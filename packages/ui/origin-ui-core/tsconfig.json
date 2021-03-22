@@ -7,7 +7,8 @@
         "declaration": true,
         "noImplicitAny": false,
         "composite": true,
-        "types": ["jest"]
+        "types": ["jest"],
+        "skipLibCheck": true
     },
     "include": ["./src/**/*"],
     "references": [
@@ -43,6 +44,9 @@
         },
         {
             "path": "../../devices/origin-device-registry-irec-form-api-client/tsconfig.json"
+        },
+        {
+            "path": "../../devices/origin-energy-api-client/tsconfig.json"
         }
     ]
 }

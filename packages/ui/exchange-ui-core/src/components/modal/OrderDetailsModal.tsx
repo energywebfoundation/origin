@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Dialog, Grid, IconButton, useTheme, Box, Divider, Button } from '@material-ui/core';
 import { Close as CloseIcon, ArrowRightAlt as ArrowRightAltIcon } from '@material-ui/icons';
 import { OrderSide } from '@energyweb/exchange-irec-client';
@@ -7,28 +8,29 @@ import {
     moment,
     formatCurrencyComplete,
     getCurrencies,
-    getEnvironment,
-    getProducingDevices,
     EnergyFormatter,
-    deviceById,
-    useTranslation,
     DATE_FORMAT_INCLUDING_TIME,
     LightenColor
 } from '@energyweb/origin-ui-core';
+import { getEnvironment } from '../../features/general';
 import { Order } from '../../utils/exchange';
+import { getDeviceName } from '../../utils/device';
 import { IOriginTypography } from '../../types/typography';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { AnyDevice } from '../../types';
 
 interface IOwnProps {
     order: Order;
     close: () => void;
     showCancelOrder: (order: Order) => void;
+    devices: AnyDevice[];
 }
 
 export const OrderDetailsModal = (props: IOwnProps) => {
     const { t } = useTranslation();
+    const environment = useSelector(getEnvironment);
     const anyOption = t('order.anyValue');
-    const { order, close, showCancelOrder } = props;
+    const { order, close, showCancelOrder, devices } = props;
     const {
         filled,
         asset,
@@ -51,8 +53,6 @@ export const OrderDetailsModal = (props: IOwnProps) => {
         deviceArr.filter((type) => !type.includes(';')).join(', ');
     const primaryDeviceType = deviceType ? deviceTypeFormatted(deviceType) : anyOption;
     const region = location ? location[0].split(';')[1] : anyOption;
-    const devices = useSelector(getProducingDevices);
-    const environment = useSelector(getEnvironment);
 
     return (
         <Dialog
@@ -116,8 +116,8 @@ export const OrderDetailsModal = (props: IOwnProps) => {
                         <Box style={{ textTransform: 'capitalize' }}>{primaryDeviceType}</Box>
                         {order.side === OrderSide.Ask && (
                             <Box>
-                                {asset?.deviceId
-                                    ? deviceById(asset.deviceId, environment, devices).facilityName
+                                {asset.deviceId
+                                    ? getDeviceName(asset.deviceId, devices, environment)
                                     : anyOption}
                             </Box>
                         )}

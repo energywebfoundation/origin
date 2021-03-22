@@ -77,8 +77,7 @@ describe('Device Facade', () => {
                 images: '',
                 region: '',
                 province: '',
-                gridOperator: '',
-                automaticPostForSale: false
+                gridOperator: ''
             };
 
             const device = await ProducingDevice.createDevice(deviceProps, conf);

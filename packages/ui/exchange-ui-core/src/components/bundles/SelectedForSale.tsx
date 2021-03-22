@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import {
@@ -18,25 +19,29 @@ import {
     ICertificateViewItem,
     reloadCertificates,
     formatCurrencyComplete,
-    useTranslation,
     EnergyFormatter
 } from '@energyweb/origin-ui-core';
+import { getEnvironment } from '../../features/general';
 import { createBundle } from '../../features/bundles';
 import { BundleItemDTO } from '../../utils/exchange';
 import { BundleItemEdit, IBundledCertificate } from './BundleItemEdit';
 import { IOriginTypography } from '../../types/typography';
+import { MyDevice } from '../../types';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { deviceById } from '../../utils/device';
 
 interface IOwnProps {
     certificatesToBundle: ICertificateViewItem[];
     callback: () => void;
+    devices: MyDevice[];
 }
 
 export const SelectedForSale = (props: IOwnProps) => {
-    const { callback } = props;
+    const { callback, devices } = props;
     const [certificatesToBundle, setCertificatesToBundle] = useState<IBundledCertificate[]>([]);
     const [price, setPrice] = useState(0);
     const [sellAsBundle, setSellAsBundle] = useState(false);
+    const environment = useSelector(getEnvironment);
     const currency = useSelector(getCurrencies)[0];
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -105,6 +110,7 @@ export const SelectedForSale = (props: IOwnProps) => {
                             >
                                 <ListItem style={{ backgroundColor: originBgColor }}>
                                     <BundleItemEdit
+                                        device={deviceById(cert.deviceId, devices, environment)}
                                         certificate={cert}
                                         totalVolume={totalVolume}
                                         onChange={handleItemEdit}

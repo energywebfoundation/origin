@@ -2,15 +2,15 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import request from 'supertest';
-import { Role } from '@energyweb/origin-backend-core';
 import { getAddress } from 'ethers/lib/utils';
 
 import moment from 'moment';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { authenticatedUser, bootstrapTestInstance, deviceManager } from './issuer-api';
+import { TestUser, bootstrapTestInstance, deviceManager } from './issuer-api';
 import { CERTIFICATION_REQUESTS_TABLE_NAME } from '../src/pods/certification-request/certification-request.entity';
 import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
 import { CertificationRequestStatus } from '../src/pods/certification-request/certification-request-status.enum';
+import { CertificationRequestDTO } from '../src/pods/certification-request';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -49,6 +49,7 @@ describe('Certification Request tests', () => {
     it('should return 400 BadRequest if "to" address is invalid', async () => {
         await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({ ...certificationRequestTestData, to: 'invalid one' })
             .expect(HttpStatus.BAD_REQUEST);
     });
@@ -75,6 +76,7 @@ describe('Certification Request tests', () => {
                 }
             } = await request(app.getHttpServer())
                 .post('/certification-request')
+                .set({ 'test-user': TestUser.OrganizationDeviceManager })
                 .send(certReqData)
                 .expect(HttpStatus.CREATED);
 
@@ -92,9 +94,12 @@ describe('Certification Request tests', () => {
 
             const { body: requests } = await request(app.getHttpServer())
                 .get(`/certification-request`)
+                .set({ 'test-user': TestUser.OrganizationDeviceManager })
                 .expect(HttpStatus.OK);
 
-            const cr: any = requests.find((req: any) => req.owner === getAddress(certReqData.to));
+            const cr = requests.find(
+                (req: CertificationRequestDTO) => req.owner === getAddress(certReqData.to)
+            );
             expect(cr).to.be.not.empty;
         });
     });
@@ -102,11 +107,13 @@ describe('Certification Request tests', () => {
     it('should not be able to request certification request twice for the same time period', async () => {
         await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect(HttpStatus.CONFLICT);
     });
@@ -116,28 +123,26 @@ describe('Certification Request tests', () => {
             body: { id: certificationRequestId }
         } = await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData);
 
         // need to wait for item to be picked up from the queue and deployed
         await sleep(3000);
 
-        authenticatedUser.rights = Role.Issuer;
-
         const {
             body: { success }
         } = await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/approve`)
+            .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK);
 
         expect(success).to.be.true;
-
-        authenticatedUser.rights = Role.OrganizationDeviceManager;
-        authenticatedUser.blockchainAccountAddress = deviceManager.address;
 
         const {
             body: { issuedCertificateTokenId: newCertificateTokenId }
         } = await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
         expect(newCertificateTokenId).to.be.above(-1);
@@ -146,6 +151,7 @@ describe('Certification Request tests', () => {
 
         const { body: certificate } = await request(app.getHttpServer())
             .get(`/certificate/token-id/${newCertificateTokenId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
         expect(certificate.deviceId).to.equal(certificationRequestTestData.deviceId);
@@ -163,6 +169,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect((res) => {
                 certificationRequestId = res.body.id;
@@ -171,10 +178,9 @@ describe('Certification Request tests', () => {
         // need to wait for item to be picked up from the queue and deployed
         await sleep(3000);
 
-        authenticatedUser.rights = Role.Issuer;
-
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/revoke`)
+            .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.success).to.be.true;
@@ -186,6 +192,7 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect((res) => {
                 certificationRequestId = res.body.id;
@@ -194,10 +201,9 @@ describe('Certification Request tests', () => {
         // need to wait for item to be picked up from the queue and deployed
         await sleep(3000);
 
-        authenticatedUser.rights = Role.Issuer;
-
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/revoke`)
+            .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK)
             .expect((res) => {
                 expect(res.body.success).to.be.true;
@@ -205,12 +211,14 @@ describe('Certification Request tests', () => {
 
         await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/revoke`)
+            .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should create a private certification request', async () => {
         await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 ...certificationRequestTestData,
                 isPrivate: true
@@ -226,6 +234,7 @@ describe('Certification Request tests', () => {
             body: { id: certificationRequestId, isPrivate }
         } = await request(app.getHttpServer())
             .post('/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 ...certificationRequestTestData,
                 isPrivate: true
@@ -241,6 +250,7 @@ describe('Certification Request tests', () => {
             body: { success }
         } = await request(app.getHttpServer())
             .put(`/certification-request/${certificationRequestId}/approve`)
+            .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK);
 
         expect(success).to.be.true;
@@ -251,14 +261,14 @@ describe('Certification Request tests', () => {
             body: { issuedCertificateTokenId: newCertificateTokenId }
         } = await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
-
-        authenticatedUser.blockchainAccountAddress = deviceManager.address;
 
         const {
             body: { energy, issuedPrivately }
         } = await request(app.getHttpServer())
             .get(`/certificate/token-id/${newCertificateTokenId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
         expect(issuedPrivately).to.be.true;

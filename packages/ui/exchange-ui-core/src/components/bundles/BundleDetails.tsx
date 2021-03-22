@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog,
     DialogTitle,
@@ -15,15 +16,18 @@ import {
     Theme
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { useTranslation, bundlePrice, formatCurrencyComplete } from '@energyweb/origin-ui-core';
+import { formatCurrencyComplete } from '@energyweb/origin-ui-core';
 import { getShowBundleDetails, showBundleDetails } from '../../features/bundles';
 import { Bundle } from '../../utils/exchange';
+import { bundlePrice } from '../../utils/bundles';
 import { BundleContents } from './BundleContents';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { AnyDevice } from '../../types';
 
 interface IOwnProps {
     bundle: Bundle;
     owner: boolean;
+    devices: AnyDevice[];
 }
 
 const useDialogStyles = makeStyles((theme: Theme) =>
@@ -62,7 +66,7 @@ export const BundleDetails = (props: IOwnProps) => {
     const dispatch = useDispatch();
     const showModal = useSelector(getShowBundleDetails);
     const { t } = useTranslation();
-    const { bundle, owner } = props;
+    const { bundle, owner, devices } = props;
     let { splits } = bundle;
     const { price } = bundle;
     const prices = splits.map(({ volume }) => bundlePrice({ volume, price }));
@@ -139,7 +143,12 @@ export const BundleDetails = (props: IOwnProps) => {
                     </Box>
                 )}
                 <Box width="97%">
-                    <BundleContents splits={splits} bundle={bundle} owner={owner} />
+                    <BundleContents
+                        devices={devices}
+                        splits={splits}
+                        bundle={bundle}
+                        owner={owner}
+                    />
                 </Box>
             </DialogContent>
         </Dialog>

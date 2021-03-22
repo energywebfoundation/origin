@@ -14,8 +14,8 @@ module.exports = {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-            "@material-ui/styles": path.join(__dirname, '../node_modules/@material-ui/styles'),
-            "react-redux": require.resolve("react-redux")
+            '@material-ui/styles': require.resolve('../node_modules/@material-ui/styles'),
+            'react-redux': require.resolve('react-redux')
         },
         fallback: {
             stream: require.resolve('stream-browserify'),
@@ -34,12 +34,17 @@ module.exports = {
     devServer: {
         port: 3000,
         compress: true,
-        historyApiFallback: true
+        historyApiFallback: true,
+        watchOptions: {
+            ignored: [
+                path.resolve(__dirname, '../cypress')
+            ]
+        }
     },
 
     plugins: [
         new MiniCssExtractPlugin({ filename: 'styles.css' }),
-        new CopyWebpackPlugin({ 
+        new CopyWebpackPlugin({
             patterns: [{ from: 'env-config.json', to: 'env-config.json' }]
         }),
         new webpack.ProvidePlugin({
@@ -73,7 +78,19 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|jpg|gif|svg)$/,
+                test: /\.svg$/,
+                use: [
+                    '@svgr/webpack',
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192
+                        }
+                    }
+                ],
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
                 use: [
                     {
                         loader: 'url-loader',
@@ -86,7 +103,7 @@ module.exports = {
             {
                 test: /\.m?js/,
                 resolve: {
-                  fullySpecified: false
+                    fullySpecified: false
                 }
             },
 

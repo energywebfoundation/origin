@@ -10,31 +10,47 @@
 **Origin** is a set of toolkits that together provide a system for issuance and management of Energy Attribute Certificates (EACs). This repository is an entry point to Origin systems. It has a goal of explaining briefly the whole system and providing you with insight and info where to explore next.
 
 <p align="center">
-  <a href="https://travis-ci.com/energywebfoundation/origin"><img src="https://img.shields.io/travis/com/energywebfoundation/origin/master"/></a>
-  <a href="https://github.com/renovatebot/renovate"><img src="https://badges.renovateapi.com/github/energywebfoundation/origin"/></a>
+  <img src="https://github.com/energywebfoundation/origin/actions/workflows/deploy-master.yml/badge.svg" />
 </p>
+
+:construction: Documentation available at [https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) :construction:
 
 ## Table of Contents
 
--   [Packages](#packages)
--   [Installation](#installation)
--   [Energy Attribute Certificates](#energy-attribute-certificates)
--   [Key modules and components](#key-modules-and-components)
--   [Deployment](#deployment)
--   [Contribution guidelines](#contribution-guidelines)
+- [Table of Contents](#table-of-contents)
+- [Packages](#packages)
+  - [SDK Releases](#sdk-releases)
+  - [Applications, Infrastructure and Demo](#applications-infrastructure-and-demo)
+  - [Packages types](#packages-types)
+    - [Stable](#stable)
+    - [Canary](#canary)
+    - [Preview](#preview)
+- [Installation](#installation)
+- [Build](#build)
+- [Test](#test)
+- [Run demo](#run-demo)
+  - [Preparation](#preparation)
+  - [Running](#running)
+  - [Heroku environment provisioning](#heroku-environment-provisioning)
+- [Energy Attribute Certificates](#energy-attribute-certificates)
+- [Key modules and components](#key-modules-and-components)
+  - [Key repositories](#key-repositories)
+  - [Other components](#other-components)
+- [Deployment](#deployment)
+- [Contribution guidelines](#contribution-guidelines)
 
 ## Packages
 
 ### SDK Releases
 
-| Package                                                               | Stable                                                                                                                                      | Canary                                                                                                                                         | Description                                         |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| [`@energyweb/device-registry`](/packages/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry)             | Library that contains information on renewable energy producing devices        |
-| [`@energyweb/issuer`](/packages/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer.svg)](https://www.npmjs.com/package/@energyweb/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer/canary)](https://www.npmjs.com/package/@energyweb/issuer)                               | Energy Attribute Certificates Issuer Module         |
-| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for interacting with the backend            |
-| [`@energyweb/origin-backend`](/packages/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)               | Example backend necessary for running Origin     |
-| [`@energyweb/exchange`](/packages/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange.svg)](https://www.npmjs.com/package/@energyweb/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange/canary)](https://www.npmjs.com/package/@energyweb/exchange)                           | A service project hosting order book based exchange |
-| [`@energyweb/utils-general`](/packages/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                 | Utilities                                           |
+| Package                                                               | Stable                                                                                                                                      | Canary                                                                                                                                         | Description                                                             |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [`@energyweb/device-registry`](/packages/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry)             | Library that contains information on renewable energy producing devices |
+| [`@energyweb/issuer`](/packages/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer.svg)](https://www.npmjs.com/package/@energyweb/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer/canary)](https://www.npmjs.com/package/@energyweb/issuer)                               | Energy Attribute Certificates Issuer Module                             |
+| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for interacting with the backend                         |
+| [`@energyweb/origin-backend`](/packages/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)               | Example backend necessary for running Origin                            |
+| [`@energyweb/exchange`](/packages/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange.svg)](https://www.npmjs.com/package/@energyweb/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange/canary)](https://www.npmjs.com/package/@energyweb/exchange)                           | A service project hosting order book based exchange                     |
+| [`@energyweb/utils-general`](/packages/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                 | Utilities                                                               |
 
 ### Applications, Infrastructure and Demo
 
@@ -90,23 +106,25 @@ yarn test
 
 ### Preparation
 
-0. Make sure you are using Node 12.x.+
-1. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`. 
+0. Make sure you are using Node 14.x.x
+1. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
 
 We recommend using Docker based setup as follows (requires psql command line tool installed):
+
 ```
 docker pull postgres
 docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
 psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
 ```
+
 2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
    Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
-3. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app#development
+3. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
 
 ### Running
 
-After you have the `.env` file created, installed dependencies (```yarn```) and build completed (```yarn build```) run the following command:
+After you have the `.env` file created, installed dependencies (`yarn`) and build completed (`yarn build`) run the following command:
 
 ```shell
 yarn run:origin
@@ -178,5 +196,5 @@ If you want to contribute to Origin, be sure to follow classic open source contr
     - Commit the change to the `master` branch
 2. Pull request
     - Open a pull request from your fork `master` branch
-    - Request code reviews from [@Kuzirashi](https://github.com/Kuzirashi), [@JosephBagaric](https://github.com/JosephBagaric) or [@kosecki123](https://github.com/kosecki123)
+    - Request code reviews from [@JosephBagaric](https://github.com/JosephBagaric), [@kosecki123](https://github.com/kosecki123), [@alexworker23](https://github.com/alexworker23) or [@ioncreature](https://github.com/ioncreature)
     - Once the PR is approved and the build passes, it will be merged to the master branch

@@ -1,9 +1,5 @@
-import {
-    ICustomFilter,
-    useTranslation,
-    CustomFilterInputType,
-    FilterRules
-} from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
+import { ICustomFilter, CustomFilterInputType, FilterRules } from '@energyweb/origin-ui-core';
 import { TimeFrame } from '@energyweb/utils-general';
 
 export function useDemandDependantFilters(): (filters: ICustomFilter[]) => ICustomFilter[] {

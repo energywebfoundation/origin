@@ -1,13 +1,7 @@
 /* eslint-disable no-return-assign */
-import {
-    DeviceCreateData,
-    DeviceSettingsUpdateData,
-    DeviceStatus,
-    IDevice
-} from '@energyweb/origin-backend-core';
+import { DeviceCreateData, DeviceStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { expect } from 'chai';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
 import moment from 'moment';
@@ -48,8 +42,7 @@ describe('Device e2e tests', () => {
             { timestamp: 11000, meterReading: BigNumber.from(200) },
             { timestamp: 12000, meterReading: BigNumber.from(300) }
         ],
-        externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }],
-        automaticPostForSale: false
+        externalDeviceIds: [{ id: externalDeviceId, type: process.env.ISSUER_ID }]
     });
 
     before(async () => {
@@ -80,72 +73,6 @@ describe('Device e2e tests', () => {
             .send(getExampleDevice())
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(201);
-    });
-
-    it('should allow to edit settings for organization member with DeviceManager role', async () => {
-        const {
-            body: { id: deviceId }
-        } = await request(app.getHttpServer())
-            .post('/device')
-            .send(getExampleDevice())
-            .set({ 'test-user': TestUser.OrganizationAdmin });
-
-        await request(app.getHttpServer())
-            .get(`/device/${deviceId}`)
-            .set({ 'test-user': TestUser.OrganizationAdmin })
-            .expect((res) => {
-                const device = res.body as IDevice;
-                expect(device.defaultAskPrice).equals(null);
-                expect(device.automaticPostForSale).equals(false);
-            });
-
-        await request(app.getHttpServer())
-            .put(`/device/${deviceId}/settings`)
-            .set({ 'test-user': TestUser.OrganizationAdmin })
-            .expect(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        const settingWithZeroPrice: DeviceSettingsUpdateData = {
-            defaultAskPrice: 0,
-            automaticPostForSale: true
-        };
-
-        await request(app.getHttpServer())
-            .put(`/device/${deviceId}/settings`)
-            .set({ 'test-user': TestUser.OrganizationAdmin })
-            .send(settingWithZeroPrice)
-            .expect(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        const settingWithNonIntegerPrice: DeviceSettingsUpdateData = {
-            defaultAskPrice: 1.3,
-            automaticPostForSale: true
-        };
-
-        await request(app.getHttpServer())
-            .put(`/device/${deviceId}/settings`)
-            .set({ 'test-user': TestUser.OrganizationAdmin })
-            .send(settingWithNonIntegerPrice)
-            .expect(HttpStatus.UNPROCESSABLE_ENTITY);
-
-        const settingWithCorrectPrice: DeviceSettingsUpdateData = {
-            defaultAskPrice: 1000,
-            automaticPostForSale: true
-        };
-
-        await request(app.getHttpServer())
-            .put(`/device/${deviceId}/settings`)
-            .set({ 'test-user': TestUser.OrganizationAdmin })
-            .send(settingWithCorrectPrice)
-            .expect(HttpStatus.OK);
-
-        await request(app.getHttpServer())
-            .get(`/device/${deviceId}`)
-            .set({ 'test-user': TestUser.OrganizationAdmin })
-            .expect((res) => {
-                const device = res.body as IDevice;
-
-                expect(device.defaultAskPrice).equals(settingWithCorrectPrice.defaultAskPrice);
-                expect(device.automaticPostForSale).equals(true);
-            });
     });
 
     it("should not allow deleting device to another Organization's admins", async () => {

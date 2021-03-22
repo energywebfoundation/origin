@@ -1,37 +1,38 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
-    getProducingDevices,
-    getEnvironment,
-    deviceById,
-    useTranslation,
     getCertificates,
     ICertificateViewItem,
     CertificateSource
 } from '@energyweb/origin-ui-core';
 import { Box, useTheme } from '@material-ui/core';
 import { GroupedCertificateList } from './GroupedCertificateList';
+import { getEnvironment } from '../../features/general';
+import { getDeviceName } from '../../utils/device';
 import { IOriginTypography } from '../../types/typography';
+import { MyDevice } from '../../types';
 
 interface IOwnProps {
     selected: ICertificateViewItem[];
     setSelected: (certIds: ICertificateViewItem[]) => void;
+    devices: MyDevice[];
 }
 
 export const Certificates = (props: IOwnProps) => {
-    const { selected, setSelected } = props;
+    const { selected, setSelected, devices } = props;
     const certificates = useSelector(getCertificates).filter(
         (cert) => cert.source === CertificateSource.Exchange
     );
-    const devices = useSelector(getProducingDevices);
-    const environment = useSelector(getEnvironment);
+
     const fontSizeMd = ((useTheme().typography as unknown) as IOriginTypography)?.fontSizeMd;
     const { t } = useTranslation();
+    const environment = useSelector(getEnvironment);
 
     const certificatesByFacility = () => {
         return certificates.reduce((grouped, cert) => {
-            const { facilityName } = deviceById(cert.deviceId, environment, devices);
-            grouped[facilityName] = grouped[facilityName]?.concat([cert]) || [cert];
+            const deviceName = getDeviceName(cert.deviceId, devices, environment);
+            grouped[deviceName] = grouped[deviceName]?.concat([cert]) || [cert];
             return grouped;
         }, {});
     };
@@ -45,6 +46,7 @@ export const Certificates = (props: IOwnProps) => {
                 groups={certificatesByFacility()}
                 selected={selected}
                 setSelected={setSelected}
+                devices={devices}
             />
         </Box>
     );

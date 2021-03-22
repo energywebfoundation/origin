@@ -1,4 +1,4 @@
-import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { EventBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import {
     Certificate as CertificateFacade,
     IOwnershipCommitmentProof,
@@ -12,6 +12,7 @@ import { HttpStatus, Logger } from '@nestjs/common';
 import { CertificateCreatedEvent } from '../events/certificate-created-event';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate.entity';
+import { CertificatePersistedEvent } from '../events/certificate-persisted.event';
 
 @EventsHandler(CertificateCreatedEvent)
 export class CertificateCreatedHandler implements IEventHandler<CertificateCreatedEvent> {
@@ -20,30 +21,28 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
     constructor(
         @InjectRepository(Certificate)
         private readonly repository: Repository<Certificate>,
-        private readonly blockchainPropertiesService: BlockchainPropertiesService
+        private readonly blockchainPropertiesService: BlockchainPropertiesService,
+        private readonly eventBus: EventBus
     ) {}
 
-    async handle({
-        certificateId,
-        privateInfo
-    }: CertificateCreatedEvent): Promise<ISuccessResponse> {
-        this.logger.log(`Detected a new certificate with ID ${certificateId}`);
+    async handle({ tokenId, privateInfo }: CertificateCreatedEvent): Promise<ISuccessResponse> {
+        this.logger.log(`Detected a new certificate with ID ${tokenId}`);
 
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
         const existingCertificate = await this.repository.findOne(
-            { tokenId: certificateId },
+            { tokenId },
             { relations: ['blockchain'] }
         );
 
         if (existingCertificate) {
             return ResponseFailure(
-                `Certificate with tokenId ${certificateId} already exists in the DB.`,
+                `Certificate with tokenId ${tokenId} already exists in the DB.`,
                 HttpStatus.CONFLICT
             );
         }
 
-        const cert = await new CertificateFacade(certificateId, blockchainProperties.wrap()).sync();
+        const cert = await new CertificateFacade(tokenId, blockchainProperties.wrap()).sync();
 
         let latestCommitment: IOwnershipCommitmentProof;
 
@@ -53,7 +52,7 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
             });
         }
 
-        const certificate = this.repository.create({
+        const certificate = await this.repository.save({
             blockchain: blockchainProperties,
             tokenId: cert.id,
             deviceId: cert.deviceId,
@@ -66,7 +65,7 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
             latestCommitment
         });
 
-        await this.repository.save(certificate);
+        this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
 
         return ResponseSuccess();
     }

@@ -19,14 +19,15 @@ import {
     NoBlockchainAccountModal,
     LoginPage,
     getUserOffchain,
-    getEnvironment
+    getEnvironment,
+    DeviceDataLayers
 } from '@energyweb/origin-ui-core';
 import { ExchangeApp, ExchangeAdapter } from '@energyweb/exchange-ui-core';
 import { useLinks } from '../routing';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 import { Header } from './Header';
 import { SidebarMenu } from './SidebarMenu';
-import { IRecCoreAdapter, IRecApp } from '@energyweb/origin-ui-irec-core';
+import { IRecCoreAdapter, IRecDeviceApp, IRecCertificateApp } from '@energyweb/origin-ui-irec-core';
 
 interface IProps {
     history: History;
@@ -43,6 +44,7 @@ export function AppContainer(props: IProps) {
     const enabledFeatures = originConfiguration?.enabledFeatures;
     const changeContext = originConfiguration?.changeContext;
     const environment = useSelector(getEnvironment);
+
     useEffect(() => {
         if (environment?.DISABLED_UI_FEATURES) {
             const disabledFeatures = environment?.DISABLED_UI_FEATURES.split(';').map(
@@ -67,12 +69,16 @@ export function AppContainer(props: IProps) {
         />
     );
 
-    const certificatesRoute = shareContextCore(<Certificates />);
+    const certificatesCoreRoute = shareContextCore(<Certificates />);
     const devicesCoreRoute = shareContextCore(<Device />);
     const loginPageRoute = shareContextCore(<LoginPage />);
     const accountRoute = shareContextCore(<Account />);
     const organizationRoute = shareContextCore(<Organization />);
     const adminRoute = shareContextCore(<Admin />);
+
+    const exchangeDeviceDataLayer = enabledFeatures?.includes(OriginFeature.IRecUIApp)
+        ? DeviceDataLayers.IRecDevice
+        : DeviceDataLayers.OriginFormDevice;
 
     const shareContextExchange = (component) => (
         <ExchangeAdapter
@@ -80,6 +86,7 @@ export function AppContainer(props: IProps) {
             configuration={config}
             history={props.history}
             component={component}
+            deviceDataLayer={exchangeDeviceDataLayer}
         />
     );
     const exchangeRoute = shareContextExchange(<ExchangeApp />);
@@ -92,10 +99,16 @@ export function AppContainer(props: IProps) {
             component={component}
         />
     );
-    const iRecDeviceRoute = shareContextIRec(<IRecApp />);
-    const deviceRoute = !enabledFeatures.includes(OriginFeature.IRecUIApp)
-        ? devicesCoreRoute
-        : iRecDeviceRoute;
+    const iRecCertificateRoute = shareContextIRec(<IRecCertificateApp />);
+    const iRecDeviceRoute = shareContextIRec(<IRecDeviceApp />);
+
+    const certificateRoute = enabledFeatures?.includes(OriginFeature.IRecUIApp)
+        ? iRecCertificateRoute
+        : certificatesCoreRoute;
+
+    const deviceRoute = enabledFeatures?.includes(OriginFeature.IRecUIApp)
+        ? iRecDeviceRoute
+        : devicesCoreRoute;
 
     const {
         baseURL,
@@ -156,7 +169,7 @@ export function AppContainer(props: IProps) {
                         {((enabledFeatures.includes(OriginFeature.Certificates) &&
                             userIsActiveAndPartOfOrg) ||
                             isIssuer) && (
-                            <Route path={getCertificatesLink()}>{certificatesRoute}</Route>
+                            <Route path={getCertificatesLink()}>{certificateRoute}</Route>
                         )}
                         <Route path={getAccountLink()}>{accountRoute}</Route>
                         <Route path={getExchangeLink()}>{exchangeRoute}</Route>

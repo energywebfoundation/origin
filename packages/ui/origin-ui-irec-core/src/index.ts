@@ -5,5 +5,6 @@ export * from './types';
 export * from './utils';
 
 export * from './IRecCoreAdapter';
-export * from './IRecApp';
+export * from './IRecDeviceApp';
+export * from './IRecCertificateApp';
 export * from './deviceMenu';

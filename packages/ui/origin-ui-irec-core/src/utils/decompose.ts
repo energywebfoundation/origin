@@ -1,4 +1,7 @@
-import { CreateDeviceData, IRecCreateDeviceDTO, OriginCreateDeviceDTO } from '../types';
+import { NewDeviceDTO as OriginCreateDeviceDTO } from '@energyweb/origin-device-registry-api-client';
+import { CreateDeviceDTO as IRecCreateDeviceDTO } from '@energyweb/origin-device-registry-irec-local-api-client';
+
+import { CreateDeviceData } from '../types';
 
 export function decomposeForIRec(newDevice: CreateDeviceData): IRecCreateDeviceDTO {
     const iRecCreateDevice = { ...newDevice };

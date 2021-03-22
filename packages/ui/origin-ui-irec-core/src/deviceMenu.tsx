@@ -4,14 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { isRole, Role } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
 import { getUserOffchain } from '@energyweb/origin-ui-core';
-
-import { AllDevices } from './containers/AllDevices';
-import { ProductionMap } from './containers/ProductionMap';
-import { MyDevices } from './containers/MyDevices';
-import { PendingDevices } from './containers/PendingDevices';
-import { RegisterDevice } from './containers/RegisterDevice';
-import { ImportDevice } from './containers/ImportDevice';
-// import { AutoSupplyDevices } from './containers/AutoSupplyDevices';
+import { AllDevices } from './containers/Device/AllDevices';
+import { ProductionMap } from './containers/Device/ProductionMap';
+import { MyDevices } from './containers/Device/MyDevices';
+import { PendingDevices } from './containers/Device/PendingDevices';
+import { RegisterDevice } from './containers/Device/RegisterDevice';
+import { ImportDevice } from './containers/Device/ImportDevice';
 // import { RegisterDeviceGroup } from './containers/RegisterDeviceGroup';
 
 interface IDeviceMenuItem {
@@ -69,13 +67,6 @@ export function useDeviceMenu(): IDeviceMenuItem[] {
         //     key: 'add-group',
         //     label: t('navigation.devices.registerDeviceGroup'),
         //     component: RegisterDeviceGroup,
-        //     features: [OriginFeature.Devices, OriginFeature.Seller],
-        //     show: isDeviceManagerOrAdmin()
-        // },
-        // {
-        //     key: 'supply',
-        //     label: t('navigation.devices.supply'),
-        //     component: AutoSupplyDevices,
         //     features: [OriginFeature.Devices, OriginFeature.Seller],
         //     show: isDeviceManagerOrAdmin()
         // },

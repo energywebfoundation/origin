@@ -20,25 +20,28 @@ import {
 import { moment, NotificationType, showNotification } from '../../utils';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
 import { ExchangeClient } from '../../utils/clients/ExchangeClient';
-import { assertCorrectBlockchainAccount } from '../../utils/sagas';
-import { setLoading } from '../general/actions';
+import {
+    setLoading,
+    setNoAccountModalVisibilityAction,
+    setAccountMismatchModalPropertiesAction,
+    IAccountMismatchModalResolvedAction,
+    GeneralActions
+} from '../general/actions';
 import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
 import { getExchangeClient } from '../general/selectors';
-import { getConfiguration, getWeb3 } from '../selectors';
-import { getUserOffchain } from '../users/selectors';
+import { getConfiguration } from '../configuration';
+import { getWeb3 } from '../web3';
+import { getUserOffchain, getActiveBlockchainAccountAddress } from '../users/selectors';
 import {
     addCertificate,
     CertificatesActions,
-    hideRequestCertificatesModal,
     IRequestCertificateApprovalAction,
     IRequestCertificateEntityFetchAction,
     IRequestCertificatesAction,
     IRequestClaimCertificateAction,
     IRequestClaimCertificateBulkAction,
     IRequestPublishForSaleAction,
-    IRequestWithdrawCertificateAction,
-    IShowRequestCertificatesModalAction,
-    setRequestCertificatesModalVisibility
+    IRequestWithdrawCertificateAction
 } from './actions';
 import {
     getBlockchainPropertiesClient,
@@ -98,9 +101,9 @@ function* requestCertificatesSaga(): SagaIterator {
         );
 
         yield put(setLoading(true));
-        yield put(hideRequestCertificatesModal());
 
-        const { startTime, endTime, energy, files, deviceId } = action.payload;
+        const { startTime, endTime, energy, files, deviceId } = action.payload.requestData;
+        const closeModalCallback = action.payload.callback;
 
         try {
             const certificationRequestsClient: CertificationRequestsClient = yield select(
@@ -127,6 +130,10 @@ function* requestCertificatesSaga(): SagaIterator {
                 }
             ]);
 
+            if (closeModalCallback) {
+                yield call(closeModalCallback);
+            }
+
             showNotification(`Certificates requested.`, NotificationType.Success);
         } catch (error) {
             console.warn('Error while requesting certificates', error);
@@ -148,26 +155,6 @@ function* requestCertificatesSaga(): SagaIterator {
         }
 
         yield put(setLoading(false));
-    }
-}
-
-function* openRequestCertificatesModalSaga(): SagaIterator {
-    while (true) {
-        const action: IShowRequestCertificatesModalAction = yield take(
-            CertificatesActions.showRequestCertificatesModal
-        );
-        const device = action.payload.producingDevice;
-
-        const userOffchain: IUser = yield select(getUserOffchain);
-
-        if (device?.organizationId !== userOffchain?.organization?.id) {
-            showNotification(
-                `You need to own the device to request certificates.`,
-                NotificationType.Error
-            );
-        } else {
-            yield put(setRequestCertificatesModalVisibility(true));
-        }
     }
 }
 
@@ -331,6 +318,34 @@ function* requestPublishForSaleSaga(): SagaIterator {
     }
 }
 
+function* assertCorrectBlockchainAccount() {
+    const user: IUser = yield select(getUserOffchain);
+    const activeBlockchainAddress: string = yield select(getActiveBlockchainAccountAddress);
+
+    if (user) {
+        if (!user.blockchainAccountAddress || !activeBlockchainAddress) {
+            yield put(setNoAccountModalVisibilityAction(true));
+
+            return false;
+        } else if (
+            user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress?.toLowerCase()
+        ) {
+            return true;
+        }
+    }
+
+    yield put(
+        setAccountMismatchModalPropertiesAction({
+            visibility: true
+        })
+    );
+    const { payload: shouldContinue }: IAccountMismatchModalResolvedAction = yield take(
+        GeneralActions.accountMismatchModalResolved
+    );
+
+    return shouldContinue;
+}
+
 function* requestDepositSaga(): SagaIterator {
     while (true) {
         const action: IRequestPublishForSaleAction = yield take(
@@ -394,7 +409,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
             continue;
         }
 
-        const { certificateId, amount, claimData } = action.payload;
+        const { certificateId, amount, claimData, callback } = action.payload;
 
         yield put(setLoading(true));
 
@@ -423,6 +438,10 @@ function* requestClaimCertificateSaga(): SagaIterator {
             if (!txResult.status) {
                 showNotification('Claiming failed.', NotificationType.Error);
                 continue;
+            }
+
+            if (callback) {
+                yield call(callback);
             }
 
             showNotification(
@@ -545,14 +564,13 @@ function* reloadCertificatesSaga(): SagaIterator {
         if (!configuration) {
             continue;
         }
-        yield call(fetchDataAfterConfigurationChange, configuration);
+        yield call(fetchDataAfterConfigurationChange);
     }
 }
 
 export function* certificatesSaga(): SagaIterator {
     yield all([
         fork(requestCertificatesSaga),
-        fork(openRequestCertificatesModalSaga),
         fork(requestCertificateSaga),
         fork(requestPublishForSaleSaga),
         fork(requestClaimCertificateSaga),

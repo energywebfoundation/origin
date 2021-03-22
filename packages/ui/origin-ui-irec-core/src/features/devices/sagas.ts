@@ -1,33 +1,29 @@
 import { SagaIterator } from 'redux-saga';
-import { all, fork, take, select, put, apply } from 'redux-saga/effects';
-import { showNotification, NotificationType, setLoading } from '@energyweb/origin-ui-core';
+import { all, apply, fork, put, select, take } from 'redux-saga/effects';
+import { NotificationType, setLoading, showNotification } from '@energyweb/origin-ui-core';
+import {
+    NewDeviceDTO as OriginCreateDeviceDTO,
+    OriginDeviceDTO
+} from '@energyweb/origin-device-registry-api-client';
+import {
+    CreateDeviceDTO as IRecCreateDeviceDTO,
+    DeviceDTO as IRecMyDeviceDTO,
+    PublicDeviceDTO as IRecPublicDeviceDTO
+} from '@energyweb/origin-device-registry-irec-local-api-client';
 import { DeviceClient } from '../../utils/client';
-import { composePublicDevices, composeMyDevices, composeCreatedDevice } from '../../utils/compose';
+import { composeCreatedDevice, composeMyDevices, composePublicDevices } from '../../utils/compose';
 import { decomposeForIRec, decomposeForOrigin } from '../../utils/decompose';
-import {
-    IRecDeviceDTO,
-    OriginDeviceDTO,
-    IRecPublicDeviceDTO,
-    ComposedDevice,
-    IRecCreateDeviceDTO,
-    OriginCreateDeviceDTO
-} from '../../types';
+import { ComposedDevice } from '../../types';
 import { getDeviceClient } from '../general';
-import {
-    DevicesActions,
-    storePublicDevices,
-    storeMyDevices,
-    IUpdateDeviceStatus,
-    ICreateDevice
-} from './actions';
+import { DevicesActions, ICreateDevice, storeMyDevices, storePublicDevices } from './actions';
 
 function* getPublicDevices(): SagaIterator {
     while (true) {
         yield take(DevicesActions.fetchPublicDevices);
 
         const deviceClient: DeviceClient = yield select(getDeviceClient);
-        const originClient = deviceClient?.originClient;
-        const iRecClient = deviceClient?.iRecClient;
+        const originClient = deviceClient.originClient;
+        const iRecClient = deviceClient.iRecClient;
 
         try {
             const [originResponse, iRecResponse] = yield all([
@@ -61,7 +57,7 @@ function* getMyDevices(): SagaIterator {
             ]);
 
             const originDevices: OriginDeviceDTO[] = originResponse.data;
-            const iRecDevices: IRecDeviceDTO[] = iRecResponse.data;
+            const iRecDevices: IRecMyDeviceDTO[] = iRecResponse.data;
 
             const composed = composeMyDevices(originDevices, iRecDevices);
             yield put(storeMyDevices(composed));
@@ -86,7 +82,7 @@ function* createNewDevice(): SagaIterator {
         const originCreateData: OriginCreateDeviceDTO = decomposeForOrigin(newDevice);
 
         try {
-            const createdIRecDevice: IRecDeviceDTO = yield apply(
+            const createdIRecDevice: IRecMyDeviceDTO = yield apply(
                 iRecClient,
                 iRecClient.createDevice,
                 [iRecCreateData]
@@ -114,44 +110,6 @@ function* createNewDevice(): SagaIterator {
     }
 }
 
-function* updateDeviceStatus(): SagaIterator {
-    while (true) {
-        yield put(setLoading(true));
-        const {
-            payload: { id, status }
-        }: IUpdateDeviceStatus = yield take(DevicesActions.updateDeviceStatus);
-
-        const deviceClient: DeviceClient = yield select(getDeviceClient);
-        const iRecClient = deviceClient.iRecClient;
-        const myDevices: ComposedDevice[] = yield select(getMyDevices);
-
-        try {
-            const updatedDevice: IRecDeviceDTO = yield apply(
-                iRecClient,
-                iRecClient.updateDeviceStatus,
-                [id, status]
-            );
-            const updatedMyDevices = myDevices.map((device) =>
-                device.id === updatedDevice.id
-                    ? { ...device, status: updatedDevice.status }
-                    : device
-            );
-
-            yield put(storeMyDevices(updatedMyDevices));
-            showNotification(`Device status successfully updated.`, NotificationType.Success);
-        } catch (error) {
-            showNotification(`Error while approving device.`, NotificationType.Error);
-            console.log(error);
-        }
-        yield put(setLoading(false));
-    }
-}
-
 export function* iRecDevicesSaga(): SagaIterator {
-    yield all([
-        fork(getPublicDevices),
-        fork(getMyDevices),
-        fork(createNewDevice),
-        fork(updateDeviceStatus)
-    ]);
+    yield all([fork(getPublicDevices), fork(getMyDevices), fork(createNewDevice)]);
 }

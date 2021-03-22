@@ -1,4 +1,5 @@
-import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
+import { IExternalDeviceId } from '@energyweb/origin-backend-core';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
 
 export type ComposedDevice = {
     id: string;
@@ -19,13 +20,13 @@ export type ComposedDevice = {
     latitude: string;
     longitude: string;
     notes: string;
-    status: DeviceStatus;
+    status: DeviceState;
     timezone: string;
     gridOperator: string;
     smartMeterId: string;
-    externalDeviceIds: IExternalDeviceId[];
     description: string;
-    imageIds: string[];
+    externalDeviceIds?: IExternalDeviceId[];
+    imageIds?: string[];
 };
 
 export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;

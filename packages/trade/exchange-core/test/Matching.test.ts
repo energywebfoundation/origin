@@ -1,6 +1,15 @@
 import BN from 'bn.js';
 import moment from 'moment';
-import { AskPriceStrategy, DirectBuy, IMatchableOrder, Order, OrderSide, Trade } from '../src';
+import { assert } from 'chai';
+import {
+    AskPriceStrategy,
+    DirectBuy,
+    IMatchableOrder,
+    MatchingEngine,
+    Order,
+    OrderSide,
+    Trade
+} from '../src';
 import { TestProduct } from './Product';
 import { Testing } from '../src/Testing';
 import { OneTimeMatchOrder } from '../src/OneTimeMatchOrder';
@@ -447,6 +456,20 @@ describe('Matching tests', () => {
                 },
                 done
             );
+        });
+    });
+
+    describe('should test clearing matching engine cache', () => {
+        it('should clear cache', () => {
+            const matchingEngine = new MatchingEngine<string, string>(new AskPriceStrategy());
+
+            matchingEngine.submitOrder(createAsk({ userId: defaultSeller, price: 100 }));
+
+            matchingEngine.tick();
+            assert.equal(matchingEngine.orderBook().asks.count(), 1);
+
+            matchingEngine.clear();
+            assert.equal(matchingEngine.orderBook().asks.count(), 0);
         });
     });
 });

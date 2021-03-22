@@ -1,10 +1,10 @@
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { IPublicOrganization, IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { Edit } from '@material-ui/icons';
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { getBackendClient } from '../../features/general/selectors';
-import { getUserOffchain } from '../../features/users/selectors';
+import { getBackendClient } from '../../features/general';
+import { getUserOffchain } from '../../features/users';
 import { NotificationType, showNotification } from '../../utils/notifications';
 import {
     IPaginatedLoaderHooksFetchDataParameters,

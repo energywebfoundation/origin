@@ -11,7 +11,8 @@
         },
         "navigation": {
             "admin": {
-                "users": "Manage Users"
+                "users": "Manage Users",
+                "claims": "Claims"
             },
             "devices": {
                 "import": "Device import",
@@ -20,8 +21,7 @@
                 "my": "My devices",
                 "registerDevice": "Register device",
                 "registerDeviceGroup": "Register device group",
-                "pending": "Pending",
-                "supply": "Supply"
+                "pending": "Pending"
             },
             "certificates": {
                 "inbox": "Inbox",
@@ -30,15 +30,22 @@
                 "detailView": "Detail view",
                 "pending": "Pending",
                 "approved": "Approved",
-                "forDemand": "For demand",
-                "exchange": "Exchange",
+                "requests": "Requests",
+                "import": "Certificate import",
+                "exchangeInbox": "Exchange inbox",
+                "blockchainInbox": "Blockchain inbox"
+            },
+            "exchange": {
+                "view_market": "View market",
                 "bundles": "Bundles",
                 "my_bundles": "My bundles",
                 "create_bundle": "Create bundle",
-                "myTrades": "My trades",
-                "myOrders": "My orders",
+                "my_trades": "My trades",
+                "my_orders": "My orders",
+                "supply": "Supply",
                 "import": "Certificate import",
-                "exchangeInbox": "Exchange Inbox"
+                "exchangeInbox": "Exchange Inbox",
+                "blockchainInbox": "Blockchain Inbox"
             }
         },
         "device": {
@@ -98,8 +105,12 @@
                 "deviceCreated": "Device successfully created.",
                 "pleaseSelectUpToXImages": "Please select up to {limit} images. You've selected {actual}.",
                 "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images.",
-                "supplyUpdatedSuccess": "Supply updated successfully",
-                "supplyUpdateError": "Supply updating failed"
+                "errorGettingDevices": "Unexpected error occurred when getting devices",
+                "errorGettingDevice": "Unexpected error occurred when getting device",                
+                "successCreatingDevice": "Device has been created",
+                "errorCreatingDevice": "Unexpected error occurred when creating device",
+                "successApprovingDevice": "Device has been approved",
+                "errorApprovingDevice": "Unexpected error occurred when approving device"
             },
             "info": {
                 "general": "General",
@@ -137,7 +148,12 @@
                 "generationDateEnd": "Generation End Date",
                 "claimedEnergy": "Claimed Energy",
                 "claimBeneficiary": "Claim beneficiary",
-                "totalPrice": "Total Price"
+                "totalPrice": "Total Price",
+                "country": "Country",
+                "beneficiary": "Beneficiary",
+                "address": "Address",
+                "region": "Region",
+                "zip": "ZIP"
             },
             "actions": {
                 "requestCertificates": "Request certificates",
@@ -158,6 +174,8 @@
                 "importNCertificates": "Import {count} Certificate(s)",
                 "withdrawNCertificates": "Withdraw {count} Certificate(s)",
                 "sellNCertificates": "Sell {count} Certificate(s)",
+                "retireNCertificates": "Retire {count} Certificate(s)",
+                "depositNCertificates": "Deposit {count} Certificate(s)",
                 "ok": "Ok",
                 "view": "View",
                 "confirm": "Confirm",
@@ -184,7 +202,8 @@
                 "bundle_created": "Bundle created",
                 "bundle_bought": "Bundle bought",
                 "bundleCanceld": "Bundle canceled",
-                "certificateNotFound": "Certificate not found"
+                "certificateNotFound": "Certificate not found",
+                "pleaseAddBlockchain": "Please add user blockchain address to withdraw"
             },
             "info": {
                 "certificates": "CERTIFICATES",
@@ -192,12 +211,24 @@
                 "selectPriceRange": "Select price range to view more combinations",
                 "certificatesToImport": "Certificates to import",
                 "exchangeInbox": "Exchange inbox",
+                "blockchainInbox": "Blockchain inbox",
                 "selectedForImport": "Selected for import",
                 "selectedForSale": "Selected for sale",
                 "selectedForWithdraw": "Selected for withdraw",
+                "selectedForRetirement": "Selected for retirement",
+                "selectedForDeposit": "Selected for deposit",
                 "selectCertificate": "Select Certificate",
                 "totalVolume": "Total volume",
-                "totalPrice": "Total price"
+                "totalPrice": "Total price",
+                "retireForBeneficiary": "Retire for beneficiary"
+            },
+            "claims": {
+                "certificateId": "Certificate ID",
+                "deviceName": "Device name",
+                "energy": "Energy",
+                "beneficiary": "Beneficiary",
+                "fromDate": "From date",
+                "toDate": "To date"
             },
             "event": {
                 "name": {
@@ -270,6 +301,7 @@
                 "update": "Update",
                 "maybeLater": "Maybe Later",
                 "connectBlockchainAcc": "Connect Blockchain Account",
+                "createDepositAddress": "Create Address",
                 "continue": "Continue",
                 "cancel": "Cancel",
                 "search": "Search",
@@ -297,7 +329,11 @@
                 "noBlockchainAccount1": "Make sure you have the MetaMask browser extension installed and set up.",
                 "noBlockchainAccount2": "Check the User Settings page and make sure your blockchain account is verified.",
                 "connectBlockchainTitle": "Connect Blockchain Address",
-                "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address and connect their own blockchain address."
+                "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address and connect their own blockchain address.",
+                "registerThankYouModalTitle": "Thank you for registering!",
+                "registerThankYouModalContent": "Your registration is reviewed by the platform administrator and you will be notified when your account is activated.",
+                "createExchangeDepositAddressTitle": "Create Exchange Deposit Address",
+                "createExchangeDepositAddressContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address. "
             }
         },
         "importAccount": {
@@ -410,7 +446,9 @@
                 "exchangeAddressHowTo": "The platform automatically generates the deposit address and takes custody of it. You do not have to manage your own blockchain wallet.",
                 "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
                 "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
-                "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
+                "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet.",
+                "yourAccountIsPending": "Your user account status is pending",
+                "yourOrganizationIsPending": "Your organization status is pending"
             },
             "feedback": {
                 "userRegistered": "User registered.",
@@ -544,6 +582,29 @@
                     "daily": "Daily"
                 }
             },
+            "supply": {
+                "type":"Type",
+                "facilityName":"Facility name",
+                "price": "Price",
+                "status": "Status",
+                "meterReadToBeCertified": "To be certified",
+                "update": "Update",
+                "remove": "Remove",
+                "facility": "Facility",
+                "updateSupply": "Update Supply",
+                "active": "Active",
+                "paused": "Paused",
+                "cancel": "Cancel",
+                "removeSupplyConfirmation": "Are you sure you want remove?",
+                "fetchSupplyError": "Error while receiving supply settings",
+                "supplySettingsMissing": "This device is missing supply settings",
+                "supplyCreatedSuccess": "Supply created successfully",
+                "supplyCreateError": "Supply creation failed",
+                "supplyUpdatedSuccess": "Supply updated successfully",
+                "supplyUpdateError": "Supply updating failed",
+                "supplyRemovedSuccess": "Supply removed successfully",
+                "supplyRemoveError": "Supply removal failed"
+            },
             "popover": {
                 "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",
                 "asksFurtherInstructions": "To see all available asks, remove the set market filters. To see a list of your active asks go to \"My Orders\".",
@@ -571,12 +632,18 @@
                     "change": "Change"
                 },
                 "notification": {
+                    "invitationSent": "Invitation sent",
                     "rejectedSuccess":"Invitation rejected",
                     "rejectedFailure": "Could not reject invitation",
                     "acceptedSuccess": "Invitation accepted",
-                    "acceptedFailure": "Could not reject invitation",
+                    "acceptedFailure": "Could not accept invitation",
                     "laterSuccess": "You can find this invitation on the Organizations tab",
-                    "laterFailure": "Could not process invitation"
+                    "laterFailure": "Could not process invitation",
+                    "unauthorized": "Unauthorized",
+                    "errorInvitingUser": "Error while inviting user to organization",
+                    "alreadySent": "You have already sent an invitation for this user",
+                    "unableToInvite": "Could not invite user to organization.",
+                    "alreadyProcessed": "Invitation has already been processed",
                 }
             },
             "registration": {

@@ -1,4 +1,4 @@
-import { IDeviceSettings, IExternalDeviceService, IProductInfo } from '@energyweb/exchange';
+import { IExternalDeviceService, IProductInfo } from '@energyweb/exchange';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-form-api';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
@@ -24,14 +24,5 @@ export class ExternalDeviceService implements IExternalDeviceService {
 
     public async getDeviceProductInfo(id: IExternalDeviceId): Promise<IProductInfo> {
         return this.deviceService.findDeviceProductInfo(id);
-    }
-
-    public async getDeviceSettings(id: IExternalDeviceId): Promise<IDeviceSettings> {
-        const device = await this.deviceService.findByExternalId(id);
-
-        return {
-            postForSale: device.automaticPostForSale,
-            postForSalePrice: device.defaultAskPrice
-        };
     }
 }

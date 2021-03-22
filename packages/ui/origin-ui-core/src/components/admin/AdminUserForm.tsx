@@ -1,16 +1,14 @@
-import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, createStyles, Grid, makeStyles, Paper, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers } from 'formik';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import { setLoading } from '../../features/general/actions';
-import { getBackendClient } from '../../features/general/selectors';
+import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
+import { setLoading, getBackendClient } from '../../features/general';
 import { NotificationType, showNotification } from '../../utils/notifications';
-import { FormInput } from '../Form/FormInput';
-import { FormSelect } from '../Form/FormSelect';
+import { FormInput, FormSelect } from '../Form';
 
 interface IProps {
     entity: IUser;
@@ -40,9 +38,10 @@ export function AdminUserForm(props: IProps) {
     const { entity, readOnly } = props;
     const adminClient = useSelector(getBackendClient)?.adminClient;
 
-    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] = useState<
-        IUser
-    >(null);
+    const [
+        initialFormValuesFromExistingEntity,
+        setInitialFormValuesFromExistingEntity
+    ] = useState<IUser>(null);
 
     const history = useHistory();
 
@@ -117,15 +116,15 @@ export function AdminUserForm(props: IProps) {
                 initialValues={initialFormValues}
                 onSubmit={submitForm}
                 validationSchema={VALIDATION_SCHEMA}
-                isInitialValid={false}
+                validateOnMount={false}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting, errors } = formikProps;
+                    const { isValid, isSubmitting, errors, dirty } = formikProps;
 
                     const otherErrors = (errors as any)?.atLeastOneProp;
 
                     const fieldDisabled = isSubmitting || readOnly;
-                    const buttonDisabled = isSubmitting || !isValid;
+                    const buttonDisabled = isSubmitting || !isValid || !dirty;
                     return (
                         <Form translate="no">
                             <Grid container spacing={3}>

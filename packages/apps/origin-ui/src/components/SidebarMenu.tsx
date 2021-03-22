@@ -1,21 +1,20 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Typography, Box, Grid } from '@material-ui/core';
-import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { useTranslation } from 'react-i18next';
+import { Typography, Box, Grid, Tooltip, Theme, withStyles } from '@material-ui/core';
+import { isRole, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
 import {
     getUserOffchain,
-    useTranslation,
-    deviceMenuCreator,
-    certificatesMenuCreator,
-    organizationMenuCreator,
-    getInvitations,
-    getIRecAccount,
-    adminMenuCreator,
-    accountMenuCreator
+    useDeviceMenu,
+    useCertificatesMenu,
+    useOrganizationMenu,
+    useAdminMenu,
+    useAccountMenu
 } from '@energyweb/origin-ui-core';
-import { exchangeMenuCreator } from '@energyweb/exchange-ui-core';
+import { useExchangeMenu } from '@energyweb/exchange-ui-core';
+import { useDeviceMenu as useIRecDeviceMenu } from '@energyweb/origin-ui-irec-core';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 import { useLinks } from '../routing';
 import { SidebarSubMenu } from './SidebarSubMenu';
@@ -37,8 +36,6 @@ export function SidebarMenu() {
         user?.organization &&
         userIsActive &&
         isRole(user, Role.OrganizationUser, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
-    const invitations = useSelector(getInvitations);
-    const iRecAccount = useSelector(getIRecAccount);
     const { enabledFeatures, logo } = useContext(OriginConfigurationContext);
     const { t } = useTranslation();
 
@@ -80,17 +77,13 @@ export function SidebarMenu() {
         }
     }, [location]);
 
-    const deviceMenuList = deviceMenuCreator(user, t);
-    const certificateMenuList = certificatesMenuCreator(user);
-    const exchangeMenuList = exchangeMenuCreator(user);
-    const organizationMenuList = organizationMenuCreator(
-        user,
-        invitations,
-        enabledFeatures,
-        iRecAccount
-    );
-    const adminMenuList = adminMenuCreator(t);
-    const settingsMenuList = accountMenuCreator(user, enabledFeatures, iRecAccount);
+    const irecDeviceMenuList = useIRecDeviceMenu();
+    const deviceMenuList = useDeviceMenu();
+    const certificateMenuList = useCertificatesMenu();
+    const exchangeMenuList = useExchangeMenu();
+    const organizationMenuList = useOrganizationMenu();
+    const adminMenuList = useAdminMenu();
+    const settingsMenuList = useAccountMenu();
 
     const openDevices = activeTab === ActiveMenuItem.Devices;
     const openCertificates = activeTab === ActiveMenuItem.Certificates;
@@ -99,6 +92,25 @@ export function SidebarMenu() {
     const openAdmin = activeTab === ActiveMenuItem.Admin;
     const openSettings = activeTab === ActiveMenuItem.Settings;
 
+    const LightTooltip = withStyles((theme: Theme) => ({
+        arrow: {
+            color: theme.palette.primary.main
+        },
+        tooltip: {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white
+        }
+    }))(Tooltip);
+
+    const dotStyle = {
+        backgroundColor: 'rgb(255, 215, 0)',
+        width: '12px',
+        height: '12px',
+        borderRadius: '50%',
+        display: 'inline-block',
+        marginLeft: '4px'
+    };
+
     return (
         <div className="SidebarMenu">
             <Box className="Logo">
@@ -106,21 +118,37 @@ export function SidebarMenu() {
             </Box>
             <Grid className="userNameAndOrg">
                 <Typography variant="h6">
-                    {user ? `${user.firstName} ${user.lastName}` : ''}
+                    {user?.status === UserStatus.Pending && (
+                        <LightTooltip arrow title={t('user.popover.yourAccountIsPending')}>
+                            <span data-cy="user-pending-badge" style={dotStyle} />
+                        </LightTooltip>
+                    )}
+                    <span>{user ? `${user.firstName} ${user.lastName}` : ''}</span>
                 </Typography>
-                <Typography>{user?.organization ? `${user.organization.name}` : ''}</Typography>
+                <Typography>
+                    {user?.organization?.status === OrganizationStatus.Submitted && (
+                        <LightTooltip arrow title={t('user.popover.yourOrganizationIsPending')}>
+                            <span data-cy="organization-pending-badge" style={dotStyle} />
+                        </LightTooltip>
+                    )}
+                    <span>{user?.organization ? `${user.organization.name}` : ''}</span>
+                </Typography>
             </Grid>
 
             <Grid className="SidebarNavigation">
                 <ul>
                     {enabledFeatures.includes(OriginFeature.Devices) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="devices-menu">
                                 <NavLink to={getDevicesLink()}>{t('header.devices')}</NavLink>
                             </li>
                             <SidebarSubMenu
                                 rootLink={getDevicesLink()}
-                                menuList={deviceMenuList}
+                                menuList={
+                                    !enabledFeatures.includes(OriginFeature.IRecUIApp)
+                                        ? deviceMenuList
+                                        : irecDeviceMenuList
+                                }
                                 open={openDevices}
                             />
                         </>
@@ -130,7 +158,7 @@ export function SidebarMenu() {
                         userIsActiveAndPartOfOrg) ||
                         isIssuer) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="certificates-menu">
                                 <NavLink to={getCertificatesLink()}>
                                     {t('header.certificates')}
                                 </NavLink>
@@ -145,7 +173,7 @@ export function SidebarMenu() {
 
                     {enabledFeatures.includes(OriginFeature.Exchange) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="exchange-menu">
                                 <NavLink to={getExchangeLink()}>{t('header.exchange')}</NavLink>
                             </li>
                             <SidebarSubMenu
@@ -158,7 +186,7 @@ export function SidebarMenu() {
 
                     {isRole(user, Role.OrganizationAdmin, Role.Admin, Role.SupportAgent) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="organizations-menu">
                                 <NavLink to={getOrganizationLink()}>
                                     {t('header.organizations')}
                                 </NavLink>
@@ -172,7 +200,7 @@ export function SidebarMenu() {
                     )}
                     {isRole(user, Role.Admin) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="admin-menu">
                                 <NavLink to={getAdminLink()}>{t('header.admin')}</NavLink>
                             </li>
                             <SidebarSubMenu
@@ -185,7 +213,7 @@ export function SidebarMenu() {
 
                     {isRole(user, Role.SupportAgent) && (
                         <>
-                            <li className="mainMenu">
+                            <li className="mainMenu" data-cy="support-agent-menu">
                                 <NavLink to={getAdminLink()}>{t('header.supportAgent')}</NavLink>
                             </li>
                             <SidebarSubMenu
@@ -196,7 +224,7 @@ export function SidebarMenu() {
                         </>
                     )}
                     <>
-                        <li className="mainMenu">
+                        <li className="mainMenu" data-cy="settings-menu">
                             <NavLink to={getAccountLink()}>{t('settings.settings')}</NavLink>
                         </li>
                         <SidebarSubMenu

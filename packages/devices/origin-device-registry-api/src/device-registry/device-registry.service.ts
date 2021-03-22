@@ -1,37 +1,36 @@
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser, ValidateDeviceOwnershipQuery } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
-import { Device } from './device.entity';
+import { OriginDevice } from './origin-device.entity';
 import {
     ExternalDeviceAlreadyUsedError,
     SmartMeterAlreadyUsedError,
     UnableToVerifyOwnershipError
 } from './errors';
-import { NewDeviceDTO } from './new-device.dto';
-import { ValidateDeviceOwnershipQuery } from './queries/validate-device-ownership.query';
+import { NewDeviceDTO } from './dto/new-device.dto';
 
 @Injectable()
 export class DeviceRegistryService {
     constructor(
-        @InjectRepository(Device) private readonly repository: Repository<Device>,
+        @InjectRepository(OriginDevice) private readonly repository: Repository<OriginDevice>,
         private readonly queryBus: QueryBus
     ) {}
 
-    public async find(options?: FindManyOptions<Device>): Promise<Device[]> {
+    public async find(options?: FindManyOptions<OriginDevice>): Promise<OriginDevice[]> {
         return this.repository.find(options);
     }
 
-    async findOne(id: string): Promise<Device> {
+    async findOne(id: string): Promise<OriginDevice> {
         return this.repository.findOne(id);
     }
 
     public async register(user: ILoggedInUser, newDevice: NewDeviceDTO): Promise<string> {
         await this.validateRegistration(user, newDevice);
 
-        const deviceToStore = new Device({
+        const deviceToStore = new OriginDevice({
             ...NewDeviceDTO.sanitize(newDevice),
             owner: user.ownerId
         });

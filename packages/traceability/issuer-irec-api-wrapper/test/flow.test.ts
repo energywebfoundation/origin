@@ -4,7 +4,7 @@ import { validateOrReject } from 'class-validator';
 import moment from 'moment/moment';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
-import { Device, DeviceCreateUpdateParams, DeviceState } from '../src/Device';
+import { Device, DeviceCreateParams, DeviceState } from '../src/Device';
 import { credentials, getClient } from './helpers';
 import { Organisation } from '../src/Organisation';
 import { Issue, IssueStatus, IssueWithStatus } from '../src/Issue';
@@ -28,7 +28,7 @@ describe('API flows', () => {
     });
 
     it('should pass create and approve device flow', async () => {
-        const params: DeviceCreateUpdateParams = {
+        const params: DeviceCreateParams = {
             address: '1 Wind Farm Avenue, London',
             capacity: 500,
             commissioningDate: new Date('2001-08-10'),
@@ -37,8 +37,8 @@ describe('API flows', () => {
             deviceType: 'T020001',
             fuel: 'ES200',
             issuer: issuerOrg.code,
-            latitude: 53.405088,
-            longitude: -1.744222,
+            latitude: '53.405088',
+            longitude: '-1.744222',
             name: 'DeviceXYZ',
             notes: 'Lorem ipsum dolor sit amet',
             registrantOrganization: registrantOrg.code,

@@ -1,23 +1,18 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
+import { useTranslation, Trans } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
+import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
 import {
     OrganizationInvitationStatus,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
-import { setInvitations, refreshUserOffchain } from '../../features/users/actions';
-import {
-    getBackendClient,
-    showNotification,
-    NotificationType,
-    useTranslation,
-    useLinks,
-    roleNames
-} from '../..';
-import { setLoading } from '../../features/general';
-import { Trans } from 'react-i18next';
-import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
+import { setInvitations, refreshUserOffchain } from '../../features/users';
+import { getBackendClient, setLoading } from '../../features/general';
+import { useLinks } from '../../utils/routing';
+import { roleNames } from '../../utils/organizationRoles';
+import { showNotification, NotificationType } from '../../utils/notifications';
 
 interface IProps {
     showModal: boolean;
@@ -194,13 +189,28 @@ export const PendingInvitationsModal = (props: IProps) => {
                 </Grid>
             </DialogTitle>
             <DialogActions>
-                <Button variant="outlined" color="primary" onClick={() => later()}>
+                <Button
+                    data-cy="invitations-later-button"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => later()}
+                >
                     {t('organization.invitations.actions.later')}
                 </Button>
-                <Button variant="outlined" color="primary" onClick={() => reject()}>
+                <Button
+                    data-cy="invitations-decline-button"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => reject()}
+                >
                     {t('organization.invitations.actions.decline')}
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => accept()}>
+                <Button
+                    data-cy="invitations-accept-button"
+                    variant="contained"
+                    color="primary"
+                    onClick={() => accept()}
+                >
                     {t('organization.invitations.actions.accept')}
                 </Button>
             </DialogActions>

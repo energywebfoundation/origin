@@ -6,7 +6,8 @@
         "moduleResolution": "node",
         "declaration": true,
         "composite": true,
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "skipLibCheck": true
     },
     "include": ["./src/**/*"],
     "references": [
@@ -30,6 +31,12 @@
         },
         {
             "path": "../../trade/exchange-irec-client/tsconfig.json"
+        },
+        {
+            "path": "../../devices/origin-device-registry-irec-form-api-client/tsconfig.json"
+        },
+        {
+            "path": "../origin-ui-irec-core/tsconfig.json"
         }
     ]
 }

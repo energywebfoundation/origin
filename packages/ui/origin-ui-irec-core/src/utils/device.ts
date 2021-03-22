@@ -45,3 +45,7 @@ export function getDeviceColumns<T extends any>(
 export function getDeviceLocationText(device: ComposedDevice | ComposedPublicDevice) {
     return [device.countryCode, device.address].filter((i) => i).join(', ');
 }
+
+export function getDeviceGridOperatorText(device: ComposedDevice | ComposedPublicDevice) {
+    return device?.gridOperator?.split(';')?.join(' ') || '';
+}

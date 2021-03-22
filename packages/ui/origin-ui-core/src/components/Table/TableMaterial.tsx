@@ -28,7 +28,7 @@ import {
     Box
 } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
-import { OriginConfigurationContext } from '../PackageConfigurationProvider';
+import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 type TableOnSelectFunction = (id: string, selected: boolean) => void;
@@ -56,6 +56,8 @@ export interface ICustomRow<T extends any> {
     display: React.ReactElement;
 }
 
+export type TableAction = ITableAction | ITableAction[] | ((row: any) => ITableAction);
+
 export function getRowId(row: { id?: string }, index: number): string {
     return row?.id ?? index?.toString();
 }
@@ -67,7 +69,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
-    actions?: (ITableAction | ITableAction[] | ((row: any) => ITableAction))[];
+    actions?: TableAction[];
     onSelect?: TableOnSelectFunction;
     currentSort?: CurrentSortType;
     sortAscending?: boolean;
@@ -159,18 +161,13 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
             })
             .filter((ac) => Boolean(ac));
 
+        const finalFinalActions = allowed
+            ? finalActionsList.filter((action) => allowed[(row as any).source]?.includes(action.id))
+            : finalActionsList;
+
         return (
             <TableCell key={id} className={classes.tableCellWrappingActions}>
-                <Actions
-                    actions={
-                        allowed
-                            ? finalActionsList.filter((action) =>
-                                  allowed[(row as any).source]?.includes(action.id)
-                              )
-                            : finalActionsList
-                    }
-                    id={id}
-                />
+                {finalFinalActions.length > 0 && <Actions actions={finalFinalActions} id={id} />}
             </TableCell>
         );
     }
@@ -238,7 +235,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
     return (
         <>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration.language}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration?.language}>
                 <FiltersHeader
                     filters={filters}
                     filtersChanged={filtersChanged}

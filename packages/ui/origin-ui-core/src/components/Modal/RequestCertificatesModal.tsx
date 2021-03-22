@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { moment, DATE_FORMAT_DMY, getDeviceId, EnergyFormatter, useTranslation } from '../../utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import { BigNumber } from 'ethers';
+import MomentUtils from '@date-io/moment';
 import {
     Button,
     Dialog,
@@ -9,13 +12,14 @@ import {
     TextField
 } from '@material-ui/core';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { useSelector, useDispatch } from 'react-redux';
-import { requestCertificates } from '../../features/certificates/actions';
-import { Upload, IUploadedFile } from '../Upload';
-import { getEnvironment } from '../../features';
-import { BigNumber } from 'ethers';
-import MomentUtils from '@date-io/moment';
+import { getEnvironment } from '../../features/general';
+import { requestCertificates } from '../../features/certificates';
+import { getDeviceId } from '../../utils/device';
+import { moment, DATE_FORMAT_DMY } from '../../utils/time';
+import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { Upload, IUploadedFile } from '../Documents';
+import { IOriginDevice } from '../../types';
 
 // Maximum number Solidity can handle is (2^256)-1
 export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
@@ -23,7 +27,7 @@ export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
 interface IProps {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
-    producingDevice: any;
+    device: IOriginDevice;
 }
 
 export function RequestCertificatesModal(props: IProps) {
@@ -35,7 +39,7 @@ export function RequestCertificatesModal(props: IProps) {
         (f) => !f.removed && !f.cancelled && f.uploadProgress !== 100
     );
     const uploadedFiles = files.filter((f) => !f.removed && f.uploadedName);
-    const { showModal, setShowModal, producingDevice } = props;
+    const { showModal, setShowModal, device } = props;
     const environment = useSelector(getEnvironment);
     const configuration = useOriginConfiguration();
 
@@ -74,13 +78,14 @@ export function RequestCertificatesModal(props: IProps) {
         filesBeingUploaded.length === 0;
 
     useEffect(() => {
-        if (!producingDevice) {
+        if (!device) {
             return;
         }
 
+        setEnergyInDisplayUnit('');
         setFromDate(DEFAULTS.fromDate);
         setToDate(DEFAULTS.toDate);
-    }, [producingDevice]);
+    }, [device]);
 
     function handleClose() {
         setShowModal(false);
@@ -89,11 +94,14 @@ export function RequestCertificatesModal(props: IProps) {
     async function requestCerts() {
         dispatch(
             requestCertificates({
-                deviceId: getDeviceId(producingDevice, environment),
-                startTime: fromDate.unix(),
-                endTime: toDate.unix(),
-                energy: energyInBaseUnit,
-                files: uploadedFiles.map((f) => f.uploadedName)
+                requestData: {
+                    deviceId: getDeviceId(device, environment),
+                    startTime: fromDate.unix(),
+                    endTime: toDate.unix(),
+                    energy: energyInBaseUnit,
+                    files: uploadedFiles.map((f) => f.uploadedName)
+                },
+                callback: () => handleClose()
             })
         );
     }
@@ -103,7 +111,7 @@ export function RequestCertificatesModal(props: IProps) {
             <Dialog open={showModal || false} onClose={handleClose}>
                 <DialogTitle>
                     {t('certificate.info.requestCertificatesFor', {
-                        facilityName: producingDevice?.facilityName ?? ''
+                        facilityName: device?.facilityName ?? ''
                     })}
                 </DialogTitle>
                 <DialogContent>

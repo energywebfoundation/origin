@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import request from 'supertest';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 
-import { bootstrapTestInstance } from './issuer-api';
+import { bootstrapTestInstance, TestUser } from './issuer-api';
 import { BlockchainPropertiesDTO } from '../src/pods/blockchain/blockchain-properties.dto';
 
 describe('BlockchainProperties tests', () => {
@@ -25,6 +25,7 @@ describe('BlockchainProperties tests', () => {
     it('should be able to get blockchain properties', async () => {
         await request(app.getHttpServer())
             .get('/blockchain-properties')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK)
             .expect((res) => {
                 const { netId, registry, issuer, rpcNode }: BlockchainPropertiesDTO = res.body;

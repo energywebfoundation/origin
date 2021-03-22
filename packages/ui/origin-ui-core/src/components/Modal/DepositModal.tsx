@@ -1,4 +1,3 @@
-import { ProducingDevice } from '@energyweb/device-registry';
 import {
     Button,
     Dialog,
@@ -18,16 +17,17 @@ import { getEnvironment } from '../../features/general/selectors';
 import { getUserOffchain } from '../../features/users/selectors';
 import { EnergyFormatter, formatDate, countDecimals } from '../../utils';
 import { IEnvironment } from '../../features/general';
+import { IOriginDevice } from '../../types';
 
 interface IProps {
     certificate: ICertificateViewItem;
-    producingDevice: ProducingDevice.Entity;
+    device: IOriginDevice;
     showModal: boolean;
     callback: () => void;
 }
 
 export function DepositModal(props: IProps) {
-    const { certificate, callback, producingDevice, showModal } = props;
+    const { certificate, callback, device, showModal } = props;
     const user = useSelector(getUserOffchain);
     const environment: IEnvironment = useSelector(getEnvironment);
     const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
@@ -97,7 +97,7 @@ export function DepositModal(props: IProps) {
     }
 
     const certificateId = certificate ? certificate.id : '';
-    const facilityName = producingDevice ? producingDevice.facilityName : '';
+    const facilityName = device ? device.facilityName : '';
 
     let creationTime: string;
 

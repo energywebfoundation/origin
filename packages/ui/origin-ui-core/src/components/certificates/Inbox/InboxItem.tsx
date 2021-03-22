@@ -1,11 +1,13 @@
 import React from 'react';
-import { Checkbox, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { EnergyFormatter, formatDate, LightenColor, moment, useTranslation } from '../../../utils';
-import { DeviceIcon } from '../../DeviceIcon';
-import { CertificateSource } from '../../../features/certificates';
+import { useTranslation } from 'react-i18next';
+import { Checkbox, Button, makeStyles } from '@material-ui/core';
 import { BigNumber } from 'ethers';
+import { CertificateSource } from '../../../features/certificates';
+import { useOriginConfiguration } from '../../../utils/configuration';
+import { LightenColor } from '../../../utils/colors';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
+import { formatDate, moment } from '../../../utils/time';
+import { DeviceIcon } from '../../Icons';
 
 export interface IInboxItemData {
     id: string;
@@ -17,7 +19,7 @@ export interface IInboxItemData {
 }
 
 export interface IInboxCertificateData {
-    id: string;
+    id: number;
     dateStart: number;
     dateEnd: number;
     energy: BigNumber;
@@ -28,11 +30,11 @@ export interface IInboxCertificateData {
 
 export function InboxItem(props: {
     device: IInboxItemData;
-    selected: string[];
+    selected: number[];
     selectedDevices: string[];
     onDeviceSelect: (id: string) => void;
-    onCertificateSelect: (id: string, deviceId: string) => void;
-    onViewClick: (id: string) => void;
+    onCertificateSelect: (id: number, deviceId: string) => void;
+    onViewClick: (id: number) => void;
 }): JSX.Element {
     const {
         device,
@@ -44,16 +46,18 @@ export function InboxItem(props: {
     } = props;
     const configuration = useOriginConfiguration();
 
-    const {
-        MAIN_BACKGROUND_COLOR,
-        SIMPLE_TEXT_COLOR,
-        PRIMARY_COLOR_DIM
-    } = configuration?.styleConfig;
+    const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
+    const simpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
+    const defaultTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
+    const primaryDimColor = configuration?.styleConfig?.PRIMARY_COLOR_DIM;
+    const primaryColor = configuration?.styleConfig?.PRIMARY_COLOR;
+
+    const unselectedIconColor = LightenColor(defaultTextColor, -7);
 
     const useStyles = makeStyles({
         device: {
             padding: '18px 20px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 4),
+            background: LightenColor(mainBgColor, 4),
             boxShadow: '0 2px 4px rgba(0,0,0,.2)',
             display: 'flex',
             flexDirection: 'row'
@@ -70,7 +74,7 @@ export function InboxItem(props: {
 
         certificate: {
             padding: '18px 20px',
-            background: LightenColor(MAIN_BACKGROUND_COLOR, 6),
+            background: LightenColor(mainBgColor, 6),
             boxShadow: '0 2px 4px rgba(0,0,0,.2)',
             display: 'flex',
             flexDirection: 'row',
@@ -78,23 +82,23 @@ export function InboxItem(props: {
         },
 
         selected: {
-            background: PRIMARY_COLOR_DIM
+            background: primaryDimColor
         },
 
         text_1: {
             fontSize: '16px',
-            color: SIMPLE_TEXT_COLOR
+            color: simpleTextColor
         },
 
         text_2: {
             fontSize: '14px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 
         text_3: {
             fontSize: '12px',
-            color: SIMPLE_TEXT_COLOR,
+            color: simpleTextColor,
             opacity: '.5'
         },
 
@@ -140,12 +144,14 @@ export function InboxItem(props: {
             </div>
             <div>
                 {device.certificates.map((cert) => {
+                    const isSelected = selected.includes(cert.id);
+
                     return (
                         <div
                             key={cert.id}
                             className={[
                                 classes.certificate,
-                                selected.includes(cert.id) ? classes.selected : ''
+                                isSelected ? classes.selected : ''
                             ].join(' ')}
                         >
                             <div className={classes.checkbox}>
@@ -155,7 +161,12 @@ export function InboxItem(props: {
                                     onChange={() => onCertificateSelect(cert.id, device.id)}
                                 />
                             </div>
-                            <div className={classes.iconContainer}>
+                            <div
+                                className={classes.iconContainer}
+                                style={{
+                                    fill: isSelected ? primaryColor : unselectedIconColor
+                                }}
+                            >
                                 <DeviceIcon type={device.type} className={classes.icon} />
                             </div>
                             <div style={{ flex: '1' }}>

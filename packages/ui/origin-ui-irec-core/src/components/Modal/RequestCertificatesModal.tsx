@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'ethers';
 import MomentUtils from '@date-io/moment';
@@ -17,7 +18,6 @@ import {
     // check if needed?
     // getDeviceId,
     EnergyFormatter,
-    useTranslation,
     requestCertificates,
     Upload,
     IUploadedFile
@@ -98,11 +98,14 @@ export function RequestCertificatesModal(props: IProps) {
     async function requestCerts() {
         dispatch(
             requestCertificates({
-                deviceId: device.externalRegistryId,
-                startTime: fromDate.unix(),
-                endTime: toDate.unix(),
-                energy: energyInBaseUnit,
-                files: uploadedFiles.map((f) => f.uploadedName)
+                requestData: {
+                    deviceId: device.externalRegistryId,
+                    startTime: fromDate.unix(),
+                    endTime: toDate.unix(),
+                    energy: energyInBaseUnit,
+                    files: uploadedFiles.map((f) => f.uploadedName)
+                },
+                callback: () => handleClose()
             })
         );
     }

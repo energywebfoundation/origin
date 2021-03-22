@@ -10,10 +10,9 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
-import { entities } from '../src';
+import { entities, SupplyService } from '../src';
 import { AppModule } from '../src/app.module';
 import {
-    IDeviceSettings,
     IExchangeConfigurationService,
     IExternalDeviceService,
     IProductInfo
@@ -106,10 +105,6 @@ export const bootstrapTestInstance = async (
                         province: 'Nakhon Pathom',
                         operationalSince: 2016,
                         gridOperator: 'TH-PEA'
-                    }),
-                    getDeviceSettings: async (): Promise<IDeviceSettings> => ({
-                        postForSale: false,
-                        postForSalePrice: null
                     })
                 }
             }
@@ -132,6 +127,7 @@ export const bootstrapTestInstance = async (
     const demandService = await app.resolve<DemandService<string>>(DemandService);
     const orderService = await app.resolve<OrderService<string>>(OrderService);
     const bundleService = await app.resolve<BundleService>(BundleService);
+    const supplyService = await app.resolve<SupplyService>(SupplyService);
 
     app.useLogger(['log', 'error']);
     app.enableCors();
@@ -149,6 +145,7 @@ export const bootstrapTestInstance = async (
         bundleService,
         registry,
         issuer,
-        app
+        app,
+        supplyService
     };
 };

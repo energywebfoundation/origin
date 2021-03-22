@@ -2,7 +2,7 @@ import React from 'react';
 import {
     MultiSelectAutocomplete,
     IAutocompleteMultiSelectOptionType
-} from '../MultiSelectAutocomplete';
+} from './MultiSelectAutocomplete';
 import { Countries } from '@energyweb/utils-general';
 
 interface IProps {
@@ -23,10 +23,19 @@ const COUNTRY_OPTIONS = Countries.map((country) => ({
 }));
 
 export function FormCountryMultiSelect(props: IProps) {
-    const { className, label, placeholder, onChange, selectedValues, disabled, max } = props;
+    const {
+        className,
+        label,
+        placeholder,
+        onChange,
+        selectedValues,
+        disabled,
+        max,
+        ...otherProps
+    } = props;
 
     return (
-        <div className={className}>
+        <div className={className} {...otherProps}>
             <MultiSelectAutocomplete
                 label={label}
                 placeholder={placeholder}

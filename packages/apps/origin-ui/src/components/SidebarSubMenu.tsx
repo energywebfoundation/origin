@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Collapse } from '@material-ui/core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { useTranslation } from '@energyweb/origin-ui-core';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 
 interface IModuleMenuItem {
@@ -40,7 +40,7 @@ export function SidebarSubMenu(props: IProps) {
                         const link = `${rootLink}/${menu.key}`;
 
                         return (
-                            <li key={menu.key}>
+                            <li key={menu.key} data-cy={menu.key}>
                                 <NavLink to={link}>{t(menu.label)}</NavLink>
                             </li>
                         );

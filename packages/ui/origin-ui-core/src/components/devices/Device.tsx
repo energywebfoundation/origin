@@ -1,33 +1,22 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
-import { getUserOffchain } from '../../features/users/selectors';
 import { useLinks } from '../../utils';
-import { PageContent } from '../PageContent/PageContent';
-import { ProducingDeviceDetailView } from './ProducingDevice/ProducingDeviceDetailView';
+import { PageContent } from '../Layout/PageContent';
+import { DeviceDetailView } from './DetailView';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
-import { deviceMenuCreator } from './deviceMenuCreator';
+import { useDeviceMenu } from './deviceMenu';
 
 export function Device() {
-    const userOffchain = useSelector(getUserOffchain);
     const { baseURL, getDevicesLink } = useLinks();
-    const { t } = useTranslation();
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
     function ProductionDetailView(id: number): JSX.Element {
-        return (
-            <ProducingDeviceDetailView
-                id={id}
-                showCertificates={true}
-                showSmartMeterReadings={true}
-            />
-        );
+        return <DeviceDetailView id={id} showCertificates={true} showSmartMeterReadings={true} />;
     }
 
-    const deviceMenuList = deviceMenuCreator(userOffchain, t);
+    const deviceMenuList = useDeviceMenu();
 
     return (
         <div className="PageWrapper">
@@ -41,8 +30,7 @@ export function Device() {
                     });
 
                     if (matches.length > 0 && key === 'producing_detail_view') {
-                        matches[0].component = () =>
-                            ProductionDetailView(id ? parseInt(id, 10) : id);
+                        matches[0].component = () => ProductionDetailView(parseInt(id, 10));
                     }
 
                     return (

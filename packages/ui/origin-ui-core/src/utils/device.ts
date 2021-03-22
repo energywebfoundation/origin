@@ -1,5 +1,4 @@
 /* eslint-disable camelcase, @typescript-eslint/no-unused-vars */
-import { ProducingDevice } from '@energyweb/device-registry';
 import { IEnvironment } from '../features/general/actions';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../components/Table/FiltersHeader';
 import gaseous from '../../assets/device/icon-gaseous.svg';
@@ -18,6 +17,8 @@ import solid_selected from '../../assets/device_selected/icon-solid.svg';
 import thermal_selected from '../../assets/device_selected/icon-thermal.svg';
 import wind_selected from '../../assets/device_selected/icon-wind.svg';
 import marine_selected from '../../assets/device_selected/icon-marine.svg';
+import { IOriginDevice } from '../types';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
 
 type TranslateFunc = (key: string) => string;
 
@@ -42,11 +43,11 @@ export enum EnergyTypes {
 export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
 export const GRID_OPERATOR_TITLE_TRANSLATION_KEY = 'device.properties.gridOperator';
 
-export function getDeviceLocationText(device: ProducingDevice.Entity) {
+export function getDeviceLocationText(device: DeviceDTO) {
     return [device?.region, device?.province].filter((i) => i).join(', ');
 }
 
-export function getDeviceGridOperatorText(device: ProducingDevice.Entity) {
+export function getDeviceGridOperatorText(device: IOriginDevice) {
     return device?.gridOperator?.split(';')?.join(' ') || '';
 }
 
@@ -108,7 +109,7 @@ export function areDeviceSpecificPropertiesValid(
     let isValid = true;
 
     if (isDeviceLocationEnabled(environment)) {
-        isValid = isValid && location?.length === 2;
+        isValid = location?.length === 2;
     }
 
     if (isDeviceGridOperatorEnabled(environment)) {
@@ -173,17 +174,6 @@ export function getDeviceSpecificPropertiesSearchTitle(
     return t('general.actions.search');
 }
 
-export const deviceById = (
-    id: string,
-    environment: IEnvironment,
-    devices: ProducingDevice.Entity[]
-): ProducingDevice.Entity => {
-    return devices.find((d) => {
-        const deviceId = getDeviceId(d, environment);
-        return deviceId === id;
-    });
-};
-
 export const energyImageByType = (type: EnergyTypes, selected = false): any => {
     const images = {
         [EnergyTypes.GASEOUS]: { regular: gaseous, selected: gaseous_selected },
@@ -195,5 +185,46 @@ export const energyImageByType = (type: EnergyTypes, selected = false): any => {
         [EnergyTypes.WIND]: { regular: wind, selected: wind_selected },
         [EnergyTypes.MARINE]: { reguar: marine, selected: marine_selected }
     };
-    return images[type][selected ? 'selected' : 'regular'];
+    const deviceType = type || EnergyTypes.SOLAR;
+    return images[deviceType][selected ? 'selected' : 'regular'];
 };
+
+export function deviceById<T>(id: string, devices: any[], environment: IEnvironment): T {
+    if (!devices) {
+        return null;
+    }
+
+    return devices.find(
+        (device) =>
+            device?.externalDeviceIds.find((ids) => ids.type === environment.ISSUER_ID).id === id
+    );
+}
+
+export function deviceTypeChecker(device: any): device is IOriginDevice {
+    if (!device) {
+        return false;
+    }
+
+    return Object.prototype.hasOwnProperty.call(device, 'facilityName');
+}
+
+export function getDeviceName(id: string, devices: any[], environment: IEnvironment): string {
+    const device = deviceById(id, devices, environment);
+    const deviceName = deviceTypeChecker(device) ? device?.facilityName : (device as any)?.name;
+    return deviceName ?? '-';
+}
+
+export function fillDevicesWithReads(
+    stateDevices: IOriginDevice[],
+    devicesWithReads: DeviceDTO[]
+): IOriginDevice[] {
+    const updatedDevices = stateDevices.map((stateDevice) => {
+        const sameDeviceWithReads = devicesWithReads.find((d) => d.id === stateDevice.id);
+        return {
+            ...stateDevice,
+            smartMeterReads: sameDeviceWithReads.smartMeterReads,
+            meterStats: sameDeviceWithReads.meterStats
+        };
+    });
+    return updatedDevices;
+}

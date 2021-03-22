@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Typography, Paper, makeStyles, createStyles, Grid } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
 import {
-    useTranslation,
     EnergyFormatter,
     TableMaterial,
     ICustomRow,
@@ -72,9 +72,12 @@ export function Orders(props: IOrdersProps) {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<
-        IOrderBookOrderDTO
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize
+    } = usePaginatedLoaderFiltered<IOrderBookOrderDTO>({
         getPaginatedData
     });
 

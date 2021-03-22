@@ -24,6 +24,8 @@ export interface IClaimData {
     region?: string;
     zipCode?: string;
     countryCode?: string;
+    fromDate?: string;
+    toDate?: string;
 }
 
 export interface IClaim {
@@ -220,7 +222,7 @@ export class Certificate implements ICertificate {
             throw new Error(`claim(): ${claimAddress} does not own a share in the certificate.`);
         }
 
-        const encodedClaimData = await encodeClaimData(claimData, this.blockchainProperties);
+        const encodedClaimData = encodeClaimData(claimData);
 
         return registryWithSigner.safeTransferAndClaimFrom(
             from ?? activeUserAddress,
@@ -285,7 +287,7 @@ export class Certificate implements ICertificate {
         for (const claimEvent of claimSingleEvents) {
             if (claimEvent._id.toNumber() === this.id) {
                 const { _claimData, _id, _claimIssuer, _claimSubject, _topic, _value } = claimEvent;
-                const claimData = await decodeClaimData(_claimData, this.blockchainProperties);
+                const claimData = decodeClaimData(_claimData);
 
                 claims.push({
                     id: _id.toNumber(),
@@ -318,10 +320,7 @@ export class Certificate implements ICertificate {
                 const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
 
                 const index = claimIds.indexOf(this.id);
-                const claimData = await decodeClaimData(
-                    _claimData[index],
-                    this.blockchainProperties
-                );
+                const claimData = decodeClaimData(_claimData[index]);
 
                 claims.push({
                     id: _ids[index].toNumber(),

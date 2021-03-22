@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Remove, Visibility } from '@material-ui/icons';
 import {
-    useTranslation,
     EnergyFormatter,
     formatCurrencyComplete,
     getConfiguration,
@@ -22,9 +22,9 @@ import {
     configureDateFormat,
     periodTypeOptions,
     demandTypeOptions,
-    useDemandDependantFilters
-} from '../../utils/demand';
-import { Demand } from '../../utils/exchange';
+    useDemandDependantFilters,
+    Demand
+} from '../../utils';
 
 import { RemoveOrderConfirmation, DemandUpdateModal } from '../modal';
 
@@ -104,8 +104,8 @@ export const DemandsTable = (props: IOwnProps) => {
         offset,
         requestedFilters
     }: IPaginatedLoaderHooksFetchDataParameters): Promise<IPaginatedLoaderFetchDataReturnValues> {
-        const filteredDemands = demands.filter((ask) => {
-            return checkRecordPassesFilters(ask, requestedFilters, deviceTypeService);
+        const filteredDemands = demands.filter((demand) => {
+            return checkRecordPassesFilters(demand, requestedFilters, deviceTypeService);
         });
         return {
             paginatedData: filteredDemands.slice(offset, offset + requestedPageSize),
@@ -113,9 +113,13 @@ export const DemandsTable = (props: IOwnProps) => {
         };
     }
 
-    const { paginatedData, loadPage, total, pageSize, setPageSize } = usePaginatedLoaderFiltered<
-        Demand
-    >({
+    const {
+        paginatedData,
+        loadPage,
+        total,
+        pageSize,
+        setPageSize
+    } = usePaginatedLoaderFiltered<Demand>({
         getPaginatedData,
         initialPageSize: DEMANDS_PER_PAGE
     });

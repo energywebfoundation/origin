@@ -1,4 +1,3 @@
-import { IClaim } from '@energyweb/issuer';
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsArray,
@@ -10,6 +9,7 @@ import {
     ValidateIf,
     ValidateNested
 } from 'class-validator';
+import { ClaimDTO } from './claim.dto';
 import { EnergyDTO } from './energy.dto';
 
 export class CertificateDTO {
@@ -54,13 +54,19 @@ export class CertificateDTO {
     @IsBoolean()
     isClaimed: boolean;
 
-    @ApiProperty({ required: false })
+    @ApiProperty({ required: false, type: [ClaimDTO] })
     @ValidateIf((dto: CertificateDTO) => !!dto.myClaims)
     @IsArray()
-    myClaims?: IClaim[];
+    myClaims?: ClaimDTO[];
+
+    @ApiProperty({ required: false, type: [ClaimDTO] })
+    @ValidateIf((dto: CertificateDTO) => !!dto.claims)
+    @IsArray()
+    claims?: ClaimDTO[];
 
     @ApiProperty({ required: false })
     @ValidateIf((dto: CertificateDTO) => !!dto.blockchain)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blockchain?: any;
 
     @ApiProperty({ type: String, required: false })

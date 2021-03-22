@@ -2,12 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
-import {
-    useLinks,
-    useTranslation,
-    getUserOffchain,
-    clearAuthenticationToken
-} from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
+import { useLinks, getUserOffchain, clearAuthenticationToken } from '@energyweb/origin-ui-core';
 
 export function Header() {
     const user = useSelector(getUserOffchain);
@@ -25,6 +21,7 @@ export function Header() {
                     {user ? (
                         <Grid item>
                             <Link
+                                data-cy="user-logout-button"
                                 to={getDefaultLink()}
                                 onClick={() => {
                                     dispatch(clearAuthenticationToken());
@@ -36,7 +33,9 @@ export function Header() {
                     ) : (
                         <Grid item>
                             <Link to={getUserRegisterLink()}>{t('user.actions.register')}</Link>
-                            <Link to={getAccountLoginLink()}>{t('user.actions.login')}</Link>
+                            <Link data-cy="user-login-button" to={getAccountLoginLink()}>
+                                {t('user.actions.login')}
+                            </Link>
                         </Grid>
                     )}
                 </div>
