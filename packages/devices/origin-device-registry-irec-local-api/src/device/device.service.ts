@@ -105,7 +105,6 @@ export class DeviceService {
     }
 
     async getDevicesToImport(user: ILoggedInUser): Promise<IrecDevice[]> {
-        console.log('@@@@@@@');
         const irecDevices = await this.irecDeviceService.getDevices(user);
         const devices = await this.repository.find({ where: { ownerId: user.ownerId } });
         const deviceCodes: string[] = devices.map((d) => d.code);
@@ -117,7 +116,12 @@ export class DeviceService {
         user: ILoggedInUser,
         deviceToImport: ImportIrecDeviceDTO
     ): Promise<Device> {
-        const irecDevice = await this.irecDeviceService.getDevice(user, deviceToImport.code);
+        let irecDevice;
+        if (this.irecDeviceService.isIrecIntegrationEnabled()) {
+            irecDevice = await this.irecDeviceService.getDevice(user, deviceToImport.code);
+        } else {
+            [irecDevice] = await this.irecDeviceService.getDevices(user);
+        }
 
         if (!irecDevice) {
             throw new NotFoundException(`Device with code ${deviceToImport.code} not found`);

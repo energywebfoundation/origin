@@ -96,7 +96,7 @@ export function ImportDeviceModal(props: {
 
         try {
             let localIrecDevice;
-            if (!device.externalRegistryId) {
+            if (!device.id) {
                 const irecResponse = await iRecClient.importIrecDevice({
                     code: device.code,
                     timezone: values.timezone,
@@ -106,9 +106,9 @@ export function ImportDeviceModal(props: {
                 localIrecDevice = irecResponse.data;
             }
 
-            if (device.id || localIrecDevice.id) {
+            if (!device.externalRegistryId) {
                 await originClient.createDevice({
-                    externalRegistryId: localIrecDevice.id,
+                    externalRegistryId: device.id || localIrecDevice.id,
                     smartMeterId: values.smartMeterId,
                     description: values.description,
                     externalDeviceIds: [],
