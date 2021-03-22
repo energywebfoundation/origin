@@ -128,7 +128,7 @@ export function SidebarMenu() {
                 <Typography>
                     {user?.organization?.status === OrganizationStatus.Submitted && (
                         <LightTooltip arrow title={t('user.popover.yourOrganizationIsPending')}>
-                            <span style={dotStyle} />
+                            <span data-cy="organization-pending-badge" style={dotStyle} />
                         </LightTooltip>
                     )}
                     <span>{user?.organization ? `${user.organization.name}` : ''}</span>

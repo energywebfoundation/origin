@@ -100,10 +100,13 @@ export function OrganizationInvitationTable(props: IProps) {
 
         if (
             [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
-                invitation.status
+                invitation?.status
             )
         ) {
-            showNotification(`Invitation has already been processed`, NotificationType.Error);
+            showNotification(
+                t('organization.invitations.notification.alreadyProcessed'),
+                NotificationType.Error
+            );
 
             return;
         }
@@ -125,11 +128,17 @@ export function OrganizationInvitationTable(props: IProps) {
                     )
                 );
 
-            showNotification(`Invitation accepted.`, NotificationType.Success);
+            showNotification(
+                t('organization.invitations.notification.acceptedSuccess'),
+                NotificationType.Success
+            );
             dispatch(refreshUserOffchain());
             history.push(getDefaultLink());
         } catch (error) {
-            showNotification(`Could not accept invitation.`, NotificationType.Error);
+            showNotification(
+                t('organization.invitations.notification.acceptedFailure'),
+                NotificationType.Error
+            );
             console.error(error);
             console.log(error);
         }
@@ -142,10 +151,13 @@ export function OrganizationInvitationTable(props: IProps) {
 
         if (
             [OrganizationInvitationStatus.Accepted, OrganizationInvitationStatus.Rejected].includes(
-                invitation.status
+                invitation?.status
             )
         ) {
-            showNotification(`Invitation has already been processed`, NotificationType.Error);
+            showNotification(
+                t('organization.invitations.notification.alreadyProcessed'),
+                NotificationType.Error
+            );
 
             return;
         }
@@ -158,11 +170,17 @@ export function OrganizationInvitationTable(props: IProps) {
                 OrganizationInvitationStatus.Rejected
             );
 
-            showNotification(`Invitation rejected.`, NotificationType.Success);
+            showNotification(
+                t('organization.invitations.notification.rejectedSuccess'),
+                NotificationType.Success
+            );
 
             await loadPage(1);
         } catch (error) {
-            showNotification(`Could not reject invitation.`, NotificationType.Error);
+            showNotification(
+                t('organization.invitations.notification.rejectedFailure'),
+                NotificationType.Error
+            );
             console.error(error);
         }
 
@@ -193,12 +211,12 @@ export function OrganizationInvitationTable(props: IProps) {
                   OrganizationInvitationStatus.Pending
                       ? [
                             {
-                                icon: <Check />,
+                                icon: <Check data-cy="accept-invitation-icon" />,
                                 name: t('organization.invitations.actions.accept'),
                                 onClick: (row: string) => accept(parseInt(row, 10))
                             },
                             {
-                                icon: <Clear />,
+                                icon: <Clear data-cy="decline-invitation-icon" />,
                                 name: t('organization.invitations.actions.decline'),
                                 onClick: (row: string) => reject(parseInt(row, 10))
                             }

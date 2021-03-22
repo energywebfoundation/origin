@@ -11,15 +11,18 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { Check } from '@material-ui/icons';
 import { CertificationRequestStatus } from '@energyweb/issuer-api-client';
-import { getConfiguration } from '../../../features/configuration';
-import { getAllDevices, fetchAllDevices } from '../../../features/devices';
-import { getUserOffchain } from '../../../features/users';
-import { getBackendClient, getEnvironment } from '../../../features/general';
+
 import {
+    getConfiguration,
+    getAllDevices,
+    fetchAllDevices,
+    getUserOffchain,
+    getBackendClient,
+    getEnvironment,
     getCertificationRequestsClient,
     ICertificationRequest,
     requestCertificateApproval
-} from '../../../features/certificates';
+} from '../../../features';
 import {
     getDeviceLocationText,
     getDeviceGridOperatorText,
@@ -27,7 +30,8 @@ import {
     EnergyFormatter,
     PowerFormatter,
     showNotification,
-    NotificationType
+    NotificationType,
+    formatDate
 } from '../../../utils';
 import { downloadFile } from '../../Documents';
 import { IOriginDevice } from '../../../types';
@@ -51,6 +55,7 @@ interface IRowData {
     deviceLocation: string;
     capacity: string;
     status: string;
+    timeFrame: JSX.Element;
 }
 type Rows = IRowData[];
 
@@ -103,7 +108,7 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
                 if (
                     (props.approved !== undefined && request.approved !== props.approved) ||
                     request.status !== CertificationRequestStatus.Executed ||
-                    (!isIssuer && user?.organization?.id !== requestDevice?.organizationId)
+                    (!isIssuer && user.organization?.id !== requestDevice?.organizationId)
                 ) {
                     continue;
                 }
@@ -178,6 +183,7 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
         { id: 'capacity', label: `Capacity (${PowerFormatter.displayUnit})` },
         { id: 'meterRead', label: `Meter Read (${EnergyFormatter.displayUnit})` },
         { id: 'files', label: 'Evidence files' },
+        { id: 'timeFrame', label: 'Request Date' },
         { id: 'status', label: 'Status' }
     ] as const;
 
@@ -202,6 +208,11 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
                     </a>
                 </div>
             )),
+            timeFrame: (
+                <div style={{ whiteSpace: 'nowrap' }}>
+                    {formatDate(request.fromTime * 1000)} - {formatDate(request.toTime * 1000)}
+                </div>
+            ),
             approved: request.approved,
             status: request.approved ? 'Approved' : 'Pending'
         };

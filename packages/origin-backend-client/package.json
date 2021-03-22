@@ -29,7 +29,7 @@
     "devDependencies": {
         "typescript": "4.1.5",
         "@energyweb/origin-backend": "10.0.0",
-        "@nestjs/swagger": "4.7.16",
+        "@nestjs/swagger": "4.8.0",
         "@nestjs/testing": "7.6.14",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.2.2",

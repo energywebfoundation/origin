@@ -6,8 +6,9 @@
         "moduleResolution": "node",
         "declaration": true,
         "noImplicitAny": false,
-
-        "types": ["jest"]
+        "composite": true,
+        "types": ["jest"],
+        "skipLibCheck": true
     },
     "include": ["./src/**/*"]
 }

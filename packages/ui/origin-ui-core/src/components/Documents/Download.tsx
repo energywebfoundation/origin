@@ -89,6 +89,7 @@ export const Download = (props: IProps) => {
                 icon={<GetApp color="primary" />}
                 style={{ background: bgColorLight }}
                 key={index}
+                {...props}
             />
         );
     });

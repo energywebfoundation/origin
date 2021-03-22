@@ -631,12 +631,18 @@
                     "change": "Change"
                 },
                 "notification": {
+                    "invitationSent": "Invitation sent",
                     "rejectedSuccess": "Invitation rejected",
                     "rejectedFailure": "Could not reject invitation",
                     "acceptedSuccess": "Invitation accepted",
-                    "acceptedFailure": "Could not reject invitation",
+                    "acceptedFailure": "Could not accept invitation",
                     "laterSuccess": "You can find this invitation on the Organizations tab",
-                    "laterFailure": "Could not process invitation"
+                    "laterFailure": "Could not process invitation",
+                    "unauthorized": "Unauthorized",
+                    "errorInvitingUser": "Error while inviting user to organization",
+                    "alreadySent": "You have already sent an invitation for this user",
+                    "unableToInvite": "Could not invite user to organization.",
+                    "alreadyProcessed": "Invitation has already been processed"
                 }
             },
             "registration": {

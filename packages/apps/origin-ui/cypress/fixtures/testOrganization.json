@@ -1,0 +1,17 @@
+{
+    "name": "Test Organization",
+    "address": "Test street",
+    "zipCode": "SW",
+    "city": "Wien",
+    "country": "AT",
+    "businessType": "1",
+    "tradeRegistryCompanyNumber": "0987654321",
+    "vatNumber": "1234567890",
+    "signatoryFullName": "John Doe",
+    "signatoryAddress": "Doe's street 1",
+    "signatoryZipCode": "321654",
+    "signatoryCity": "Buenos Aires",
+    "signatoryCountry": "AR",
+    "signatoryEmail": "johndoe@mail.com",
+    "signatoryPhoneNumber": "+123456789"
+}
