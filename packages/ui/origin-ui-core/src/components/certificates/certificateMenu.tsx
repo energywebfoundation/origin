@@ -42,14 +42,14 @@ export const useCertificatesMenu = (): ICertificateMenuItem[] => {
             label: 'navigation.certificates.exchangeInbox',
             component: ExchangeInboxPage,
             show: userIsActiveAndPartOfOrg,
-            features: [OriginFeature.Certificates, OriginFeature.Buyer]
+            features: [OriginFeature.Certificates, OriginFeature.Buyer, OriginFeature.NewInboxes]
         },
         {
             key: 'blockchain-inbox',
             label: 'navigation.certificates.blockchainInbox',
             component: BlockchainInboxPage,
             show: userIsActiveAndPartOfOrg,
-            features: [OriginFeature.Certificates, OriginFeature.Buyer]
+            features: [OriginFeature.Certificates, OriginFeature.Buyer, OriginFeature.NewInboxes]
         },
         {
             key: 'claims_report',
