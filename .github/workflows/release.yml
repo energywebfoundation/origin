@@ -39,6 +39,9 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Setup GIT user
+      uses: fregante/setup-git-user@v1
+
     - uses: actions/setup-node@v2-beta
       with:
         node-version: '14'
