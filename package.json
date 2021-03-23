@@ -75,7 +75,7 @@
         "build:containers:release": "lerna run build:container:latest --stream",
         "publish:preview": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag preview --preid=$BUILD_ID",
         "deploy:heroku:canary": "lerna run deploy:container:heroku:canary --stream",
-        "deploy:heroku:stable": "lerna run deploy:container:heroku:stable --scope @energyweb/migrations --stream && lerna run deploy:container:heroku:stable --scope @energyweb/origin-ui --scope @energyweb/solar-simulator --stream"
+        "deploy:heroku:stable": "lerna run deploy:container:heroku:stable --stream"
     },
     "workspaces": [
         "packages/*",

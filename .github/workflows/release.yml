@@ -75,6 +75,7 @@ jobs:
         yarn publish:release 
         npx sleep 5
         yarn build:containers:release
+        yarn deploy:heroku:stable
       env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
