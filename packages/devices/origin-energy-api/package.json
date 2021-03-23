@@ -6,7 +6,6 @@
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "main": "dist/js/src/index.js",
-    "private": true,
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
