@@ -72,3 +72,7 @@ jobs:
         yarn publish:release 
         npx sleep 5
         yarn build:containers:release
+      env:
+          GH_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
