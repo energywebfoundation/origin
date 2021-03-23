@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "3.1.0",
+    "version": "3.2.0",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -42,7 +42,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/utils-general": "11.0.1",
+        "@energyweb/utils-general": "11.0.2",
         "chai": "4.3.4",
         "dotenv": "8.2.0",
         "ethers": "5.0.31",

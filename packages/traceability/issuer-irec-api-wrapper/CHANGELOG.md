@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.2.0...@energyweb/issuer-irec-api-wrapper@0.3.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency form-data to v3.0.1 ([1034c4b](https://github.com/energywebfoundation/origin/commit/1034c4bb6726a3f01b3d1ac5eabb09d8e18732aa))
+* **deps:** update dependency qs to v6.10.0 ([8ba146e](https://github.com/energywebfoundation/origin/commit/8ba146e952b7be88bcf557420213918ec9a38af9))
+
+
+### Features
+
+* **origin-backend-irec-app:** added irec integration to device creation ([38a0cf3](https://github.com/energywebfoundation/origin/commit/38a0cf36741503f08fec58a795fcf1d3f985b0d8))
+
+
+
+
+
 # [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.1.0-alpha.2...@energyweb/issuer-irec-api-wrapper@0.2.0) (2021-02-12)
 
 

@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-io-erc1888",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "ERC1888 withdwaral/deposit processing for exchange",
     "author": "EnergyWeb DevHub GmbH; Aleksandr Marenin, aleksandr.marenin@energyweb.org",
     "homepage": "https://github.com/energywebfoundation/origin#readme",
@@ -30,12 +30,12 @@
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "dependencies": {
-        "@energyweb/exchange": "1.8.0",
-        "@energyweb/exchange-core": "3.1.9",
-        "@energyweb/issuer": "3.1.0",
-        "@energyweb/origin-backend-core": "8.0.0",
-        "@energyweb/origin-backend-utils": "1.5.0",
-        "@energyweb/utils-general": "11.0.1",
+        "@energyweb/exchange": "1.9.0",
+        "@energyweb/exchange-core": "3.2.0",
+        "@energyweb/issuer": "3.2.0",
+        "@energyweb/origin-backend-core": "8.0.1",
+        "@energyweb/origin-backend-utils": "1.5.1",
+        "@energyweb/utils-general": "11.0.2",
         "@nestjs/common": "7.6.14",
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.14",

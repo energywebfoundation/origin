@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-energy-api-client",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Client library interacting with the Origin Energy API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -23,7 +23,7 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "@energyweb/origin-energy-api": "1.0.1",
+        "@energyweb/origin-energy-api": "1.0.2",
         "axios": "0.21.1"
     },
     "devDependencies": {
