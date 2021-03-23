@@ -73,6 +73,13 @@ jobs:
         npx sleep 5
         yarn build:containers:release
       env:
-          GH_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          BUILD_ID: ${{ steps.generate_unique_id.outputs.unique_id }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_STABLE_APP_API: ${{ secrets.HEROKU_STABLE_APP_API }}
+          HEROKU_STABLE_APP_UI: ${{ secrets.HEROKU_STABLE_APP_UI }}
+          HEROKU_STABLE_APP_SIM: ${{ secrets.HEROKU_STABLE_APP_SIM }}
+          HEROKU_STABLE_APP_IREC_UI: ${{ secrets.HEROKU_STABLE_APP_IREC_UI }}
+          HEROKU_STABLE_APP_IREC_API: ${{ secrets.HEROKU_STABLE_APP_IREC_API }}
