@@ -25,7 +25,8 @@
         "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0 -p 8553",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf dist",
-        "deploy:container:heroku:canary": "make build-canary push-heroku-canary"
+        "deploy:container:heroku:canary": "make build-canary push-heroku-canary",
+        "deploy:container:heroku:stable": "make build-stable push-heroku-stable"
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
