@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-irec-form-api",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "description": "An API for form based version of I-REC compatible registry",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-irec-form-api#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -30,9 +30,9 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/origin-backend": "10.0.0",
-        "@energyweb/origin-backend-core": "8.0.0",
-        "@energyweb/origin-backend-utils": "1.5.0",
+        "@energyweb/origin-backend": "10.0.1",
+        "@energyweb/origin-backend-core": "8.0.1",
+        "@energyweb/origin-backend-utils": "1.5.1",
         "@nestjs/common": "7.6.14",
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.14",

@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.3.0...@energyweb/exchange-ui-core@1.4.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @material-ui/pickers to v3.3.10 ([c3d13e5](https://github.com/energywebfoundation/origin/commit/c3d13e501ae7949cba3e3fa1d24bac35612c3ed2))
+* **deps:** update dependency ethers to v5.0.31 ([2c4a3a0](https://github.com/energywebfoundation/origin/commit/2c4a3a002e113ab28d1a452ed77b1b4b2a8436e6))
+* **deps:** update dependency i18next to v19.8.9 ([86169ea](https://github.com/energywebfoundation/origin/commit/86169eac6ffef1a84ab86d24df605905808d92bf))
+* **deps:** update dependency i18next to v19.9.0 ([2140690](https://github.com/energywebfoundation/origin/commit/2140690637c8ef4c060d915aeeb9db685f010196))
+* **deps:** update dependency i18next to v19.9.1 ([860cb8f](https://github.com/energywebfoundation/origin/commit/860cb8f08a4518f9ce730f0b01fe9a8c24504ff7))
+* **deps:** update dependency i18next to v19.9.2 ([26cadd3](https://github.com/energywebfoundation/origin/commit/26cadd3f0ffcbbbde09217c5947287b2195a1528))
+* **deps:** update dependency yup to v0.32.9 ([fc68c9d](https://github.com/energywebfoundation/origin/commit/fc68c9da3700627c1c5b4c8f70bd2318941a54a2))
+* **exchange-ui-core:** bundle render error ([f3b3003](https://github.com/energywebfoundation/origin/commit/f3b3003b07de654093625e04f07020d9ba01fcac))
+* **exchange-ui-core:** create bundle icon error ([0ba2cee](https://github.com/energywebfoundation/origin/commit/0ba2ceeb1a9ce889866e965150fa64cde440ce95))
+* **exchange-ui-core:** device name check and devices pre-fetch in supply ([91a4220](https://github.com/energywebfoundation/origin/commit/91a4220fca573da944f303f8181eb244950a8f56))
+* **exchange-ui-core:** fallbacks for devices ([cf71aac](https://github.com/energywebfoundation/origin/commit/cf71aac18434b84f58504f4524d422357c753df6))
+* **exchange-ui-core:** import translation hook from i18next ([7a89abb](https://github.com/energywebfoundation/origin/commit/7a89abb5c1b803d0cf69c2d40ba225aeea28bed8))
+* **exchange-ui-core:** missing device fetch in orders tables ([7487b35](https://github.com/energywebfoundation/origin/commit/7487b35450028fcff9d586b8ce4cf5ccf513b4eb))
+* **exchange-ui-core:** unstable facilityName filter options ([699e835](https://github.com/energywebfoundation/origin/commit/699e8353d512556d8fbc24d0adabfa4eca99b674))
+* **exchange-ui-core:** use ternary operator instead of nullish coalescing ([8609d4e](https://github.com/energywebfoundation/origin/commit/8609d4e2eb4e57b5d634358f08eb2318b930b803))
+* add i18next provider for ui packages ([998e101](https://github.com/energywebfoundation/origin/commit/998e101d2aa38a5bda8e0228868398cb0edd8096))
+
+
+### Features
+
+* **exchange-ui-core:** demands - comma validation fix ([9188534](https://github.com/energywebfoundation/origin/commit/91885345deeb85f4012531ad8b676cf594f337cd))
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-ui-core@1.2.1...@energyweb/exchange-ui-core@1.3.0) (2021-02-12)
 
 
