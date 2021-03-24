@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations-irec@1.0.1...@energyweb/migrations-irec@1.1.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency commander to 6.2.1 ([c41b0b2](https://github.com/energywebfoundation/origin/commit/c41b0b2b6387c56d598bdb4fa4df176d63fe9b26))
+* **deps:** update dependency @types/pg to v7.14.10 ([43e16fc](https://github.com/energywebfoundation/origin/commit/43e16fcebb127acf9b36c9edaaabc9da8aebe8fa))
+* **deps:** update dependency @types/pg to v7.14.11 ([592556e](https://github.com/energywebfoundation/origin/commit/592556e67d66886a0e59deada312f39340884cd8))
+* **deps:** update dependency ethers to v5.0.31 ([2c4a3a0](https://github.com/energywebfoundation/origin/commit/2c4a3a002e113ab28d1a452ed77b1b4b2a8436e6))
+
+
+### Features
+
+* **migrations-irec:** added irec device-fuel types ([1ceb02c](https://github.com/energywebfoundation/origin/commit/1ceb02ccab1ddf3b960a7f5a3cf060b6c8ece9ca))
+* **migrations-irec:** use names instead of codes ([ea8830b](https://github.com/energywebfoundation/origin/commit/ea8830bdf0cf9e313b24fb12c0a1d6887b52695b))
+
+
+
+
+
 ## 1.0.1 (2021-02-12)
 
 **Note:** Version bump only for package @energyweb/migrations-irec
