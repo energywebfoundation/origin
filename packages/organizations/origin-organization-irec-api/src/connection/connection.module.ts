@@ -8,9 +8,16 @@ import { ConnectionController } from './connection.controller';
 import { Connection } from './connection.entity';
 import { Handlers } from './handlers';
 import { IrecConnectionService } from './irec-connection.service';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Connection]), ConfigModule, CqrsModule, RegistrationModule],
+    imports: [
+        TypeOrmModule.forFeature([Connection]),
+        ConfigModule,
+        CqrsModule,
+        RegistrationModule,
+        PassportModule.register({ defaultStrategy: 'jwt' })
+    ],
     providers: [...Handlers, IrecConnectionService],
     exports: [...Handlers, IrecConnectionService],
     controllers: [ConnectionController]

@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConnectionModule, RegistrationModule } from '@energyweb/origin-organization-irec-api';
 import { ConfigModule } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
 
 import { DeviceController } from './device.controller';
 import { Device } from './device.entity';
@@ -16,7 +17,8 @@ import { IrecDeviceService } from './irec-device.service';
         CqrsModule,
         ConfigModule,
         ConnectionModule,
-        RegistrationModule
+        RegistrationModule,
+        PassportModule.register({ defaultStrategy: 'jwt' })
     ],
     providers: [DeviceService, IrecDeviceService, ValidateDeviceOwnershipCommandHandler],
     exports: [DeviceService, IrecDeviceService],
