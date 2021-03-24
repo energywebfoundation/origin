@@ -59,3 +59,6 @@ jobs:
 
     - name: Run all test:ci:apps
       run: node common/scripts/install-run-rush.js test:ci:apps
+
+    - name: Build containers
+      run: node common/scripts/install-run-rush.js build:container:canary
