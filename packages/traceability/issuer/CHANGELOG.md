@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@3.1.0...@energyweb/issuer@3.2.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chai to v4.3.3 ([ed9a753](https://github.com/energywebfoundation/origin/commit/ed9a75383c66ed0502ecbb79f9bb029e708852bd))
+* **deps:** update dependency chai to v4.3.4 ([beeedd1](https://github.com/energywebfoundation/origin/commit/beeedd1bbaf17025f97b787f9e875bf2a34ed085))
+* **deps:** update dependency ethers to v5.0.31 ([2c4a3a0](https://github.com/energywebfoundation/origin/commit/2c4a3a002e113ab28d1a452ed77b1b4b2a8436e6))
+* **deps:** update dependency mocha to v8.3.0 ([95868da](https://github.com/energywebfoundation/origin/commit/95868dab470f877d89685e64e55165460701b525))
+* **deps:** update dependency mocha to v8.3.1 ([2aac4f1](https://github.com/energywebfoundation/origin/commit/2aac4f1a5e150b9f977ee4f19387366f27566bb2))
+* **deps:** update dependency mocha to v8.3.2 ([0f535b4](https://github.com/energywebfoundation/origin/commit/0f535b45c00696985cba5c0884c5e9650d571596))
+* **issuer:** fallback to empty strings when encoding claiming data ([23d47c4](https://github.com/energywebfoundation/origin/commit/23d47c484ffa9a98ed64a0f048bce4b2ba688364))
+
+
+### Features
+
+* **issuer:** add time range for claim data. calculate encoded/decoded payload locally ([d1cc82a](https://github.com/energywebfoundation/origin/commit/d1cc82ad264c6b5409a7f7b1ee7fe46964f8068c))
+
+
+
+
+
 # [3.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@3.0.1...@energyweb/issuer@3.1.0) (2021-02-12)
 
 

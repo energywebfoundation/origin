@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.13.0...@energyweb/localization@0.14.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **localization:** add missing localization ([ea977d8](https://github.com/energywebfoundation/origin/commit/ea977d83399cfb345c4cd5221b470f6b743c2998))
+* **localization:** modal typo ([b2dc577](https://github.com/energywebfoundation/origin/commit/b2dc577b3d0171557529cfae14db3c1dd3852c49))
+* **localization:** tooltip typo ([c55b952](https://github.com/energywebfoundation/origin/commit/c55b952957e6045c7d10aa77292ffdb63515675e))
+
+
+### Features
+
+* **localization:** activation message ([bf48a9c](https://github.com/energywebfoundation/origin/commit/bf48a9c04783a12020e30b56e8e36bf950afa320))
+* **localization:** add claims localization ([88e3e60](https://github.com/energywebfoundation/origin/commit/88e3e60962000fc02e3afc9d1fb8cffb0c02c738))
+* **localization:** add invitations localization ([8caf67f](https://github.com/energywebfoundation/origin/commit/8caf67f77c08c717240a2f6fd8f531e71002a8f7))
+* **localization:** add localization for devices ([0988130](https://github.com/energywebfoundation/origin/commit/0988130294d50b4c64ee655792432bfec4a477e4))
+* **localization:** add localization for supply ([81bcb56](https://github.com/energywebfoundation/origin/commit/81bcb568976759f858a52805ca9c663e68b5fb97))
+* **localization:** block withdraw if user lack blockchain address ([056101b](https://github.com/energywebfoundation/origin/commit/056101bcef664ccdbd168a55ecc9bdd00153d252))
+* **localization:** cert request page ([0c5228c](https://github.com/energywebfoundation/origin/commit/0c5228c38ed107dbf2068b088d836b9ed0d126e4))
+* **localization:** claims menu item ([550ff1d](https://github.com/energywebfoundation/origin/commit/550ff1d39166a4cbd507318b42c45922b3f43fcd))
+* **localization:** create address modal ([ec753fd](https://github.com/energywebfoundation/origin/commit/ec753fd3fd89b4b0a3164444a906c72f6924d24f))
+* **localization:** new blockchain inbox page ([3c04fae](https://github.com/energywebfoundation/origin/commit/3c04faed1ce5f3601e0ba040e1706c67141e0a7f))
+* **localization:** register - thank you modal ([373ded7](https://github.com/energywebfoundation/origin/commit/373ded7a58a3f03ab119ebf23b83e022400d1b94))
+
+
+
+
+
 # [0.13.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.12.0...@energyweb/localization@0.13.0) (2021-02-12)
 
 

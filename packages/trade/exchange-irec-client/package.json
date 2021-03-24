@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-irec-client",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Client library interacting with the I-REC Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-irec-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -26,8 +26,8 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "@energyweb/exchange": "1.8.0",
-        "@energyweb/exchange-irec": "1.0.1",
+        "@energyweb/exchange": "1.9.0",
+        "@energyweb/exchange-irec": "1.0.2",
         "@nestjs/swagger": "4.8.0",
         "@nestjs/testing": "7.6.14",
         "@nestjs/typeorm": "7.1.5",

@@ -4,8 +4,10 @@ nav:
   - Introduction: index.md
   - Getting started: getting-started.md
   - Architecture: architecture.md
+  - Packages: packages.md
   - User guides:
     - Onboarding: user-guide-onboarding.md
+    - Device Management: user-guide-device-management.md 
   - SDK:
     - Traceability: traceability.md
     - Trade: trade.md
@@ -14,7 +16,7 @@ nav:
   - Cookbook:
     - How to deploy to Volta: volta-deployment.md
 
-theme: readthedocs
+theme: material
 
 plugins:
   - mermaid2

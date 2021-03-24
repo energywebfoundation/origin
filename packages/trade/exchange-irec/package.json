@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-irec",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A service project hosting order book based exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-irec#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -33,12 +33,12 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/exchange": "1.8.0",
-        "@energyweb/exchange-core": "3.1.9",
-        "@energyweb/exchange-core-irec": "1.0.1",
-        "@energyweb/origin-backend-core": "8.0.0",
-        "@energyweb/origin-backend-utils": "1.5.0",
-        "@energyweb/utils-general": "11.0.1",
+        "@energyweb/exchange": "1.9.0",
+        "@energyweb/exchange-core": "3.2.0",
+        "@energyweb/exchange-core-irec": "1.0.2",
+        "@energyweb/origin-backend-core": "8.0.1",
+        "@energyweb/origin-backend-utils": "1.5.1",
+        "@energyweb/utils-general": "11.0.2",
         "@nestjs/common": "7.6.14",
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.14",

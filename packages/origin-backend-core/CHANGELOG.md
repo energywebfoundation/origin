@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@8.0.0...@energyweb/origin-backend-core@8.0.1) (2021-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.0.31 ([2c4a3a0](https://github.com/energywebfoundation/origin/commit/2c4a3a002e113ab28d1a452ed77b1b4b2a8436e6))
+
+
+
+
+
 # [8.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@7.0.1...@energyweb/origin-backend-core@8.0.0) (2021-02-12)
 
 
