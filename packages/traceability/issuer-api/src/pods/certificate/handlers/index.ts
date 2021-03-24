@@ -10,7 +10,7 @@ import { BulkClaimCertificatesHandler } from './bulk-claim-certificates.handler'
 import { GetAllCertificateEventsHandler } from './get-all-certificate-events.handler';
 import { SyncCertificateHandler } from './sync-certificate.handler';
 
-export const Handlers = [
+export const CertificateHandlers = [
     GetAllCertificatesHandler,
     IssueCertificateHandler,
     TransferCertificateHandler,

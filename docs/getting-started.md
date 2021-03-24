@@ -5,8 +5,10 @@ Before you can start Origin development you need to go through basic installatio
 1. Make sure you are using [Node 14.x.x](https://nodejs.org/en/download/)
 2. Install `yarn` package manager using `npm i -g yarn`
 3. Origin requires PostgreSQL database installed and configured
-4. Copy `.env.example` to `.env` (default values are for now)
-5. Build using `yarn build`
+4. Clone Origin repository branch <a href="https://github.com/energywebfoundation/origin">master</a>
+5. Copy `.env.example` to `.env` (default values are for now)
+6. Install packages using `yarn` command
+7. Build using `yarn build` command
 
 <div class="admonition note">
   <p class="first admonition-title">Note</p>
