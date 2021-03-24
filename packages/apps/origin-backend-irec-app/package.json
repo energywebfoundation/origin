@@ -18,7 +18,8 @@
         "precommit": "lint-staged",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
         "test:e2e": "yarn test:mocha",
-        "build:container:canary": "make build-canary"
+        "build:container:canary": "make build-canary",
+        "build:container:latest": "make build-latest"
     },
     "bin": {
         "origin-backend-app": "./bin/origin-backend-app"

@@ -14,6 +14,7 @@
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
+        "build:docs": "rm -Rf ../../../docs/sdk-reference/issuer-irec-api-wrapper && typedoc --plugin typedoc-plugin-markdown src/index.ts --out ../../../docs/sdk-reference/issuer-irec-api-wrapper",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
@@ -40,7 +41,9 @@
         "@types/dotenv": "6.1.1",
         "dotenv": "8.2.0",
         "@types/qs": "^6.9.0",
-        "ts-node": "9.1.1"
+        "ts-node": "9.1.1",
+        "typedoc": "0.20.33",
+        "typedoc-plugin-markdown": "3.6.0"
     },
     "publishConfig": {
         "access": "public",

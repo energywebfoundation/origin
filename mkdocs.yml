@@ -13,6 +13,8 @@ nav:
           - Trade: trade.md
           - Device Registry: device-registry.md
           - Organizations: organizations.md
+    - SDK Reference:
+          - '@energyweb/issuer-irec-api-wrapper': sdk-reference/issuer-irec-api-wrapper/modules.md
     - Cookbook:
           - How to deploy to Volta: volta-deployment.md
 
