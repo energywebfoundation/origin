@@ -60,7 +60,7 @@ export class DeviceRegistryController {
         description: 'Returns my Devices'
     })
     async getMyDevices(@UserDecorator() { ownerId }: ILoggedInUser): Promise<OriginDeviceDTO[]> {
-        return this.deviceRegistryService.find({ where: { ownerId } });
+        return this.deviceRegistryService.find({ where: { owner: ownerId } });
     }
 
     @Get('/:id')

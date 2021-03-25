@@ -71,21 +71,14 @@ export class DeviceRegistryService {
     private async isExternalRegistryIdAlreadyUsed(externalRegistryId: string) {
         const count = await this.repository
             .createQueryBuilder()
-            .where('LOWER(externalRegistryId) = LOWER(:externalRegistryId)', {
-                externalRegistryId
-            })
+            .where({ externalRegistryId })
             .getCount();
 
         return count > 0;
     }
 
     private async isSmartMeterIdAlreadyUsed(smartMeterId: string) {
-        const count = await this.repository
-            .createQueryBuilder()
-            .where('LOWER(smartMeterId) = LOWER(:smartMeterId)', {
-                smartMeterId
-            })
-            .getCount();
+        const count = await this.repository.createQueryBuilder().where({ smartMeterId }).getCount();
 
         return count > 0;
     }
