@@ -128,8 +128,11 @@ export function ExchangeInboxPage(): JSX.Element {
                                     type="number"
                                     value={price}
                                     onChange={(ev) => {
-                                        const newValue = parseFloat(ev.target.value);
-                                        if (!isNaN(newValue)) setPrice(newValue);
+                                        const newValue = parseFloat(
+                                            ev.target.value.replace(',', '.')
+                                        );
+                                        if (!isNaN(newValue))
+                                            setPrice(Math.floor(newValue * 100) / 100);
                                     }}
                                 />
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -137,7 +140,7 @@ export function ExchangeInboxPage(): JSX.Element {
                                         {t('certificate.info.totalPrice')}:{' '}
                                     </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        ${EnergyFormatter.format(totalVolume.mul(price))}
+                                        ${EnergyFormatter.format(totalVolume.toNumber() * price)}
                                     </div>
                                 </div>
                             </TabContent>
