@@ -20,7 +20,7 @@ export async function startAPI(logger?: LoggerService) {
         const parsed = JSON.parse(info.toString());
 
         return {
-            '@energyweb/origin-backend-app': parsed.version,
+            '@energyweb/origin-backend-irec-app': parsed.version,
             '@energyweb/exchange': parsed.dependencies['@energyweb/exchange'],
             '@energyweb/origin-backend': parsed.dependencies['@energyweb/origin-backend'],
             '@energyweb/issuer-api': parsed.dependencies['@energyweb/issuer-api'],

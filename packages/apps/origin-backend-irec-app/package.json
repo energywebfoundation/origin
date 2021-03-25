@@ -22,9 +22,9 @@
         "build:container:latest": "make build-latest"
     },
     "bin": {
-        "origin-backend-app": "./bin/origin-backend-app"
+        "origin-backend-irec-app": "./bin/origin-backend-irec-app"
     },
-    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app#readme",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-irec-app#readme",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -41,7 +41,6 @@
         "@energyweb/issuer": "3.2.0",
         "@energyweb/issuer-api": "0.2.0",
         "@energyweb/issuer-irec-api-wrapper": "0.3.0",
-        "@energyweb/migrations-irec": "1.1.0",
         "@energyweb/origin-backend": "10.0.1",
         "@energyweb/origin-backend-core": "8.0.1",
         "@energyweb/origin-backend-utils": "1.5.1",
