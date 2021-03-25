@@ -53,11 +53,11 @@ jobs:
     - name: Install application
       # lerna doesn't work without additional fetch
       run: |
-        yarn
+        rush update --full --purge
 
     - name: Build application
       run: |
-        yarn build
+        rush rebuild
 
     - name: Deploy application
       run: |
@@ -71,4 +71,3 @@ jobs:
         HEROKU_CANARY_APP_SIM: ${{ secrets.HEROKU_CANARY_APP_SIM }}
         HEROKU_CANARY_APP_IREC_UI: ${{ secrets.HEROKU_CANARY_APP_IREC_UI }}
         HEROKU_CANARY_APP_IREC_API: ${{ secrets.HEROKU_CANARY_APP_IREC_API }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
