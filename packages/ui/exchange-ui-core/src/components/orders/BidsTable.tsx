@@ -20,10 +20,9 @@ import {
     TableMaterial,
     useLinks
 } from '@energyweb/origin-ui-core';
-import { getEnvironment } from '../../features/general';
+import { getEnvironment } from '../../features';
 import { useDeviceDataLayer } from '../../deviceDataLayer';
-import { getDeviceName, deviceTypeChecker } from '../../utils/device';
-import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
+import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
 
 const ORDERS_PER_PAGE = 5;
@@ -32,7 +31,7 @@ interface IOwnProsp {
     bids: Order[];
 }
 
-export const BidsTable = (props: IOwnProsp) => {
+export const BidsTable = (props: IOwnProsp): JSX.Element => {
     const { bids } = props;
     const { t } = useTranslation();
     const [bidToView, setToView] = useState<Order>();
@@ -87,20 +86,6 @@ export const BidsTable = (props: IOwnProsp) => {
             }
         },
         {
-            property: (order: Order) =>
-                order.asset?.deviceId
-                    ? getDeviceName(order.asset.deviceId, devices, environment)
-                    : undefined,
-            label: t('device.properties.facilityName'),
-            input: {
-                type: CustomFilterInputType.dropdown,
-                availableOptions: devices.map((device) => ({
-                    label: deviceTypeChecker(device) ? device?.facilityName : device?.name,
-                    value: deviceTypeChecker(device) ? device?.facilityName : device?.name
-                }))
-            }
-        },
-        {
             property: (record: Order) => new Date(record.product.generationFrom).getTime() / 1000,
             label: t('certificate.properties.generationDateStart'),
             input: {
@@ -144,10 +129,8 @@ export const BidsTable = (props: IOwnProsp) => {
     });
 
     useEffect(() => {
-        if (bids.length > 0) {
-            setPageSize(ORDERS_PER_PAGE);
-            loadPage(1);
-        }
+        setPageSize(ORDERS_PER_PAGE);
+        loadPage(1);
     }, [bids]);
 
     const [currency = 'USD'] = useSelector(getCurrencies);
