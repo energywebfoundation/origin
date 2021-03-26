@@ -5,3 +5,6 @@ export const getAllDevices = (state: IIRecAppState): ComposedPublicDevice[] =>
 
 export const getMyDevices = (state: IIRecAppState): ComposedDevice[] =>
     state.iRecDevicesState.myDevices;
+
+export const getDevicesToImport = (state: IIRecAppState): ComposedDevice[] =>
+    state.iRecDevicesState.devicesToImport;

@@ -122,7 +122,7 @@
                 "selectProvince": "Select province",
                 "selectGridOperator": "Select grid operator",
                 "toRegisterADevice": "To register a device you need to fulfill following criteria:",
-                "importDevice": "Import Device",
+                "importDevice": "Devices to import",
                 "importedDevices": "Imported Devices",
                 "attachDeviceData": "Attach optional device data"
             }

@@ -8,3 +8,4 @@ export * from './IRecCoreAdapter';
 export * from './IRecDeviceApp';
 export * from './IRecCertificateApp';
 export * from './deviceMenu';
+export * from './certificateMenu';

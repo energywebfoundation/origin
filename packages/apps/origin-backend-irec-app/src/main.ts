@@ -32,7 +32,7 @@ export async function startAPI(logger?: LoggerService) {
     console.log(`Backend starting on port: ${PORT}`);
     console.log(`Backend versions: ${JSON.stringify(getVersion())}`);
 
-    const app = await NestFactory.create(OriginAppModule);
+    const app = await NestFactory.create(OriginAppModule, { logger: console });
 
     app.enableShutdownHooks();
     app.enableCors();

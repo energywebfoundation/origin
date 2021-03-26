@@ -14,7 +14,10 @@ import {
     useAccountMenu
 } from '@energyweb/origin-ui-core';
 import { useExchangeMenu } from '@energyweb/exchange-ui-core';
-import { useDeviceMenu as useIRecDeviceMenu } from '@energyweb/origin-ui-irec-core';
+import {
+    useDeviceMenu as useIRecDeviceMenu,
+    useCertificatesMenu as useIRecCertificatesMenu
+} from '@energyweb/origin-ui-irec-core';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 import { useLinks } from '../routing';
 import { SidebarSubMenu } from './SidebarSubMenu';
@@ -78,6 +81,8 @@ export function SidebarMenu() {
     }, [location]);
 
     const irecDeviceMenuList = useIRecDeviceMenu();
+    const iRecCertificatesMenuList = useIRecCertificatesMenu();
+
     const deviceMenuList = useDeviceMenu();
     const certificateMenuList = useCertificatesMenu();
     const exchangeMenuList = useExchangeMenu();
@@ -165,7 +170,11 @@ export function SidebarMenu() {
                             </li>
                             <SidebarSubMenu
                                 rootLink={getCertificatesLink()}
-                                menuList={certificateMenuList}
+                                menuList={
+                                    !enabledFeatures.includes(OriginFeature.IRecUIApp)
+                                        ? certificateMenuList
+                                        : iRecCertificatesMenuList
+                                }
                                 open={openCertificates}
                             />
                         </>

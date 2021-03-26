@@ -3,10 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { LightenColor } from '@energyweb/origin-ui-core';
-import { useOriginConfiguration } from '../../../utils/configuration';
-import { IDevice } from '../../../containers/Certificate/CertificateImport';
+import { useOriginConfiguration } from '../../../utils';
+import { ComposedDevice } from '../../../types';
 
-export function ImportDeviceItem(props: { device: IDevice; onImport: () => void }): JSX.Element {
+export function ImportDeviceItem(props: {
+    device: ComposedDevice;
+    onImport: () => void;
+}): JSX.Element {
     const configuration = useOriginConfiguration();
 
     const mainBgColor = configuration?.styleConfig?.MAIN_BACKGROUND_COLOR;
@@ -85,7 +88,7 @@ export function ImportDeviceItem(props: { device: IDevice; onImport: () => void 
                     <div className={classes.label}>Device:</div>
                     <div className={classes.name}>{device.name}</div>
                 </div>
-                {!device.imported && (
+                {!device.externalRegistryId && (
                     <div>
                         <Button
                             variant="outlined"
@@ -108,7 +111,7 @@ export function ImportDeviceItem(props: { device: IDevice; onImport: () => void 
                 </div>
                 <div>
                     <div className={classes.label}>{t('device.properties.country')}</div>
-                    <div className={classes.value}>{device.country}</div>
+                    <div className={classes.value}>{device.countryCode}</div>
                 </div>
             </div>
         </div>

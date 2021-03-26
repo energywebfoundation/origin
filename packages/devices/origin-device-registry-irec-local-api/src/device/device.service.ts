@@ -116,7 +116,12 @@ export class DeviceService {
         user: ILoggedInUser,
         deviceToImport: ImportIrecDeviceDTO
     ): Promise<Device> {
-        const irecDevice = await this.irecDeviceService.getDevice(user, deviceToImport.code);
+        let irecDevice;
+        if (this.irecDeviceService.isIrecIntegrationEnabled()) {
+            irecDevice = await this.irecDeviceService.getDevice(user, deviceToImport.code);
+        } else {
+            [irecDevice] = await this.irecDeviceService.getDevices(user);
+        }
 
         if (!irecDevice) {
             throw new NotFoundException(`Device with code ${deviceToImport.code} not found`);

@@ -4491,7 +4491,7 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==
-  /@testing-library/dom/7.30.0:
+  /@testing-library/dom/7.30.1:
     dependencies:
       '@babel/code-frame': 7.12.13
       '@babel/runtime': 7.13.10
@@ -4505,11 +4505,11 @@ packages:
     engines:
       node: '>=10'
     resolution:
-      integrity: sha512-v4GzWtltaiDE0yRikLlcLAfEiiK8+ptu6OuuIebm9GdC2XlZTNDPGEfM2UkEtnH7hr9TRq2sivT5EA9P1Oy7bw==
+      integrity: sha512-RQUvqqq2lxTCOffhSNxpX/9fCoR+nwuQPmG5uhuuEH5KBAzNf2bK3OzBoWjm5zKM78SLjnGRAKt8hRjQA4E46A==
   /@testing-library/react/11.2.5_react-dom@17.0.1+react@17.0.1:
     dependencies:
       '@babel/runtime': 7.13.10
-      '@testing-library/dom': 7.30.0
+      '@testing-library/dom': 7.30.1
       react: 17.0.1
       react-dom: 17.0.1_react@17.0.1
     dev: false
@@ -4526,23 +4526,21 @@ packages:
       node: '>= 6'
     resolution:
       integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
-  /@truffle/abi-utils/0.1.5:
+  /@truffle/abi-utils/0.1.6:
     dependencies:
       change-case: 3.0.2
-      faker: 5.4.0
+      faker: 5.5.0
       fast-check: 2.14.0
-      source-map-support: 0.5.19
     dev: false
     resolution:
-      integrity: sha512-PvCN/qebM0boK2YycX3sMe6CwoLtB7cpYj2ugHPtcQ+Zpg1hQRGS+GRLeBuQg3RR5X8IxzLb4YPZh5dnJxMZYA==
-  /@truffle/code-utils/1.2.24:
+      integrity: sha512-A9bW5XHywPNHod8rsu4x4eyM4C6k3eMeyOCd47edhiA/e9kgAVp6J3QDzKoHS8nuJ2qiaq+jk5bLnAgNWAHYyQ==
+  /@truffle/code-utils/1.2.25:
     dependencies:
       cbor: 5.2.0
-      source-map-support: 0.5.19
     dev: false
     resolution:
-      integrity: sha512-IqpbTh4uNQueadv96GBWBaGTYTyOsLKE9Dui1wpiijON6xq2iIcTArej1vMh+nkAd5/AsP+enbBY8mksm6rFBg==
-  /@truffle/codec/0.10.1:
+      integrity: sha512-LsKFfsb+gAv44upI/iof1jLOBmXUoViFBbHwAwiec8n4wHreAQq7xd3t3q/A9MFLZfbKjDNdLya9jGQ6x7f3lQ==
+  /@truffle/codec/0.10.2:
     dependencies:
       big.js: 5.2.2
       bn.js: 5.2.0
@@ -4553,17 +4551,16 @@ packages:
       lodash.partition: 4.6.0
       lodash.sum: 4.0.2
       semver: 7.3.5
-      source-map-support: 0.5.19
       utf8: 3.0.0
       web3-utils: 1.2.9
     dev: false
     resolution:
-      integrity: sha512-c1lC9Wcp+Z1DLvEYH3dkEtMKnUJx72CirO3kmi0OgFSA5QqTDCtfrVOhAugcb/iMLgqUK05/pexp2whb4oASKA==
-  /@truffle/debugger/8.0.19:
+      integrity: sha512-m396zHfF5ee8zv0O0SctVt0/FxGPv/x9pTm24BHlDz540S6wiWwarBb20QF4sXfJ7lwe6ZfwtyQHExuszCENlg==
+  /@truffle/debugger/8.0.20:
     dependencies:
-      '@truffle/abi-utils': 0.1.5
-      '@truffle/codec': 0.10.1
-      '@truffle/source-map-utils': 1.3.35
+      '@truffle/abi-utils': 0.1.6
+      '@truffle/codec': 0.10.2
+      '@truffle/source-map-utils': 1.3.36
       bn.js: 5.2.0
       debug: 4.3.1
       json-pointer: 0.6.1
@@ -4578,27 +4575,26 @@ packages:
       remote-redux-devtools: 0.5.16_redux@3.7.2
       reselect-tree: 1.3.4
       semver: 7.3.5
-      source-map-support: 0.5.19
       web3: 1.2.9
       web3-eth-abi: 1.2.9
     dev: false
     resolution:
-      integrity: sha512-f2JOuqlVkBUdQjQxf6waJbYkLdIAiAn/mZwhdPN4epcPs4TTn9rp9W1Gq6pkhlIzKs1ZNYDxDvMDuKBX0P8ooQ==
+      integrity: sha512-S9shygtI8lxbJPhiQ+IrVck5XxRjYgImOn1LKjNsgjGtxtDzkWDIP6mLDa7WzMh9AKvZt1K2kcj69jJO14+Htg==
   /@truffle/error/0.0.6:
     dev: false
     resolution:
       integrity: sha512-QUM9ZWiwlXGixFGpV18g5I6vua6/r+ZV9W/5DQA5go9A3eZUNPHPaTKMIQPJLYn6+ZV5jg5H28zCHq56LHF3yA==
-  /@truffle/source-map-utils/1.3.35:
+  /@truffle/source-map-utils/1.3.36:
     dependencies:
-      '@truffle/code-utils': 1.2.24
-      '@truffle/codec': 0.10.1
+      '@truffle/code-utils': 1.2.25
+      '@truffle/codec': 0.10.2
       debug: 4.3.1
       json-pointer: 0.6.1
       node-interval-tree: 1.3.3
       web3-utils: 1.2.9
     dev: false
     resolution:
-      integrity: sha512-j3PHac4g/yQwxSB899lkal/YMuIXLNNlDGfCog2QrWqdtK7HJhx6X2tftwqrZzO4JTKc1Cs8KOCPOndx9W2xeQ==
+      integrity: sha512-EVNDwkGVxu0lFKHwwTY80Y0jS9CFw1q1CvLesJYSmRF+MeA36HtO6dsxax/sljPe0cbvZma5z3EjMZZqTzpxTg==
   /@turf/boolean-point-in-polygon/6.3.0:
     dependencies:
       '@turf/helpers': 6.3.0
@@ -5106,17 +5102,17 @@ packages:
     dependencies:
       '@types/history': 4.7.8
       '@types/react': 17.0.3
-      '@types/react-router': 5.1.12
+      '@types/react-router': 5.1.13
     dev: false
     resolution:
       integrity: sha512-D5mHD6TbdV/DNHYsnwBTv+y73ei+mMjrkGrla86HthE4/PVvL1J94Bu3qABU+COXzpL23T1EZapVVpwHuBXiUg==
-  /@types/react-router/5.1.12:
+  /@types/react-router/5.1.13:
     dependencies:
       '@types/history': 4.7.8
       '@types/react': 17.0.3
     dev: false
     resolution:
-      integrity: sha512-0bhXQwHYfMeJlCh7mGhc0VJTRm0Gk+Z8T00aiP4702mDUuLs9SMhnd2DitpjWFjdOecx2UXtICK14H9iMnziGA==
+      integrity: sha512-ZIuaO9Yrln54X6elg8q2Ivp6iK6p4syPsefEYAhRDAoqNh48C8VYUmB9RkXjKSQAJSJV0mbIFCX7I4vZDcHrjg==
   /@types/react-syntax-highlighter/11.0.4:
     dependencies:
       '@types/react': 17.0.3
@@ -5228,10 +5224,16 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Xt8TbEyZTnD5Xulw95GLMOkmjGICrOQyJ2jqgkSjAUR3mm7pAIzSR0NFBaMcwlzVvlpCjNwbATcWWwjNiZiFrQ==
-  /@types/tapable/1.0.6:
+  /@types/tapable/1.0.7:
     dev: false
     resolution:
-      integrity: sha512-W+bw9ds02rAQaMvaLYxAbJ6cvguW/iJXNT6lTssS1ps6QdrMKttqEAMEG/b5CR8TZl3/L7/lH0ZV5nNR1LXikA==
+      integrity: sha512-0VBprVqfgFD7Ehb2vd8Lh9TG3jP98gvr8rgehQqzztZNI7o8zS8Ad4jyZneKELphpuE212D8J70LnSNQSyO6bQ==
+  /@types/tapable/2.2.0:
+    dependencies:
+      tapable: 2.2.0
+    dev: false
+    resolution:
+      integrity: sha512-nMJIv2KFSNfYKpjxt2Rx8pRLEso0ymg308K3hoTLMdlvreUIynlEOX6WeLeJENbIgm4kDO2G+uWhYm1LAg1Sww==
   /@types/uglify-js/3.13.0:
     dependencies:
       source-map: 0.6.1
@@ -5277,13 +5279,24 @@ packages:
     dependencies:
       '@types/anymatch': 1.3.1
       '@types/node': 14.14.31
-      '@types/tapable': 1.0.6
+      '@types/tapable': 2.2.0
       '@types/uglify-js': 3.13.0
       '@types/webpack-sources': 2.1.0
       source-map: 0.6.1
     dev: false
     resolution:
       integrity: sha512-7ZyTfxjCRwexh+EJFwRUM+CDB2XvgHl4vfuqf1ZKrgGvcS5BrNvPQqJh3tsZ0P6h6Aa1qClVHaJZszLPzpqHeA==
+  /@types/webpack/4.41.27:
+    dependencies:
+      '@types/anymatch': 1.3.1
+      '@types/node': 14.14.31
+      '@types/tapable': 1.0.7
+      '@types/uglify-js': 3.13.0
+      '@types/webpack-sources': 2.1.0
+      source-map: 0.6.1
+    dev: false
+    resolution:
+      integrity: sha512-wK/oi5gcHi72VMTbOaQ70VcDxSQ1uX8S2tukBK9ARuGXrYM/+u4ou73roc7trXDNmCxCoerE8zruQqX/wuHszA==
   /@types/websocket/1.0.2:
     dependencies:
       '@types/node': 14.14.31
@@ -7722,7 +7735,7 @@ packages:
   /browserslist/3.2.8:
     dependencies:
       caniuse-lite: 1.0.30001204
-      electron-to-chromium: 1.3.699
+      electron-to-chromium: 1.3.700
     dev: false
     hasBin: true
     resolution:
@@ -7730,7 +7743,7 @@ packages:
   /browserslist/4.14.2:
     dependencies:
       caniuse-lite: 1.0.30001204
-      electron-to-chromium: 1.3.699
+      electron-to-chromium: 1.3.700
       escalade: 3.1.1
       node-releases: 1.1.71
     dev: false
@@ -7743,7 +7756,7 @@ packages:
     dependencies:
       caniuse-lite: 1.0.30001204
       colorette: 1.2.2
-      electron-to-chromium: 1.3.699
+      electron-to-chromium: 1.3.700
       escalade: 3.1.1
       node-releases: 1.1.71
     dev: false
@@ -10411,10 +10424,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-9lt9Zse4hPucPkoP7FHDF0LQAlGyF9JVpnClFLFH3aSSbxmyoqINRpp/9wePWJTUl4KOQwRL72Iw3InHPDkoGw==
-  /electron-to-chromium/1.3.699:
+  /electron-to-chromium/1.3.700:
     dev: false
     resolution:
-      integrity: sha512-fjt43CPXdPYwD9ybmKbNeLwZBmCVdLY2J5fGZub7/eMPuiqQznOGNXv/wurnpXIlE7ScHnvG9Zi+H4/i6uMKmw==
+      integrity: sha512-wQtaxVZzpOeCjW1CGuC5W3bYjE2jglvk076LcTautBOB9UtHztty7wNzjVsndiMcSsdUsdMy5w76w5J1U7OPTQ==
   /elegant-spinner/1.0.1:
     dev: false
     engines:
@@ -10707,7 +10720,7 @@ packages:
       object.assign: 4.1.2
       string.prototype.trimend: 1.0.4
       string.prototype.trimstart: 1.0.4
-      unbox-primitive: 1.0.0
+      unbox-primitive: 1.0.1
     dev: false
     engines:
       node: '>= 0.4'
@@ -11772,10 +11785,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-S4w6z7Ugr635hgsfFM2M40As3dM=
-  /faker/5.4.0:
+  /faker/5.5.0:
     dev: false
     resolution:
-      integrity: sha512-Y9n/Ky/xZx/Bj8DePvXspUYRtHl/rGQytoIT5LaxmNwSe3wWyOeOXb3lT6Dpipq240PVpeFaGKzScz/5fvff2g==
+      integrity: sha512-2pPfgmRCfMDRJy8koo5WSEXVHpRdYSs04Iis/kCamSg5nnXyknArW1t4phpJXy2/LIr0C7cys/+IiIQLLU/KCw==
   /fast-check/2.14.0:
     dependencies:
       pure-rand: 4.1.2
@@ -13329,7 +13342,7 @@ packages:
       integrity: sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew==
   /hmac-drbg/1.0.1:
     dependencies:
-      hash.js: 1.1.3
+      hash.js: 1.1.7
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
     dev: false
@@ -13434,8 +13447,8 @@ packages:
   /html-webpack-plugin/4.5.2_webpack@4.46.0:
     dependencies:
       '@types/html-minifier-terser': 5.1.1
-      '@types/tapable': 1.0.6
-      '@types/webpack': 4.41.26
+      '@types/tapable': 1.0.7
+      '@types/webpack': 4.41.27
       html-minifier-terser: 5.1.1
       loader-utils: 1.4.0
       lodash: 4.17.21
@@ -21479,7 +21492,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Sd/T0K/9UlqTfz+HUuFq90dshA5OBJPQbdkRzGtcKIOm52fkdsBTt0FYpiuzzxv5VrU7PWpRm6KIfNXyPwlLpw==
-  /sockjs-client/1.5.0:
+  /sockjs-client/1.5.1:
     dependencies:
       debug: 3.2.7
       eventsource: 1.1.0
@@ -21489,7 +21502,7 @@ packages:
       url-parse: 1.5.1
     dev: false
     resolution:
-      integrity: sha512-8Dt3BDi4FYNrCFGTL/HtwVzkARrENdwOUf1ZoW/9p3M8lZdFT35jVdrHza+qgxuG9H3/shR4cuX/X9umUrjP8Q==
+      integrity: sha512-VnVAb663fosipI/m6pqRXakEOw7nvd7TUgdr3PlR/8V2I95QIdwT8L4nMxhyU8SmDBHYXU1TOElaKOmKLfYzeQ==
   /sockjs/0.3.21:
     dependencies:
       faye-websocket: 0.11.3
@@ -23019,7 +23032,7 @@ packages:
       integrity: sha512-75yFYNt0ws1TTehrGxhOqH3tutvBCAs+RG2SrhVIqQvU72kLAb4ercl32dES8yKbXBVHjzv3OXNg5gsbak+3Dg==
   /truffle/5.1.67:
     dependencies:
-      '@truffle/debugger': 8.0.19
+      '@truffle/debugger': 8.0.20
       app-module-path: 2.2.0
       mocha: 8.1.2
       original-require: 1.0.1
@@ -23332,12 +23345,12 @@ packages:
     dev: false
     resolution:
       integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
-  /typedoc-default-themes/0.12.9:
+  /typedoc-default-themes/0.12.10:
     dev: false
     engines:
       node: '>= 8'
     resolution:
-      integrity: sha512-Jd5fYTiqzinZdoIY382W7tQXTwAzWRdg8KbHfaxmb78m1/3jL9riXtk23oBOKwhi8GFVykCOdPzEJKY87/D0LQ==
+      integrity: sha512-fIS001cAYHkyQPidWXmHuhs8usjP5XVJjWB8oZGqkTowZaz3v7g3KDZeeqE82FBrmkAnIBOY3jgy7lnPnqATbA==
   /typedoc-plugin-markdown/3.6.0_typedoc@0.20.33:
     dependencies:
       handlebars: 4.7.7
@@ -23361,7 +23374,7 @@ packages:
       progress: 2.0.3
       shelljs: 0.8.4
       shiki: 0.9.3
-      typedoc-default-themes: 0.12.9
+      typedoc-default-themes: 0.12.10
       typescript: 4.1.5
     dev: false
     engines:
@@ -23472,7 +23485,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-UIEXBNeYmKptWH6z8ZnqTeS8fV74zG0/eRU9VGkpzz+LIJNs8W/zM/L+7ctCkRrgbNnnR0xxw4bKOr0cW0N0Og==
-  /unbox-primitive/1.0.0:
+  /unbox-primitive/1.0.1:
     dependencies:
       function-bind: 1.1.1
       has-bigints: 1.0.1
@@ -23480,7 +23493,7 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: false
     resolution:
-      integrity: sha512-P/51NX+JXyxK/aigg1/ZgyccdAxm5K1+n8+tvqSntjOivPt19gvm1VC49RWYetsiub8WViUchdxl/KWHHB0kzA==
+      integrity: sha512-tZU/3NqK3dA5gpE1KtyiJUrEB0lxnGkMFHptJ7q6ewdZ8s12QrODwNbhIJStmJkd1QDXa1NRA8aF2A1zk/Ypyw==
   /unbzip2-stream/1.4.3:
     dependencies:
       buffer: 5.7.1
@@ -25483,7 +25496,7 @@ packages:
       semver: 6.3.0
       serve-index: 1.9.1
       sockjs: 0.3.21
-      sockjs-client: 1.5.0
+      sockjs-client: 1.5.1
       spdy: 4.0.2_supports-color@6.1.0
       strip-ansi: 3.0.1
       supports-color: 6.1.0
@@ -27744,7 +27757,7 @@ packages:
     peerDependencies:
       jest: '*'
     resolution:
-      integrity: sha512-JDPDm9WWbXFxVDCbWYG+rmv/2k8SWqY2BXKhFiv+TZHUvSLBE0NBLEXFb18zkb58xIOVjPW9gbYAO5/u0j1FgQ==
+      integrity: sha512-ENbh5uR8N31fd7WCvSvoucZL3m36xbzp4MBvMTPKPlZduit+0lfMbMMzPA5RF8tIUClSdOKa8iWdQd5pR97Mkw==
       tarball: file:projects/origin-ui.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -27830,7 +27843,6 @@ packages:
     resolution:
       tarball: https://codeload.github.com/web3-js/scrypt-shim/tar.gz/aafdadda13e660e25e1c525d1f5b2443f5eb1ebb
     version: 0.1.0
-registry: ''
 specifiers:
   '@date-io/moment': 2.10.6
   '@energyweb/energy-api-influxdb': 0.7.0
@@ -27959,7 +27971,7 @@ specifiers:
   connected-react-router: 6.9.1
   copy-webpack-plugin: 8.0.0
   cors: 2.8.5
-  cross-env: ~7.0.3
+  cross-env: 7.0.3
   crypto-browserify: 3.12.0
   css-loader: 5.1.3
   csv-parse: 4.15.3
