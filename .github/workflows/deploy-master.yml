@@ -53,11 +53,11 @@ jobs:
     - name: Install application
       # lerna doesn't work without additional fetch
       run: |
-        rush update --full --purge
+        node common/scripts/install-run-rush.js update --full --purge
 
     - name: Build application
       run: |
-        rush rebuild
+        node common/scripts/install-run-rush.js rebuild
 
     - name: Deploy application
       run: |
