@@ -6,50 +6,50 @@
 
 ### Constructors
 
-- [constructor](deviceupdateparams.md#constructor)
+-   [constructor](deviceupdateparams.md#constructor)
 
 ### Properties
 
-- [address](deviceupdateparams.md#address)
-- [capacity](deviceupdateparams.md#capacity)
-- [commissioningDate](deviceupdateparams.md#commissioningdate)
-- [countryCode](deviceupdateparams.md#countrycode)
-- [defaultAccount](deviceupdateparams.md#defaultaccount)
-- [deviceType](deviceupdateparams.md#devicetype)
-- [fuel](deviceupdateparams.md#fuel)
-- [issuer](deviceupdateparams.md#issuer)
-- [latitude](deviceupdateparams.md#latitude)
-- [longitude](deviceupdateparams.md#longitude)
-- [name](deviceupdateparams.md#name)
-- [notes](deviceupdateparams.md#notes)
-- [registrantOrganization](deviceupdateparams.md#registrantorganization)
-- [registrationDate](deviceupdateparams.md#registrationdate)
+-   [address](deviceupdateparams.md#address)
+-   [capacity](deviceupdateparams.md#capacity)
+-   [commissioningDate](deviceupdateparams.md#commissioningdate)
+-   [countryCode](deviceupdateparams.md#countrycode)
+-   [defaultAccount](deviceupdateparams.md#defaultaccount)
+-   [deviceType](deviceupdateparams.md#devicetype)
+-   [fuel](deviceupdateparams.md#fuel)
+-   [issuer](deviceupdateparams.md#issuer)
+-   [latitude](deviceupdateparams.md#latitude)
+-   [longitude](deviceupdateparams.md#longitude)
+-   [name](deviceupdateparams.md#name)
+-   [notes](deviceupdateparams.md#notes)
+-   [registrantOrganization](deviceupdateparams.md#registrantorganization)
+-   [registrationDate](deviceupdateparams.md#registrationdate)
 
 ## Constructors
 
 ### constructor
 
-\+ **new DeviceUpdateParams**(): [*DeviceUpdateParams*](deviceupdateparams.md)
+\+ **new DeviceUpdateParams**(): [_DeviceUpdateParams_](deviceupdateparams.md)
 
-**Returns:** [*DeviceUpdateParams*](deviceupdateparams.md)
+**Returns:** [_DeviceUpdateParams_](deviceupdateparams.md)
 
 ## Properties
 
 ### address
 
-• `Optional` **address**: *string*
+• `Optional` **address**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:138](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L138)
 
-___
+---
 
 ### capacity
 
-• `Optional` **capacity**: *number*
+• `Optional` **capacity**: _number_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:118](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L118)
 
-___
+---
 
 ### commissioningDate
 
@@ -57,87 +57,87 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:127](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L127)
 
-___
+---
 
 ### countryCode
 
-• `Optional` **countryCode**: *string*
+• `Optional` **countryCode**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:103](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L103)
 
-___
+---
 
 ### defaultAccount
 
-• `Optional` **defaultAccount**: *string*
+• `Optional` **defaultAccount**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:88](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L88)
 
-___
+---
 
 ### deviceType
 
-• `Optional` **deviceType**: *string*
+• `Optional` **deviceType**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:93](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L93)
 
-___
+---
 
 ### fuel
 
-• `Optional` **fuel**: *string*
+• `Optional` **fuel**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:98](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L98)
 
-___
+---
 
 ### issuer
 
-• `Optional` **issuer**: *string*
+• `Optional` **issuer**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:113](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L113)
 
-___
+---
 
 ### latitude
 
-• `Optional` **latitude**: *string*
+• `Optional` **latitude**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:142](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L142)
 
-___
+---
 
 ### longitude
 
-• `Optional` **longitude**: *string*
+• `Optional` **longitude**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:146](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L146)
 
-___
+---
 
 ### name
 
-• `Optional` **name**: *string*
+• `Optional` **name**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:83](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L83)
 
-___
+---
 
 ### notes
 
-• `Optional` **notes**: *string*
+• `Optional` **notes**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:150](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L150)
 
-___
+---
 
 ### registrantOrganization
 
-• `Optional` **registrantOrganization**: *string*
+• `Optional` **registrantOrganization**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:108](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L108)
 
-___
+---
 
 ### registrationDate
 

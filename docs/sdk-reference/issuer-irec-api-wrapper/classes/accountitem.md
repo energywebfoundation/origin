@@ -6,33 +6,33 @@
 
 ### Constructors
 
-- [constructor](accountitem.md#constructor)
+-   [constructor](accountitem.md#constructor)
 
 ### Properties
 
-- [code](accountitem.md#code)
-- [items](accountitem.md#items)
+-   [code](accountitem.md#code)
+-   [items](accountitem.md#items)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AccountItem**(): [*AccountItem*](accountitem.md)
+\+ **new AccountItem**(): [_AccountItem_](accountitem.md)
 
-**Returns:** [*AccountItem*](accountitem.md)
+**Returns:** [_AccountItem_](accountitem.md)
 
 ## Properties
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Items.ts:46](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Items.ts#L46)
 
-___
+---
 
 ### items
 
-• **items**: [*Item*](item.md)[]
+• **items**: [_Item_](item.md)[]
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Items.ts:48](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Items.ts#L48)

@@ -5,7 +5,7 @@
     "employeesNumber": "50-100",
     "shareholders": "John Doe, Jane Doe",
     "website": "https://bigcompany.website",
-    "activeCountries": ["DZ","AD"],
+    "activeCountries": ["DZ", "AD"],
     "mainBusiness": "Renewable energy",
     "ceoName": "James Brown",
     "ceoPassportNumber": "AA123456789",

@@ -4,79 +4,79 @@
 
 ## Hierarchy
 
-* *EventEmitter*
+-   _EventEmitter_
 
-  ↳ **IRECAPIClient**
+    ↳ **IRECAPIClient**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](irecapiclient.md#constructor)
+-   [constructor](irecapiclient.md#constructor)
 
 ### Properties
 
-- [axiosInstance](irecapiclient.md#axiosinstance)
-- [config](irecapiclient.md#config)
-- [interceptorId](irecapiclient.md#interceptorid)
-- [captureRejectionSymbol](irecapiclient.md#capturerejectionsymbol)
-- [captureRejections](irecapiclient.md#capturerejections)
-- [defaultMaxListeners](irecapiclient.md#defaultmaxlisteners)
-- [errorMonitor](irecapiclient.md#errormonitor)
+-   [axiosInstance](irecapiclient.md#axiosinstance)
+-   [config](irecapiclient.md#config)
+-   [interceptorId](irecapiclient.md#interceptorid)
+-   [captureRejectionSymbol](irecapiclient.md#capturerejectionsymbol)
+-   [captureRejections](irecapiclient.md#capturerejections)
+-   [defaultMaxListeners](irecapiclient.md#defaultmaxlisteners)
+-   [errorMonitor](irecapiclient.md#errormonitor)
 
 ### Accessors
 
-- [account](irecapiclient.md#account)
-- [device](irecapiclient.md#device)
-- [file](irecapiclient.md#file)
-- [fuel](irecapiclient.md#fuel)
-- [issue](irecapiclient.md#issue)
-- [organisation](irecapiclient.md#organisation)
+-   [account](irecapiclient.md#account)
+-   [device](irecapiclient.md#device)
+-   [file](irecapiclient.md#file)
+-   [fuel](irecapiclient.md#fuel)
+-   [issue](irecapiclient.md#issue)
+-   [organisation](irecapiclient.md#organisation)
 
 ### Methods
 
-- [addListener](irecapiclient.md#addlistener)
-- [applyTokens](irecapiclient.md#applytokens)
-- [disableInterceptor](irecapiclient.md#disableinterceptor)
-- [emit](irecapiclient.md#emit)
-- [enableErrorHandler](irecapiclient.md#enableerrorhandler)
-- [enableInterceptor](irecapiclient.md#enableinterceptor)
-- [ensureNotExpired](irecapiclient.md#ensurenotexpired)
-- [eventNames](irecapiclient.md#eventnames)
-- [getMaxListeners](irecapiclient.md#getmaxlisteners)
-- [listenerCount](irecapiclient.md#listenercount)
-- [listeners](irecapiclient.md#listeners)
-- [login](irecapiclient.md#login)
-- [off](irecapiclient.md#off)
-- [on](irecapiclient.md#on)
-- [once](irecapiclient.md#once)
-- [prependListener](irecapiclient.md#prependlistener)
-- [prependOnceListener](irecapiclient.md#prependoncelistener)
-- [rawListeners](irecapiclient.md#rawlisteners)
-- [redeem](irecapiclient.md#redeem)
-- [refreshAccessTokens](irecapiclient.md#refreshaccesstokens)
-- [removeAllListeners](irecapiclient.md#removealllisteners)
-- [removeListener](irecapiclient.md#removelistener)
-- [setMaxListeners](irecapiclient.md#setmaxlisteners)
-- [transfer](irecapiclient.md#transfer)
-- [listenerCount](irecapiclient.md#listenercount)
-- [on](irecapiclient.md#on)
-- [once](irecapiclient.md#once)
+-   [addListener](irecapiclient.md#addlistener)
+-   [applyTokens](irecapiclient.md#applytokens)
+-   [disableInterceptor](irecapiclient.md#disableinterceptor)
+-   [emit](irecapiclient.md#emit)
+-   [enableErrorHandler](irecapiclient.md#enableerrorhandler)
+-   [enableInterceptor](irecapiclient.md#enableinterceptor)
+-   [ensureNotExpired](irecapiclient.md#ensurenotexpired)
+-   [eventNames](irecapiclient.md#eventnames)
+-   [getMaxListeners](irecapiclient.md#getmaxlisteners)
+-   [listenerCount](irecapiclient.md#listenercount)
+-   [listeners](irecapiclient.md#listeners)
+-   [login](irecapiclient.md#login)
+-   [off](irecapiclient.md#off)
+-   [on](irecapiclient.md#on)
+-   [once](irecapiclient.md#once)
+-   [prependListener](irecapiclient.md#prependlistener)
+-   [prependOnceListener](irecapiclient.md#prependoncelistener)
+-   [rawListeners](irecapiclient.md#rawlisteners)
+-   [redeem](irecapiclient.md#redeem)
+-   [refreshAccessTokens](irecapiclient.md#refreshaccesstokens)
+-   [removeAllListeners](irecapiclient.md#removealllisteners)
+-   [removeListener](irecapiclient.md#removelistener)
+-   [setMaxListeners](irecapiclient.md#setmaxlisteners)
+-   [transfer](irecapiclient.md#transfer)
+-   [listenerCount](irecapiclient.md#listenercount)
+-   [on](irecapiclient.md#on)
+-   [once](irecapiclient.md#once)
 
 ## Constructors
 
 ### constructor
 
-\+ **new IRECAPIClient**(`endPointUrl`: *string*, `accessTokens?`: [*AccessTokens*](../modules.md#accesstokens)): [*IRECAPIClient*](irecapiclient.md)
+\+ **new IRECAPIClient**(`endPointUrl`: _string_, `accessTokens?`: [_AccessTokens_](../modules.md#accesstokens)): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`endPointUrl` | *string* |
-`accessTokens?` | [*AccessTokens*](../modules.md#accesstokens) |
+| Name            | Type                                         |
+| :-------------- | :------------------------------------------- |
+| `endPointUrl`   | _string_                                     |
+| `accessTokens?` | [_AccessTokens_](../modules.md#accesstokens) |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:43](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L43)
 
@@ -88,7 +88,7 @@ Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:43](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L43)
 
-___
+---
 
 ### config
 
@@ -96,45 +96,45 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:39](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L39)
 
-___
+---
 
 ### interceptorId
 
-• `Private` **interceptorId**: *number*
+• `Private` **interceptorId**: _number_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:41](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L41)
 
-___
+---
 
 ### captureRejectionSymbol
 
-▪ `Static` `Readonly` **captureRejectionSymbol**: *typeof* [*captureRejectionSymbol*](irecapiclient.md#capturerejectionsymbol)
+▪ `Static` `Readonly` **captureRejectionSymbol**: _typeof_ [_captureRejectionSymbol_](irecapiclient.md#capturerejectionsymbol)
 
 Defined in: node_modules/@types/node/events.d.ts:35
 
-___
+---
 
 ### captureRejections
 
-▪ `Static` **captureRejections**: *boolean*
+▪ `Static` **captureRejections**: _boolean_
 
 Sets or gets the default captureRejection value for all emitters.
 
 Defined in: node_modules/@types/node/events.d.ts:41
 
-___
+---
 
 ### defaultMaxListeners
 
-▪ `Static` **defaultMaxListeners**: *number*
+▪ `Static` **defaultMaxListeners**: _number_
 
 Defined in: node_modules/@types/node/events.d.ts:42
 
-___
+---
 
 ### errorMonitor
 
-▪ `Static` `Readonly` **errorMonitor**: *typeof* [*errorMonitor*](irecapiclient.md#errormonitor)
+▪ `Static` `Readonly` **errorMonitor**: _typeof_ [_errorMonitor_](irecapiclient.md#errormonitor)
 
 This symbol shall be used to install a listener for only monitoring `'error'`
 events. Listeners installed using this symbol are called before the regular
@@ -150,109 +150,109 @@ Defined in: node_modules/@types/node/events.d.ts:34
 
 ### account
 
-• get **account**(): *object*
+• get **account**(): _object_
 
-**Returns:** *object*
+**Returns:** _object_
 
-Name | Type |
-:------ | :------ |
-`get` | (`code`: *string*) => *Promise*<[*Account*](account.md)\> |
-`getAll` | () => *Promise*<[*Account*](account.md)[]\> |
-`getBalance` | (`code`: *string*) => *Promise*<[*AccountBalance*](accountbalance.md)[]\> |
-`getItems` | (`code`: *string*) => *Promise*<[*AccountItem*](accountitem.md)[]\> |
-`getTransactions` | (`code`: *string*) => *Promise*<([*Transaction*](transaction.md) \| [*RedeemTransaction*](redeemtransaction.md))[]\> |
+| Name              | Type                                                                                                                 |
+| :---------------- | :------------------------------------------------------------------------------------------------------------------- |
+| `get`             | (`code`: _string_) => _Promise_<[_Account_](account.md)\>                                                            |
+| `getAll`          | () => _Promise_<[_Account_](account.md)[]\>                                                                          |
+| `getBalance`      | (`code`: _string_) => _Promise_<[_AccountBalance_](accountbalance.md)[]\>                                            |
+| `getItems`        | (`code`: _string_) => _Promise_<[_AccountItem_](accountitem.md)[]\>                                                  |
+| `getTransactions` | (`code`: _string_) => _Promise_<([_Transaction_](transaction.md) \| [_RedeemTransaction_](redeemtransaction.md))[]\> |
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:91](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L91)
 
-___
+---
 
 ### device
 
-• get **device**(): *object*
+• get **device**(): _object_
 
-**Returns:** *object*
+**Returns:** _object_
 
-Name | Type |
-:------ | :------ |
-`approve` | (`code`: *string*, `\_\_namedParameters`: { `fileIds?`: *string*[] ; `notes?`: *string*  }) => *Promise*<void\> |
-`create` | (`device`: [*DeviceCreateParams*](devicecreateparams.md)) => *Promise*<[*Device*](device.md)\> |
-`edit` | (`code`: *string*, `device`: *Partial*<[*DeviceUpdateParams*](deviceupdateparams.md)\>) => *Promise*<[*Device*](device.md)\> |
-`get` | (`code`: *string*) => *Promise*<[*Device*](device.md)\> |
-`getAll` | () => *Promise*<[*Device*](device.md)[]\> |
-`refer` | (`code`: *string*, `\_\_namedParameters`: { `fileIds?`: *string*[] ; `notes?`: *string*  }) => *Promise*<void\> |
-`reject` | (`code`: *string*, `\_\_namedParameters`: { `fileIds?`: *string*[] ; `notes?`: *string*  }) => *Promise*<void\> |
-`submit` | (`code`: *string*, `\_\_namedParameters`: { `fileIds?`: *string*[] ; `notes?`: *string*  }) => *Promise*<void\> |
-`verify` | (`code`: *string*, `\_\_namedParameters`: { `fileIds?`: *string*[] ; `notes?`: *string*  }) => *Promise*<void\> |
-`withdraw` | (`code`: *string*, `\_\_namedParameters`: { `notes?`: *string*  }) => *Promise*<void\> |
+| Name       | Type                                                                                                                         |
+| :--------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `approve`  | (`code`: _string_, `\_\_namedParameters`: { `fileIds?`: _string_[] ; `notes?`: _string_ }) => _Promise_<void\>               |
+| `create`   | (`device`: [_DeviceCreateParams_](devicecreateparams.md)) => _Promise_<[_Device_](device.md)\>                               |
+| `edit`     | (`code`: _string_, `device`: _Partial_<[_DeviceUpdateParams_](deviceupdateparams.md)\>) => _Promise_<[_Device_](device.md)\> |
+| `get`      | (`code`: _string_) => _Promise_<[_Device_](device.md)\>                                                                      |
+| `getAll`   | () => _Promise_<[_Device_](device.md)[]\>                                                                                    |
+| `refer`    | (`code`: _string_, `\_\_namedParameters`: { `fileIds?`: _string_[] ; `notes?`: _string_ }) => _Promise_<void\>               |
+| `reject`   | (`code`: _string_, `\_\_namedParameters`: { `fileIds?`: _string_[] ; `notes?`: _string_ }) => _Promise_<void\>               |
+| `submit`   | (`code`: _string_, `\_\_namedParameters`: { `fileIds?`: _string_[] ; `notes?`: _string_ }) => _Promise_<void\>               |
+| `verify`   | (`code`: _string_, `\_\_namedParameters`: { `fileIds?`: _string_[] ; `notes?`: _string_ }) => _Promise_<void\>               |
+| `withdraw` | (`code`: _string_, `\_\_namedParameters`: { `notes?`: _string_ }) => _Promise_<void\>                                        |
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:269](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L269)
 
-___
+---
 
 ### file
 
-• get **file**(): *object*
+• get **file**(): _object_
 
-**Returns:** *object*
+**Returns:** _object_
 
-Name | Type |
-:------ | :------ |
-`download` | (`code`: *string*) => *Promise*<string\> |
-`upload` | (`files`: Blob[] \| *ReadStream*[]) => *Promise*<string[]\> |
+| Name       | Type                                                        |
+| :--------- | :---------------------------------------------------------- |
+| `download` | (`code`: _string_) => _Promise_<string\>                    |
+| `upload`   | (`files`: Blob[] \| _ReadStream_[]) => _Promise_<string[]\> |
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:242](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L242)
 
-___
+---
 
 ### fuel
 
-• get **fuel**(): *object*
+• get **fuel**(): _object_
 
-**Returns:** *object*
+**Returns:** _object_
 
-Name | Type |
-:------ | :------ |
-`getAll` | () => *Promise*<[*Fuel*](fuel.md)[]\> |
-`getAllTypes` | () => *Promise*<[*FuelType*](fueltype.md)[]\> |
+| Name          | Type                                          |
+| :------------ | :-------------------------------------------- |
+| `getAll`      | () => _Promise_<[_Fuel_](fuel.md)[]\>         |
+| `getAllTypes` | () => _Promise_<[_FuelType_](fueltype.md)[]\> |
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:381](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L381)
 
-___
+---
 
 ### issue
 
-• get **issue**(): *object*
+• get **issue**(): _object_
 
-**Returns:** *object*
+**Returns:** _object_
 
-Name | Type |
-:------ | :------ |
-`approve` | (`code`: *string*, `approve`: [*ApproveIssue*](approveissue.md)) => *Promise*<void\> |
-`create` | (`issue`: [*Issue*](issue.md)) => *Promise*<string\> |
-`get` | (`code`: *string*) => *Promise*<[*IssueWithStatus*](issuewithstatus.md)\> |
-`getStatus` | (`code`: *string*) => *Promise*<[*IssueWithStatus*](issuewithstatus.md)\> |
-`refer` | (`code`: *string*, `notes?`: *string*) => *Promise*<void\> |
-`reject` | (`code`: *string*, `notes?`: *string*) => *Promise*<void\> |
-`submit` | (`code`: *string*, `notes?`: *string*) => *Promise*<void\> |
-`update` | (`code`: *string*, `issue`: [*Issue*](issue.md)) => *Promise*<void\> |
-`verify` | (`code`: *string*, `notes?`: *string*) => *Promise*<void\> |
-`withdraw` | (`code`: *string*, `notes?`: *string*) => *Promise*<void\> |
+| Name        | Type                                                                                 |
+| :---------- | :----------------------------------------------------------------------------------- |
+| `approve`   | (`code`: _string_, `approve`: [_ApproveIssue_](approveissue.md)) => _Promise_<void\> |
+| `create`    | (`issue`: [_Issue_](issue.md)) => _Promise_<string\>                                 |
+| `get`       | (`code`: _string_) => _Promise_<[_IssueWithStatus_](issuewithstatus.md)\>            |
+| `getStatus` | (`code`: _string_) => _Promise_<[_IssueWithStatus_](issuewithstatus.md)\>            |
+| `refer`     | (`code`: _string_, `notes?`: _string_) => _Promise_<void\>                           |
+| `reject`    | (`code`: _string_, `notes?`: _string_) => _Promise_<void\>                           |
+| `submit`    | (`code`: _string_, `notes?`: _string_) => _Promise_<void\>                           |
+| `update`    | (`code`: _string_, `issue`: [_Issue_](issue.md)) => _Promise_<void\>                 |
+| `verify`    | (`code`: _string_, `notes?`: _string_) => _Promise_<void\>                           |
+| `withdraw`  | (`code`: _string_, `notes?`: _string_) => _Promise_<void\>                           |
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:173](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L173)
 
-___
+---
 
 ### organisation
 
-• get **organisation**(): *object*
+• get **organisation**(): _object_
 
-**Returns:** *object*
+**Returns:** _object_
 
-Name | Type |
-:------ | :------ |
-`get` | () => *Promise*<[*Organisation*](organisation.md)\> |
-`getIssuers` | () => *Promise*<[*CodeName*](codename.md)[]\> |
-`getRegistrants` | () => *Promise*<[*CodeName*](codename.md)[]\> |
+| Name             | Type                                                |
+| :--------------- | :-------------------------------------------------- |
+| `get`            | () => _Promise_<[_Organisation_](organisation.md)\> |
+| `getIssuers`     | () => _Promise_<[_CodeName_](codename.md)[]\>       |
+| `getRegistrants` | () => _Promise_<[_CodeName_](codename.md)[]\>       |
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:142](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L142)
 
@@ -260,419 +260,419 @@ Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:
 
 ### addListener
 
-▸ **addListener**(`event`: *string* \| *symbol*, `listener`: (...`args`: *any*[]) => *void*): [*IRECAPIClient*](irecapiclient.md)
+▸ **addListener**(`event`: _string_ \| _symbol_, `listener`: (...`args`: _any_[]) => _void_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
-`listener` | (...`args`: *any*[]) => *void* |
+| Name       | Type                           |
+| :--------- | :----------------------------- |
+| `event`    | _string_ \| _symbol_           |
+| `listener` | (...`args`: _any_[]) => _void_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:636
 
-___
+---
 
 ### applyTokens
 
-▸ `Private`**applyTokens**(`accessToken`: *string*, `refreshToken`: *string*, `expiresIn`: *number*): *void*
+▸ `Private`**applyTokens**(`accessToken`: _string_, `refreshToken`: _string_, `expiresIn`: _number_): _void_
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`accessToken` | *string* |
-`refreshToken` | *string* |
-`expiresIn` | *number* |
+| Name           | Type     |
+| :------------- | :------- |
+| `accessToken`  | _string_ |
+| `refreshToken` | _string_ |
+| `expiresIn`    | _number_ |
 
-**Returns:** *void*
+**Returns:** _void_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:428](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L428)
 
-___
+---
 
 ### disableInterceptor
 
-▸ `Private`**disableInterceptor**(): *void*
+▸ `Private`**disableInterceptor**(): _void_
 
-**Returns:** *void*
+**Returns:** _void_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:491](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L491)
 
-___
+---
 
 ### emit
 
-▸ **emit**(`event`: *string* \| *symbol*, ...`args`: *any*[]): *boolean*
+▸ **emit**(`event`: _string_ \| _symbol_, ...`args`: _any_[]): _boolean_
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
-`...args` | *any*[] |
+| Name      | Type                 |
+| :-------- | :------------------- |
+| `event`   | _string_ \| _symbol_ |
+| `...args` | _any_[]              |
 
-**Returns:** *boolean*
+**Returns:** _boolean_
 
 Defined in: node_modules/@types/node/globals.d.ts:646
 
-___
+---
 
 ### enableErrorHandler
 
-▸ `Private`**enableErrorHandler**(): *void*
+▸ `Private`**enableErrorHandler**(): _void_
 
-**Returns:** *void*
+**Returns:** _void_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:500](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L500)
 
-___
+---
 
 ### enableInterceptor
 
-▸ `Private`**enableInterceptor**(): *void*
+▸ `Private`**enableInterceptor**(): _void_
 
-**Returns:** *void*
+**Returns:** _void_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:478](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L478)
 
-___
+---
 
 ### ensureNotExpired
 
-▸ `Private`**ensureNotExpired**(): *Promise*<void\>
+▸ `Private`**ensureNotExpired**(): _Promise_<void\>
 
-**Returns:** *Promise*<void\>
+**Returns:** _Promise_<void\>
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:469](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L469)
 
-___
+---
 
 ### eventNames
 
-▸ **eventNames**(): (*string* \| *symbol*)[]
+▸ **eventNames**(): (_string_ \| _symbol_)[]
 
-**Returns:** (*string* \| *symbol*)[]
+**Returns:** (_string_ \| _symbol_)[]
 
 Defined in: node_modules/@types/node/globals.d.ts:651
 
-___
+---
 
 ### getMaxListeners
 
-▸ **getMaxListeners**(): *number*
+▸ **getMaxListeners**(): _number_
 
-**Returns:** *number*
+**Returns:** _number_
 
 Defined in: node_modules/@types/node/globals.d.ts:643
 
-___
+---
 
 ### listenerCount
 
-▸ **listenerCount**(`type`: *string* \| *symbol*): *number*
+▸ **listenerCount**(`type`: _string_ \| _symbol_): _number_
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`type` | *string* \| *symbol* |
+| Name   | Type                 |
+| :----- | :------------------- |
+| `type` | _string_ \| _symbol_ |
 
-**Returns:** *number*
+**Returns:** _number_
 
 Defined in: node_modules/@types/node/globals.d.ts:647
 
-___
+---
 
 ### listeners
 
-▸ **listeners**(`event`: *string* \| *symbol*): Function[]
+▸ **listeners**(`event`: _string_ \| _symbol_): Function[]
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
+| Name    | Type                 |
+| :------ | :------------------- |
+| `event` | _string_ \| _symbol_ |
 
 **Returns:** Function[]
 
 Defined in: node_modules/@types/node/globals.d.ts:644
 
-___
+---
 
 ### login
 
-▸ **login**(`userName`: *string*, `password`: *string*, `clientId`: *string*, `clientSecret`: *string*): *Promise*<[*AccessTokens*](../modules.md#accesstokens)\>
+▸ **login**(`userName`: _string_, `password`: _string_, `clientId`: _string_, `clientSecret`: _string_): _Promise_<[_AccessTokens_](../modules.md#accesstokens)\>
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`userName` | *string* |
-`password` | *string* |
-`clientId` | *string* |
-`clientSecret` | *string* |
+| Name           | Type     |
+| :------------- | :------- |
+| `userName`     | _string_ |
+| `password`     | _string_ |
+| `clientId`     | _string_ |
+| `clientSecret` | _string_ |
 
-**Returns:** *Promise*<[*AccessTokens*](../modules.md#accesstokens)\>
+**Returns:** _Promise_<[_AccessTokens_](../modules.md#accesstokens)\>
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:56](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L56)
 
-___
+---
 
 ### off
 
-▸ **off**(`event`: *string* \| *symbol*, `listener`: (...`args`: *any*[]) => *void*): [*IRECAPIClient*](irecapiclient.md)
+▸ **off**(`event`: _string_ \| _symbol_, `listener`: (...`args`: _any_[]) => _void_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
-`listener` | (...`args`: *any*[]) => *void* |
+| Name       | Type                           |
+| :--------- | :----------------------------- |
+| `event`    | _string_ \| _symbol_           |
+| `listener` | (...`args`: _any_[]) => _void_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:640
 
-___
+---
 
 ### on
 
-▸ **on**(`event`: *tokensRefreshed*, `listener`: (`accessTokens`: [*AccessTokens*](../modules.md#accesstokens)) => *void*): [*IRECAPIClient*](irecapiclient.md)
+▸ **on**(`event`: _tokensRefreshed_, `listener`: (`accessTokens`: [_AccessTokens_](../modules.md#accesstokens)) => _void_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *tokensRefreshed* |
-`listener` | (`accessTokens`: [*AccessTokens*](../modules.md#accesstokens)) => *void* |
+| Name       | Type                                                                     |
+| :--------- | :----------------------------------------------------------------------- |
+| `event`    | _tokensRefreshed_                                                        |
+| `listener` | (`accessTokens`: [_AccessTokens_](../modules.md#accesstokens)) => _void_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:35](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L35)
 
-___
+---
 
 ### once
 
-▸ **once**(`event`: *string* \| *symbol*, `listener`: (...`args`: *any*[]) => *void*): [*IRECAPIClient*](irecapiclient.md)
+▸ **once**(`event`: _string_ \| _symbol_, `listener`: (...`args`: _any_[]) => _void_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
-`listener` | (...`args`: *any*[]) => *void* |
+| Name       | Type                           |
+| :--------- | :----------------------------- |
+| `event`    | _string_ \| _symbol_           |
+| `listener` | (...`args`: _any_[]) => _void_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:638
 
-___
+---
 
 ### prependListener
 
-▸ **prependListener**(`event`: *string* \| *symbol*, `listener`: (...`args`: *any*[]) => *void*): [*IRECAPIClient*](irecapiclient.md)
+▸ **prependListener**(`event`: _string_ \| _symbol_, `listener`: (...`args`: _any_[]) => _void_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
-`listener` | (...`args`: *any*[]) => *void* |
+| Name       | Type                           |
+| :--------- | :----------------------------- |
+| `event`    | _string_ \| _symbol_           |
+| `listener` | (...`args`: _any_[]) => _void_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:649
 
-___
+---
 
 ### prependOnceListener
 
-▸ **prependOnceListener**(`event`: *string* \| *symbol*, `listener`: (...`args`: *any*[]) => *void*): [*IRECAPIClient*](irecapiclient.md)
+▸ **prependOnceListener**(`event`: _string_ \| _symbol_, `listener`: (...`args`: _any_[]) => _void_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
-`listener` | (...`args`: *any*[]) => *void* |
+| Name       | Type                           |
+| :--------- | :----------------------------- |
+| `event`    | _string_ \| _symbol_           |
+| `listener` | (...`args`: _any_[]) => _void_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:650
 
-___
+---
 
 ### rawListeners
 
-▸ **rawListeners**(`event`: *string* \| *symbol*): Function[]
+▸ **rawListeners**(`event`: _string_ \| _symbol_): Function[]
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
+| Name    | Type                 |
+| :------ | :------------------- |
+| `event` | _string_ \| _symbol_ |
 
 **Returns:** Function[]
 
 Defined in: node_modules/@types/node/globals.d.ts:645
 
-___
+---
 
 ### redeem
 
-▸ **redeem**(`redemption`: [*Redemption*](redemption.md)): *Promise*<[*RedeemTransactionResult*](redeemtransactionresult.md)\>
+▸ **redeem**(`redemption`: [_Redemption_](redemption.md)): _Promise_<[_RedeemTransactionResult_](redeemtransactionresult.md)\>
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`redemption` | [*Redemption*](redemption.md) |
+| Name         | Type                          |
+| :----------- | :---------------------------- |
+| `redemption` | [_Redemption_](redemption.md) |
 
-**Returns:** *Promise*<[*RedeemTransactionResult*](redeemtransactionresult.md)\>
+**Returns:** _Promise_<[_RedeemTransactionResult_](redeemtransactionresult.md)\>
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:414](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L414)
 
-___
+---
 
 ### refreshAccessTokens
 
-▸ `Private`**refreshAccessTokens**(): *Promise*<[*AccessTokens*](../modules.md#accesstokens)\>
+▸ `Private`**refreshAccessTokens**(): _Promise_<[_AccessTokens_](../modules.md#accesstokens)\>
 
-**Returns:** *Promise*<[*AccessTokens*](../modules.md#accesstokens)\>
+**Returns:** _Promise_<[_AccessTokens_](../modules.md#accesstokens)\>
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:442](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L442)
 
-___
+---
 
 ### removeAllListeners
 
-▸ **removeAllListeners**(`event?`: *string* \| *symbol*): [*IRECAPIClient*](irecapiclient.md)
+▸ **removeAllListeners**(`event?`: _string_ \| _symbol_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event?` | *string* \| *symbol* |
+| Name     | Type                 |
+| :------- | :------------------- |
+| `event?` | _string_ \| _symbol_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:641
 
-___
+---
 
 ### removeListener
 
-▸ **removeListener**(`event`: *string* \| *symbol*, `listener`: (...`args`: *any*[]) => *void*): [*IRECAPIClient*](irecapiclient.md)
+▸ **removeListener**(`event`: _string_ \| _symbol_, `listener`: (...`args`: _any_[]) => _void_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`event` | *string* \| *symbol* |
-`listener` | (...`args`: *any*[]) => *void* |
+| Name       | Type                           |
+| :--------- | :----------------------------- |
+| `event`    | _string_ \| _symbol_           |
+| `listener` | (...`args`: _any_[]) => _void_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:639
 
-___
+---
 
 ### setMaxListeners
 
-▸ **setMaxListeners**(`n`: *number*): [*IRECAPIClient*](irecapiclient.md)
+▸ **setMaxListeners**(`n`: _number_): [_IRECAPIClient_](irecapiclient.md)
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`n` | *number* |
+| Name | Type     |
+| :--- | :------- |
+| `n`  | _number_ |
 
-**Returns:** [*IRECAPIClient*](irecapiclient.md)
+**Returns:** [_IRECAPIClient_](irecapiclient.md)
 
 Defined in: node_modules/@types/node/globals.d.ts:642
 
-___
+---
 
 ### transfer
 
-▸ **transfer**(`transfer`: [*Transfer*](transfer.md)): *Promise*<[*TransactionResult*](transactionresult.md)\>
+▸ **transfer**(`transfer`: [_Transfer_](transfer.md)): _Promise_<[_TransactionResult_](transactionresult.md)\>
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`transfer` | [*Transfer*](transfer.md) |
+| Name       | Type                      |
+| :--------- | :------------------------ |
+| `transfer` | [_Transfer_](transfer.md) |
 
-**Returns:** *Promise*<[*TransactionResult*](transactionresult.md)\>
+**Returns:** _Promise_<[_TransactionResult_](transactionresult.md)\>
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts:400](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/IRECAPIClient.ts#L400)
 
-___
+---
 
 ### listenerCount
 
-▸ `Static`**listenerCount**(`emitter`: *EventEmitter*, `event`: *string* \| *symbol*): *number*
+▸ `Static`**listenerCount**(`emitter`: _EventEmitter_, `event`: _string_ \| _symbol_): _number_
 
 **`deprecated`** since v4.0.0
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`emitter` | *EventEmitter* |
-`event` | *string* \| *symbol* |
+| Name      | Type                 |
+| :-------- | :------------------- |
+| `emitter` | _EventEmitter_       |
+| `event`   | _string_ \| _symbol_ |
 
-**Returns:** *number*
+**Returns:** _number_
 
 Defined in: node_modules/@types/node/events.d.ts:23
 
-___
+---
 
 ### on
 
-▸ `Static`**on**(`emitter`: *EventEmitter*, `event`: *string*): *AsyncIterableIterator*<any\>
+▸ `Static`**on**(`emitter`: _EventEmitter_, `event`: _string_): _AsyncIterableIterator_<any\>
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`emitter` | *EventEmitter* |
-`event` | *string* |
+| Name      | Type           |
+| :-------- | :------------- |
+| `emitter` | _EventEmitter_ |
+| `event`   | _string_       |
 
-**Returns:** *AsyncIterableIterator*<any\>
+**Returns:** _AsyncIterableIterator_<any\>
 
 Defined in: node_modules/@types/node/events.d.ts:20
 
-___
+---
 
 ### once
 
-▸ `Static`**once**(`emitter`: *NodeEventTarget*, `event`: *string* \| *symbol*): *Promise*<any[]\>
+▸ `Static`**once**(`emitter`: _NodeEventTarget_, `event`: _string_ \| _symbol_): _Promise_<any[]\>
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`emitter` | *NodeEventTarget* |
-`event` | *string* \| *symbol* |
+| Name      | Type                 |
+| :-------- | :------------------- |
+| `emitter` | _NodeEventTarget_    |
+| `event`   | _string_ \| _symbol_ |
 
-**Returns:** *Promise*<any[]\>
+**Returns:** _Promise_<any[]\>
 
 Defined in: node_modules/@types/node/events.d.ts:18
 
-▸ `Static`**once**(`emitter`: DOMEventTarget, `event`: *string*): *Promise*<any[]\>
+▸ `Static`**once**(`emitter`: DOMEventTarget, `event`: _string_): _Promise_<any[]\>
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`emitter` | DOMEventTarget |
-`event` | *string* |
+| Name      | Type           |
+| :-------- | :------------- |
+| `emitter` | DOMEventTarget |
+| `event`   | _string_       |
 
-**Returns:** *Promise*<any[]\>
+**Returns:** _Promise_<any[]\>
 
 Defined in: node_modules/@types/node/events.d.ts:19

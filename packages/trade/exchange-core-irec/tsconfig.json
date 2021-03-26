@@ -1,17 +1,8 @@
 {
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js"
     },
-    "include": ["./src/**/**/*", "test/*"],
-    "references": [
-        {
-            "path": "../../utils/utils-general/tsconfig.json"
-        },
-        {
-            "path": "../exchange-core/tsconfig.json"
-        }
-    ]
+    "include": ["./src/**/**/*", "test/*"]
 }

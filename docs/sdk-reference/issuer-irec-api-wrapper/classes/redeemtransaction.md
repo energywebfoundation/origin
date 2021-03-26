@@ -4,37 +4,37 @@
 
 ## Hierarchy
 
-* [*Transaction*](transaction.md)
+-   [_Transaction_](transaction.md)
 
-  ↳ **RedeemTransaction**
+    ↳ **RedeemTransaction**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](redeemtransaction.md#constructor)
+-   [constructor](redeemtransaction.md#constructor)
 
 ### Properties
 
-- [beneficiary](redeemtransaction.md#beneficiary)
-- [code](redeemtransaction.md#code)
-- [end](redeemtransaction.md#end)
-- [notes](redeemtransaction.md#notes)
-- [purpose](redeemtransaction.md#purpose)
-- [recipient](redeemtransaction.md#recipient)
-- [sender](redeemtransaction.md#sender)
-- [start](redeemtransaction.md#start)
-- [time](redeemtransaction.md#time)
-- [transactionType](redeemtransaction.md#transactiontype)
-- [volume](redeemtransaction.md#volume)
+-   [beneficiary](redeemtransaction.md#beneficiary)
+-   [code](redeemtransaction.md#code)
+-   [end](redeemtransaction.md#end)
+-   [notes](redeemtransaction.md#notes)
+-   [purpose](redeemtransaction.md#purpose)
+-   [recipient](redeemtransaction.md#recipient)
+-   [sender](redeemtransaction.md#sender)
+-   [start](redeemtransaction.md#start)
+-   [time](redeemtransaction.md#time)
+-   [transactionType](redeemtransaction.md#transactiontype)
+-   [volume](redeemtransaction.md#volume)
 
 ## Constructors
 
 ### constructor
 
-\+ **new RedeemTransaction**(): [*RedeemTransaction*](redeemtransaction.md)
+\+ **new RedeemTransaction**(): [_RedeemTransaction_](redeemtransaction.md)
 
-**Returns:** [*RedeemTransaction*](redeemtransaction.md)
+**Returns:** [_RedeemTransaction_](redeemtransaction.md)
 
 Inherited from: [Transaction](transaction.md)
 
@@ -42,21 +42,21 @@ Inherited from: [Transaction](transaction.md)
 
 ### beneficiary
 
-• **beneficiary**: [*Beneficiary*](beneficiary.md)
+• **beneficiary**: [_Beneficiary_](beneficiary.md)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:104](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L104)
 
-___
+---
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Inherited from: [Transaction](transaction.md).[code](transaction.md#code)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:67](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L67)
 
-___
+---
 
 ### end
 
@@ -64,45 +64,45 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:112](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L112)
 
-___
+---
 
 ### notes
 
-• **notes**: *string*
+• **notes**: _string_
 
 Inherited from: [Transaction](transaction.md).[notes](transaction.md#notes)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:72](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L72)
 
-___
+---
 
 ### purpose
 
-• **purpose**: *string*
+• **purpose**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:102](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L102)
 
-___
+---
 
 ### recipient
 
-• **recipient**: *string*
+• **recipient**: _string_
 
 Inherited from: [Transaction](transaction.md).[recipient](transaction.md#recipient)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:80](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L80)
 
-___
+---
 
 ### sender
 
-• **sender**: *string*
+• **sender**: _string_
 
 Inherited from: [Transaction](transaction.md).[sender](transaction.md#sender)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:76](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L76)
 
-___
+---
 
 ### start
 
@@ -110,7 +110,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:108](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L108)
 
-___
+---
 
 ### time
 
@@ -120,21 +120,21 @@ Inherited from: [Transaction](transaction.md).[time](transaction.md#time)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:83](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L83)
 
-___
+---
 
 ### transactionType
 
-• **transactionType**: [*TransactionType*](../enums/transactiontype.md)
+• **transactionType**: [_TransactionType_](../enums/transactiontype.md)
 
 Inherited from: [Transaction](transaction.md).[transactionType](transaction.md#transactiontype)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:87](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L87)
 
-___
+---
 
 ### volume
 
-• **volume**: *number*
+• **volume**: _number_
 
 Inherited from: [Transaction](transaction.md).[volume](transaction.md#volume)
 

@@ -4,28 +4,28 @@
 
 ## Hierarchy
 
-* [*CodeName*](codename.md)
+-   [_CodeName_](codename.md)
 
-  ↳ **Fuel**
+    ↳ **Fuel**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](fuel.md#constructor)
+-   [constructor](fuel.md#constructor)
 
 ### Properties
 
-- [code](fuel.md#code)
-- [name](fuel.md#name)
+-   [code](fuel.md#code)
+-   [name](fuel.md#name)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Fuel**(): [*Fuel*](fuel.md)
+\+ **new Fuel**(): [_Fuel_](fuel.md)
 
-**Returns:** [*Fuel*](fuel.md)
+**Returns:** [_Fuel_](fuel.md)
 
 Inherited from: [CodeName](codename.md)
 
@@ -33,17 +33,17 @@ Inherited from: [CodeName](codename.md)
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Inherited from: [CodeName](codename.md).[code](codename.md#code)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Items.ts:54](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Items.ts#L54)
 
-___
+---
 
 ### name
 
-• **name**: *string*
+• **name**: _string_
 
 Inherited from: [CodeName](codename.md).[name](codename.md#name)
 

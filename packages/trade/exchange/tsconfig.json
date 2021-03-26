@@ -1,29 +1,11 @@
 {
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "ES2020",
-        "types": ["node", "mocha"]
+        "baseUrl": "./"
     },
-    "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
-    "references": [
-        {
-            "path": "../exchange-core/tsconfig.json"
-        },
-        {
-            "path": "../exchange-token-account/tsconfig.json"
-        },
-        {
-            "path": "../../utils/utils-general/tsconfig.json"
-        },
-        {
-            "path": "../../origin-backend-core/tsconfig.json"
-        },
-        {
-            "path": "../../traceability/issuer/tsconfig.json"
-        }
-    ]
+    "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"]
 }

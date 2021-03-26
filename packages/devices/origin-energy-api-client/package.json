@@ -5,7 +5,7 @@
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
-    "main": "dist/js/src/index.js",
+    "main": "dist/js/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "yarn build:client && tsc -b tsconfig.json",
+        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc -b tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
         "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
@@ -27,13 +27,18 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
+        "typescript": "4.1.5",
         "@nestjs/swagger": "4.8.0",
         "@nestjs/testing": "7.6.14",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.2.2",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.2.1",
-        "ts-node": "9.1.1"
+        "ts-node": "9.1.1",
+        "@types/mocha": "^8.2.1",
+        "@types/node": "14.14.31",
+        "mocha": "8.3.0",
+        "@nestjs/passport": "7.1.5"
     },
     "publishConfig": {
         "access": "public",

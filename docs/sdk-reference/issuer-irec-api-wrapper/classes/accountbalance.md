@@ -6,42 +6,42 @@
 
 ### Constructors
 
-- [constructor](accountbalance.md#constructor)
+-   [constructor](accountbalance.md#constructor)
 
 ### Properties
 
-- [balance](accountbalance.md#balance)
-- [code](accountbalance.md#code)
-- [product](accountbalance.md#product)
+-   [balance](accountbalance.md#balance)
+-   [code](accountbalance.md#code)
+-   [product](accountbalance.md#product)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AccountBalance**(): [*AccountBalance*](accountbalance.md)
+\+ **new AccountBalance**(): [_AccountBalance_](accountbalance.md)
 
-**Returns:** [*AccountBalance*](accountbalance.md)
+**Returns:** [_AccountBalance_](accountbalance.md)
 
 ## Properties
 
 ### balance
 
-• **balance**: *number*
+• **balance**: _number_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:57](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L57)
 
-___
+---
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:61](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L61)
 
-___
+---
 
 ### product
 
-• **product**: [*Product*](product.md)
+• **product**: [_Product_](product.md)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:63](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L63)

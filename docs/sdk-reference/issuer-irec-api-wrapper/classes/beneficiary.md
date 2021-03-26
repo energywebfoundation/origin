@@ -6,33 +6,33 @@
 
 ### Constructors
 
-- [constructor](beneficiary.md#constructor)
+-   [constructor](beneficiary.md#constructor)
 
 ### Properties
 
-- [id](beneficiary.md#id)
-- [name](beneficiary.md#name)
+-   [id](beneficiary.md#id)
+-   [name](beneficiary.md#name)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Beneficiary**(): [*Beneficiary*](beneficiary.md)
+\+ **new Beneficiary**(): [_Beneficiary_](beneficiary.md)
 
-**Returns:** [*Beneficiary*](beneficiary.md)
+**Returns:** [_Beneficiary_](beneficiary.md)
 
 ## Properties
 
 ### id
 
-• **id**: *number*
+• **id**: _number_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:19](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L19)
 
-___
+---
 
 ### name
 
-• **name**: *string*
+• **name**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:21](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L21)

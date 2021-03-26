@@ -6,33 +6,33 @@
 
 ### Constructors
 
-- [constructor](reservationitem.md#constructor)
+-   [constructor](reservationitem.md#constructor)
 
 ### Properties
 
-- [amount](reservationitem.md#amount)
-- [code](reservationitem.md#code)
+-   [amount](reservationitem.md#amount)
+-   [code](reservationitem.md#code)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ReservationItem**(): [*ReservationItem*](reservationitem.md)
+\+ **new ReservationItem**(): [_ReservationItem_](reservationitem.md)
 
-**Returns:** [*ReservationItem*](reservationitem.md)
+**Returns:** [_ReservationItem_](reservationitem.md)
 
 ## Properties
 
 ### amount
 
-• **amount**: *number*
+• **amount**: _number_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:19](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L19)
 
-___
+---
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:16](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L16)

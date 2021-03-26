@@ -6,33 +6,33 @@
 
 ### Constructors
 
-- [constructor](approveissue.md#constructor)
+-   [constructor](approveissue.md#constructor)
 
 ### Properties
 
-- [issuer](approveissue.md#issuer)
-- [notes](approveissue.md#notes)
+-   [issuer](approveissue.md#issuer)
+-   [notes](approveissue.md#notes)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ApproveIssue**(): [*ApproveIssue*](approveissue.md)
+\+ **new ApproveIssue**(): [_ApproveIssue_](approveissue.md)
 
-**Returns:** [*ApproveIssue*](approveissue.md)
+**Returns:** [_ApproveIssue_](approveissue.md)
 
 ## Properties
 
 ### issuer
 
-• **issuer**: *string*
+• **issuer**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:58](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L58)
 
-___
+---
 
 ### notes
 
-• `Optional` **notes**: *string*
+• `Optional` **notes**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:62](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L62)

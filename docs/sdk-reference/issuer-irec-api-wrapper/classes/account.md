@@ -6,42 +6,42 @@
 
 ### Constructors
 
-- [constructor](account.md#constructor)
+-   [constructor](account.md#constructor)
 
 ### Properties
 
-- [code](account.md#code)
-- [details](account.md#details)
-- [type](account.md#type)
+-   [code](account.md#code)
+-   [details](account.md#details)
+-   [type](account.md#type)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Account**(): [*Account*](account.md)
+\+ **new Account**(): [_Account_](account.md)
 
-**Returns:** [*Account*](account.md)
+**Returns:** [_Account_](account.md)
 
 ## Properties
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:42](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L42)
 
-___
+---
 
 ### details
 
-• **details**: [*AccountDetails*](accountdetails.md)
+• **details**: [_AccountDetails_](accountdetails.md)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:47](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L47)
 
-___
+---
 
 ### type
 
-• **type**: [*AccountType*](../enums/accounttype.md)
+• **type**: [_AccountType_](../enums/accounttype.md)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:52](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L52)

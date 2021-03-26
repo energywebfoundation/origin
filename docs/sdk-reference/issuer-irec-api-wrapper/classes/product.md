@@ -6,42 +6,42 @@
 
 ### Constructors
 
-- [constructor](product.md#constructor)
+-   [constructor](product.md#constructor)
 
 ### Properties
 
-- [code](product.md#code)
-- [name](product.md#name)
-- [unit](product.md#unit)
+-   [code](product.md#code)
+-   [name](product.md#name)
+-   [unit](product.md#unit)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Product**(): [*Product*](product.md)
+\+ **new Product**(): [_Product_](product.md)
 
-**Returns:** [*Product*](product.md)
+**Returns:** [_Product_](product.md)
 
 ## Properties
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Product.ts:2](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Product.ts#L2)
 
-___
+---
 
 ### name
 
-• **name**: *string*
+• **name**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Product.ts:4](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Product.ts#L4)
 
-___
+---
 
 ### unit
 
-• **unit**: *string*
+• **unit**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Product.ts:6](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Product.ts#L6)

@@ -1,26 +1,12 @@
 {
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "ES2020",
-        "types": ["node", "mocha"]
+        "types": ["node", "mocha"],
+        "baseUrl": "./"
     },
-    "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"],
-    "references": [
-        {
-            "path": "../../origin-backend-core/tsconfig.json"
-        },
-        {
-            "path": "../../utils/origin-backend-utils/tsconfig.json"
-        },
-        {
-            "path": "../origin-device-registry-api/tsconfig.json"
-        },
-        {
-            "path": "../../organizations/origin-organization-irec-api/tsconfig.json"
-        }
-    ]
+    "include": ["src/**/*", "test/**/*", "migrations/*", "ormconfig*.ts"]
 }

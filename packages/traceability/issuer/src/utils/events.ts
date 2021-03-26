@@ -18,15 +18,17 @@ export const getEventsFromContract = async (
         toBlock: 'latest'
     });
 
-    const parsedLogs = logs.map((log) => {
-        const { name } = contract.interface.parseLog(log);
+    const parsedLogs = logs.map(
+        (log: { data: any; topics: any; blockHash: any; transactionHash: any }) => {
+            const { name } = contract.interface.parseLog(log);
 
-        return {
-            ...contract.interface.decodeEventLog(name, log.data, log.topics),
-            blockHash: log.blockHash,
-            transactionHash: log.transactionHash
-        };
-    });
+            return {
+                ...contract.interface.decodeEventLog(name, log.data, log.topics),
+                blockHash: log.blockHash,
+                transactionHash: log.transactionHash
+            };
+        }
+    );
 
     return parsedLogs;
 };

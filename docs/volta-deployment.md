@@ -1,6 +1,6 @@
 # Volta deployment
 
-Sometime it's more convenient to use a test network over local for testing or development. 
+Sometime it's more convenient to use a test network over local for testing or development.
 
 <div class="admonition note">
   <p class="first admonition-title">Note</p>

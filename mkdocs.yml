@@ -23,9 +23,9 @@ nav:
 theme: material
 
 plugins:
-  - mermaid2
-  - search
-  - autolinks
+    - mermaid2
+    - search
+    - autolinks
 
 extra_javascript:
-  - https://unpkg.com/mermaid@8.8.4/dist/mermaid.min.js
+    - https://unpkg.com/mermaid@8.8.4/dist/mermaid.min.js

@@ -6,9 +6,9 @@
 
 ### Enumeration members
 
-- [Issue](accounttype.md#issue)
-- [Redemption](accounttype.md#redemption)
-- [Trade](accounttype.md#trade)
+-   [Issue](accounttype.md#issue)
+-   [Redemption](accounttype.md#redemption)
+-   [Trade](accounttype.md#trade)
 
 ## Enumeration members
 
@@ -18,7 +18,7 @@
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:7](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L7)
 
-___
+---
 
 ### Redemption
 
@@ -26,7 +26,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Account.ts:8](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Account.ts#L8)
 
-___
+---
 
 ### Trade
 

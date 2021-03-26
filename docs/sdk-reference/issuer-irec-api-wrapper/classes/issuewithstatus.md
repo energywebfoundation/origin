@@ -4,35 +4,35 @@
 
 ## Hierarchy
 
-* [*Issue*](issue.md)
+-   [_Issue_](issue.md)
 
-  ↳ **IssueWithStatus**
+    ↳ **IssueWithStatus**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](issuewithstatus.md#constructor)
+-   [constructor](issuewithstatus.md#constructor)
 
 ### Properties
 
-- [code](issuewithstatus.md#code)
-- [device](issuewithstatus.md#device)
-- [end](issuewithstatus.md#end)
-- [fuel](issuewithstatus.md#fuel)
-- [notes](issuewithstatus.md#notes)
-- [production](issuewithstatus.md#production)
-- [recipient](issuewithstatus.md#recipient)
-- [start](issuewithstatus.md#start)
-- [status](issuewithstatus.md#status)
+-   [code](issuewithstatus.md#code)
+-   [device](issuewithstatus.md#device)
+-   [end](issuewithstatus.md#end)
+-   [fuel](issuewithstatus.md#fuel)
+-   [notes](issuewithstatus.md#notes)
+-   [production](issuewithstatus.md#production)
+-   [recipient](issuewithstatus.md#recipient)
+-   [start](issuewithstatus.md#start)
+-   [status](issuewithstatus.md#status)
 
 ## Constructors
 
 ### constructor
 
-\+ **new IssueWithStatus**(): [*IssueWithStatus*](issuewithstatus.md)
+\+ **new IssueWithStatus**(): [_IssueWithStatus_](issuewithstatus.md)
 
-**Returns:** [*IssueWithStatus*](issuewithstatus.md)
+**Returns:** [_IssueWithStatus_](issuewithstatus.md)
 
 Inherited from: [Issue](issue.md)
 
@@ -40,21 +40,21 @@ Inherited from: [Issue](issue.md)
 
 ### code
 
-• **code**: *string*
+• **code**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:66](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L66)
 
-___
+---
 
 ### device
 
-• **device**: *string*
+• **device**: _string_
 
 Inherited from: [Issue](issue.md).[device](issue.md#device)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:19](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L19)
 
-___
+---
 
 ### end
 
@@ -64,47 +64,47 @@ Inherited from: [Issue](issue.md).[end](issue.md#end)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:41](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L41)
 
-___
+---
 
 ### fuel
 
-• **fuel**: *string*
+• **fuel**: _string_
 
 Inherited from: [Issue](issue.md).[fuel](issue.md#fuel)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:24](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L24)
 
-___
+---
 
 ### notes
 
-• `Optional` **notes**: *string*
+• `Optional` **notes**: _string_
 
 Inherited from: [Issue](issue.md).[notes](issue.md#notes)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:51](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L51)
 
-___
+---
 
 ### production
 
-• **production**: *number*
+• **production**: _number_
 
 Inherited from: [Issue](issue.md).[production](issue.md#production)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:47](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L47)
 
-___
+---
 
 ### recipient
 
-• **recipient**: *string*
+• **recipient**: _string_
 
 Inherited from: [Issue](issue.md).[recipient](issue.md#recipient)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:29](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L29)
 
-___
+---
 
 ### start
 
@@ -114,10 +114,10 @@ Inherited from: [Issue](issue.md).[start](issue.md#start)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:35](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L35)
 
-___
+---
 
 ### status
 
-• **status**: [*IssueStatus*](../enums/issuestatus.md)
+• **status**: [_IssueStatus_](../enums/issuestatus.md)
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:68](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L68)

@@ -6,10 +6,10 @@
 
 ### Enumeration members
 
-- [Approved](devicestate.md#approved)
-- [Draft](devicestate.md#draft)
-- [InProgress](devicestate.md#inprogress)
-- [Rejected](devicestate.md#rejected)
+-   [Approved](devicestate.md#approved)
+-   [Draft](devicestate.md#draft)
+-   [InProgress](devicestate.md#inprogress)
+-   [Rejected](devicestate.md#rejected)
 
 ## Enumeration members
 
@@ -19,7 +19,7 @@
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:17](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L17)
 
-___
+---
 
 ### Draft
 
@@ -27,7 +27,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:14](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L14)
 
-___
+---
 
 ### InProgress
 
@@ -35,7 +35,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Device.ts:15](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Device.ts#L15)
 
-___
+---
 
 ### Rejected
 

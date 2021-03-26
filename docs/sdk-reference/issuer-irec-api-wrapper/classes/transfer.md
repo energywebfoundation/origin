@@ -4,73 +4,73 @@
 
 ## Hierarchy
 
-* **Transfer**
+-   **Transfer**
 
-  ↳ [*Redemption*](redemption.md)
+    ↳ [_Redemption_](redemption.md)
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](transfer.md#constructor)
+-   [constructor](transfer.md#constructor)
 
 ### Properties
 
-- [approver](transfer.md#approver)
-- [items](transfer.md#items)
-- [notes](transfer.md#notes)
-- [recipient](transfer.md#recipient)
-- [sender](transfer.md#sender)
+-   [approver](transfer.md#approver)
+-   [items](transfer.md#items)
+-   [notes](transfer.md#notes)
+-   [recipient](transfer.md#recipient)
+-   [sender](transfer.md#sender)
 
 ### Accessors
 
-- [total](transfer.md#total)
+-   [total](transfer.md#total)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Transfer**(): [*Transfer*](transfer.md)
+\+ **new Transfer**(): [_Transfer_](transfer.md)
 
-**Returns:** [*Transfer*](transfer.md)
+**Returns:** [_Transfer_](transfer.md)
 
 ## Properties
 
 ### approver
 
-• **approver**: *string*
+• **approver**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:36](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L36)
 
-___
+---
 
 ### items
 
-• **items**: [*ReservationItem*](reservationitem.md)[]
+• **items**: [_ReservationItem_](reservationitem.md)[]
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:45](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L45)
 
-___
+---
 
 ### notes
 
-• `Optional` **notes**: *string*
+• `Optional` **notes**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:49](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L49)
 
-___
+---
 
 ### recipient
 
-• **recipient**: *string*
+• **recipient**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:31](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L31)
 
-___
+---
 
 ### sender
 
-• **sender**: *string*
+• **sender**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:26](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L26)
 
@@ -78,8 +78,8 @@ Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:26](h
 
 ### total
 
-• get **total**(): *number*
+• get **total**(): _number_
 
-**Returns:** *number*
+**Returns:** _number_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts:39](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Transfer.ts#L39)

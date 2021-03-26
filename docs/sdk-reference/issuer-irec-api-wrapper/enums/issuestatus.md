@@ -6,14 +6,14 @@
 
 ### Enumeration members
 
-- [Approved](issuestatus.md#approved)
-- [Draft](issuestatus.md#draft)
-- [Issued](issuestatus.md#issued)
-- [Referred](issuestatus.md#referred)
-- [Rejected](issuestatus.md#rejected)
-- [Submitted](issuestatus.md#submitted)
-- [Verified](issuestatus.md#verified)
-- [Withdrawn](issuestatus.md#withdrawn)
+-   [Approved](issuestatus.md#approved)
+-   [Draft](issuestatus.md#draft)
+-   [Issued](issuestatus.md#issued)
+-   [Referred](issuestatus.md#referred)
+-   [Rejected](issuestatus.md#rejected)
+-   [Submitted](issuestatus.md#submitted)
+-   [Verified](issuestatus.md#verified)
+-   [Withdrawn](issuestatus.md#withdrawn)
 
 ## Enumeration members
 
@@ -23,7 +23,7 @@
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:11](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L11)
 
-___
+---
 
 ### Draft
 
@@ -31,7 +31,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:5](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L5)
 
-___
+---
 
 ### Issued
 
@@ -39,7 +39,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:12](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L12)
 
-___
+---
 
 ### Referred
 
@@ -47,7 +47,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:9](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L9)
 
-___
+---
 
 ### Rejected
 
@@ -55,7 +55,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:6](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L6)
 
-___
+---
 
 ### Submitted
 
@@ -63,7 +63,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:8](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L8)
 
-___
+---
 
 ### Verified
 
@@ -71,7 +71,7 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:10](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L10)
 
-___
+---
 
 ### Withdrawn
 

@@ -4,43 +4,43 @@
 
 ## Hierarchy
 
-* **Issue**
+-   **Issue**
 
-  ↳ [*IssueWithStatus*](issuewithstatus.md)
+    ↳ [_IssueWithStatus_](issuewithstatus.md)
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](issue.md#constructor)
+-   [constructor](issue.md#constructor)
 
 ### Properties
 
-- [device](issue.md#device)
-- [end](issue.md#end)
-- [fuel](issue.md#fuel)
-- [notes](issue.md#notes)
-- [production](issue.md#production)
-- [recipient](issue.md#recipient)
-- [start](issue.md#start)
+-   [device](issue.md#device)
+-   [end](issue.md#end)
+-   [fuel](issue.md#fuel)
+-   [notes](issue.md#notes)
+-   [production](issue.md#production)
+-   [recipient](issue.md#recipient)
+-   [start](issue.md#start)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Issue**(): [*Issue*](issue.md)
+\+ **new Issue**(): [_Issue_](issue.md)
 
-**Returns:** [*Issue*](issue.md)
+**Returns:** [_Issue_](issue.md)
 
 ## Properties
 
 ### device
 
-• **device**: *string*
+• **device**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:19](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L19)
 
-___
+---
 
 ### end
 
@@ -48,39 +48,39 @@ ___
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:41](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L41)
 
-___
+---
 
 ### fuel
 
-• **fuel**: *string*
+• **fuel**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:24](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L24)
 
-___
+---
 
 ### notes
 
-• `Optional` **notes**: *string*
+• `Optional` **notes**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:51](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L51)
 
-___
+---
 
 ### production
 
-• **production**: *number*
+• **production**: _number_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:47](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L47)
 
-___
+---
 
 ### recipient
 
-• **recipient**: *string*
+• **recipient**: _string_
 
 Defined in: [packages/traceability/issuer-irec-api-wrapper/src/Issue.ts:29](https://github.com/energywebfoundation/origin/blob/1ec4bda2/packages/traceability/issuer-irec-api-wrapper/src/Issue.ts#L29)
 
-___
+---
 
 ### start
 

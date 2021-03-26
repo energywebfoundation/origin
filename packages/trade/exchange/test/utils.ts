@@ -36,7 +36,9 @@ export const issueToken = async (
         validityData
     )) as ContractTransaction).wait();
 
-    const { args } = approvalReceipt.events.find((e) => e.event === 'CertificationRequestApproved');
+    const { args } = approvalReceipt.events.find(
+        (e: any) => e.event === 'CertificationRequestApproved'
+    );
 
     return args[2].toString();
 };
