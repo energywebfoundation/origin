@@ -10,4 +10,4 @@ CMD ["/bin/bash","-c", "apps/origin-backend-app/node_modules/.bin/typeorm migrat
                         apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config organizations/origin-organization-irec-api/dist/js/ormconfig.js && \
                         apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-api/dist/js/ormconfig.js && \
                         tools/migrations/bin/migrations -c /var/migration-config/demo-config.json -s /var/migration-config/seed.sql && \
-                        tools/migrations/bin/origin-backend-app"]
+                        tools/migrations/node_modules/.bin/origin-backend-app"]
