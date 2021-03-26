@@ -126,6 +126,7 @@ dependencies:
   connected-react-router: 6.9.1_3a32cfa7d6f442074e268f98a243a2ba
   copy-webpack-plugin: 8.0.0_webpack@5.27.1
   cors: 2.8.5
+  cross-env: 7.0.3
   crypto-browserify: 3.12.0
   css-loader: 5.1.3_webpack@5.27.1
   csv-parse: 4.15.3
@@ -9287,6 +9288,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+SaJ2OfeRvfQqwXQ2kgr0Y5pzBR/lijf5OpnnaruwWnmI799JfWr2jN2ItOV9s3A/+TFOt6mxvKzQq5F0Jp6VQ==
+  /cross-env/7.0.3:
+    dependencies:
+      cross-spawn: 7.0.3
+    dev: false
+    engines:
+      node: '>=10.14'
+      npm: '>=6'
+      yarn: '>=1'
+    hasBin: true
+    resolution:
+      integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==
   /cross-fetch/2.2.3:
     dependencies:
       node-fetch: 2.1.2
@@ -27681,6 +27693,7 @@ packages:
       buffer: 6.0.3
       connected-react-router: 6.9.1_3a32cfa7d6f442074e268f98a243a2ba
       copy-webpack-plugin: 8.0.0_webpack@5.27.1
+      cross-env: 7.0.3
       crypto-browserify: 3.12.0
       css-loader: 5.1.3_webpack@5.27.1
       cypress: 6.8.0
@@ -27731,7 +27744,7 @@ packages:
     peerDependencies:
       jest: '*'
     resolution:
-      integrity: sha512-ltCOoR8u1jm/AZGC7DppYDxJMxXX8ruZZHqOOZShczQfN1pmqZyajeu2brpb8VlnoKvL6I/tvlKqrQXi7//sgA==
+      integrity: sha512-JDPDm9WWbXFxVDCbWYG+rmv/2k8SWqY2BXKhFiv+TZHUvSLBE0NBLEXFb18zkb58xIOVjPW9gbYAO5/u0j1FgQ==
       tarball: file:projects/origin-ui.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -27817,6 +27830,7 @@ packages:
     resolution:
       tarball: https://codeload.github.com/web3-js/scrypt-shim/tar.gz/aafdadda13e660e25e1c525d1f5b2443f5eb1ebb
     version: 0.1.0
+registry: ''
 specifiers:
   '@date-io/moment': 2.10.6
   '@energyweb/energy-api-influxdb': 0.7.0
@@ -27945,6 +27959,7 @@ specifiers:
   connected-react-router: 6.9.1
   copy-webpack-plugin: 8.0.0
   cors: 2.8.5
+  cross-env: ~7.0.3
   crypto-browserify: 3.12.0
   css-loader: 5.1.3
   csv-parse: 4.15.3
