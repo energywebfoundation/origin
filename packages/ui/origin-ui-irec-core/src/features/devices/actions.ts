@@ -1,5 +1,5 @@
 import { ComposedPublicDevice, ComposedDevice, CreateDeviceData } from '../../types';
-import { DeviceDTO as IRecMyDeviceDTO } from '@energyweb/origin-device-registry-irec-local-api-client/dist/js/src/api';
+import { DeviceDTO as IRecMyDeviceDTO } from '@energyweb/origin-device-registry-irec-local-api-client';
 
 export enum DevicesActions {
     fetchPublicDevices = 'IREC_APP_FETCH_PUBLIC_DEVICES',
