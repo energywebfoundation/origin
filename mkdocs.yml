@@ -7,7 +7,9 @@ nav:
   - Packages: packages.md
   - User guides:
     - Onboarding: user-guide-onboarding.md
-    - Device Management: user-guide-device-management.md 
+    - Device Management: user-guide-device-management.md
+  - Configuration:
+    - UI: configuration-ui.md
   - SDK:
     - Traceability: traceability.md
     - Trade: trade.md
