@@ -50,6 +50,10 @@ jobs:
       run: |
         sh scripts/restore-original-timestamps.sh
 
+    - name: Install rush
+      run: |
+        npm install -g @microsoft/rush
+
     - name: Install application
       # lerna doesn't work without additional fetch
       run: |
