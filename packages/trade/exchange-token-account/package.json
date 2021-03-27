@@ -52,7 +52,7 @@
         "@ethersproject/abstract-provider": "5.0.9",
         "@ethersproject/abi": "5.0.12",
         "@openzeppelin/cli": "2.8.2",
-        "@openzeppelin/contracts-ethereum-package": "2.5.0",
+        "@openzeppelin/contracts-ethereum-package": "3.0.0",
         "@openzeppelin/upgrades": "2.8.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
