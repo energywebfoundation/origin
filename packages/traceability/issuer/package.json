@@ -57,7 +57,7 @@
         "ethlint": "1.2.5",
         "truffle-typings": "1.0.8",
         "typechain": "4.0.3",
-        "@types/mocha": "^8.2.1",
+        "@types/mocha": "8.2.2",
         "@types/node": "14.14.31",
         "mocha": "8.3.0",
         "truffle": "5.1.67",
