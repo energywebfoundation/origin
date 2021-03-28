@@ -93,7 +93,7 @@
         "redux-logger": "3.0.6",
         "@types/mocha": "8.2.2",
         "@types/node": "14.14.37",
-        "mocha": "8.3.0",
+        "mocha": "8.3.2",
         "ts-jest": "26.5.4"
     },
     "repository": {

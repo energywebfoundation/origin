@@ -64,7 +64,7 @@
         "supertest-capture-error": "1.0.0",
         "ts-node": "9.1.1",
         "@types/mocha": "8.2.2",
-        "mocha": "8.3.0",
+        "mocha": "8.3.2",
         "@types/dotenv": "6.1.1",
         "dotenv": "8.2.0",
         "@types/uuid": "8.3.0"
