@@ -41,7 +41,7 @@
         "immutable": "4.0.0-rc.12",
         "moment": "2.29.1",
         "moment-range": "4.0.2",
-        "rxjs": "6.6.6"
+        "rxjs": "6.6.7"
     },
     "devDependencies": {
         "typescript": "4.1.5",
