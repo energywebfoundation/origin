@@ -67,6 +67,22 @@ export const BidsTable = (props: IOwnProsp): JSX.Element => {
 
     const getFilters = (): ICustomFilterDefinition[] => [
         {
+            property: (record: Order) => new Date(record.product.generationFrom).getTime() / 1000,
+            label: t('certificate.properties.generationDateStart'),
+            input: {
+                type: CustomFilterInputType.yearMonth,
+                filterRule: FilterRules.FROM
+            }
+        },
+        {
+            property: (record: Order) => new Date(record.product.generationTo).getTime() / 1000,
+            label: t('certificate.properties.generationDateEnd'),
+            input: {
+                type: CustomFilterInputType.yearMonth,
+                filterRule: FilterRules.TO
+            }
+        },
+        {
             property: ({ product: { deviceType } }: Order) => {
                 return deviceType
                     ? deviceType
@@ -83,22 +99,6 @@ export const BidsTable = (props: IOwnProsp): JSX.Element => {
                     value: type
                 })),
                 defaultOptions: []
-            }
-        },
-        {
-            property: (record: Order) => new Date(record.product.generationFrom).getTime() / 1000,
-            label: t('certificate.properties.generationDateStart'),
-            input: {
-                type: CustomFilterInputType.yearMonth,
-                filterRule: FilterRules.FROM
-            }
-        },
-        {
-            property: (record: Order) => new Date(record.product.generationTo).getTime() / 1000,
-            label: t('certificate.properties.generationDateEnd'),
-            input: {
-                type: CustomFilterInputType.yearMonth,
-                filterRule: FilterRules.TO
             }
         }
     ];
