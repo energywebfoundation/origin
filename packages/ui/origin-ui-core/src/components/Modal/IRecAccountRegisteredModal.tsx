@@ -7,7 +7,7 @@ import iconAdded from '../../../assets/icon-org-added.svg';
 interface IProps {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
-    onClose?: (showModal: boolean) => void;
+    onClose?: () => void;
 }
 
 export const IRecAccountRegisteredModal = ({ showModal, setShowModal, onClose }: IProps) => {
@@ -19,7 +19,7 @@ export const IRecAccountRegisteredModal = ({ showModal, setShowModal, onClose }:
     const onCloseHandler = () => {
         setShowModal(false);
         showNotification('Organization registered.', NotificationType.Success);
-        onClose(true);
+        onClose();
     };
 
     return (

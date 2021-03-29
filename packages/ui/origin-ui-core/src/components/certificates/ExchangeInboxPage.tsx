@@ -3,24 +3,27 @@ import {
     CertificateSource,
     requestPublishForSale,
     requestWithdrawCertificate,
-    getUserOffchain
+    getUserOffchain,
+    getCurrencies
 } from '../../features';
 import React, { useState } from 'react';
 import { TabContent } from './Inbox/InboxTabContent';
 import { SelectedInboxList, IInboxCertificateData } from './Inbox';
-import { EnergyFormatter, usePermissions } from '../../utils';
-import TextField from '@material-ui/core/TextField';
+import { EnergyFormatter, formatCurrencyComplete, usePermissions } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/styles';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { Requirements } from '../Layout';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield';
+import { Unit } from '@energyweb/utils-general';
 
 export function ExchangeInboxPage(): JSX.Element {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const user = useSelector(getUserOffchain);
     const [price, setPrice] = useState(0);
+    const currency = useSelector(getCurrencies)[0];
 
     const hasBlockchainAccount = Boolean(user.blockchainAccountAddress);
 
@@ -123,24 +126,29 @@ export function ExchangeInboxPage(): JSX.Element {
                                         {EnergyFormatter.format(totalVolume, true)}
                                     </div>
                                 </div>
-                                <TextField
-                                    style={{ margin: '24px 0' }}
-                                    type="number"
+                                <CurrencyTextField
+                                    style={{ margin: '4px 0 8px 0' }}
+                                    fullWidth
+                                    variant="filled"
+                                    required
+                                    label={t('bundle.properties.price')}
+                                    currencySymbol="$"
+                                    outputFormat="number"
                                     value={price}
-                                    onChange={(ev) => {
-                                        const newValue = parseFloat(
-                                            ev.target.value.replace(',', '.')
-                                        );
-                                        if (!isNaN(newValue))
-                                            setPrice(Math.floor(newValue * 100) / 100);
-                                    }}
+                                    onChange={(event, value) => setPrice(value)}
+                                    minimumValue="0"
                                 />
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <div className={classes.text_2}>
                                         {t('certificate.info.totalPrice')}:{' '}
                                     </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        ${EnergyFormatter.format(totalVolume.toNumber() * price)}
+                                        {formatCurrencyComplete(
+                                            (totalVolume.toNumber() /
+                                                Unit[EnergyFormatter.displayUnit]) *
+                                                price,
+                                            currency
+                                        )}
                                     </div>
                                 </div>
                             </TabContent>
