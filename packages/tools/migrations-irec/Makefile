@@ -7,6 +7,7 @@ CANARY 				= ${NAME}:canary
 build-canary:
 	@rm -rf ./deployment/migrations/canary/deployment
 	@mkdir ./deployment/migrations/canary/deployment
+	@cp -r ./config ./deployment/migrations/canary/deployment/config
 	@rush deploy -p @energyweb/migrations-irec -t ./deployment/migrations/canary/deployment --overwrite
 	@docker rmi ${LATEST} -f
 	@docker build -f deployment/migrations/canary/Dockerfile.local -t ${CANARY} ./deployment/migrations/canary/deployment
