@@ -641,7 +641,7 @@ export const IRECRegisterForm = (): JSX.Element => {
             <IRecAccountRegisteredModal
                 showModal={showIRecRegisteredModal}
                 setShowModal={setShowIRecRegisteredModal}
-                onClose={setShowApprovalMessageModal}
+                onClose={() => setShowApprovalMessageModal(true)}
             />
             <IRecRegisterThankYouMessageModal
                 showModal={showApprovalMessageModal}
