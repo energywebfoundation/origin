@@ -6,9 +6,9 @@ import { APP_PIPE } from '@nestjs/core';
 import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { CertificateModule } from './pods/certificate/certificate.module';
-import { BlockchainPropertiesModule } from './pods/blockchain/blockchain-properties.module';
-import { CertificationRequestModule } from './pods/certification-request/certification-request.module';
+import { CertificateModule } from './pods/certificate';
+import { BlockchainPropertiesModule } from './pods/blockchain';
+import { CertificationRequestModule } from './pods/certification-request';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];

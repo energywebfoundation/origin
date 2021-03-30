@@ -24,9 +24,10 @@ import {
     requestClaimCertificateBulk
 } from '../../features/certificates';
 import { getUserOffchain } from '../../features/users/selectors';
-import { EnergyFormatter, countDecimals } from '../../utils';
+import { EnergyFormatter, countDecimals, getCountryName } from '../../utils';
 import { getEnvironment } from '../../features';
 import { IEnvironment } from '../../features/general';
+import { MaterialDatePicker } from '../Form/MaterialDatePicker';
 
 interface IProps {
     certificates: ICertificateViewItem[];
@@ -45,9 +46,6 @@ export function ClaimModal(props: IProps) {
     const isBulkClaim = certificates.length > 1;
     const certificateIds: number[] = certificates.map((cert) => cert.id);
 
-    const getCountryCodeFromId = (code: string) =>
-        Countries.find((country) => country.code === code)?.code;
-
     const user = useSelector(getUserOffchain);
     const countryCodes = Countries.map((country) => country.code);
 
@@ -55,9 +53,9 @@ export function ClaimModal(props: IProps) {
     const [address, setAddress] = useState(user?.organization?.address);
     const [zipCode, setZipCode] = useState(user?.organization?.zipCode);
     const [region, setRegion] = useState(null);
-    const [countryCode, setCountryCode] = useState(
-        getCountryCodeFromId(user?.organization?.country)
-    );
+    const [countryCode, setCountryCode] = useState(user?.organization?.country);
+    const [fromDate, setFromDate] = useState<string>(new Date().toISOString());
+    const [toDate, setToDate] = useState<string>(new Date().toISOString());
 
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
@@ -85,7 +83,7 @@ export function ClaimModal(props: IProps) {
         if (user?.organization) {
             setBeneficiary(user.organization.name);
             setAddress(user.organization.address);
-            setCountryCode(getCountryCodeFromId(user.organization.country));
+            setCountryCode(user.organization.country);
             setZipCode(user.organization.zipCode);
         }
     }, [user]);
@@ -106,7 +104,9 @@ export function ClaimModal(props: IProps) {
             address,
             region,
             zipCode,
-            countryCode
+            countryCode,
+            fromDate,
+            toDate
         };
 
         const action = isBulkClaim
@@ -114,12 +114,11 @@ export function ClaimModal(props: IProps) {
             : requestClaimCertificate({
                   certificateId: certificateIds[0],
                   claimData,
-                  amount: energyInBaseUnit
+                  amount: energyInBaseUnit,
+                  callback: handleClose
               });
 
         dispatch(action);
-
-        handleClose();
     }
 
     async function validateInputs(event) {
@@ -209,6 +208,23 @@ export function ClaimModal(props: IProps) {
                     fullWidth
                 />
 
+                <div style={{ display: 'flex' }}>
+                    <MaterialDatePicker
+                        label="From date"
+                        value={fromDate ?? ''}
+                        onChange={(date) => setFromDate(date.toISOString())}
+                        className="mt-4 mr-1"
+                        style={{ width: '50%' }}
+                    />
+                    <MaterialDatePicker
+                        label="To date"
+                        value={toDate ?? ''}
+                        onChange={(date) => setToDate(date.toISOString())}
+                        className="mt-4 ml-1"
+                        style={{ width: '50%' }}
+                    />
+                </div>
+
                 <FormControl fullWidth={true} variant="filled" className="mt-4">
                     <InputLabel>Country</InputLabel>
                     <Select
@@ -220,7 +236,7 @@ export function ClaimModal(props: IProps) {
                     >
                         {countryCodes?.map((item) => (
                             <MenuItem key={item} value={item}>
-                                {item}
+                                {getCountryName(item)}
                             </MenuItem>
                         ))}
                     </Select>

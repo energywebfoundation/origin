@@ -1,14 +1,16 @@
-import { IDevicesAction, DevicesActions } from './actions';
-import { ComposedPublicDevice, ComposedDevice } from '../../types';
+import { DevicesActions, IDevicesAction } from './actions';
+import { ComposedDevice, ComposedPublicDevice } from '../../types';
 
 export interface IIRecDevicesState {
     allDevices: ComposedPublicDevice[];
     myDevices: ComposedDevice[];
+    devicesToImport: ComposedDevice[];
 }
 
 const initialState: IIRecDevicesState = {
     allDevices: null,
-    myDevices: null
+    myDevices: null,
+    devicesToImport: null
 };
 
 export function iRecDevicesState(
@@ -25,6 +27,11 @@ export function iRecDevicesState(
             return {
                 ...state,
                 myDevices: payload
+            };
+        case DevicesActions.storeMyIrecDevices:
+            return {
+                ...state,
+                devicesToImport: payload
             };
         default:
             return state;

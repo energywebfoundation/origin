@@ -17,7 +17,9 @@ export const downloadFile = async (client: FileClient, id: string, name: string)
         const response = await client.download(id);
         if (response) {
             const imageType = response.headers['content-type'];
-            const blob = new Blob([Buffer.from(response.data.data)], { type: imageType });
+            const blob = new Blob([Buffer.from((response.data.data as unknown) as string)], {
+                type: imageType
+            });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -87,6 +89,7 @@ export const Download = (props: IProps) => {
                 icon={<GetApp color="primary" />}
                 style={{ background: bgColorLight }}
                 key={index}
+                {...props}
             />
         );
     });

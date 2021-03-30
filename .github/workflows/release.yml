@@ -39,6 +39,9 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Setup GIT user
+      uses: fregante/setup-git-user@v1
+
     - uses: actions/setup-node@v2-beta
       with:
         node-version: '14'
@@ -51,11 +54,11 @@ jobs:
       # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
-        yarn
+        node common/scripts/install-run-rush.js install
 
     - name: Build application
       run: |
-        yarn build
+        node common/scripts/install-run-rush.js build
 
     - name: Set creds to npm 
       run: |
@@ -72,3 +75,14 @@ jobs:
         yarn publish:release 
         npx sleep 5
         yarn build:containers:release
+        yarn deploy:heroku:stable
+      env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_STABLE_APP_API: ${{ secrets.HEROKU_STABLE_APP_API }}
+          HEROKU_STABLE_APP_UI: ${{ secrets.HEROKU_STABLE_APP_UI }}
+          HEROKU_STABLE_APP_SIM: ${{ secrets.HEROKU_STABLE_APP_SIM }}
+          HEROKU_STABLE_APP_IREC_UI: ${{ secrets.HEROKU_STABLE_APP_IREC_UI }}
+          HEROKU_STABLE_APP_IREC_API: ${{ secrets.HEROKU_STABLE_APP_IREC_API }}

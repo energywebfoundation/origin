@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.4.0...@energyweb/origin-ui@2.5.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @material-ui/pickers to v3.3.10 ([c3d13e5](https://github.com/energywebfoundation/origin/commit/c3d13e501ae7949cba3e3fa1d24bac35612c3ed2))
+* **deps:** update dependency i18next to v19.8.9 ([86169ea](https://github.com/energywebfoundation/origin/commit/86169eac6ffef1a84ab86d24df605905808d92bf))
+* **deps:** update dependency i18next to v19.9.0 ([2140690](https://github.com/energywebfoundation/origin/commit/2140690637c8ef4c060d915aeeb9db685f010196))
+* **deps:** update dependency i18next to v19.9.1 ([860cb8f](https://github.com/energywebfoundation/origin/commit/860cb8f08a4518f9ce730f0b01fe9a8c24504ff7))
+* **deps:** update dependency i18next to v19.9.2 ([26cadd3](https://github.com/energywebfoundation/origin/commit/26cadd3f0ffcbbbde09217c5947287b2195a1528))
+* **deps:** update dependency redux-devtools-extension to v2.13.9 ([6beea7b](https://github.com/energywebfoundation/origin/commit/6beea7bc7068256f1ea629f30724251e3af5193d))
+* **origin-ui:** add alias for react-i18next ([5b28347](https://github.com/energywebfoundation/origin/commit/5b28347302623d5f3530c80300b4375e86a2b6cd))
+* **origin-ui:** add webpack alias for mui/styles ([e00854d](https://github.com/energywebfoundation/origin/commit/e00854d9c82826ba55294d4ef9ecd71f407df3d3))
+* **origin-ui:** make exchangeDataLayer dependant on env ([4f7f3c0](https://github.com/energywebfoundation/origin/commit/4f7f3c0b18d800e37ee85a60d9935ce933088bc4))
+* add i18next provider for ui packages ([998e101](https://github.com/energywebfoundation/origin/commit/998e101d2aa38a5bda8e0228868398cb0edd8096))
+
+
+### Features
+
+* **origin-ui:** add cypress tests ([e642b7d](https://github.com/energywebfoundation/origin/commit/e642b7d2eeda3b2c558bd9ad4a4388b7d0a9ee8c))
+* **origin-ui-core:** activation message ([c4c937a](https://github.com/energywebfoundation/origin/commit/c4c937a2b72500bd97c23789381723caa7142fa0))
+* add smart meter id to env ([44876e2](https://github.com/energywebfoundation/origin/commit/44876e2ae5219692d74afdbc40cc1962d7c1fe36))
+* **origin-ui:** device icons replacement ([f5cc936](https://github.com/energywebfoundation/origin/commit/f5cc93664faafb5f4ddee5ff1e1e5a2ca0e5da9a))
+
+
+
+
+
 # [2.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.3.2...@energyweb/origin-ui@2.4.0) (2021-02-12)
 
 

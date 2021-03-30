@@ -96,7 +96,7 @@ export function UserDataEditForm(): JSX.Element {
             validate={ValidationHandler}
         >
             {(formikProps: FormikProps<typeof INITIAL_VALUES>) => {
-                const { isSubmitting, touched, values } = formikProps;
+                const { isSubmitting, values, dirty, isValid } = formikProps;
                 const fieldDisabled = isSubmitting || !isEditing;
 
                 return (
@@ -108,6 +108,7 @@ export function UserDataEditForm(): JSX.Element {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="first-name"
                                         label={t('user.properties.firstName')}
                                         property="firstName"
                                         disabled={fieldDisabled}
@@ -128,6 +129,7 @@ export function UserDataEditForm(): JSX.Element {
                                     />
 
                                     <FormInput
+                                        data-cy="telephone"
                                         label={t('user.properties.telephone')}
                                         property="telephone"
                                         disabled={fieldDisabled}
@@ -137,6 +139,7 @@ export function UserDataEditForm(): JSX.Element {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="last-name"
                                         label={t('user.properties.lastName')}
                                         property="lastName"
                                         disabled={fieldDisabled}
@@ -204,18 +207,13 @@ export function UserDataEditForm(): JSX.Element {
                             </Grid>
                             {isEditing && (
                                 <Button
+                                    data-cy="info-save-button"
                                     style={{ marginRight: 10 }}
                                     type="button"
                                     variant="contained"
                                     color="primary"
                                     className="mt-3 right"
-                                    disabled={
-                                        !(
-                                            touched.firstName ||
-                                            touched.lastName ||
-                                            touched.telephone
-                                        )
-                                    }
+                                    disabled={!dirty && isValid}
                                     onClick={async () => {
                                         await formikProps.validateForm();
                                         await formikProps.submitForm();
@@ -226,6 +224,7 @@ export function UserDataEditForm(): JSX.Element {
                             )}
                             {isEditing && (
                                 <Button
+                                    data-cy="info-cancel-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -240,6 +239,7 @@ export function UserDataEditForm(): JSX.Element {
                             )}
                             {!isEditing && (
                                 <Button
+                                    data-cy="info-edit-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"

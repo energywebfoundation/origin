@@ -1,14 +1,34 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IUser, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
+import {
+    ILoggedInUser,
+    IUser,
+    OrganizationStatus,
+    Role,
+    UserStatus
+} from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
+import { Connection, Registration } from '@energyweb/origin-organization-irec-api';
+
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
-import { DeviceModule, DeviceService, Device } from '../src/device';
+import {
+    Device as IrecDevice,
+    DeviceCreateParams,
+    DeviceState
+} from '@energyweb/issuer-irec-api-wrapper';
+import {
+    Device,
+    DeviceModule,
+    DeviceService,
+    ImportIrecDeviceDTO,
+    IrecDeviceService,
+    UserIdentifier
+} from '../src/device';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -65,6 +85,24 @@ const authGuard: CanActivate = {
 };
 
 export const bootstrapTestInstance = async () => {
+    const irecDevice = {
+        code: 'deviceToImportCode',
+        name: 'Test solar device',
+        defaultAccount: 'MYTRADEACCOUNT001',
+        registrantOrganization: 'REGORG',
+        issuer: 'ISSUERORG',
+        deviceType: 'ES100',
+        fuel: 'TC110',
+        countryCode: 'TH',
+        capacity: 1000,
+        commissioningDate: new Date('2020-01-01'),
+        registrationDate: new Date('2020-01-02'),
+        address: '1 Wind Farm Avenue, Thailand',
+        latitude: '10',
+        longitude: '10',
+        status: DeviceState.Approved
+    };
+
     const moduleFixture = await Test.createTestingModule({
         imports: [
             TypeOrmModule.forRoot({
@@ -74,7 +112,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Device],
+                entities: [Device, Connection, Registration],
                 logging: ['info']
             }),
             DeviceModule
@@ -83,6 +121,43 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
+        .overrideProvider(IrecDeviceService)
+        .useValue({
+            async importIrecDevice(user: ILoggedInUser, deviceToImport: ImportIrecDeviceDTO) {
+                return {
+                    ...irecDevice,
+                    ...deviceToImport,
+                    id: '100500',
+                    ownerId: user.ownerId
+                };
+            },
+            async getDevice(user: ILoggedInUser, code: string): Promise<IrecDevice> {
+                return { ...irecDevice, code };
+            },
+            async getDevices(): Promise<IrecDevice[]> {
+                return [irecDevice];
+            },
+            async createIrecDevice(
+                user: ILoggedInUser,
+                deviceData: DeviceCreateParams
+            ): Promise<IrecDevice> {
+                return {
+                    ...deviceData,
+                    code: '100500',
+                    status: DeviceState.InProgress
+                };
+            },
+            async update(
+                user: UserIdentifier,
+                code: string,
+                device: Partial<IrecDevice>
+            ): Promise<Partial<IrecDevice>> {
+                return { ...device, status: DeviceState.InProgress };
+            },
+            isIrecIntegrationEnabled() {
+                return false;
+            }
+        })
         .compile();
 
     const app = moduleFixture.createNestApplication();

@@ -1,12 +1,11 @@
 {
     "name": "@energyweb/origin-energy-api",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "An API for Smart meter reads",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "main": "dist/js/src/index.js",
-    "private": true,
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -26,20 +25,29 @@
     },
     "dependencies": {
         "@energyweb/energy-api-influxdb": "0.7.0",
-        "@energyweb/origin-backend-core": "8.0.0",
-        "@nestjs/common": "7.6.13",
+        "@energyweb/origin-backend-core": "8.0.1",
+        "@nestjs/common": "7.6.15",
         "@nestjs/config": "0.6.3",
-        "@nestjs/core": "7.6.13",
+        "@nestjs/core": "7.6.15",
         "@nestjs/passport": "7.1.5",
-        "@nestjs/swagger": "4.7.15"
+        "@nestjs/swagger": "4.8.0"
     },
     "devDependencies": {
-        "@nestjs/testing": "7.6.13",
-        "influx": "5.7.0",
+        "typescript": "4.1.5",
+        "@nestjs/testing": "7.6.15",
+        "influx": "5.8.0",
         "prettier": "2.2.1",
         "superagent-use": "0.1.0",
         "supertest": "6.1.3",
-        "supertest-capture-error": "1.0.0"
+        "supertest-capture-error": "1.0.0",
+        "@types/supertest": "2.0.10",
+        "@types/superagent": "4.1.10",
+        "@types/mocha": "8.2.2",
+        "@types/node": "14.14.37",
+        "mocha": "8.3.2",
+        "@types/chai": "4.2.15",
+        "chai": "4.3.0",
+        "ts-node": "9.1.1"
     },
     "publishConfig": {
         "access": "public",

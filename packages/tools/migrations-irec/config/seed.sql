@@ -493,7 +493,7 @@ VALUES (
         '14.059500',
         '99.977800',
         'Notes...',
-        'Active',
+        'Approved',
         'Asia/Bangkok',
         'TH-PEA'
     );
@@ -559,7 +559,7 @@ VALUES (
         '15.1739',
         '101.4928',
         'Notes...',
-        'Active',
+        'Approved',
         'Asia/Bangkok',
         'TH-MEA'
     );
@@ -625,7 +625,7 @@ VALUES (
         '14.059500',
         '99.977800',
         'Notes...',
-        'Active',
+        'Approved',
         'Asia/Bangkok',
         'TH-PEA'
     );

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { beforeEach, expect, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import BN from 'bn.js';

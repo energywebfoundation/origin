@@ -8,4 +8,4 @@ RUN mkdir -p /var/db
 
 RUN for i in 1 2 3 4 5; do yarn global add @energyweb/origin-backend-irec-app@${VERSION} && break || sleep 15; done
 
-CMD ["/bin/bash", "-c", "origin-backend-app"]
+CMD ["/bin/bash", "-c", "origin-backend-irec-app"]

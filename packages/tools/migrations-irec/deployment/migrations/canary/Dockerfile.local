@@ -1,0 +1,17 @@
+FROM energyweb/origin-backend-irec-app:canary
+
+RUN mkdir -p /var/deployment
+COPY ./ /var/deployment
+
+WORKDIR /var/deployment/packages/
+
+CMD ["/bin/bash","-c", "apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config trade/exchange/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config organizations/origin-organization-irec-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config devices/origin-device-registry-irec-local-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config devices/origin-device-registry-api/dist/js/ormconfig.js && \
+                        cd tools/migrations-irec/bin && \
+                        ./migrations -c /var/deployment/config/demo-config.json -s /var/deployment/config/seed.sql && \
+                        cd - && \
+                        tools/migrations-irec/node_modules/.bin/origin-backend-irec-app"]

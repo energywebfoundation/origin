@@ -92,12 +92,14 @@ export function BlockchainAddresses(): JSX.Element {
                                     {exchangeAddress ? (
                                         <Grid item lg={6} md={10} xs={12}>
                                             <FormInput
+                                                data-cy="exchange-deposit-address"
                                                 property="exchangeDepositAddress"
                                                 disabled={true}
                                             />
                                         </Grid>
                                     ) : (
                                         <Button
+                                            data-cy="exchange-address-create-button"
                                             type="button"
                                             variant="contained"
                                             color="primary"
@@ -108,6 +110,7 @@ export function BlockchainAddresses(): JSX.Element {
                                         </Button>
                                     )}
                                     <IconPopover
+                                        data-cy="exchange-address-info-icon"
                                         icon={Info}
                                         iconSize={IconSize.Large}
                                         popoverText={[
@@ -153,6 +156,7 @@ export function BlockchainAddresses(): JSX.Element {
                                             : t('user.actions.connectNewBlockchain')}
                                     </Button>
                                     <IconPopover
+                                        data-cy="blockchain-address-info-icon"
                                         icon={Info}
                                         iconSize={IconSize.Large}
                                         popoverText={[

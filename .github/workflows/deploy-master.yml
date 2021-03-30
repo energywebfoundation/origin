@@ -50,29 +50,22 @@ jobs:
       run: |
         sh scripts/restore-original-timestamps.sh
 
+    - name: Install rush
+      run: |
+        npm install -g @microsoft/rush
+
     - name: Install application
       # lerna doesn't work without additional fetch
       run: |
-        yarn
+        node common/scripts/install-run-rush.js update --full --purge
 
     - name: Build application
       run: |
-        yarn build
-
-    - name: Set creds to npm 
-      run: |
-        echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc
-
-    - name: Login into docker hub 
-      run: |
-        wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
-        echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
+        node common/scripts/install-run-rush.js rebuild
 
     - name: Deploy application
       run: |
-        yarn publish:canary 
-        npx sleep 5 
-        yarn build:containers:canary 
+        yarn build:containers:canary
         yarn deploy:heroku:canary
       env:
         BUILD_ID: ${{ steps.generate_unique_id.outputs.unique_id }}
@@ -82,4 +75,3 @@ jobs:
         HEROKU_CANARY_APP_SIM: ${{ secrets.HEROKU_CANARY_APP_SIM }}
         HEROKU_CANARY_APP_IREC_UI: ${{ secrets.HEROKU_CANARY_APP_IREC_UI }}
         HEROKU_CANARY_APP_IREC_API: ${{ secrets.HEROKU_CANARY_APP_IREC_API }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

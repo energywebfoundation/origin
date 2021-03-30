@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "3.1.0",
+    "version": "3.2.0",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -42,20 +42,38 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/utils-general": "11.0.1",
-        "chai": "4.3.0",
+        "@energyweb/utils-general": "11.0.2",
+        "@ethersproject/contracts": "5.0.11",
+        "@ethersproject/providers": "5.0.24",
         "dotenv": "8.2.0",
         "ethers": "5.0.31",
-        "mocha": "8.3.0",
         "moment": "2.29.1",
         "precise-proofs-js": "1.2.0",
         "winston": "3.3.3"
     },
     "devDependencies": {
+        "typescript": "4.1.5",
         "@typechain/ethers-v5": "1.0.0",
         "ethlint": "1.2.5",
         "truffle-typings": "1.0.8",
-        "typechain": "4.0.2"
+        "typechain": "4.0.3",
+        "@types/mocha": "8.2.2",
+        "@types/node": "14.14.37",
+        "mocha": "8.3.2",
+        "truffle": "5.2.6",
+        "solc": "0.5.16",
+        "@ethersproject/abstract-provider": "5.0.10",
+        "@ethersproject/abi": "5.0.13",
+        "winston-transport": "4.4.0",
+        "@types/dotenv": "6.1.1",
+        "@types/chai": "4.2.15",
+        "chai": "4.3.0",
+        "@openzeppelin/cli": "2.8.2",
+        "@openzeppelin/contracts-ethereum-package": "2.5.0",
+        "@openzeppelin/upgrades": "2.8.0",
+        "shx": "0.3.3",
+        "@types/supertest": "2.0.10",
+        "ts-node": "9.1.1"
     },
     "publishConfig": {
         "access": "public",

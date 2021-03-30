@@ -15,3 +15,4 @@ export * from './blockchainNetwork';
 export * from './organizationRoles';
 export * from './permissions';
 export * from './dataLayers';
+export * from './countries';

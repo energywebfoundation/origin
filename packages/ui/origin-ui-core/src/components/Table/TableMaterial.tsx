@@ -56,6 +56,8 @@ export interface ICustomRow<T extends any> {
     display: React.ReactElement;
 }
 
+export type TableAction = ITableAction | ITableAction[] | ((row: any) => ITableAction);
+
 export function getRowId(row: { id?: string }, index: number): string {
     return row?.id ?? index?.toString();
 }
@@ -67,7 +69,7 @@ interface IProps<T extends readonly ITableColumn[]> {
     loadPage?: (page: number, filters?: ICustomFilter[]) => void | Promise<any>;
     pageSize?: number;
     total?: number;
-    actions?: (ITableAction | ITableAction[] | ((row: any) => ITableAction))[];
+    actions?: TableAction[];
     onSelect?: TableOnSelectFunction;
     currentSort?: CurrentSortType;
     sortAscending?: boolean;
@@ -233,7 +235,7 @@ export function TableMaterial<T extends readonly ITableColumn[]>(props: IProps<T
 
     return (
         <>
-            <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration.language}>
+            <MuiPickersUtilsProvider utils={MomentUtils} locale={configuration?.language}>
                 <FiltersHeader
                     filters={filters}
                     filtersChanged={filtersChanged}

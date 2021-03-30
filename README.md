@@ -13,29 +13,31 @@
   <img src="https://github.com/energywebfoundation/origin/actions/workflows/deploy-master.yml/badge.svg" />
 </p>
 
+:construction: Documentation available at [https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) :construction:
+
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Packages](#packages)
-  - [SDK Releases](#sdk-releases)
-  - [Applications, Infrastructure and Demo](#applications-infrastructure-and-demo)
-  - [Packages types](#packages-types)
-    - [Stable](#stable)
-    - [Canary](#canary)
-    - [Preview](#preview)
-- [Installation](#installation)
-- [Build](#build)
-- [Test](#test)
-- [Run demo](#run-demo)
-  - [Preparation](#preparation)
-  - [Running](#running)
-  - [Heroku environment provisioning](#heroku-environment-provisioning)
-- [Energy Attribute Certificates](#energy-attribute-certificates)
-- [Key modules and components](#key-modules-and-components)
-  - [Key repositories](#key-repositories)
-  - [Other components](#other-components)
-- [Deployment](#deployment)
-- [Contribution guidelines](#contribution-guidelines)
+-   [Table of Contents](#table-of-contents)
+-   [Packages](#packages)
+    -   [SDK Releases](#sdk-releases)
+    -   [Applications, Infrastructure and Demo](#applications-infrastructure-and-demo)
+    -   [Packages types](#packages-types)
+        -   [Stable](#stable)
+        -   [Canary](#canary)
+        -   [Preview](#preview)
+-   [Installation](#installation)
+-   [Build](#build)
+-   [Test](#test)
+-   [Run demo](#run-demo)
+    -   [Preparation](#preparation)
+    -   [Running](#running)
+    -   [Heroku environment provisioning](#heroku-environment-provisioning)
+-   [Energy Attribute Certificates](#energy-attribute-certificates)
+-   [Key modules and components](#key-modules-and-components)
+    -   [Key repositories](#key-repositories)
+    -   [Other components](#other-components)
+-   [Deployment](#deployment)
+-   [Contribution guidelines](#contribution-guidelines)
 
 ## Packages
 
@@ -82,22 +84,22 @@ Install using `yarn add @energyweb/{package}@preview`
 
 ## Installation
 
-Make sure have latest `yarn` package manager installed.
+Make sure have latest `@microsoft/rush` package manager installed.
 
 ```shell
-yarn
+rush install
 ```
 
 ## Build
 
 ```shell
-yarn build
+rush build
 ```
 
 ## Test
 
 ```shell
-yarn test
+rush test:e2e
 ```
 
 ## Run demo
@@ -118,14 +120,14 @@ psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
 2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
    Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
-3. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-app#development
+3. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
 
 ### Running
 
-After you have the `.env` file created, installed dependencies (`yarn`) and build completed (`yarn build`) run the following command:
+After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
 
 ```shell
-yarn run:origin
+rush run:origin
 ```
 
 Visit the UI at: http://localhost:3000.
@@ -194,5 +196,5 @@ If you want to contribute to Origin, be sure to follow classic open source contr
     - Commit the change to the `master` branch
 2. Pull request
     - Open a pull request from your fork `master` branch
-    - Request code reviews from [@Kuzirashi](https://github.com/Kuzirashi), [@JosephBagaric](https://github.com/JosephBagaric) or [@kosecki123](https://github.com/kosecki123)
+    - Request code reviews from [@JosephBagaric](https://github.com/JosephBagaric), [@kosecki123](https://github.com/kosecki123), [@alexworker23](https://github.com/alexworker23) or [@ioncreature](https://github.com/ioncreature)
     - Once the PR is approved and the build passes, it will be merged to the master branch

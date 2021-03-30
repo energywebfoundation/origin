@@ -7,7 +7,12 @@ LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
 
 build-canary:
-	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY} .
+	@rm -rf ./deployment
+	@mkdir ./deployment
+	@rush deploy -p @energyweb/solar-simulator -t ./deployment --overwrite
+	@docker rmi ${LATEST} -f
+	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY} -f Dockerfile.local ./deployment
+	@rm -rf ./deployment
 	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
 
 build-latest:

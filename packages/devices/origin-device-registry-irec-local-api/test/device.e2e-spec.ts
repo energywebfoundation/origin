@@ -1,15 +1,14 @@
 /* eslint-disable no-return-assign */
-import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
+import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import dotenv from 'dotenv';
 import { expect } from 'chai';
 import supertest from 'supertest';
 
-import { CreateDeviceDTO } from '../src/device';
+import { CreateDeviceDTO, PublicDeviceDTO } from '../src';
 import { request } from './request';
 import { bootstrapTestInstance, TestUser } from './test.app';
-import { PublicDeviceDTO } from '../src/device/dto/public-device.dto';
 
 describe('Device e2e tests', () => {
     dotenv.config({
@@ -22,7 +21,6 @@ describe('Device e2e tests', () => {
 
     const exampleDevice: CreateDeviceDTO = {
         name: 'Test solar device',
-        code: 'TESTDEVICE001',
         defaultAccount: 'MYTRADEACCOUNT001',
         deviceType: 'ES100',
         fuel: 'TC110',
@@ -61,38 +59,12 @@ describe('Device e2e tests', () => {
             .expect(HttpStatus.FORBIDDEN);
     });
 
-    it('should not allow organization admin to approve the device', async () => {
-        const { body } = await test
-            .post('/irec/device-registry')
-            .send(exampleDevice)
-            .set({ 'test-user': TestUser.OrganizationAdmin });
-
-        await test
-            .put(`/irec/device-registry/device/${body.id}`)
-            .send({ status: DeviceStatus.Active })
-            .set({ 'test-user': TestUser.OrganizationAdmin })
-            .expect(HttpStatus.FORBIDDEN);
-    });
-
     it('should allow to register device for active organization', async () => {
         await test
             .post('/irec/device-registry')
             .send(exampleDevice)
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
-    });
-
-    it('should allow platform admin to approve the device', async () => {
-        const { body } = await test
-            .post('/irec/device-registry')
-            .send(exampleDevice)
-            .set({ 'test-user': TestUser.OrganizationAdmin });
-
-        await test
-            .put(`/irec/device-registry/device/${body.id}`)
-            .send({ status: DeviceStatus.Active })
-            .set({ 'test-user': TestUser.PlatformAdmin })
-            .expect(HttpStatus.OK);
     });
 
     it('should not expose all fields as public devices', async () => {
@@ -135,5 +107,64 @@ describe('Device e2e tests', () => {
             expect(fuelType.code).to.be.a('string');
             expect(fuelType.name).to.be.a('string');
         });
+    });
+
+    it('should return my devices', async () => {
+        const { body: device } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(device.status).to.equal(DeviceState.InProgress);
+
+        const { body: myDevices } = await test
+            .get('/irec/device-registry/my-devices')
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(myDevices).to.be.an('array');
+        expect(myDevices[0].id).to.equal(device.id);
+        expect(myDevices[0].code).to.equal(device.code);
+    });
+
+    it('should update device data', async () => {
+        const { body: device } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(device.status).to.equal(DeviceState.InProgress);
+
+        await test
+            .put(`/irec/device-registry/device/${device.id}`)
+            .send({
+                status: DeviceState.Approved, // the status should not change
+                name: 'Changed Name'
+            })
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+
+        const { body: updatedDevice }: { body: PublicDeviceDTO } = await test.get(
+            `/irec/device-registry/device/${device.id}`
+        );
+
+        expect(updatedDevice.status).to.equal(DeviceState.InProgress);
+        expect(updatedDevice.name).to.equal('Changed Name');
+    });
+
+    it('should import irec device to local irec device storage', async () => {
+        const {
+            body: [deviceToImport]
+        } = await test
+            .get('/irec/device-registry/irec-devices-to-import')
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(deviceToImport.code).to.be.a('string');
+
+        const { body: createdDevice } = await test
+            .post('/irec/device-registry/import-irec-device')
+            .send({ code: deviceToImport.code, timezone: 'some', gridOperator: 'some' })
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(createdDevice.id).to.be.a('string');
     });
 });

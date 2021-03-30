@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -34,14 +34,24 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/exchange-core": "3.1.9",
-        "@energyweb/utils-general": "11.0.1",
-        "@nestjs/common": "7.6.13",
+        "@energyweb/exchange-core": "3.2.0",
+        "@energyweb/utils-general": "11.0.2",
+        "@nestjs/common": "7.6.15",
         "bn.js": "5.2.0",
         "immutable": "4.0.0-rc.12",
         "moment": "2.29.1",
         "moment-range": "4.0.2",
-        "rxjs": "6.6.6"
+        "rxjs": "6.6.7"
+    },
+    "devDependencies": {
+        "typescript": "4.1.5",
+        "@types/mocha": "8.2.2",
+        "@types/node": "14.14.37",
+        "@types/bn.js": "5.1.0",
+        "mocha": "8.3.2",
+        "@types/chai": "4.2.15",
+        "chai": "4.3.0",
+        "ts-node": "9.1.1"
     },
     "publishConfig": {
         "access": "public",

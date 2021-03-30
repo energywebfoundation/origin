@@ -1,11 +1,11 @@
 {
     "name": "@energyweb/origin-device-registry-irec-form-api-client",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Client library interacting with the Origin I-REC Device Registry ",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-irec-form-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
-    "main": "dist/js/src/index.js",
+    "main": "dist/js/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "yarn build:client && tsc -b tsconfig.json",
+        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc -b tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
         "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
@@ -26,15 +26,20 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "@energyweb/origin-backend": "10.0.0",
-        "@energyweb/origin-device-registry-irec-form-api": "1.0.1",
-        "@nestjs/swagger": "4.7.15",
-        "@nestjs/testing": "7.6.13",
+        "typescript": "4.1.5",
+        "@energyweb/origin-backend": "10.0.1",
+        "@energyweb/origin-device-registry-irec-form-api": "2.0.0",
+        "@nestjs/swagger": "4.8.0",
+        "@nestjs/testing": "7.6.15",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.1.26",
+        "@openapitools/openapi-generator-cli": "2.2.3",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.2.1",
-        "ts-node": "9.1.1"
+        "ts-node": "9.1.1",
+        "@types/mocha": "8.2.2",
+        "@types/node": "14.14.37",
+        "mocha": "8.3.2",
+        "@nestjs/passport": "7.1.5"
     },
     "publishConfig": {
         "access": "public",

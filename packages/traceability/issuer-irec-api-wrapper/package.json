@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-irec-api-wrapper",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "A Typescript wrapper for I-REC Evident API",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
@@ -14,6 +14,7 @@
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
+        "build:docs": "rm -Rf ../../../docs/sdk-reference/issuer-irec-api-wrapper && typedoc --plugin typedoc-plugin-markdown src/index.ts --out ../../../docs/sdk-reference/issuer-irec-api-wrapper",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
@@ -27,8 +28,22 @@
         "form-data": "3.0.1",
         "moment": "2.29.1",
         "moment-timezone": "0.5.33",
-        "qs": "6.9.6",
+        "qs": "6.10.1",
         "reflect-metadata": "0.1.13"
+    },
+    "devDependencies": {
+        "typescript": "4.1.5",
+        "@types/mocha": "8.2.2",
+        "@types/node": "14.14.37",
+        "mocha": "8.3.2",
+        "@types/chai": "4.2.15",
+        "chai": "4.3.0",
+        "@types/dotenv": "6.1.1",
+        "dotenv": "8.2.0",
+        "@types/qs": "6.9.6",
+        "ts-node": "9.1.1",
+        "typedoc": "0.20.34",
+        "typedoc-plugin-markdown": "3.6.0"
     },
     "publishConfig": {
         "access": "public",

@@ -3,7 +3,9 @@ import {
     IStoreAllDevicesAction,
     IStoreMyDevicesAction,
     IDeviceActions,
-    IApproveDeviceAction
+    IApproveDeviceAction,
+    IAddReadsAllDevices,
+    IAddReadsMyDevices
 } from './types';
 
 export enum DevicesActions {
@@ -14,7 +16,9 @@ export enum DevicesActions {
     CREATE_DEVICE = 'CREATE_DEVICE',
     STORE_ALL_DEVICES = 'STORE_ALL_DEVICES',
     STORE_MY_DEVICES = 'STORE_MY_DEVICES',
-    APPROVE_DEVICE = 'APPROVE_DEVICE'
+    APPROVE_DEVICE = 'APPROVE_DEVICE',
+    ADD_READS_ALL_DEVICES = 'ADD_READS_ALL_DEVICES',
+    ADD_READS_MY_DEVICES = 'ADD_READS_MY_DEVICES'
 }
 
 export const fetchAllDevices = (): IDeviceActions => ({
@@ -54,5 +58,17 @@ export const createDevice = (payload: ICreateDeviceAction['payload']): ICreateDe
 
 export const approveDevice = (payload: IApproveDeviceAction['payload']): IApproveDeviceAction => ({
     type: DevicesActions.APPROVE_DEVICE,
+    payload
+});
+
+export const addReadsAllDevices = (
+    payload: IAddReadsAllDevices['payload']
+): IAddReadsAllDevices => ({
+    type: DevicesActions.ADD_READS_ALL_DEVICES,
+    payload
+});
+
+export const addReadsMyDevices = (payload: IAddReadsMyDevices['payload']): IAddReadsMyDevices => ({
+    type: DevicesActions.ADD_READS_MY_DEVICES,
     payload
 });

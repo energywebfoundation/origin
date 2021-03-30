@@ -107,7 +107,7 @@ export class Entity implements IDevice {
         const { data } = await this.configuration.deviceClient.getAllSmartMeterReadings(
             this.id.toString()
         );
-        return data.map((smRead) => ({
+        return data.map((smRead: any) => ({
             ...smRead,
             meterReading: BigNumber.from(smRead.meterReading)
         }));
@@ -156,7 +156,7 @@ export const getAllDevices = async (
 ): Promise<Entity[]> => {
     const { data: allDevices } = await configuration.deviceClient.getAll(withMeterStats);
 
-    return allDevices.map((device) => {
+    return allDevices.map((device: any) => {
         const transformedDevice = {
             ...device,
             meterStats: {

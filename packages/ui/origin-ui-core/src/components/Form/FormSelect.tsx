@@ -20,25 +20,37 @@ interface IFormSelectProps {
 }
 
 export function FormSelect(props: IFormSelectProps) {
+    const {
+        label,
+        property,
+        currentValue,
+        options,
+        className,
+        required,
+        disabled,
+        ...otherProps
+    } = props;
+
     return (
         <FormControl
             fullWidth
             variant="filled"
-            className={props.className}
-            required={props.required}
+            className={className}
+            required={required}
+            {...otherProps}
         >
-            <InputLabel required>{props.label}</InputLabel>
+            <InputLabel required>{label}</InputLabel>
             <Field
-                name={props.property}
-                label={props.label}
+                name={property}
+                label={label}
                 component={Select}
-                input={<FilledInput value={props.currentValue ?? ''} />}
+                input={<FilledInput value={currentValue ?? ''} />}
                 fullWidth
                 variant="filled"
-                required={props.required}
-                disabled={props.disabled}
+                required={required}
+                disabled={disabled}
             >
-                {props.options.map((option) => (
+                {options.map((option) => (
                     <MenuItem value={option.code || option.value} key={option.value}>
                         {option.label}
                     </MenuItem>

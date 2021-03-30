@@ -47,7 +47,7 @@ export class ConnectionController {
         type: [ConnectionDTO],
         description: 'Get a IREC connection info'
     })
-    public async getAll(@UserDecorator() user: ILoggedInUser): Promise<ConnectionDTO> {
+    public async getMyConnection(@UserDecorator() user: ILoggedInUser): Promise<ConnectionDTO> {
         return this.commandBus.execute(new GetConnectionCommand(user));
     }
 }

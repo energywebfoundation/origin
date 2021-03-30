@@ -41,8 +41,10 @@ import {
     CodeNameDTO,
     CreateDeviceDTO,
     DeviceDTO,
+    ImportIrecDeviceDTO,
+    IrecDeviceDTO,
     PublicDeviceDTO,
-    UpdateDeviceStatusDTO
+    UpdateDeviceDTO
 } from './dto';
 
 @ApiTags('device')
@@ -142,19 +144,66 @@ export class DeviceController {
 
     @Put('/device/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
-    @Roles(Role.Issuer, Role.Admin)
-    @ApiBody({ type: UpdateDeviceStatusDTO })
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: UpdateDeviceDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: DeviceDTO,
-        description: `Updates a device's status`
+        description: `Updates a device data`
     })
     @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
-    async updateDeviceStatus(
+    async updateDevice(
         @Param('id') id: string,
-        @Body() { status }: UpdateDeviceStatusDTO
+        @Body() deviceData: UpdateDeviceDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<DeviceDTO> {
-        const device = await this.deviceService.updateStatus(id, status);
+        const device = await this.deviceService.findOne(id);
+        if (device.ownerId !== loggedInUser.ownerId) {
+            throw new NotFoundException('Device not found');
+        }
+
+        const updatedDevice = await this.deviceService.update(loggedInUser, id, deviceData);
+
+        return plainToClass(DeviceDTO, updatedDevice);
+    }
+
+    @Get('/irec-devices-to-import')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [IrecDeviceDTO],
+        description: 'Returns not imported IREC devices'
+    })
+    async getDevicesToImportFromIrec(
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<IrecDeviceDTO[]> {
+        return this.deviceService.getDevicesToImport(loggedInUser);
+    }
+
+    @Post('/import-irec-device')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: ImportIrecDeviceDTO })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: DeviceDTO,
+        description: 'Imports a device from IREC'
+    })
+    @ApiForbiddenResponse({
+        status: HttpStatus.FORBIDDEN,
+        description: `User doesn't have the correct permissions`
+    })
+    @ApiUnprocessableEntityResponse({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        description: 'Incorrect inputs'
+    })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST })
+    async importIrecDevice(
+        @Body() deviceToImport: ImportIrecDeviceDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<DeviceDTO> {
+        const device = await this.deviceService.importIrecDevice(loggedInUser, deviceToImport);
 
         return plainToClass(DeviceDTO, device);
     }

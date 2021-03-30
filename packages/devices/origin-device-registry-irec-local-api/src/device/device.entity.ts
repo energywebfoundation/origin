@@ -1,4 +1,4 @@
-import { DeviceStatus } from '@energyweb/origin-backend-core';
+import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -60,8 +60,8 @@ export class Device extends ExtendedBaseEntity {
     @Column({ nullable: true })
     notes: string;
 
-    @Column({ nullable: false, default: DeviceStatus.Submitted })
-    status: DeviceStatus;
+    @Column({ nullable: false, default: DeviceState.Draft })
+    status: DeviceState;
 
     @Column()
     timezone: string;

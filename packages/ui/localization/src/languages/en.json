@@ -11,7 +11,8 @@
         },
         "navigation": {
             "admin": {
-                "users": "Manage Users"
+                "users": "Manage Users",
+                "claims": "Claims"
             },
             "devices": {
                 "import": "Device import",
@@ -105,7 +106,7 @@
                 "pleaseSelectUpToXImages": "Please select up to {limit} images. You've selected {actual}.",
                 "unexpectedErrorWhenUploadingImages": "Unexpected error occurred when uploading images.",
                 "errorGettingDevices": "Unexpected error occurred when getting devices",
-                "errorGettingDevice": "Unexpected error occurred when getting device",                
+                "errorGettingDevice": "Unexpected error occurred when getting device",
                 "successCreatingDevice": "Device has been created",
                 "errorCreatingDevice": "Unexpected error occurred when creating device",
                 "successApprovingDevice": "Device has been approved",
@@ -121,7 +122,7 @@
                 "selectProvince": "Select province",
                 "selectGridOperator": "Select grid operator",
                 "toRegisterADevice": "To register a device you need to fulfill following criteria:",
-                "importDevice": "Import Device",
+                "importDevice": "Devices to import",
                 "importedDevices": "Imported Devices",
                 "attachDeviceData": "Attach optional device data"
             }
@@ -142,7 +143,7 @@
                 "from": "From",
                 "to": "To",
                 "source": "Source",
-                "generationDate":"Generation Date",
+                "generationDate": "Generation Date",
                 "generationDateStart": "Generation Start Date",
                 "generationDateEnd": "Generation End Date",
                 "claimedEnergy": "Claimed Energy",
@@ -221,6 +222,14 @@
                 "totalPrice": "Total price",
                 "retireForBeneficiary": "Retire for beneficiary"
             },
+            "claims": {
+                "certificateId": "Certificate ID",
+                "deviceName": "Device name",
+                "energy": "Energy",
+                "beneficiary": "Beneficiary",
+                "fromDate": "From date",
+                "toDate": "To date"
+            },
             "event": {
                 "name": {
                     "certified": "Certified",
@@ -279,7 +288,6 @@
                 "userProfile": "User profile",
                 "connectIREC": "Connect I-REC"
             }
-            
         },
         "general": {
             "responses": {
@@ -438,7 +446,7 @@
                 "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
                 "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
                 "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet.",
-                "yourAccountIsPending": "You user account status is pending",
+                "yourAccountIsPending": "Your user account status is pending",
                 "yourOrganizationIsPending": "Your organization status is pending"
             },
             "feedback": {
@@ -574,8 +582,8 @@
                 }
             },
             "supply": {
-                "type":"Type",
-                "facilityName":"Facility name",
+                "type": "Type",
+                "facilityName": "Facility name",
                 "price": "Price",
                 "status": "Status",
                 "meterReadToBeCertified": "To be certified",
@@ -623,12 +631,18 @@
                     "change": "Change"
                 },
                 "notification": {
-                    "rejectedSuccess":"Invitation rejected",
+                    "invitationSent": "Invitation sent",
+                    "rejectedSuccess": "Invitation rejected",
                     "rejectedFailure": "Could not reject invitation",
                     "acceptedSuccess": "Invitation accepted",
-                    "acceptedFailure": "Could not reject invitation",
+                    "acceptedFailure": "Could not accept invitation",
                     "laterSuccess": "You can find this invitation on the Organizations tab",
-                    "laterFailure": "Could not process invitation"
+                    "laterFailure": "Could not process invitation",
+                    "unauthorized": "Unauthorized",
+                    "errorInvitingUser": "Error while inviting user to organization",
+                    "alreadySent": "You have already sent an invitation for this user",
+                    "unableToInvite": "Could not invite user to organization.",
+                    "alreadyProcessed": "Invitation has already been processed"
                 }
             },
             "registration": {
@@ -658,12 +672,12 @@
                 "organizationCouldNotBeRegistered": "Sorry but this organization could not be registered.",
                 "organizationAlreadyExists": "There already exists an organization with the same information.",
                 "titleConnectOrRegisterIREC": "Thank you for registering an organization on the marketplace!",
-                "checkingInfoToApprove":"We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.",
+                "checkingInfoToApprove": "We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.",
                 "contentConnectOrRegisterIREC": "In order to register devices and request I-RECs, users also need to connect an I-REC account.",
                 "titleIRecInfoSuccess": "Thank you for providing your I-REC account information.",
                 "contentIRecInfoSuccess": "We will connect your organization to this account shortly!",
                 "titleIRecAccountRegistered": "Thank you for registering an I-REC account!",
-                "contentIRecAccountRegistered":"We will forward your application to I-REC and inform you as soon as it is approved.",
+                "contentIRecAccountRegistered": "We will forward your application to I-REC and inform you as soon as it is approved.",
                 "titleConnectIREC": "Requesting I-REC API Access",
                 "platformOrganizationId": "Platform Organization ID",
                 "IRECAPICredentials": "I-REC API Credentials",
@@ -671,7 +685,7 @@
                 "apiToken": "API token",
                 "clientID": "Client ID",
                 "clientSecret": "Client Secret",
-                
+
                 "titleRegisterIREC": "I-REC Registration information",
                 "irecInformation": "I-REC Information",
                 "IRECAccountType": "I-REC Account type",
@@ -684,8 +698,8 @@
                 "shareholderNames": "Shareholder Names (over 10%)",
                 "orgWebsite": "Organization Website",
                 "activeCountries": "Active Countries",
-                "mainBusiness":"Main Business",
-                "ceoName":"Name of the Chief Executive Officer/General Manager",
+                "mainBusiness": "Main Business",
+                "ceoName": "Name of the Chief Executive Officer/General Manager",
                 "ceoPassport": "Chief Executive Officer/General Manager passport number",
                 "lastBalance": "Balance sheet total for last financial year",
                 "primaryContactBlockTitle": "Primary Contact Details",
@@ -695,9 +709,9 @@
                 "primaryContactOrgCountry": "Organization country",
                 "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
                 "primaryContactName": "Contact person name",
-                "primaryContactEmail": "Contact person email",                
-                "primaryContactPhoneNumber": "Contact person telephone",                
-                "primaryContactFax": "Contact person fax",                
+                "primaryContactEmail": "Contact person email",
+                "primaryContactPhoneNumber": "Contact person telephone",
+                "primaryContactFax": "Contact person fax",
                 "leadUserBlockTitle": "Lead User Details",
                 "leadUserTitle": "Title",
                 "leadUserFirstName": "First Name",
@@ -706,9 +720,9 @@
                 "leadUserPhoneNumber": "Phone number",
                 "leadUserFax": "Fax",
                 "documents": "Documents",
-                "companyProof":"Company Proof",
+                "companyProof": "Company Proof",
                 "signatoryId": "Signatory ID",
-                "actions":{
+                "actions": {
                     "notNow": "Not now",
                     "connectIREC": "Connect existing I-REC account",
                     "registerIREC": "Register new I-REC account",
@@ -739,7 +753,7 @@
                 "certificates": "certificates",
                 "price": "Price per MWh",
                 "bundleBought": "Bundle was fully purchased",
-                "editBundleVolume" : "Edit volume (MWh)"
+                "editBundleVolume": "Edit volume (MWh)"
             },
             "actions": {
                 "sellAsBundle": "Sell as bundle"

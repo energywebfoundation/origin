@@ -18,7 +18,67 @@ export enum DeviceState {
     Approved = 'Approved'
 }
 
-export class DeviceCreateUpdateParams {
+export class DeviceCreateParams {
+    @IsString()
+    name: string;
+
+    @Expose({ name: 'default_account_code', toPlainOnly: true })
+    @IsString()
+    defaultAccount: string;
+
+    @Expose({ name: 'device_type_code', toPlainOnly: true })
+    @IsString()
+    deviceType: string;
+
+    @Expose({ name: 'fuel_code', toPlainOnly: true })
+    @IsString()
+    fuel: string;
+
+    @Expose({ name: 'country_code', toPlainOnly: true })
+    @IsString()
+    countryCode: string;
+
+    @Expose({ name: 'registrant_organisation_code', toPlainOnly: true })
+    @IsString()
+    registrantOrganization: string;
+
+    @Expose({ name: 'issuer_code', toPlainOnly: true })
+    @IsString()
+    issuer: string;
+
+    @Transform((value: string) => Number(value))
+    @IsPositive()
+    capacity: number;
+
+    @Expose({ name: 'commissioning_date', toPlainOnly: true })
+    @Transform((value: Date) => value?.toISOString().split('T')[0], {
+        toPlainOnly: true
+    })
+    @Transform((value: string) => new Date(value), { toClassOnly: true })
+    @IsDate()
+    commissioningDate: Date;
+
+    @Expose({ name: 'registration_date', toPlainOnly: true })
+    @Transform((value: Date) => value?.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: string) => new Date(value), { toClassOnly: true })
+    @IsDate()
+    registrationDate: Date;
+
+    @IsString()
+    address: string;
+
+    @IsLatitude()
+    latitude: string;
+
+    @IsLongitude()
+    longitude: string;
+
+    @IsOptional()
+    @IsString()
+    notes?: string;
+}
+
+export class DeviceUpdateParams {
     @IsOptional()
     @IsString()
     name?: string;
@@ -80,11 +140,11 @@ export class DeviceCreateUpdateParams {
 
     @IsOptional()
     @IsLatitude()
-    latitude?: number;
+    latitude?: string;
 
     @IsOptional()
     @IsLongitude()
-    longitude?: number;
+    longitude?: string;
 
     @IsOptional()
     @IsString()
@@ -95,7 +155,7 @@ export class DeviceCreateUpdateParams {
     active: boolean;
 }
 
-export class Device extends DeviceCreateUpdateParams {
+export class Device extends DeviceCreateParams {
     @IsString()
     @IsNotEmpty()
     code: string;

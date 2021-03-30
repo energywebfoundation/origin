@@ -1,5 +1,6 @@
 import { AppModule, entities } from '@energyweb/origin-device-registry-irec-local-api';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { entities as orgEntities } from '@energyweb/origin-organization-irec-api';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import fs from 'fs';
@@ -17,7 +18,7 @@ export const generateSchema = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities,
+                entities: [...entities, ...orgEntities],
                 logging: ['info']
             }),
             AppModule

@@ -24,7 +24,7 @@ export const generateSchema = async () => {
         ]
     }).compile();
 
-    const app = moduleFixture.createNestApplication();
+    const app = moduleFixture.createNestApplication(null, { logger: false });
 
     app.setGlobalPrefix('api');
 

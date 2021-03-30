@@ -102,7 +102,7 @@ export function DeviceTable(props: IOwnProps) {
 
     useEffect(() => {
         loadPage(1);
-    }, [user]);
+    }, [user, props.devices]);
 
     function viewDevice(rowIndex: number) {
         const device = paginatedData[rowIndex];
@@ -183,8 +183,14 @@ export function DeviceTable(props: IOwnProps) {
         deviceLocation: device.locationText,
         type: configuration?.deviceTypeService?.getDisplayText(device.deviceType) ?? '',
         capacity: PowerFormatter.format(device.capacityInW),
-        readCertified: EnergyFormatter.format(device.meterStats?.certified ?? 0),
-        readToBeCertified: EnergyFormatter.format(device.meterStats?.uncertified ?? 0),
+        readCertified:
+            device.meterStats === null
+                ? 'Loading...'
+                : EnergyFormatter.format(device.meterStats?.certified ?? 0),
+        readToBeCertified:
+            device.meterStats === null
+                ? 'Loading...'
+                : EnergyFormatter.format(device.meterStats?.uncertified ?? 0),
         status: device.status,
         gridOperator: device.gridOperator
     }));

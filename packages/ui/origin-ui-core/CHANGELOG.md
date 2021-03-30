@@ -3,6 +3,70 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.14.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.13.0...@energyweb/origin-ui-core@1.14.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @material-ui/pickers to v3.3.10 ([c3d13e5](https://github.com/energywebfoundation/origin/commit/c3d13e501ae7949cba3e3fa1d24bac35612c3ed2))
+* **deps:** update dependency ethers to v5.0.31 ([2c4a3a0](https://github.com/energywebfoundation/origin/commit/2c4a3a002e113ab28d1a452ed77b1b4b2a8436e6))
+* **deps:** update dependency i18next to v19.8.9 ([86169ea](https://github.com/energywebfoundation/origin/commit/86169eac6ffef1a84ab86d24df605905808d92bf))
+* **deps:** update dependency i18next to v19.9.0 ([2140690](https://github.com/energywebfoundation/origin/commit/2140690637c8ef4c060d915aeeb9db685f010196))
+* **deps:** update dependency i18next to v19.9.1 ([860cb8f](https://github.com/energywebfoundation/origin/commit/860cb8f08a4518f9ce730f0b01fe9a8c24504ff7))
+* **deps:** update dependency i18next to v19.9.2 ([26cadd3](https://github.com/energywebfoundation/origin/commit/26cadd3f0ffcbbbde09217c5947287b2195a1528))
+* **deps:** update dependency query-string to v6.14.0 ([a3b1524](https://github.com/energywebfoundation/origin/commit/a3b1524cd4dfe115eed1a381439121df870af491))
+* **deps:** update dependency query-string to v6.14.1 ([a0e1506](https://github.com/energywebfoundation/origin/commit/a0e150625b20ce7ec991da2ebfc2af3543155e28))
+* **deps:** update dependency react-hook-form to v6.15.5 ([6253b6c](https://github.com/energywebfoundation/origin/commit/6253b6cdc62ef0a89ad71c66db467f1c807ae5c7))
+* **deps:** update dependency yup to v0.32.9 ([fc68c9d](https://github.com/energywebfoundation/origin/commit/fc68c9da3700627c1c5b4c8f70bd2318941a54a2))
+* **origin-ui-core:** claiming certificate from blockchain inbox ([7c46877](https://github.com/energywebfoundation/origin/commit/7c4687724e09e7e0aba7ea566846203c9bb5e5c9))
+* **origin-ui-core:** display smartMeterReads in device detail view ([65682d0](https://github.com/energywebfoundation/origin/commit/65682d0374a5533160dde55d7c7f2c80ec4cc5e2))
+* **origin-ui-core:** fallback for deviceType ([0de9b0e](https://github.com/energywebfoundation/origin/commit/0de9b0e29dc04b7ee639807dd4287a01e6c2470f))
+* **origin-ui-core:** fetching my devices for inactive user ([15c332e](https://github.com/energywebfoundation/origin/commit/15c332eabf34d44f880d399dde7c40e9ca32edab))
+* **origin-ui-core:** forbid changing email to current and add test attributes ([0e451ef](https://github.com/energywebfoundation/origin/commit/0e451ef8890b2ffa3d8314d33adfa36ece8d6782))
+* **origin-ui-core:** getting meter reads after vital device data ([0cefef7](https://github.com/energywebfoundation/origin/commit/0cefef7cb64f22f9bdac4c7a546979cf9563eaec))
+* **origin-ui-core:** hide claims report for issuer, adjust default redirect ([0047b9b](https://github.com/energywebfoundation/origin/commit/0047b9b375a378a11460cbf53c6bafdf47cd7f28))
+* **origin-ui-core:** hide myDevices under requirements ([b64df9e](https://github.com/energywebfoundation/origin/commit/b64df9ecd7bd4d8f0173110831daf84463fb84d4))
+* **origin-ui-core:** hide requests page for issuer ([62e99ee](https://github.com/energywebfoundation/origin/commit/62e99eeccf288637d03a86e5a0271ee06a25701d))
+* **origin-ui-core:** remove destructing of exchangeClient ([2b65155](https://github.com/energywebfoundation/origin/commit/2b65155d5a55126a6564e0da81f05afa40343822))
+* **origin-ui-core:** return Register I-REC to menu ([b32d85e](https://github.com/energywebfoundation/origin/commit/b32d85e6820cb5c75db918cb04d9d161495b0137))
+* **origin-ui-core:** type inconsistence ([f07b428](https://github.com/energywebfoundation/origin/commit/f07b428a97df0aa263244f64f3c80a64d1569420))
+* add i18next provider for ui packages ([998e101](https://github.com/energywebfoundation/origin/commit/998e101d2aa38a5bda8e0228868398cb0edd8096))
+
+
+### Features
+
+* **localization:** create address modal ([ec753fd](https://github.com/energywebfoundation/origin/commit/ec753fd3fd89b4b0a3164444a906c72f6924d24f))
+* **origin-core-ui:** old table pages visibility only for issuer ([1ccb521](https://github.com/energywebfoundation/origin/commit/1ccb521ed063c87aebbbdbc7db1135b8d9d3b8d4))
+* **origin-ui-core:** add blockchain inbox validation ([3ee109e](https://github.com/energywebfoundation/origin/commit/3ee109e22e9d995a1b2944de7163b1f6d8f86b6d))
+* **origin-ui-core:** add date info to admin claims table ([4597e73](https://github.com/energywebfoundation/origin/commit/4597e7359e51f74d0a9a96f71dc5859b39c119d9))
+* **origin-ui-core:** add invitations localization ([8fc1fb1](https://github.com/energywebfoundation/origin/commit/8fc1fb1551f909bf242016ef31e724f044171b29))
+* **origin-ui-core:** admin claims page ([988b5d7](https://github.com/energywebfoundation/origin/commit/988b5d7b560effb0b509d6112248dc678cf6d384))
+* **origin-ui-core:** block withdraw if user lack blockchain address ([ba4c7b9](https://github.com/energywebfoundation/origin/commit/ba4c7b99fcb265389f584b8900a5f9200e8ff165))
+* **origin-ui-core:** cert request page ([9891697](https://github.com/energywebfoundation/origin/commit/989169774c5cc5f868ecb0282d6e0074e53a683b))
+* **origin-ui-core:** certificate requests timerame column added ([ed37df7](https://github.com/energywebfoundation/origin/commit/ed37df704cfa86850db19ac7b865dc763a114639))
+* **origin-ui-core:** certificate state fix ([218ed5c](https://github.com/energywebfoundation/origin/commit/218ed5c8af382533ae570a298ad0b4f104358b98))
+* **origin-ui-core:** column name fix ([b168613](https://github.com/energywebfoundation/origin/commit/b168613c576464f94cba6286798eeaebb19a21cf))
+* **origin-ui-core:** cr fixes ([e875230](https://github.com/energywebfoundation/origin/commit/e875230fa914b9d455456ae35348aeeb05e7c1ed))
+* **origin-ui-core:** cr fixes ([8372c9f](https://github.com/energywebfoundation/origin/commit/8372c9f9dfe1c4d4bcda0794e5d25d210173a4a1))
+* **origin-ui-core:** create address modal ([666dc7c](https://github.com/energywebfoundation/origin/commit/666dc7c50470d5b23788312590c22b015e27f02b))
+* **origin-ui-core:** create SmartMeterChart based on energy-api ([2383c5a](https://github.com/energywebfoundation/origin/commit/2383c5a219484c16b550ed1d8bc3e1067205b124))
+* **origin-ui-core:** date fields for claiming certificate ([e651d20](https://github.com/energywebfoundation/origin/commit/e651d20402366e4ce9c93c429f3e6a8ffe5d563a))
+* **origin-ui-core:** deepscan fix ([02fd535](https://github.com/energywebfoundation/origin/commit/02fd53595ee4d16057b700cf29e89553be58089b))
+* **origin-ui-core:** deepscan fix, console log removed ([bbe38eb](https://github.com/energywebfoundation/origin/commit/bbe38ebeb7478c31657f9c821deac8c118b7cb65))
+* **origin-ui-core:** DeepScan issue fix ([171d87b](https://github.com/energywebfoundation/origin/commit/171d87bbef236a1a2ee69fdc41b3e488867e2f72))
+* **origin-ui-core:** device icons replacement ([99adad9](https://github.com/energywebfoundation/origin/commit/99adad9393b1cd362095b0953505eb3e65f68849))
+* **origin-ui-core:** display loading while getting meterReads ([8743da1](https://github.com/energywebfoundation/origin/commit/8743da116270bb2335b49c722a72916b6b466151))
+* **origin-ui-core:** new blockchain inbox page ([6e48b90](https://github.com/energywebfoundation/origin/commit/6e48b908d140327bce6cba92f4f090536a3301b1))
+* **origin-ui-core:** notification fix ([2d5c10f](https://github.com/energywebfoundation/origin/commit/2d5c10f36653793763e94a5937101231a9c10f9d))
+* **origin-ui-core:** register - thank you modal ([71dcb73](https://github.com/energywebfoundation/origin/commit/71dcb73b11e6bec484b2fc016b3df6b459bdadae))
+* **origin-ui-core:** use permissions extended, blockchain inbox requirements added ([e812a8e](https://github.com/energywebfoundation/origin/commit/e812a8e813d0ba354084f847495c98a3cd1003ba))
+* **origin-ui-core:** various certificates fixes ([b0f83ef](https://github.com/energywebfoundation/origin/commit/b0f83ef69854a2d1affb7ef51afc9f3682b3ca73))
+* add smart meter id to env ([44876e2](https://github.com/energywebfoundation/origin/commit/44876e2ae5219692d74afdbc40cc1962d7c1fe36))
+
+
+
+
+
 # [1.13.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.12.0...@energyweb/origin-ui-core@1.13.0) (2021-02-12)
 
 

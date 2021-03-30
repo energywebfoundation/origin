@@ -1,17 +1,10 @@
 {
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "target": "ES2020",
-        "types": ["node", "mocha"]
+        "target": "ES2020"
     },
-    "include": ["src/**/*", "test/**/*"],
-    "references": [
-        {
-            "path": "../../origin-backend-core/tsconfig.json"
-        }
-    ]
+    "include": ["src/**/*", "test/**/*"]
 }

@@ -1,35 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
 import { Fab, Tooltip } from '@material-ui/core';
-import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
+import { Add, Assignment, Visibility } from '@material-ui/icons';
 import {
     checkRecordPassesFilters,
     CustomFilterInputType,
+    EnergyFormatter,
+    getBaseURL,
+    getConfiguration,
+    getDeviceDetailLink,
+    getExchangeDepositAddress,
+    getUserOffchain,
     ICustomFilterDefinition,
     IPaginatedLoaderFetchDataReturnValues,
     IPaginatedLoaderHooksFetchDataParameters,
     ITableAction,
-    TableMaterial,
-    usePaginatedLoaderFiltered,
-    EnergyFormatter,
-    // This should be removed
-    getDeviceDetailLink,
     moment,
     NotificationType,
     PowerFormatter,
     showNotification,
-    getExchangeDepositAddress,
-    getUserOffchain,
-    setLoading,
-    getBaseURL,
-    // SHOULD BE REMOVED
-    getConfiguration
+    TableMaterial,
+    usePaginatedLoaderFiltered
 } from '@energyweb/origin-ui-core';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
 // import { getConfiguration, getProducingDevices } from '../../../features/selectors';
-import { updateDeviceStatus } from '../../../features/devices';
 import { getEnvironment } from '../../../features/general';
 import { getDeviceColumns } from '../../../utils/device';
 import { ComposedDevice, ComposedPublicDevice } from '../../../types';
@@ -44,7 +41,7 @@ interface IOwnProps {
     owner?: number;
     showAddDeviceButton?: boolean;
     hiddenColumns?: string[];
-    includedStatuses?: DeviceStatus[];
+    includedStatuses?: DeviceState[];
 }
 
 interface IEnrichedDeviceData {
@@ -62,7 +59,7 @@ interface IDeviceRowData {
     type: string;
     deviceLocation: string;
     capacity: string;
-    status: DeviceStatus;
+    status: DeviceState;
 }
 
 export function DeviceTable(props: IOwnProps) {
@@ -75,7 +72,6 @@ export function DeviceTable(props: IOwnProps) {
     const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
     const [showRequestModal, setShowRequestModal] = useState(false);
     const [deviceForModal, setDeviceForModal] = useState(null);
-    const dispatch = useDispatch();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -94,12 +90,11 @@ export function DeviceTable(props: IOwnProps) {
                     ) &&
                     (!props.owner ||
                         // check if its true later
-                        record?.registrantOrganization === user?.organization?.id.toString()) &&
+                        record?.ownerId === user?.organization?.id.toString()) &&
                     (includedStatuses.length === 0 || includedStatuses.includes(record.status))
             ) || [];
 
         const total = filteredEnrichedDeviceData.length;
-
         const paginatedData = filteredEnrichedDeviceData.slice(offset, offset + requestedPageSize);
 
         return {
@@ -108,14 +103,11 @@ export function DeviceTable(props: IOwnProps) {
         };
     }
 
-    const {
-        paginatedData,
-        loadPage,
-        total,
-        pageSize
-    } = usePaginatedLoaderFiltered<IEnrichedDeviceData>({
-        getPaginatedData
-    });
+    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<ComposedDevice>(
+        {
+            getPaginatedData
+        }
+    );
 
     const { t } = useTranslation();
 
@@ -124,9 +116,7 @@ export function DeviceTable(props: IOwnProps) {
     }, [user, devices]);
 
     function viewDevice(rowIndex: number) {
-        const device = paginatedData[rowIndex].device;
-
-        setDetailViewForDeviceId(device.id);
+        setDetailViewForDeviceId(paginatedData[rowIndex].id);
     }
 
     async function requestCerts(rowIndex: string) {
@@ -139,32 +129,6 @@ export function DeviceTable(props: IOwnProps) {
         }
         setDeviceForModal(targetDevice);
         setShowRequestModal(true);
-    }
-
-    async function approve(rowIndex: string) {
-        const deviceToApprove: ComposedPublicDevice = paginatedData[rowIndex].device;
-        dispatch(setLoading(true));
-        try {
-            if (isRole(user, Role.Issuer)) {
-                dispatch(
-                    updateDeviceStatus({
-                        id: deviceToApprove.externalRegistryId,
-                        status: { status: DeviceStatus.Active }
-                    })
-                );
-            } else {
-                throw new Error('You are not allowed to perform this action');
-            }
-            showNotification(`Device has been approved.`, NotificationType.Success);
-            await loadPage(1);
-        } catch (error) {
-            showNotification(
-                error.message ?? `Unexpected error occurred when approving device.`,
-                NotificationType.Error
-            );
-            console.error(error);
-        }
-        dispatch(setLoading(false));
     }
 
     const filters: ICustomFilterDefinition[] = [
@@ -211,21 +175,20 @@ export function DeviceTable(props: IOwnProps) {
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
-    const rows: IDeviceRowData[] = [];
-    // Adjust according to new properties
-
-    // paginatedData.map((enrichedData) => ({
-    //     owner: enrichedData.organizationName,
-    //     facilityName: enrichedData.device.facilityName,
-    //     deviceLocation: enrichedData.locationText,
-    //     type:
-    //         configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
-    //     capacity: PowerFormatter.format(enrichedData.device.capacityInW),
-    //     readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
-    //     readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
-    //     status: enrichedData.device.status,
-    //     gridOperator: enrichedData?.device?.gridOperator
-    // }));
+    const rows: IDeviceRowData[] = paginatedData.map((enrichedData) => ({
+        owner: enrichedData.registrantOrganization,
+        facilityName: enrichedData.name,
+        deviceLocation: enrichedData.address,
+        type: enrichedData.deviceType ?? '',
+        // type: configuration?.deviceTypeService?.getDisplayText(enrichedData.deviceType) ?? '',
+        capacity: PowerFormatter.format(enrichedData.capacity),
+        // readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
+        readCertified: '',
+        // readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
+        readToBeCertified: '',
+        status: enrichedData.status,
+        gridOperator: enrichedData.gridOperator ?? ''
+    }));
 
     if (detailViewForDeviceId !== null) {
         return <Redirect push={true} to={getDeviceDetailLink(baseURL, detailViewForDeviceId)} />;
@@ -245,21 +208,13 @@ export function DeviceTable(props: IOwnProps) {
         isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin)
     ) {
         actions.push((rowData) => {
-            if (rowData.status === DeviceStatus.Active) {
+            if (rowData.status === DeviceState.Approved) {
                 return {
                     icon: <Assignment />,
                     name: t('device.actions.requestCertificates'),
                     onClick: requestCerts
                 };
             }
-        });
-    }
-
-    if (props.actions.approve && isRole(user, Role.Issuer)) {
-        actions.push({
-            icon: <Check />,
-            name: t('device.actions.approve'),
-            onClick: approve
         });
     }
 
