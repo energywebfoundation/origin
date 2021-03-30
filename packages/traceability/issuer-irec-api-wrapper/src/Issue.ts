@@ -3,6 +3,7 @@ import { IsDate, IsPositive, IsOptional, IsString, IsNotEmpty } from 'class-vali
 
 export enum IssueStatus {
     Draft = 'Draft',
+    InProgress = 'In-progress',
     Rejected = 'Rejected',
     Withdrawn = 'Withdrawn',
     Submitted = 'Submitted',

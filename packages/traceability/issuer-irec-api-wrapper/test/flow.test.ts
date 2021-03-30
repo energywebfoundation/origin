@@ -88,7 +88,7 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(10000);
 
-    it.only('should pass create and approve issue flow', async () => {
+    it('should pass create and approve issue flow', async () => {
         const params = getDeviceParams();
         const device: Device = await registrantClient.device.create(params);
         const deviceCode: string = device.code;
@@ -112,19 +112,27 @@ describe('API flows', () => {
 
         await registrantClient.issue.submit(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        // expect(issue.status).to.equal(IssueStatus.Submitted);
+        expect(issue.status).to.equal(IssueStatus.InProgress);
+        let issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Submitted);
 
         await issuerClient.issue.verify(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        // expect(issue.status).to.equal(IssueStatus.Verified);
+        expect(issue.status).to.equal(IssueStatus.InProgress);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Verified);
 
         await issuerClient.issue.refer(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        // expect(issue.status).to.equal(IssueStatus.Referred);
+        expect(issue.status).to.equal(IssueStatus.InProgress);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Referred);
 
         await issuerClient.issue.reject(issueCode);
         issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssueStatus.Rejected);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Rejected);
 
         await registrantClient.issue.submit(issueCode);
         await issuerClient.issue.verify(issueCode);
@@ -133,6 +141,8 @@ describe('API flows', () => {
             notes: 'it is ok'
         });
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Approved);
+        expect(issue.status).to.equal(IssueStatus.Issued);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Issued);
     }).timeout(10000);
 });

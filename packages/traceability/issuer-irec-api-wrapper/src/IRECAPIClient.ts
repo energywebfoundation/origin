@@ -217,11 +217,14 @@ export class IRECAPIClient {
                 await setState(code, 'withdraw', notes);
             },
             approve: async (code: string, approve: ApproveIssue): Promise<void> => {
+                const appr =
+                    approve instanceof ApproveIssue ? approve : plainToClass(ApproveIssue, approve);
+
                 await validateOrReject(approve);
 
                 const url = `${issueManagementUrl}/${code}/approve`;
 
-                await this.axiosInstance.put(url, classToPlain(approve), this.config);
+                await this.axiosInstance.put(url, classToPlain(appr), this.config);
             },
             getStatus: async (code: string): Promise<IssueWithStatus> => {
                 const url = `${issueManagementUrl}/${code}`;
