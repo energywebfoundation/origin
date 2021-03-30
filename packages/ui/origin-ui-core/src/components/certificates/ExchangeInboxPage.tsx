@@ -127,7 +127,7 @@ export function ExchangeInboxPage(): JSX.Element {
                                     </div>
                                 </div>
                                 <CurrencyTextField
-                                    style={{ margin: '4px 0 8px 0' }}
+                                    style={{ margin: '24px 0' }}
                                     fullWidth
                                     variant="filled"
                                     required

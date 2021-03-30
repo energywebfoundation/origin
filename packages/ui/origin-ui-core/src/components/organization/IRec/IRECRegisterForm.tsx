@@ -280,6 +280,7 @@ export const IRECRegisterForm = (): JSX.Element => {
 
                     return (
                         <Form translate="no">
+                            <pre>{JSON.stringify(values, null, 2)}</pre>
                             <Grid container direction="column">
                                 <Grid item container>
                                     <Grid item container direction="column" xs={6}>
@@ -311,8 +312,10 @@ export const IRECRegisterForm = (): JSX.Element => {
                                                 label={t(
                                                     'organization.registration.orgHeadquartersCountry'
                                                 )}
-                                                property="headquarterCountry"
                                                 currentValue={values.headquarterCountry}
+                                                onChange={(value) =>
+                                                    setFieldValue('headquarterCountry', value, true)
+                                                }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
                                                 required
@@ -470,9 +473,15 @@ export const IRECRegisterForm = (): JSX.Element => {
                                                 label={t(
                                                     'organization.registration.primaryContactOrgCountry'
                                                 )}
-                                                property="primaryContactOrganizationCountry"
                                                 currentValue={
                                                     values.primaryContactOrganizationCountry
+                                                }
+                                                onChange={(value) =>
+                                                    setFieldValue(
+                                                        'primaryContactOrganizationCountry',
+                                                        value,
+                                                        true
+                                                    )
                                                 }
                                                 disabled={isSubmitting}
                                                 className="mt-3"

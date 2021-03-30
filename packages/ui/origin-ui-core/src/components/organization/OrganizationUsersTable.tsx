@@ -9,10 +9,8 @@ import {
     Role,
     UserStatus
 } from '@energyweb/origin-backend-core';
-import { getUserOffchain } from '../../features/users';
-import { setLoading, getBackendClient } from '../../features/general';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { roleNames } from '../../utils/organizationRoles';
+import { setLoading, getBackendClient, getUserOffchain } from '../../features';
+import { showNotification, NotificationType, roleNames } from '../../utils';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
@@ -140,10 +138,10 @@ export function OrganizationUsersTable() {
     }
 
     const columns = [
-        { id: 'firstName', label: 'First name' },
-        { id: 'lastName', label: 'Last name' },
-        { id: 'email', label: 'Email' },
-        { id: 'role', label: 'Role' }
+        { id: 'firstName', label: t('user.properties.firstName') },
+        { id: 'lastName', label: t('user.properties.lastName') },
+        { id: 'email', label: t('user.properties.email') },
+        { id: 'role', label: t('user.properties.role') }
     ];
 
     const rows = paginatedData.map(({ user }) => {
