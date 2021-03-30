@@ -280,7 +280,6 @@ export const IRECRegisterForm = (): JSX.Element => {
 
                     return (
                         <Form translate="no">
-                            <pre>{JSON.stringify(values, null, 2)}</pre>
                             <Grid container direction="column">
                                 <Grid item container>
                                     <Grid item container direction="column" xs={6}>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-
 import { useOriginConfiguration } from '../../utils/configuration';
 import { IAutocompleteMultiSelectOptionType } from './MultiSelectAutocomplete';
 
@@ -12,23 +11,11 @@ interface IOwnProps {
     onChange: (value: string) => void;
     currentValue: string | number;
     disabled?: boolean;
-    className?: string;
-    max?: number;
     required?: boolean;
-    singleChoice?: boolean;
 }
 
 export function SelectAutocomplete(props: IOwnProps) {
-    const {
-        label,
-        placeholder,
-        options,
-        currentValue,
-        disabled,
-        className,
-        required,
-        ...otherProps
-    } = props;
+    const { label, placeholder, options, currentValue, disabled, required } = props;
 
     const { styleConfig } = useOriginConfiguration();
 
@@ -82,7 +69,7 @@ export function SelectAutocomplete(props: IOwnProps) {
                             setTextValue('');
                         } else {
                             const current = options.find((o) => o.value === props.currentValue);
-                            setTextValue(current.label);
+                            setTextValue(current?.label ?? '');
                         }
                     }}
                     helperText={
