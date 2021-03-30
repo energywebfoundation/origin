@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+    IsBoolean,
     IsDate,
     IsISO31661Alpha2,
     IsLatitude,
@@ -77,4 +78,10 @@ export class UpdateDeviceDTO {
     @IsOptional()
     @Expose()
     notes?: string;
+
+    @ApiProperty({ type: Boolean })
+    @IsOptional()
+    @IsBoolean()
+    @Expose()
+    active: boolean;
 }

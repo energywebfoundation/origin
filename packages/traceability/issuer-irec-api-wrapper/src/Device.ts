@@ -76,6 +76,10 @@ export class DeviceCreateParams {
     @IsOptional()
     @IsString()
     notes?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    active: boolean;
 }
 
 export class DeviceUpdateParams {
