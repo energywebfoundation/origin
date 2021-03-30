@@ -100,7 +100,8 @@ export const bootstrapTestInstance = async () => {
         address: '1 Wind Farm Avenue, Thailand',
         latitude: '10',
         longitude: '10',
-        status: DeviceState.Approved
+        status: DeviceState.Approved,
+        active: true
     };
 
     const moduleFixture = await Test.createTestingModule({
@@ -132,7 +133,7 @@ export const bootstrapTestInstance = async () => {
                 };
             },
             async getDevice(user: ILoggedInUser, code: string): Promise<IrecDevice> {
-                return { ...irecDevice, code };
+                return { ...irecDevice, code, active: true };
             },
             async getDevices(): Promise<IrecDevice[]> {
                 return [irecDevice];

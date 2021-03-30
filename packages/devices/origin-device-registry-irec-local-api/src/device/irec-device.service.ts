@@ -115,7 +115,8 @@ export class IrecDeviceService {
                     registrantOrganization: 'someRegistrantCode',
                     registrationDate: new Date('2001-09-20'),
                     status: DeviceState.Approved,
-                    code: 'mockDeviceCode'
+                    code: 'mockDeviceCode',
+                    active: true
                 }
             ];
         }
