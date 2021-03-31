@@ -20,7 +20,7 @@ import {
     areDeviceSpecificPropertiesValid,
     PowerFormatter,
     showNotification,
-    NotificationType,
+    NotificationTypeEnum,
     useValidation,
     usePermissions,
     Moment,
@@ -29,17 +29,13 @@ import {
     FormInput,
     Requirements,
     DeviceSelectors,
-    getBackendClient,
-    getCountry,
-    // getCompliance,
-    getExternalDeviceIdTypes,
     Upload,
     IUploadedFile,
     // should be removed
-    getConfiguration
+    getConfiguration,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
-import { createDevice } from '../../features/devices';
-import { getEnvironment } from '../../features/general';
+import { createDevice } from '../../features';
 
 interface IFormValues {
     facilityName: string;
@@ -79,14 +75,14 @@ const useStyles = makeStyles(() =>
     })
 );
 
-export function RegisterDevice() {
+export const RegisterDevice = () => {
     // should be removed
     const configuration = useSelector(getConfiguration);
     // const compliance = useSelector(getCompliance);
-    const country = useSelector(getCountry);
-    const backendClient = useSelector(getBackendClient);
-    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
-    const environment = useSelector(getEnvironment);
+    const country = useSelector(fromGeneralSelectors.getCountry);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
+    const externalDeviceIdTypes = useSelector(fromGeneralSelectors.getExternalDeviceIdTypes);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -197,7 +193,7 @@ export function RegisterDevice() {
                     limit: 10,
                     actual: files.length
                 }),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             return;
         }
@@ -213,7 +209,7 @@ export function RegisterDevice() {
             console.log(error);
             showNotification(
                 t('device.feedback.unexpectedErrorWhenUploadingImages'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
     }
@@ -542,4 +538,4 @@ export function RegisterDevice() {
             </Formik>
         </Paper>
     );
-}
+};

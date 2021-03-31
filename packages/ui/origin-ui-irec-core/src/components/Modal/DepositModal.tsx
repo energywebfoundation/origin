@@ -13,13 +13,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     resyncCertificate,
     requestDepositCertificate,
-    getEnvironment,
     ICertificateViewItem,
-    getUserOffchain,
     EnergyFormatter,
     formatDate,
     countDecimals,
-    IEnvironment
+    IEnvironment,
+    fromUsersSelectors,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '../../types';
 
@@ -30,10 +30,10 @@ interface IProps {
     callback: () => void;
 }
 
-export function DepositModal(props: IProps) {
+export const DepositModal = (props: IProps) => {
     const { certificate, callback, device, showModal } = props;
-    const user = useSelector(getUserOffchain);
-    const environment: IEnvironment = useSelector(getEnvironment);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const environment: IEnvironment = useSelector(fromGeneralSelectors.getEnvironment);
     const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
         Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
     );
@@ -155,4 +155,4 @@ export function DepositModal(props: IProps) {
             </DialogActions>
         </Dialog>
     );
-}
+};

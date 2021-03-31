@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { isRole, Role } from '@energyweb/origin-backend-core';
-import { getUserOffchain, usePermissions, Requirements } from '@energyweb/origin-ui-core';
+import { usePermissions, Requirements, fromUsersSelectors } from '@energyweb/origin-ui-core';
 import { CertificateTable, SelectedState } from '../../components/certificates/table';
 
-export function ClaimedCertificates() {
-    const user = useSelector(getUserOffchain);
+export const ClaimedCertificates = () => {
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const isIssuer = isRole(user, Role.Issuer);
     const { canAccessPage } = usePermissions();
 
@@ -14,4 +14,4 @@ export function ClaimedCertificates() {
     }
 
     return <CertificateTable selectedState={SelectedState.Claimed} hiddenColumns={['source']} />;
-}
+};

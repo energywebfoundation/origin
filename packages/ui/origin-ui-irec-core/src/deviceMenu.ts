@@ -1,16 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { isRole, Role } from '@energyweb/origin-backend-core';
+import { isRole, IUser, Role } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain } from '@energyweb/origin-ui-core';
 import { AllDevices } from './containers/Device/AllDevices';
 import { ProductionMap } from './containers/Device/ProductionMap';
 import { MyDevices } from './containers/Device/MyDevices';
 import { PendingDevices } from './containers/Device/PendingDevices';
 import { RegisterDevice } from './containers/Device/RegisterDevice';
 import { ImportDevice } from './containers/Device/ImportDevice';
-// import { RegisterDeviceGroup } from './containers/RegisterDeviceGroup';
+import { fromUsersSelectors } from '@energyweb/origin-ui-core';
 
 interface IDeviceMenuItem {
     key: string;
@@ -20,12 +19,12 @@ interface IDeviceMenuItem {
     features: OriginFeature[];
 }
 
-export function useDeviceMenu(): IDeviceMenuItem[] {
-    const user = useSelector(getUserOffchain);
-    const { t } = useTranslation();
+const isDeviceManagerOrAdmin = (user: IUser): boolean =>
+    user?.organization && isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
 
-    const isDeviceManagerOrAdmin = () =>
-        user?.organization && isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin);
+export function useDeviceMenu(): IDeviceMenuItem[] {
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const { t } = useTranslation();
 
     return [
         {
@@ -47,7 +46,7 @@ export function useDeviceMenu(): IDeviceMenuItem[] {
             label: t('navigation.devices.my'),
             component: MyDevices,
             features: [OriginFeature.Devices, OriginFeature.Seller],
-            show: isDeviceManagerOrAdmin()
+            show: isDeviceManagerOrAdmin(user)
         },
         {
             key: 'pending',
@@ -61,7 +60,7 @@ export function useDeviceMenu(): IDeviceMenuItem[] {
             label: t('navigation.devices.registerDevice'),
             component: RegisterDevice,
             features: [OriginFeature.Devices, OriginFeature.Seller],
-            show: isDeviceManagerOrAdmin()
+            show: isDeviceManagerOrAdmin(user)
         },
         // {
         //     key: 'add-group',

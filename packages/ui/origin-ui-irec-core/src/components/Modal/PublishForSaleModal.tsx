@@ -20,12 +20,12 @@ import {
     requestPublishForSale,
     resyncCertificate,
     ICertificateViewItem,
-    getUserOffchain,
-    getCurrencies,
     IEnvironment,
     formatDate,
     countDecimals,
-    EnergyFormatter
+    EnergyFormatter,
+    fromGeneralSelectors,
+    fromUsersSelectors
 } from '@energyweb/origin-ui-core';
 import { getEnvironment } from '../../features/general';
 import { ComposedPublicDevice } from '../../types';
@@ -42,8 +42,8 @@ export function PublishForSaleModal(props: IProps) {
 
     const { t } = useTranslation();
 
-    const currencies = useSelector(getCurrencies);
-    const user = useSelector(getUserOffchain);
+    const currencies = useSelector(fromGeneralSelectors.getCurrencies);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const environment: IEnvironment = useSelector(getEnvironment);
 
     const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(

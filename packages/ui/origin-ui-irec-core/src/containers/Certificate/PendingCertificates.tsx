@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { Role, isRole } from '@energyweb/origin-backend-core';
-import { usePermissions, getUserOffchain, Requirements } from '@energyweb/origin-ui-core';
+import { usePermissions, Requirements, fromUsersSelectors } from '@energyweb/origin-ui-core';
 import { CertificationRequestsTable } from '../../components/certificates/table';
 
-export function PendingCertificates() {
-    const user = useSelector(getUserOffchain);
+export const PendingCertificates = (): ReactElement => {
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const isIssuer = isRole(user, Role.Issuer);
     const { canAccessPage } = usePermissions();
 
@@ -14,4 +14,4 @@ export function PendingCertificates() {
     }
 
     return <CertificationRequestsTable approved={false} />;
-}
+};

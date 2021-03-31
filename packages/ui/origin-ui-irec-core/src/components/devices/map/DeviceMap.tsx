@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { LoadScriptNext, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { CircularProgress } from '@material-ui/core';
 import { IPublicOrganization } from '@energyweb/origin-backend-core';
-import { useLinks, getBackendClient } from '@energyweb/origin-ui-core';
+import { fromGeneralSelectors, useLinks } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '../../../types';
 import { getEnvironment } from '../../../features/general';
 
@@ -14,7 +14,7 @@ interface IProps {
     height?: string;
 }
 
-export function DeviceMap(props: IProps) {
+export const DeviceMap = (props: IProps): ReactElement => {
     const { devices } = props;
 
     const [deviceHighlighted, setDeviceHighlighted] = useState<ComposedPublicDevice>(null);
@@ -22,8 +22,8 @@ export function DeviceMap(props: IProps) {
     const [map, setMap] = useState(null);
 
     const environment = useSelector(getEnvironment);
-    const backendClient = useSelector(getBackendClient);
-    const { getDeviceDetailLink } = useLinks();
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
+    const { getDeviceDetailsPageUrl } = useLinks();
     const { t } = useTranslation();
 
     const { height = '250px' } = props;
@@ -138,7 +138,7 @@ export function DeviceMap(props: IProps) {
                             }
                             <br />
                             <br />
-                            <Link to={getDeviceDetailLink(deviceHighlighted.id)}>
+                            <Link to={getDeviceDetailsPageUrl(deviceHighlighted.id)}>
                                 {t('deviceMap.actions.seeMore')}
                             </Link>
                         </div>
@@ -147,4 +147,4 @@ export function DeviceMap(props: IProps) {
             </GoogleMap>
         </LoadScriptNext>
     );
-}
+};

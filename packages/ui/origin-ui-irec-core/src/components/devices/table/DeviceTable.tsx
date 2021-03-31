@@ -9,25 +9,23 @@ import {
     checkRecordPassesFilters,
     CustomFilterInputType,
     EnergyFormatter,
-    getBaseURL,
     getConfiguration,
-    getDeviceDetailLink,
-    getExchangeDepositAddress,
-    getUserOffchain,
     ICustomFilterDefinition,
     IPaginatedLoaderFetchDataReturnValues,
     IPaginatedLoaderHooksFetchDataParameters,
     ITableAction,
     moment,
-    NotificationType,
+    NotificationTypeEnum,
     PowerFormatter,
     showNotification,
+    // TODO  !SHOULD BE REMOVED!
+    fromUsersSelectors,
+    useLinks,
     TableMaterial,
     usePaginatedLoaderFiltered
 } from '@energyweb/origin-ui-core';
-import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
-// import { getConfiguration, getProducingDevices } from '../../../features/selectors';
 import { getEnvironment } from '../../../features/general';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { getDeviceColumns } from '../../../utils/device';
 import { ComposedDevice, ComposedPublicDevice } from '../../../types';
 import { RequestCertificatesModal } from '../../Modal/RequestCertificatesModal';
@@ -62,16 +60,16 @@ interface IDeviceRowData {
     status: DeviceState;
 }
 
-export function DeviceTable(props: IOwnProps) {
+export const DeviceTable = (props: IOwnProps) => {
     const { devices } = props;
     const [detailViewForDeviceId, setDetailViewForDeviceId] = useState(null);
     const configuration = useSelector(getConfiguration);
-    const user = useSelector(getUserOffchain);
-    const baseURL = useSelector(getBaseURL);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const environment = useSelector(getEnvironment);
-    const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
+    const exchangeDepositAddress = useSelector(fromUsersSelectors.getExchangeDepositAddress);
     const [showRequestModal, setShowRequestModal] = useState(false);
     const [deviceForModal, setDeviceForModal] = useState(null);
+    const { getDeviceDetailsPageUrl } = useLinks();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -124,7 +122,7 @@ export function DeviceTable(props: IOwnProps) {
         if (targetDevice.status !== DeviceStatus.Active) {
             return showNotification(
                 `You can only request certificates for devices with status ${DeviceStatus.Active}.`,
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
         setDeviceForModal(targetDevice);
@@ -191,7 +189,7 @@ export function DeviceTable(props: IOwnProps) {
     }));
 
     if (detailViewForDeviceId !== null) {
-        return <Redirect push={true} to={getDeviceDetailLink(baseURL, detailViewForDeviceId)} />;
+        return <Redirect push={true} to={getDeviceDetailsPageUrl(detailViewForDeviceId)} />;
     }
 
     const actions: (ITableAction | ((row: IDeviceRowData) => ITableAction))[] = [];
@@ -250,4 +248,4 @@ export function DeviceTable(props: IOwnProps) {
             />
         </>
     );
-}
+};

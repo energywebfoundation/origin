@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import {
     getConfiguration,
     EnergyFormatter,
     useLinks,
-    NotificationType,
+    NotificationTypeEnum,
     showNotification,
     formatDate,
     moment,
@@ -66,7 +66,7 @@ const CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES = [
     (record: IEnrichedCertificateData) => record?.certificate?.creationTime
 ];
 
-export function CertificateTable(props: IProps) {
+export const CertificateTable = ({ hiddenColumns = [], selectedState }: IProps): ReactElement => {
     const { currentSort, sortAscending, sortData, toggleSort } = usePaginatedLoaderSorting({
         currentSort: {
             id: CERTIFICATION_DATE_COLUMN_ID,
@@ -88,11 +88,9 @@ export function CertificateTable(props: IProps) {
         }
     }, [deviceClient]);
 
-    const { selectedState } = props;
-    const hiddenColumns = props.hiddenColumns || [];
     const deviceTypeService = configuration?.deviceTypeService;
     const { t } = useTranslation();
-    const { getCertificateDetailLink } = useLinks();
+    const { getCertificateDetailsPageUrl } = useLinks();
 
     const [selectedCertificates, setSelectedCertificates] = useState<ICertificateViewItem[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
@@ -168,7 +166,7 @@ export function CertificateTable(props: IProps) {
 
     async function claimCertificateBulk(selectedIndexes: string[]) {
         if (selectedIndexes.length === 0) {
-            showNotification(t('certificate.feedback.zeroSelected'), NotificationType.Error);
+            showNotification(t('certificate.feedback.zeroSelected'), NotificationTypeEnum.Error);
 
             return;
         }
@@ -178,7 +176,7 @@ export function CertificateTable(props: IProps) {
         if (selectedIndexes.length > CERTIFICATE_LIMIT) {
             showNotification(
                 t(`certificate.feedback.pleaseSelectLess`, { amount: CERTIFICATE_LIMIT }),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
 
             return;
@@ -215,7 +213,7 @@ export function CertificateTable(props: IProps) {
         if (certificate.source === CertificateSource.Exchange) {
             showNotification(
                 'Claiming certificate from the exchange is currently not supported',
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             return;
         }
@@ -518,7 +516,9 @@ export function CertificateTable(props: IProps) {
     });
 
     if (detailViewForCertificateId !== null) {
-        return <Redirect push={true} to={getCertificateDetailLink(detailViewForCertificateId)} />;
+        return (
+            <Redirect push={true} to={getCertificateDetailsPageUrl(detailViewForCertificateId)} />
+        );
     }
 
     const allowedActions = {
@@ -603,4 +603,4 @@ export function CertificateTable(props: IProps) {
             />
         </>
     );
-}
+};
