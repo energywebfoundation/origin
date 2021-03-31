@@ -2,10 +2,10 @@ import React, { ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@material-ui/lab';
 import { useValidation } from '../../utils';
-import { ChangePasswordForm } from './userProfile';
-import { UserDataEditForm } from './userProfile';
-import { UserEmailChangeForm } from './userProfile';
-import { BlockchainAddressesContainer } from './userProfile/BlockchainAddressesContainer';
+import { ChangePasswordForm } from './UserProfile';
+import { UserDataEditForm } from './UserProfile';
+import { UserEmailChangeForm } from './UserProfile';
+import { BlockchainAddressesContainer } from './UserProfile/BlockchainAddressesContainer';
 import { fromUsersSelectors } from '../../features';
 
 export const UserProfilePage = (): ReactElement => {
