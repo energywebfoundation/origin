@@ -418,6 +418,7 @@
                 "lastName": "Last name",
                 "telephone": "Telephone",
                 "email": "Email",
+                "role": "Role",
                 "password": "Password",
                 "status": "Status",
                 "kycStatus": "KYC Status",
@@ -510,7 +511,7 @@
             },
             "dialog": {
                 "dontHaveAccAsk": "Don't have an account?",
-                "userRegisteredModalTitle": "Thanks for registering a user on the marketplace",
+                "userRegisteredModalTitle": "Thanks for registering as a user on the marketplace",
                 "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
             }
         },

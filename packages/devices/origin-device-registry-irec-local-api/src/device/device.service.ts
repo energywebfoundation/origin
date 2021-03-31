@@ -49,7 +49,8 @@ export class DeviceService {
             registrantOrganization: this.configService.get<string>(
                 'IREC_PARTICIPANT_TRADE_ACCOUNT'
             ),
-            issuer: this.configService.get<string>('IREC_ISSUER_ORGANIZATION_CODE')
+            issuer: this.configService.get<string>('IREC_ISSUER_ORGANIZATION_CODE'),
+            active: true
         };
 
         const irecDevice = await this.irecDeviceService.createIrecDevice(user, deviceData);

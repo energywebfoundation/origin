@@ -84,22 +84,22 @@ Install using `yarn add @energyweb/{package}@preview`
 
 ## Installation
 
-Make sure have latest `yarn` package manager installed.
+Make sure have latest `@microsoft/rush` package manager installed.
 
 ```shell
-yarn
+rush install
 ```
 
 ## Build
 
 ```shell
-yarn build
+rush build
 ```
 
 ## Test
 
 ```shell
-yarn test
+rush test:e2e
 ```
 
 ## Run demo
@@ -124,10 +124,10 @@ psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
 
 ### Running
 
-After you have the `.env` file created, installed dependencies (`yarn`) and build completed (`yarn build`) run the following command:
+After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
 
 ```shell
-yarn run:origin
+rush run:origin
 ```
 
 Visit the UI at: http://localhost:3000.

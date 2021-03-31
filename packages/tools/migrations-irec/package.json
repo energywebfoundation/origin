@@ -14,7 +14,7 @@
     "version": "1.1.0",
     "main": "dist/js/src/main.js",
     "bin": {
-        "origin-migrations": "./bin/migrations"
+        "origin-migrations-irec": "./bin/migrations-irec"
     },
     "scripts": {
         "build": "yarn build:ts",
@@ -56,6 +56,6 @@
     },
     "files": [
         "bin",
-        "dist/js/src"
+        "dist"
     ]
 }

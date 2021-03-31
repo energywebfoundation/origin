@@ -206,7 +206,7 @@ export function OrganizationForm(props: IProps) {
                 validateOnMount={true}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting, values } = formikProps;
+                    const { isValid, isSubmitting, values, setFieldValue } = formikProps;
 
                     const fieldDisabled = isSubmitting || readOnly;
                     const buttonDisabled =
@@ -272,7 +272,9 @@ export function OrganizationForm(props: IProps) {
                                             <FormCountrySelect
                                                 label={t('organization.registration.country')}
                                                 data-cy="organization-country"
-                                                property="country"
+                                                onChange={(value) =>
+                                                    setFieldValue('country', value, true)
+                                                }
                                                 currentValue={values.country}
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -374,7 +376,9 @@ export function OrganizationForm(props: IProps) {
                                             <FormCountrySelect
                                                 label={t('organization.registration.country')}
                                                 data-cy="organization-signatory-country"
-                                                property="signatoryCountry"
+                                                onChange={(value) =>
+                                                    setFieldValue('signatoryCountry', value, true)
+                                                }
                                                 currentValue={values.signatoryCountry}
                                                 disabled={fieldDisabled}
                                                 className="mt-3"

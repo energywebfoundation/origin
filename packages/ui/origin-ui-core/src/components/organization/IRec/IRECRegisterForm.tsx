@@ -311,8 +311,10 @@ export const IRECRegisterForm = (): JSX.Element => {
                                                 label={t(
                                                     'organization.registration.orgHeadquartersCountry'
                                                 )}
-                                                property="headquarterCountry"
                                                 currentValue={values.headquarterCountry}
+                                                onChange={(value) =>
+                                                    setFieldValue('headquarterCountry', value, true)
+                                                }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
                                                 required
@@ -470,9 +472,15 @@ export const IRECRegisterForm = (): JSX.Element => {
                                                 label={t(
                                                     'organization.registration.primaryContactOrgCountry'
                                                 )}
-                                                property="primaryContactOrganizationCountry"
                                                 currentValue={
                                                     values.primaryContactOrganizationCountry
+                                                }
+                                                onChange={(value) =>
+                                                    setFieldValue(
+                                                        'primaryContactOrganizationCountry',
+                                                        value,
+                                                        true
+                                                    )
                                                 }
                                                 disabled={isSubmitting}
                                                 className="mt-3"

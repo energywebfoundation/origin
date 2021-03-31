@@ -37,9 +37,7 @@ module.exports = {
         compress: true,
         historyApiFallback: true,
         watchOptions: {
-            ignored: [
-                path.resolve(__dirname, '../cypress')
-            ]
+            ignored: [path.resolve(__dirname, '../cypress')]
         }
     },
 

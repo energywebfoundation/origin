@@ -19,16 +19,8 @@ describe('API flows', () => {
     const tradeAccount = 'ACCOUNTTRADE001';
     const issueAccount = 'ACCOUNTISSUE001';
 
-    before(async () => {
-        issuerClient = await getClient(credentials.issuer);
-        registrantClient = await getClient(credentials.registrant);
-
-        issuerOrg = await issuerClient.organisation.get();
-        registrantOrg = await registrantClient.organisation.get();
-    });
-
-    it('should pass create and approve device flow', async () => {
-        const params: DeviceCreateParams = {
+    function getDeviceParams(): DeviceCreateParams {
+        return {
             address: '1 Wind Farm Avenue, London',
             capacity: 500,
             commissioningDate: new Date('2001-08-10'),
@@ -42,8 +34,21 @@ describe('API flows', () => {
             name: 'DeviceXYZ',
             notes: 'Lorem ipsum dolor sit amet',
             registrantOrganization: registrantOrg.code,
-            registrationDate: new Date('2001-09-20')
+            registrationDate: new Date('2001-09-20'),
+            active: true
         };
+    }
+
+    before(async () => {
+        issuerClient = await getClient(credentials.issuer);
+        registrantClient = await getClient(credentials.registrant);
+
+        issuerOrg = await issuerClient.organisation.get();
+        registrantOrg = await registrantClient.organisation.get();
+    });
+
+    it('should pass create and approve device flow', async () => {
+        const params = getDeviceParams();
         const createdDevice: Device = await registrantClient.device.create(params);
 
         let device: Device = await registrantClient.device.get(createdDevice.code);
@@ -83,48 +88,61 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(10000);
 
-    it.skip('should pass create and approve issue flow', async () => {
-        const devices: Device[] = await registrantClient.device.getAll();
-        const approvedDevice = devices.find((device) => device.status === DeviceState.Approved);
+    it('should pass create and approve issue flow', async () => {
+        const params = getDeviceParams();
+        const device: Device = await registrantClient.device.create(params);
+        const deviceCode: string = device.code;
+        await registrantClient.device.submit(deviceCode, { notes: 'Some submit note' });
+        await issuerClient.device.verify(deviceCode, { notes: 'Some verify note' });
+        await issuerClient.device.approve(deviceCode, { notes: 'Some approve note' });
 
         const issueParams: Issue = {
-            device: approvedDevice.code,
+            device: device.code,
             recipient: tradeAccount,
             start: moment().subtract(2, 'day').toDate(),
             end: moment().subtract(1, 'day').toDate(),
             production: 10,
-            fuel: approvedDevice.fuel,
+            fuel: device.fuel,
             notes: 'Some note'
         };
         const issueCode: string = await registrantClient.issue.create(issueParams);
-
         let issue: IssueWithStatus = await registrantClient.issue.get(issueCode);
         expect(issue.code).to.equal(issueCode);
         expect(issue.status).to.equal(IssueStatus.Draft);
 
         await registrantClient.issue.submit(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Submitted);
+        expect(issue.status).to.equal(IssueStatus.InProgress);
+        let issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Submitted);
 
-        await registrantClient.issue.verify(issueCode);
+        await issuerClient.issue.verify(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Verified);
+        expect(issue.status).to.equal(IssueStatus.InProgress);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Verified);
 
-        await registrantClient.issue.refer(issueCode);
+        await issuerClient.issue.refer(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Referred);
+        expect(issue.status).to.equal(IssueStatus.InProgress);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Referred);
 
-        await registrantClient.issue.reject(issueCode);
+        await issuerClient.issue.reject(issueCode);
         issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssueStatus.Rejected);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Rejected);
 
         await registrantClient.issue.submit(issueCode);
-        await registrantClient.issue.verify(issueCode);
-        await registrantClient.issue.approve(issueCode, {
+        await issuerClient.issue.verify(issueCode);
+        await issuerClient.issue.approve(issueCode, {
             issuer: issueAccount,
             notes: 'it is ok'
         });
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Approved);
+        expect(issue.status).to.equal(IssueStatus.Issued);
+        issuerIssue = await issuerClient.issue.get(issueCode);
+        expect(issuerIssue.status).to.equal(IssueStatus.Issued);
     }).timeout(10000);
 });

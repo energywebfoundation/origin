@@ -16,7 +16,8 @@ import { useLinks } from '../../utils/routing';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
-    usePaginatedLoader
+    usePaginatedLoader,
+    TableAction
 } from '../Table';
 
 interface IRecord {
@@ -118,12 +119,16 @@ export function OrganizationTable() {
         dispatch(setLoading(false));
     }
 
-    const actions = hasApprovalRights
+    const actions: TableAction[] = hasApprovalRights
         ? [
-              {
-                  icon: <Check />,
-                  name: 'Approve',
-                  onClick: (index: string) => approve(parseInt(index, 10))
+              (row) => {
+                  return row.status === OrganizationStatus.Submitted
+                      ? {
+                            icon: <Check />,
+                            name: 'Approve',
+                            onClick: (index: string) => approve(parseInt(index, 10))
+                        }
+                      : null;
               }
           ]
         : [];

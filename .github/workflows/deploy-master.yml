@@ -65,7 +65,7 @@ jobs:
 
     - name: Deploy application
       run: |
-        yarn build:containers:canary 
+        yarn build:containers:canary
         yarn deploy:heroku:canary
       env:
         BUILD_ID: ${{ steps.generate_unique_id.outputs.unique_id }}

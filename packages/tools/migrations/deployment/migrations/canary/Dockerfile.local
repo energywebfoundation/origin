@@ -9,5 +9,7 @@ CMD ["/bin/bash","-c", "apps/origin-backend-app/node_modules/.bin/typeorm migrat
                         apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \
                         apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config organizations/origin-organization-irec-api/dist/js/ormconfig.js && \
                         apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-api/dist/js/ormconfig.js && \
-                        tools/migrations/bin/migrations -c /var/migration-config/demo-config.json -s /var/migration-config/seed.sql && \
+                        cd tools/migrations/bin && \
+                        ./migrations -c /var/deployment/config/demo-config.json -s /var/deployment/config/seed.sql && \
+                        cd - && \
                         tools/migrations/node_modules/.bin/origin-backend-app"]
