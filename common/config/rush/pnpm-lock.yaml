@@ -1,6 +1,6 @@
 dependencies:
   '@babel/core': 7.13.14
-  '@date-io/moment': 2.10.6_moment@2.29.1
+  '@date-io/moment': 1.3.13_moment@2.29.1
   '@energyweb/energy-api-influxdb': 0.7.0_c0335c462c52287d38a2a4f534b51f71
   '@ethersproject/abi': 5.0.13
   '@ethersproject/abstract-provider': 5.0.10
@@ -1730,19 +1730,15 @@ packages:
     dev: false
     resolution:
       integrity: sha512-AlEKV7TxjeK+jxWVKcCFrfYAk8spX9aCyiToFIiLPtfQbsjmRGLIhb5VZgptQcJdHtLXo7+m0DuurwFgUToQuA==
-  /@date-io/core/2.10.7:
-    dev: false
-    resolution:
-      integrity: sha512-EG/1qDiQvd12RoNJ6H+sZcHVswC/3uMx/ySvfaJ24vB30rLjkgHggEXbgMbfgki7wMuiQ/zXI8QlmF1k3kWRGQ==
-  /@date-io/moment/2.10.6_moment@2.29.1:
+  /@date-io/moment/1.3.13_moment@2.29.1:
     dependencies:
-      '@date-io/core': 2.10.7
+      '@date-io/core': 1.3.13
       moment: 2.29.1
     dev: false
     peerDependencies:
       moment: ^2.24.0
     resolution:
-      integrity: sha512-oIo24tW/l5kFxYV2B3Hc0joYKh59p7X7S36u0/inmf+Rk0Z8B4nU9jxuAgx5gbkFY2NVLwo1kr4l0CO2POtkYA==
+      integrity: sha512-3kJYusJtQuOIxq6byZlzAHoW/18iExJer9qfRF5DyyzdAk074seTuJfdofjz4RFfTd/Idk8WylOQpWtERqvFuQ==
   /@discoveryjs/json-ext/0.5.2:
     dev: false
     engines:
@@ -29919,7 +29915,7 @@ packages:
     version: 0.0.0
   file:projects/exchange-ui-core.tgz:
     dependencies:
-      '@date-io/moment': 2.10.6_moment@2.29.1
+      '@date-io/moment': 1.3.13_moment@2.29.1
       '@material-ui/core': 4.11.3_ba191c0052acfa37659f3ba04a2d9405
       '@material-ui/icons': 4.11.2_14cd2bb1c7fa2ed72199e05e8be5cec9
       '@material-ui/lab': 4.0.0-alpha.57_14cd2bb1c7fa2ed72199e05e8be5cec9
@@ -29955,7 +29951,7 @@ packages:
     dev: false
     name: '@rush-temp/exchange-ui-core'
     resolution:
-      integrity: sha512-gyF/Tw6bs9LlAYxpGtAsTVS0udeOATn8a351q6F/EJKTE/5apenQuzq/U1sWEHQ7O1Mk/JnNU7g75v6KzUrplw==
+      integrity: sha512-uSIqc6MZsTh7zlZ9VZvvARWXgliVv5vgtCrVGXgW3uXbDt5J/Ms1vlt74Iu3NAtrRUM3bxMjjRdd8C9+XDuRnw==
       tarball: file:projects/exchange-ui-core.tgz
     version: 0.0.0
   file:projects/exchange.tgz_908c1bdd5f0524cb03e109d8b75bfd92:
@@ -30834,7 +30830,7 @@ packages:
   file:projects/origin-ui-core.tgz_bd0632c8ae78e5715efe552984c3943b:
     dependencies:
       '@babel/core': 7.13.14
-      '@date-io/moment': 2.10.6_moment@2.29.1
+      '@date-io/moment': 1.3.13_moment@2.29.1
       '@hookform/resolvers': 1.3.6_react-hook-form@6.15.5
       '@material-ui/core': 4.11.3_ba191c0052acfa37659f3ba04a2d9405
       '@material-ui/icons': 4.11.2_14cd2bb1c7fa2ed72199e05e8be5cec9
@@ -30857,6 +30853,7 @@ packages:
       '@types/react-router-dom': 5.1.7
       '@types/redux-logger': 3.0.8
       '@types/yup': 0.29.11
+      '@unicef/material-ui-currency-textfield': 0.8.6_4ce37a97a3d3aa49030922ba2ca2aa72
       axios: 0.21.1
       babel-loader: 8.2.2_85719aba9ad21591b8751e49239ef1a1
       chart.js: 2.9.4
@@ -30903,12 +30900,12 @@ packages:
       webpack-cli: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-1qGMiOgUTl3FZ1X0ZWFTPfv7IMo7EyXQSvdm43mPgcRJUI85//CqqXqc7pIrFIYq3i95NJyKp52TWtLc73vjCg==
+      integrity: sha512-XY+ZKKwq/19XV/N23mH4lNlEJLUbnM/TX6G2o9MmrRRyRMl8Ek4o7fXEJ/TpOeJ9+8F7nvYF8hxvvWoEdJGLSQ==
       tarball: file:projects/origin-ui-core.tgz
     version: 0.0.0
   file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1:
     dependencies:
-      '@date-io/moment': 2.10.6_moment@2.29.1
+      '@date-io/moment': 1.3.13_moment@2.29.1
       '@hookform/resolvers': 1.3.6_react-hook-form@6.15.5
       '@material-ui/core': 4.11.3_ba191c0052acfa37659f3ba04a2d9405
       '@material-ui/icons': 4.11.2_14cd2bb1c7fa2ed72199e05e8be5cec9
@@ -30950,12 +30947,12 @@ packages:
     peerDependencies:
       ts-node: '*'
     resolution:
-      integrity: sha512-xp9ZyuMcI2Yr9IkKJttfGH6/Zhsyqlp4+yKB0tmAWTCSLJxPwfyvupW+gta5hvzcp/jujyuTOBgC64MbSvRSDg==
+      integrity: sha512-PIwUBFnwoQ9t4PYQNBT4wIGL7Fs0k3WMs/3IBInnGgFYiucUOTpIj9qMExyhQjgsq86DpSQI38EYNc47PQN++Q==
       tarball: file:projects/origin-ui-irec-core.tgz
     version: 0.0.0
   file:projects/origin-ui.tgz_jest@26.6.3:
     dependencies:
-      '@date-io/moment': 2.10.6_moment@2.29.1
+      '@date-io/moment': 1.3.13_moment@2.29.1
       '@material-ui/core': 4.11.3_ba191c0052acfa37659f3ba04a2d9405
       '@material-ui/icons': 4.11.2_14cd2bb1c7fa2ed72199e05e8be5cec9
       '@material-ui/pickers': 3.3.10_4ce37a97a3d3aa49030922ba2ca2aa72
@@ -31018,7 +31015,7 @@ packages:
     peerDependencies:
       jest: '*'
     resolution:
-      integrity: sha512-Bz+urHh2pKRcO4xGwahUwMQAlDgI0z/YNCOS9q9AvLUF/oWdKdVerVfmgEnbFz5eXkQ3bT5ArBzga5b3KtML8w==
+      integrity: sha512-L+Kil4yxWQR/Y0LMV6U9vgSPfyfTKxqNvgR1TF+zF6X/IwAyJDVTbJIub/nDlHjQ0wBvo5Xe2TVDd4QyoOnn5Q==
       tarball: file:projects/origin-ui.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -31107,7 +31104,7 @@ packages:
 registry: ''
 specifiers:
   '@babel/core': ^7.13.14
-  '@date-io/moment': 2.10.6
+  '@date-io/moment': 1.3.13
   '@energyweb/energy-api-influxdb': 0.7.0
   '@ethersproject/abi': 5.0.13
   '@ethersproject/abstract-provider': 5.0.10
