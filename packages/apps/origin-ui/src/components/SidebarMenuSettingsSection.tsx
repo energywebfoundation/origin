@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import { SidebarSubMenu } from './SidebarSubMenu';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { OriginFeature } from '@energyweb/utils-general';
+import { useAccountMenu } from '@energyweb/origin-ui-core';
 
 interface IProps {
     accountPageUrl: string;
@@ -15,7 +16,7 @@ export const SidebarMenuSettingsSection = ({
     isActive
 }: IProps) => {
     const { t } = useTranslation();
-    const [menuList] = useState([]);
+    const menuList = useAccountMenu();
     return (
         <>
             <li className="mainMenu">

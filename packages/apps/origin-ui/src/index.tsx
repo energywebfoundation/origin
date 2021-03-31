@@ -10,7 +10,6 @@ import { createRootReducer } from './features/rootReducer';
 import { createBrowserHistory } from 'history';
 import createSagaMiddleware from 'redux-saga';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
-import logger from 'redux-logger';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
@@ -55,8 +54,7 @@ if (IS_PRODUCTION) {
             //     // immutableCheck: true
             // }),
             routerMiddleware(browserHistory),
-            sagaMiddleware,
-            logger
+            sagaMiddleware
         ],
         reducer: createRootReducer(browserHistory)
     });

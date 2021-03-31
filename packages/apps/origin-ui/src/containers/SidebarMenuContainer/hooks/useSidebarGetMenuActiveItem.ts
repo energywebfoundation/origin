@@ -7,7 +7,6 @@ export const useSidebarGetMenuActiveItem = (): ActiveMenuItem => {
     const [activeTab, setActiveTab] = useState<ActiveMenuItem>(null);
 
     useEffect(() => {
-        console.log('x');
         switch (location.pathname.split('/')[1].toString().toLowerCase()) {
             case 'devices':
                 setActiveTab(ActiveMenuItem.Devices);
