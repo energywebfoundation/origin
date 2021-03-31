@@ -15,10 +15,11 @@ import {
 import { directBuyOrder, getEnvironment, getExchangeClient } from '../../../features';
 import { useCallback, useState } from 'react';
 import { Filter, ProductFilterDTO } from '@energyweb/exchange-irec-client';
+import { Configuration } from '@energyweb/device-registry';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import { IMarketFormValues } from '../../../components';
 import { BuyDirectParams, OrderBookFilterConfig } from '../types';
-import { useBidHandler } from './useBidHandler';
+import { bidHandler } from './useBidHandler';
 
 const REFRESH_INTERVAL_MS = 3000;
 
@@ -30,17 +31,17 @@ const getOrderbookFilterConfig = ({
     location
 }: OrderBookFilterConfig): ProductFilterDTO => {
     return {
-        deviceTypeFilter: deviceType ? Filter.Specific : Filter.Unspecified,
-        locationFilter: location ? Filter.Specific : Filter.Unspecified,
-        gridOperatorFilter: gridOperator ? Filter.Specific : Filter.Unspecified,
+        deviceTypeFilter: deviceType.length > 0 ? Filter.Specific : Filter.Unspecified,
+        locationFilter: location.length > 0 ? Filter.Specific : Filter.Unspecified,
+        gridOperatorFilter: gridOperator.length > 0 ? Filter.Specific : Filter.Unspecified,
         generationTimeFilter:
             generationDateStart && generationDateEnd ? Filter.Specific : Filter.Unspecified,
         deviceVintageFilter: Filter.Unspecified,
-        deviceType: deviceType || undefined,
-        location: location || undefined,
-        gridOperator: gridOperator || undefined,
-        generationFrom: generationDateStart || undefined,
-        generationTo: generationDateEnd || undefined
+        deviceType: deviceType.length > 0 ? deviceType : undefined,
+        location: location.length > 0 ? location : undefined,
+        gridOperator: gridOperator.length > 0 ? gridOperator : undefined,
+        generationFrom: generationDateStart ?? undefined,
+        generationTo: generationDateEnd ?? undefined
     };
 };
 
@@ -51,9 +52,8 @@ const buyDirect = async ({ dispatch, orderId, price, volume }: BuyDirectParams) 
         throw new Error(`Can't buy direct order with undefined parameters passed`);
     }
 };
-import { Configuration } from '@energyweb/device-registry';
 export const useViewMarketPageEffects = (): {
-    bidHandler: (values: IMarketFormValues, oneTimePurchase: boolean) => () => void;
+    bidHandler: (values: IMarketFormValues, oneTimePurchase: boolean) => Promise<void>;
     exchangeAddress: string;
     configuration: Configuration.Entity;
     marketValuesChangeHandler: (values: IMarketFormValues) => void;
@@ -151,8 +151,15 @@ export const useViewMarketPageEffects = (): {
     return {
         bidHandler: useCallback(
             (values: IMarketFormValues, oneTimePurchase: boolean) =>
-                useBidHandler({ generationDateStart, generationDateEnd, oneTimePurchase, values }),
-            [generationDateStart, generationDateEnd]
+                bidHandler({
+                    dispatch,
+                    country,
+                    generationDateStart,
+                    generationDateEnd,
+                    oneTimePurchase,
+                    values
+                }),
+            [country, generationDateStart, generationDateEnd]
         ),
         buyDirect: useCallback((orderId: string, volume: string, price: number) => {
             return buyDirect({ dispatch, orderId, price, volume });

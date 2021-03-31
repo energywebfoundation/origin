@@ -65,17 +65,17 @@ function* requestCreateBundle() {
             payload: { bundleDTO, callback }
         }: ICreateBundleAction = yield take(BundlesActionType.CREATE);
         yield put(fromGeneralActions.setLoading(true));
-        const { t } = getI18n();
+        const i18n = getI18n();
         const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
             yield apply(bundleClient, bundleClient.createBundle, [bundleDTO]);
             showNotification(
-                t('certificate.feedback.bundle_created'),
+                i18n.t('certificate.feedback.bundle_created'),
                 NotificationTypeEnum.Success
             );
         } catch (err) {
             console.error(err);
-            showNotification(t('general.feedback.unknownError'), NotificationTypeEnum.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
         yield put(fromGeneralActions.setLoading(false));
         yield call(callback);
@@ -88,14 +88,17 @@ function* buyBundle() {
             payload: { bundleDTO }
         } = yield take(BundlesActionType.BUY);
         yield put(fromGeneralActions.setLoading(true));
-        const { t } = getI18n();
+        const i18n = getI18n();
         const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
             yield apply(bundleClient, bundleClient.buyBundle, [bundleDTO]);
-            showNotification(t('certificate.feedback.bundle_bought'), NotificationTypeEnum.Success);
+            showNotification(
+                i18n.t('certificate.feedback.bundle_bought'),
+                NotificationTypeEnum.Success
+            );
         } catch (err) {
             console.error(err);
-            showNotification(t('general.feedback.unknownError'), NotificationTypeEnum.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
         yield put(fetchBundles());
         yield put(fromGeneralActions.setLoading(false));
@@ -106,18 +109,21 @@ function* buyBundle() {
 function* cancelBundle(): SagaIterator {
     while (true) {
         const action = yield take(BundlesActionType.CANCEL_BUNDLE);
-        const { t } = getI18n();
+        const i18n = getI18n();
         const { payload } = action;
         const { bundleClient }: ExchangeClient = yield select(getExchangeClient);
         try {
             yield apply(bundleClient, bundleClient.cancelBundle, [payload]);
-            showNotification(t('certificate.feedback.bundleCanceld'), NotificationTypeEnum.Success);
+            showNotification(
+                i18n.t('certificate.feedback.bundleCanceld'),
+                NotificationTypeEnum.Success
+            );
             yield put(showBundleDetails(false));
             yield put(reloadCertificates());
             yield put(fetchBundles());
         } catch (err) {
             console.error(err);
-            showNotification(t('general.feedback.unknownError'), NotificationTypeEnum.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
     }
 }

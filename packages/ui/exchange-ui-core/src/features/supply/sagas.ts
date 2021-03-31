@@ -12,7 +12,7 @@ function* getAllSupplies(): SagaIterator {
     while (true) {
         yield take(SupplyActions.FETCH_SUPPLIES);
         const { supplyClient }: ExchangeClient = yield select(getExchangeClient);
-        const { t } = getI18n();
+        const i18n = getI18n();
         try {
             const { data: supplies }: { data: SupplyDto[] } = yield apply(
                 supplyClient,
@@ -21,7 +21,10 @@ function* getAllSupplies(): SagaIterator {
             );
             yield put(storeSupplies(supplies));
         } catch (error) {
-            showNotification(t('exchange.supply.fetchSupplyError'), NotificationTypeEnum.Error);
+            showNotification(
+                i18n.t('exchange.supply.fetchSupplyError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -31,16 +34,19 @@ function* createNewSupply(): SagaIterator {
     while (true) {
         const { payload }: ICreateSupplyAction = yield take(SupplyActions.CREATE_SUPPLY);
         const { supplyClient }: ExchangeClient = yield select(getExchangeClient);
-        const { t } = getI18n();
+        const i18n = getI18n();
         try {
             yield apply(supplyClient, supplyClient.create, [payload]);
             yield put(fetchSupplies());
             showNotification(
-                t('exchange.supply.supplyCreatedSuccess'),
+                i18n.t('exchange.supply.supplyCreatedSuccess'),
                 NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(t('exchange.supply.supplyCreateError'), NotificationTypeEnum.Error);
+            showNotification(
+                i18n.t('exchange.supply.supplyCreateError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -51,16 +57,19 @@ function* updateExistingSupply(): SagaIterator {
         const { payload }: IUpdateSupplyAction = yield take(SupplyActions.UPDATE_SUPPLY);
         const { supplyId, supplyData } = payload;
         const { supplyClient }: ExchangeClient = yield select(getExchangeClient);
-        const { t } = getI18n();
+        const i18n = getI18n();
         try {
             yield apply(supplyClient, supplyClient.update, [supplyId, supplyData]);
             yield put(fetchSupplies());
             showNotification(
-                t('exchange.supply.supplyUpdatedSuccess'),
+                i18n.t('exchange.supply.supplyUpdatedSuccess'),
                 NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(t('exchange.supply.supplyUpdateError'), NotificationTypeEnum.Error);
+            showNotification(
+                i18n.t('exchange.supply.supplyUpdateError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -70,16 +79,19 @@ function* removeSelectedSupply(): SagaIterator {
     while (true) {
         const { payload }: IRemoveSupplyAction = yield take(SupplyActions.REMOVE_SUPPLY);
         const { supplyClient }: ExchangeClient = yield select(getExchangeClient);
-        const { t } = getI18n();
+        const i18n = getI18n();
         try {
             yield apply(supplyClient, supplyClient.remove, [payload.supplyId]);
             yield put(fetchSupplies());
             showNotification(
-                t('exchange.supply.supplyRemovedSuccess'),
+                i18n.t('exchange.supply.supplyRemovedSuccess'),
                 NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(t('exchange.supply.supplyRemoveError'), NotificationTypeEnum.Error);
+            showNotification(
+                i18n.t('exchange.supply.supplyRemoveError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }

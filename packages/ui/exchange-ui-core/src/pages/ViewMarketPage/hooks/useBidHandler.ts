@@ -1,14 +1,9 @@
 import { IMarketFormValues } from '../../../components';
 import { Dispatch } from 'redux';
-import {
-    EnergyFormatter,
-    fromGeneralActions,
-    fromGeneralSelectors
-} from '@energyweb/origin-ui-core';
+import { EnergyFormatter, fromGeneralActions } from '@energyweb/origin-ui-core';
 import { createBid, createDemand } from '../../../features';
 import { ANY_OPERATOR, ANY_VALUE } from '../../../utils';
 import moment from 'moment';
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 
 type BidHandlerParams = {
@@ -20,7 +15,7 @@ type BidHandlerParams = {
     generationDateEnd: string;
 };
 
-async function bidHandler({
+export async function bidHandler({
     oneTimePurchase,
     values,
     dispatch,
@@ -82,17 +77,21 @@ async function bidHandler({
 }
 
 export const useBidHandler = ({
+    dispatch,
+    country,
     generationDateEnd,
     values,
     generationDateStart,
     oneTimePurchase
 }: Pick<
     BidHandlerParams,
-    'generationDateStart' | 'generationDateEnd' | 'oneTimePurchase' | 'values'
+    | 'dispatch'
+    | 'country'
+    | 'generationDateStart'
+    | 'generationDateEnd'
+    | 'oneTimePurchase'
+    | 'values'
 >) => {
-    const dispatch = useDispatch();
-    const country = useSelector(fromGeneralSelectors.getCountry);
-
     return useCallback(() => {
         bidHandler({
             dispatch,

@@ -35,13 +35,16 @@ export const Certificates = (props: IOwnProps) => {
             return grouped;
         }, {});
     };
+
+    const groups = devices.length === 0 ? {} : certificatesByFacility();
+
     return (
         <Box p={2}>
             <Box fontWeight="fontWeightBold" fontSize={fontSizeMd}>
                 {t('certificate.info.certificates')}
             </Box>
             <GroupedCertificateList
-                groups={certificatesByFacility()}
+                groups={groups}
                 selected={selected}
                 setSelected={setSelected}
                 devices={devices}
