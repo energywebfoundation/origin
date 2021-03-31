@@ -5,14 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Fab, Tooltip } from '@material-ui/core';
 import { Add, Assignment, Check, Visibility } from '@material-ui/icons';
 import { DeviceStatus, isRole, Role } from '@energyweb/origin-backend-core';
-import { getEnvironment } from '../../../features/general';
-import { getBaseURL, getDeviceDetailLink } from '../../../utils/routing';
 import { getConfiguration } from '../../../features/configuration';
 import { approveDevice } from '../../../features/devices';
-import { getExchangeDepositAddress, getUserOffchain } from '../../../features/users';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { moment } from '../../../utils/time';
-import { NotificationType, showNotification } from '../../../utils/notifications';
+import { NotificationTypeEnum, showNotification } from '../../../utils/notifications';
 import { PowerFormatter } from '../../../utils/PowerFormatter';
 import { getDeviceColumns } from '../../../utils/device';
 import { IOriginDevice } from '../../../types';
@@ -28,6 +25,8 @@ import {
     usePaginatedLoaderFiltered,
     TableFallback
 } from '../../Table';
+import { fromGeneralSelectors, fromUsersSelectors } from '../../../features';
+import { useLinks } from '../../../hooks';
 
 interface IOwnProps {
     actions: {
@@ -54,14 +53,13 @@ interface IDeviceRowData {
     status: DeviceStatus;
 }
 
-export function DeviceTable(props: IOwnProps) {
+export const DeviceTable = (props: IOwnProps) => {
     const [detailViewForDeviceId, setDetailViewForDeviceId] = useState(null);
-
+    const { getDeviceDetailsPageUrl } = useLinks();
     const configuration = useSelector(getConfiguration);
-    const user = useSelector(getUserOffchain);
-    const baseURL = useSelector(getBaseURL);
-    const environment = useSelector(getEnvironment);
-    const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
+    const exchangeDepositAddress = useSelector(fromUsersSelectors.getExchangeDepositAddress);
     const [showRequestCertModal, setShowRequestCertModal] = useState<boolean>(false);
     const [deviceForRequest, setDeviceForRequest] = useState<IOriginDevice>(null);
     const dispatch = useDispatch();
@@ -116,7 +114,7 @@ export function DeviceTable(props: IOwnProps) {
         if (device.status !== DeviceStatus.Active) {
             return showNotification(
                 `You can only request certificates for devices with status ${DeviceStatus.Active}.`,
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
 
@@ -196,7 +194,7 @@ export function DeviceTable(props: IOwnProps) {
     }));
 
     if (detailViewForDeviceId !== null) {
-        return <Redirect push={true} to={getDeviceDetailLink(baseURL, detailViewForDeviceId)} />;
+        return <Redirect push={true} to={getDeviceDetailsPageUrl(detailViewForDeviceId)} />;
     }
 
     const actions: (ITableAction | ((row: IDeviceRowData) => ITableAction))[] = [];
@@ -267,4 +265,4 @@ export function DeviceTable(props: IOwnProps) {
             />
         </>
     );
-}
+};

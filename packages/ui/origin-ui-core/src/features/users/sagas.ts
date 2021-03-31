@@ -12,29 +12,12 @@ import { SagaIterator } from 'redux-saga';
 import {
     UsersActions,
     ISetAuthenticationTokenAction,
-    setUserOffchain,
-    setAuthenticationToken,
-    clearAuthenticationToken,
-    setUserState,
-    refreshUserOffchain,
-    refreshClients,
-    IUpdateUserBlockchainAction
+    IUpdateUserBlockchainAction,
+    fromUsersActions
 } from './actions';
-import {
-    getBackendClient,
-    getIRecClient,
-    getEnvironment,
-    getExchangeClient
-} from '../general/selectors';
-import { Registration } from '../../utils/irec/types';
-import {
-    GeneralActions,
-    IEnvironment,
-    setBackendClient,
-    setExchangeClient,
-    setIRecClient,
-    setLoading
-} from '../general/actions';
+import { fromGeneralActions, fromGeneralSelectors, GeneralActions, IEnvironment } from '../general';
+import { Registration } from '../../utils/irec';
+
 import {
     reloadCertificates,
     clearCertificates,
@@ -42,16 +25,20 @@ import {
     setCertificationRequestsClient,
     setBlockchainPropertiesClient
 } from '../certificates';
-import { getUserState, getUserOffchain } from './selectors';
 import { IUsersState } from './reducer';
 
-import { BackendClient } from '../../utils/clients/BackendClient';
-import { ExchangeClient } from '../../utils/clients/ExchangeClient';
-import { IRecClient } from '../../utils/clients/IRecClient';
-import { showNotification, NotificationType } from '../..';
+import {
+    BackendClient,
+    ExchangeClient,
+    IRecClient,
+    NotificationTypeEnum,
+    showNotification
+} from '../../utils';
+
 import { getI18n } from 'react-i18next';
 import { getWeb3 } from '../web3';
 import { pollExchangeAddress } from '../../utils/pollExchangeAddress';
+import { fromUsersSelectors } from './selectors';
 
 export const LOCAL_STORAGE_KEYS = {
     AUTHENTICATION_TOKEN: 'AUTHENTICATION_TOKEN'
@@ -65,14 +52,11 @@ function* setPreviouslyLoggedInOffchainUser(): SagaIterator {
     yield take(GeneralActions.setEnvironment);
 
     const authenticationTokenFromStorage = getStoredAuthenticationToken();
+    const environment: IEnvironment = yield select(fromGeneralSelectors.getEnvironment);
 
-    const environment: IEnvironment = yield select(getEnvironment);
-
-    if (!authenticationTokenFromStorage || !environment) {
-        return;
+    if (authenticationTokenFromStorage && environment) {
+        yield put(fromUsersActions.setAuthenticationToken(authenticationTokenFromStorage));
     }
-
-    yield put(setAuthenticationToken(authenticationTokenFromStorage));
 }
 
 function* persistAuthenticationToken(): SagaIterator {
@@ -85,7 +69,7 @@ function* persistAuthenticationToken(): SagaIterator {
             localStorage.setItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN, action.payload);
         }
 
-        yield put(refreshClients());
+        yield put(fromUsersActions.refreshClients());
     }
 }
 
@@ -93,7 +77,7 @@ function* updateClients(): SagaIterator {
     while (true) {
         yield take(UsersActions.refreshClients);
 
-        const environment: IEnvironment = yield select(getEnvironment);
+        const environment: IEnvironment = yield select(fromGeneralSelectors.getEnvironment);
 
         if (!environment) {
             continue;
@@ -102,11 +86,21 @@ function* updateClients(): SagaIterator {
         const authenticationTokenFromStorage = getStoredAuthenticationToken();
         const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
 
-        yield put(setBackendClient(new BackendClient(backendUrl, authenticationTokenFromStorage)));
         yield put(
-            setExchangeClient(new ExchangeClient(backendUrl, authenticationTokenFromStorage))
+            fromGeneralActions.setBackendClient(
+                new BackendClient(backendUrl, authenticationTokenFromStorage)
+            )
         );
-        yield put(setIRecClient(new IRecClient(backendUrl, authenticationTokenFromStorage)));
+        yield put(
+            fromGeneralActions.setExchangeClient(
+                new ExchangeClient(backendUrl, authenticationTokenFromStorage)
+            )
+        );
+        yield put(
+            fromGeneralActions.setIRecClient(
+                new IRecClient(backendUrl, authenticationTokenFromStorage)
+            )
+        );
 
         const clientConfiguration = new ClientConfiguration(
             authenticationTokenFromStorage
@@ -133,7 +127,7 @@ function* updateClients(): SagaIterator {
             )
         );
 
-        yield put(refreshUserOffchain());
+        yield put(fromUsersActions.refreshUserOffchain());
     }
 }
 
@@ -141,9 +135,10 @@ function* fetchOffchainUserDetails(): SagaIterator {
     while (true) {
         yield take(UsersActions.refreshUserOffchain);
 
-        const exchangeClient: ExchangeClient = yield select(getExchangeClient);
-        const accountClient = exchangeClient?.accountClient;
-        const backendClient: BackendClient = yield select(getBackendClient);
+        const { accountClient }: ExchangeClient = yield select(
+            fromGeneralSelectors.getExchangeClient
+        );
+        const backendClient: BackendClient = yield select(fromGeneralSelectors.getBackendClient);
         const features = yield getContext('enabledFeatures');
 
         if (!backendClient?.accessToken) {
@@ -160,7 +155,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
                 [invitationClient, invitationClient.getInvitations],
                 []
             );
-            const userState: IUsersState = yield select(getUserState);
+            const userState: IUsersState = yield select(fromUsersSelectors.getUserState);
 
             const { data: account } = yield apply(accountClient, accountClient.getAccount, []);
             const exchangeDepositAddress = account.address;
@@ -168,7 +163,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
             let iRecAccount: Registration[];
 
             if (features.includes(OriginFeature.IRec)) {
-                const { organizationClient } = yield select(getIRecClient);
+                const { organizationClient } = yield select(fromGeneralSelectors.getIRecClient);
                 const iRecAccountResponse = userOffchain.organization
                     ? yield call([organizationClient, organizationClient.getRegistrations], [])
                     : { data: [] };
@@ -176,7 +171,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
             }
 
             yield put(
-                setUserState({
+                fromUsersActions.setUserState({
                     ...userState,
                     userOffchain,
                     iRecAccount,
@@ -196,7 +191,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
             console.log('error', error, error.response);
 
             if (error?.response?.status === 401) {
-                yield put(clearAuthenticationToken());
+                yield put(fromUsersActions.clearAuthenticationToken());
             } else {
                 console.warn('unkown error while getting user profile');
             }
@@ -209,13 +204,13 @@ function* updateBlockchainAddress(): SagaIterator {
         const { payload }: IUpdateUserBlockchainAction = yield take(
             UsersActions.updateUserBlockchain
         );
-        const { user, activeAccount, callback } = payload;
+        const { user, activeAccount } = payload;
 
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
 
         const web3 = yield select(getWeb3);
-        const environment = yield select(getEnvironment);
-        const backendClient: BackendClient = yield select(getBackendClient);
+        const environment = yield select(fromGeneralSelectors.getEnvironment);
+        const backendClient: BackendClient = yield select(fromGeneralSelectors.getBackendClient);
         const userClient: UserClient = backendClient.userClient;
         const i18n = getI18n();
 
@@ -239,23 +234,25 @@ function* updateBlockchainAddress(): SagaIterator {
 
             showNotification(
                 i18n.t('settings.feedback.blockchainAccountLinked'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
-            yield put(refreshUserOffchain());
-            yield call(callback);
+            yield put(fromUsersActions.refreshUserOffchain());
         } catch (error) {
             if (error?.data?.message) {
-                showNotification(error.data.message, NotificationType.Error);
+                showNotification(error.data.message, NotificationTypeEnum.Error);
             } else if (error?.response) {
-                showNotification(error.response.data.message, NotificationType.Error);
+                showNotification(error.response.data.message, NotificationTypeEnum.Error);
             } else if (error?.message) {
-                showNotification(error.message, NotificationType.Error);
+                showNotification(error.message, NotificationTypeEnum.Error);
             } else {
                 console.warn('Could not log in.', error);
-                showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+                showNotification(
+                    i18n.t('general.feedback.unknownError'),
+                    NotificationTypeEnum.Error
+                );
             }
         }
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
@@ -263,9 +260,11 @@ function* createUserExchangeAddress(): SagaIterator {
     while (true) {
         yield take(UsersActions.createExchangeDepositAddress);
 
-        yield put(setLoading(true));
-        const user = yield select(getUserOffchain);
-        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+        yield put(fromGeneralActions.setLoading(true));
+        const user = yield select(fromUsersSelectors.getUserOffchain);
+        const { accountClient }: ExchangeClient = yield select(
+            fromGeneralSelectors.getExchangeClient
+        );
         const i18n = getI18n();
 
         try {
@@ -283,24 +282,24 @@ function* createUserExchangeAddress(): SagaIterator {
             const isAddressAssigned = yield call(pollExchangeAddress, accountClient, 2000);
 
             if (isAddressAssigned) {
-                yield put(refreshUserOffchain());
+                yield put(fromUsersActions.refreshUserOffchain());
                 showNotification(
                     i18n.t('user.feedback.exchangeAddressSuccess'),
-                    NotificationType.Success
+                    NotificationTypeEnum.Success
                 );
             }
         } catch (error) {
             if (error?.message) {
-                showNotification(error?.message, NotificationType.Error);
+                showNotification(error?.message, NotificationTypeEnum.Error);
             } else {
                 console.warn('Could not create exchange deposit address.', error);
                 showNotification(
                     i18n.t('user.feedback.exchangeAddressFailure'),
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             }
         }
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
@@ -310,8 +309,8 @@ function* logOutSaga(): SagaIterator {
 
         localStorage.removeItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN);
 
-        yield put(refreshClients());
-        yield put(setUserOffchain(null));
+        yield put(fromUsersActions.refreshClients());
+        yield put(fromUsersActions.setUserOffchain(null));
         yield put(clearCertificates());
     }
 }

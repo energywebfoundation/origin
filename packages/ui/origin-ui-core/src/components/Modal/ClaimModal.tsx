@@ -23,10 +23,9 @@ import {
     requestClaimCertificate,
     requestClaimCertificateBulk
 } from '../../features/certificates';
-import { getUserOffchain } from '../../features/users/selectors';
+import { fromUsersSelectors } from '../../features/users/selectors';
 import { EnergyFormatter, countDecimals, getCountryName } from '../../utils';
-import { getEnvironment } from '../../features';
-import { IEnvironment } from '../../features/general';
+import { fromGeneralSelectors, IEnvironment } from '../../features/general';
 import { MaterialDatePicker } from '../Form/MaterialDatePicker';
 
 interface IProps {
@@ -38,7 +37,7 @@ interface IProps {
 export function ClaimModal(props: IProps) {
     const { certificates, callback, showModal } = props;
 
-    const environment: IEnvironment = useSelector(getEnvironment);
+    const environment: IEnvironment = useSelector(fromGeneralSelectors.getEnvironment);
     const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
         Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
     );
@@ -46,7 +45,7 @@ export function ClaimModal(props: IProps) {
     const isBulkClaim = certificates.length > 1;
     const certificateIds: number[] = certificates.map((cert) => cert.id);
 
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const countryCodes = Countries.map((country) => country.code);
 
     const [beneficiary, setBeneficiary] = useState(user?.organization?.name);

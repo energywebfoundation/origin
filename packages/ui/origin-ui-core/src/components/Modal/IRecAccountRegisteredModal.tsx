@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
-import { showNotification, NotificationType } from '../../utils';
+import { showNotification, NotificationTypeEnum } from '../../utils';
 import iconAdded from '../../../assets/icon-org-added.svg';
 
 interface IProps {
@@ -18,7 +18,7 @@ export const IRecAccountRegisteredModal = ({ showModal, setShowModal, onClose }:
 
     const onCloseHandler = () => {
         setShowModal(false);
-        showNotification('Organization registered.', NotificationType.Success);
+        showNotification('Organization registered.', NotificationTypeEnum.Success);
         onClose();
     };
 

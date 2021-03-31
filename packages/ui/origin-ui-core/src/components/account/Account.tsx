@@ -1,45 +1,53 @@
-import React from 'react';
+import React, { memo, ReactElement } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useLinks } from '../../utils';
 import { PageContent } from '../Layout';
-import { useAccountMenu } from './accountMenu';
+import { useAccountMenu } from './hooks/useAccountMenu';
+import { useLinks } from '../../hooks';
 
-export function Account() {
-    const { baseURL, getAccountLink } = useLinks();
+export const Account = memo(
+    (): ReactElement => {
+        const { baseURL, accountLoginPageUrl } = useLinks();
 
-    const accountMenuList = useAccountMenu();
+        const accountMenuList = useAccountMenu();
 
-    return (
-        <div className="PageWrapper">
-            <Route
-                path={`${getAccountLink()}/:key/:id?`}
-                render={(props) => {
-                    const key = props.match.params.key;
+        return (
+            <div className="PageWrapper">
+                <Route
+                    path={`${accountLoginPageUrl}/:key/:id?`}
+                    render={(props) => {
+                        const key = props.match.params.key;
 
-                    return (
-                        <PageContent
-                            menu={accountMenuList.find((item) => item.key === key)}
-                            redirectPath={getAccountLink()}
-                            {...props}
+                        return (
+                            <PageContent
+                                menu={accountMenuList.find((item) => item.key === key)}
+                                redirectPath={accountLoginPageUrl}
+                                {...props}
+                            />
+                        );
+                    }}
+                />
+
+                <Route
+                    exact={true}
+                    path={`${accountLoginPageUrl}`}
+                    render={() => (
+                        <Redirect
+                            to={{ pathname: `${accountLoginPageUrl}/${accountMenuList[0].key}` }}
                         />
-                    );
-                }}
-            />
+                    )}
+                />
+                <Route
+                    exact={true}
+                    path={`${baseURL}/`}
+                    render={() => (
+                        <Redirect
+                            to={{ pathname: `${accountLoginPageUrl}/${accountMenuList[0].key}` }}
+                        />
+                    )}
+                />
+            </div>
+        );
+    }
+);
 
-            <Route
-                exact={true}
-                path={`${getAccountLink()}`}
-                render={() => (
-                    <Redirect to={{ pathname: `${getAccountLink()}/${accountMenuList[0].key}` }} />
-                )}
-            />
-            <Route
-                exact={true}
-                path={`${baseURL}/`}
-                render={() => (
-                    <Redirect to={{ pathname: `${getAccountLink()}/${accountMenuList[0].key}` }} />
-                )}
-            />
-        </div>
-    );
-}
+Account.displayName = 'Account';

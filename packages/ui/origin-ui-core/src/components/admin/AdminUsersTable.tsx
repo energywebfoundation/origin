@@ -3,23 +3,22 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { IPublicOrganization, IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
 import { Edit } from '@material-ui/icons';
-import { getBackendClient } from '../../features/general';
-import { getUserOffchain } from '../../features/users';
-import { NotificationType, showNotification } from '../../utils/notifications';
+import { NotificationTypeEnum, showNotification } from '../../utils/notifications';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
     TableMaterial,
     usePaginatedLoaderFiltered
 } from '../Table';
 import { CustomFilterInputType, ICustomFilterDefinition } from '../Table/FiltersHeader';
+import { fromGeneralSelectors, fromUsersSelectors } from '../../features';
 
 export interface IRecord {
     user: IUser;
 }
 
 export function AdminUsersTable() {
-    const adminClient = useSelector(getBackendClient)?.adminClient;
-    const userOffchain = useSelector(getUserOffchain);
+    const adminClient = useSelector(fromGeneralSelectors.getBackendClient)?.adminClient;
+    const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
 
     const history = useHistory();
 
@@ -52,7 +51,7 @@ export function AdminUsersTable() {
             if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${userOffchain.status}`,
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             }
         }

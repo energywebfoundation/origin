@@ -4,10 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Grid, Box, Button, useTheme } from '@material-ui/core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain } from '../../features/users';
-import { useLinks } from '../../utils/routing';
 import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
+import { fromUsersSelectors } from '../../features';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     showModal: boolean;
@@ -30,8 +30,8 @@ export const IRECConnectOrRegisterModal = ({
     const {
         typography: { fontSizeMd }
     } = useTheme();
-    const { getOrganizationIRecRegisterLink, getOrganizationViewLink } = useLinks();
-    const user = useSelector(getUserOffchain);
+    const { organizationIRecRegisterUrl, getOrganizationDetailsPageUrl } = useLinks();
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const orgId = user.organization?.id;
     const history = useHistory();
     const { enabledFeatures } = useContext(OriginConfigurationContext);
@@ -43,11 +43,11 @@ export const IRECConnectOrRegisterModal = ({
                 if (!user.blockchainAccountAddress) {
                     setShowBlockchainModal(true);
                 } else {
-                    history.push(getOrganizationViewLink(orgId.toString()));
+                    history.push(getOrganizationDetailsPageUrl(String(orgId)));
                 }
                 break;
             case STEP_NAMES.REGISTER_IREC:
-                history.push(getOrganizationIRecRegisterLink());
+                history.push(organizationIRecRegisterUrl);
                 break;
         }
     };

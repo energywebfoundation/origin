@@ -6,9 +6,9 @@ import { Skeleton } from '@material-ui/lab';
 import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
-import { setLoading, getBackendClient } from '../../features/general';
-import { NotificationType, showNotification } from '../../utils/notifications';
+import { NotificationTypeEnum, showNotification } from '../../utils/notifications';
 import { FormInput, FormSelect } from '../Form';
+import { fromGeneralActions, fromGeneralSelectors } from '../../features';
 
 interface IProps {
     entity: IUser;
@@ -36,7 +36,7 @@ const VALIDATION_SCHEMA = Yup.object({
 
 export function AdminUserForm(props: IProps) {
     const { entity, readOnly } = props;
-    const adminClient = useSelector(getBackendClient)?.adminClient;
+    const adminClient = useSelector(fromGeneralSelectors.getBackendClient)?.adminClient;
 
     const [
         initialFormValuesFromExistingEntity,
@@ -68,25 +68,25 @@ export function AdminUserForm(props: IProps) {
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await adminClient.updateUser(values.id, values);
 
             history.push('manage-user');
 
-            showNotification('User updated.', NotificationType.Success);
+            showNotification('User updated.', NotificationTypeEnum.Success);
         } catch (error) {
             console.warn('Error while update an user', error);
 
             if (error?.response?.status === 401) {
-                showNotification('Unauthorized.', NotificationType.Error);
+                showNotification('Unauthorized.', NotificationTypeEnum.Error);
             } else {
-                showNotification('User could not be updated.', NotificationType.Error);
+                showNotification('User could not be updated.', NotificationTypeEnum.Error);
             }
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
         formikActions.setSubmitting(false);
     }
 
@@ -137,7 +137,7 @@ export function AdminUserForm(props: IProps) {
                                         required
                                     />
                                 </Grid>
-                                <Grid item xs={6}></Grid>
+                                <Grid item xs={6} />
                                 <Grid item xs={6}>
                                     <FormInput
                                         label="First Name"
@@ -194,7 +194,7 @@ export function AdminUserForm(props: IProps) {
                                         required
                                     />
                                 </Grid>
-                                <Grid item xs={6}></Grid>
+                                <Grid item xs={6} />
                             </Grid>
 
                             {otherErrors && <div className="mt-3">{otherErrors}</div>}

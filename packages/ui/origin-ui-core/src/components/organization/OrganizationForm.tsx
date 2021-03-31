@@ -17,10 +17,8 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { IFullOrganization, OrganizationPostData } from '@energyweb/origin-backend-core';
-import { setLoading, getBackendClient } from '../../features/general';
-import { setUserOffchain, getUserOffchain } from '../../features/users';
 import { useOriginConfiguration } from '../../utils/configuration';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../utils/notifications';
 import { LightenColor } from '../../utils/colors';
 import { Upload, IUploadedFile } from '../Documents';
 import { FormInput, FormCountrySelect, FormBusinessTypeSelect } from '../Form';
@@ -30,6 +28,12 @@ import {
     RegisterThankYouMessageModal,
     OrganizationAlreadyExistsModal
 } from '../Modal';
+import {
+    fromGeneralActions,
+    fromGeneralSelectors,
+    fromUsersActions,
+    fromUsersSelectors
+} from '../../features';
 
 interface IProps {
     entity: IFullOrganization;
@@ -96,16 +100,17 @@ const VALIDATION_SCHEMA = Yup.object({
     documentIds: Yup.array().label('Upload Company Proof')
 });
 
-export function OrganizationForm(props: IProps) {
+export const OrganizationForm = (props: IProps) => {
     const { entity, readOnly } = props;
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
+    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
+        ?.organizationClient;
     const [
         initialFormValuesFromExistingEntity,
         setInitialFormValuesFromExistingEntity
     ] = useState<IFormValues>(null);
     const [companyProofs, setCompanyProofs] = useState<IUploadedFile[]>([]);
     const [signatoryId, setSignatoryId] = useState<IUploadedFile[]>([]);
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
@@ -147,7 +152,7 @@ export function OrganizationForm(props: IProps) {
             return;
         }
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             const formData: OrganizationPostData = {
@@ -163,26 +168,26 @@ export function OrganizationForm(props: IProps) {
             };
 
             const organization = (await organizationClient.register(formData)).data;
-            dispatch(setUserOffchain({ ...user, organization }));
+            dispatch(fromUsersActions.setUserOffchain({ ...user, organization }));
 
             if (organization) {
                 setShowRoleModal(true);
-                showNotification('Organization registered.', NotificationType.Success);
+                showNotification('Organization registered.', NotificationTypeEnum.Success);
             }
         } catch (error) {
             console.warn('Error while registering an organization', error);
 
             if (error?.response?.status === 401) {
-                showNotification('Unauthorized.', NotificationType.Error);
+                showNotification('Unauthorized.', NotificationTypeEnum.Error);
             } else if (error?.response?.status === 400) {
                 setShowAlreadyExistsModal(true);
-                showNotification(error?.response?.data?.message, NotificationType.Error);
+                showNotification(error?.response?.data?.message, NotificationTypeEnum.Error);
             } else {
-                showNotification('Organization could not be created.', NotificationType.Error);
+                showNotification('Organization could not be created.', NotificationTypeEnum.Error);
             }
         }
         formikActions.setSubmitting(false);
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     }
 
     let initialFormValues: IFormValues = null;
@@ -464,4 +469,4 @@ export function OrganizationForm(props: IProps) {
             />
         </Paper>
     );
-}
+};

@@ -5,12 +5,13 @@ import { push } from 'connected-react-router';
 import { DeviceStatus } from '@energyweb/origin-backend-core';
 import { OrganizationClient } from '@energyweb/origin-backend-client';
 import { DeviceClient, DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { BackendClient } from '../../utils/clients';
-import { getDevicesOwnedLink, getBaseURL } from '../../utils/routing';
-import { getDeviceLocationText } from '../../utils/device';
+import {
+    showNotification,
+    NotificationTypeEnum,
+    getDeviceLocationText,
+    BackendClient
+} from '../../utils';
 import { IOriginDevice } from '../../types';
-import { getDeviceClient, getBackendClient, setLoading } from '../general';
 import {
     DevicesActions,
     storeAllDevices,
@@ -23,13 +24,15 @@ import {
     addReadsMyDevices
 } from './actions';
 import { ICreateDeviceAction, IApproveDeviceAction } from './types';
+import { fromGeneralActions, fromGeneralSelectors } from '../general';
+import { linkPaths } from '../../hooks';
 
 function* fetchAndFormatAllDevices(): SagaIterator {
     while (true) {
         yield take(DevicesActions.FETCH_ALL_DEVICES);
 
-        const deviceClient: DeviceClient = yield select(getDeviceClient);
-        const backendClient: BackendClient = yield select(getBackendClient);
+        const deviceClient: DeviceClient = yield select(fromGeneralSelectors.getDeviceClient);
+        const backendClient: BackendClient = yield select(fromGeneralSelectors.getBackendClient);
         const organizationClient: OrganizationClient = backendClient.organizationClient;
         const i18n = getI18n();
 
@@ -67,7 +70,10 @@ function* fetchAndFormatAllDevices(): SagaIterator {
             );
             yield put(addReadsAllDevices(allDevicesWithReads));
         } catch (error) {
-            showNotification(i18n.t('device.feedback.errorGettingDevices'), NotificationType.Error);
+            showNotification(
+                i18n.t('device.feedback.errorGettingDevices'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -77,8 +83,8 @@ function* fetchAndFormatMyDevices(): SagaIterator {
     while (true) {
         yield take(DevicesActions.FETCH_MY_DEVICES);
 
-        const deviceClient: DeviceClient = yield select(getDeviceClient);
-        const backendClient: BackendClient = yield select(getBackendClient);
+        const deviceClient: DeviceClient = yield select(fromGeneralSelectors.getDeviceClient);
+        const backendClient: BackendClient = yield select(fromGeneralSelectors.getBackendClient);
         const organizationClient: OrganizationClient = backendClient.organizationClient;
         const i18n = getI18n();
 
@@ -116,7 +122,10 @@ function* fetchAndFormatMyDevices(): SagaIterator {
             );
             yield put(addReadsMyDevices(myDevicesWithReads));
         } catch (error) {
-            showNotification(i18n.t('device.feedback.errorGettingDevices'), NotificationType.Error);
+            showNotification(
+                i18n.t('device.feedback.errorGettingDevices'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -128,27 +137,29 @@ function* createNewDevice(): SagaIterator {
             DevicesActions.CREATE_DEVICE
         );
 
-        yield put(setLoading(true));
-        const baseUrl = getBaseURL();
+        yield put(fromGeneralActions.setLoading(true));
         const i18n = getI18n();
 
-        const deviceClient: DeviceClient = yield select(getDeviceClient);
+        const deviceClient: DeviceClient = yield select(fromGeneralSelectors.getDeviceClient);
 
         try {
             yield apply(deviceClient, deviceClient.createDevice, [newDevice]);
 
             yield put(fetchMyDevices());
-            yield put(push(getDevicesOwnedLink(baseUrl)));
+            yield put(push(linkPaths.devicesOwnedPageUrl));
 
             showNotification(
                 i18n.t('device.feedback.successCreatingDevice'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(i18n.t('device.feedback.errorCreatingDevice'), NotificationType.Error);
+            showNotification(
+                i18n.t('device.feedback.errorCreatingDevice'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
@@ -156,8 +167,8 @@ function* approveSubmittedDevice(): SagaIterator {
     while (true) {
         const { payload: id }: IApproveDeviceAction = yield take(DevicesActions.APPROVE_DEVICE);
 
-        yield put(setLoading(true));
-        const deviceClient: DeviceClient = yield select(getDeviceClient);
+        yield put(fromGeneralActions.setLoading(true));
+        const deviceClient: DeviceClient = yield select(fromGeneralSelectors.getDeviceClient);
         const i18n = getI18n();
 
         try {
@@ -170,17 +181,17 @@ function* approveSubmittedDevice(): SagaIterator {
 
             showNotification(
                 i18n.t('device.feedback.successApprovingDevice'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
             showNotification(
                 i18n.t('device.feedback.errorApprovingDevice'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             console.log(error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 

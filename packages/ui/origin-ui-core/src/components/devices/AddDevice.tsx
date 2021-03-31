@@ -16,25 +16,19 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { CloudUpload } from '@material-ui/icons';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
-import {
-    getEnvironment,
-    getExternalDeviceIdTypes,
-    getCompliance,
-    getCountry,
-    getBackendClient
-} from '../../features/general';
 import { getConfiguration } from '../../features/configuration';
 import { PowerFormatter } from '../../utils/PowerFormatter';
 import { useValidation } from '../../utils/validation';
 import { areDeviceSpecificPropertiesValid } from '../../utils/device';
 import { usePermissions } from '../../utils/permissions';
 import { Moment } from '../../utils/time';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../utils/notifications';
 import { FormikDatePicker, FormInput, HierarchicalMultiSelect } from '../Form';
 import { Upload, IUploadedFile } from '../Documents';
 import { Requirements } from '../Layout';
 import { DeviceSelectors } from './DeviceSelectors';
 import { createDevice } from '../../features/devices';
+import { fromGeneralSelectors } from '../../features';
 
 interface IFormValues {
     facilityName: string;
@@ -60,13 +54,13 @@ const INITIAL_FORM_VALUES: IFormValues = {
     projectStory: ''
 };
 
-export function AddDevice() {
+export const AddDevice = () => {
     const configuration = useSelector(getConfiguration);
-    const compliance = useSelector(getCompliance);
-    const country = useSelector(getCountry);
-    const backendClient = useSelector(getBackendClient);
-    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
-    const environment = useSelector(getEnvironment);
+    const compliance = useSelector(fromGeneralSelectors.getCompliance);
+    const country = useSelector(fromGeneralSelectors.getCountry);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
+    const externalDeviceIdTypes = useSelector(fromGeneralSelectors.getExternalDeviceIdTypes);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -188,7 +182,7 @@ export function AddDevice() {
                     limit: 10,
                     actual: files.length
                 }),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             return;
         }
@@ -204,7 +198,7 @@ export function AddDevice() {
             console.log(error);
             showNotification(
                 t('device.feedback.unexpectedErrorWhenUploadingImages'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
     }
@@ -529,4 +523,4 @@ export function AddDevice() {
             </Formik>
         </Paper>
     );
-}
+};

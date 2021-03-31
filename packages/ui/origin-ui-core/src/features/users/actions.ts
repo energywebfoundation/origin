@@ -2,19 +2,19 @@ import { IUser, IFullOrganization, IOrganizationInvitation } from '@energyweb/or
 import { IUsersState } from './reducer';
 
 export enum UsersActions {
-    setActiveBlockchainAccountAddress = 'USERS_SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
-    updateFetcher = 'UPDATE_USER_FETCHER',
-    setUserOffchain = 'SET_USER_OFFCHAIN',
-    setAuthenticationToken = 'SET_AUTHENTICATION_TOKEN',
-    clearAuthenticationToken = 'CLEAR_AUTHENTICATION_TOKEN',
-    refreshUserOffchain = 'REFRESH_USER_OFFCHAIN',
-    refreshClients = 'REFRESH_CLIENTS',
-    addOrganizations = 'USERS_ADD_ORGANIZATIONS',
-    setInvitations = 'USERS_SET_INVITATIONS',
-    setUserState = 'USERS_SET_USER_STATE',
-    setIRecAccount = 'USERS_SET_IREC_ACCOUNT',
-    updateUserBlockchain = 'UPDATE_USER_BLOCKCHAIN',
-    createExchangeDepositAddress = 'CREATE_EXCHANGE_DEPOSIT_ADDRESS'
+    setActiveBlockchainAccountAddress = '[USERS] SET_ACTIVE_BLOCKCHAIN_ACCOUNT_ADDRESS',
+    updateFetcher = '[USERS] UPDATE_USER_FETCHER',
+    setUserOffchain = '[USERS] SET_USER_OFFCHAIN',
+    setAuthenticationToken = '[USERS] SET_AUTHENTICATION_TOKEN',
+    clearAuthenticationToken = '[USERS] CLEAR_AUTHENTICATION_TOKEN',
+    refreshUserOffchain = '[USERS] REFRESH_USER_OFFCHAIN',
+    refreshClients = '[USERS] REFRESH_CLIENTS',
+    addOrganizations = '[USERS] ADD_ORGANIZATIONS',
+    setInvitations = '[USERS] SET_INVITATIONS',
+    setUserState = '[USERS] SET_USER_STATE',
+    setIRecAccount = '[USERS] SET_IREC_ACCOUNT',
+    updateUserBlockchain = '[USERS] UPDATE_USER_BLOCKCHAIN',
+    createExchangeDepositAddress = '[USERS] CREATE_EXCHANGE_DEPOSIT_ADDRESS'
 }
 
 export interface ISetActiveBlockchainAccountAddressAction {
@@ -22,7 +22,7 @@ export interface ISetActiveBlockchainAccountAddressAction {
     payload: string;
 }
 
-export const setActiveBlockchainAccountAddress = (
+const setActiveBlockchainAccountAddress = (
     payload: ISetActiveBlockchainAccountAddressAction['payload']
 ) => ({
     type: UsersActions.setActiveBlockchainAccountAddress,
@@ -36,7 +36,7 @@ export interface ISetUserOffchainAction {
     payload: IUser;
 }
 
-export const setUserOffchain = (payload: ISetUserOffchainAction['payload']) => ({
+const setUserOffchain = (payload: ISetUserOffchainAction['payload']) => ({
     type: UsersActions.setUserOffchain,
     payload
 });
@@ -47,7 +47,7 @@ export interface IRefreshUserOffchainAction {
     type: UsersActions.refreshUserOffchain;
 }
 
-export const refreshUserOffchain = () => ({
+const refreshUserOffchain = () => ({
     type: UsersActions.refreshUserOffchain
 });
 
@@ -57,7 +57,7 @@ export interface IRefreshClientsAction {
     type: UsersActions.refreshUserOffchain;
 }
 
-export const refreshClients = () => ({
+const refreshClients = () => ({
     type: UsersActions.refreshClients
 });
 
@@ -68,7 +68,7 @@ export interface ISetAuthenticationTokenAction {
     payload: string;
 }
 
-export const setAuthenticationToken = (payload: ISetAuthenticationTokenAction['payload']) => ({
+const setAuthenticationToken = (payload: ISetAuthenticationTokenAction['payload']) => ({
     type: UsersActions.setAuthenticationToken,
     payload
 });
@@ -79,51 +79,47 @@ export interface IClearAuthenticationTokenAction {
     type: UsersActions.clearAuthenticationToken;
 }
 
-export const clearAuthenticationToken = () => ({
+const clearAuthenticationToken = () => ({
     type: UsersActions.clearAuthenticationToken
 });
 
 export type TClearAuthenticationTokenAction = typeof clearAuthenticationToken;
 
-export interface IAddOrganizationsAction {
+interface IAddOrganizationsAction {
     type: UsersActions.addOrganizations;
     payload: IFullOrganization[];
 }
 
-export const addOrganizations = (payload: IAddOrganizationsAction['payload']) => ({
+const addOrganizations = (payload: IAddOrganizationsAction['payload']) => ({
     type: UsersActions.addOrganizations,
     payload
 });
 
-export interface ISetInvitationsAction {
+interface ISetInvitationsAction {
     type: UsersActions.setInvitations;
     payload: IOrganizationInvitation[];
 }
 
-export const setInvitations = (
-    payload: ISetInvitationsAction['payload']
-): ISetInvitationsAction => ({
+const setInvitations = (payload: ISetInvitationsAction['payload']): ISetInvitationsAction => ({
     type: UsersActions.setInvitations,
     payload
 });
 
-export interface ISetIRecAccountAction {
+interface ISetIRecAccountAction {
     type: UsersActions.setIRecAccount;
     payload;
 }
 
-export const setIRecAccount = (
-    payload: ISetIRecAccountAction['payload']
-): ISetIRecAccountAction => ({
+const setIRecAccount = (payload: ISetIRecAccountAction['payload']): ISetIRecAccountAction => ({
     type: UsersActions.setIRecAccount,
     payload
 });
-export interface ISetUserState {
+
+interface ISetUserState {
     type: UsersActions.setUserState;
     payload: IUsersState;
 }
-
-export const setUserState = (payload: ISetUserState['payload']): ISetUserState => ({
+const setUserState = (payload: ISetUserState['payload']): ISetUserState => ({
     type: UsersActions.setUserState,
     payload
 });
@@ -133,13 +129,13 @@ export interface IUpdateUserBlockchainAction {
     payload: {
         user: IUser;
         activeAccount: string;
-        callback: () => void;
     };
 }
 
-export const updateUserBlockchain = (
-    payload: IUpdateUserBlockchainAction['payload']
-): IUpdateUserBlockchainAction => ({
+const updateUserBlockchain = (payload: {
+    activeAccount: string;
+    user: IUser;
+}): IUpdateUserBlockchainAction => ({
     type: UsersActions.updateUserBlockchain,
     payload
 });
@@ -148,7 +144,7 @@ export interface ICreateExchangeDepositAddressAction {
     type: UsersActions.createExchangeDepositAddress;
 }
 
-export const createExchangeDepositAddress = (): ICreateExchangeDepositAddressAction => ({
+const createExchangeDepositAddress = (): ICreateExchangeDepositAddressAction => ({
     type: UsersActions.createExchangeDepositAddress
 });
 
@@ -167,3 +163,18 @@ export type IUsersAction =
     | ISetIRecAccountAction
     | IUpdateUserBlockchainAction
     | ICreateExchangeDepositAddressAction;
+
+export const fromUsersActions = {
+    setActiveBlockchainAccountAddress,
+    setUserOffchain,
+    setAuthenticationToken,
+    clearAuthenticationToken,
+    refreshUserOffchain,
+    refreshClients,
+    addOrganizations,
+    setInvitations,
+    setUserState,
+    setIRecAccount,
+    updateUserBlockchain,
+    createExchangeDepositAddress
+};

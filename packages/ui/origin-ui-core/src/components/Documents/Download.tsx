@@ -6,9 +6,9 @@ import { GetApp } from '@material-ui/icons';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { LightenColor } from '../../utils';
 
-import { getBackendClient } from '../../features/general/selectors';
+import { fromGeneralSelectors } from '../../features/general/selectors';
 
-export const downloadFile = async (client: FileClient, id: string, name: string) => {
+export const downloadFileHandler = async (client: FileClient, id: string, name: string) => {
     if (!client) {
         return;
     }
@@ -44,7 +44,7 @@ interface IProps {
 
 export const Download = (props: IProps) => {
     const { documents, name } = props;
-    const fileClient: FileClient = useSelector(getBackendClient)?.fileClient;
+    const fileClient: FileClient = useSelector(fromGeneralSelectors.getBackendClient)?.fileClient;
     const configuration = useOriginConfiguration();
     const originTextColor = configuration?.styleConfig?.TEXT_COLOR_DEFAULT;
 
@@ -85,7 +85,7 @@ export const Download = (props: IProps) => {
                 label={`${documents.length > 1 ? `${name} ${index + 1}` : `${name}`}`}
                 variant="outlined"
                 color="primary"
-                onClick={() => downloadFile(fileClient, documentId, name)}
+                onClick={() => downloadFileHandler(fileClient, documentId, name)}
                 icon={<GetApp color="primary" />}
                 style={{ background: bgColorLight }}
                 key={index}

@@ -1,20 +1,18 @@
 import { IOriginConfiguration, DeviceCreateData } from '@energyweb/origin-backend-core';
-import { ExchangeClient } from '../../utils/clients/ExchangeClient';
-import { BackendClient } from '../../utils/clients/BackendClient';
-import { IRecClient } from '../../utils/clients/IRecClient';
+import { ExchangeClient, BackendClient, IRecClient } from '../../utils';
 
 export enum GeneralActions {
-    setLoading = 'GENERAL_SET_LOADING',
-    setError = 'GENERAL_SET_ERROR',
-    setBackendClient = 'GENERAL_SET_BACKEND_CLIENT',
-    setExchangeClient = 'GENERAL_SET_EXCHANGE_CLIENT',
-    setEnvironment = 'GENERAL_SET_ENVIRONMENT',
-    setOffchainConfiguration = 'GENERAL_SET_OFFCHAIN_CONFIGURATION',
-    setAccountMismatchModalProperties = 'GENERAL_SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
-    accountMismatchModalResolved = 'GENERAL_ACCOUNT_MISMATCH_MODAL_RESOLVED',
-    requestDeviceCreation = 'GENERAL_REQUEST_DEVICE_CREATION',
-    setNoAccountModalVisibility = 'NO_ACCOUNT_MODAL_VISIBILITY',
-    setIRecClient = 'GENERAL_SET_IREC_CLIENT'
+    setLoading = '[GENERAL] SET_LOADING',
+    setError = '[GENERAL] SET_ERROR',
+    setBackendClient = '[GENERAL] SET_BACKEND_CLIENT',
+    setExchangeClient = '[GENERAL] SET_EXCHANGE_CLIENT',
+    setEnvironment = '[GENERAL] SET_ENVIRONMENT',
+    setOffchainConfiguration = '[GENERAL] SET_OFFCHAIN_CONFIGURATION',
+    setAccountMismatchModalProperties = '[GENERAL] SET_ACCOUNT_MISMATCH_MODAL_PROPERTIES',
+    accountMismatchModalResolved = '[GENERAL] ACCOUNT_MISMATCH_MODAL_RESOLVED',
+    requestDeviceCreation = '[GENERAL] REQUEST_DEVICE_CREATION',
+    setNoAccountModalVisibility = '[GENERAL] NO_ACCOUNT_MODAL_VISIBILITY',
+    setIRecClient = '[GENERAL] SET_IREC_CLIENT'
 }
 
 export interface IEnvironment {
@@ -39,7 +37,7 @@ export interface ISetLoadingAction {
     payload: boolean;
 }
 
-export const setLoading = (payload: ISetLoadingAction['payload']) => ({
+const setLoading = (payload: ISetLoadingAction['payload']) => ({
     type: GeneralActions.setLoading,
     payload
 });
@@ -51,7 +49,7 @@ export interface ISetErrorAction {
     payload: string;
 }
 
-export const setError = (payload: ISetErrorAction['payload']) => ({
+const setError = (payload: ISetErrorAction['payload']) => ({
     type: GeneralActions.setError,
     payload
 });
@@ -63,65 +61,54 @@ export interface ISetBackendClientAction {
     payload: BackendClient;
 }
 
-export const setBackendClient = (payload: ISetBackendClientAction['payload']) => ({
+export type TSetBackendClientAction = typeof setBackendClient;
+const setBackendClient = (payload: ISetBackendClientAction['payload']) => ({
     type: GeneralActions.setBackendClient,
     payload
 });
-
-export type TSetBackendClientAction = typeof setBackendClient;
 
 export interface ISetEnvironmentAction {
     type: GeneralActions.setEnvironment;
     payload: IEnvironment;
 }
-
-export const setEnvironment = (payload: ISetEnvironmentAction['payload']) => ({
+const setEnvironment = (payload: ISetEnvironmentAction['payload']) => ({
     type: GeneralActions.setEnvironment,
     payload
 });
 
 export type TSetEnvironmentAction = typeof setEnvironment;
-
 export interface ISetExchangeClientAction {
     type: GeneralActions.setExchangeClient;
     payload: ExchangeClient;
 }
-
-export const setExchangeClient = (payload: ISetExchangeClientAction['payload']) => ({
+const setExchangeClient = (payload: ISetExchangeClientAction['payload']) => ({
     type: GeneralActions.setExchangeClient,
     payload
 });
 
 export type TSetExchangeClientAction = typeof setExchangeClient;
-
 export interface ISetOffchainConfigurationAction {
     type: GeneralActions.setOffchainConfiguration;
     payload: {
         configuration: IOriginConfiguration;
     };
 }
-
-export const setOffchainConfiguration = (payload: ISetOffchainConfigurationAction['payload']) => ({
+const setOffchainConfiguration = (payload: ISetOffchainConfigurationAction['payload']) => ({
     type: GeneralActions.setOffchainConfiguration,
     payload
 });
 
 export type TSetOffchainConfigurationAction = typeof setOffchainConfiguration;
-
 export interface IAccountMismatchModalResolvedAction {
     type: GeneralActions.accountMismatchModalResolved;
     payload: boolean;
 }
-
-export const accountMismatchModalResolvedAction = (
-    payload: IAccountMismatchModalResolvedAction['payload']
-) => ({
+const accountMismatchModalResolved = (payload: IAccountMismatchModalResolvedAction['payload']) => ({
     type: GeneralActions.accountMismatchModalResolved,
     payload
 });
 
-export type TAccountMismatchModalResolvedAction = typeof accountMismatchModalResolvedAction;
-
+export type TAccountMismatchModalResolvedAction = typeof accountMismatchModalResolved;
 export interface ISetAccountMismatchModalPropertiesAction {
     type: GeneralActions.setAccountMismatchModalProperties;
     payload: {
@@ -129,52 +116,43 @@ export interface ISetAccountMismatchModalPropertiesAction {
     };
 }
 
-export const setAccountMismatchModalPropertiesAction = (
+const setAccountMismatchModalProperties = (
     payload: ISetAccountMismatchModalPropertiesAction['payload']
 ) => ({
     type: GeneralActions.setAccountMismatchModalProperties,
     payload
 });
 
-export type TSetAccountMismatchModalPropertiesAction = typeof setAccountMismatchModalPropertiesAction;
-
+export type TSetAccountMismatchModalPropertiesAction = typeof setAccountMismatchModalProperties;
 export interface ISetNoAccountModalVisibilityAction {
     type: GeneralActions.setNoAccountModalVisibility;
     payload: boolean;
 }
-
-export const setNoAccountModalVisibilityAction = (
-    payload: ISetNoAccountModalVisibilityAction['payload']
-) => ({
+const setNoAccountModalVisibility = (payload: ISetNoAccountModalVisibilityAction['payload']) => ({
     type: GeneralActions.setNoAccountModalVisibility,
     payload
 });
 
-export type TSetNoAccountModalVisibilityAction = typeof setNoAccountModalVisibilityAction;
-
+export type TSetNoAccountModalVisibilityAction = typeof setNoAccountModalVisibility;
 export interface IRequestDeviceCreationAction {
     type: GeneralActions.requestDeviceCreation;
     payload: DeviceCreateData;
 }
-
-export const requestDeviceCreation = (payload: IRequestDeviceCreationAction['payload']) => ({
+const requestDeviceCreation = (payload: IRequestDeviceCreationAction['payload']) => ({
     type: GeneralActions.requestDeviceCreation,
     payload
 });
 
 export type TRequestDeviceCreationAction = typeof requestDeviceCreation;
-
 export interface ISetIRecClientAction {
     type: GeneralActions.setIRecClient;
     payload: IRecClient;
 }
-
-export const setIRecClient = (payload: ISetIRecClientAction['payload']) => ({
+export type TSetIRecClientAction = typeof setIRecClient;
+const setIRecClient = (payload: ISetIRecClientAction['payload']) => ({
     type: GeneralActions.setIRecClient,
     payload
 });
-
-export type TSetIRecClientAction = typeof setIRecClient;
 
 export type IGeneralAction =
     | ISetLoadingAction
@@ -188,3 +166,17 @@ export type IGeneralAction =
     | IAccountMismatchModalResolvedAction
     | IRequestDeviceCreationAction
     | ISetIRecClientAction;
+
+export const fromGeneralActions = {
+    setLoading,
+    setError,
+    setBackendClient,
+    setExchangeClient,
+    setEnvironment,
+    setOffchainConfiguration,
+    setAccountMismatchModalProperties,
+    accountMismatchModalResolved,
+    requestDeviceCreation,
+    setNoAccountModalVisibility,
+    setIRecClient
+};

@@ -4,19 +4,19 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GoogleMap, InfoWindow, LoadScriptNext, Marker } from '@react-google-maps/api';
 import { CircularProgress } from '@material-ui/core';
-import { getBackendClient, getEnvironment } from '../../features/general';
 import { getAllDevices, fetchAllDevices } from '../../features/devices';
-import { useLinks } from '../../utils/routing';
 import { IOriginDevice } from '../../types';
+import { fromGeneralSelectors } from '../../features';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     devices?: IOriginDevice[];
     height?: string;
 }
 
-export function DeviceMap(props: IProps) {
-    const environment = useSelector(getEnvironment);
-    const deviceClient = useSelector(getBackendClient)?.deviceClient;
+export const DeviceMap = (props: IProps) => {
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
+    const deviceClient = useSelector(fromGeneralSelectors.getBackendClient)?.deviceClient;
     const dispatch = useDispatch();
 
     const [deviceHighlighted, setDeviceHighlighted] = useState<IOriginDevice>(null);
@@ -30,7 +30,7 @@ export function DeviceMap(props: IProps) {
         }
     }, [deviceClient]);
 
-    const { getDeviceDetailLink } = useLinks();
+    const { getDeviceDetailsPageUrl } = useLinks();
     const { t } = useTranslation();
 
     const devices: IOriginDevice[] = props.devices || allDevices;
@@ -135,7 +135,7 @@ export function DeviceMap(props: IProps) {
                             {t('deviceMap.properties.owner')}: {deviceHighlighted.organizationName}
                             <br />
                             <br />
-                            <Link to={getDeviceDetailLink(deviceHighlighted.id)}>
+                            <Link to={getDeviceDetailsPageUrl(deviceHighlighted.id)}>
                                 {t('deviceMap.actions.seeMore')}
                             </Link>
                         </div>
@@ -144,4 +144,4 @@ export function DeviceMap(props: IProps) {
             </GoogleMap>
         </LoadScriptNext>
     );
-}
+};

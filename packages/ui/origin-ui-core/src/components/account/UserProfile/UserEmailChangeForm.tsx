@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { Form, Formik, FormikHelpers, yupToFormErrors, FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { setLoading, getBackendClient } from '../../../features/general';
-import { refreshUserOffchain, getUserOffchain } from '../../../features/users';
-import { NotificationType, showNotification } from '../../../utils/notifications';
-import { BackendClient } from '../../../utils/clients';
-import { useValidation } from '../../../utils/validation';
+import {
+    NotificationTypeEnum,
+    showNotification,
+    BackendClient,
+    useValidation
+} from '../../../utils';
+
 import { FormInput } from '../../Form';
+import {
+    fromGeneralActions,
+    fromGeneralSelectors,
+    fromUsersActions,
+    fromUsersSelectors
+} from '../../../features';
 
 const INITIAL_FORM_VALUES = {
     email: ''
 };
 
-export function UserEmailChange(): JSX.Element {
-    const user = useSelector(getUserOffchain);
-    const backendClient: BackendClient = useSelector(getBackendClient);
+export const UserEmailChangeForm = (): ReactElement => {
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const backendClient: BackendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const userClient = backendClient?.userClient;
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -38,23 +46,23 @@ export function UserEmailChange(): JSX.Element {
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await userClient.updateOwnProfile({
                 ...user,
                 email: values?.email
             });
-            showNotification(t('user.profile.updateProfile'), NotificationType.Success);
-            dispatch(refreshUserOffchain());
+            showNotification(t('user.profile.updateProfile'), NotificationTypeEnum.Success);
+            dispatch(fromUsersActions.refreshUserOffchain());
             setIsEditing(false);
             formikActions.resetForm();
             history.push('/');
         } catch (error) {
-            showNotification(t('user.profile.errorUpdateProfile'), NotificationType.Error);
+            showNotification(t('user.profile.errorUpdateProfile'), NotificationTypeEnum.Error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
         formikActions.setSubmitting(false);
     }
 
@@ -81,7 +89,7 @@ export function UserEmailChange(): JSX.Element {
             validate={ValidationHandler}
         >
             {(formikProps: FormikProps<typeof INITIAL_VALUES>) => {
-                const { isSubmitting, dirty } = formikProps;
+                const { isSubmitting, touched } = formikProps;
                 const fieldDisabled = isSubmitting || !isEditing;
 
                 return (
@@ -91,7 +99,6 @@ export function UserEmailChange(): JSX.Element {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput
-                                        data-cy="email"
                                         label={t('user.properties.email')}
                                         property="email"
                                         disabled={fieldDisabled}
@@ -102,13 +109,12 @@ export function UserEmailChange(): JSX.Element {
                             </Grid>
                             {isEditing && (
                                 <Button
-                                    data-cy="email-save-button"
                                     style={{ marginRight: 10 }}
                                     type="button"
                                     variant="contained"
                                     color="primary"
                                     className="mt-3 right"
-                                    disabled={!dirty}
+                                    disabled={!touched.email}
                                     onClick={async () => {
                                         await formikProps.validateForm();
                                         await formikProps.submitForm();
@@ -119,7 +125,6 @@ export function UserEmailChange(): JSX.Element {
                             )}
                             {isEditing && (
                                 <Button
-                                    data-cy="email-cancel-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -134,7 +139,6 @@ export function UserEmailChange(): JSX.Element {
                             )}
                             {!isEditing && (
                                 <Button
-                                    data-cy="email-edit-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -150,4 +154,4 @@ export function UserEmailChange(): JSX.Element {
             }}
         </Formik>
     );
-}
+};

@@ -4,13 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikHelpers, Form, Field } from 'formik';
 import { Paper, Button, Theme, makeStyles, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { setLoading, getBackendClient } from '../../features/general';
-import { setAuthenticationToken } from '../../features/users';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { useValidation } from '../../utils/validation';
-import { useLinks } from '../../utils/routing';
+import { showNotification, NotificationTypeEnum, useValidation } from '../../utils';
+
 import { InputFixedHeight } from '../Form/InputFixedHeight';
 import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersActions } from '../../features';
+import { useLinks } from '../../hooks';
 
 interface IFormValues {
     email: string;
@@ -25,11 +24,11 @@ const INITIAL_VALUES: IFormValues = {
 export const LoginForm = () => {
     const dispatch = useDispatch();
     const originConfiguration = useContext(OriginConfigurationContext);
-    const authClient = useSelector(getBackendClient)?.authClient;
+    const authClient = useSelector(fromGeneralSelectors.getBackendClient)?.authClient;
     const history = useHistory();
     const { t } = useTranslation();
     const { Yup } = useValidation();
-    const { getAccountLink } = useLinks();
+    const { accountPageUrl } = useLinks();
 
     const useStyles = makeStyles((theme: Theme) => ({
         form: {
@@ -56,20 +55,20 @@ export const LoginForm = () => {
         formikActions: FormikHelpers<typeof INITIAL_VALUES>
     ): Promise<void> {
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             const { data: loginResponse } = await authClient.login({
                 username: values.email,
                 password: values.password
             });
-            dispatch(setAuthenticationToken(loginResponse.accessToken));
+            dispatch(fromUsersActions.setAuthenticationToken(loginResponse.accessToken));
         } catch (error) {
             console.warn('Could not log in.', error);
-            showNotification(t('user.feedback.couldNotLogIn'), NotificationType.Error);
+            showNotification(t('user.feedback.couldNotLogIn'), NotificationTypeEnum.Error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
         formikActions.setSubmitting(false);
     }
 
@@ -141,9 +140,7 @@ export const LoginForm = () => {
                                 <Button
                                     data-cy="register-now-button"
                                     className={styles.button}
-                                    onClick={() =>
-                                        history.push(`${getAccountLink()}/user-register`)
-                                    }
+                                    onClick={() => history.push(`${accountPageUrl}/user-register`)}
                                 >
                                     {t('user.actions.registerNow')}
                                 </Button>

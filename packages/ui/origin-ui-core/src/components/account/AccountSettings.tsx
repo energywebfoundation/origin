@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Paper,
@@ -18,12 +18,11 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { AVAILABLE_ORIGIN_LANGUAGES, ORIGIN_LANGUAGE } from '@energyweb/localization';
-import { showNotification, NotificationType } from '../../utils';
-import { getBackendClient } from '../../features/general';
-import { getUserOffchain, refreshUserOffchain } from '../../features/users';
+import { showNotification, NotificationTypeEnum } from '../../utils';
 import { OriginConfigurationContext, setOriginLanguage } from '../../PackageConfigurationProvider';
+import { fromGeneralSelectors, fromUsersActions, fromUsersSelectors } from '../../features';
 
-export function AccountSettings() {
+export const AccountSettings = (): ReactElement => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
@@ -38,10 +37,10 @@ export function AccountSettings() {
         })
     );
 
-    const classes = useStyles(useTheme());
+    const theme = useStyles(useTheme());
 
-    const user = useSelector(getUserOffchain);
-    const userClient = useSelector(getBackendClient)?.userClient;
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const userClient = useSelector(fromGeneralSelectors.getBackendClient)?.userClient;
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(null);
 
@@ -75,7 +74,7 @@ export function AccountSettings() {
 
     async function saveChanges() {
         if (!propertiesChanged) {
-            showNotification(t('general.feedback.noChangesMade'), NotificationType.Error);
+            showNotification(t('general.feedback.noChangesMade'), NotificationTypeEnum.Error);
 
             return;
         }
@@ -84,14 +83,14 @@ export function AccountSettings() {
             await userClient.updateOwnUserSettings({ notifications: notificationsEnabled });
         }
 
-        dispatch(refreshUserOffchain());
+        dispatch(fromUsersActions.refreshUserOffchain());
 
-        showNotification(t('settings.feedback.userSettingsUpdated'), NotificationType.Success);
+        showNotification(t('settings.feedback.userSettingsUpdated'), NotificationTypeEnum.Success);
     }
 
     return (
         <Paper>
-            <Grid container spacing={3} className={classes.container}>
+            <Grid container spacing={3} className={theme.container}>
                 <Grid item xs={12}>
                     {user && (
                         <>
@@ -136,4 +135,4 @@ export function AccountSettings() {
             </Grid>
         </Paper>
     );
-}
+};

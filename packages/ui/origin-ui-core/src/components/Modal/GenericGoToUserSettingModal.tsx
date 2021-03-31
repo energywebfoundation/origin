@@ -12,7 +12,7 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { useLinks } from '../../utils/routing';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     showModal?: boolean;
@@ -31,7 +31,7 @@ export const GenericGoToUserSettingModal = ({
 }: IProps) => {
     const history = useHistory();
     const { t } = useTranslation();
-    const { getDefaultLink, getUserProfileLink } = useLinks();
+    const { defaultPageUrl, userProfilePageUrl } = useLinks();
 
     const {
         typography: { fontSizeMd }
@@ -54,12 +54,12 @@ export const GenericGoToUserSettingModal = ({
 
     const closeModal = () => {
         setShowModal(false);
-        history.push(getDefaultLink());
+        history.push(defaultPageUrl);
     };
 
     const connectAddress = () => {
         setShowModal(false);
-        history.push(getUserProfileLink());
+        history.push(userProfilePageUrl);
     };
 
     return (

@@ -1,40 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Formik, Field, Form, FormikHelpers, FieldArray } from 'formik';
+import { Field, FieldArray, Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'formik-material-ui';
 import {
-    Paper,
-    Typography,
+    Button,
+    createStyles,
     FormControl,
     Grid,
-    Button,
-    useTheme,
     makeStyles,
-    createStyles,
+    Paper,
     Table,
+    TableBody,
+    TableCell,
     TableHead,
     TableRow,
-    TableCell,
     TextField as MaterialTextField,
-    TableBody
+    Typography,
+    useTheme
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Unit } from '@energyweb/utils-general';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
-import {
-    getCompliance,
-    getCountry,
-    getExternalDeviceIdTypes,
-    requestDeviceCreation
-} from '../../features/general';
+import { fromGeneralActions, fromGeneralSelectors } from '../../features/general';
 import { getConfiguration } from '../../features/configuration';
 import { moment } from '../../utils/time';
 import { usePermissions } from '../../utils/permissions';
 import { PowerFormatter } from '../../utils/PowerFormatter';
-import { HierarchicalMultiSelect, FormInput } from '../Form';
-import { Upload, IUploadedFile } from '../Documents';
+import { FormInput, HierarchicalMultiSelect } from '../Form';
+import { IUploadedFile, Upload } from '../Documents';
 import { Requirements } from '../Layout';
 import { DeviceSelectors } from './DeviceSelectors';
 import { IOriginDevice } from '../../types';
@@ -84,12 +79,9 @@ function sumCapacityOfDevices(devices: IDeviceGroupChild[]) {
         return a;
     }, 0);
 
-    const totalCapacityInW =
-        typeof totalCapacityInKW === 'number' && !isNaN(totalCapacityInKW)
-            ? totalCapacityInKW * Unit.kW
-            : 0;
-
-    return totalCapacityInW;
+    return typeof totalCapacityInKW === 'number' && !isNaN(totalCapacityInKW)
+        ? totalCapacityInKW * Unit.kW
+        : 0;
 }
 
 interface IProps {
@@ -101,9 +93,9 @@ export function DeviceGroupForm(props: IProps) {
     const { device, readOnly } = props;
     const { t } = useTranslation();
     const configuration = useSelector(getConfiguration);
-    const compliance = useSelector(getCompliance);
-    const country = useSelector(getCountry);
-    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
+    const compliance = useSelector(fromGeneralSelectors.getCompliance);
+    const country = useSelector(fromGeneralSelectors.getCountry);
+    const externalDeviceIdTypes = useSelector(fromGeneralSelectors.getExternalDeviceIdTypes);
     const { canAccessPage } = usePermissions();
     const [
         initialFormValuesFromExistingEntity,
@@ -230,7 +222,7 @@ export function DeviceGroupForm(props: IProps) {
         const [region, province] = selectedLocation;
 
         dispatch(
-            requestDeviceCreation({
+            fromGeneralActions.requestDeviceCreation({
                 status: DeviceStatus.Submitted,
                 deviceType,
                 complianceRegistry: compliance,
@@ -408,7 +400,7 @@ export function DeviceGroupForm(props: IProps) {
                                             </TableCell>
                                             <TableCell>Meter id</TableCell>
                                             <TableCell>Meter type</TableCell>
-                                            {!readOnly && <TableCell></TableCell>}
+                                            {!readOnly && <TableCell />}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>

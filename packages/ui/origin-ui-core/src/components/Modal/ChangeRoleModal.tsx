@@ -14,10 +14,9 @@ import {
     Select
 } from '@material-ui/core';
 import { Role, IUser, getRolesFromRights, isRole } from '@energyweb/origin-backend-core';
-import { getUserOffchain } from '../../features/users';
-import { setLoading, getBackendClient } from '../../features/general';
-import { NotificationType, showNotification } from '../../utils/notifications';
+import { NotificationTypeEnum, showNotification } from '../../utils/notifications';
 import { roleNames } from '../../utils/organizationRoles';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersSelectors } from '../../features';
 
 interface IProps {
     user: IUser;
@@ -30,8 +29,9 @@ export function ChangeRoleModal(props: IProps) {
 
     const { user, callback, showModal } = props;
 
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const userOffchain = useSelector(getUserOffchain);
+    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
+        ?.organizationClient;
+    const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
 
     const [currentUserRole] = getRolesFromRights(user?.rights);
 
@@ -49,24 +49,27 @@ export function ChangeRoleModal(props: IProps) {
 
     async function changeRole() {
         if (!isRole(userOffchain, Role.OrganizationAdmin)) {
-            showNotification(`Only the Admin can change user roles.`, NotificationType.Error);
+            showNotification(`Only the Admin can change user roles.`, NotificationTypeEnum.Error);
             return;
         }
 
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await organizationClient.changeMemberRole(userOffchain.organization.id, user.id, {
                 role: Number(selectedRole)
             });
 
-            showNotification(`User role updated.`, NotificationType.Success);
+            showNotification(`User role updated.`, NotificationTypeEnum.Success);
         } catch (error) {
-            showNotification(`There always needs to be an admin present.`, NotificationType.Error);
+            showNotification(
+                `There always needs to be an admin present.`,
+                NotificationTypeEnum.Error
+            );
             console.error(error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
 
         handleClose();
     }

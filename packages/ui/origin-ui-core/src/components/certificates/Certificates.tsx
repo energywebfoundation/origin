@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
-import { getUserOffchain } from '../../features/users';
-import { useLinks } from '../../utils/routing';
 import { PageContent } from '../Layout';
 import { RoleChangedModal, ConnectBlockchainAccountModal } from '../Modal';
 import { CertificateDetailView } from './DetailView';
 import { useCertificatesMenu } from './certificateMenu';
+import { fromUsersSelectors } from '../../features';
+import { useLinks } from '../../hooks';
 
 function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
 }
 
 export function Certificates() {
-    const user = useSelector(getUserOffchain);
-    const { getCertificatesLink } = useLinks();
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const { certificatesPageUrl } = useLinks();
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
@@ -28,13 +28,13 @@ export function Certificates() {
     }
 
     const defaultRedirect = {
-        pathname: `${getCertificatesLink()}/${getDefaultRedirect()}`
+        pathname: `${certificatesPageUrl}/${getDefaultRedirect()}`
     };
 
     return (
         <div className="PageWrapper">
             <Route
-                path={`${getCertificatesLink()}/:key/:id?`}
+                path={`${certificatesPageUrl}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
                     const id = props.match.params.id as string;
@@ -50,13 +50,13 @@ export function Certificates() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getCertificatesLink()}
+                            redirectPath={certificatesPageUrl}
                         />
                     );
                 }}
             />
 
-            <Route path={getCertificatesLink()} render={() => <Redirect to={defaultRedirect} />} />
+            <Route path={certificatesPageUrl} render={() => <Redirect to={defaultRedirect} />} />
 
             <RoleChangedModal
                 showModal={showRoleModal}

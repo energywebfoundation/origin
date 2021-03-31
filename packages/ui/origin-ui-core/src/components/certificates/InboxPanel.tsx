@@ -9,18 +9,18 @@ import {
     ICertificateViewItem
 } from '../../features/certificates';
 import {
-    getEnvironment,
     getMyDevices,
-    getUserOffchain,
-    getBackendClient,
-    fetchMyDevices
+    fetchMyDevices,
+    fromGeneralSelectors,
+    fromUsersSelectors
 } from '../../features';
-import { getBaseURL, getCertificateDetailLink, getDeviceId } from '../../utils';
+import { getDeviceId } from '../../utils';
 import { IInboxCertificateData, IInboxItemData, InboxItem } from './Inbox';
 import { BigNumber } from 'ethers';
 import { makeStyles } from '@material-ui/styles';
 import { useHistory } from 'react-router-dom';
 import { TableFallback } from '../Table';
+import { useLinks } from '../../hooks';
 
 export const InboxItemEditContext = createContext<{
     isEditing: boolean;
@@ -47,7 +47,8 @@ export function InboxPanel(props: IProps): JSX.Element {
     const configuration = useOriginConfiguration();
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const deviceClient = useSelector(getBackendClient)?.deviceClient;
+    const deviceClient = useSelector(fromGeneralSelectors.getBackendClient)?.deviceClient;
+    const { getCertificateDetailsPageUrl } = useLinks();
 
     useEffect(() => {
         if (deviceClient) {
@@ -58,7 +59,7 @@ export function InboxPanel(props: IProps): JSX.Element {
     const allCertificates: ICertificateViewItem[] = useSelector(getCertificates);
     const [certificates, setCertificates] = useState<ICertificateViewItem[]>([]);
     const myDevices = useSelector(getMyDevices);
-    const environment = useSelector(getEnvironment);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
 
     const [allSelected, setAllSelected] = useState<boolean>(false);
     const [selectedCerts, setSelectedCerts] = useState<number[]>([]);
@@ -69,7 +70,7 @@ export function InboxPanel(props: IProps): JSX.Element {
 
     const [isEditing, setIsEditing] = useState(false);
 
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     useEffect(() => {
         setCertificates(
@@ -297,9 +298,8 @@ export function InboxPanel(props: IProps): JSX.Element {
     };
 
     const history = useHistory();
-    const baseURL = useSelector(getBaseURL);
     function viewDetails(certificateId: number) {
-        history.push(getCertificateDetailLink(baseURL, certificateId));
+        history.push(getCertificateDetailsPageUrl(certificateId));
     }
 
     const getSelectedItems = (): [IInboxItemData, IInboxCertificateData][] => {

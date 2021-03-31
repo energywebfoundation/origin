@@ -16,8 +16,8 @@ import {
     MenuItem
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { setLoading, getBackendClient } from '../../features/general';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { fromGeneralActions, fromGeneralSelectors } from '../../features/general';
+import { showNotification, NotificationTypeEnum } from '../../utils/notifications';
 import { useValidation } from '../../utils/validation';
 import { FormInput } from '../Form';
 import { UserRegisteredModal } from '../Modal';
@@ -44,8 +44,8 @@ const INITIAL_FORM_VALUES: IFormValues = {
 
 const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 
-export function UserRegister() {
-    const userClient = useSelector(getBackendClient)?.userClient;
+export const UserRegister = () => {
+    const userClient = useSelector(fromGeneralSelectors.getBackendClient)?.userClient;
     const dispatch = useDispatch();
     const [showUserRegisteredModal, setShowUserRegisteredModal] = useState<boolean>(false);
 
@@ -81,7 +81,7 @@ export function UserRegister() {
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await userClient.register({
@@ -90,7 +90,7 @@ export function UserRegister() {
             });
             setShowUserRegisteredModal(true);
 
-            showNotification(t('user.feedback.userRegistered'), NotificationType.Success);
+            showNotification(t('user.feedback.userRegistered'), NotificationTypeEnum.Success);
         } catch (error) {
             const userExists = parseFloat(error.message.match(/\d/g).join('')) === 409;
             const message = userExists
@@ -99,10 +99,10 @@ export function UserRegister() {
                   })
                 : t('user.feedback.errorWhileRegisteringUser');
             console.warn('Error while registering user', error);
-            showNotification(message, NotificationType.Error);
+            showNotification(message, NotificationTypeEnum.Error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
         formikActions.setSubmitting(false);
     }
 
@@ -257,4 +257,4 @@ export function UserRegister() {
             />
         </Paper>
     );
-}
+};

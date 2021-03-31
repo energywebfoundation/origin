@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { isRole, UserStatus, Role } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain } from '../../features';
+import { fromUsersSelectors } from '../../features';
 import { CertificatesInbox } from './CertificatesInbox';
 import { ClaimedCertificates } from './ClaimedCertificates';
 import { PendingCertificates } from './PendingCertificates';
@@ -21,7 +21,7 @@ interface ICertificateMenuItem {
 }
 
 export const useCertificatesMenu = (): ICertificateMenuItem[] => {
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const isIssuer = isRole(user, Role.Issuer);
     const userIsActive = user && user.status === UserStatus.Active;
     const userIsActiveAndPartOfOrg =

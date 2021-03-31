@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain, getIRecAccount, getInvitations } from '../../features/users';
 import { OrganizationInvitations } from './Invitation/OrganizationInvitations';
 import { OrganizationInvite } from './Invitation/OrganizationInvite';
 import { IRECRegisterForm } from './IRec/IRECRegisterForm';
@@ -9,6 +8,7 @@ import { OrganizationUsersTable } from './OrganizationUsersTable';
 import { OrganizationForm } from './OrganizationForm';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
+import { fromUsersSelectors } from '../../features';
 
 interface IOrganizationMenuItem {
     key: string;
@@ -19,9 +19,9 @@ interface IOrganizationMenuItem {
 }
 
 export const useOrganizationMenu = (): IOrganizationMenuItem[] => {
-    const user = useSelector(getUserOffchain);
-    const invitations = useSelector(getInvitations);
-    const iRecAccount = useSelector(getIRecAccount);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const invitations = useSelector(fromUsersSelectors.getInvitations);
+    const iRecAccount = useSelector(fromUsersSelectors.getIRecAccount);
 
     const showInvitations: boolean =
         user?.organization?.id && isRole(user, Role.OrganizationAdmin)

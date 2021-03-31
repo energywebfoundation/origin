@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { isRole, Role, IUser } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain } from '../../features';
 import { AllDevices } from './AllDevices';
 import { AllDevicesMap } from './AllDevicesMap';
 import { MyDevices } from './MyDevices';
@@ -11,17 +10,18 @@ import { PendingDevices } from './PendingDevices';
 import { AddDevice } from './AddDevice';
 import { DeviceGroupForm } from './DeviceGroupForm';
 import { ImportDevice } from './ImportDevice/ImportDevices';
+import { fromUsersSelectors } from '../../features';
 
 interface IDeviceMenuItem {
     key: string;
     label: string;
-    component: React.ReactType;
+    component: React.ElementType;
     show: boolean;
     features: OriginFeature[];
 }
 
 export const useDeviceMenu = (): IDeviceMenuItem[] => {
-    const user: IUser = useSelector(getUserOffchain);
+    const user: IUser = useSelector(fromUsersSelectors.getUserOffchain);
     const { t } = useTranslation();
     const isDeviceManagerOrAdmin = () =>
         user?.organization && isRole(user, Role.OrganizationDeviceManager, Role.OrganizationAdmin);

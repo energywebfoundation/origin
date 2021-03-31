@@ -9,7 +9,7 @@ import { DatePicker, DatePickerProps } from 'formik-material-ui-pickers';
 import { FieldProps, Field, useFormikContext } from 'formik';
 import { Moment, DATE_FORMAT_DMY } from '../../utils';
 import { useSelector } from 'react-redux';
-import { getEnvironment, IEnvironment } from '../../features/general';
+import { fromGeneralSelectors, IEnvironment } from '../../features/general';
 
 interface ITextFieldWithArrowsEventHandlers {
     onLeftArrowClick: () => void;
@@ -112,7 +112,7 @@ export const FormikDatePickerWithMonthArrowsFilled = ({
     disabled: boolean;
     required: boolean;
 }) => {
-    const environment: IEnvironment = useSelector(getEnvironment);
+    const environment: IEnvironment = useSelector(fromGeneralSelectors.getEnvironment);
     const setFieldValue = useFormikContext()?.setFieldValue;
     const values = useFormikContext()?.values;
 
