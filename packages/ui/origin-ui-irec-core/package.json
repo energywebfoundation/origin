@@ -15,7 +15,7 @@
         "clean": "shx rm -rf dist"
     },
     "dependencies": {
-        "@date-io/moment": "2.10.6",
+        "@date-io/moment": "1.3.13",
         "@energyweb/issuer": "3.2.0",
         "@energyweb/issuer-api-client": "0.1.4",
         "@energyweb/origin-backend-core": "8.0.1",

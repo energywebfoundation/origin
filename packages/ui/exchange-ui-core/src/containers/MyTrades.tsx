@@ -8,11 +8,11 @@ import {
     usePermissions,
     Requirements
 } from '@energyweb/origin-ui-core';
-import { getExchangeClient } from '../features/general';
-import { ITradeDTO } from '../utils/exchange';
-import { Trades } from '../components/trades';
+import { getExchangeClient } from '../features';
+import { ITradeDTO } from '../utils';
+import { Trades } from '../components';
 
-export function MyTrades() {
+export function MyTrades(): JSX.Element {
     const { canAccessPage } = usePermissions();
 
     if (!canAccessPage?.value) {

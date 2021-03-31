@@ -331,6 +331,7 @@
                 "connectBlockchainContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address and connect their own blockchain address.",
                 "registerThankYouModalTitle": "Thank you for registering!",
                 "registerThankYouModalContent": "Your registration is reviewed by the platform administrator and you will be notified when your account is activated.",
+                "IRecRegisterThankYouModalContent": "Your account is being approved",
                 "createExchangeDepositAddressTitle": "Create Exchange Deposit Address",
                 "createExchangeDepositAddressContent": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address. "
             }
@@ -417,6 +418,7 @@
                 "lastName": "Last name",
                 "telephone": "Telephone",
                 "email": "Email",
+                "role": "Role",
                 "password": "Password",
                 "status": "Status",
                 "kycStatus": "KYC Status",
@@ -509,7 +511,7 @@
             },
             "dialog": {
                 "dontHaveAccAsk": "Don't have an account?",
-                "userRegisteredModalTitle": "Thanks for registering a user on the marketplace",
+                "userRegisteredModalTitle": "Thanks for registering as a user on the marketplace",
                 "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
             }
         },

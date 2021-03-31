@@ -21,7 +21,7 @@
         "clean": "shx rm -rf dist"
     },
     "dependencies": {
-        "@date-io/moment": "2.10.6",
+        "@date-io/moment": "1.3.13",
         "@energyweb/exchange-ui-core": "1.4.0",
         "@energyweb/localization": "0.14.0",
         "@energyweb/origin-backend-core": "8.0.1",

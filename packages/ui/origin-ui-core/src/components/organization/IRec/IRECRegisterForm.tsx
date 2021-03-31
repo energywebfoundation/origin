@@ -27,8 +27,9 @@ import {
     IAutocompleteMultiSelectOptionType,
     FormSelect
 } from '../../Form';
-import { IRecAccountRegisteredModal, ConnectBlockchainAccountModal } from '../../Modal';
+import { IRecAccountRegisteredModal } from '../../Modal';
 import irecLogo from '../../../../assets/logo-i-rec.svg';
+import { IRecRegisterThankYouMessageModal } from '../../Modal/IRecRegisterThankYouMessageModal';
 
 interface IFormValues {
     accountType: string;
@@ -97,12 +98,12 @@ const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'].map((option) => {
     };
 });
 
-export const IRECRegisterForm = () => {
+export const IRECRegisterForm = (): JSX.Element => {
     const { spacing }: Theme = useTheme();
     const { t } = useTranslation();
     const { Yup } = useValidation();
     const [showIRecRegisteredModal, setShowIRecRegisteredModal] = useState<boolean>(false);
-    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
+    const [showApprovalMessageModal, setShowApprovalMessageModal] = useState(false);
 
     const iRecClient = useSelector(getIRecClient);
     const dispatch = useDispatch();
@@ -310,8 +311,10 @@ export const IRECRegisterForm = () => {
                                                 label={t(
                                                     'organization.registration.orgHeadquartersCountry'
                                                 )}
-                                                property="headquarterCountry"
                                                 currentValue={values.headquarterCountry}
+                                                onChange={(value) =>
+                                                    setFieldValue('headquarterCountry', value, true)
+                                                }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
                                                 required
@@ -469,9 +472,15 @@ export const IRECRegisterForm = () => {
                                                 label={t(
                                                     'organization.registration.primaryContactOrgCountry'
                                                 )}
-                                                property="primaryContactOrganizationCountry"
                                                 currentValue={
                                                     values.primaryContactOrganizationCountry
+                                                }
+                                                onChange={(value) =>
+                                                    setFieldValue(
+                                                        'primaryContactOrganizationCountry',
+                                                        value,
+                                                        true
+                                                    )
                                                 }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
@@ -640,11 +649,11 @@ export const IRECRegisterForm = () => {
             <IRecAccountRegisteredModal
                 showModal={showIRecRegisteredModal}
                 setShowModal={setShowIRecRegisteredModal}
-                setShowBlockchainModal={setShowBlockchainModal}
+                onClose={() => setShowApprovalMessageModal(true)}
             />
-            <ConnectBlockchainAccountModal
-                showModal={showBlockchainModal}
-                setShowModal={setShowBlockchainModal}
+            <IRecRegisterThankYouMessageModal
+                showModal={showApprovalMessageModal}
+                setShowModal={setShowApprovalMessageModal}
             />
         </Paper>
     );
