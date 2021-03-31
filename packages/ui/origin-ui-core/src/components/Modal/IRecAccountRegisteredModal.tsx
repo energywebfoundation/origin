@@ -1,45 +1,29 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
-import { getUserOffchain } from '../../features/users';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { useLinks } from '../../utils/routing';
+import { showNotification, NotificationType } from '../../utils';
 import iconAdded from '../../../assets/icon-org-added.svg';
 
 interface IProps {
     showModal: boolean;
     setShowModal: (showModal: boolean) => void;
-    setShowBlockchainModal?: (showModal: boolean) => void;
+    onClose?: () => void;
 }
 
-export const IRecAccountRegisteredModal = ({
-    showModal,
-    setShowModal,
-    setShowBlockchainModal
-}: IProps) => {
-    const history = useHistory();
-    const { getOrganizationLink } = useLinks();
-    const user = useSelector(getUserOffchain);
-
+export const IRecAccountRegisteredModal = ({ showModal, setShowModal, onClose }: IProps) => {
     const {
         typography: { fontSizeMd }
     } = useTheme();
     const { t } = useTranslation();
 
-    const onClose = () => {
+    const onCloseHandler = () => {
         setShowModal(false);
         showNotification('Organization registered.', NotificationType.Success);
-        if (!user.blockchainAccountAddress) {
-            setShowBlockchainModal(true);
-        } else {
-            history.push(getOrganizationLink());
-        }
+        onClose();
     };
 
     return (
-        <Dialog open={showModal} onClose={() => onClose()} maxWidth={'sm'} fullWidth={true}>
+        <Dialog open={showModal} onClose={() => onCloseHandler()} maxWidth={'sm'} fullWidth={true}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={2}>
@@ -69,7 +53,7 @@ export const IRecAccountRegisteredModal = ({
             </DialogTitle>
             <DialogActions>
                 <Box pr={2.5} pb={2.5}>
-                    <Button variant="contained" color="primary" onClick={() => onClose()}>
+                    <Button variant="contained" color="primary" onClick={() => onCloseHandler()}>
                         {t('general.responses.ok')}
                     </Button>
                 </Box>

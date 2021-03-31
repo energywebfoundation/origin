@@ -150,10 +150,8 @@ export const DemandsTable = (props: IOwnProps) => {
     });
 
     useEffect(() => {
-        if (demands.length > 0) {
-            setPageSize(DEMANDS_PER_PAGE);
-            loadPage(1);
-        }
+        setPageSize(DEMANDS_PER_PAGE);
+        loadPage(1);
     }, [demands]);
 
     const viewDetails = (rowIndex: number) => {
