@@ -33,7 +33,7 @@ export function buildRights(roles: Role[]): number {
     }, 0);
 }
 
-export function getRolesFromRights(rights: number): Role[] {
+export const getRolesFromRights = (rights: number): Role[] => {
     if (!rights) {
         return [];
     }
@@ -42,11 +42,10 @@ export function getRolesFromRights(rights: number): Role[] {
     const roles: Role[] = rolesKeys.splice(0, rolesKeys.length / 2).map((value) => Number(value));
 
     return roles.filter((role) => rights & role);
-}
+};
 
-export function isRole(user: { rights: number }, ...roles: Role[]): boolean {
-    return roles.some((role) => (user?.rights & role) !== 0);
-}
+export const isRole = (user: { rights: number }, ...roles: Role[]): boolean =>
+    roles.some((role) => (user?.rights & role) !== 0);
 
 export interface IUserProperties {
     id: number;
