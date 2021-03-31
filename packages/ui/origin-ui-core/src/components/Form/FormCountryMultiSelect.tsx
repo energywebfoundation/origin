@@ -12,7 +12,6 @@ interface IProps {
     placeholder?: string;
     className?: string;
     disabled?: boolean;
-    isoFormat?: boolean;
     max?: number;
 }
 

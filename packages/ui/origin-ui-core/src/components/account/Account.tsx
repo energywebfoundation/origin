@@ -6,21 +6,21 @@ import { useLinks } from '../../hooks';
 
 export const Account = memo(
     (): ReactElement => {
-        const { baseURL, accountLoginPageUrl } = useLinks();
+        const { baseURL, accountPageUrl } = useLinks();
 
         const accountMenuList = useAccountMenu();
 
         return (
             <div className="PageWrapper">
                 <Route
-                    path={`${accountLoginPageUrl}/:key/:id?`}
+                    path={`${accountPageUrl}/:key/:id?`}
                     render={(props) => {
                         const key = props.match.params.key;
 
                         return (
                             <PageContent
                                 menu={accountMenuList.find((item) => item.key === key)}
-                                redirectPath={accountLoginPageUrl}
+                                redirectPath={accountPageUrl}
                                 {...props}
                             />
                         );
@@ -29,10 +29,10 @@ export const Account = memo(
 
                 <Route
                     exact={true}
-                    path={`${accountLoginPageUrl}`}
+                    path={`${accountPageUrl}`}
                     render={() => (
                         <Redirect
-                            to={{ pathname: `${accountLoginPageUrl}/${accountMenuList[0].key}` }}
+                            to={{ pathname: `${accountPageUrl}/${accountMenuList[0].key}` }}
                         />
                     )}
                 />
@@ -41,7 +41,7 @@ export const Account = memo(
                     path={`${baseURL}/`}
                     render={() => (
                         <Redirect
-                            to={{ pathname: `${accountLoginPageUrl}/${accountMenuList[0].key}` }}
+                            to={{ pathname: `${accountPageUrl}/${accountMenuList[0].key}` }}
                         />
                     )}
                 />

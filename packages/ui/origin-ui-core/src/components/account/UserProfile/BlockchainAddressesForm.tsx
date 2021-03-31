@@ -40,7 +40,13 @@ export const BlockchainAddressesForm = memo(
                 onSubmit={() => null}
                 validate={handleValidation}
             >
-                {() => {
+                {(formikProps) => {
+                    const { setFieldValue, values } = formikProps;
+
+                    if (values.exchangeDepositAddress !== exchangeAddress) {
+                        setFieldValue('exchangeDepositAddress', exchangeAddress);
+                    }
+
                     return (
                         <Form translate="no">
                             <Paper className="container">

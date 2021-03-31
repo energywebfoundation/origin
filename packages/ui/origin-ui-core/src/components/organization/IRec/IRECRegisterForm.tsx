@@ -376,7 +376,6 @@ export const IRECRegisterForm = (): JSX.Element => {
                                                 selectedValues={values.activeCountries}
                                                 disabled={isSubmitting}
                                                 className="mt-3"
-                                                isoFormat={true}
                                                 max={3}
                                             />
                                             <FormInput
