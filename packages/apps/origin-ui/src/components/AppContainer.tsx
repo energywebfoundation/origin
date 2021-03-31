@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { ReactElement, useContext, useEffect } from 'react';
 import { useSelector, useStore } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { History } from 'history';
@@ -14,37 +14,34 @@ import {
     Organization,
     AccountMismatchModal,
     ErrorComponent,
-    getError,
-    getLoading,
     NoBlockchainAccountModal,
     LoginPage,
-    getUserOffchain,
-    getEnvironment,
-    DeviceDataLayers
+    DeviceDataLayers,
+    fromGeneralSelectors,
+    fromUsersSelectors,
+    useLinks
 } from '@energyweb/origin-ui-core';
 import { ExchangeApp, ExchangeAdapter } from '@energyweb/exchange-ui-core';
-import { useLinks } from '../routing';
 import { OriginConfigurationContext } from './OriginConfigurationContext';
 import { Header } from './Header';
-import { SidebarMenu } from './SidebarMenu';
 import { IRecCoreAdapter, IRecDeviceApp, IRecCertificateApp } from '@energyweb/origin-ui-irec-core';
+import { SidebarMenuContainer } from '../containers/SidebarMenuContainer';
 
 interface IProps {
     history: History;
 }
 
-export function AppContainer(props: IProps) {
-    const error = useSelector(getError);
-    const loading = useSelector(getLoading);
-    const user = useSelector(getUserOffchain);
+export const AppContainer = (props: IProps): ReactElement => {
+    const error = useSelector(fromGeneralSelectors.getError);
+    const loading = useSelector(fromGeneralSelectors.getLoading);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const config = useContext(OriginConfigurationContext);
     const store = useStore();
 
     const originConfiguration = useContext(OriginConfigurationContext);
     const enabledFeatures = originConfiguration?.enabledFeatures;
     const changeContext = originConfiguration?.changeContext;
-    const environment = useSelector(getEnvironment);
-
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
     useEffect(() => {
         if (environment?.DISABLED_UI_FEATURES) {
             const disabledFeatures = environment?.DISABLED_UI_FEATURES.split(';').map(
@@ -80,6 +77,16 @@ export function AppContainer(props: IProps) {
         ? DeviceDataLayers.IRecDevice
         : DeviceDataLayers.OriginFormDevice;
 
+    const {
+        accountPageUrl,
+        adminPageUrl,
+        baseURL,
+        certificatesPageUrl,
+        devicesPageUrl,
+        organizationPageUrl,
+        exchangePageUrl
+    } = useLinks();
+
     const shareContextExchange = (component) => (
         <ExchangeAdapter
             store={store}
@@ -110,16 +117,6 @@ export function AppContainer(props: IProps) {
         ? iRecDeviceRoute
         : devicesCoreRoute;
 
-    const {
-        baseURL,
-        getAccountLink,
-        getDevicesLink,
-        getCertificatesLink,
-        getOrganizationLink,
-        getAdminLink,
-        getExchangeLink
-    } = useLinks();
-
     const useStyles = makeStyles(() =>
         createStyles({
             progress: {
@@ -137,7 +134,7 @@ export function AppContainer(props: IProps) {
 
     const classes = useStyles(useTheme());
 
-    const isIssuer = isRole(user, Role.Issuer);
+    const isUserIssuer = isRole(user, Role.Issuer);
     const userIsActive = user && user.status === UserStatus.Active;
     const userIsActiveAndPartOfOrg =
         user?.organization &&
@@ -163,25 +160,25 @@ export function AppContainer(props: IProps) {
                         </div>
                     )}
                     <Header />
-                    <SidebarMenu />
+                    <SidebarMenuContainer />
                     <Switch>
-                        <Route path={getDevicesLink()}>{deviceRoute}</Route>
+                        <Route path={devicesPageUrl}>{deviceRoute}</Route>
                         {((enabledFeatures.includes(OriginFeature.Certificates) &&
                             userIsActiveAndPartOfOrg) ||
-                            isIssuer) && (
-                            <Route path={getCertificatesLink()}>{certificateRoute}</Route>
+                            isUserIssuer) && (
+                            <Route path={certificatesPageUrl}>{certificateRoute}</Route>
                         )}
-                        <Route path={getAccountLink()}>{accountRoute}</Route>
-                        <Route path={getExchangeLink()}>{exchangeRoute}</Route>
+                        <Route path={accountPageUrl}>{accountRoute}</Route>
+                        <Route path={exchangePageUrl}>{exchangeRoute}</Route>
                         <Route
-                            path={getOrganizationLink()}
+                            path={organizationPageUrl}
                             render={() => {
                                 if (!user) {
                                     return <Redirect to={`${baseURL}/user-login`} />;
                                 } else return organizationRoute;
                             }}
                         />
-                        <Route path={getAdminLink()}>{adminRoute}</Route>
+                        <Route path={adminPageUrl}>{adminRoute}</Route>
                         <Route
                             path={baseURL}
                             render={() => {
@@ -199,4 +196,4 @@ export function AppContainer(props: IProps) {
             </Route>
         </Switch>
     );
-}
+};
