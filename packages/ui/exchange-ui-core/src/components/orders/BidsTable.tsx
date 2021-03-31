@@ -6,9 +6,7 @@ import { Remove, Visibility, Search } from '@material-ui/icons';
 import {
     EnergyFormatter,
     formatCurrencyComplete,
-    moment,
     EnergyTypes,
-    getCurrencies,
     getConfiguration,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
@@ -18,12 +16,14 @@ import {
     CustomFilterInputType,
     FilterRules,
     TableMaterial,
-    useLinks
+    useLinks,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import { getEnvironment } from '../../features';
 import { useDeviceDataLayer } from '../../deviceDataLayer';
 import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
+import moment from 'moment';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -46,7 +46,7 @@ export const BidsTable = (props: IOwnProsp): JSX.Element => {
     const deviceFetcher = deviceDataLayer.fetchAllDevices;
     const devices = useSelector(deviceSelector) || [];
 
-    const { getExchangeLink } = useLinks();
+    const { exchangePageUrl } = useLinks();
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -133,7 +133,7 @@ export const BidsTable = (props: IOwnProsp): JSX.Element => {
         loadPage(1);
     }, [bids]);
 
-    const [currency = 'USD'] = useSelector(getCurrencies);
+    const [currency = 'USD'] = useSelector(fromGeneralSelectors.getCurrencies);
 
     const rows = paginatedData.map((bid) => {
         const {
@@ -174,7 +174,7 @@ export const BidsTable = (props: IOwnProsp): JSX.Element => {
     const viewMarket = (rowIndex: number) => {
         const { bidId } = rows[rowIndex];
         const bid = bids.find((o) => o.id === bidId);
-        history.push(`${getExchangeLink()}/view-market`, {
+        history.push(`${exchangePageUrl}/view-market`, {
             redirectDeviceType: bid.product.deviceType || [ANY_VALUE],
             redirectLocation: bid.product.location || [ANY_VALUE],
             redirectGridOperator: bid.product.gridOperator || [ANY_OPERATOR],

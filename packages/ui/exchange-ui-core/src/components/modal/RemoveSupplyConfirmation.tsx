@@ -13,7 +13,7 @@ import {
     useTheme
 } from '@material-ui/core';
 import { ErrorOutline } from '@material-ui/icons';
-import { showNotification, NotificationType } from '@energyweb/origin-ui-core';
+import { showNotification, NotificationTypeEnum } from '@energyweb/origin-ui-core';
 import { removeSupply } from '../../features/supply';
 import { IDeviceWithSupply } from '../../types';
 
@@ -40,7 +40,10 @@ export const RemoveSupplyConfirmation = (props: IOwnProps) => {
             dispatch(removeSupply({ supplyId }));
             close();
         } else {
-            showNotification(t('exchange.supply.supplySettingsMissing'), NotificationType.Error);
+            showNotification(
+                t('exchange.supply.supplySettingsMissing'),
+                NotificationTypeEnum.Error
+            );
             close();
         }
     };

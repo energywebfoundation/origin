@@ -8,8 +8,8 @@ import {
     fetchAllDevices as fetchAllFormDevices,
     fetchMyDevices as fetchMyFormDevices,
     ICoreState,
-    getBackendClient,
-    BackendClient
+    BackendClient,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import {
     getAllDevices as getAllIRecDevices,
@@ -36,7 +36,9 @@ type TDeviceClientSelector = (
 
 export const deviceDataLayerSelector = (layer: DeviceDataLayers) => {
     const deviceClientSelector: TDeviceClientSelector =
-        layer === DeviceDataLayers.IRecDevice ? getIRecDeviceClient : getBackendClient;
+        layer === DeviceDataLayers.IRecDevice
+            ? getIRecDeviceClient
+            : fromGeneralSelectors.getBackendClient;
 
     const client = useSelector(deviceClientSelector);
 

@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { Edit, Remove } from '@material-ui/icons';
+import moment from 'moment';
 import {
-    formatCurrencyComplete,
-    moment,
-    usePermissions,
-    EnergyFormatter,
-    IPaginatedLoaderHooksFetchDataParameters,
-    TableMaterial,
-    usePaginatedLoaderFiltered,
+    checkRecordPassesFilters,
     CustomFilterInputType,
+    EnergyFormatter,
+    formatCurrencyComplete,
+    fromGeneralSelectors,
     ICustomFilterDefinition,
+    IPaginatedLoaderHooksFetchDataParameters,
     Requirements,
     TableFallback,
-    checkRecordPassesFilters,
-    getCurrencies
+    TableMaterial,
+    usePaginatedLoaderFiltered,
+    usePermissions
 } from '@energyweb/origin-ui-core';
 import { getEnvironment } from '../features/general';
-import { getSupplies, fetchSupplies } from '../features/supply';
+import { fetchSupplies, getSupplies } from '../features/supply';
 import { IDeviceWithSupply, ISupplyTableRecord } from '../types';
-import { UpdateSupplyModal, RemoveSupplyConfirmation } from '../components/modal';
+import { RemoveSupplyConfirmation, UpdateSupplyModal } from '../components/modal';
 import { useDeviceDataLayer } from '../deviceDataLayer';
 
 export enum SupplyStatus {
@@ -29,12 +29,12 @@ export enum SupplyStatus {
     Paused = 'Paused'
 }
 
-export function SupplyTable() {
+export const SupplyTablePage = () => {
     const deviceDataLayer = useDeviceDataLayer();
     const deviceClient = deviceDataLayer.deviceClient;
 
     const { t } = useTranslation();
-    const currencies = useSelector(getCurrencies);
+    const currencies = useSelector(fromGeneralSelectors.getCurrencies);
     const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
     const environment = useSelector(getEnvironment);
     const issuerId = environment?.ISSUER_ID;
@@ -62,7 +62,7 @@ export function SupplyTable() {
         }
 
         let entities: IDeviceWithSupply[] = [];
-        const devicesEnrichedWithSupply = myDevices.map((device) => {
+        entities = myDevices.map((device) => {
             const matchingSupply = supplySettings?.find(
                 (supply) =>
                     supply.deviceId ===
@@ -90,7 +90,6 @@ export function SupplyTable() {
                 };
             }
         });
-        entities = devicesEnrichedWithSupply;
 
         const filteredEntities = entities.filter((device) => {
             return checkRecordPassesFilters(device, requestedFilters);
@@ -239,4 +238,6 @@ export function SupplyTable() {
             )}
         </>
     );
-}
+};
+
+SupplyTablePage.displayName = 'SupplyTablePage';

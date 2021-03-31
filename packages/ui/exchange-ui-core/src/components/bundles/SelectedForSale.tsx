@@ -15,11 +15,11 @@ import {
 } from '@material-ui/core';
 import { Unit } from '@energyweb/utils-general';
 import {
-    getCurrencies,
     ICertificateViewItem,
     reloadCertificates,
     formatCurrencyComplete,
-    EnergyFormatter
+    EnergyFormatter,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import { getEnvironment } from '../../features/general';
 import { createBundle } from '../../features/bundles';
@@ -42,7 +42,7 @@ export const SelectedForSale = (props: IOwnProps) => {
     const [price, setPrice] = useState(0);
     const [sellAsBundle, setSellAsBundle] = useState(false);
     const environment = useSelector(getEnvironment);
-    const currency = useSelector(getCurrencies)[0];
+    const currency = useSelector(fromGeneralSelectors.getCurrencies)[0];
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const configuration = useOriginConfiguration();

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Orders, IOrdersProps } from './Orders';
 
-export function Bids(props: IOrdersProps) {
+export const Bids = memo((props: IOrdersProps) => {
     const { currency, data, title, highlightOrdersUserId, ordersTotalVolume } = props;
     const { t } = useTranslation();
     const popoverText = [
@@ -20,4 +20,6 @@ export function Bids(props: IOrdersProps) {
             popoverText={popoverText}
         />
     );
-}
+});
+
+Bids.displayName = 'Bids';

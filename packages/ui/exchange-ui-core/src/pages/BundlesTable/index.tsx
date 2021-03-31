@@ -10,20 +10,20 @@ import {
     formatCurrencyComplete,
     EnergyFormatter,
     EnergyTypes,
-    getCurrencies,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered,
     usePaginatedLoaderSorting,
-    getUserOffchain,
     TableMaterial,
     usePermissions,
     Requirements,
-    TableFallback
+    TableFallback,
+    fromUsersSelectors,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
-import { energyShares } from '../utils/bundles';
-import { Bundle, ExchangeClient } from '../utils/exchange';
-import { getExchangeClient, getEnvironment } from '../features/general';
+import { energyShares } from '../../utils/bundles';
+import { Bundle, ExchangeClient } from '../../utils/exchange';
+import { getExchangeClient, getEnvironment } from '../../features/general';
 import {
     getBundles,
     getShowBundleDetails,
@@ -31,10 +31,10 @@ import {
     cancelBundle,
     storeBundle,
     fetchBundles
-} from '../features/bundles';
-import { useDeviceDataLayer } from '../deviceDataLayer';
-import { BundleDetails } from '../components/bundles';
-import { BundleBought } from '../components/modal';
+} from '../../features/bundles';
+import { useDeviceDataLayer } from '../../deviceDataLayer';
+import { BundleDetails } from '../../components/bundles';
+import { BundleBought } from '../../components/modal';
 
 const BUNDLES_PER_PAGE = 25;
 const BUNDLES_TOTAL_ENERGY_COLUMN_ID = 'total';
@@ -48,7 +48,7 @@ export interface IBundleTableProps {
 
 const ENERGY_COLUMNS_TO_DISPLAY = [EnergyTypes.SOLAR, EnergyTypes.WIND, EnergyTypes.HYDRO];
 
-export const BundlesTable = (props: IBundleTableProps) => {
+export const BundlesTablePage = (props: IBundleTableProps) => {
     const dispatch = useDispatch();
     const exchangeClient: ExchangeClient = useSelector(getExchangeClient);
     const environment = useSelector(getEnvironment);
@@ -59,7 +59,7 @@ export const BundlesTable = (props: IBundleTableProps) => {
         }
     }, [exchangeClient]);
 
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const userIsActive = user && user.status === UserStatus.Active;
     const { owner = false } = props;
     const allBundles = useSelector(getBundles);
@@ -129,7 +129,7 @@ export const BundlesTable = (props: IBundleTableProps) => {
         }
     }, [allBundles, owner]);
 
-    const [currency = 'USD'] = useSelector(getCurrencies);
+    const [currency = 'USD'] = useSelector(fromGeneralSelectors.getCurrencies);
 
     const rows = paginatedData.map((bundle) => {
         return {

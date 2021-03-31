@@ -6,11 +6,8 @@ import { Remove, Visibility, Search } from '@material-ui/icons';
 import {
     EnergyFormatter,
     formatCurrencyComplete,
-    moment,
     EnergyTypes,
-    getCurrencies,
     getConfiguration,
-    getEnvironment,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered,
@@ -20,12 +17,13 @@ import {
     FilterRules,
     TableMaterial,
     useLinks,
-    TableFallback
+    TableFallback,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import { useDeviceDataLayer } from '../../deviceDataLayer';
-import { getDeviceName, deviceTypeChecker } from '../../utils/device';
-import { Order, ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
+import { Order, ANY_VALUE, ANY_OPERATOR, getDeviceName, deviceTypeChecker } from '../../utils';
 import { RemoveOrderConfirmation, OrderDetailsModal } from '../modal';
+import moment from 'moment';
 
 const ORDERS_PER_PAGE = 5;
 
@@ -33,20 +31,19 @@ interface IOwnProsp {
     asks: Order[];
 }
 
-export const AsksTable = (props: IOwnProsp) => {
-    const { asks } = props;
+export const AsksTable = ({ asks }: IOwnProsp) => {
     const { t } = useTranslation();
     const [askToView, setToView] = useState<Order>();
     const [askToRemove, setToRemove] = useState<Order>();
     const configuration = useSelector(getConfiguration);
     const deviceTypeService = configuration?.deviceTypeService;
-    const environment = useSelector(getEnvironment);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
     const deviceDataLayer = useDeviceDataLayer();
     const deviceClient = deviceDataLayer.deviceClient;
     const deviceSelector = deviceDataLayer.getMyDevices;
     const deviceFetcher = deviceDataLayer.fetchMyDevices;
     const devices = useSelector(deviceSelector);
-    const { getExchangeLink } = useLinks();
+    const { exchangePageUrl } = useLinks();
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -137,7 +134,7 @@ export const AsksTable = (props: IOwnProsp) => {
         loadPage(1);
     }, [asks]);
 
-    const [currency = 'USD'] = useSelector(getCurrencies);
+    const [currency = 'USD'] = useSelector(fromGeneralSelectors.getCurrencies);
 
     const rows = paginatedData.map((order) => {
         const {
@@ -206,7 +203,7 @@ export const AsksTable = (props: IOwnProsp) => {
         const { askId } = rows[rowIndex];
         const ask = asks.find((o) => o.id === askId);
         const prepared = prepareRedirectFilters(ask);
-        history.push(`${getExchangeLink()}/view-market`, {
+        history.push(`${exchangePageUrl}/view-market`, {
             redirectDeviceType: prepared.deviceType,
             redirectLocation: prepared.location,
             redirectGridOperator: prepared.gridOperator,

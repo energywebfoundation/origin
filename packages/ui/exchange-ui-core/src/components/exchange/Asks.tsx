@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Formik, Form } from 'formik';
 import { TableCell, Button, InputAdornment, Grid, Typography } from '@material-ui/core';
 import { IDevice, UserStatus } from '@energyweb/origin-backend-core';
+import { Formik, Form } from 'formik';
 import {
-    getEnvironment,
     formatDate,
-    moment,
     useValidation,
     EnergyFormatter,
-    getUserOffchain,
-    getBackendClient,
-    LightenColor
+    LightenColor,
+    fromGeneralSelectors,
+    fromUsersSelectors
 } from '@energyweb/origin-ui-core';
-import { getExchangeClient } from '../../features/general';
 import { IAsset, IOrderBookOrderDTO, calculateTotalPrice } from '../../utils/exchange';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { FormInput } from '../Form';
 import { Orders, IOrdersProps } from './Orders';
+import moment from 'moment';
 
 interface IAsksProps {
     buyDirect: (orderId: string, volume: string, price: number) => void;
@@ -29,7 +27,7 @@ interface IAsksProps {
 
 type Props = IAsksProps & IOrdersProps;
 
-export function Asks(props: Props) {
+export const Asks = (props: Props): ReactElement => {
     const {
         buyDirect,
         displayAssetDetails,
@@ -39,10 +37,10 @@ export function Asks(props: Props) {
         directBuydisabled = false
     } = props;
 
-    const exchangeClient = useSelector(getExchangeClient);
-    const backendClient = useSelector(getBackendClient);
-    const environment = useSelector(getEnvironment);
-    const user = useSelector(getUserOffchain);
+    const exchangeClient = useSelector(fromGeneralSelectors.getExchangeClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const { t } = useTranslation();
     const { Yup } = useValidation();
 
@@ -263,4 +261,4 @@ export function Asks(props: Props) {
             {...props}
         />
     );
-}
+};

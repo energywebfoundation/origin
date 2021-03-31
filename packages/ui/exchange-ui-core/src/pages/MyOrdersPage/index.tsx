@@ -1,29 +1,15 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
 import { Box } from '@material-ui/core';
 import { usePermissions, Requirements, TableFallback } from '@energyweb/origin-ui-core';
-import { ActiveOrders, Demands } from '../utils';
-import { getOrders, getDemands } from '../features/orders/selectors';
-import { BidsTable, AsksTable, DemandsTable } from '../components/orders';
-import { fetchOrders } from '../features/orders';
+import { BidsTable, AsksTable, DemandsTable } from '../../components';
+import { useMyOrdersPageEffects } from './hooks/useMyOrdersPageEffects';
 
-export const MyOrders = () => {
+export const MyOrdersPage = () => {
     const { canAccessPage } = usePermissions();
     if (!canAccessPage?.value) {
         return <Requirements />;
     }
-
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(fetchOrders());
-    }, []);
-
-    const allDemands = useSelector(getDemands);
-    const demands = new Demands(allDemands);
-
-    const allOrders = useSelector(getOrders);
-    const activeOrders: ActiveOrders = new ActiveOrders(allOrders);
-
+    const { activeOrders, allOrders, allDemands, demands } = useMyOrdersPageEffects();
     return (
         <Box className="OpenOrders">
             <Box mt={3}>

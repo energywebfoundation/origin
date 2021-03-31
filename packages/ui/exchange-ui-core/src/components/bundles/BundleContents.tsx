@@ -22,13 +22,12 @@ import {
 } from '@material-ui/icons';
 import { UserStatus } from '@energyweb/origin-backend-core';
 import {
-    moment,
     EnergyFormatter,
     EnergyTypes,
     energyImageByType,
     formatCurrencyComplete,
-    getCurrencies,
-    getUserOffchain
+    fromGeneralSelectors,
+    fromUsersSelectors
 } from '@energyweb/origin-ui-core';
 import { IOriginTypography } from '../../types/typography';
 import { getEnvironment } from '../../features/general';
@@ -38,6 +37,8 @@ import { bundlePrice } from '../../utils/bundles';
 import { deviceById, deviceTypeChecker } from '../../utils/device';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { AnyDevice } from '../../types';
+
+import moment from 'moment';
 
 interface IOwnProps {
     bundle: Bundle;
@@ -87,7 +88,7 @@ export const BundleContents = (props: IOwnProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const environment = useSelector(getEnvironment);
-    const currency = useSelector(getCurrencies)[0];
+    const currency = useSelector(fromGeneralSelectors.getCurrencies)[0];
     const configuration = useOriginConfiguration();
     const originSimpleTextColor = configuration?.styleConfig?.SIMPLE_TEXT_COLOR;
 
@@ -112,7 +113,7 @@ export const BundleContents = (props: IOwnProps) => {
         }
     }, [splits]);
 
-    const status = useSelector(getUserOffchain)?.status;
+    const status = useSelector(fromUsersSelectors.getUserOffchain)?.status;
     const userIsActive = status === UserStatus.Active;
 
     return (

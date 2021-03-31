@@ -8,10 +8,9 @@ import {
 } from '@energyweb/origin-ui-core';
 import { Box, useTheme } from '@material-ui/core';
 import { GroupedCertificateList } from './GroupedCertificateList';
-import { getEnvironment } from '../../features/general';
-import { getDeviceName } from '../../utils/device';
-import { IOriginTypography } from '../../types/typography';
-import { MyDevice } from '../../types';
+import { getEnvironment } from '../../features';
+import { getDeviceName } from '../../utils';
+import { MyDevice, IOriginTypography } from '../../types';
 
 interface IOwnProps {
     selected: ICertificateViewItem[];
@@ -36,7 +35,6 @@ export const Certificates = (props: IOwnProps) => {
             return grouped;
         }, {});
     };
-
     return (
         <Box p={2}>
             <Box fontWeight="fontWeightBold" fontSize={fontSizeMd}>
