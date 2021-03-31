@@ -9,12 +9,11 @@ import {
     CertificateSource,
     getCertificates,
     ICertificateViewItem,
-    getEnvironment,
-    getUserOffchain,
-    getBaseURL,
-    getCertificateDetailLink,
     getDeviceId,
-    TableFallback
+    TableFallback,
+    fromGeneralSelectors,
+    fromUsersSelectors,
+    useLinks
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { getDeviceClient } from '../../../features/general';
@@ -41,7 +40,7 @@ interface IProps {
     }) => JSX.Element;
 }
 
-export function InboxPanel(props: IProps): JSX.Element {
+export const InboxPanel = (props: IProps): JSX.Element => {
     const { mode, title, tabs } = props;
     const configuration = useOriginConfiguration();
     const { t } = useTranslation();
@@ -57,7 +56,7 @@ export function InboxPanel(props: IProps): JSX.Element {
     const allCertificates: ICertificateViewItem[] = useSelector(getCertificates);
     const [certificates, setCertificates] = useState<ICertificateViewItem[]>([]);
     const myDevices = useSelector(getMyDevices);
-    const environment = useSelector(getEnvironment);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
 
     const [allSelected, setAllSelected] = useState<boolean>(false);
     const [selectedCerts, setSelectedCerts] = useState<number[]>([]);
@@ -68,7 +67,7 @@ export function InboxPanel(props: IProps): JSX.Element {
 
     const [isEditing, setIsEditing] = useState(false);
 
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     useEffect(() => {
         setCertificates(
@@ -297,9 +296,9 @@ export function InboxPanel(props: IProps): JSX.Element {
     };
 
     const history = useHistory();
-    const baseURL = useSelector(getBaseURL);
+    const { getCertificateDetailsPageUrl } = useLinks();
     function viewDetails(certificateId: number) {
-        history.push(getCertificateDetailLink(baseURL, certificateId));
+        history.push(getCertificateDetailsPageUrl(certificateId));
     }
 
     const getSelectedItems = (): [IInboxItemData, IInboxCertificateData][] => {
@@ -384,4 +383,4 @@ export function InboxPanel(props: IProps): JSX.Element {
             </Grid>
         </div>
     );
-}
+};

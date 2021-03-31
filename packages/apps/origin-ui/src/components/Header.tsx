@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { useLinks, getUserOffchain, clearAuthenticationToken } from '@energyweb/origin-ui-core';
+import { fromUsersActions, fromUsersSelectors, useLinks } from '@energyweb/origin-ui-core';
 
-export function Header() {
-    const user = useSelector(getUserOffchain);
+export const Header = (): ReactElement => {
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { getDefaultLink, getUserRegisterLink, getAccountLoginLink } = useLinks();
+    const { defaultPageUrl, userRegisterPageUrl, accountLoginPageUrl } = useLinks();
 
     return (
         <div className="HeaderWrapper">
@@ -22,9 +22,9 @@ export function Header() {
                         <Grid item>
                             <Link
                                 data-cy="user-logout-button"
-                                to={getDefaultLink()}
+                                to={defaultPageUrl}
                                 onClick={() => {
-                                    dispatch(clearAuthenticationToken());
+                                    dispatch(fromUsersActions.clearAuthenticationToken());
                                 }}
                             >
                                 {t('user.actions.logout')}
@@ -32,8 +32,8 @@ export function Header() {
                         </Grid>
                     ) : (
                         <Grid item>
-                            <Link to={getUserRegisterLink()}>{t('user.actions.register')}</Link>
-                            <Link data-cy="user-login-button" to={getAccountLoginLink()}>
+                            <Link to={userRegisterPageUrl}>{t('user.actions.register')}</Link>
+                            <Link data-cy="user-login-button" to={accountLoginPageUrl}>
                                 {t('user.actions.login')}
                             </Link>
                         </Grid>
@@ -42,4 +42,4 @@ export function Header() {
             </div>
         </div>
     );
-}
+};

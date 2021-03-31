@@ -6,7 +6,6 @@ import {
     EnergyFormatter,
     formatCurrencyComplete,
     getConfiguration,
-    getCurrencies,
     IPaginatedLoaderHooksFetchDataParameters,
     IPaginatedLoaderFetchDataReturnValues,
     usePaginatedLoaderFiltered,
@@ -14,7 +13,8 @@ import {
     ICustomFilterDefinition,
     CustomFilterInputType,
     FilterRules,
-    TableMaterial
+    TableMaterial,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import {
     configureTimeFrame,
@@ -124,7 +124,7 @@ export const DemandsTable = (props: IOwnProps) => {
         initialPageSize: DEMANDS_PER_PAGE
     });
 
-    const [currency = 'USD'] = useSelector(getCurrencies);
+    const [currency = 'USD'] = useSelector(fromGeneralSelectors.getCurrencies);
 
     const rows = paginatedData.map((demand) => {
         const {

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import LoginPageImage from '../../assets/bg-origin.png';
 
-export function LoginPageBackground() {
-    return <img className="LoginPageBackground" src={LoginPageImage} />;
-}
+export const LoginPageBackground = memo(() => (
+    <img alt={'login page background'} className="LoginPageBackground" src={LoginPageImage} />
+));
+
+LoginPageBackground.displayName = 'LoginPageBackground';

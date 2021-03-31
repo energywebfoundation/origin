@@ -8,12 +8,12 @@ import {
     IRECBusinessLegalStatusLabelsMap
 } from '@energyweb/utils-general';
 import { makeStyles, createStyles, useTheme, Paper, Grid, TextField, Box } from '@material-ui/core';
-import { getIRecClient, getBackendClient } from '../../features/general';
-import { getUserOffchain } from '../../features/users';
+import { fromUsersSelectors } from '../../features/users';
 import { Registration } from '../../utils/irec';
 import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import { Download } from '../Documents';
 import { IRECOrganizationView } from './IRec/IRECOrganizationView';
+import { fromGeneralSelectors } from '../../features';
 
 interface IFormValues {
     name: string;
@@ -46,13 +46,14 @@ const useStyles = makeStyles(() =>
 );
 
 export function OrganizationView() {
-    const userOffchain = useSelector(getUserOffchain);
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
+    const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
+    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
+        ?.organizationClient;
     const params: { id?: string } = useParams();
     const { enabledFeatures } = useContext(OriginConfigurationContext);
     const [formValues, setFormValues] = useState<IFormValues>(null);
     const [iRecData, setIRecData] = useState<Registration>(null);
-    const iRecClient = useSelector(getIRecClient);
+    const iRecClient = useSelector(fromGeneralSelectors.getIRecClient);
 
     const { t } = useTranslation();
     const classes = useStyles(useTheme());

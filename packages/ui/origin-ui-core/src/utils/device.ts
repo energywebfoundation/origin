@@ -22,12 +22,9 @@ import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-clien
 
 type TranslateFunc = (key: string) => string;
 
-export function getDeviceId(device: any, environment: IEnvironment) {
-    return (
-        device.externalDeviceIds?.find((i) => i.type === environment.ISSUER_ID)?.id ??
-        device.id?.toString()
-    );
-}
+export const getDeviceId = (device: any, environment: IEnvironment) =>
+    device.externalDeviceIds?.find((i) => i.type === environment.ISSUER_ID)?.id ??
+    device.id?.toString();
 
 export enum EnergyTypes {
     GASEOUS = 'gaseous',
@@ -43,13 +40,11 @@ export enum EnergyTypes {
 export const LOCATION_TITLE_TRANSLATION_KEY = 'device.properties.regionProvince';
 export const GRID_OPERATOR_TITLE_TRANSLATION_KEY = 'device.properties.gridOperator';
 
-export function getDeviceLocationText(device: DeviceDTO) {
-    return [device?.region, device?.province].filter((i) => i).join(', ');
-}
+export const getDeviceLocationText = (device: DeviceDTO) =>
+    [device?.region, device?.province].filter((i) => i).join(', ');
 
-export function getDeviceGridOperatorText(device: IOriginDevice) {
-    return device?.gridOperator?.split(';')?.join(' ') || '';
-}
+export const getDeviceGridOperatorText = (device: IOriginDevice) =>
+    device?.gridOperator?.split(';')?.join(' ') || '';
 
 interface IRecordWithLocationText {
     locationText: string;

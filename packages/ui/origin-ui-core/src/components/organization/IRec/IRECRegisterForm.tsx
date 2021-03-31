@@ -13,10 +13,8 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { getIRecClient, setLoading } from '../../../features/general';
-import { setIRecAccount } from '../../../features/users';
 import { IRECAccountType, RegistrationIRecPostData } from '../../../utils/irec';
-import { showNotification, NotificationType } from '../../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../../utils/notifications';
 import { useValidation } from '../../../utils/validation';
 import { LightenColor } from '../../../utils/colors';
 import { useOriginConfiguration } from '../../../utils/configuration';
@@ -30,6 +28,7 @@ import {
 import { IRecAccountRegisteredModal } from '../../Modal';
 import irecLogo from '../../../../assets/logo-i-rec.svg';
 import { IRecRegisterThankYouMessageModal } from '../../Modal/IRecRegisterThankYouMessageModal';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersActions } from '../../../features';
 
 interface IFormValues {
     accountType: string;
@@ -105,7 +104,7 @@ export const IRECRegisterForm = (): JSX.Element => {
     const [showIRecRegisteredModal, setShowIRecRegisteredModal] = useState<boolean>(false);
     const [showApprovalMessageModal, setShowApprovalMessageModal] = useState(false);
 
-    const iRecClient = useSelector(getIRecClient);
+    const iRecClient = useSelector(fromGeneralSelectors.getIRecClient);
     const dispatch = useDispatch();
     const dividerBgColor = LightenColor(
         useOriginConfiguration()?.styleConfig?.MAIN_BACKGROUND_COLOR,
@@ -161,7 +160,7 @@ export const IRECRegisterForm = (): JSX.Element => {
         if (values.headquarterCountry === '' || values.activeCountries === []) {
             return;
         }
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             setSubmitting(true);
@@ -181,18 +180,18 @@ export const IRECRegisterForm = (): JSX.Element => {
 
             if (iRecAccount) {
                 setSubmitting(false);
-                dispatch(setIRecAccount(iRecAccount));
+                dispatch(fromUsersActions.setIRecAccount(iRecAccount));
                 setShowIRecRegisteredModal(true);
             }
         } catch (error) {
             console.warn('Error while registering an organization', error);
             if (error?.response?.status === 401) {
-                showNotification('Unauthorized.', NotificationType.Error);
+                showNotification('Unauthorized.', NotificationTypeEnum.Error);
             } else {
-                showNotification('Organization could not be created.', NotificationType.Error);
+                showNotification('Organization could not be created.', NotificationTypeEnum.Error);
             }
         }
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     };
 
     const VALIDATION_SCHEME = Yup.object({
@@ -377,7 +376,6 @@ export const IRECRegisterForm = (): JSX.Element => {
                                                 selectedValues={values.activeCountries}
                                                 disabled={isSubmitting}
                                                 className="mt-3"
-                                                isoFormat={true}
                                                 max={3}
                                             />
                                             <FormInput

@@ -10,12 +10,11 @@ import {
     getCertificates,
     getCertificatesClient,
     getCertificationRequestsClient,
-    getEnvironment,
-    getExchangeClient,
     deduplicate,
     formatDate,
     EnergyFormatter,
-    LightenColor
+    LightenColor,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
@@ -51,8 +50,8 @@ export function CertificateDetailView(props: IProps) {
     const iRecClient = deviceClient?.iRecClient;
 
     const certificates = useSelector(getCertificates);
-    const environment = useSelector(getEnvironment);
-    const exchangeClient = useSelector(getExchangeClient);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
+    const exchangeClient = useSelector(fromGeneralSelectors.getExchangeClient);
     const certificatesClient = useSelector(getCertificatesClient);
     const certificationRequestsClient = useSelector(getCertificationRequestsClient);
 

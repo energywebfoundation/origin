@@ -19,10 +19,10 @@ import {
 import { Brightness1 } from '@material-ui/icons';
 import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain, getInvitations } from '../../features/users';
-import { useLinks } from '../../utils/routing';
 import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
+import { fromUsersSelectors } from '../../features';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     showModal?: boolean;
@@ -37,10 +37,10 @@ export const RoleChangedModal = ({
     setShowIRec,
     setShowBlockchainModal
 }: IProps) => {
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const userRef = useRef(user);
     const history = useHistory();
-    const { getDefaultLink } = useLinks();
+    const { defaultPageUrl } = useLinks();
     const { t } = useTranslation();
     const {
         typography: { fontSizeMd },
@@ -48,7 +48,7 @@ export const RoleChangedModal = ({
             text: { primary }
         }
     } = useTheme();
-    const sender = useSelector(getInvitations).find(
+    const sender = useSelector(fromUsersSelectors.getInvitations).find(
         (invitation) => invitation.status === OrganizationInvitationStatus.Accepted
     )?.sender;
     const enabledFeatures = useContext(OriginConfigurationContext)?.enabledFeatures;
@@ -128,7 +128,7 @@ export const RoleChangedModal = ({
         } else if (!user.blockchainAccountAddress) {
             setShowBlockchainModal(true);
         } else {
-            history.push(getDefaultLink());
+            history.push(defaultPageUrl);
         }
 
         const { rights: newRole } = user;
@@ -181,7 +181,7 @@ export const RoleChangedModal = ({
             </DialogTitle>
             <DialogContent style={{ paddingTop: 0 }}>
                 <Grid container>
-                    <Grid item xs={3}></Grid>
+                    <Grid item xs={3} />
                     <Grid item xs={9}>
                         <Box color="text.secondary" fontSize={fontSizeMd}>
                             <List dense style={{ paddingTop: 0 }}>

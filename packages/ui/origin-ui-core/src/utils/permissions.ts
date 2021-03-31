@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
-import { getUserOffchain, getExchangeDepositAddress } from '../features';
+import { fromUsersSelectors } from '../features';
 
 export interface IPermissionRule {
     label: string;
@@ -31,8 +31,8 @@ const DefaultRequirements: Requirements = [
 ];
 
 export function usePermissions(config = DefaultRequirements): { canAccessPage: IPermission } {
-    const user = useSelector(getUserOffchain);
-    const exchangeAddress = useSelector(getExchangeDepositAddress);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const exchangeAddress = useSelector(fromUsersSelectors.getExchangeDepositAddress);
     const { t } = useTranslation();
 
     const tests: Record<Requirement, IPermissionRule> = {

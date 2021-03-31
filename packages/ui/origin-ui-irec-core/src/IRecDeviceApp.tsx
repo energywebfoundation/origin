@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import {
-    getUserOffchain,
     useLinks,
     PageContent,
     RoleChangedModal,
     ConnectBlockchainAccountModal,
-    refreshUserOffchain
+    fromUsersSelectors,
+    fromUsersActions
 } from '@energyweb/origin-ui-core';
 import { Skeleton } from '@material-ui/lab';
 import { initializeDeviceApp, getDeviceClient } from './features/general';
 import { DeviceDetailView } from './components/devices/detailView';
 import { useDeviceMenu } from './deviceMenu';
 
-export function IRecDeviceApp() {
+export const IRecDeviceApp = memo(() => {
     const dispatch = useDispatch();
-    const userOffchain = useSelector(getUserOffchain);
+    const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
     const deviceClient = useSelector(getDeviceClient);
-    const { baseURL, getDevicesLink } = useLinks();
+    const { baseURL, devicesPageUrl } = useLinks();
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
@@ -29,7 +29,7 @@ export function IRecDeviceApp() {
     useEffect(() => {
         dispatch(initializeDeviceApp());
         if (deviceClient?.accessToken && !userOffchain) {
-            dispatch(refreshUserOffchain());
+            dispatch(fromUsersActions.refreshUserOffchain());
         }
     }, []);
 
@@ -42,7 +42,7 @@ export function IRecDeviceApp() {
     return (
         <div className="PageWrapper">
             <Route
-                path={`${getDevicesLink()}/:key/:id?`}
+                path={`${devicesPageUrl}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
                     const id = props.match.params.id;
@@ -58,23 +58,23 @@ export function IRecDeviceApp() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getDevicesLink()}
+                            redirectPath={devicesPageUrl}
                         />
                     );
                 }}
             />
             <Route
                 exact={true}
-                path={getDevicesLink()}
+                path={devicesPageUrl}
                 render={() => (
-                    <Redirect to={{ pathname: `${getDevicesLink()}/${deviceMenuList[0].key}` }} />
+                    <Redirect to={{ pathname: `${devicesPageUrl}/${deviceMenuList[0].key}` }} />
                 )}
             />
             <Route
                 exact={true}
                 path={`${baseURL}/`}
                 render={() => (
-                    <Redirect to={{ pathname: `${getDevicesLink()}/${deviceMenuList[0].key}` }} />
+                    <Redirect to={{ pathname: `${devicesPageUrl}/${deviceMenuList[0].key}` }} />
                 )}
             />
             <RoleChangedModal
@@ -88,4 +88,6 @@ export function IRecDeviceApp() {
             />
         </div>
     );
-}
+});
+
+IRecDeviceApp.displayName = 'IRecDeviceApp';

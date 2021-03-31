@@ -17,7 +17,12 @@ import {
     Divider
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import { EnergyFormatter, getCurrencies, LightenColor, moment } from '@energyweb/origin-ui-core';
+import {
+    EnergyFormatter,
+    fromGeneralSelectors,
+    LightenColor,
+    moment
+} from '@energyweb/origin-ui-core';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { updateDemand, pauseDemand, resumeDemand } from '../../features';
 import { Demand, IProductDTO, Order, periodTypeOptions } from '../../utils';
@@ -62,7 +67,7 @@ export function DemandUpdateModal(props: IProps) {
     const [demandStatus, setDemandStatus] = useState<boolean>(initialStatus);
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const currencies = useSelector(getCurrencies);
+    const currencies = useSelector(fromGeneralSelectors.getCurrencies);
     const defaultCurrency = (currencies && currencies[0]) ?? 'USD';
     const periodOptions = periodTypeOptions(t, false);
 

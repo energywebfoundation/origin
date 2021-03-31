@@ -1,20 +1,18 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useLinks } from '../../utils/routing';
 import { PageContent } from '../Layout';
 import { useOrganizationMenu } from './organizationMenu';
+import { useLinks } from '../../hooks';
 
-export function Organization() {
-    const { getOrganizationLink } = useLinks();
-
+export const Organization = () => {
+    const { organizationPageUrl } = useLinks();
     const organizationMenuList = useOrganizationMenu();
-
     const firstNotHiddenRoute = organizationMenuList.filter((i) => i.show)[0]?.key;
 
     return (
         <div className="PageWrapper">
             <Route
-                path={`${getOrganizationLink()}/:key/:id?`}
+                path={`${organizationPageUrl}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
                     const matches = organizationMenuList.filter((item) => {
@@ -24,7 +22,7 @@ export function Organization() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getOrganizationLink()}
+                            redirectPath={organizationPageUrl}
                         />
                     );
                 }}
@@ -33,11 +31,11 @@ export function Organization() {
             {firstNotHiddenRoute && (
                 <Route
                     exact={true}
-                    path={`${getOrganizationLink()}`}
+                    path={`${organizationPageUrl}`}
                     render={() => (
                         <Redirect
                             to={{
-                                pathname: `${getOrganizationLink()}/${firstNotHiddenRoute}`
+                                pathname: `${organizationPageUrl}/${firstNotHiddenRoute}`
                             }}
                         />
                     )}
@@ -45,4 +43,4 @@ export function Organization() {
             )}
         </div>
     );
-}
+};

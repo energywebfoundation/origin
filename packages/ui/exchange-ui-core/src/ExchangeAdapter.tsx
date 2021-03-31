@@ -22,7 +22,7 @@ interface IProps {
     deviceDataLayer: DeviceDataLayers;
 }
 
-export function ExchangeAdapter(props: IProps) {
+export const ExchangeAdapter = (props: IProps) => {
     const selectedDataLayer = deviceDataLayerSelector(props.deviceDataLayer);
 
     return (
@@ -47,4 +47,4 @@ export function ExchangeAdapter(props: IProps) {
             ) : null}
         </>
     );
-}
+};

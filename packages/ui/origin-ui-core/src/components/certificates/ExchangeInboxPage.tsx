@@ -3,8 +3,7 @@ import {
     CertificateSource,
     requestPublishForSale,
     requestWithdrawCertificate,
-    getUserOffchain,
-    getCurrencies
+    fromGeneralSelectors
 } from '../../features';
 import React, { useState } from 'react';
 import { TabContent } from './Inbox/InboxTabContent';
@@ -14,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/styles';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { fromUsersSelectors } from '../../features';
 import { Requirements } from '../Layout';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield';
 import { Unit } from '@energyweb/utils-general';
@@ -21,9 +21,9 @@ import { Unit } from '@energyweb/utils-general';
 export function ExchangeInboxPage(): JSX.Element {
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const [price, setPrice] = useState(0);
-    const currency = useSelector(getCurrencies)[0];
+    const currency = useSelector(fromGeneralSelectors.getCurrencies)[0];
 
     const hasBlockchainAccount = Boolean(user.blockchainAccountAddress);
 

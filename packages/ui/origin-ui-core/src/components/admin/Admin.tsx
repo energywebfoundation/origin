@@ -1,18 +1,18 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { useLinks } from '../../utils/routing';
 import { PageContent } from '../Layout';
 import { useAdminMenu } from './adminMenu';
+import { useLinks } from '../../hooks';
 
-export function Admin() {
-    const { baseURL, getAdminLink } = useLinks();
+export const Admin = () => {
+    const { baseURL, adminPageUrl } = useLinks();
 
     const adminMenuList = useAdminMenu();
 
     return (
         <div className="PageWrapper">
             <Route
-                path={`${getAdminLink()}/:key/:id?`}
+                path={`${adminPageUrl}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
                     const matches = adminMenuList.filter((item) => {
@@ -22,25 +22,25 @@ export function Admin() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getAdminLink()}
+                            redirectPath={adminPageUrl}
                         />
                     );
                 }}
             />
             <Route
                 exact={true}
-                path={getAdminLink()}
+                path={adminPageUrl}
                 render={() => (
-                    <Redirect to={{ pathname: `${getAdminLink()}/${adminMenuList[0].key}` }} />
+                    <Redirect to={{ pathname: `${adminPageUrl}/${adminMenuList[0].key}` }} />
                 )}
             />
             <Route
                 exact={true}
                 path={`${baseURL}/`}
                 render={() => (
-                    <Redirect to={{ pathname: `${getAdminLink()}/${adminMenuList[0].key}` }} />
+                    <Redirect to={{ pathname: `${adminPageUrl}/${adminMenuList[0].key}` }} />
                 )}
             />
         </div>
     );
-}
+};

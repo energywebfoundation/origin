@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { isRole, Role } from '@energyweb/origin-backend-core';
-import { getUserOffchain } from '../../../features/users';
 import { OrganizationInvitationTable } from './OrganizationInvitationTable';
+import { fromUsersSelectors } from '../../../features';
 
 export function OrganizationInvitations() {
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     const orgId = user.organization?.id;
 

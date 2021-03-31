@@ -12,21 +12,21 @@ import {
     EnergyFormatter,
     PowerFormatter,
     LightenColor,
-    downloadFile,
+    downloadFileHandler,
     // SmartMeterReadingsTable,
     // SmartMeterReadingsChart,
-    getBackendClient,
-    moment,
     // SHOULD BE REMOVED
     getConfiguration,
-    getCertificatesClient
+    getCertificatesClient,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '../../../types';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { getAllDevices } from '../../../features/devices';
 import { DeviceMap } from '../map';
 import { selectIconOnDeviceType } from '../../../utils/deviceIcons';
-// import { RegisterDeviceGroup } from '../../containers/RegisterDeviceGroup';
+import moment from 'moment';
+// import { RegisterDeviceGroup } from '../../pages/RegisterDeviceGroup';
 
 interface IProps {
     id: string;
@@ -39,7 +39,7 @@ export function DeviceDetailView(props: IProps) {
     // should be removed
     const configuration = useSelector(getConfiguration);
     const allDevices = useSelector(getAllDevices);
-    const backendClient = useSelector(getBackendClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const certificatesClient = useSelector(getCertificatesClient);
     const organizationClient = backendClient?.organizationClient;
 
@@ -176,7 +176,9 @@ export function DeviceDetailView(props: IProps) {
                     <li key={fileId}>
                         <a
                             style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={() => downloadFile(backendClient?.fileClient, fileId, fileId)}
+                            onClick={() =>
+                                downloadFileHandler(backendClient?.fileClient, fileId, fileId)
+                            }
                         >
                             {fileId}
                         </a>

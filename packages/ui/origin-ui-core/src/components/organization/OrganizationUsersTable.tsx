@@ -9,8 +9,8 @@ import {
     Role,
     UserStatus
 } from '@energyweb/origin-backend-core';
-import { setLoading, getBackendClient, getUserOffchain } from '../../features';
-import { showNotification, NotificationType, roleNames } from '../../utils';
+import { fromGeneralActions, fromGeneralSelectors } from '../../features';
+import { showNotification, NotificationTypeEnum, roleNames } from '../../utils';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
@@ -18,12 +18,14 @@ import {
 } from '../Table';
 import { IRecord } from '../admin/AdminUsersTable';
 import { ChangeRoleModal } from '../Modal';
+import { fromUsersSelectors } from '../../features';
 
 export function OrganizationUsersTable() {
     const { t } = useTranslation();
 
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const userOffchain = useSelector(getUserOffchain);
+    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
+        ?.organizationClient;
+    const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
     const userIsActive = userOffchain && userOffchain.status === UserStatus.Active;
 
     const dispatch = useDispatch();
@@ -49,7 +51,7 @@ export function OrganizationUsersTable() {
             if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${userOffchain.status}`,
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             }
         }
@@ -82,32 +84,32 @@ export function OrganizationUsersTable() {
         if (user.id === userOffchain.id) {
             showNotification(
                 `You can't remove yourself from organization.`,
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             return;
         }
 
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await organizationClient.removeMember(userOffchain.organization.id, user.id);
 
-            showNotification(`User removed.`, NotificationType.Success);
+            showNotification(`User removed.`, NotificationTypeEnum.Success);
 
             await loadPage(1);
         } catch (error) {
-            showNotification(`Could not remove user.`, NotificationType.Error);
+            showNotification(`Could not remove user.`, NotificationTypeEnum.Error);
             console.error(error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     }
 
     async function changeRole(rowIndex: number) {
         const user = paginatedData[rowIndex]?.user;
 
         if (!isRole(userOffchain, Role.OrganizationAdmin)) {
-            showNotification(`Only the Admin can change user roles.`, NotificationType.Error);
+            showNotification(`Only the Admin can change user roles.`, NotificationTypeEnum.Error);
             return;
         }
 

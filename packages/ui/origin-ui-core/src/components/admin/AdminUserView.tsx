@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { IUser } from '@energyweb/origin-backend-core';
-import { getBackendClient } from '../../features/general';
 import { AdminUserForm } from './AdminUserForm';
 import { IRecord } from './AdminUsersTable';
+import { fromGeneralSelectors } from '../../features';
 
 interface IMatchParams {
     key?: string;
@@ -12,7 +12,7 @@ interface IMatchParams {
 }
 
 export function AdminUserView() {
-    const adminClient = useSelector(getBackendClient)?.adminClient;
+    const adminClient = useSelector(fromGeneralSelectors.getBackendClient)?.adminClient;
 
     const location = useLocation<IRecord>();
     const [entity, setEntity] = useState<IUser>(null);

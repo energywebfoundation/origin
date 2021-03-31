@@ -5,18 +5,16 @@ import { useTranslation } from 'react-i18next';
 import { utils } from 'ethers';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { getEnvironment, getExchangeClient, getDeviceClient } from '../../../features/general';
 import {
     getCertificates,
     getCertificatesClient,
     getCertificationRequestsClient
 } from '../../../features/certificates';
-import { deduplicate } from '../../../utils/helper';
-import { formatDate } from '../../../utils/time';
-import { EnergyFormatter } from '../../../utils/EnergyFormatter';
-import { LightenColor } from '../../../utils/colors';
+import { deduplicate, formatDate, EnergyFormatter, LightenColor } from '../../../utils';
+
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { fromGeneralSelectors } from '../../../features';
 import { ClaimDataDTO } from '@energyweb/issuer-api-client';
 
 interface IProps {
@@ -41,9 +39,9 @@ export function CertificateDetailView(props: IProps) {
     const { id } = props;
 
     const certificates = useSelector(getCertificates);
-    const environment = useSelector(getEnvironment);
-    const exchangeClient = useSelector(getExchangeClient);
-    const deviceClient = useSelector(getDeviceClient);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
+    const exchangeClient = useSelector(fromGeneralSelectors.getExchangeClient);
+    const deviceClient = useSelector(fromGeneralSelectors.getDeviceClient);
     const certificatesClient = useSelector(getCertificatesClient);
     const certificationRequestsClient = useSelector(getCertificationRequestsClient);
 

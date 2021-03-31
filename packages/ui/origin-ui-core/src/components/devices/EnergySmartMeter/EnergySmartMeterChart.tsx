@@ -9,7 +9,7 @@ import { moment, formatDate } from '../../../utils/time';
 import { reverse } from '../../../utils/helper';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { useOriginConfiguration } from '../../../utils/configuration';
-import { getBackendClient, getEnvironment } from '../../../features/general';
+import { fromGeneralSelectors } from '../../../features';
 
 enum TimeframeOptions {
     DAY = 'day',
@@ -24,12 +24,12 @@ interface IProps {
     meterId: string;
 }
 
-export function EnergySmartMeterChart({ meterId }: IProps) {
+export const EnergySmartMeterChart = ({ meterId }: IProps) => {
     const originConfiguration = useOriginConfiguration();
-    const environment = useSelector(getEnvironment);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
     const marketUtcOffset = Number(environment?.MARKET_UTC_OFFSET) || 0;
 
-    const backendClient = useSelector(getBackendClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const meterReadsClient: MeterReadsClient = backendClient?.meterReadsClient;
 
     const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
@@ -283,4 +283,4 @@ export function EnergySmartMeterChart({ meterId }: IProps) {
             </div>
         </div>
     );
-}
+};

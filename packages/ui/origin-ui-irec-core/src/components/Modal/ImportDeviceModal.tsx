@@ -8,11 +8,11 @@ import {
     FormInput,
     IUploadedFile,
     LightenColor,
-    NotificationType,
+    NotificationTypeEnum,
     showNotification,
     Upload
 } from '@energyweb/origin-ui-core';
-import { useOriginConfiguration } from '../../utils/configuration';
+import { useOriginConfiguration } from '../../utils';
 import { ComposedDevice } from '../../types';
 import { useSelector } from 'react-redux';
 import { getDeviceClient } from '../../features';
@@ -116,10 +116,10 @@ export function ImportDeviceModal(props: {
                 });
             }
 
-            showNotification(t('user.profile.updateProfile'), NotificationType.Success);
+            showNotification(t('user.profile.updateProfile'), NotificationTypeEnum.Success);
             formikActions.setTouched({}, false);
         } catch (error) {
-            showNotification(t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
 
         formikActions.setSubmitting(false);

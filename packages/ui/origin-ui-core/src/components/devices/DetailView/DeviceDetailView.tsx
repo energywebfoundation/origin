@@ -6,7 +6,6 @@ import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-cl
 import { OrganizationClient } from '@energyweb/origin-backend-client';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 
-import { getBackendClient } from '../../../features/general';
 import { getConfiguration } from '../../../features/configuration';
 import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { formatDate } from '../../../utils/time';
@@ -15,17 +14,18 @@ import { PowerFormatter } from '../../../utils/PowerFormatter';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { SmartMeterReadingsChart } from '../SmartMeterReadings/SmartMeterReadingsChart';
 import { SmartMeterReadingsTable } from '../SmartMeterReadings/SmartMeterReadingsTable';
-import { downloadFile } from '../../Documents';
+import { downloadFileHandler } from '../../Documents';
 import { DeviceGroupForm } from '../DeviceGroupForm';
 import { DeviceMap } from '../DeviceMap';
 
-import { showNotification, NotificationType } from '../../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../../utils/notifications';
 import { IOriginDevice } from '../../../types';
 import { getDeviceLocationText } from '../../../utils/device';
 import { DeviceIcon } from '../../Icons';
 import map from '../../../../assets/map.svg';
 import marker from '../../../../assets/marker.svg';
 import { makeStyles } from '@material-ui/core';
+import { fromGeneralSelectors } from '../../../features';
 
 interface IProps {
     id: number;
@@ -45,7 +45,7 @@ const useStyles = makeStyles({
 
 export function DeviceDetailView(props: IProps) {
     const configuration = useSelector(getConfiguration);
-    const backendClient = useSelector(getBackendClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const deviceClient: DeviceClient = backendClient?.deviceClient;
     const organizationClient: OrganizationClient = backendClient?.organizationClient;
 
@@ -84,7 +84,7 @@ export function DeviceDetailView(props: IProps) {
                 });
             }
         } catch (error) {
-            showNotification(t('device.feedback.errorGettingDevices'), NotificationType.Error);
+            showNotification(t('device.feedback.errorGettingDevices'), NotificationTypeEnum.Error);
             console.log(error);
         }
     };
@@ -174,7 +174,9 @@ export function DeviceDetailView(props: IProps) {
                     <li key={fileId}>
                         <a
                             style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={() => downloadFile(backendClient?.fileClient, fileId, fileId)}
+                            onClick={() =>
+                                downloadFileHandler(backendClient?.fileClient, fileId, fileId)
+                            }
                         >
                             {fileId}
                         </a>

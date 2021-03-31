@@ -5,10 +5,10 @@ import { BigNumber } from 'ethers';
 import { IUser, UserStatus } from '@energyweb/origin-backend-core';
 import {
     showNotification,
-    NotificationType,
+    NotificationTypeEnum,
     reloadCertificates,
-    getUserOffchain,
-    setLoading
+    fromUsersSelectors,
+    fromGeneralActions
 } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../general/selectors';
 import {
@@ -29,7 +29,7 @@ function* fetchOrdersAndDemands(): SagaIterator {
         const exchangeClient: ExchangeClient = yield select(getExchangeClient);
         const ordersClient = exchangeClient?.ordersClient;
         const demandClient = exchangeClient?.demandClient;
-        const user: IUser = yield select(getUserOffchain);
+        const user: IUser = yield select(fromUsersSelectors.getUserOffchain);
 
         const ordersResponse =
             user && user.status === UserStatus.Active
@@ -71,13 +71,13 @@ function* createBid(): SagaIterator {
         try {
             yield apply(ordersClient, ordersClient.createBid, [payload]);
             yield put(reloadCertificates());
-            showNotification(i18n.t('exchange.feedback.bidPlaced'), NotificationType.Success);
+            showNotification(i18n.t('exchange.feedback.bidPlaced'), NotificationTypeEnum.Success);
             yield put(fetchOrders());
         } catch (err) {
             console.error(err);
             showNotification(
                 i18n.t('exchange.feedback.actionUnsuccessful'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
     }
@@ -94,11 +94,11 @@ function* cancelOrder(): SagaIterator {
         try {
             yield apply(ordersClient, ordersClient.cancelOrder, [orderId]);
             yield put(reloadCertificates());
-            showNotification(i18n.t('order.feedback.orderCanceled'), NotificationType.Success);
+            showNotification(i18n.t('order.feedback.orderCanceled'), NotificationTypeEnum.Success);
             yield put(fetchOrders());
         } catch (err) {
             console.error(err);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
     }
 }
@@ -107,7 +107,7 @@ function* buyDirect(): SagaIterator {
     while (true) {
         const { payload } = yield take(OrdersActionsType.DIRECT_BUY_ORDER);
         const { ordersClient }: ExchangeClient = yield select(getExchangeClient);
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
         const i18n = getI18n();
 
         try {
@@ -115,14 +115,17 @@ function* buyDirect(): SagaIterator {
             yield put(reloadCertificates());
             showNotification(
                 i18n.t('exchange.feedback.directBuySuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(i18n.t('exchange.feedback.directBuyError'), NotificationType.Error);
+            showNotification(
+                i18n.t('exchange.feedback.directBuyError'),
+                NotificationTypeEnum.Error
+            );
             console.error(error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
@@ -134,13 +137,16 @@ function* createDemand(): SagaIterator {
         try {
             yield apply(demandClient, demandClient.create, [payload]);
             yield put(reloadCertificates());
-            showNotification(i18n.t('exchange.feedback.demandPlaced'), NotificationType.Success);
+            showNotification(
+                i18n.t('exchange.feedback.demandPlaced'),
+                NotificationTypeEnum.Success
+            );
             yield put(fetchOrders());
         } catch (err) {
             console.error(err);
             showNotification(
                 i18n.t('exchange.feedback.actionUnsuccessful'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
     }
@@ -154,11 +160,11 @@ function* updateDemand(): SagaIterator {
         try {
             yield apply(demandClient, demandClient.replace, [payload.id, payload.demand]);
             yield put(reloadCertificates());
-            showNotification(i18n.t('demand.feedback.demandUpdated'), NotificationType.Success);
+            showNotification(i18n.t('demand.feedback.demandUpdated'), NotificationTypeEnum.Success);
             yield put(fetchOrders());
         } catch (err) {
             console.error(err);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
     }
 }
@@ -170,11 +176,14 @@ function* pauseDemand(): SagaIterator {
         const i18n = getI18n();
         try {
             yield apply(demandClient, demandClient.pause, [payload]);
-            showNotification(i18n.t('demand.feedback.demandPaused'), NotificationType.Success);
+            showNotification(i18n.t('demand.feedback.demandPaused'), NotificationTypeEnum.Success);
             yield put(fetchOrders());
         } catch (err) {
             console.error(err);
-            showNotification(i18n.t('demand.feedback.statusNotChanged'), NotificationType.Error);
+            showNotification(
+                i18n.t('demand.feedback.statusNotChanged'),
+                NotificationTypeEnum.Error
+            );
         }
     }
 }
@@ -186,11 +195,17 @@ function* resumeDemand(): SagaIterator {
         const i18n = getI18n();
         try {
             yield apply(demandClient, demandClient.resume, [payload]);
-            showNotification(i18n.t('demand.feedback.demandActivated'), NotificationType.Success);
+            showNotification(
+                i18n.t('demand.feedback.demandActivated'),
+                NotificationTypeEnum.Success
+            );
             yield put(fetchOrders());
         } catch (err) {
             console.error(err);
-            showNotification(i18n.t('demand.feedback.statusNotChanged'), NotificationType.Error);
+            showNotification(
+                i18n.t('demand.feedback.statusNotChanged'),
+                NotificationTypeEnum.Error
+            );
         }
     }
 }
@@ -204,12 +219,12 @@ function* archiveDemand(): SagaIterator {
             yield apply(demandClient, demandClient.archive, [payload.id]);
             showNotification(
                 i18n.t('demand.feedback.successfullyRemoved'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
             yield put(fetchOrders());
         } catch (error) {
             console.error(error);
-            showNotification(i18n.t('demand.feedback.pauseDemand'), NotificationType.Error);
+            showNotification(i18n.t('demand.feedback.pauseDemand'), NotificationTypeEnum.Error);
         }
     }
 }

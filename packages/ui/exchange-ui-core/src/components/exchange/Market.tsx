@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import {
+    Box,
+    Button,
+    createStyles,
+    Grid,
+    makeStyles,
     Paper,
     Typography,
-    Grid,
-    Button,
-    Box,
-    makeStyles,
-    createStyles,
     useTheme
 } from '@material-ui/core';
 import {
-    getConfiguration,
-    Moment,
-    formatCurrencyComplete,
     DeviceSelectors,
+    formatCurrencyComplete,
+    getConfiguration,
     LightenColor,
+    Moment,
     moment
 } from '@energyweb/origin-ui-core';
 import { TimeFrame } from '@energyweb/utils-general';
 import {
-    calculateTotalPrice,
-    ANY_VALUE,
     ANY_OPERATOR,
+    ANY_VALUE,
+    calculateTotalPrice,
     MarketRedirectFilter
 } from '../../utils/exchange';
 import { FormikEffect, HierarchicalMultiSelect } from '../Form';
@@ -73,7 +73,7 @@ interface IProps {
     disableBidding?: boolean;
 }
 
-export function Market(props: IProps) {
+export const Market = memo((props: IProps) => {
     const { onBid, currency, energyUnit, onNotify, onChange, disableBidding } = props;
 
     const environment = useSelector(getEnvironment);
@@ -154,13 +154,11 @@ export function Market(props: IProps) {
     const [oneTimePurchase, setOneTimePurchase] = useState<boolean>(true);
     const [validationSchema, setValidationSchema] = useState();
 
-    const initialFormValues = INITIAL_FORM_VALUES;
-
     return (
         <Grid container className="Market">
             <Grid item xs={12}>
                 <Formik
-                    initialValues={initialFormValues}
+                    initialValues={INITIAL_FORM_VALUES}
                     validationSchema={validationSchema}
                     validateOnMount={false}
                     onSubmit={null}
@@ -298,7 +296,7 @@ export function Market(props: IProps) {
                                             }}
                                             disabled={fieldDisabled}
                                             inlinePadding={true}
-                                        ></DeviceSelectors>
+                                        />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <ul
@@ -405,4 +403,6 @@ export function Market(props: IProps) {
             </Grid>
         </Grid>
     );
-}
+});
+
+Market.displayName = 'Market';

@@ -12,7 +12,7 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { useLinks } from '../../utils';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     showModal?: boolean;
@@ -22,7 +22,7 @@ interface IProps {
 export const RegisterThankYouMessageModal = ({ showModal, setShowModal }: IProps): JSX.Element => {
     const history = useHistory();
     const { t } = useTranslation();
-    const { getDefaultLink } = useLinks();
+    const { defaultPageUrl } = useLinks();
 
     const {
         typography: { fontSizeMd }
@@ -45,7 +45,7 @@ export const RegisterThankYouMessageModal = ({ showModal, setShowModal }: IProps
 
     const closeModal = () => {
         setShowModal(false);
-        history.push(getDefaultLink());
+        history.push(defaultPageUrl);
     };
 
     return (

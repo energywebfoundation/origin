@@ -8,15 +8,14 @@ import {
     OrganizationInvitationStatus,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
-import { setLoading, getBackendClient } from '../../../features/general';
-import { refreshUserOffchain } from '../../../features/users';
-import { showNotification, NotificationType } from '../../../utils/notifications';
-import { useLinks } from '../../../utils/routing';
+import { showNotification, NotificationTypeEnum } from '../../../utils/notifications';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../../Table';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersActions } from '../../../features';
+import { useLinks } from '../../../hooks';
 
 interface IRecord {
     organization: IPublicOrganization;
@@ -40,14 +39,14 @@ interface IProps {
     organizationId?: number;
 }
 
-export function OrganizationInvitationTable(props: IProps) {
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const invitationClient = useSelector(getBackendClient)?.invitationClient;
+export const OrganizationInvitationTable = (props: IProps) => {
+    const { organizationClient, invitationClient } =
+        useSelector(fromGeneralSelectors.getBackendClient) ?? {};
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const history = useHistory();
-    const { getDefaultLink } = useLinks();
+    const { defaultPageUrl } = useLinks();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -105,13 +104,13 @@ export function OrganizationInvitationTable(props: IProps) {
         ) {
             showNotification(
                 t('organization.invitations.notification.alreadyProcessed'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
 
             return;
         }
 
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await invitationClient.updateInvitation(
@@ -130,20 +129,20 @@ export function OrganizationInvitationTable(props: IProps) {
 
             showNotification(
                 t('organization.invitations.notification.acceptedSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
-            dispatch(refreshUserOffchain());
-            history.push(getDefaultLink());
+            dispatch(fromUsersActions.refreshUserOffchain());
+            history.push(defaultPageUrl);
         } catch (error) {
             showNotification(
                 t('organization.invitations.notification.acceptedFailure'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             console.error(error);
             console.log(error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     }
 
     async function reject(rowIndex: number) {
@@ -156,13 +155,13 @@ export function OrganizationInvitationTable(props: IProps) {
         ) {
             showNotification(
                 t('organization.invitations.notification.alreadyProcessed'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
 
             return;
         }
 
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await invitationClient.updateInvitation(
@@ -172,19 +171,19 @@ export function OrganizationInvitationTable(props: IProps) {
 
             showNotification(
                 t('organization.invitations.notification.rejectedSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
 
             await loadPage(1);
         } catch (error) {
             showNotification(
                 t('organization.invitations.notification.rejectedFailure'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             console.error(error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     }
 
     const columns = [
@@ -235,4 +234,4 @@ export function OrganizationInvitationTable(props: IProps) {
             actions={actions}
         />
     );
-}
+};

@@ -4,7 +4,7 @@ import { Button, Modal, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Form, Formik } from 'formik';
 import Close from '@material-ui/icons/Close';
-import { LightenColor } from '../../../utils/colors';
+import { LightenColor } from '../../../utils';
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { Upload } from '../../Documents';
 import { FormInput, FormSelect } from '../../Form';

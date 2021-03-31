@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { useLinks } from '../../utils';
 import { PageContent } from '../Layout/PageContent';
 import { DeviceDetailView } from './DetailView';
 import { RoleChangedModal } from '../Modal/RoleChangedModal';
 import { ConnectBlockchainAccountModal } from '../Modal/ConnectBlockchainAccountModal';
 import { useDeviceMenu } from './deviceMenu';
+import { useLinks } from '../../hooks';
 
-export function Device() {
-    const { baseURL, getDevicesLink } = useLinks();
+export const Device = () => {
+    const { baseURL, devicesPageUrl } = useLinks();
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
@@ -21,7 +21,7 @@ export function Device() {
     return (
         <div className="PageWrapper">
             <Route
-                path={`${getDevicesLink()}/:key/:id?`}
+                path={`${devicesPageUrl}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
                     const id = props.match.params.id;
@@ -36,23 +36,23 @@ export function Device() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getDevicesLink()}
+                            redirectPath={devicesPageUrl}
                         />
                     );
                 }}
             />
             <Route
                 exact={true}
-                path={getDevicesLink()}
+                path={devicesPageUrl}
                 render={() => (
-                    <Redirect to={{ pathname: `${getDevicesLink()}/${deviceMenuList[0].key}` }} />
+                    <Redirect to={{ pathname: `${devicesPageUrl}/${deviceMenuList[0].key}` }} />
                 )}
             />
             <Route
                 exact={true}
                 path={`${baseURL}/`}
                 render={() => (
-                    <Redirect to={{ pathname: `${getDevicesLink()}/${deviceMenuList[0].key}` }} />
+                    <Redirect to={{ pathname: `${devicesPageUrl}/${deviceMenuList[0].key}` }} />
                 )}
             />
             <RoleChangedModal
@@ -66,4 +66,4 @@ export function Device() {
             />
         </div>
     );
-}
+};

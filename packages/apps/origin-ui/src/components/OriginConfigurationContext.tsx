@@ -283,13 +283,13 @@ export function getOriginLanguage(): ORIGIN_LANGUAGE {
     return 'en';
 }
 
-export function setOriginLanguage(language: ORIGIN_LANGUAGE) {
+export const setOriginLanguage = (language: ORIGIN_LANGUAGE) => {
     localStorage.setItem(ORIGIN_CONFIGURATION_LANGUAGE_STORAGE_KEY, language);
 
     location.reload();
-}
+};
 
-export function useConfigurationCreation(configuration: Partial<IOriginConfiguration> = {}) {
+export const useConfigurationCreation = (configuration: Partial<IOriginConfiguration> = {}) => {
     const DEFAULT_STYLE_CONFIG = createStyleConfigFromSCSSVariables(variables);
 
     const storedLanguage = getOriginLanguage();
@@ -342,27 +342,26 @@ export function useConfigurationCreation(configuration: Partial<IOriginConfigura
     });
 
     return newConfiguration;
-}
+};
 
 interface IProps {
     children: ReactNode;
     value: IOriginConfiguration;
 }
 
-export function OriginConfigurationProvider(props: IProps) {
-    const [context, setContext] = useState<IOriginConfiguration>(props.value);
-    const value = { ...context, changeContext: setContext };
+export const OriginConfigurationProvider = ({ value, children }: IProps) => {
+    const [context, setContext] = useState<IOriginConfiguration>(value);
     return (
-        <OriginConfigurationContext.Provider value={value}>
-            {props.children}
+        <OriginConfigurationContext.Provider value={{ ...context, changeContext: setContext }}>
+            {children}
         </OriginConfigurationContext.Provider>
     );
-}
+};
 
-export function initializeI18N(
+export const initializeI18N = (
     language: ORIGIN_LANGUAGE = 'en',
     fallbackLanguage: ORIGIN_LANGUAGE = 'en'
-) {
+) => {
     i18n.use(new ICU())
         .use(initReactI18next)
         .init({
@@ -376,4 +375,4 @@ export function initializeI18N(
         });
 
     return i18n;
-}
+};

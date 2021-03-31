@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
-    getUserOffchain,
     CertificateSource,
     requestClaimCertificate,
     requestDepositCertificate,
-    EnergyFormatter
+    EnergyFormatter,
+    fromUsersSelectors
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../utils/configuration';
 import {
@@ -27,7 +27,7 @@ export function BlockchainInboxPage(): JSX.Element {
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     useEffect(() => {
         setRetireForBeneficiary(false);

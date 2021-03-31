@@ -10,17 +10,14 @@ import {
     DialogContentText,
     Grid
 } from '@material-ui/core';
-import {
-    setNoAccountModalVisibilityAction,
-    getNoAccountModalVisibility
-} from '../../features/general';
+import { fromGeneralActions, fromGeneralSelectors } from '../../features';
 
 export function NoBlockchainAccountModal() {
-    const visibility = useSelector(getNoAccountModalVisibility);
+    const visibility = useSelector(fromGeneralSelectors.getNoAccountModalVisibility);
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
-    const handleClose = () => dispatch(setNoAccountModalVisibilityAction(false));
+    const handleClose = () => dispatch(fromGeneralActions.setNoAccountModalVisibility(false));
 
     return (
         <Dialog open={visibility} onClose={handleClose}>

@@ -2,10 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Grid, GridSize, Theme, useTheme } from '@material-ui/core';
-import { getRegions, getOffchainConfiguration, getEnvironment } from '../../features/general';
 import { isDeviceLocationEnabled, isDeviceGridOperatorEnabled } from '../../utils/device';
 import { ANY_VALUE, ANY_OPERATOR } from '../../utils/exchange';
 import { HierarchicalMultiSelect } from '../Form';
+import { fromGeneralSelectors } from '../../features';
 
 interface IProps {
     location: string[];
@@ -32,10 +32,10 @@ export function DeviceSelectors(props: IProps) {
         inlinePadding
     } = { gridItemSize: 6 as GridSize, ...props };
 
-    const regions = useSelector(getRegions);
+    const regions = useSelector(fromGeneralSelectors.getRegions);
     regions[ANY_VALUE] = [];
-    const configuration = useSelector(getOffchainConfiguration);
-    const environment = useSelector(getEnvironment);
+    const configuration = useSelector(fromGeneralSelectors.getOffchainConfiguration);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
     const { t } = useTranslation();
     const { spacing }: Theme = useTheme();
 
