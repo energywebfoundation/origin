@@ -12,7 +12,7 @@
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "version": "3.2.4",
-    "main": "dist/js/src/main.js",
+    "main": "dist/js/main.js",
     "bin": {
         "origin-migrations": "./bin/migrations"
     },
