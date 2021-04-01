@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 /* eslint-disable-next-line */
 export interface UiThemeProps {}

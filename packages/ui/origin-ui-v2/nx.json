@@ -7,7 +7,7 @@
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
-  "affected": { "defaultBase": "master" },
+  "affected": { "defaultBase": "chore/origin-ui-v2" },
   "npmScope": "energy-web",
   "tasksRunnerOptions": {
     "default": {
