@@ -1,0 +1,70 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@energyweb/origin-ui-core": ["libs/ui/core/src/index.ts"],
+      "@energyweb/origin-ui-utils": ["libs/ui/utils/src/index.ts"],
+      "@energyweb/origin-ui-formatters": ["libs/ui/formatters/src/index.ts"],
+      "@energyweb/origin-ui-localization": [
+        "libs/ui/localization/src/index.ts"
+      ],
+      "@energyweb/origin-ui-theme": ["libs/ui/theme/src/index.ts"],
+      "@energyweb/origin-ui-state-management": [
+        "libs/ui/state-management/src/index.ts"
+      ],
+      "@energyweb/origin-ui-assets": ["libs/ui/assets/src/index.ts"],
+      "@energyweb/origin-ui-certificate-data-access": [
+        "libs/certificate/data-access/src/index.ts"
+      ],
+      "@energyweb/origin-ui-exchange-data-access": [
+        "libs/exchange/data-access/src/index.ts"
+      ],
+      "@energyweb/origin-ui-exchange-view": ["libs/exchange/view/src/index.ts"],
+      "@energyweb/origin-ui-exchange-logic": [
+        "libs/exchange/logic/src/index.ts"
+      ],
+      "@energyweb/origin-ui-exchange-state-management": [
+        "libs/exchange/state-management/src/index.ts"
+      ],
+      "@energyweb/origin-ui-certificate-view": [
+        "libs/certificate/view/src/index.ts"
+      ],
+      "@energyweb/origin-ui-certificate-state-management": [
+        "libs/certificate/state-management/src/index.ts"
+      ],
+      "@energyweb/origin-ui-certificate-logic": [
+        "libs/certificate/logic/src/index.ts"
+      ],
+      "@energyweb/origin-ui-user-data-access": [
+        "libs/user/data-access/src/index.ts"
+      ],
+      "@energyweb/origin-ui-user-view": ["libs/user/view/src/index.ts"],
+      "@energyweb/origin-ui-user-logic": ["libs/user/logic/src/index.ts"],
+      "@energyweb/origin-ui-user-state-management": [
+        "libs/user/state-management/src/index.ts"
+      ],
+      "@energyweb/origin-ui-device-state-management": [
+        "libs/device/state-management/src/index.ts"
+      ],
+      "@energyweb/origin-ui-device-logic": ["libs/device/logic/src/index.ts"],
+      "@energyweb/origin-ui-device-view": ["libs/device/view/src/index.ts"],
+      "@energyweb/origin-ui-device-data-access": [
+        "libs/device/data-access/src/index.ts"
+      ]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
