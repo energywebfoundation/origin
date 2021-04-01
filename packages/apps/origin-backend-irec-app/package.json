@@ -2,7 +2,7 @@
     "name": "@energyweb/origin-backend-irec-app",
     "version": "1.1.0",
     "description": "This is a bootstrap project for Origin API that uses I-REC API connection",
-    "main": "dist/js/src/index.js",
+    "main": "dist/js/index.js",
     "scripts": {
         "start": "nest start -p tsconfig.json",
         "start:dev": "nest start --watch -p tsconfig.json",
