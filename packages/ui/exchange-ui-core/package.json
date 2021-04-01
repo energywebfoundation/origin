@@ -30,7 +30,7 @@
         "@material-ui/icons": "4.11.2",
         "@material-ui/lab": "4.0.0-alpha.57",
         "@material-ui/pickers": "3.3.10",
-        "@unicef/material-ui-currency-textfield": "^0.8.6",
+        "@unicef/material-ui-currency-textfield": "0.8.6",
         "axios": "0.21.1",
         "connected-react-router": "6.9.1",
         "dayjs": "^1.10.4",
