@@ -12,7 +12,15 @@
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e",
+          "build-storybook"
+        ]
+      }
     }
   },
   "projects": {
@@ -40,6 +48,7 @@
     "device-state-management": { "tags": [] },
     "device-logic": { "tags": [] },
     "device-view": { "tags": [] },
-    "device-data-access": { "tags": [] }
+    "device-data-access": { "tags": [] },
+    "ui-core-e2e": { "tags": [], "implicitDependencies": ["ui-core"] }
   }
 }

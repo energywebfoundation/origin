@@ -6,8 +6,8 @@ export interface ThemeProviderProps {
   children: ReactNode;
 }
 
-export function ThemeProvider(props: ThemeProviderProps) {
-  return <MuiThemeProvider theme={makeOriginUiTheme()} />;
+export function ThemeProvider({ children }: ThemeProviderProps) {
+  return <MuiThemeProvider children={children} theme={makeOriginUiTheme()} />;
 }
 
 export default ThemeProvider;
