@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import UiTheme from './ui-theme';
+import ThemeProvider from './ThemeProvider';
 
-describe('UiTheme', () => {
+describe('ThemeProvider', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<UiTheme />);
+    const { baseElement } = render(<ThemeProvider children={null} />);
     expect(baseElement).toBeTruthy();
   });
 });
