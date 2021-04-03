@@ -77,7 +77,7 @@
         "@types/superagent": "4.1.10",
         "@types/bn.js": "5.1.0",
         "@types/jest": "26.0.22",
-        "@types/supertest": "2.0.10",
+        "@types/supertest": "2.0.11",
         "eslint-plugin-jest": "24.3.2",
         "jest": "26.6.3",
         "@jest/globals": "26.6.2",
