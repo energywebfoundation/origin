@@ -63,7 +63,7 @@
         "truffle": "5.2.6",
         "solc": "0.5.16",
         "@ethersproject/abstract-provider": "5.0.10",
-        "@ethersproject/abi": "5.0.13",
+        "@ethersproject/abi": "5.1.0",
         "winston-transport": "4.4.0",
         "@types/dotenv": "6.1.1",
         "@types/chai": "4.2.15",

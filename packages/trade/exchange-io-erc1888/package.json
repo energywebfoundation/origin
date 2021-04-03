@@ -67,7 +67,7 @@
         "@ethersproject/providers": "5.0.24",
         "@ethersproject/abstract-provider": "5.0.10",
         "@ethersproject/contracts": "5.0.11",
-        "@ethersproject/abi": "5.0.13"
+        "@ethersproject/abi": "5.1.0"
     },
     "publishConfig": {
         "access": "public",
