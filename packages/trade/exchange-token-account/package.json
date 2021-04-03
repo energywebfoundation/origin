@@ -50,7 +50,7 @@
         "truffle": "5.2.6",
         "solc": "0.5.16",
         "@ethersproject/abstract-provider": "5.0.10",
-        "@ethersproject/abi": "5.0.13",
+        "@ethersproject/abi": "5.1.0",
         "@openzeppelin/cli": "2.8.2",
         "@openzeppelin/contracts-ethereum-package": "2.5.0",
         "@openzeppelin/upgrades": "2.8.0"
