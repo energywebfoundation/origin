@@ -59,10 +59,10 @@
         "buffer": "6.0.3",
         "@svgr/webpack": "5.5.0",
         "cross-env": "7.0.3",
-        "react-error-boundary": "^3.1.1",
+        "react-error-boundary": "3.1.1",
         "redux-logger": "4.0.0",
         "@vmw/queue-for-redux-saga": "0.2.1",
-        "@reduxjs/toolkit": "^1.5.1"
+        "@reduxjs/toolkit": "1.5.1"
     },
     "devDependencies": {
         "typescript": "4.1.5",
@@ -90,6 +90,6 @@
         "webpack-cli": "4.6.0",
         "webpack-dev-server": "3.11.2",
         "webpack-merge": "5.7.3",
-        "@types/redux-logger": "~3.0.8"
+        "@types/redux-logger": "3.0.8"
     }
 }
