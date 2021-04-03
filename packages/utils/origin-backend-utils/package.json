@@ -38,7 +38,7 @@
         "class-validator": "0.13.1",
         "polly-js": "1.8.2",
         "rxjs": "6.6.7",
-        "typeorm": "0.2.31"
+        "typeorm": "0.2.32"
     },
     "devDependencies": {
         "typescript": "4.1.5",
