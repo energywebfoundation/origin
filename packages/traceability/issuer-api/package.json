@@ -103,6 +103,6 @@
         "bin"
     ],
     "resolutions": {
-        "tslib": "1.14.1"
+        "tslib": "2.2.0"
     }
 }
