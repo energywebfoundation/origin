@@ -1,10 +1,10 @@
-import { createMuiTheme, Theme, ThemeOptions } from '@material-ui/core';
+import { createMuiTheme, Theme, ThemeOptions } from '@material-ui/core/styles';
 import { LightenColor } from '../utils/colors';
-import variables from './variables';
+import { variables } from './variables';
 import { enUS, plPL } from '@material-ui/core/locale';
-import { IOriginStyleConfig } from '../utils/makeOriginUiTheme';
+import { IOriginStyleConfig } from '../utils/makeOriginUiConfig';
 
-const getThemeConfig = (styleConfig): ThemeOptions => ({
+const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
   palette: {
     primary: {
       main: styleConfig.PRIMARY_COLOR,
@@ -20,6 +20,11 @@ const getThemeConfig = (styleConfig): ThemeOptions => ({
       // hint: '#f50057',
       disabled: styleConfig.TEXT_COLOR_DEFAULT,
     },
+    mode: 'dark',
+  },
+  typography: {
+    fontFamily: styleConfig.FONT_FAMILY_PRIMARY,
+    fontSize: styleConfig.FONT_SIZE,
   },
   components: {
     MuiInput: {
@@ -36,7 +41,7 @@ const getThemeConfig = (styleConfig): ThemeOptions => ({
     },
     MuiFormLabel: {
       styleOverrides: {
-        root: { fontSize: variables.fontSizeMd },
+        root: { fontSize: variables.fontSize },
       },
     },
     MuiChip: {
@@ -98,7 +103,7 @@ const getThemeConfig = (styleConfig): ThemeOptions => ({
       styleOverrides: {
         root: {
           borderBottom: `1px solid ${styleConfig.MAIN_BACKGROUND_COLOR}`,
-          fontSize: variables.fontSizeMd,
+          fontSize: variables.fontSize,
         },
         body: {
           color: styleConfig.TEXT_COLOR_DEFAULT,

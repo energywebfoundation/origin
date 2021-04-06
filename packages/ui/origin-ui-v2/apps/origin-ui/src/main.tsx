@@ -2,13 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './app/app';
-import { ThemeProvider } from '@energyweb/origin-ui-theme';
+import {
+  OriginThemeProvider,
+  EmotionThemeProvider,
+} from '@energyweb/origin-ui-theme';
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    <OriginThemeProvider>
+      <EmotionThemeProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </EmotionThemeProvider>
+    </OriginThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

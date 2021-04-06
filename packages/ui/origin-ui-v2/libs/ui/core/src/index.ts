@@ -1,1 +1,2 @@
-export * from './lib/ui-core';
+export * from './components';
+export * from './containers';
