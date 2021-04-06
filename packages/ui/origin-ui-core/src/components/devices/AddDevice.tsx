@@ -261,6 +261,7 @@ export function AddDevice() {
                                         <Field
                                             label={t('device.properties.facilityName')}
                                             name="facilityName"
+                                            data-cy="facilityName"
                                             component={TextField}
                                             variant="filled"
                                             fullWidth
@@ -268,7 +269,7 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
-                                    <div className={classes.selectContainer}>
+                                    <div className={classes.selectContainer} data-cy="device-type">
                                         <HierarchicalMultiSelect
                                             selectedValue={selectedDeviceType}
                                             onChange={(value: string[]) =>
@@ -297,6 +298,7 @@ export function AddDevice() {
 
                                     <Field
                                         name="commissioningDate"
+                                        data-cy="commissioningDate"
                                         label={t('device.properties.vintageCod')}
                                         className="mt-3"
                                         inputVariant="filled"
@@ -308,6 +310,7 @@ export function AddDevice() {
                                     />
                                     <Field
                                         name="registrationDate"
+                                        data-cy="registrationDate"
                                         label={t('device.properties.registrationDate')}
                                         className="mt-3"
                                         inputVariant="filled"
@@ -319,6 +322,7 @@ export function AddDevice() {
                                     />
                                     <Field
                                         name="supported"
+                                        data-cy="supported"
                                         Label={{
                                             label: t('device.info.supported')
                                         }}
@@ -340,6 +344,7 @@ export function AddDevice() {
                                                 PowerFormatter.displayUnit
                                             })`}
                                             name="capacity"
+                                            data-cy="capacity"
                                             component={TextField}
                                             variant="filled"
                                             fullWidth
@@ -368,6 +373,7 @@ export function AddDevice() {
                                         <Field
                                             label={t('device.properties.address')}
                                             name="address"
+                                            data-cy="address"
                                             component={TextField}
                                             variant="filled"
                                             fullWidth
@@ -384,6 +390,7 @@ export function AddDevice() {
                                         <FormInput
                                             label={t('device.properties.latitude')}
                                             property="latitude"
+                                            data-cy="latitude"
                                             variant="filled"
                                             className="mt-1"
                                             required
@@ -414,6 +421,7 @@ export function AddDevice() {
                                         <FormInput
                                             label={t('device.properties.longitude')}
                                             property="longitude"
+                                            data-cy="longitude"
                                             variant="filled"
                                             className="mt-1"
                                             required
@@ -447,6 +455,7 @@ export function AddDevice() {
                                         <Field
                                             label={t('device.properties.projectStory')}
                                             name="projectStory"
+                                            data-cy="projectStory"
                                             component={TextField}
                                             multiline
                                             rows={4}
@@ -467,6 +476,7 @@ export function AddDevice() {
                                                 key={index}
                                                 label={externalDeviceIdType.type}
                                                 property={externalDeviceIdType.type}
+                                                data-cy={externalDeviceIdType.type}
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
                                                 required={!!externalDeviceIdType.required}
@@ -491,6 +501,7 @@ export function AddDevice() {
                                                 className={classes.fileUploadInput}
                                                 id="contained-button-file"
                                                 type="file"
+                                                data-cy="file"
                                                 onChange={(e) => uploadImages(e.target.files)}
                                                 multiple
                                                 disabled={imagesUploaded}
@@ -520,6 +531,7 @@ export function AddDevice() {
                                 color="primary"
                                 className="mt-3 right"
                                 disabled={buttonDisabled}
+                                data-cy="device-register-submit"
                             >
                                 {t('device.actions.register')}
                             </Button>

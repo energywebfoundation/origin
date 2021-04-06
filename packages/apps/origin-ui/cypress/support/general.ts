@@ -2,7 +2,7 @@
 import 'cypress-file-upload';
 
 Cypress.Commands.add('dataCy', (value: string) => {
-    cy.get(`[data-cy=${value}]`);
+    cy.get(`[data-cy="${value}"]`);
 });
 
 Cypress.Commands.add('inputRequired', (target: string, neighbor: string) => {

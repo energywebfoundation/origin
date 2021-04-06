@@ -260,20 +260,22 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
 
     return (
         <>
-            <MultiSelectAutocomplete
-                label={props.selectOptions[0].label}
-                placeholder={readOnly ? '' : props.selectOptions[0].placeholder}
-                options={allValuesLevelOne}
-                onChange={(value) => setValueByLevel(value, 1)}
-                selectedValues={selectedValuesLevelOne}
-                className="mt-3"
-                disabled={disabled}
-                required={required}
-                singleChoice={singleChoice}
-                {...dataTest('hierarchical-multi-select-level-1')}
-            />
+            <div data-cy={props.selectOptions[0].label}>
+                <MultiSelectAutocomplete
+                    label={props.selectOptions[0].label}
+                    placeholder={readOnly ? '' : props.selectOptions[0].placeholder}
+                    options={allValuesLevelOne}
+                    onChange={(value) => setValueByLevel(value, 1)}
+                    selectedValues={selectedValuesLevelOne}
+                    className="mt-3"
+                    disabled={disabled}
+                    required={required}
+                    singleChoice={singleChoice}
+                    {...dataTest('hierarchical-multi-select-level-1')}
+                />
+            </div>
             {props.selectOptions && props.selectOptions[1]?.label && levelTwoValues.length > 0 && (
-                <div style={{ marginTop: '6px' }}>
+                <div style={{ marginTop: '6px' }} data-cy={props.selectOptions[1].label}>
                     <MultiSelectAutocomplete
                         label={props.selectOptions[1].label}
                         placeholder={readOnly ? '' : props.selectOptions[1].placeholder}
@@ -289,7 +291,7 @@ export function HierarchicalMultiSelect<T>(props: IOwnProps<T>) {
                 </div>
             )}
             {props.selectOptions && props.selectOptions[2]?.label && levelThreeValues.length > 0 && (
-                <div style={{ marginTop: '6px' }}>
+                <div style={{ marginTop: '6px' }} data-cy={props.selectOptions[2].label}>
                     <MultiSelectAutocomplete
                         label={props.selectOptions[2].label}
                         placeholder={readOnly ? '' : props.selectOptions[2].placeholder}

@@ -248,7 +248,7 @@ export function DeviceTable(props: IOwnProps) {
                 actions={actions}
             />
             {props.showAddDeviceButton && (
-                <Link to={'/devices/add'}>
+                <Link to={'/devices/add'} data-cy={'plus-device-button'}>
                     <Tooltip title={t('device.actions.registerDevice')}>
                         <Fab
                             color="primary"
