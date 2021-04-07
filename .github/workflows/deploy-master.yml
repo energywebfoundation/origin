@@ -61,7 +61,7 @@ jobs:
 
     - name: Build application
       run: |
-        node common/scripts/install-run-rush.js rebuild
+        node common/scripts/install-run-rush.js rebuild -v
 
     - name: Deploy application
       run: |
