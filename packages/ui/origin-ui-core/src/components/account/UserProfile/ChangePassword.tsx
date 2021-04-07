@@ -28,7 +28,7 @@ export const ChangePasswordForm = (): ReactElement => {
         newPassword: Yup.string().label('New Password').required(),
         newPasswordConfirm: Yup.string()
             .oneOf([Yup.ref('newPassword'), null], "Entered value doesn't match new password")
-            .label('Confirm New Password')
+            .label('Confirm Password')
             .required()
     });
 
@@ -94,6 +94,7 @@ export const ChangePasswordForm = (): ReactElement => {
                             <Grid container spacing={3}>
                                 <Grid item xs={4}>
                                     <FormInput
+                                        data-cy="current-password"
                                         label="Current Password"
                                         property="currentPassword"
                                         disabled={fieldDisabled}
@@ -104,6 +105,7 @@ export const ChangePasswordForm = (): ReactElement => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormInput
+                                        data-cy="new-password"
                                         label="New Password"
                                         property="newPassword"
                                         disabled={fieldDisabled}
@@ -114,6 +116,7 @@ export const ChangePasswordForm = (): ReactElement => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormInput
+                                        data-cy="confirm-password"
                                         label="Confirm Password"
                                         property="newPasswordConfirm"
                                         disabled={fieldDisabled}
@@ -126,6 +129,7 @@ export const ChangePasswordForm = (): ReactElement => {
 
                             {isEditing && (
                                 <Button
+                                    data-cy="password-save-button"
                                     style={{ marginRight: 10 }}
                                     type="button"
                                     variant="contained"
@@ -142,6 +146,7 @@ export const ChangePasswordForm = (): ReactElement => {
                             )}
                             {isEditing && (
                                 <Button
+                                    data-cy="password-cancel-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -156,6 +161,7 @@ export const ChangePasswordForm = (): ReactElement => {
                             )}
                             {!isEditing && (
                                 <Button
+                                    data-cy="password-edit-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"

@@ -99,6 +99,7 @@ export const UserEmailChangeForm = (): ReactElement => {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="email"
                                         label={t('user.properties.email')}
                                         property="email"
                                         disabled={fieldDisabled}
@@ -109,6 +110,7 @@ export const UserEmailChangeForm = (): ReactElement => {
                             </Grid>
                             {isEditing && (
                                 <Button
+                                    data-cy="email-save-button"
                                     style={{ marginRight: 10 }}
                                     type="button"
                                     variant="contained"
@@ -125,6 +127,7 @@ export const UserEmailChangeForm = (): ReactElement => {
                             )}
                             {isEditing && (
                                 <Button
+                                    data-cy="email-cancel-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -139,6 +142,7 @@ export const UserEmailChangeForm = (): ReactElement => {
                             )}
                             {!isEditing && (
                                 <Button
+                                    data-cy="email-edit-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
