@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TopBar, NavBar, ErrorFallback } from '@energyweb/origin-ui-core';
-import { Box } from '@material-ui/core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { OriginGlobalStyles } from './OriginGlobalStyles';
 
@@ -30,15 +29,13 @@ export function App() {
       isOpen: true,
       menuList: [
         {
-          key: 'all-devices',
+          url: 'all-devices',
           label: 'All devices',
-          component: <Box>All devices</Box>,
           show: true,
         },
         {
-          key: 'my-devices',
+          url: 'my-devices',
           label: 'My devices',
-          component: <Box>My devices</Box>,
           show: true,
         },
       ],
@@ -50,15 +47,13 @@ export function App() {
       isOpen: false,
       menuList: [
         {
-          key: 'view-market',
+          url: 'view-market',
           label: 'View Market',
-          component: <Box>View Market</Box>,
           show: true,
         },
         {
-          key: 'my-orders',
+          url: 'my-orders',
           label: 'My orders',
-          component: <Box>My orders</Box>,
           show: true,
         },
       ],

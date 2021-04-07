@@ -11,13 +11,11 @@ const section1MenuList = [
   {
     url: 'menu_item_one',
     label: 'Item one',
-    component: <div>Item one</div>,
     show: true,
   },
   {
     url: 'menu_item_two',
     label: 'Item two',
-    component: <div>Item one</div>,
     show: true,
   },
 ];
@@ -25,13 +23,11 @@ const section2MenuList = [
   {
     url: 'menu_item_one',
     label: 'Item one',
-    component: <div>Item one</div>,
     show: true,
   },
   {
     url: 'menu_item_two',
     label: 'Item two',
-    component: <div>Item one</div>,
     show: true,
   },
 ];

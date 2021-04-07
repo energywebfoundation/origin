@@ -10,10 +10,7 @@ export type TMenuSection = NavBarSectionProps;
 export type TModuleMenuItem = {
   url: string;
   label: string;
-  component: React.ReactElement;
   show: boolean;
-  // add OriginFeature
-  features?: any[];
 };
 
 export interface NavBarSectionProps {
@@ -22,8 +19,6 @@ export interface NavBarSectionProps {
   rootUrl: string;
   isOpen: boolean;
   menuList: TModuleMenuItem[];
-  // add OriginFeature
-  enabledFeatures?: any[];
 }
 
 const Wrapper = styled.div`
@@ -36,18 +31,13 @@ const Wrapper = styled.div`
 `;
 
 export const NavBarSection: FC<NavBarSectionProps> = memo(
-  ({ sectionTitle, show, rootUrl, isOpen, menuList, enabledFeatures }) => {
+  ({ sectionTitle, show, rootUrl, isOpen, menuList }) => {
     return (
       <Wrapper>
         {show && (
           <>
             <NavSectionTitle url={rootUrl} title={sectionTitle} />
-            <NavSubMenu
-              rootUrl={rootUrl}
-              open={isOpen}
-              menuList={menuList}
-              enabledFeatures={enabledFeatures}
-            />
+            <NavSubMenu rootUrl={rootUrl} open={isOpen} menuList={menuList} />
           </>
         )}
       </Wrapper>

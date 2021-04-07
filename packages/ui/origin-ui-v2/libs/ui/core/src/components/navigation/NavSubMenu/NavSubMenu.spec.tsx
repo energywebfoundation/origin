@@ -23,4 +23,25 @@ describe('NavSubMenu', () => {
     const testLink = Default.args.rootUrl + '/' + Default.args.menuList[0].url;
     expect(subMenuList.querySelector('a')).toHaveAttribute('href', testLink);
   });
+
+  it('render menu items only with show property equal true', () => {
+    const oneSectionNotShownProps = {
+      ...Default.args,
+    };
+    oneSectionNotShownProps.menuList[1].show = false;
+
+    const { container, queryByText } = render(
+      <BrowserRouter>
+        <Default {...oneSectionNotShownProps} />
+      </BrowserRouter>
+    );
+
+    const subMenuList = container.querySelector('ul');
+    expect(subMenuList).toBeInTheDocument();
+
+    const allItems = subMenuList.querySelectorAll('li');
+    expect(allItems.length).toEqual(1);
+
+    expect(queryByText(Default.args.menuList[1].label)).not.toBeInTheDocument();
+  });
 });
