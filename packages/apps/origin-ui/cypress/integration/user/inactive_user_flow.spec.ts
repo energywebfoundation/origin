@@ -66,26 +66,26 @@ describe('User with status Pending flow', () => {
         cy.visit('/account/user-profile');
         cy.dataCy('info-edit-button').click();
 
-        cy.dataCy('first-name').type('-edit');
+        cy.dataCy('first-name').find('input').type('-edit').blur();
         cy.dataCy('info-save-button').click();
         cy.notification('Error to update User profile');
         cy.get('.toast').click();
         cy.wait(100);
 
-        cy.dataCy('last-name').type('-edit');
+        cy.dataCy('last-name').find('input').type('-edit').blur();
         cy.dataCy('info-save-button').click();
         cy.notification('Error to update User profile');
         cy.get('.toast').click();
         cy.wait(200);
 
-        cy.dataCy('telephone').type('-edit');
+        cy.dataCy('telephone').find('input').type('-edit').blur();
         cy.dataCy('info-save-button').click();
         cy.notification('Error to update User profile');
         cy.get('.toast').click();
         cy.wait(300);
 
         cy.dataCy('email-edit-button').click();
-        cy.dataCy('email').type('-edit');
+        cy.dataCy('email').find('input').type('-edit').blur();
         cy.dataCy('email-save-button').click();
         cy.notification('Error to update User profile');
     });
@@ -99,7 +99,7 @@ describe('User with status Pending flow', () => {
 
         const newPassword = testUser.password + '0qwe';
         cy.dataCy('new-password').type(newPassword);
-        cy.dataCy('password-save-button').should('be.disabled');
+        cy.dataCy('password-save-button').should('not.be.disabled');
 
         cy.dataCy('confirm-password').type(newPassword);
         cy.dataCy('password-save-button').should('not.be.disabled');

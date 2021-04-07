@@ -46,7 +46,7 @@ describe('User registration', () => {
         cy.dataCy('register-button').should('not.be.disabled').click();
 
         cy.notification('User registered.');
-        cy.contains('Thanks for registering a user on the marketplace');
+        cy.contains('Thanks for registering as a user on the marketplace');
         cy.dataCy('user-registered-modal-ok').click();
         cy.url().should('include', '/user-login');
     });
