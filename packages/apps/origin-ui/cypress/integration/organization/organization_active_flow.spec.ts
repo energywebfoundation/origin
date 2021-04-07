@@ -94,8 +94,8 @@ describe('Organization with status Active and User status active flow', () => {
         cy.contains('WIND');
         cy.contains('OTHER');
 
-        cy.dataCy('my_trades').click();
-        cy.url().should('include', 'my_trades');
+        cy.dataCy('my-trades').click();
+        cy.url().should('include', 'my-trades');
         cy.contains('Date');
         cy.contains('Side');
 
