@@ -18,7 +18,7 @@ export const SidebarMenuExchangeSection = memo(
         return (
             enabledFeatures.includes(OriginFeature.Exchange) && (
                 <>
-                    <li className="mainMenu">
+                    <li data-cy="exchange-menu" className="mainMenu">
                         <NavLink to={exchangePath}>{t('header.exchange')}</NavLink>
                     </li>
                     <SidebarSubMenu

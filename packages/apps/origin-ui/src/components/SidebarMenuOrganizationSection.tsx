@@ -17,7 +17,7 @@ export const SidebarMenuOrganizationSection = memo(
         const organizationMenuList = useOrganizationMenu();
         return (
             <>
-                <li className="mainMenu">
+                <li data-cy="organizations-menu" className="mainMenu">
                     <NavLink to={organizationPageUrl}>{t('header.organizations')}</NavLink>
                 </li>
                 <SidebarSubMenu
