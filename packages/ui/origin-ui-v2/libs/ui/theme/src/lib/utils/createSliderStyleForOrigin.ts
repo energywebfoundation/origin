@@ -1,5 +1,5 @@
 import { LightenColor } from './colors';
-import { IOriginStyleConfig } from './makeOriginUiTheme';
+import { IOriginStyleConfig } from './makeOriginUiConfig';
 
 const createSliderStyleForOrigin = (styleConfig: IOriginStyleConfig) => ({
   root: {

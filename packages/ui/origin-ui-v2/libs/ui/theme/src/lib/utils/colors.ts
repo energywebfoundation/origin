@@ -1,8 +1,20 @@
+import { PaletteMode } from '@material-ui/core';
+
 /* eslint-disable no-bitwise */
-export function LightenColor(color, percent) {
+export function LightenColor(
+  color: string,
+  percent: number,
+  themeMode?: PaletteMode
+): string {
+  let formattedPercent = percent;
+
+  if (!!themeMode) {
+    formattedPercent = themeMode === 'dark' ? percent : -percent;
+  }
+
   if (color) {
     const num = parseInt(color.replace('#', ''), 16);
-    const amt = Math.round(2.55 * percent);
+    const amt = Math.round(2.55 * formattedPercent);
     const R = (num >> 16) + amt;
     const B = ((num >> 8) & 0x00ff) + amt;
     const G = (num & 0x0000ff) + amt;
@@ -19,5 +31,6 @@ export function LightenColor(color, percent) {
         .slice(1)
     );
   }
-  return percent > 0 ? '#ffffff' : '#000000';
+
+  return formattedPercent > 0 ? '#ffffff' : '#000000';
 }

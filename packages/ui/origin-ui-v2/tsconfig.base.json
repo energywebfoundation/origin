@@ -11,6 +11,7 @@
     "target": "es2015",
     "module": "esnext",
     "lib": ["es2017", "dom"],
+    "types": ["@emotion/core"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",

@@ -1,20 +1,36 @@
-const $primaryColor = 'rgb(137, 78, 197)';
-const $primaryColorDark = 'rgb(112,55,169)';
-const $primaryColorDim = 'rgb(54, 44, 69)';
+import { LightenColor } from '../utils/colors';
 
-const $textColorDefault = 'rgb(168,168,168)';
-const $simpleTextColor = 'rgb(255,255,255)';
+const $primaryColor = '#894ec5';
+const $primaryColorDark = LightenColor($primaryColor, -10);
+const $primaryColorDim = '#362c45';
 
-const $bodyBackgroundColor = 'rgb(51,51,51)';
-const $mainBackgroundColor = 'rgb(44,44,44)';
-const $fieldIconColor = 'rgb(179,179,179)';
+const $textColorDefault = '#a8a8a8';
+const $simpleTextColor = '#ffffff';
 
-const $fontFamilyPrimary = 'Rubik';
-const $fontFamilySecondary = 'Rubik';
+const $bodyBackgroundColor = '#333333';
+const $mainBackgroundColor = '#2c2c2c';
+const $fieldIconColor = LightenColor('#ffffff', -30);
 
-const $fontSizeMd = 12;
+const $fontFamilyPrimary = 'Rajdhani';
+const $fontFamilySecondary = 'Rajdhani';
 
-const variables = {
+const $fontSize = 12;
+
+export type OriginUiThemeVariables = {
+  primaryColor: string;
+  primaryColorDark: string;
+  primaryColorDim: string;
+  textColorDefault: string;
+  simpleTextColor: string;
+  bodyBackgroundColor: string;
+  mainBackgroundColor: string;
+  fieldIconColor: string;
+  fontFamilyPrimary: string;
+  fontFamilySecondary: string;
+  fontSize: number;
+};
+
+export const variables: OriginUiThemeVariables = {
   primaryColor: $primaryColor,
   primaryColorDark: $primaryColorDark,
   primaryColorDim: $primaryColorDim,
@@ -25,7 +41,5 @@ const variables = {
   fieldIconColor: $fieldIconColor,
   fontFamilyPrimary: $fontFamilyPrimary,
   fontFamilySecondary: $fontFamilySecondary,
-  fontSizeMd: $fontSizeMd,
+  fontSize: $fontSize,
 };
-
-export default variables;

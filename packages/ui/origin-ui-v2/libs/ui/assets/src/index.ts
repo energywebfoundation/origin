@@ -1,1 +1,1 @@
-export * from './lib/ui-assets';
+export * from './layout';
