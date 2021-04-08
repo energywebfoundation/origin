@@ -91,8 +91,8 @@ Install using `yarn add @energyweb/{package}@preview`
 npm install -g @microsoft/rush
 ```
 
-
-3. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
+3. Make sure you have Java runtime installed
+4. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
 
 We recommend using Docker based setup as follows (requires psql command line tool installed):
 
@@ -114,7 +114,6 @@ rush update
 ```
 
 ## Build
-
 
 ```shell
 rush build
