@@ -40,7 +40,7 @@ describe('Active user profile user info block interactions', () => {
         const { firstName, lastName, telephone } = testUser;
 
         cy.dataCy('info-edit-button').click();
-        cy.dataCy('first-name').type(editText);
+        cy.dataCy('first-name').find('input').type(editText).blur();
         cy.dataCy('first-name')
             .find('input')
             .should('have.value', firstName + editText);
@@ -49,7 +49,7 @@ describe('Active user profile user info block interactions', () => {
         cy.dataCy('first-name').find('input').should('have.value', firstName);
 
         cy.dataCy('info-edit-button').click();
-        cy.dataCy('last-name').type(editText);
+        cy.dataCy('last-name').find('input').type(editText).blur();
         cy.dataCy('last-name')
             .find('input')
             .should('have.value', lastName + editText);
@@ -58,7 +58,7 @@ describe('Active user profile user info block interactions', () => {
         cy.dataCy('last-name').find('input').should('have.value', lastName);
 
         cy.dataCy('info-edit-button').click();
-        cy.dataCy('telephone').type(editNumbers);
+        cy.dataCy('telephone').find('input').type(editNumbers).blur();
         cy.dataCy('telephone')
             .find('input')
             .should('have.value', telephone + editNumbers);
