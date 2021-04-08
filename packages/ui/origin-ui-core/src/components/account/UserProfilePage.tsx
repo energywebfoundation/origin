@@ -22,11 +22,11 @@ export const UserProfilePage = (): ReactElement => {
 
     return (
         <div id="user_profile">
-            {/*<UserDataEditForm />*/}
+            <UserDataEditForm />
             <br />
-            {/*<UserEmailChangeForm />*/}
+            <UserEmailChangeForm />
             <br />
-            {/*<ChangePasswordForm />*/}
+            <ChangePasswordForm />
             <br />
             <BlockchainAddressesContainer />
         </div>

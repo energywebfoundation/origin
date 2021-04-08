@@ -4,6 +4,6 @@
   <br>
   EnergyWeb Origin
   <br>
-  <h2 align="center">Issuer API Client</h2>
+  <h2 align="center">Issuer API</h2>
   <br>
 </h1>
