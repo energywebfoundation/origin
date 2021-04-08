@@ -86,11 +86,11 @@ Install using `yarn add @energyweb/{package}@preview`
 
 1. Make sure you are using Node 14.x.x
 2. Make sure have latest `@microsoft/rush` package manager installed.
+3. Make sure you have Java runtime installed
 
 ```shell
 npm install -g @microsoft/rush
 ```
-
 
 3. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
 
@@ -114,7 +114,6 @@ rush update
 ```
 
 ## Build
-
 
 ```shell
 rush build
