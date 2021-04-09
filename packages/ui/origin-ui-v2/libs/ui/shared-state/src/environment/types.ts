@@ -1,3 +1,5 @@
+import { OriginResponse } from '../utils';
+
 export type OriginEnvironment = {
   MODE: string;
   BACKEND_URL: string;
@@ -13,6 +15,15 @@ export type OriginEnvironment = {
   DISABLED_UI_FEATURES: string;
   SMART_METER_ID: string;
 };
+
+export type ResponseEnvironment = Omit<
+  OriginEnvironment,
+  'MARKET_UTC_OFFSET'
+> & {
+  MARKET_UTC_OFFSET: string;
+};
+
+export type TEnvironmentResponse = OriginResponse<ResponseEnvironment>;
 
 export type TFetchEnvironment = (
   customUrl?: string

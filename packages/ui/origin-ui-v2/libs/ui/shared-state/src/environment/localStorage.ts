@@ -33,7 +33,7 @@ export const setPackageEnvironment: TFetchAndSetEnvironment = async (
   configUrl
 ) => {
   const existingEnv = getEnvironment();
-  if (!!existingEnv && !isEmpty(existingEnv)) {
+  if (!isEmpty(existingEnv)) {
     return;
   }
   await fetchAndSetEnvironment(configUrl);

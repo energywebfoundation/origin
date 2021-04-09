@@ -1,5 +1,5 @@
 import { IUser, OrganizationStatus } from '@energyweb/origin-backend-core';
-import { AllFetchOptions, RequireOnlyOne } from '../utils';
+import { AllFetchOptions, OriginResponse, RequireOnlyOne } from '../utils';
 
 type OriginUserOrganization = {
   id: number;
@@ -17,6 +17,8 @@ export type FetchUserOptions = RequireOnlyOne<
 >;
 
 export type TFetchUser = (options: FetchUserOptions) => Promise<OriginUser>;
+
+export type TUserResponse = OriginResponse<OriginUser>;
 
 export type TFetchAndSetUser = (options: FetchUserOptions) => Promise<void>;
 

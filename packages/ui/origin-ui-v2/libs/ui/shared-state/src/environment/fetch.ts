@@ -1,8 +1,10 @@
-import { TFetchEnvironment } from './types';
+import { TEnvironmentResponse, TFetchEnvironment } from './types';
 
 export const fetchEnvironment: TFetchEnvironment = async (customUrl) => {
   try {
-    const response = await fetch(customUrl ?? 'env-config.json');
+    const response: TEnvironmentResponse = await fetch(
+      customUrl ?? 'env-config.json'
+    );
     const environment = await response.json();
     return {
       ...environment,

@@ -1,4 +1,4 @@
-import { TFetchConfiguration } from './types';
+import { TConfigurationResponse, TFetchConfiguration } from './types';
 
 export const fetchConfiguration: TFetchConfiguration = async (options) => {
   const { url, fetchFunc } = options;
@@ -8,7 +8,7 @@ export const fetchConfiguration: TFetchConfiguration = async (options) => {
       return await fetchFunc();
     }
 
-    const response = await fetch(url);
+    const response: TConfigurationResponse = await fetch(url);
     const config = await response.json();
     return config;
   } catch (error) {

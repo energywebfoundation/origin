@@ -11,3 +11,7 @@ export type AllFetchOptions<T> = {
   url: string;
   fetchFunc: () => Promise<T>;
 };
+
+export type OriginResponse<T> = Omit<Response, 'json'> & {
+  json: () => Promise<T>;
+};

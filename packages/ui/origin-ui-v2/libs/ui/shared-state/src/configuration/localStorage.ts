@@ -35,7 +35,7 @@ export const setPackageConfiguration: TFetchAndSetConfiguration = async (
   options
 ) => {
   const existingConfig = getConfiguration();
-  if (!!existingConfig && !isEmpty(existingConfig)) {
+  if (!isEmpty(existingConfig)) {
     return;
   }
 

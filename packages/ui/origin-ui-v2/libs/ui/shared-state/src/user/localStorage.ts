@@ -20,7 +20,7 @@ const fetchAndSetUser: TFetchAndSetUser = async (options) => {
 
 export const setUser: TFetchAndSetUser = async (options) => {
   const existingUser = getUser();
-  if (!!existingUser && !isEmpty(existingUser)) {
+  if (!isEmpty(existingUser)) {
     return;
   }
 
