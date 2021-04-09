@@ -1,10 +1,11 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx, css } from '@emotion/react';
+import { jsx } from '@emotion/react';
 import { Collapse, List } from '@material-ui/core';
 import { FC, memo } from 'react';
 import { MenuItem } from '../MenuItem';
 import { TModuleMenuItem } from '../NavBarSection';
+import { useComponentStyles } from './styles';
 
 export interface NavSubMenuProps {
   open: boolean;
@@ -12,12 +13,9 @@ export interface NavSubMenuProps {
   menuList: TModuleMenuItem[];
 }
 
-const listCss = css({
-  padding: 0,
-});
-
 export const NavSubMenu: FC<NavSubMenuProps> = memo(
   ({ open, menuList, rootUrl }) => {
+    const { listCss } = useComponentStyles();
     return (
       <Collapse in={open} timeout="auto">
         <List css={listCss}>

@@ -29,6 +29,7 @@
   "dependencies": {
     "@emotion/react": "11.0.0",
     "@emotion/styled": "11.0.0",
+    "@energyweb/origin-backend-core": "8.0.1",
     "@material-ui/core": "^5.0.0-alpha.29",
     "@material-ui/icons": "^5.0.0-alpha.28",
     "@material-ui/styles": "^5.0.0-alpha.29",
@@ -92,6 +93,8 @@
     "eslint-plugin-react": "7.21.5",
     "eslint-plugin-react-hooks": "4.2.0",
     "jest": "26.2.2",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-localstorage-mock": "^2.4.9",
     "prettier": "2.2.1",
     "ts-jest": "26.4.0",
     "ts-node": "~9.1.1",

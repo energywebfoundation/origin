@@ -23,9 +23,6 @@
         "libs/ui/localization/src/index.ts"
       ],
       "@energyweb/origin-ui-theme": ["libs/ui/theme/src/index.ts"],
-      "@energyweb/origin-ui-state-management": [
-        "libs/ui/state-management/src/index.ts"
-      ],
       "@energyweb/origin-ui-assets": ["libs/ui/assets/src/index.ts"],
       "@energyweb/origin-ui-certificate-data-access": [
         "libs/certificate/data-access/src/index.ts"
@@ -64,7 +61,8 @@
       "@energyweb/origin-ui-device-view": ["libs/device/view/src/index.ts"],
       "@energyweb/origin-ui-device-data-access": [
         "libs/device/data-access/src/index.ts"
-      ]
+      ],
+      "@energyweb/origin-ui-shared-state": ["libs/ui/shared-state/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
