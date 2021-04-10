@@ -60,7 +60,7 @@
         "@types/mocha": "8.2.2",
         "@types/node": "14.14.37",
         "mocha": "8.3.2",
-        "truffle": "5.3.0",
+        "truffle": "5.3.1",
         "solc": "0.5.16",
         "@ethersproject/abstract-provider": "5.1.0",
         "@ethersproject/abi": "5.1.0",
