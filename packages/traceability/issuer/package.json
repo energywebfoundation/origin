@@ -52,7 +52,7 @@
         "winston": "3.3.3"
     },
     "devDependencies": {
-        "typescript": "4.1.5",
+        "typescript": "4.2.4",
         "@typechain/ethers-v5": "1.0.0",
         "ethlint": "1.2.5",
         "truffle-typings": "1.0.8",

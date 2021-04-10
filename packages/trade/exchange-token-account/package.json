@@ -39,7 +39,7 @@
         "ethers": "5.0.31"
     },
     "devDependencies": {
-        "typescript": "4.1.5",
+        "typescript": "4.2.4",
         "@energyweb/issuer": "3.2.0",
         "@typechain/ethers-v5": "1.0.0",
         "truffle-typings": "1.0.8",

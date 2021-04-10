@@ -45,7 +45,7 @@
         "yaeti": "1.0.2"
     },
     "devDependencies": {
-        "typescript": "4.1.5",
+        "typescript": "4.2.4",
         "@types/mocha": "8.2.2",
         "@types/node": "14.14.37",
         "mocha": "8.3.2"
