@@ -66,7 +66,7 @@
         "chai": "4.3.0",
         "@ethersproject/providers": "5.0.24",
         "@ethersproject/abstract-provider": "5.1.0",
-        "@ethersproject/contracts": "5.0.11",
+        "@ethersproject/contracts": "5.1.0",
         "@ethersproject/abi": "5.1.0"
     },
     "publishConfig": {
