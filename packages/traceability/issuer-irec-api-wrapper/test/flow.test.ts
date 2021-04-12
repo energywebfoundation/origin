@@ -2,6 +2,7 @@
 import { expect } from 'chai';
 import { validateOrReject } from 'class-validator';
 import moment from 'moment/moment';
+import fs from 'fs';
 
 import { IRECAPIClient } from '../src/IRECAPIClient';
 import { Device, DeviceCreateParams, DeviceState } from '../src/Device';
@@ -48,8 +49,14 @@ describe('API flows', () => {
     });
 
     it('should pass create and approve device flow', async () => {
+        const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
+        const [fileId] = await registrantClient.file.upload([file]);
+
         const params = getDeviceParams();
-        const createdDevice: Device = await registrantClient.device.create(params);
+        const createdDevice: Device = await registrantClient.device.create({
+            ...params,
+            files: [fileId]
+        });
 
         let device: Device = await registrantClient.device.get(createdDevice.code);
         const deviceCode: string = device.code;
@@ -89,6 +96,9 @@ describe('API flows', () => {
     }).timeout(10000);
 
     it('should pass create and approve issue flow', async () => {
+        const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
+        const [fileId] = await registrantClient.file.upload([file]);
+
         const params = getDeviceParams();
         const device: Device = await registrantClient.device.create(params);
         const deviceCode: string = device.code;
@@ -103,7 +113,8 @@ describe('API flows', () => {
             end: moment().subtract(1, 'day').toDate(),
             production: 10,
             fuel: device.fuel,
-            notes: 'Some note'
+            notes: 'Some note',
+            files: [fileId]
         };
         const issueCode: string = await registrantClient.issue.create(issueParams);
         let issue: IssueWithStatus = await registrantClient.issue.get(issueCode);
