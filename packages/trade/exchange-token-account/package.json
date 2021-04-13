@@ -33,10 +33,10 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@ethersproject/contracts": "5.0.11",
-        "@ethersproject/providers": "5.0.24",
+        "@ethersproject/contracts": "5.1.0",
+        "@ethersproject/providers": "5.1.0",
         "chai": "4.3.0",
-        "ethers": "5.0.31"
+        "ethers": "5.1.0"
     },
     "devDependencies": {
         "typescript": "4.2.4",
@@ -49,8 +49,6 @@
         "mocha": "8.3.2",
         "truffle": "5.3.1",
         "solc": "0.5.16",
-        "@ethersproject/abstract-provider": "5.1.0",
-        "@ethersproject/abi": "5.1.0",
         "@openzeppelin/cli": "2.8.2",
         "@openzeppelin/contracts-ethereum-package": "2.5.0",
         "@openzeppelin/upgrades": "2.8.0"
