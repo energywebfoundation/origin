@@ -54,6 +54,29 @@ type OrganizationPostData = {
     documentIds?: string[];
 };
 
+type DevicePostData = {
+    address: string;
+    capacityInW: number;
+    complianceRegistry: string;
+    country: string;
+    description: string;
+    deviceType: string;
+    externalDeviceIds: { type: string }[];
+    facilityName: string;
+    files: string;
+    gpsLatitude: string;
+    gpsLongitude: string;
+    gridOperator: string;
+    images: string;
+    operationalSince: number;
+    otherGreenAttributes: string;
+    province: string;
+    region: string;
+    status: string;
+    timezone: string;
+    typeOfPublicSupport: string;
+};
+
 declare namespace Cypress {
     interface Chainable {
         dataCy(value: string): Chainable<Element>;
@@ -68,6 +91,7 @@ declare namespace Cypress {
         apiRegisterAndApproveUser(user: UserRegisterData): Chainable<Element>;
         fillOrgRegisterForm(orgData: OrganizationPostData): Chainable<Element>;
         attachDocument(uploadDataCy: string): Chainable<Element>;
+        attachMultipleDocuments(uploadDataCy: string, count: number): Chainable<Element>;
         apiRegisterOrg(
             userData: UserRegisterData,
             orgData: OrganizationPostData
@@ -85,6 +109,14 @@ declare namespace Cypress {
             senderData: UserRegisterData,
             receiverEmail: string,
             role: OrganizationRole
+        ): Chainable<Element>;
+        apiRegisterDevice(
+            userData: UserRegisterData,
+            testDevice: DevicePostData
+        ): Chainable<Element>;
+        apiRegisterAndApproveDevice(
+            userData: UserRegisterData,
+            testDevice: DevicePostData
         ): Chainable<Element>;
     }
 }
