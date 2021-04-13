@@ -114,7 +114,10 @@ export const AddDevice = () => {
 
     const VALIDATION_SCHEMA = Yup.object().shape({
         facilityName: Yup.string().label(t('device.properties.facilityName')).required(),
-        capacity: Yup.number().label(t('device.properties.capacity')).required().positive(),
+        capacity: Yup.number()
+            .label(`${t('device.properties.capacity')} (${PowerFormatter.displayUnit})`)
+            .required()
+            .positive(),
         commissioningDate: Yup.date().required(),
         registrationDate: Yup.date().required(),
         address: Yup.string().label(t('device.properties.address')).required(),
@@ -253,6 +256,7 @@ export const AddDevice = () => {
                                         required
                                     >
                                         <Field
+                                            data-cy="facilityName"
                                             label={t('device.properties.facilityName')}
                                             name="facilityName"
                                             component={TextField}
@@ -262,7 +266,7 @@ export const AddDevice = () => {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
-                                    <div className={classes.selectContainer}>
+                                    <div className={classes.selectContainer} data-cy="device-type">
                                         <HierarchicalMultiSelect
                                             selectedValue={selectedDeviceType}
                                             onChange={(value: string[]) =>
@@ -290,6 +294,7 @@ export const AddDevice = () => {
                                     </div>
 
                                     <Field
+                                        data-cy="commissioningDate"
                                         name="commissioningDate"
                                         label={t('device.properties.vintageCod')}
                                         className="mt-3"
@@ -301,6 +306,7 @@ export const AddDevice = () => {
                                         disabled={fieldDisabled}
                                     />
                                     <Field
+                                        data-cy="registrationDate"
                                         name="registrationDate"
                                         label={t('device.properties.registrationDate')}
                                         className="mt-3"
@@ -312,6 +318,7 @@ export const AddDevice = () => {
                                         disabled={fieldDisabled}
                                     />
                                     <Field
+                                        data-cy="supported"
                                         name="supported"
                                         Label={{
                                             label: t('device.info.supported')
@@ -330,6 +337,7 @@ export const AddDevice = () => {
                                         required
                                     >
                                         <Field
+                                            data-cy="capacity"
                                             label={`${t('device.properties.capacity')} (${
                                                 PowerFormatter.displayUnit
                                             })`}
@@ -360,6 +368,7 @@ export const AddDevice = () => {
                                         required
                                     >
                                         <Field
+                                            data-cy="address"
                                             label={t('device.properties.address')}
                                             name="address"
                                             component={TextField}
@@ -376,6 +385,7 @@ export const AddDevice = () => {
                                         required
                                     >
                                         <FormInput
+                                            data-cy="latitude"
                                             label={t('device.properties.latitude')}
                                             property="latitude"
                                             variant="filled"
@@ -406,6 +416,7 @@ export const AddDevice = () => {
                                         required
                                     >
                                         <FormInput
+                                            data-cy="longitude"
                                             label={t('device.properties.longitude')}
                                             property="longitude"
                                             variant="filled"
@@ -439,6 +450,7 @@ export const AddDevice = () => {
                                     </Typography>
                                     <FormControl fullWidth variant="filled" className="mt-3">
                                         <Field
+                                            data-cy="projectStory"
                                             label={t('device.properties.projectStory')}
                                             name="projectStory"
                                             component={TextField}
@@ -458,6 +470,7 @@ export const AddDevice = () => {
 
                                         return (
                                             <FormInput
+                                                data-cy={externalDeviceIdType.type}
                                                 key={index}
                                                 label={externalDeviceIdType.type}
                                                 property={externalDeviceIdType.type}
@@ -480,7 +493,7 @@ export const AddDevice = () => {
                                             {t('device.info.pleaseFillOtherFields')}
                                         </p>
                                     ) : (
-                                        <>
+                                        <div data-cy="device-upload-image">
                                             <input
                                                 className={classes.fileUploadInput}
                                                 id="contained-button-file"
@@ -501,14 +514,14 @@ export const AddDevice = () => {
                                                     })}
                                                 </Button>
                                             </label>
-                                        </>
+                                        </div>
                                     )}
-
                                     <Upload onChange={(newFiles) => setFiles(newFiles)} />
                                 </Grid>
                             </Grid>
 
                             <Button
+                                data-cy="device-register-submit"
                                 type="submit"
                                 variant="contained"
                                 color="primary"
