@@ -73,6 +73,7 @@ export function Actions(props: IProps) {
             ariaLabel={`speed-dial-${id}`}
             icon={
                 <SpeedDialIcon
+                    data-cy="speed-dial-icon"
                     icon={<MoreHoriz style={{ backgroundColor: 'inherit' }} />}
                     classes={{
                         icon: classes.speedDialIcon
@@ -92,6 +93,7 @@ export function Actions(props: IProps) {
         >
             {actions.map((action) => (
                 <SpeedDialAction
+                    data-cy={action.name}
                     key={action.name}
                     icon={action.icon}
                     tooltipTitle={action.name}
