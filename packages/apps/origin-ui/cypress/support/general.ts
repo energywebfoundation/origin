@@ -2,7 +2,7 @@
 import 'cypress-file-upload';
 
 Cypress.Commands.add('dataCy', (value: string) => {
-    cy.get(`[data-cy=${value}]`);
+    cy.get(`[data-cy="${value}"]`);
 });
 
 Cypress.Commands.add('inputRequired', (target: string, neighbor: string) => {
@@ -41,6 +41,15 @@ Cypress.Commands.add('attachDocument', (uploadDataCy: string) => {
         mimeType: 'image/png',
         encoding: 'binary'
     });
+});
+
+Cypress.Commands.add('attachMultipleDocuments', (uploadDataCy: string, count: number) => {
+    const files = new Array(count).fill({
+        filePath: 'testDocument.json',
+        mimeType: 'image/png',
+        encoding: 'binary'
+    });
+    cy.dataCy(uploadDataCy).find('input').attachFile(files);
 });
 
 Cypress.Commands.add('inputHasValue', (inputCy: string, value: string) => {
