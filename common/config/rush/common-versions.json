@@ -23,10 +23,7 @@
          * When someone asks for "^1.0.0" make sure they get "1.2.3" when working in this repo,
          * instead of the latest version.
          */
-        "@ethersproject/bignumber": "5.0.14",
-        "@ethersproject/contracts": "5.0.11",
-        "@ethersproject/providers": "5.0.24",
-        "ethers": "5.0.31"
+        "ethers": "5.1.0"
     },
 
     /**

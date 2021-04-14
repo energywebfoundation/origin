@@ -61,12 +61,14 @@ export const BlockchainAddressesForm = memo(
                                         {exchangeAddress ? (
                                             <Grid item lg={6} md={10} xs={12}>
                                                 <FormInput
+                                                    data-cy="exchange-deposit-address"
                                                     property="exchangeDepositAddress"
                                                     disabled={true}
                                                 />
                                             </Grid>
                                         ) : (
                                             <Button
+                                                data-cy="exchange-address-create-button"
                                                 type="button"
                                                 variant="contained"
                                                 color="primary"
@@ -78,6 +80,7 @@ export const BlockchainAddressesForm = memo(
                                             </Button>
                                         )}
                                         <IconPopover
+                                            data-cy="exchange-address-info-icon"
                                             icon={Info}
                                             iconSize={IconSize.Large}
                                             popoverText={[
@@ -118,6 +121,7 @@ export const BlockchainAddressesForm = memo(
                                                 : t('user.actions.connectNewBlockchain')}
                                         </Button>
                                         <IconPopover
+                                            data-cy="blockchain-address-info-icon"
                                             icon={Info}
                                             iconSize={IconSize.Large}
                                             popoverText={[

@@ -131,8 +131,8 @@ describe('Organization with status Pending and User status active flow', () => {
         cy.contains('fulfill following criteria');
         cy.contains('exchange deposit address');
 
-        cy.dataCy('my_trades').click();
-        cy.url().should('include', 'my_trades');
+        cy.dataCy('my-trades').click();
+        cy.url().should('include', 'my-trades');
         cy.contains('fulfill following criteria');
         cy.contains('exchange deposit address');
 

@@ -94,7 +94,12 @@ export class FileService {
                     }
                 ]
             });
-            if (count !== 1) {
+
+            this.logger.debug(
+                `Found ${count} documents matching user ID ${user.id} and org ID ${user.organizationId}`
+            );
+
+            if (count == 0) {
                 isOwner = false;
                 break;
             }
