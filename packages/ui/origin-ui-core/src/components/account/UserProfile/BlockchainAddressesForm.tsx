@@ -72,6 +72,7 @@ export const BlockchainAddressesForm = memo(
                                                 color="primary"
                                                 disabled={isLoading}
                                                 onClick={onCreateExchangeAddress}
+                                                data-cy="exchange-address-create-button"
                                             >
                                                 {t('user.actions.createDepositAddress')}
                                             </Button>
