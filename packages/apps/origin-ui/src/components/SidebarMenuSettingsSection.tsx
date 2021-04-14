@@ -19,7 +19,7 @@ export const SidebarMenuSettingsSection = ({
     const menuList = useAccountMenu();
     return (
         <>
-            <li className="mainMenu">
+            <li className="mainMenu" data-cy="settings-menu">
                 <NavLink to={accountPageUrl}>{t('settings.settings')}</NavLink>
             </li>
             <SidebarSubMenu
