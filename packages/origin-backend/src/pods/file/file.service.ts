@@ -2,7 +2,7 @@ import { LoggedInUser, Role } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import path from 'path';
-import { Connection, IsNull, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { File } from './file.entity';
