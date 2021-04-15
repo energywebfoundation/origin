@@ -93,9 +93,7 @@ export class FileService {
                       userId: user.id.toString()
                   };
 
-            const count = await this.repository.count({
-                where: [where]
-            });
+            const count = await this.repository.count({ where });
 
             this.logger.debug(
                 `Found ${count} documents matching user ID ${user.id} and org ID ${user.organizationId}`
