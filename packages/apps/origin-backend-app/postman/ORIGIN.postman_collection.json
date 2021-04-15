@@ -1,0 +1,55 @@
+{
+    "info": {
+        "_postman_id": "ae1f8c76-f830-4a72-891c-d1933de941d8",
+        "name": "ORIGIN",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get All Orgs",
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [
+                            "let current_time = Date.now();",
+                            "    console.log('getting new auth...');",
+                            "    const postRequest = {",
+                            "        url: 'http://localhost:3030/api/auth/login',",
+                            "        method: 'POST',",
+                            "        header: {'Content-Type': 'application/json' },",
+                            "        body: {mode: 'raw',raw: JSON.stringify({username:\"rob@adivate.net\",password:\"password\"})}};",
+                            "    pm.sendRequest(postRequest, (error, response) => {",
+                            "        console.log('got response...');",
+                            "        console.log(response.json());",
+                            "        console.log('accessToken=' + response.json().accessToken);",
+                            "        //pm.environment.set('jwt_expired_time',response.json().expires_at);",
+                            "        pm.environment.set('jwt_token',response.json().accessToken);",
+                            "    });",
+                            ""
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{jwt_token}}",
+                        "type": "text"
+                    }
+                ],
+                "url": {
+                    "raw": "http://localhost:3030/api/Organization",
+                    "protocol": "http",
+                    "host": ["localhost"],
+                    "port": "3030",
+                    "path": ["api", "Organization"]
+                }
+            },
+            "response": []
+        }
+    ]
+}
