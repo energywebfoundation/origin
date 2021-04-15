@@ -80,19 +80,21 @@ export class FileService {
         let isOwner = true;
 
         for (const documentId of ids) {
+            const hasOrganization = user.organizationId && user.organizationId > 0;
+
+            const where = hasOrganization
+                ? {
+                      id: documentId,
+                      userId: user.id.toString(),
+                      organizationId: user.organizationId.toString()
+                  }
+                : {
+                      id: documentId,
+                      userId: user.id.toString()
+                  };
+
             const count = await this.repository.count({
-                where: [
-                    {
-                        id: documentId,
-                        userId: user.id.toString(),
-                        organizationId: user.organizationId?.toString()
-                    },
-                    {
-                        id: documentId,
-                        userId: user.id.toString(),
-                        organizationId: IsNull()
-                    }
-                ]
+                where: [where]
             });
 
             this.logger.debug(
