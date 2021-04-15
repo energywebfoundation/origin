@@ -69,6 +69,7 @@ export class UserDTO implements IUser {
     @IsBoolean()
     emailConfirmed?: boolean;
 
+    // TODO RJA: THIS REALY NEEDS TO BE A REQUIRED FIELD BUT IT BREAKS A TON OF CODE!!
     @ApiProperty({ type: String, required: false })
     @IsOptional()
     @IsString()

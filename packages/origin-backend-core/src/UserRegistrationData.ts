@@ -25,4 +25,8 @@ export class UserRegistrationData {
     @IsNotEmpty()
     @IsString()
     password: string;
+
+    @IsNotEmpty()
+    @IsString()
+    blockchainAccountAddress: string;
 }

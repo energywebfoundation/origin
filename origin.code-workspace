@@ -1,0 +1,162 @@
+{
+    "folders": [
+        {
+            "name": "ORIGIN",
+            "path": "./"
+        },
+        {
+            "name": "Server - App",
+            "path": "./packages/apps/origin-backend-app"
+        },
+        {
+            "name": "Server - App IRec",
+            "path": "./packages/apps/origin-backend-irec-app"
+        },
+        {
+            "name": "Server - Backend",
+            "path": "./packages/origin-backend/"
+        },
+        {
+            "name": "Server - API Client",
+            "path": "./packages/origin-backend-client/"
+        },
+        {
+            "name": "Server - Core Types",
+            "path": "./packages/origin-backend-core/"
+        },
+        {
+            "name": "Server - Utils",
+            "path": "./packages/utils/origin-backend-utils/"
+        },
+
+        {
+            "name": "Client - Origin UI",
+            "path": "./packages/apps/origin-ui"
+        },
+        {
+            "name": "Client - Origin UI Core",
+            "path": "./packages/ui/origin-ui-core/"
+        },
+        {
+            "name": "Client - Origin UI Core - IRec",
+            "path": "./packages/ui/origin-ui-irec-core/"
+        },
+        {
+            "name": "Client - Exchange UI Core",
+            "path": "./packages/ui/exchange-ui-core/"
+        },
+        {
+            "name": "Client - Localization",
+            "path": "./packages/ui/localization/"
+        },
+        {
+            "name": "Devices - Device Registry",
+            "path": "./packages/device-registry"
+        },
+        {
+            "name": "Devices - Device Registry API",
+            "path": "./packages/devices/origin-device-registry-api/"
+        },
+        {
+            "name": "Devices - Device Registry API Client",
+            "path": "./packages/devices/origin-device-registry-api-client/"
+        },
+        {
+            "name": "Devices - Device Registry IRec Form API",
+            "path": "./packages/devices/origin-device-registry-irec-form-api/"
+        },
+        {
+            "name": "Devices - Device Registry IRec Form API Client",
+            "path": "./packages/devices/origin-device-registry-irec-form-api-client/"
+        },
+        {
+            "name": "Devices - Device Registry IRec Local API",
+            "path": "./packages/devices/origin-device-registry-irec-local-api/"
+        },
+        {
+            "name": "Devices - Device Registry IRec Local API Client",
+            "path": "./packages/devices/origin-device-registry-irec-local-api-client/"
+        },
+        {
+            "name": "Devices - Energy API",
+            "path": "./packages/devices/origin-energy-api/"
+        },
+        {
+            "name": "Devices - Energy API Client",
+            "path": "./packages/devices/origin-energy-api-client/"
+        },
+        {
+            "name": "Org - Organization IRec API",
+            "path": "./packages/organizations/origin-organization-irec-api/"
+        },
+        {
+            "name": "Org - Organization IRec API Client",
+            "path": "./packages/organizations/origin-organization-irec-api-client/"
+        },
+
+        {
+            "name": "Tools - Migrations",
+            "path": "./packages/tools/migrations/"
+        },
+        {
+            "name": "Tools - Migrations IRec",
+            "path": "./packages/tools/migrations-irec/"
+        },
+        {
+            "name": "Tools - Solar Simulator",
+            "path": "./packages/tools/solar-simulator/"
+        },
+        {
+            "name": "Traceability - Issuer Server",
+            "path": "./packages/traceability/issuer/"
+        },
+        {
+            "name": "Traceability - Issuer API",
+            "path": "./packages/traceability/issuer-api/"
+        },
+        {
+            "name": "Traceability - Issuer API Client",
+            "path": "./packages/traceability/issuer-api-client/"
+        },
+        {
+            "name": "Traceability - Issuer IRec API Wrapper",
+            "path": "./packages/traceability/issuer-irec-api-wrapper/"
+        },
+        {
+            "name": "Trade - Exchange Server",
+            "path": "./packages/trade/exchange/"
+        },
+        {
+            "name": "Trade - Exchange API Client",
+            "path": "./packages/trade/exchange-client/"
+        },
+        {
+            "name": "Trade - Exchange Core",
+            "path": "./packages/trade/exchange-core/"
+        },
+        {
+            "name": "Trade - Exchange Core IRec",
+            "path": "./packages/trade/exchange-core-irec/"
+        },
+        {
+            "name": "Trade - Exchange IO-ER1888",
+            "path": "./packages/trade/exchange-io-erc1888/"
+        },
+        {
+            "name": "Trade - Exchange IRec",
+            "path": "./packages/trade/exchange-irec/"
+        },
+        {
+            "name": "Trade - Exchange IRec API Client",
+            "path": "./packages/trade/exchange-irec-client/"
+        },
+        {
+            "name": "Trade - Exchange Token Account",
+            "path": "./packages/trade/exchange-token-account/"
+        },
+        {
+            "name": "Utils - General",
+            "path": "./packages/utils/utils-general/"
+        }
+    ]
+}

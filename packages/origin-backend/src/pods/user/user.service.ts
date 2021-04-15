@@ -47,17 +47,32 @@ export class UserService {
     }
 
     public async create(data: UserRegistrationData): Promise<User> {
-        const isExistingUser = await this.hasUser({ email: data.email });
+        const isExistingUser = await this.hasUser({
+            email: data.email
+        });
+        const alreadyExistingUserWithAddress = await this.repository.findOne({
+            blockchainAccountAddress: data.blockchainAccountAddress
+        });
 
         if (isExistingUser) {
             const message = `User with email ${data.email} already exists`;
-
             this.logger.error(message);
             throw new ConflictException({
                 success: false,
                 message
             });
         }
+
+        if (alreadyExistingUserWithAddress) {
+            const message = `User with address ${data.blockchainAccountAddress} already exists`;
+            this.logger.error(message);
+            throw new ConflictException({
+                success: false,
+                message
+            });
+        }
+
+        const autoConfirmUserReg = this.config.get<boolean>('AUTO_CONFIRM_USER_REGISTRATION');
 
         const user = await this.repository.save({
             title: data.title,
@@ -66,14 +81,16 @@ export class UserService {
             email: data.email,
             telephone: data.telephone,
             password: this.hashPassword(data.password),
+            blockchainAccountAddress: data.blockchainAccountAddress,
             notifications: true,
             rights: Role.OrganizationAdmin,
-            status: UserStatus.Pending,
-            kycStatus: KYCStatus.Pending
+            status: autoConfirmUserReg ? UserStatus.Active : UserStatus.Pending,
+            kycStatus: autoConfirmUserReg ? KYCStatus.Passed : KYCStatus.Pending
         });
 
-        await this.emailConfirmationService.create(user);
-
+        if (!autoConfirmUserReg) {
+            await this.emailConfirmationService.create(user);
+        }
         return new User(user);
     }
 

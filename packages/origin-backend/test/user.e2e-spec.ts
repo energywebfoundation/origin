@@ -26,7 +26,8 @@ export const userToRegister: UserRegistrationData = {
     lastName: 'Rambo',
     email: 'john@example.com',
     password: 'FirstBlood',
-    telephone: '+11'
+    telephone: '+11',
+    blockchainAccountAddress: '0xC49965F4F6f4eBe512f16916eaAEE8A3d822D03b'
 };
 
 describe('User e2e tests', () => {

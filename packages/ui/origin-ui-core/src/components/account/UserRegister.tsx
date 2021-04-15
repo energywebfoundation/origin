@@ -21,6 +21,7 @@ import { showNotification, NotificationTypeEnum } from '../../utils/notification
 import { useValidation } from '../../utils/validation';
 import { FormInput } from '../Form';
 import { UserRegisteredModal } from '../Modal';
+import * as ethers from 'ethers';
 
 interface IFormValues {
     titleSelect: string;
@@ -30,6 +31,7 @@ interface IFormValues {
     telephone: string;
     email: string;
     password: string;
+    blockchainAccountAddress: string;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -39,7 +41,8 @@ const INITIAL_FORM_VALUES: IFormValues = {
     lastName: '',
     telephone: '',
     email: '',
-    password: ''
+    password: '',
+    blockchainAccountAddress: ''
 };
 
 const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
@@ -73,7 +76,16 @@ export const UserRegister = () => {
         lastName: Yup.string().label(t('user.properties.lastName')).required(),
         telephone: Yup.string().label(t('user.properties.telephone')).required(),
         email: Yup.string().email().label(t('user.properties.email')).required(),
-        password: Yup.string().label(t('user.properties.password')).required()
+        password: Yup.string().label(t('user.properties.password')).required(),
+        blockchainAccountAddress: Yup.string()
+            .label(t('user.properties.blockchainAddress'))
+            .test(
+                t('user.properties.blockchainAddress'),
+                t('user.validationMessages.invalidBlockchainAddress'),
+                function (value) {
+                    return ethers.utils.isAddress(value);
+                }
+            )
     });
 
     async function submitForm(
@@ -95,7 +107,8 @@ export const UserRegister = () => {
             const userExists = parseFloat(error.message.match(/\d/g).join('')) === 409;
             const message = userExists
                 ? t('user.feedback.errorUserExists', {
-                      userEmail: values.email
+                      userEmail: values.email,
+                      userAddress: values.blockchainAccountAddress
                   })
                 : t('user.feedback.errorWhileRegisteringUser');
             console.warn('Error while registering user', error);
@@ -192,6 +205,14 @@ export const UserRegister = () => {
                                         data-cy="last-name"
                                         label={t('user.properties.lastName')}
                                         property="lastName"
+                                        disabled={fieldDisabled}
+                                        className="mt-3"
+                                        required
+                                    />
+                                    <FormInput
+                                        data-cy="blockchain-account-address"
+                                        label={t('user.properties.blockchainAddress')}
+                                        property="blockchainAccountAddress"
                                         disabled={fieldDisabled}
                                         className="mt-3"
                                         required

@@ -3,7 +3,8 @@
     "compilerOptions": {
         "outDir": "./dist/js",
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "composite": true
     },
     "include": ["src/**/*"]
 }

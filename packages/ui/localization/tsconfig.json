@@ -3,7 +3,8 @@
     "compilerOptions": {
         "rootDir": "./",
         "outDir": "./dist/js",
-        "baseUrl": "./"
+        "baseUrl": "./",
+        "composite": true
     },
     "include": ["src/**/*", "src/languages/*.json"]
 }

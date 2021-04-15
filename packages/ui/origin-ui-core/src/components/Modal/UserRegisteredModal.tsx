@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, Grid } from '@material-ui/core';
 import HowToRegIcon from '@material-ui/icons/HowToReg';
 import { useLinks } from '../../hooks';
+import configData from '../../../env-config.json';
 
 interface IProps {
     showModal: boolean;
@@ -39,7 +40,13 @@ export const UserRegisteredModal = ({ showModal, setShowModal }: IProps) => {
                             <br />
                             <br />
                             <Box style={{ fontSize: '70%', fontWeight: 'lighter' }}>
-                                <Trans i18nKey="user.dialog.userRegisteredModalContent" />
+                                <Trans
+                                    i18nKey={
+                                        configData.AUTO_CONFIRM_USER_REGISTRATION === 'true'
+                                            ? 'user.dialog.userRegisteredModalContentAutoConfirm'
+                                            : 'user.dialog.userRegisteredModalContent'
+                                    }
+                                />
                             </Box>
                         </Box>
                     </Grid>

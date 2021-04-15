@@ -132,7 +132,8 @@ export const registerAndLogin = async (
             firstName: 'Name',
             lastName: 'Name',
             title: 'Sir',
-            telephone: '991'
+            telephone: '991',
+            blockchainAccountAddress: '0xC49965F4F6f4eBe512f16916eaAEE8A3d822D03b'
         };
         const { id: userId } = await userService.create(userRegistration);
         await userService.changeRole(userId, ...roles);

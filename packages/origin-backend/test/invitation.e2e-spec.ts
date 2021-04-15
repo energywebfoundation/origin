@@ -70,7 +70,8 @@ describe('Invitation e2e tests', () => {
             firstName: 'Random',
             lastName: 'Dude',
             password,
-            telephone: '123'
+            telephone: '123',
+            blockchainAccountAddress: '0xC49965F4F6f4eBe512f16916eaAEE8A3d822D03b'
         };
 
         await request(app.getHttpServer())

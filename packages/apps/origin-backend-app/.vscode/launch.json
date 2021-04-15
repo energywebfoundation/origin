@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Origin Server: Run",
+            "args": [],
+            "program": "${workspaceFolder}/dist/js/main.js",
+            "runtimeExecutable": "/usr/local/bin/node",
+            "preLaunchTask": "",
+            "sourceMaps": true,
+            "smartStep": true,
+            "internalConsoleOptions": "openOnSessionStart",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js",
+                "${workspaceFolder}/../../origin-backend-core/dist/**/*.js",
+                "${workspaceFolder}/../../origin-backend/dist/**/*.js",
+                "${workspaceFolder}/../../trade/exchange/dist/**/*.js",
+                "${workspaceFolder}/../../trade/exchange-irec/dist/**/*.js",
+                "${workspaceFolder}/../../trade/exchange-io-erc1888/dist/**/*.js",
+                "${workspaceFolder}/../../organizations/origin-organization-irec-api/dist/**/*.js",
+                "${workspaceFolder}/../../utils/utils-general/dist/**/*.js",
+                "${workspaceFolder}/../../traceability/issuer-api/dist/**/*.js",
+                "${workspaceFolder}/../../devices/origin-device-registry-irec-form-api/dist/**/*.js",
+                "${workspaceFolder}/../../tools/migrations/dist/**/*.js"
+            ]
+        }
+    ]
+}

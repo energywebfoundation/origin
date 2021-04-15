@@ -68,7 +68,7 @@ common/autoinstallers/*/.npmrc
 .idea
 
 # Vscode
-.vscode
+#.vscode
 
 # !Ignore
 !.env.example

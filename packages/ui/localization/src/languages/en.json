@@ -512,7 +512,8 @@
             "dialog": {
                 "dontHaveAccAsk": "Don't have an account?",
                 "userRegisteredModalTitle": "Thanks for registering as a user on the marketplace",
-                "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
+                "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail",
+                "userRegisteredModalContentAutoConfirm": "Your accout has been auto-activated (DEV MODE). Please continue on to login..."
             }
         },
         "notification": {
@@ -687,7 +688,6 @@
                 "apiToken": "API token",
                 "clientID": "Client ID",
                 "clientSecret": "Client Secret",
-
                 "titleRegisterIREC": "I-REC Registration information",
                 "irecInformation": "I-REC Information",
                 "IRECAccountType": "I-REC Account type",
