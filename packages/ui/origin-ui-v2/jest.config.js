@@ -24,5 +24,7 @@ module.exports = {
     '<rootDir>/libs/device/logic',
     '<rootDir>/libs/device/view',
     '<rootDir>/libs/device/data-access',
+    '<rootDir>/libs/ui/forms',
+    '<rootDir>/libs/ui/validation',
   ],
 };

@@ -10,7 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": ["ES2020", "DOM", "ESNext"],
     "types": ["@emotion/core"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -62,7 +62,11 @@
       "@energyweb/origin-ui-device-data-access": [
         "libs/device/data-access/src/index.ts"
       ],
-      "@energyweb/origin-ui-shared-state": ["libs/ui/shared-state/src/index.ts"]
+      "@energyweb/origin-ui-shared-state": [
+        "libs/ui/shared-state/src/index.ts"
+      ],
+      "@energy-web/ui/forms": ["libs/ui/forms/src/index.ts"],
+      "@energy-web/ui/validation": ["libs/ui/validation/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
