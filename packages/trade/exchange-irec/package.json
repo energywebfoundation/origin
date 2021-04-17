@@ -50,7 +50,7 @@
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
         "moment": "2.29.1",
-        "pg": "8.5.1",
+        "pg": "8.6.0",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.6.7",
         "typeorm": "0.2.32"

@@ -61,7 +61,7 @@
         "immutable": "4.0.0-rc.12",
         "moment": "2.29.1",
         "moment-range": "4.0.2",
-        "pg": "8.5.1",
+        "pg": "8.6.0",
         "polly-js": "1.8.2",
         "reflect-metadata": "0.1.13",
         "rxjs": "6.6.7",
