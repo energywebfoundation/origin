@@ -38,7 +38,7 @@
         "commander": "6.2.1",
         "dotenv": "8.2.0",
         "ethers": "5.1.0",
-        "pg": "8.5.1",
+        "pg": "8.6.0",
         "winston": "3.3.3",
         "winston-transport": "4.4.0",
         "write-json-file": "4.3.0",
