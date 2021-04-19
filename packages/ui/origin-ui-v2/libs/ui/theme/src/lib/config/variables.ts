@@ -7,8 +7,8 @@ const $primaryColorDim = '#362c45';
 const $textColorDefault = '#a8a8a8';
 const $simpleTextColor = '#ffffff';
 
-const $bodyBackgroundColor = '#333333';
-const $mainBackgroundColor = '#2c2c2c';
+const $bodyBackgroundColor = '#2d2d2d';
+const $mainBackgroundColor = '#272727';
 const $fieldIconColor = LightenColor('#ffffff', -30);
 
 const $fontFamilyPrimary = 'Rajdhani';

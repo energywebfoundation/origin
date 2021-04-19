@@ -24,5 +24,8 @@ module.exports = {
     '<rootDir>/libs/device/logic',
     '<rootDir>/libs/device/view',
     '<rootDir>/libs/device/data-access',
+    '<rootDir>/libs/organization/view',
+    '<rootDir>/libs/organization/data',
+    '<rootDir>/libs/organization/logic',
   ],
 };

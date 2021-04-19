@@ -17,7 +17,6 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     text: {
       primary: styleConfig.WHITE,
       secondary: styleConfig.TEXT_COLOR_DEFAULT,
-      // hint: '#f50057',
       disabled: styleConfig.TEXT_COLOR_DEFAULT,
     },
     mode: 'dark',
@@ -27,15 +26,14 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     fontSize: styleConfig.FONT_SIZE,
   },
   components: {
-    MuiInput: {
+    MuiFilledInput: {
       styleOverrides: {
-        underline: {
-          '&:before': {
-            borderBottom: `2px solid ${LightenColor(
-              styleConfig.MAIN_BACKGROUND_COLOR,
-              13
-            )}`,
-          },
+        root: {
+          backgroundColor: LightenColor(
+            styleConfig.MAIN_BACKGROUND_COLOR,
+            -0.5
+          ),
+          borderRadius: 5,
         },
       },
     },
@@ -121,16 +119,16 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
         },
       },
     },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          color: styleConfig.SIMPLE_TEXT_COLOR,
-        },
-        icon: {
-          color: styleConfig.FIELD_ICON_COLOR,
-        },
-      },
-    },
+    // MuiSelect: {
+    //   styleOverrides: {
+    //     root: {
+    //       color: styleConfig.SIMPLE_TEXT_COLOR,
+    //     },
+    //     icon: {
+    //       color: styleConfig.FIELD_ICON_COLOR,
+    //     },
+    //   },
+    // },
     MuiMenuItem: {
       styleOverrides: {
         root: {

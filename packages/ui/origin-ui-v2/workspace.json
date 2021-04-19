@@ -1,8 +1,6 @@
 {
   "version": 2,
-  "cli": {
-    "defaultCollection": "@nrwl/react"
-  },
+  "cli": { "defaultCollection": "@nrwl/react" },
   "defaultProject": "origin-ui",
   "generators": {
     "@nrwl/react": {
@@ -11,13 +9,8 @@
         "linter": "eslint",
         "babel": true
       },
-      "component": {
-        "style": "@emotion/styled"
-      },
-      "library": {
-        "style": "@emotion/styled",
-        "linter": "eslint"
-      }
+      "component": { "style": "@emotion/styled" },
+      "library": { "style": "@emotion/styled", "linter": "eslint" }
     }
   },
   "projects": {
@@ -70,13 +63,9 @@
         },
         "serve": {
           "executor": "@nrwl/web:dev-server",
-          "options": {
-            "buildTarget": "origin-ui:build"
-          },
+          "options": { "buildTarget": "origin-ui:build" },
           "configurations": {
-            "production": {
-              "buildTarget": "origin-ui:build:production"
-            }
+            "production": { "buildTarget": "origin-ui:build:production" }
           }
         },
         "lint": {
@@ -108,16 +97,12 @@
             "devServerTarget": "origin-ui:serve"
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "origin-ui:serve:production"
-            }
+            "production": { "devServerTarget": "origin-ui:serve:production" }
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/origin-ui-e2e/**/*.{js,ts}"]
-          }
+          "options": { "lintFilePatterns": ["apps/origin-ui-e2e/**/*.{js,ts}"] }
         }
       }
     },
@@ -137,13 +122,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -165,15 +144,9 @@
           "options": {
             "uiFramework": "@storybook/react",
             "port": 4400,
-            "config": {
-              "configFolder": "libs/ui/core/.storybook"
-            }
+            "config": { "configFolder": "libs/ui/core/.storybook" }
           },
-          "configurations": {
-            "ci": {
-              "quiet": true
-            }
-          }
+          "configurations": { "ci": { "quiet": true } }
         },
         "build-storybook": {
           "executor": "@nrwl/storybook:build",
@@ -181,15 +154,9 @@
           "options": {
             "uiFramework": "@storybook/react",
             "outputPath": "dist/storybook/ui-core",
-            "config": {
-              "configFolder": "libs/ui/core/.storybook"
-            }
+            "config": { "configFolder": "libs/ui/core/.storybook" }
           },
-          "configurations": {
-            "ci": {
-              "quiet": true
-            }
-          }
+          "configurations": { "ci": { "quiet": true } }
         }
       }
     },
@@ -209,13 +176,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -250,13 +211,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -291,13 +246,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -332,13 +281,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -373,13 +316,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -414,13 +351,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -457,13 +388,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -500,13 +425,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -541,13 +460,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -582,13 +495,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -625,13 +532,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -666,13 +567,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -709,13 +604,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -750,13 +639,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -791,13 +674,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -832,13 +709,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -873,13 +744,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -916,13 +781,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -959,13 +818,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -1000,13 +853,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -1041,13 +888,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -1079,16 +920,12 @@
             "devServerTarget": "ui-core:storybook"
           },
           "configurations": {
-            "ci": {
-              "devServerTarget": "ui-core:storybook:ci"
-            }
+            "ci": { "devServerTarget": "ui-core:storybook:ci" }
           }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["apps/ui-core-e2e/**/*.{js,ts}"]
-          }
+          "options": { "lintFilePatterns": ["apps/ui-core-e2e/**/*.{js,ts}"] }
         }
       }
     },
@@ -1108,13 +945,7 @@
             "external": ["react", "react-dom", "react-is", "@emotion/styled"],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
         "lint": {
@@ -1128,6 +959,126 @@
           "outputs": ["coverage/libs/ui/shared-state"],
           "options": {
             "jestConfig": "libs/ui/shared-state/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-view": {
+      "root": "libs/organization/view",
+      "sourceRoot": "libs/organization/view/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/view",
+            "tsConfig": "libs/organization/view/tsconfig.lib.json",
+            "project": "libs/organization/view/package.json",
+            "entryFile": "libs/organization/view/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/view/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/view"],
+          "options": {
+            "jestConfig": "libs/organization/view/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-data": {
+      "root": "libs/organization/data",
+      "sourceRoot": "libs/organization/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/data",
+            "tsConfig": "libs/organization/data/tsconfig.lib.json",
+            "project": "libs/organization/data/package.json",
+            "entryFile": "libs/organization/data/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/data"],
+          "options": {
+            "jestConfig": "libs/organization/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-logic": {
+      "root": "libs/organization/logic",
+      "sourceRoot": "libs/organization/logic/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/logic",
+            "tsConfig": "libs/organization/logic/tsconfig.lib.json",
+            "project": "libs/organization/logic/package.json",
+            "entryFile": "libs/organization/logic/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/logic/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/logic"],
+          "options": {
+            "jestConfig": "libs/organization/logic/jest.config.js",
             "passWithNoTests": true
           }
         }

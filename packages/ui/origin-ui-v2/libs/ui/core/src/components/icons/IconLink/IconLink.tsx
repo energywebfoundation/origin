@@ -1,8 +1,8 @@
-import { Box } from '@material-ui/core';
+import { Box, BoxProps } from '@material-ui/core';
 import React, { FC, memo } from 'react';
 import { NavLink } from 'react-router-dom';
 
-export interface IconLinkProps {
+export interface IconLinkProps extends BoxProps {
   url: string;
 }
 

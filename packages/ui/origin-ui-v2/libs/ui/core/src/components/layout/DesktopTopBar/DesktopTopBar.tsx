@@ -1,9 +1,6 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-import { FC, memo } from 'react';
+import React, { FC, memo } from 'react';
 import { Box, Button, Toolbar } from '@material-ui/core';
-import { useComponentStyles } from './styles';
+import { useStyles } from './DesktopTopBar.styles';
 
 export type TopBarButtonData = {
   label: string;
@@ -15,13 +12,13 @@ export interface DesktopTopBarProps {
 }
 
 export const DesktopTopBar: FC<DesktopTopBarProps> = memo(({ buttons }) => {
-  const { toolbarCss, buttonCss } = useComponentStyles();
+  const classes = useStyles();
 
   return (
-    <Toolbar css={toolbarCss}>
+    <Toolbar className={classes.toolbar}>
       <Box flexGrow={1} />
       {buttons?.map(({ label, onClick }) => (
-        <Button css={buttonCss} key={label} onClick={onClick}>
+        <Button className={classes.button} key={label} onClick={onClick}>
           {label}
         </Button>
       ))}

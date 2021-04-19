@@ -1,12 +1,9 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Box } from '@material-ui/core';
-import { FC, memo } from 'react';
+import { Box, BoxProps } from '@material-ui/core';
+import React, { FC, memo } from 'react';
 import { TextWithPendingDot } from '../../utils';
+import { useStyles } from './UsernameAndOrg.styles';
 
-export interface UsernameAndOrgProps {
+export interface UsernameAndOrgProps extends BoxProps {
   username: string;
   userPending?: boolean;
   userTooltip?: string;
@@ -14,11 +11,6 @@ export interface UsernameAndOrgProps {
   orgPending?: boolean;
   orgTooltip?: string;
 }
-
-const Wrapper = styled(Box)`
-  display: flex,
-  margin: 20px 0
-`;
 
 export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
   ({
@@ -30,8 +22,9 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
     orgTooltip,
     ...props
   }) => {
+    const classes = useStyles();
     return (
-      <Wrapper {...props}>
+      <Box className={classes.wrapper} {...props}>
         <Box flexGrow={1} />
         <Box>
           <TextWithPendingDot
@@ -47,7 +40,7 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
           />
         </Box>
         <Box flexGrow={1} />
-      </Wrapper>
+      </Box>
     );
   }
 );

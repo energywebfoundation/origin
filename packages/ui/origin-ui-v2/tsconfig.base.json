@@ -62,7 +62,18 @@
       "@energyweb/origin-ui-device-data-access": [
         "libs/device/data-access/src/index.ts"
       ],
-      "@energyweb/origin-ui-shared-state": ["libs/ui/shared-state/src/index.ts"]
+      "@energyweb/origin-ui-shared-state": [
+        "libs/ui/shared-state/src/index.ts"
+      ],
+      "@energyweb/origin-ui-organization-view": [
+        "libs/organization/view/src/index.ts"
+      ],
+      "@energyweb/origin-ui-organization-data": [
+        "libs/organization/data/src/index.ts"
+      ],
+      "@energyweb/origin-ui-organization-logic": [
+        "libs/organization/logic/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
