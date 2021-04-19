@@ -1,0 +1,85 @@
+version: '3'
+services:
+    ui:
+        image: energyweb/origin-ui:canary
+        restart: unless-stopped
+        env_file:
+            - ./.env
+        environment:
+            DISABLED_UI_FEATURES: IRecConnect;DevicesImport;CertificatesImport
+            PORT: 80
+        ports:
+            - 3000:80
+        networks:
+            - vanilla-app-network
+        depends_on:
+            backend:
+                condition: service_started
+
+    backend:
+        image: energyweb/migrations-irec:canary
+        restart: 'no'
+        env_file:
+            - ./.env
+        environment:
+            DB_HOST: postgres
+            DB_PORT: 5432
+            WEB3: http://ganache-cli:8545
+        networks:
+            - vanilla-app-network
+        ports:
+            - ${BACKEND_PORT}:${BACKEND_PORT}
+        depends_on:
+            ganache-cli:
+                condition: service_started
+            postgres:
+                condition: service_healthy
+
+    ganache-cli:
+        image: trufflesuite/ganache-cli
+        command: ganache-cli -m "chalk park staff buzz chair purchase wise oak receive avoid avoid home" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0
+        networks:
+            - vanilla-app-network
+        ports:
+            - 8545:8545
+
+    solar-simulator:
+        image: energyweb/solar-simulator:canary
+        restart: unless-stopped
+        env_file:
+            - ./.env
+        environment:
+            BACKEND_URL: http://backend
+        networks:
+            - vanilla-app-network
+        depends_on:
+            backend:
+                condition: service_started
+
+    postgres:
+        image: postgres
+        restart: unless-stopped
+        env_file:
+            - ./.env
+        environment:
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: origin
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U postgres']
+            interval: 1s
+        networks:
+            - vanilla-app-network
+        volumes:
+            - irec-postgres-data:/var/lib/postgresql/data
+        #        ports:
+        #            - 5432:5432
+        depends_on:
+            - ganache-cli
+
+volumes:
+    irec-postgres-data:
+
+networks:
+    vanilla-app-network:
+        driver: bridge
