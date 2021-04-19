@@ -1,5 +1,7 @@
 FROM energyweb/origin-backend-app:latest
 
+RUN apk --no-cache add curl
+
 RUN mkdir /var/migration-config
 COPY config/* /var/migration-config/
 

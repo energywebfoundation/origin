@@ -14,7 +14,7 @@ services:
             - vanilla-app-network
         depends_on:
             backend:
-                condition: service_started
+                condition: service_healthy
 
     backend:
         image: energyweb/migrations-irec:canary
@@ -29,6 +29,12 @@ services:
             - vanilla-app-network
         ports:
             - ${BACKEND_PORT}:${BACKEND_PORT}
+        healthcheck:
+            test: curl --fail http://127.0.0.1:$BACKEND_PORT/api/configuration || exit 1
+            interval: 3s
+            timeout: 3s
+            retries: 1
+            start_period: 60s
         depends_on:
             ganache-cli:
                 condition: service_started
@@ -54,7 +60,7 @@ services:
             - vanilla-app-network
         depends_on:
             backend:
-                condition: service_started
+                condition: service_healthy
 
     postgres:
         image: postgres
