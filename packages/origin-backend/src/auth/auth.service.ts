@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { IUser, UserLoginReturnData } from '@energyweb/origin-backend-core';
-
 import { UserService } from '../pods/user/user.service';
 
 export interface IJWTPayload {

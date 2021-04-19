@@ -6,7 +6,7 @@ import { IUser } from '@energyweb/origin-backend-core';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth/auth.service';
 import { LoginReturnDataDTO } from './auth/login-return-data.dto';
-import { LoginDataDTO } from './auth/login-data.dto';
+import { LoginDataDTO } from './auth/models/login-data.dto';
 
 @ApiTags('auth')
 @ApiBearerAuth('access-token')

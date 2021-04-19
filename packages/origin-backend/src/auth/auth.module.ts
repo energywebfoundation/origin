@@ -1,12 +1,11 @@
 import { Module, Global } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-
 import { ConfigService } from '@nestjs/config';
 import { UserModule } from '../pods/user/user.module';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Global()
 @Module({

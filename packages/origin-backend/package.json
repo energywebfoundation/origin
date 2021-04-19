@@ -65,7 +65,9 @@
         "reflect-metadata": "0.1.13",
         "rxjs": "6.6.7",
         "typeorm": "0.2.32",
-        "uuid": "8.3.2"
+        "uuid": "8.3.2",
+        "@ew-did-registry/did": "~0.5.1",
+        "passport-did-auth": "~1.0.0"
     },
     "devDependencies": {
         "typescript": "4.2.4",
