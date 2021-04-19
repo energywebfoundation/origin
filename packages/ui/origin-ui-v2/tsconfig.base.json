@@ -10,7 +10,7 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": ["ES2020", "DOM", "ESNext"],
     "types": ["@emotion/core"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -73,7 +73,9 @@
       ],
       "@energyweb/origin-ui-organization-logic": [
         "libs/organization/logic/src/index.ts"
-      ]
+      ],
+      "@energy-web/ui/forms": ["libs/ui/forms/src/index.ts"],
+      "@energy-web/ui/validation": ["libs/ui/validation/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

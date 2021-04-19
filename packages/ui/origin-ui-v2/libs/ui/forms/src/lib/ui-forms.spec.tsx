@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import UiUtils from './ui-utils';
+import UiForms from './ui-forms';
 
-describe('UiUtils', () => {
+describe('UiForms', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<UiUtils />);
+    const { baseElement } = render(<UiForms />);
     expect(baseElement).toBeTruthy();
   });
 });

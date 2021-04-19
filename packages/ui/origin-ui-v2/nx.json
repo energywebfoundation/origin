@@ -52,6 +52,8 @@
     "ui-shared-state": { "tags": [] },
     "organization-view": { "tags": [] },
     "organization-data": { "tags": [] },
-    "organization-logic": { "tags": [] }
+    "organization-logic": { "tags": [] },
+    "ui-forms": { "tags": [] },
+    "ui-validation": { "tags": [] }
   }
 }

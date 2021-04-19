@@ -1044,6 +1044,27 @@
         }
       }
     },
+    "ui-forms": {
+      "root": "libs/ui/forms",
+      "sourceRoot": "libs/ui/forms/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/forms/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/forms"],
+          "options": {
+            "jestConfig": "libs/ui/forms/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "organization-logic": {
       "root": "libs/organization/logic",
       "sourceRoot": "libs/organization/logic/src",
@@ -1079,6 +1100,27 @@
           "outputs": ["coverage/libs/organization/logic"],
           "options": {
             "jestConfig": "libs/organization/logic/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-validation": {
+      "root": "libs/ui/validation",
+      "sourceRoot": "libs/ui/validation/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/validation/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/validation"],
+          "options": {
+            "jestConfig": "libs/ui/validation/jest.config.js",
             "passWithNoTests": true
           }
         }
