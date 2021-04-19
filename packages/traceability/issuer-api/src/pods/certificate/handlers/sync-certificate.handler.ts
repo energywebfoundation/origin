@@ -27,7 +27,9 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
         try {
             await certificate.sync();
         } catch (e) {
-            this.logger.error(`Failed to resync certificate: ${JSON.stringify(e.message)}`);
+            this.logger.error(
+                `Failed to resync certificate ${tokenId}: ${JSON.stringify(e.message)}`
+            );
             this.logger.error(JSON.stringify(e));
             return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
