@@ -1,7 +1,7 @@
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HttpStatus, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 
 import { SyncCertificateEvent } from '../events/sync-certificate-event';
@@ -17,7 +17,9 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
     ) {}
 
     async handle({ tokenId }: SyncCertificateEvent): Promise<ISuccessResponse> {
-        this.logger.log(`Detected a new certificate event for certificate ${tokenId}`);
+        this.logger.log(
+            `Detected a new event for certificate with tokenId ${tokenId}. Re-syncing...`
+        );
 
         const certificate = await this.repository.findOne(
             { tokenId },
@@ -25,7 +27,11 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
         );
 
         try {
-            await certificate.sync();
+            const response = await certificate.sync();
+
+            if (!response.success) {
+                throw new HttpException(response.message, response.statusCode);
+            }
         } catch (e) {
             this.logger.error(
                 `Failed to resync certificate ${tokenId}: ${JSON.stringify(e.message)}`
@@ -34,6 +40,7 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
             return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        this.logger.log(`Successfully re-synced certificate with tokenId ${tokenId}.`);
         return ResponseSuccess();
     }
 }
