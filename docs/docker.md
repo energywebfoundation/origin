@@ -22,19 +22,25 @@ All compose files require docker images to be built locally.
 
 -   Check out the latest code from the [Origin repository](https://github.com/energywebfoundation/origin)
 -   Execute the following commands from the code folder to build the codebase:
-    ```shell
-    rush update
-    rush build #in case of errors it is necessary to execute rush rebuild
-    ```
+
+```shell
+rush update
+rush build #in case of errors it is necessary to execute rush rebuild
+```
+
 -   Build docker images
+
     -   For the latest stable release:
-    ```shell
-    yarn build:containers:release
-    ```
+
+        ```shell
+        yarn build:containers:release
+        ```
+
     -   For the latest canary version:
-    ```shell
-    yarn build:containers:canary
-    ```
+
+        ```shell
+        yarn build:containers:canary
+        ```
 
 ## Start chosen stack
 
