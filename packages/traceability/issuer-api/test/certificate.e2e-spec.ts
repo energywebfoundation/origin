@@ -234,7 +234,7 @@ describe('Certificate tests', () => {
             .put(`/certificate/${id}/claim`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({ claimData })
-            .expect(console.log);
+            .expect(HttpStatus.OK);
 
         await request(app.getHttpServer())
             .put(`/certificate/${id}/claim`)

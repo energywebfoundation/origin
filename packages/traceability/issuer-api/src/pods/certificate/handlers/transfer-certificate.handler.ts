@@ -70,7 +70,7 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
                 from
             );
 
-            const receipt = await transferTx.wait(1);
+            const receipt = await transferTx.wait();
 
             if (receipt.status === 0) {
                 throw new Error(

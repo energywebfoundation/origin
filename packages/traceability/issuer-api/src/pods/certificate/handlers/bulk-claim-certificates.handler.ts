@@ -45,7 +45,7 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
                 forAddress
             );
 
-            const receipt = await bulkClaimTx.wait(1);
+            const receipt = await bulkClaimTx.wait();
 
             if (receipt.status === 0) {
                 throw new Error(

@@ -99,7 +99,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
                 checksummedForAddress
             );
 
-            const receipt = await claimTx.wait(1);
+            const receipt = await claimTx.wait();
 
             if (receipt.status === 0) {
                 throw new Error(
