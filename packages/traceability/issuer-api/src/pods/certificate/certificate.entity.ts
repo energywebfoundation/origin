@@ -1,5 +1,5 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, Unique, getRepository } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, Unique } from 'typeorm';
 import { IsBoolean, IsInt, IsPositive, IsString, Min } from 'class-validator';
 import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
