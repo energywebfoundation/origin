@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
+import { Certificate as OnChainCertificate } from '@energyweb/issuer';
 
 import { SyncCertificateEvent } from '../events/sync-certificate-event';
 import { Certificate } from '../certificate.entity';
@@ -26,11 +27,29 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
             { relations: ['blockchain'] }
         );
 
-        try {
-            const response = await certificate.sync();
+        if (!certificate.blockchain || !certificate.tokenId) {
+            throw new Error(
+                `Certificate ${certificate.id} is missing either blockchain (${certificate.blockchain}) or tokenId (${certificate.tokenId}) properties.`
+            );
+        }
 
-            if (!response.success) {
-                throw new HttpException(response.message, response.statusCode);
+        const onChainCert = await new OnChainCertificate(
+            certificate.tokenId,
+            certificate.blockchain.wrap()
+        ).sync();
+
+        try {
+            const updateResult = await this.repository.update(certificate.id, {
+                owners: onChainCert.owners,
+                claimers: onChainCert.claimers,
+                claims: await onChainCert.getClaimedData()
+            });
+
+            if (updateResult.affected < 1) {
+                throw new HttpException(
+                    `Unable to perform update on certificate ${certificate.id}: ${updateResult.raw}`,
+                    500
+                );
             }
         } catch (e) {
             this.logger.error(

@@ -55,12 +55,12 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
         this.provider.on(
             this.registry.filters.TransferBatch(null, null, null, null, null),
-            (event: providers.Log) => this.processEvent(EventType.TransferSingle, event)
+            (event: providers.Log) => this.processEvent(EventType.TransferBatch, event)
         );
 
         this.provider.on(
             this.registry.filters.ClaimBatch(null, null, null, null, null, null),
-            (event: providers.Log) => this.processEvent(EventType.ClaimSingle, event)
+            (event: providers.Log) => this.processEvent(EventType.ClaimBatch, event)
         );
     }
 

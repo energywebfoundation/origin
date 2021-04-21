@@ -92,17 +92,23 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
         }
 
         try {
-            await cert.claim(
+            const claimTx = await cert.claim(
                 claimData,
                 BigNumber.from(amountToClaim),
                 checksummedForAddress,
                 checksummedForAddress
             );
+
+            const receipt = await claimTx.wait();
+
+            if (receipt.status === 0) {
+                throw new Error(
+                    `Transfer tx ${receipt.transactionHash} on certificate with tokenId ${cert.id} failed.`
+                );
+            }
         } catch (error) {
             return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        await certificate.sync();
 
         return ResponseSuccess();
     }
