@@ -7,26 +7,26 @@ export default {
   component: StepReport,
 } as Meta;
 
-export const FirstStepDone = (args: StepReportProps) => {
+export const FirstStep = (args: StepReportProps) => {
   return <StepReport {...args} />;
 };
-FirstStepDone.args = {
+FirstStep.args = {
   activeStep: 0,
   labels: ['First step', 'Second step', 'Third step'],
 };
 
-export const SecondStepDone = (args: StepReportProps) => {
+export const SecondStep = (args: StepReportProps) => {
   return <StepReport {...args} />;
 };
-SecondStepDone.args = {
+SecondStep.args = {
   activeStep: 1,
   labels: ['First step', 'Second step', 'Third step'],
 };
 
-export const ThirdStepDone = (args: StepReportProps) => {
+export const ThirdStep = (args: StepReportProps) => {
   return <StepReport {...args} />;
 };
-ThirdStepDone.args = {
+ThirdStep.args = {
   activeStep: 2,
   labels: ['First step', 'Second step', 'Third step'],
 };

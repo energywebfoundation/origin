@@ -9,7 +9,7 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-start',
     fontWeight: 600,
     letterSpacing: '0.1rem',
-    padding: '10px 8px',
+    padding: '10px 20px',
     width: '100%',
     color: theme.palette?.text.primary,
     '&:hover': {

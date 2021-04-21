@@ -1,9 +1,9 @@
-import { BaseTextFieldProps, MenuItem, TextField } from '@material-ui/core';
+import { MenuItem, TextField } from '@material-ui/core';
 import React from 'react';
 import { FC } from 'react';
 import { GenericFormField } from '../../../containers';
 
-interface SelectRegularProps extends BaseTextFieldProps {
+export interface SelectRegularProps {
   field: GenericFormField;
   errorExists: boolean;
   errorText: string;
@@ -19,7 +19,6 @@ export const SelectRegular: FC<SelectRegularProps> = ({
   variant,
   value,
   onChange,
-  ...rest
 }) => {
   return (
     <TextField
@@ -35,7 +34,6 @@ export const SelectRegular: FC<SelectRegularProps> = ({
       value={value ?? ''}
       defaultValue={value}
       onChange={onChange}
-      {...rest}
     >
       {field.options.map((option) => (
         <MenuItem key={option.label} value={option.value}>

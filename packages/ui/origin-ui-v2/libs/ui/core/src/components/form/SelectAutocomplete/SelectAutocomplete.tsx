@@ -4,11 +4,13 @@ import { FormSelectOption } from '../FormSelect';
 import { useSelectAutocompleteEffects } from './SelectAutocomplete.effects';
 import { useStyles } from './SelectAutocomplete.styles';
 
-interface SelectAutocompleteProps {
+export interface SelectAutocompleteProps {
   label: string;
   options: FormSelectOption[];
   onChange: (...event: any[]) => void;
-  value: string | number;
+  errorExists: boolean;
+  errorText: string;
+  variant?: 'standard' | 'outlined' | 'filled';
   multiple?: boolean;
   maxValues?: number;
   disabled?: boolean;
@@ -19,15 +21,16 @@ export const SelectAutocomplete: FC<SelectAutocompleteProps> = ({
   label,
   onChange,
   options,
-  value,
   multiple,
+  errorExists,
+  errorText,
   maxValues,
   disabled,
   required,
+  variant,
 }) => {
   const {
     textValue,
-    touchFlag,
     setTextValue,
     singleChangeHandler,
     multipleChangeHandler,
@@ -52,15 +55,11 @@ export const SelectAutocomplete: FC<SelectAutocompleteProps> = ({
           required={required}
           label={label}
           onChange={(event) => setTextValue(event.target.value)}
-          helperText={
-            touchFlag && required && value !== null
-              ? label + ' is a required field'
-              : ''
-          }
+          helperText={errorText}
           inputProps={{ ...params.inputProps }}
-          error={touchFlag && required && value === null}
+          error={errorExists}
+          variant={variant ?? 'filled'}
           fullWidth
-          variant="filled"
         />
       )}
       renderTags={(value, getTagProps) =>

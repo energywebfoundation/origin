@@ -1,4 +1,3 @@
-import { BaseTextFieldProps } from '@material-ui/core';
 import React, { FC } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { GenericFormField } from '../../../containers/GenericForm';
@@ -10,7 +9,7 @@ export type FormSelectOption = {
   label: string;
 };
 
-export interface FormSelectProps extends BaseTextFieldProps {
+export interface FormSelectProps {
   field: GenericFormField;
   control: Control<any>;
   errorExists: boolean;
@@ -36,9 +35,11 @@ export const FormSelect: FC<FormSelectProps> = ({
             label={field.label}
             options={field.options}
             onChange={onChange}
-            value={value}
+            errorExists={errorExists}
+            errorText={errorText}
             multiple={field.multiple}
             maxValues={field.maxValues}
+            variant={variant}
           />
         ) : (
           <SelectRegular
@@ -48,7 +49,6 @@ export const FormSelect: FC<FormSelectProps> = ({
             value={value}
             onChange={onChange}
             variant={variant}
-            {...rest}
           />
         )
       }

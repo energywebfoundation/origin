@@ -40,7 +40,7 @@ Filled.args = {
   errorExists: false,
   errorText: '',
   isDirty: false,
-  variant: 'filled',
+  variant: 'filled' as any,
 };
 
 export const Outlined = (args: Omit<FormInputProps, 'register'>) => {
@@ -55,7 +55,7 @@ Outlined.args = {
   errorExists: false,
   errorText: '',
   isDirty: false,
-  variant: 'outlined',
+  variant: 'outlined' as any,
 };
 
 export const Error = (args: Omit<FormInputProps, 'register'>) => {

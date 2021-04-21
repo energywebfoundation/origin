@@ -8,7 +8,7 @@ export const useStyles = makeStyles((theme) => ({
   button: {
     justifyContent: 'flex-start',
     textTransform: 'none',
-    padding: '10px 8px',
+    padding: '10px 20px',
     width: '100%',
     margin: '0',
     color: LightenColor(theme.palette?.text.secondary, 5, theme.palette?.mode),

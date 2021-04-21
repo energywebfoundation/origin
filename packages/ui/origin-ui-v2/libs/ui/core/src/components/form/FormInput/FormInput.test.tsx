@@ -4,6 +4,8 @@ import '@testing-library/jest-dom';
 
 import {
   Standard,
+  Filled,
+  Outlined,
   Error,
   Password,
   Number,
@@ -17,6 +19,20 @@ describe('FormInput', () => {
     const { baseElement } = render(<Standard {...Standard.args} />);
     expect(baseElement).toBeInTheDocument();
     expect(baseElement.querySelector('.Mui-error')).not.toBeInTheDocument();
+  });
+
+  it('should render filled form input', () => {
+    const { baseElement } = render(<Filled {...Filled.args} />);
+    expect(
+      baseElement.querySelector('.MuiFilledInput-root')
+    ).toBeInTheDocument();
+  });
+
+  it('should render outlined form input', () => {
+    const { baseElement } = render(<Outlined {...Outlined.args} />);
+    expect(
+      baseElement.querySelector('.MuiOutlinedInput-root')
+    ).toBeInTheDocument();
   });
 
   it('should render form input with error state', () => {

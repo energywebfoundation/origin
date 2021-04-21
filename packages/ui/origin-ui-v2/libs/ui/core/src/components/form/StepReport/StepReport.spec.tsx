@@ -2,11 +2,16 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { FirstStepDone } from './StepReport.stories';
+import { FirstStep } from './StepReport.stories';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
 
 describe('StepReport', () => {
   it('should render StepReport with first step', () => {
-    const { baseElement } = render(<FirstStepDone {...FirstStepDone.args} />);
+    const { baseElement } = render(
+      <MuiThemeProvider theme={createMuiTheme()}>
+        <FirstStep {...FirstStep.args} />
+      </MuiThemeProvider>
+    );
     expect(baseElement).toBeInTheDocument();
   });
 });

@@ -1,11 +1,16 @@
-import { Box, Button, Typography, TypographyVariant } from '@material-ui/core';
-import React, { FC, memo, ReactNode } from 'react';
-import { isEmpty } from 'lodash';
 import {
-  FormInput,
+  Box,
+  BoxProps,
+  Button,
+  Typography,
+  TypographyVariant,
+} from '@material-ui/core';
+import React, { FC, memo, ReactNode } from 'react';
+import {
+  DoubleColumnForm,
   FormInputProps,
-  FormSelect,
   FormSelectOption,
+  SingleColumnForm,
 } from '../../components/form';
 import { useGenericFormEffects } from './GenericForm.effects';
 import * as yup from 'yup';
@@ -33,12 +38,14 @@ export interface GenericFormProps {
   fields: GenericFormField[];
   buttonText: string;
   buttonFullWidth?: boolean;
+  buttonWrapperProps?: BoxProps;
   formTitle?: string;
   formTitleVariant?: TypographyVariant;
   formClass?: string;
   inputsVariant?: FormInputProps['variant'];
   inputsClass?: string;
   partOfMultiForm?: boolean;
+  twoColumns?: boolean;
 }
 
 export const GenericForm: FC<GenericFormProps> = memo(
@@ -51,11 +58,13 @@ export const GenericForm: FC<GenericFormProps> = memo(
     fields,
     buttonText,
     buttonFullWidth,
+    buttonWrapperProps,
     children,
     formClass,
     inputsVariant,
     inputsClass,
     partOfMultiForm,
+    twoColumns,
   }) => {
     const {
       control,
@@ -70,6 +79,7 @@ export const GenericForm: FC<GenericFormProps> = memo(
       initialValues,
       partOfMultiForm,
     });
+
     return (
       <form onSubmit={onSubmit} className={formClass}>
         {formTitle && (
@@ -79,34 +89,37 @@ export const GenericForm: FC<GenericFormProps> = memo(
             </Typography>
           </Box>
         )}
-        {fields.map((field) =>
-          field.select ? (
-            <FormSelect
-              key={field.label}
-              field={field}
-              control={control}
-              errorExists={!isEmpty(errors[field.name])}
-              errorText={errors[field.name]?.message ?? ''}
-              variant={inputsVariant}
-              className={inputsClass}
-            />
-          ) : (
-            <FormInput
-              className={inputsClass}
-              key={field.label}
-              field={field}
-              register={register}
-              errorExists={!isEmpty(errors[field.name])}
-              errorText={errors[field.name]?.message ?? ''}
-              isDirty={dirtyFields[field.name]}
-              variant={inputsVariant}
-            />
-          )
+
+        {twoColumns ? (
+          <DoubleColumnForm
+            fields={fields}
+            control={control}
+            register={register}
+            errors={errors}
+            dirtyFields={dirtyFields}
+            inputsClass={inputsClass}
+            inputsVariant={inputsVariant}
+          />
+        ) : (
+          <SingleColumnForm
+            fields={fields}
+            control={control}
+            register={register}
+            errors={errors}
+            dirtyFields={dirtyFields}
+            inputsClass={inputsClass}
+            inputsVariant={inputsVariant}
+          />
         )}
 
         {children}
 
-        <Box my={2} display="flex" justifyContent="flex-end">
+        <Box
+          my={2}
+          display="flex"
+          justifyContent="flex-end"
+          {...buttonWrapperProps}
+        >
           <Button
             fullWidth={buttonFullWidth}
             color="primary"
