@@ -148,6 +148,8 @@ describe('Certificate tests', () => {
                 expect(transferResponse.body.success).to.be.true;
             });
 
+        await sleep(5000);
+
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
@@ -179,6 +181,8 @@ describe('Certificate tests', () => {
             .expect((claimResponse) => {
                 expect(claimResponse.body.success).to.be.true;
             });
+
+        await sleep(10000);
 
         await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
@@ -224,17 +228,21 @@ describe('Certificate tests', () => {
             })
             .expect(HttpStatus.OK);
 
+        await sleep(5000);
+
         await request(app.getHttpServer())
             .put(`/certificate/${id}/claim`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({ claimData })
-            .expect(HttpStatus.OK);
+            .expect(console.log);
 
         await request(app.getHttpServer())
             .put(`/certificate/${id}/claim`)
             .set({ 'test-user': TestUser.OtherOrganizationDeviceManager })
             .send({ claimData })
             .expect(HttpStatus.OK);
+
+        await sleep(10000);
 
         await request(app.getHttpServer())
             .get(`/certificate/${id}`)
