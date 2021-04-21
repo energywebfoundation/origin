@@ -38,18 +38,26 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
         }
 
         try {
-            await CertificateUtils.claimCertificates(
+            const bulkClaimTx = await CertificateUtils.claimCertificates(
                 certificatesToClaim.map((cert) => cert.tokenId),
                 claimData,
                 blockchainProperties.wrap(),
                 forAddress
             );
+
+            const receipt = await bulkClaimTx.wait(1);
+
+            if (receipt.status === 0) {
+                throw new Error(
+                    `ClaimBatch tx ${
+                        receipt.transactionHash
+                    } on certificate with tokenId ${certificatesToClaim.map(
+                        (cert) => cert.tokenId
+                    )} failed.`
+                );
+            }
         } catch (error) {
             return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        for (const cert of certificatesToClaim) {
-            await cert.sync();
         }
 
         return ResponseSuccess();

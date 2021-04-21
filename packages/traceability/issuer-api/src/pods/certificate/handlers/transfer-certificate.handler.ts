@@ -64,16 +64,22 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
         }
 
         try {
-            await onChainCert.transfer(
+            const transferTx = await onChainCert.transfer(
                 to,
                 BigNumber.from(amount ?? onChainCert.owners[from]),
                 from
             );
+
+            const receipt = await transferTx.wait(1);
+
+            if (receipt.status === 0) {
+                throw new Error(
+                    `Transfer tx ${receipt.transactionHash} on certificate with tokenId ${onChainCert.id} failed.`
+                );
+            }
         } catch (error) {
             return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        await certificate.sync();
 
         return ResponseSuccess();
     }
