@@ -1,7 +1,10 @@
 // @should-localize
 import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
-import { BUSINESS_LEGAL_TYPE_OPTIONS, COUNTRY_OPTIONS_ISO } from '../options';
+import {
+  BUSINESS_LEGAL_TYPE_OPTIONS,
+  COUNTRY_OPTIONS_ISO,
+} from '../select-options';
 
 export const orgInfoForm: MultiStepFormItem = {
   formTitle: 'Organization Information',

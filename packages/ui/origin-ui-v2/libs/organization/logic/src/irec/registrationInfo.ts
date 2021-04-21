@@ -5,7 +5,7 @@ import {
   COUNTRY_OPTIONS_ISO,
   NUMBER_OF_EMPLOYEES_OPTIONS,
   IREC_ACCOUNT_TYPE_OPTIONS,
-} from '../options';
+} from '../select-options';
 
 export const orgInfoForm: MultiStepFormItem = {
   formTitle: 'I-REC Registration information',

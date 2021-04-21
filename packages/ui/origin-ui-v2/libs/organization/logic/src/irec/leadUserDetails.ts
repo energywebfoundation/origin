@@ -1,7 +1,7 @@
 // @should-localize
 import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
-import { TITLE_OPTIONS } from '../options';
+import { TITLE_OPTIONS } from '../select-options';
 
 export const leadUserDetals: MultiStepFormItem = {
   formTitle: 'Lead User Details',

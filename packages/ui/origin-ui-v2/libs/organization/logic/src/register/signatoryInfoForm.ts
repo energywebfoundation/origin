@@ -1,7 +1,7 @@
 // @should-localize
 import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
-import { COUNTRY_OPTIONS_ISO } from '../options';
+import { COUNTRY_OPTIONS_ISO } from '../select-options';
 
 export const signatoryInfoForm: MultiStepFormItem = {
   formTitle: 'Authorized Signatory Information',
