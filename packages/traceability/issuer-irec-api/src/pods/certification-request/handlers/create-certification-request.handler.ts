@@ -11,13 +11,13 @@ import {
     BlockchainPropertiesService,
     CertificationRequestStatus,
     CertificationRequestDTO,
-    CertificationRequest,
-    CreateCertificationRequestCommand
+    CertificationRequest
 } from '@energyweb/issuer-api';
+import { CreateIrecCertificationRequestCommand } from '../commands/create-irec-certification-request.command';
 
-@CommandHandler(CreateCertificationRequestCommand)
+@CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateCertificationRequestHandler
-    implements ICommandHandler<CreateCertificationRequestCommand> {
+    implements ICommandHandler<CreateIrecCertificationRequestCommand> {
     private readonly logger = new Logger(CreateCertificationRequestHandler.name);
 
     private readonly requestQueue = new Subject<number>();
@@ -31,6 +31,7 @@ export class CreateCertificationRequestHandler
     }
 
     async execute({
+        user,
         to,
         energy,
         fromTime,
@@ -38,7 +39,7 @@ export class CreateCertificationRequestHandler
         deviceId,
         files,
         isPrivate
-    }: CreateCertificationRequestCommand): Promise<CertificationRequestDTO> {
+    }: CreateIrecCertificationRequestCommand): Promise<CertificationRequestDTO> {
         if (!isAddress(to)) {
             throw new BadRequestException(
                 'Invalid "to" parameter, it has to be ethereum address string'

@@ -1,21 +1,21 @@
 import {
     ActiveUserGuard,
-    RolesGuard,
-    Roles,
     ExceptionInterceptor,
+    Roles,
+    RolesGuard,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
     Controller,
     Get,
-    Post,
-    UseGuards,
+    HttpStatus,
     Param,
     ParseIntPipe,
+    Post,
     Put,
-    UseInterceptors,
-    HttpStatus
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -29,18 +29,18 @@ import {
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import {
-    CreateCertificationRequestCommand,
     ApproveCertificationRequestCommand,
-    RevokeCertificationRequestCommand,
-    ValidateCertificationRequestCommand,
     CertificateBoundToCertificationRequestCommand,
+    CertificationRequestDTO,
     CreateCertificationRequestDTO,
     GetAllCertificationRequestsQuery,
-    GetCertificationRequestQuery,
     GetCertificationRequestByCertificateQuery,
-    CertificationRequestDTO,
-    SuccessResponseDTO
+    GetCertificationRequestQuery,
+    RevokeCertificationRequestCommand,
+    SuccessResponseDTO,
+    ValidateCertificationRequestCommand
 } from '@energyweb/issuer-api';
+import { CreateIrecCertificationRequestCommand } from './commands/create-irec-certification-request.command';
 
 @ApiTags('certification-requests')
 @ApiBearerAuth('access-token')
@@ -105,11 +105,11 @@ export class CertificationRequestController {
     })
     @ApiBody({ type: CreateCertificationRequestDTO })
     public async create(
-        @UserDecorator() { ownerId }: ILoggedInUser,
+        @UserDecorator() user: ILoggedInUser,
         @Body() dto: CreateCertificationRequestDTO
     ): Promise<CertificationRequestDTO | SuccessResponseDTO> {
         const isOwnerOfTheDevice = await this.queryBus.execute(
-            new ValidateDeviceOwnershipQuery(ownerId, dto.deviceId)
+            new ValidateDeviceOwnershipQuery(user.ownerId, dto.deviceId)
         );
 
         if (!isOwnerOfTheDevice) {
@@ -125,7 +125,8 @@ export class CertificationRequestController {
         }
 
         return this.commandBus.execute(
-            new CreateCertificationRequestCommand(
+            new CreateIrecCertificationRequestCommand(
+                user,
                 dto.to,
                 dto.energy,
                 dto.fromTime,
