@@ -35,7 +35,6 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
             errorExists={!isEmpty(errors[field.name])}
             errorText={errors[field.name]?.message ?? ''}
             variant={inputsVariant}
-            className={inputsClass}
           />
         ) : (
           <FormInput
