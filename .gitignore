@@ -77,3 +77,6 @@ common/autoinstallers/*/.npmrc
 dist/
 
 site/
+
+deployment/
+!packages/tools/migrations/deployment/

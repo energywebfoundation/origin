@@ -19,6 +19,7 @@ nav:
           - '@energyweb/issuer-irec-api-wrapper': sdk-reference/issuer-irec-api-wrapper/modules.md
     - Cookbook:
           - How to deploy to Volta: volta-deployment.md
+          - Run with Docker: docker.md
 
 theme: material
 
