@@ -34,7 +34,7 @@
             ],
             "styles": [],
             "scripts": [],
-            "webpackConfig": "@nrwl/react/plugins/webpack"
+            "webpackConfig": "webpack/webpack.config.js"
           },
           "configurations": {
             "production": {
@@ -63,7 +63,10 @@
         },
         "serve": {
           "executor": "@nrwl/web:dev-server",
-          "options": { "buildTarget": "origin-ui:build" },
+          "options": {
+            "buildTarget": "origin-ui:build",
+            "webpackConfig": "webpack/webpack.config.js"
+          },
           "configurations": {
             "production": { "buildTarget": "origin-ui:build:production" }
           }

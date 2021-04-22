@@ -6,6 +6,8 @@ import { topBarButtons, userAndOrgData } from '../__mocks__/mainLayout';
 import { useAppEffects } from './App.effects';
 import { Routes, Route } from 'react-router-dom';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
+import { initializeI18N } from '@energyweb/origin-ui-utils';
+import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 
 export function App() {
   const { orgMenu } = useAppEffects();
@@ -31,6 +33,8 @@ export function App() {
       ],
     },
   ];
+
+  initializeI18N(getOriginLanguage());
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
