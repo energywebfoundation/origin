@@ -7,6 +7,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
@@ -75,7 +76,8 @@
         "libs/organization/logic/src/index.ts"
       ],
       "@energy-web/ui/forms": ["libs/ui/forms/src/index.ts"],
-      "@energy-web/ui/validation": ["libs/ui/validation/src/index.ts"]
+      "@energy-web/ui/validation": ["libs/ui/validation/src/index.ts"],
+      "stream": ["node_modules/readable-stream"]
     }
   },
   "exclude": ["node_modules", "tmp"]
