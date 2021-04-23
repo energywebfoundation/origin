@@ -4,7 +4,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { OriginGlobalStyles } from './OriginGlobalStyles';
 import { AuthProvider } from '@energy-web/ui/api-clients';
 import { OriginQueryClientProvider } from '@energy-web/ui/api-clients';
-import { useBundleControllerGetMyTrades } from '../../../../libs/ui/api-clients/src/api/exchange-client/exchangeAPI';
 import { topBarButtons, userAndOrgData } from '../__mocks__/mainLayout';
 import { useAppEffects } from './App.effects';
 import { Routes, Route } from 'react-router-dom';
@@ -39,8 +38,7 @@ export function App() {
 
   initializeI18N(getOriginLanguage());
 
-  const { data } = useBundleControllerGetMyTrades();
-  data[1].return(
+  return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <OriginQueryClientProvider>
         <AuthProvider initialState={null}>
