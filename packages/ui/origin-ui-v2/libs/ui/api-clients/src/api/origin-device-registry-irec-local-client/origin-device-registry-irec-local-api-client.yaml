@@ -1,0 +1,811 @@
+openapi: '3.0.0'
+info:
+  title: 'Origin Device Registry I-REC Local API'
+  description: 'Swagger documentation for the Origin Device Registry I-REC Local API'
+  version: '0.1'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    access-token:
+      scheme: 'bearer'
+      bearerFormat: 'JWT'
+      type: 'http'
+  schemas:
+    DeviceState:
+      type: 'string'
+      enum:
+        - 'Draft'
+        - 'In-progress'
+        - 'Rejected'
+        - 'Approved'
+    PublicDeviceDTO:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        name:
+          type: 'string'
+        deviceType:
+          type: 'string'
+        fuel:
+          type: 'string'
+        countryCode:
+          type: 'string'
+        registrantOrganization:
+          type: 'string'
+        issuer:
+          type: 'string'
+        capacity:
+          type: 'number'
+        commissioningDate:
+          format: 'date-time'
+          type: 'string'
+        registrationDate:
+          format: 'date-time'
+          type: 'string'
+        address:
+          type: 'string'
+        latitude:
+          type: 'string'
+        longitude:
+          type: 'string'
+        notes:
+          type: 'string'
+        status:
+          $ref: '#/components/schemas/DeviceState'
+        id:
+          type: 'string'
+        ownerId:
+          type: 'string'
+        timezone:
+          type: 'string'
+        gridOperator:
+          type: 'string'
+      required:
+        - 'code'
+        - 'name'
+        - 'deviceType'
+        - 'fuel'
+        - 'countryCode'
+        - 'registrantOrganization'
+        - 'issuer'
+        - 'capacity'
+        - 'commissioningDate'
+        - 'registrationDate'
+        - 'address'
+        - 'latitude'
+        - 'longitude'
+        - 'notes'
+        - 'status'
+        - 'id'
+        - 'ownerId'
+        - 'timezone'
+        - 'gridOperator'
+    CodeNameDTO:
+      type: 'object'
+      properties:
+        name:
+          type: 'string'
+        code:
+          type: 'string'
+      required:
+        - 'name'
+        - 'code'
+    DeviceDTO:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        name:
+          type: 'string'
+        defaultAccount:
+          type: 'string'
+        deviceType:
+          type: 'string'
+        fuel:
+          type: 'string'
+        countryCode:
+          type: 'string'
+        registrantOrganization:
+          type: 'string'
+        issuer:
+          type: 'string'
+        capacity:
+          type: 'number'
+        commissioningDate:
+          format: 'date-time'
+          type: 'string'
+        registrationDate:
+          format: 'date-time'
+          type: 'string'
+        address:
+          type: 'string'
+        latitude:
+          type: 'string'
+        longitude:
+          type: 'string'
+        notes:
+          type: 'string'
+        status:
+          $ref: '#/components/schemas/DeviceState'
+        id:
+          type: 'string'
+        ownerId:
+          type: 'string'
+        timezone:
+          type: 'string'
+        gridOperator:
+          type: 'string'
+      required:
+        - 'code'
+        - 'name'
+        - 'defaultAccount'
+        - 'deviceType'
+        - 'fuel'
+        - 'countryCode'
+        - 'registrantOrganization'
+        - 'issuer'
+        - 'capacity'
+        - 'commissioningDate'
+        - 'registrationDate'
+        - 'address'
+        - 'latitude'
+        - 'longitude'
+        - 'notes'
+        - 'status'
+        - 'id'
+        - 'ownerId'
+        - 'timezone'
+        - 'gridOperator'
+    CreateDeviceDTO:
+      type: 'object'
+      properties:
+        name:
+          type: 'string'
+        defaultAccount:
+          type: 'string'
+        deviceType:
+          type: 'string'
+        fuel:
+          type: 'string'
+        countryCode:
+          type: 'string'
+        capacity:
+          type: 'number'
+        commissioningDate:
+          format: 'date-time'
+          type: 'string'
+        registrationDate:
+          format: 'date-time'
+          type: 'string'
+        address:
+          type: 'string'
+        latitude:
+          type: 'string'
+        longitude:
+          type: 'string'
+        notes:
+          type: 'string'
+        timezone:
+          type: 'string'
+        gridOperator:
+          type: 'string'
+      required:
+        - 'name'
+        - 'defaultAccount'
+        - 'deviceType'
+        - 'fuel'
+        - 'countryCode'
+        - 'capacity'
+        - 'commissioningDate'
+        - 'registrationDate'
+        - 'address'
+        - 'latitude'
+        - 'longitude'
+        - 'notes'
+        - 'timezone'
+        - 'gridOperator'
+    UpdateDeviceDTO:
+      type: 'object'
+      properties:
+        name:
+          type: 'string'
+        deviceType:
+          type: 'string'
+        fuel:
+          type: 'string'
+        countryCode:
+          type: 'string'
+        capacity:
+          type: 'number'
+        commissioningDate:
+          format: 'date-time'
+          type: 'string'
+        registrationDate:
+          format: 'date-time'
+          type: 'string'
+        address:
+          type: 'string'
+        latitude:
+          type: 'string'
+        longitude:
+          type: 'string'
+        notes:
+          type: 'string'
+        active:
+          type: 'boolean'
+      required:
+        - 'name'
+        - 'deviceType'
+        - 'fuel'
+        - 'countryCode'
+        - 'capacity'
+        - 'commissioningDate'
+        - 'registrationDate'
+        - 'address'
+        - 'latitude'
+        - 'longitude'
+        - 'notes'
+        - 'active'
+    SuccessResponseDTO:
+      type: 'object'
+      properties:
+        success:
+          type: 'boolean'
+        message:
+          type: 'string'
+      required:
+        - 'success'
+    IrecDeviceDTO:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        name:
+          type: 'string'
+        defaultAccount:
+          type: 'string'
+        deviceType:
+          type: 'string'
+        fuel:
+          type: 'string'
+        countryCode:
+          type: 'string'
+        registrantOrganization:
+          type: 'string'
+        issuer:
+          type: 'string'
+        capacity:
+          type: 'number'
+        commissioningDate:
+          format: 'date-time'
+          type: 'string'
+        registrationDate:
+          format: 'date-time'
+          type: 'string'
+        address:
+          type: 'string'
+        latitude:
+          type: 'string'
+        longitude:
+          type: 'string'
+        notes:
+          type: 'string'
+        status:
+          $ref: '#/components/schemas/DeviceState'
+      required:
+        - 'code'
+        - 'name'
+        - 'defaultAccount'
+        - 'deviceType'
+        - 'fuel'
+        - 'countryCode'
+        - 'registrantOrganization'
+        - 'issuer'
+        - 'capacity'
+        - 'commissioningDate'
+        - 'registrationDate'
+        - 'address'
+        - 'latitude'
+        - 'longitude'
+        - 'notes'
+        - 'status'
+    ImportIrecDeviceDTO:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        timezone:
+          type: 'string'
+        gridOperator:
+          type: 'string'
+      required:
+        - 'code'
+        - 'timezone'
+        - 'gridOperator'
+    CreateConnectionDTO:
+      type: 'object'
+      properties:
+        userName:
+          type: 'string'
+        password:
+          type: 'string'
+        clientId:
+          type: 'string'
+        clientSecret:
+          type: 'string'
+      required:
+        - 'userName'
+        - 'password'
+        - 'clientId'
+        - 'clientSecret'
+    IRECAccountType:
+      type: 'string'
+      enum:
+        - 'Registrant'
+        - 'Participant'
+        - 'Both'
+    RegistrationDTO:
+      type: 'object'
+      properties:
+        accountType:
+          $ref: '#/components/schemas/IRECAccountType'
+        headquarterCountry:
+          type: 'string'
+        registrationYear:
+          type: 'number'
+        employeesNumber:
+          type: 'string'
+        shareholders:
+          type: 'string'
+        website:
+          type: 'string'
+        activeCountries:
+          type: 'array'
+          items:
+            type: 'string'
+        mainBusiness:
+          type: 'string'
+        ceoName:
+          type: 'string'
+        ceoPassportNumber:
+          type: 'string'
+        balanceSheetTotal:
+          type: 'string'
+        subsidiaries:
+          type: 'string'
+        primaryContactOrganizationName:
+          type: 'string'
+        primaryContactOrganizationAddress:
+          type: 'string'
+        primaryContactOrganizationPostalCode:
+          type: 'string'
+        primaryContactOrganizationCountry:
+          type: 'string'
+        primaryContactName:
+          type: 'string'
+        primaryContactEmail:
+          type: 'string'
+        primaryContactPhoneNumber:
+          type: 'string'
+        primaryContactFax:
+          type: 'string'
+        leadUserTitle:
+          type: 'string'
+        leadUserFirstName:
+          type: 'string'
+        leadUserLastName:
+          type: 'string'
+        leadUserEmail:
+          type: 'string'
+        leadUserPhoneNumber:
+          type: 'string'
+        leadUserFax:
+          type: 'string'
+        id:
+          type: 'string'
+        owner:
+          type: 'string'
+      required:
+        - 'accountType'
+        - 'headquarterCountry'
+        - 'registrationYear'
+        - 'employeesNumber'
+        - 'shareholders'
+        - 'website'
+        - 'activeCountries'
+        - 'mainBusiness'
+        - 'ceoName'
+        - 'ceoPassportNumber'
+        - 'balanceSheetTotal'
+        - 'primaryContactOrganizationName'
+        - 'primaryContactOrganizationAddress'
+        - 'primaryContactOrganizationPostalCode'
+        - 'primaryContactOrganizationCountry'
+        - 'primaryContactName'
+        - 'primaryContactEmail'
+        - 'primaryContactPhoneNumber'
+        - 'primaryContactFax'
+        - 'leadUserTitle'
+        - 'leadUserFirstName'
+        - 'leadUserLastName'
+        - 'leadUserEmail'
+        - 'leadUserPhoneNumber'
+        - 'leadUserFax'
+        - 'id'
+        - 'owner'
+    ConnectionDTO:
+      type: 'object'
+      properties:
+        accessToken:
+          type: 'string'
+        refreshToken:
+          type: 'string'
+        expiryDate:
+          format: 'date-time'
+          type: 'string'
+        registration:
+          $ref: '#/components/schemas/RegistrationDTO'
+      required:
+        - 'accessToken'
+        - 'refreshToken'
+        - 'expiryDate'
+        - 'registration'
+    NewRegistrationDTO:
+      type: 'object'
+      properties:
+        accountType:
+          $ref: '#/components/schemas/IRECAccountType'
+        headquarterCountry:
+          type: 'string'
+        registrationYear:
+          type: 'number'
+        employeesNumber:
+          type: 'string'
+        shareholders:
+          type: 'string'
+        website:
+          type: 'string'
+        activeCountries:
+          type: 'array'
+          items:
+            type: 'string'
+        mainBusiness:
+          type: 'string'
+        ceoName:
+          type: 'string'
+        ceoPassportNumber:
+          type: 'string'
+        balanceSheetTotal:
+          type: 'string'
+        subsidiaries:
+          type: 'string'
+        primaryContactOrganizationName:
+          type: 'string'
+        primaryContactOrganizationAddress:
+          type: 'string'
+        primaryContactOrganizationPostalCode:
+          type: 'string'
+        primaryContactOrganizationCountry:
+          type: 'string'
+        primaryContactName:
+          type: 'string'
+        primaryContactEmail:
+          type: 'string'
+        primaryContactPhoneNumber:
+          type: 'string'
+        primaryContactFax:
+          type: 'string'
+        leadUserTitle:
+          type: 'string'
+        leadUserFirstName:
+          type: 'string'
+        leadUserLastName:
+          type: 'string'
+        leadUserEmail:
+          type: 'string'
+        leadUserPhoneNumber:
+          type: 'string'
+        leadUserFax:
+          type: 'string'
+      required:
+        - 'accountType'
+        - 'headquarterCountry'
+        - 'registrationYear'
+        - 'employeesNumber'
+        - 'shareholders'
+        - 'website'
+        - 'activeCountries'
+        - 'mainBusiness'
+        - 'ceoName'
+        - 'ceoPassportNumber'
+        - 'balanceSheetTotal'
+        - 'primaryContactOrganizationName'
+        - 'primaryContactOrganizationAddress'
+        - 'primaryContactOrganizationPostalCode'
+        - 'primaryContactOrganizationCountry'
+        - 'primaryContactName'
+        - 'primaryContactEmail'
+        - 'primaryContactPhoneNumber'
+        - 'primaryContactFax'
+        - 'leadUserTitle'
+        - 'leadUserFirstName'
+        - 'leadUserLastName'
+        - 'leadUserEmail'
+        - 'leadUserPhoneNumber'
+        - 'leadUserFax'
+    RegisterResponseDTO:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+      required:
+        - 'id'
+paths:
+  /api/irec/device-registry:
+    get:
+      operationId: 'DeviceController_getAll'
+      parameters: []
+      responses:
+        200:
+          description: 'Returns all Devices'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/PublicDeviceDTO'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+    post:
+      operationId: 'DeviceController_createDevice'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceDTO'
+      responses:
+        201:
+          description: 'Creates a Device'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+        400:
+          description: ''
+        403:
+          description: "User doesn't have the correct permissions"
+        422:
+          description: 'Incorrect inputs'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+  /api/irec/device-registry/device-type:
+    get:
+      operationId: 'DeviceController_getFuels'
+      parameters: []
+      responses:
+        200:
+          description: 'Returns all IREC fuels'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/CodeNameDTO'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+  /api/irec/device-registry/fuel-type:
+    get:
+      operationId: 'DeviceController_getFuelTypes'
+      parameters: []
+      responses:
+        200:
+          description: 'Returns all IREC fuels types'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/CodeNameDTO'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+  /api/irec/device-registry/device/{id}:
+    get:
+      operationId: 'DeviceController_get'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      responses:
+        200:
+          description: 'Returns a Device'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicDeviceDTO'
+        404:
+          description: "The device with the ID doesn't exist"
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+    put:
+      operationId: 'DeviceController_updateDevice'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeviceDTO'
+      responses:
+        200:
+          description: 'Updates a device data'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+        404:
+          description: 'Non existent device'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseDTO'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+  /api/irec/device-registry/my-devices:
+    get:
+      operationId: 'DeviceController_getMyDevices'
+      parameters: []
+      responses:
+        200:
+          description: 'Returns my Devices'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/DeviceDTO'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+  /api/irec/device-registry/irec-devices-to-import:
+    get:
+      operationId: 'DeviceController_getDevicesToImportFromIrec'
+      parameters: []
+      responses:
+        200:
+          description: 'Returns not imported IREC devices'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/IrecDeviceDTO'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+  /api/irec/device-registry/import-irec-device:
+    post:
+      operationId: 'DeviceController_importIrecDevice'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportIrecDeviceDTO'
+      responses:
+        201:
+          description: 'Imports a device from IREC'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+        400:
+          description: ''
+        403:
+          description: "User doesn't have the correct permissions"
+        422:
+          description: 'Incorrect inputs'
+      tags:
+        - 'device'
+      security:
+        - access-token: []
+  /api/irec/connection:
+    post:
+      operationId: 'ConnectionController_register'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConnectionDTO'
+      responses:
+        201:
+          description: 'Creates a connection to I-REC'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionDTO'
+      tags:
+        - 'irec_connection'
+      security:
+        - access-token: []
+    get:
+      operationId: 'ConnectionController_getMyConnection'
+      parameters: []
+      responses:
+        200:
+          description: 'Get a IREC connection info'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/ConnectionDTO'
+      tags:
+        - 'irec_connection'
+      security:
+        - access-token: []
+  /api/irec/registration:
+    get:
+      operationId: 'RegistrationController_getRegistrations'
+      parameters: []
+      responses:
+        200:
+          description: 'Get all registrations'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/RegistrationDTO'
+      tags:
+        - 'irec_registration'
+      security:
+        - access-token: []
+    post:
+      operationId: 'RegistrationController_register'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewRegistrationDTO'
+      responses:
+        201:
+          description: 'Register an I-REC organization'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponseDTO'
+      tags:
+        - 'irec_registration'
+      security:
+        - access-token: []

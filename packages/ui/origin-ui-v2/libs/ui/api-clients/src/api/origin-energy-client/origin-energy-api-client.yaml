@@ -1,0 +1,240 @@
+openapi: '3.0.0'
+info:
+  title: 'Origin Energy API'
+  description: 'Swagger documentation for the Origin Energy API for reading and storing metered data'
+  version: '0.1'
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    ReadDTO:
+      type: 'object'
+      properties:
+        timestamp:
+          type: 'string'
+          format: 'date-time'
+          example: '2020-01-01T00:00:00Z'
+          description: 'Measurement timestamp'
+        value:
+          type: 'integer'
+          example: 10000000
+          description: 'Measurement value in Wh'
+      required:
+        - 'timestamp'
+        - 'value'
+    Aggregate:
+      type: 'string'
+      enum:
+        - 'sum'
+        - 'mean'
+    AggregatedReadDTO:
+      type: 'object'
+      properties:
+        start:
+          type: 'string'
+          format: 'date-time'
+          example: '2020-01-01T00:00:00Z'
+          description: 'Measurement start timestamp'
+        stop:
+          type: 'string'
+          format: 'date-time'
+          example: '2020-01-02T00:00:00Z'
+          description: 'Measurement stop timestamp'
+        value:
+          type: 'integer'
+          example: 10000000
+          description: 'Measurement value in Wh'
+      required:
+        - 'start'
+        - 'stop'
+        - 'value'
+    Unit:
+      type: 'string'
+      enum:
+        - 'Wh'
+        - 'kWh'
+        - 'MWh'
+        - 'GWh'
+    MeasurementDTO:
+      type: 'object'
+      properties:
+        reads:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/ReadDTO'
+        unit:
+          $ref: '#/components/schemas/Unit'
+      required:
+        - 'reads'
+        - 'unit'
+paths:
+  /api/meter-reads/{meter}:
+    get:
+      operationId: 'ReadsController_getReads'
+      parameters:
+        - name: 'meter'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+        - name: 'start'
+          required: true
+          in: 'query'
+          example: '2020-01-01T00:00:00Z'
+          schema:
+            format: 'date-time'
+            type: 'string'
+        - name: 'end'
+          required: true
+          in: 'query'
+          example: '2020-01-02T00:00:00Z'
+          schema:
+            format: 'date-time'
+            type: 'string'
+        - name: 'limit'
+          required: false
+          in: 'query'
+          schema:
+            minimum: 0
+            maximum: 10000
+            default: 10000
+            type: 'integer'
+        - name: 'offset'
+          required: false
+          in: 'query'
+          schema:
+            minimum: 0
+            default: 0
+            type: 'integer'
+      responses:
+        200:
+          description: 'Returns time-series of meter reads'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/ReadDTO'
+      tags:
+        - 'meter-reads'
+    post:
+      operationId: 'ReadsController_storeReads'
+      parameters:
+        - name: 'meter'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeasurementDTO'
+      responses:
+        201:
+          description: 'Creates meter reads'
+      tags:
+        - 'meter-reads'
+  /api/meter-reads/{meter}/difference:
+    get:
+      operationId: 'ReadsController_getReadsDifference'
+      parameters:
+        - name: 'meter'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+        - name: 'start'
+          required: true
+          in: 'query'
+          example: '2020-01-01T00:00:00Z'
+          schema:
+            format: 'date-time'
+            type: 'string'
+        - name: 'end'
+          required: true
+          in: 'query'
+          example: '2020-01-02T00:00:00Z'
+          schema:
+            format: 'date-time'
+            type: 'string'
+        - name: 'limit'
+          required: false
+          in: 'query'
+          schema:
+            minimum: 0
+            maximum: 10000
+            default: 10000
+            type: 'integer'
+        - name: 'offset'
+          required: false
+          in: 'query'
+          schema:
+            minimum: 0
+            default: 0
+            type: 'integer'
+      responses:
+        200:
+          description: 'Returns time-series of difference between subsequent meter reads'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/ReadDTO'
+      tags:
+        - 'meter-reads'
+  /api/meter-reads/{meter}/aggregate:
+    get:
+      operationId: 'ReadsController_getReadsAggregates'
+      parameters:
+        - name: 'meter'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+        - name: 'start'
+          required: true
+          in: 'query'
+          example: '2020-01-01T00:00:00Z'
+          schema:
+            format: 'date-time'
+            type: 'string'
+        - name: 'end'
+          required: true
+          in: 'query'
+          example: '2020-01-02T00:00:00Z'
+          schema:
+            format: 'date-time'
+            type: 'string'
+        - name: 'window'
+          required: true
+          in: 'query'
+          example: '1mo'
+          description: 'An aggregation window duration. Possible values: m = minute, h=hours, d=days, w=weeks, mo=months, y=years for e.g 1d, 15m, 3mo, 1y'
+          schema:
+            type: 'string'
+        - name: 'aggregate'
+          required: true
+          in: 'query'
+          schema:
+            $ref: '#/components/schemas/Aggregate'
+        - name: 'difference'
+          required: true
+          in: 'query'
+          description: 'When "true" it will calculate the difference between reads before applying aggregation functions'
+          schema:
+            type: 'boolean'
+      responses:
+        200:
+          description: 'Returns aggregated time-series of difference between subsequent meter reads'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/AggregatedReadDTO'
+      tags:
+        - 'meter-reads'

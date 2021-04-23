@@ -16,5 +16,7 @@ export enum DateFormatEnum {
 export function setGlobalTimeLanguage(
   language: SupportedLanguagesEnum = SupportedLanguagesEnum.en
 ) {
-  import(`dayjs/locale/${language}`).then((value) => dayjs.locale(value));
+  import(`dayjs/locale/${language}`).then((value) => {
+    dayjs.locale(value);
+  });
 }

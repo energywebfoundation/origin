@@ -1,0 +1,739 @@
+openapi: '3.0.0'
+info:
+  title: 'Exchange API'
+  description: 'Swagger documentation for the Exchange API'
+  version: '0.1'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    access-token:
+      scheme: 'bearer'
+      bearerFormat: 'JWT'
+      type: 'http'
+  schemas:
+    Asset:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        address:
+          type: 'string'
+        tokenId:
+          type: 'string'
+        deviceId:
+          type: 'string'
+        generationFrom:
+          type: 'string'
+        generationTo:
+          type: 'string'
+      required:
+        - 'id'
+        - 'address'
+        - 'tokenId'
+        - 'deviceId'
+        - 'generationFrom'
+        - 'generationTo'
+    AccountAssetDTO:
+      type: 'object'
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+        amount:
+          type: 'string'
+      required:
+        - 'asset'
+        - 'amount'
+    AccountBalanceDTO:
+      type: 'object'
+      properties:
+        available:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/AccountAssetDTO'
+        locked:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/AccountAssetDTO'
+      required:
+        - 'available'
+        - 'locked'
+    TransferStatus:
+      type: 'string'
+      enum:
+        - 'Unknown'
+        - 'Accepted'
+        - 'Unconfirmed'
+        - 'Confirmed'
+        - 'Error'
+    TransferDirection:
+      type: 'string'
+      enum:
+        - 'Deposit'
+        - 'Withdrawal'
+        - 'Claim'
+    Transfer:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        userId:
+          type: 'string'
+        asset:
+          $ref: '#/components/schemas/Asset'
+        amount:
+          type: 'string'
+        transactionHash:
+          type: 'string'
+        address:
+          type: 'string'
+        status:
+          $ref: '#/components/schemas/TransferStatus'
+        confirmationBlock:
+          type: 'number'
+        direction:
+          $ref: '#/components/schemas/TransferDirection'
+      required:
+        - 'id'
+        - 'userId'
+        - 'asset'
+        - 'amount'
+        - 'transactionHash'
+        - 'address'
+        - 'status'
+        - 'confirmationBlock'
+        - 'direction'
+    RequestWithdrawalDTO:
+      type: 'object'
+      properties:
+        assetId:
+          type: 'string'
+        address:
+          type: 'string'
+        amount:
+          type: 'string'
+      required:
+        - 'assetId'
+        - 'address'
+        - 'amount'
+    RequestClaimDTO:
+      type: 'object'
+      properties:
+        assetId:
+          type: 'string'
+        amount:
+          type: 'string'
+      required:
+        - 'assetId'
+        - 'amount'
+    AssetDTO:
+      type: 'object'
+      properties:
+        address:
+          type: 'string'
+        tokenId:
+          type: 'string'
+        deviceId:
+          type: 'string'
+        generationFrom:
+          format: 'date-time'
+          type: 'string'
+        generationTo:
+          format: 'date-time'
+          type: 'string'
+        id:
+          type: 'string'
+      required:
+        - 'address'
+        - 'tokenId'
+        - 'deviceId'
+        - 'generationFrom'
+        - 'generationTo'
+        - 'id'
+    AccountDTO:
+      type: 'object'
+      properties:
+        address:
+          type: 'string'
+      required:
+        - 'address'
+    BundlePublicItemDTO:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        asset:
+          $ref: '#/components/schemas/Asset'
+        startVolume:
+          type: 'string'
+        currentVolume:
+          type: 'string'
+      required:
+        - 'id'
+        - 'asset'
+        - 'startVolume'
+        - 'currentVolume'
+    BundlePublicDTO:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        items:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/BundlePublicItemDTO'
+        available:
+          type: 'string'
+        volume:
+          type: 'string'
+        price:
+          type: 'string'
+      required:
+        - 'id'
+        - 'items'
+        - 'available'
+        - 'volume'
+        - 'price'
+    Bundle:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        userId:
+          type: 'string'
+        price:
+          type: 'number'
+        isCancelled:
+          type: 'boolean'
+        items:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/BundleItem'
+        available:
+          type: 'string'
+        volume:
+          type: 'string'
+      required:
+        - 'id'
+        - 'userId'
+        - 'price'
+        - 'isCancelled'
+        - 'items'
+        - 'available'
+        - 'volume'
+    BundleItem:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        asset:
+          $ref: '#/components/schemas/Asset'
+        startVolume:
+          type: 'string'
+        currentVolume:
+          type: 'string'
+        bundle:
+          $ref: '#/components/schemas/Bundle'
+      required:
+        - 'id'
+        - 'asset'
+        - 'startVolume'
+        - 'currentVolume'
+        - 'bundle'
+    BundleTradeItemDTO:
+      type: 'object'
+      properties:
+        assetId:
+          type: 'number'
+        volume:
+          type: 'string'
+      required:
+        - 'assetId'
+        - 'volume'
+    BundleTrade:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        buyerId:
+          type: 'string'
+        volume:
+          type: 'string'
+        bundle:
+          $ref: '#/components/schemas/Bundle'
+        items:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/BundleTradeItemDTO'
+      required:
+        - 'id'
+        - 'buyerId'
+        - 'volume'
+        - 'bundle'
+        - 'items'
+    BundleItemDTO:
+      type: 'object'
+      properties:
+        assetId:
+          type: 'string'
+        volume:
+          type: 'string'
+      required:
+        - 'assetId'
+        - 'volume'
+    CreateBundleDTO:
+      type: 'object'
+      properties:
+        price:
+          type: 'number'
+        items:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/BundleItemDTO'
+      required:
+        - 'price'
+        - 'items'
+    BuyBundleDTO:
+      type: 'object'
+      properties:
+        bundleId:
+          type: 'string'
+        volume:
+          type: 'string'
+      required:
+        - 'bundleId'
+        - 'volume'
+    BundleSplitItemDTO:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        volume:
+          type: 'string'
+      required:
+        - 'id'
+        - 'volume'
+    BundleSplitVolumeDTO:
+      type: 'object'
+      properties:
+        volume:
+          type: 'string'
+        items:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/BundleSplitItemDTO'
+      required:
+        - 'volume'
+        - 'items'
+    BundleSplitDTO:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        splits:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/BundleSplitVolumeDTO'
+      required:
+        - 'id'
+        - 'splits'
+    CreateSupplyDto:
+      type: 'object'
+      properties:
+        deviceId:
+          type: 'string'
+        active:
+          type: 'boolean'
+        price:
+          type: 'number'
+      required:
+        - 'deviceId'
+        - 'active'
+        - 'price'
+    SupplyDto:
+      type: 'object'
+      properties:
+        id:
+          type: 'string'
+        ownerId:
+          type: 'string'
+        deviceId:
+          type: 'string'
+        active:
+          type: 'boolean'
+        price:
+          type: 'number'
+      required:
+        - 'id'
+        - 'ownerId'
+        - 'deviceId'
+        - 'active'
+        - 'price'
+    UpdateSupplyDto:
+      type: 'object'
+      properties:
+        active:
+          type: 'boolean'
+        price:
+          type: 'number'
+      required:
+        - 'active'
+        - 'price'
+paths:
+  /api/account-balance:
+    get:
+      operationId: 'AccountBalanceController_get'
+      parameters: []
+      responses:
+        200:
+          description: 'Get the Account Balance'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalanceDTO'
+      tags:
+        - 'account-balance'
+      security:
+        - access-token: []
+  /api/transfer/all:
+    get:
+      operationId: 'TransferController_getMyTransfers'
+      parameters: []
+      responses:
+        200:
+          description: 'Get my transfers'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Transfer'
+      tags:
+        - 'transfer'
+      security:
+        - access-token: []
+  /api/transfer/withdrawal:
+    post:
+      operationId: 'TransferController_requestWithdrawal'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestWithdrawalDTO'
+      responses:
+        201:
+          description: 'Request a withdrawal'
+          content:
+            application/json:
+              schema:
+                type: 'string'
+      tags:
+        - 'transfer'
+      security:
+        - access-token: []
+  /api/transfer/claim:
+    post:
+      operationId: 'TransferController_requestClaim'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestClaimDTO'
+      responses:
+        201:
+          description: 'Request a claim'
+          content:
+            application/json:
+              schema:
+                type: 'string'
+      tags:
+        - 'transfer'
+      security:
+        - access-token: []
+  /api/asset/{id}:
+    get:
+      operationId: 'AssetController_get'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      responses:
+        200:
+          description: 'Gets the Asset'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetDTO'
+      tags:
+        - 'asset'
+      security:
+        - access-token: []
+  /api/account:
+    get:
+      operationId: 'AccountController_getAccount'
+      parameters: []
+      responses:
+        200:
+          description: 'Get the Account'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDTO'
+      tags:
+        - 'account'
+      security:
+        - access-token: []
+    post:
+      operationId: 'AccountController_create'
+      parameters: []
+      responses:
+        202:
+          description: 'Created the Exchange Account'
+        409:
+          description: 'Account already exists'
+      tags:
+        - 'account'
+      security:
+        - access-token: []
+  /api/bundle/available:
+    get:
+      operationId: 'BundleController_getAvailableBundles'
+      parameters: []
+      responses:
+        200:
+          description: 'Get available bundles'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/BundlePublicDTO'
+      tags:
+        - 'bundle'
+      security:
+        - access-token: []
+  /api/bundle:
+    get:
+      operationId: 'BundleController_getMyBundles'
+      parameters: []
+      responses:
+        200:
+          description: 'Get my bundles'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Bundle'
+      tags:
+        - 'bundle'
+      security:
+        - access-token: []
+    post:
+      operationId: 'BundleController_createBundle'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBundleDTO'
+      responses:
+        201:
+          description: 'Create a bundle'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+      tags:
+        - 'bundle'
+      security:
+        - access-token: []
+  /api/bundle/trade:
+    get:
+      operationId: 'BundleController_getMyTrades'
+      parameters: []
+      responses:
+        200:
+          description: 'Get my trades'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/BundleTrade'
+      tags:
+        - 'bundle'
+      security:
+        - access-token: []
+  /api/bundle/buy:
+    put:
+      operationId: 'BundleController_buyBundle'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyBundleDTO'
+      responses:
+        200:
+          description: 'Buy a bundle'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BundleTrade'
+      tags:
+        - 'bundle'
+      security:
+        - access-token: []
+  /api/bundle/{id}/cancel:
+    put:
+      operationId: 'BundleController_cancelBundle'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      responses:
+        200:
+          description: 'Cancel a bundle'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bundle'
+      tags:
+        - 'bundle'
+      security:
+        - access-token: []
+  /api/bundle/{id}/splits:
+    get:
+      operationId: 'BundleController_availableBundleSplits'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      responses:
+        200:
+          description: 'Get available bundle splits'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BundleSplitDTO'
+      tags:
+        - 'bundle'
+      security:
+        - access-token: []
+  /api/supply:
+    post:
+      operationId: 'SupplyController_create'
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSupplyDto'
+      responses:
+        200:
+          description: 'Returns device supply id'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/SupplyDto'
+      tags:
+        - 'supply'
+      security:
+        - access-token: []
+    get:
+      operationId: 'SupplyController_findAll'
+      parameters: []
+      responses:
+        200:
+          description: 'Returns all device supply settings'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/SupplyDto'
+      tags:
+        - 'supply'
+      security:
+        - access-token: []
+  /api/supply/{id}:
+    get:
+      operationId: 'SupplyController_findOne'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      responses:
+        200:
+          description: 'Returns device supply settings'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/SupplyDto'
+      tags:
+        - 'supply'
+      security:
+        - access-token: []
+    put:
+      operationId: 'SupplyController_update'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSupplyDto'
+      responses:
+        200:
+          description: 'Returns device supply settings'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/SupplyDto'
+      tags:
+        - 'supply'
+      security:
+        - access-token: []
+    delete:
+      operationId: 'SupplyController_remove'
+      parameters:
+        - name: 'id'
+          required: true
+          in: 'path'
+          schema:
+            type: 'string'
+      responses:
+        200:
+          description: ''
+      tags:
+        - 'supply'
+      security:
+        - access-token: []

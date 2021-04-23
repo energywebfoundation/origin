@@ -26,5 +26,6 @@ module.exports = {
     '<rootDir>/libs/device/data-access',
     '<rootDir>/libs/ui/forms',
     '<rootDir>/libs/ui/validation',
+    '<rootDir>/libs/ui/api-clients',
   ],
 };

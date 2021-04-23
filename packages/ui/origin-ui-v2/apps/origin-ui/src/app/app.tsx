@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { TopBar, NavBar, ErrorFallback } from '@energyweb/origin-ui-core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { OriginGlobalStyles } from './OriginGlobalStyles';
+import { AuthProvider } from '@energy-web/ui/api-clients';
+import { OriginQueryClientProvider } from '@energy-web/ui/api-clients';
+import { useBundleControllerGetMyTrades } from '../../../../libs/ui/api-clients/src/api/exchange-client/exchangeAPI';
 
 export function App() {
   // Mock
@@ -73,17 +76,22 @@ export function App() {
   // Mock
   const [mobilenav, setnav] = useState(false);
 
-  return (
+  const { data } = useBundleControllerGetMyTrades();
+  data[1].return(
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <OriginGlobalStyles />
-      <TopBar buttons={buttons} onMobileNavOpen={() => setnav(true)} />
-      <NavBar
-        openMobile={mobilenav}
-        onMobileClose={() => setnav(false)}
-        menuSections={menuSections}
-        userData={userData}
-        orgData={orgData}
-      />
+      <OriginQueryClientProvider>
+        <AuthProvider initialState={null}>
+          <OriginGlobalStyles />
+          <TopBar buttons={buttons} onMobileNavOpen={() => setnav(true)} />
+          <NavBar
+            openMobile={mobilenav}
+            onMobileClose={() => setnav(false)}
+            menuSections={menuSections}
+            userData={userData}
+            orgData={orgData}
+          />
+        </AuthProvider>
+      </OriginQueryClientProvider>
     </ErrorBoundary>
   );
 }

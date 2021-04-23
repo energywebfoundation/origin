@@ -51,6 +51,7 @@
     "ui-core-e2e": { "tags": [], "implicitDependencies": ["ui-core"] },
     "ui-shared-state": { "tags": [] },
     "ui-forms": { "tags": [] },
-    "ui-validation": { "tags": [] }
+    "ui-validation": { "tags": [] },
+    "ui-api-clients": { "tags": [] }
   }
 }
