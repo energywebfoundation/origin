@@ -1,22 +1,22 @@
 import { TableRow } from '@material-ui/core';
-import React from 'react';
-import { FC } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import { TableRowData, TableHeaderData } from '../../../containers';
 import { TableComponentActions } from '../TableComponentActions';
 import { TableComponentCell } from '../TableComponentCell';
 
-interface TableComponentRowProps {
-  row: TableRowData;
+interface TableComponentRowProps<Id> {
+  row: TableRowData<Id>;
   headerData: TableHeaderData;
 }
 
-export const TableComponentRow: FC<TableComponentRowProps> = ({
-  row,
-  headerData,
-}) => {
+export type TTableComponentRow = <Id>(
+  props: PropsWithChildren<TableComponentRowProps<Id>>
+) => ReactElement;
+
+export const TableComponentRow: TTableComponentRow = ({ row, headerData }) => {
   const headerKeys = Object.keys(headerData);
   return (
-    <TableRow key={row.id}>
+    <TableRow key={row.id.toString()}>
       {headerKeys.map((key, idx) =>
         key === 'actions' ? (
           <TableComponentActions

@@ -1,11 +1,14 @@
 import { Grid } from '@material-ui/core';
-import React from 'react';
-import { FC } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import { SingleColumnForm, SingleColumnFormProps } from '../SingleColumnForm';
 
 export interface DoubleColumnFormProps extends SingleColumnFormProps {}
 
-export const DoubleColumnForm: FC<DoubleColumnFormProps> = ({
+export type TDoubleColumnForm = (
+  props: PropsWithChildren<SingleColumnFormProps>
+) => ReactElement;
+
+export const DoubleColumnForm: TDoubleColumnForm = ({
   fields,
   control,
   register,

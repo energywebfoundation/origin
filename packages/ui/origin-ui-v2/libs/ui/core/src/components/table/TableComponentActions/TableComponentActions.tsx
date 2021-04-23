@@ -5,18 +5,21 @@ import {
   TableCell,
 } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
-import React from 'react';
-import { FC } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import { TableActionData } from '../../../containers';
 import { useStyles } from './TableComponentActions.styles';
 import { useTableActionsEffects } from './TableComponentsActions.effects';
 
-interface TableComponentActionsProps {
-  id: string | number;
-  actions: TableActionData[];
+interface TableComponentActionsProps<Id> {
+  id: Id;
+  actions: TableActionData<Id>[];
 }
 
-export const TableComponentActions: FC<TableComponentActionsProps> = ({
+export type TTableComponentActions = <Id>(
+  props: PropsWithChildren<TableComponentActionsProps<Id>>
+) => ReactElement;
+
+export const TableComponentActions: TTableComponentActions = ({
   id,
   actions,
 }) => {

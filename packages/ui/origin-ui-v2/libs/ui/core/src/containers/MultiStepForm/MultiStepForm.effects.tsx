@@ -1,25 +1,22 @@
 import React from 'react';
 import { useState } from 'react';
+import { UnpackNestedValue } from 'react-hook-form';
 import { GenericForm } from '../GenericForm';
 import { MultiStepFormProps } from './MultiStepForm';
 
-type TUseMultiStepEffectsArgs = Pick<
-  MultiStepFormProps,
+type TUseMultiStepEffectsArgs<Union, Merged> = Pick<
+  MultiStepFormProps<Union, Merged>,
   'forms' | 'submitHandler'
 >;
 
-type FormStore = {
-  [key: string]: any;
-};
-
-export const useMultiStepFormEffects = ({
+export const useMultiStepFormEffects = <Union, Merged>({
   forms,
   submitHandler,
-}: TUseMultiStepEffectsArgs) => {
+}: TUseMultiStepEffectsArgs<Union, Merged>) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [store, setStore] = useState<FormStore>(null);
+  const [store, setStore] = useState<Merged>(null);
 
-  const nextButtonHandler = (values: any): void => {
+  const nextButtonHandler = (values: UnpackNestedValue<Union>): void => {
     if (activeStep + 1 === forms.length) {
       return submitHandler({ ...store, values });
     }

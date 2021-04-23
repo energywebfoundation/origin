@@ -7,8 +7,13 @@ import {
 import { GenericFormField } from '../../../containers';
 import { UseFormRegister, FieldValues } from 'react-hook-form';
 
+export type FormInputField = Omit<
+  GenericFormField,
+  'options' | 'select' | 'autocomplete' | 'multiple' | 'maxValues'
+>;
+
 export interface FormInputProps extends BaseTextFieldProps {
-  field: GenericFormField;
+  field: FormInputField;
   register: UseFormRegister<FieldValues>;
   errorExists: boolean;
   errorText: string;

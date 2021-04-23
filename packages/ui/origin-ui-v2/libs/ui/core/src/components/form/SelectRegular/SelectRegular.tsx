@@ -1,13 +1,13 @@
 import { MenuItem, TextField } from '@material-ui/core';
-import React from 'react';
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { GenericFormField } from '../../../containers';
+import { FormSelectOption } from '../FormSelect';
 
 export interface SelectRegularProps {
   field: GenericFormField;
   errorExists: boolean;
   errorText: string;
-  value: string | number;
+  value: FormSelectOption['value'];
   onChange: (...event: any[]) => void;
   variant?: 'standard' | 'outlined' | 'filled';
 }

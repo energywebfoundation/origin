@@ -1,20 +1,28 @@
 import { Typography, TypographyVariant } from '@material-ui/core';
-import React from 'react';
-import { FC } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import { StepReport } from '../../components/form';
 import { GenericFormProps } from '../GenericForm';
 import { useMultiStepFormEffects } from './MultiStepForm.effects';
 
-export type MultiStepFormItem = Omit<GenericFormProps, 'submitHandler'>;
+export type MultiStepFormItem<FormValuesType> = Omit<
+  GenericFormProps<FormValuesType>,
+  'submitHandler'
+>;
 
-export interface MultiStepFormProps {
+export interface MultiStepFormProps<FormValuesUnion, FormValuesMerged> {
   heading: string;
   headingVariant?: TypographyVariant;
-  forms: MultiStepFormItem[];
-  submitHandler: (values: any) => void;
+  forms: MultiStepFormItem<FormValuesUnion>[];
+  submitHandler: (values: FormValuesMerged) => void;
 }
 
-export const MultiStepForm: FC<MultiStepFormProps> = ({
+export type TMultiStepForm = <FormValuesUnion, FormValuesMerged>(
+  props: PropsWithChildren<
+    MultiStepFormProps<FormValuesUnion, FormValuesMerged>
+  >
+) => ReactElement;
+
+export const MultiStepForm: TMultiStepForm = ({
   heading,
   headingVariant,
   forms,

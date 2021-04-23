@@ -1,54 +1,10 @@
-import {
-  Box,
-  BoxProps,
-  Button,
-  Typography,
-  TypographyVariant,
-} from '@material-ui/core';
-import React, { FC, memo, ReactNode } from 'react';
-import {
-  DoubleColumnForm,
-  FormInputProps,
-  FormSelectOption,
-  SingleColumnForm,
-} from '../../components/form';
+import { Box, Button, Typography } from '@material-ui/core';
+import React, { memo } from 'react';
+import { DoubleColumnForm, SingleColumnForm } from '../../components/form';
 import { useGenericFormEffects } from './GenericForm.effects';
-import * as yup from 'yup';
+import { TGenericForm } from './GenericForm.types';
 
-export type GenericFormField = {
-  name: string;
-  label: string;
-  type?: string;
-  select?: boolean;
-  options?: FormSelectOption[];
-  autocomplete?: boolean;
-  multiple?: boolean;
-  maxValues?: number;
-  startAdornment?: ReactNode;
-  endAdornment?: {
-    element: ReactNode;
-    isValidCheck?: boolean;
-  };
-};
-
-export interface GenericFormProps {
-  submitHandler: (values: any) => void;
-  validationSchema: yup.ObjectSchema<any>;
-  initialValues: any;
-  fields: GenericFormField[];
-  buttonText: string;
-  buttonFullWidth?: boolean;
-  buttonWrapperProps?: BoxProps;
-  formTitle?: string;
-  formTitleVariant?: TypographyVariant;
-  formClass?: string;
-  inputsVariant?: FormInputProps['variant'];
-  inputsClass?: string;
-  partOfMultiForm?: boolean;
-  twoColumns?: boolean;
-}
-
-export const GenericForm: FC<GenericFormProps> = memo(
+export const GenericForm: TGenericForm = memo(
   ({
     submitHandler,
     validationSchema,

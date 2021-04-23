@@ -6,25 +6,25 @@ import {
   Control,
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { GenericFormProps } from './GenericForm';
+import { GenericFormProps } from './GenericForm.types';
 
-type GenericFormEffectsProps = Pick<
-  GenericFormProps,
+type GenericFormEffectsProps<FormValuesType> = Pick<
+  GenericFormProps<FormValuesType>,
   'validationSchema' | 'initialValues' | 'submitHandler' | 'partOfMultiForm'
 >;
 
-type GenericFormEffectsReturnType = {
-  register: UseFormRegister<any>;
+type GenericFormEffectsReturnType<FormValuesType> = {
+  register: UseFormRegister<FormValuesType>;
   onSubmit: (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
-  errors: DeepMap<any, FieldError>;
+  errors: DeepMap<FormValuesType, FieldError>;
   buttonDisabled: boolean;
-  dirtyFields: DeepMap<any, true>;
-  control: Control<any>;
+  dirtyFields: DeepMap<FormValuesType, true>;
+  control: Control<FormValuesType>;
 };
 
-type TGenericFormEffects = (
-  props: GenericFormEffectsProps
-) => GenericFormEffectsReturnType;
+type TGenericFormEffects = <FormValuesType>(
+  props: GenericFormEffectsProps<FormValuesType>
+) => GenericFormEffectsReturnType<FormValuesType>;
 
 export const useGenericFormEffects: TGenericFormEffects = ({
   validationSchema,
