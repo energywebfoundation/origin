@@ -65,9 +65,9 @@
       "@energyweb/origin-ui-shared-state": [
         "libs/ui/shared-state/src/index.ts"
       ],
-      "@energy-web/ui/forms": ["libs/ui/forms/src/index.ts"],
-      "@energy-web/ui/validation": ["libs/ui/validation/src/index.ts"],
-      "@energy-web/ui/api-clients": ["libs/ui/api-clients/src/index.ts"]
+      "@energy-web/origin-ui-forms": ["libs/ui/forms/src/index.ts"],
+      "@energy-web/origin-ui-validation": ["libs/ui/validation/src/index.ts"],
+      "@energy-web/origin-ui-api-clients": ["libs/ui/api-clients/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { TopBar, NavBar, ErrorFallback } from '@energyweb/origin-ui-core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { OriginGlobalStyles } from './OriginGlobalStyles';
-import { AuthProvider } from '@energy-web/ui/api-clients';
-import { OriginQueryClientProvider } from '@energy-web/ui/api-clients';
-import { useBundleControllerGetMyTrades } from '../../../../libs/ui/api-clients/src/api/exchange-client/exchangeAPI';
+import {
+  AuthProvider,
+  OriginQueryClientProvider,
+} from '@energy-web/origin-ui-api-clients';
 
 export function App() {
   // Mock
@@ -76,8 +77,7 @@ export function App() {
   // Mock
   const [mobilenav, setnav] = useState(false);
 
-  const { data } = useBundleControllerGetMyTrades();
-  data[1].return(
+  return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <OriginQueryClientProvider>
         <AuthProvider initialState={null}>

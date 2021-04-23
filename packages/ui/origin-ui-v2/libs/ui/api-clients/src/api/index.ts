@@ -1,4 +1,9 @@
 export * as exchangeClient from './exchange-client';
-export * as iRecClient from './exchange-irec-client';
+export * as exchangeIRecClient from './exchange-irec-client';
 export * as issuerApiClient from './issuer-api-client';
 export * as originBackendClient from './origin-backend-client';
+export * as originDeviceRegistryClient from './origin-device-registry-client';
+export * as originDeviceRegistryIRecFormClient from './origin-device-registry-irec-form-client';
+export * as originDeviceRegistryIRecLocalClient from './origin-device-registry-irec-local-client';
+export * as originEnergyClient from './origin-energy-client';
+export * as originOrganizationIRecClient from './origin-organization-irec-client';
