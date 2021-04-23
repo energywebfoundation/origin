@@ -4,11 +4,10 @@ import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
 import {
     AccessTokens,
-    Device as IrecDevice,
-    DeviceCreateParams,
-    DeviceUpdateParams,
-    DeviceState,
-    IRECAPIClient
+    IRECAPIClient,
+    Issue,
+    IssueStatus,
+    IssueWithStatus
 } from '@energyweb/issuer-irec-api-wrapper';
 import {
     GetConnectionCommand,
@@ -48,79 +47,45 @@ export class IrecCertificateService {
         return client;
     }
 
-    async createIrecIssue(
-        user: UserIdentifier,
-        deviceData: DeviceCreateParams
-    ): Promise<IrecDevice> {
+    async createIrecIssue(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {
         if (!this.isIrecIntegrationEnabled()) {
             return {
-                ...deviceData,
-                status: DeviceState.InProgress,
+                ...issue,
+                status: IssueStatus.InProgress,
                 code: ''
             };
         }
         const irecClient = await this.getIrecClient(user);
-        const irecDevice = await irecClient.device.create(deviceData);
-        await irecClient.device.submit(irecDevice.code);
-        irecDevice.status = DeviceState.InProgress;
-        return irecDevice;
+        const irecIssue: IssueWithStatus = await irecClient.issue.create(issue);
+        await irecClient.issue.submit(irecIssue.code);
+        irecIssue.status = IssueStatus.InProgress;
+        return irecIssue;
     }
 
-    async update(
-        user: UserIdentifier,
-        code: string,
-        device: DeviceUpdateParams
-    ): Promise<IrecDevice> {
+    async update(user: UserIdentifier, code: string, issue: Issue): Promise<IssueWithStatus> {
         if (!this.isIrecIntegrationEnabled()) {
             return {
-                ...device,
-                status: DeviceState.InProgress,
+                ...issue,
+                status: IssueStatus.InProgress,
                 code
-            } as IrecDevice;
+            } as IssueWithStatus;
         }
 
         const irecClient = await this.getIrecClient(user);
-        const irecDevice = await irecClient.device.get(code);
-        if (irecDevice.status === DeviceState.InProgress) {
-            throw new BadRequestException('Device in "In Progress" state is not available to edit');
+        const irecIssue = await irecClient.issue.get(code);
+        if (irecIssue.status === IssueStatus.InProgress) {
+            throw new BadRequestException('Issue in "In Progress" state is not available to edit');
         }
 
-        const updatedIredDevice = await irecClient.device.edit(code, device);
+        await irecClient.issue.update(code, issue);
+        const updatedIredIssue = await irecClient.issue.get(code);
         await irecClient.device.submit(code);
-        updatedIredDevice.status = DeviceState.InProgress;
-        return updatedIredDevice;
+        updatedIredIssue.status = IssueStatus.InProgress;
+        return updatedIredIssue;
     }
 
-    async getIssue(user: UserIdentifier, code: string): Promise<IrecDevice> {
+    async getIssue(user: UserIdentifier, code: string): Promise<IssueWithStatus> {
         const irecClient = await this.getIrecClient(user);
-        return irecClient.device.get(code);
-    }
-
-    async getIssues(user: UserIdentifier): Promise<IrecDevice[]> {
-        if (!this.isIrecIntegrationEnabled()) {
-            return [
-                {
-                    address: '1 Wind Farm Avenue, London',
-                    capacity: 500,
-                    commissioningDate: new Date('2001-08-10'),
-                    countryCode: 'GB',
-                    defaultAccount: 'someTradeAccount',
-                    deviceType: 'TC110',
-                    fuel: 'ES200',
-                    issuer: 'someIssuerCode',
-                    latitude: '53.405088',
-                    longitude: '-1.744222',
-                    name: 'DeviceXYZ',
-                    notes: 'Lorem ipsum dolor sit amet',
-                    registrantOrganization: 'someRegistrantCode',
-                    registrationDate: new Date('2001-09-20'),
-                    status: DeviceState.Approved,
-                    code: 'mockDeviceCode',
-                    active: true
-                }
-            ];
-        }
-        const irecClient = await this.getIrecClient(user);
-        return irecClient.device.getAll();
+        return irecClient.issue.get(code);
     }
 }

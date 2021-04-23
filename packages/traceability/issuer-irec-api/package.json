@@ -39,6 +39,7 @@
     "dependencies": {
         "@energyweb/issuer": "3.2.0",
         "@energyweb/issuer-api": "0.2.0",
+        "@energyweb/issuer-irec-api-wrapper": "0.3.0",
         "@energyweb/origin-backend-core": "8.0.1",
         "@energyweb/origin-backend-utils": "1.5.1",
         "@energyweb/utils-general": "11.0.2",
