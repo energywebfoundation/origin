@@ -6,6 +6,7 @@ import { BNTransformer } from '../../utils/valueTransformers';
 import { Order } from '../order/order.entity';
 
 import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: `${DB_TABLE_PREFIX}_trade` })
 export class Trade extends ExtendedBaseEntity {
@@ -14,22 +15,28 @@ export class Trade extends ExtendedBaseEntity {
         Object.assign(this, partial);
     }
 
+    @ApiProperty({ type: String })
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
+    @ApiProperty({ type: String })
     @Column('timestamptz')
     created: Date;
 
+    @ApiProperty({ type: String })
     @Column('bigint', { transformer: BNTransformer })
     volume: BN;
 
+    @ApiProperty({ type: String })
     @Column()
     price: number;
 
+    @ApiProperty({ type: () => Order })
     @ManyToOne(() => Order, { eager: true })
     @JoinTable()
     bid: Order;
 
+    @ApiProperty({ type: () => Order })
     @ManyToOne(() => Order, { eager: true })
     @JoinTable()
     ask: Order;
