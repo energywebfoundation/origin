@@ -1,17 +1,17 @@
 import { CertificationRequest as CertificationRequestFacade } from '@energyweb/issuer';
 import { BadRequestException, Logger } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
-import { isAddress, getAddress } from 'ethers/lib/utils';
+import { getAddress, isAddress } from 'ethers/lib/utils';
 
 import {
     BlockchainPropertiesService,
-    CertificationRequestStatus,
+    CertificationRequest,
     CertificationRequestDTO,
-    CertificationRequest
+    CertificationRequestStatus
 } from '@energyweb/issuer-api';
 import { CreateIrecCertificationRequestCommand } from '../commands/create-irec-certification-request.command';
 
@@ -25,7 +25,8 @@ export class CreateCertificationRequestHandler
     constructor(
         @InjectRepository(CertificationRequest)
         private readonly repository: Repository<CertificationRequest>,
-        private readonly blockchainPropertiesService: BlockchainPropertiesService
+        private readonly blockchainPropertiesService: BlockchainPropertiesService,
+        private readonly eventBus: EventBus
     ) {
         this.requestQueue.pipe(concatMap((id) => this.process(id))).subscribe();
     }

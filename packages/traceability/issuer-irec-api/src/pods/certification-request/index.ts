@@ -9,3 +9,4 @@ export * from './certification-request.controller';
 export * from './certification-request.dto';
 export * from './certification-request.entity';
 export * from './certification-request.module';
+export * from './irec-certificate.service';

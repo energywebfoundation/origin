@@ -1,7 +1,7 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
 import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
 import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
-import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-api';
+import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-irec-api';
 import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities,
