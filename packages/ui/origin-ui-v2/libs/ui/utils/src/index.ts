@@ -12,3 +12,4 @@ export * from './period';
 export * from './permissions';
 export * from './roles';
 export * from './convert';
+export * from './localization';

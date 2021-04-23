@@ -1,22 +1,25 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
 import { Button, ListItem } from '@material-ui/core';
-import { FC, memo } from 'react';
+import React, { FC, memo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useComponentStyles } from './styles';
+import { useStyles } from './NavSection.styles';
 
 export interface NavSectionTitleProps {
   url: string;
   title: string;
+  clickHandler?: () => void;
 }
 
 export const NavSectionTitle: FC<NavSectionTitleProps> = memo(
-  ({ url, title }) => {
-    const { listItemCss, buttonCss } = useComponentStyles();
+  ({ url, title, clickHandler }) => {
+    const classes = useStyles();
     return (
-      <ListItem css={listItemCss} disableGutters>
-        <Button css={buttonCss} component={NavLink} to={url}>
+      <ListItem className={classes.listItem} disableGutters>
+        <Button
+          onClick={clickHandler}
+          className={classes.button}
+          component={NavLink}
+          to={url}
+        >
           {title}
         </Button>
       </ListItem>

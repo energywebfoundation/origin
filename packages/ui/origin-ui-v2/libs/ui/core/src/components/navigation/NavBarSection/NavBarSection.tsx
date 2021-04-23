@@ -1,11 +1,12 @@
-import React, { FC, memo } from 'react';
-import { Theme } from '@material-ui/core/styles';
+import React, { FC } from 'react';
 import { NavSectionTitle } from '../NavSectionTitle';
 import { NavSubMenu } from '../NavSubMenu';
-import styled from '@emotion/styled';
-import { LightenColor } from '@energyweb/origin-ui-theme';
+import { useStyles } from './NavBarSection.styles';
 
-export type TMenuSection = NavBarSectionProps;
+export type TMenuSection = Omit<
+  NavBarSectionProps,
+  'titleClickHandler' | 'isOpen'
+>;
 
 export type TModuleMenuItem = {
   url: string;
@@ -19,28 +20,38 @@ export interface NavBarSectionProps {
   rootUrl: string;
   isOpen: boolean;
   menuList: TModuleMenuItem[];
+  titleClickHandler?: () => void;
+  closeMobileNav?: () => void;
 }
 
-const Wrapper = styled.div`
-  border-top: 1px solid
-    ${(props) => {
-      const mode = (props.theme as Theme).palette?.mode;
-      const themeBgColor = (props.theme as Theme).palette?.background.paper;
-      return LightenColor(themeBgColor, 5, mode);
-    }};
-`;
+export const NavBarSection: FC<NavBarSectionProps> = ({
+  sectionTitle,
+  show,
+  rootUrl,
+  isOpen,
+  menuList,
+  titleClickHandler,
+  closeMobileNav,
+}) => {
+  const classes = useStyles();
 
-export const NavBarSection: FC<NavBarSectionProps> = memo(
-  ({ sectionTitle, show, rootUrl, isOpen, menuList }) => {
-    return (
-      <Wrapper>
-        {show && (
-          <>
-            <NavSectionTitle url={rootUrl} title={sectionTitle} />
-            <NavSubMenu rootUrl={rootUrl} open={isOpen} menuList={menuList} />
-          </>
-        )}
-      </Wrapper>
-    );
-  }
-);
+  return (
+    <div className={classes.wrapper}>
+      {show && (
+        <>
+          <NavSectionTitle
+            url={rootUrl}
+            title={sectionTitle}
+            clickHandler={titleClickHandler}
+          />
+          <NavSubMenu
+            closeMobileNav={closeMobileNav}
+            rootUrl={rootUrl}
+            open={isOpen}
+            menuList={menuList}
+          />
+        </>
+      )}
+    </div>
+  );
+};
