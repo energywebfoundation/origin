@@ -29,5 +29,6 @@ module.exports = {
     '<rootDir>/libs/organization/logic',
     '<rootDir>/libs/ui/forms',
     '<rootDir>/libs/ui/validation',
+    '<rootDir>/libs/ui/api-clients',
   ],
 };

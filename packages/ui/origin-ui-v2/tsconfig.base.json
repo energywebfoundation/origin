@@ -75,8 +75,9 @@
       "@energyweb/origin-ui-organization-logic": [
         "libs/organization/logic/src/index.ts"
       ],
-      "@energy-web/ui/forms": ["libs/ui/forms/src/index.ts"],
-      "@energy-web/ui/validation": ["libs/ui/validation/src/index.ts"],
+      "@energy-web/origin-ui-forms": ["libs/ui/forms/src/index.ts"],
+      "@energy-web/origin-ui-validation": ["libs/ui/validation/src/index.ts"],
+      "@energy-web/origin-ui-api-clients": ["libs/ui/api-clients/src/index.ts"],
       "stream": ["node_modules/readable-stream"]
     }
   },

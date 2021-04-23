@@ -54,6 +54,7 @@
     "organization-data": { "tags": [] },
     "organization-logic": { "tags": [] },
     "ui-forms": { "tags": [] },
-    "ui-validation": { "tags": [] }
+    "ui-validation": { "tags": [] },
+    "ui-api-clients": { "tags": [] }
   }
 }
