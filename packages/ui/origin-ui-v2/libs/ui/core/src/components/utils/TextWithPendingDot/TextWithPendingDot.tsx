@@ -1,10 +1,7 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { jsx } from '@emotion/react';
-import styled from '@emotion/styled';
-import { FC, memo } from 'react';
+import React, { FC, memo } from 'react';
 import { Tooltip, Typography, TypographyVariant } from '@material-ui/core';
 import { Dot } from '../Dot';
+import { useStyles } from './TextWithPendingDot.styles';
 
 export interface TextWithPendingDotProps {
   textContent: string;
@@ -13,28 +10,20 @@ export interface TextWithPendingDotProps {
   variant?: TypographyVariant;
 }
 
-const BlockWrapper = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-});
-
-const DotWrapper = styled.div({
-  display: 'inline-block',
-});
-
 export const TextWithPendingDot: FC<TextWithPendingDotProps> = memo(
   ({ textContent, pending = false, tooltipText, variant }) => {
+    const classes = useStyles();
     return (
-      <BlockWrapper>
+      <div className={classes.blockWrapper}>
         <Typography variant={variant}>{textContent}</Typography>
         {pending && (
           <Tooltip title={tooltipText}>
-            <DotWrapper>
+            <div className={classes.dotWrapper}>
               <Dot />
-            </DotWrapper>
+            </div>
           </Tooltip>
         )}
-      </BlockWrapper>
+      </div>
     );
   }
 );

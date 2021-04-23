@@ -14,4 +14,7 @@ export const Default = (args: NavSectionTitleProps) => (
 Default.args = {
   title: 'Section Title',
   url: '/section-title',
+  clickHandler: () => {
+    console.log('Title clicked');
+  },
 };
