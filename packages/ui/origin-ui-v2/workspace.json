@@ -34,7 +34,7 @@
             ],
             "styles": [],
             "scripts": [],
-            "webpackConfig": "@nrwl/react/plugins/webpack"
+            "webpackConfig": "webpack/webpack.config.js"
           },
           "configurations": {
             "production": {
@@ -63,7 +63,10 @@
         },
         "serve": {
           "executor": "@nrwl/web:dev-server",
-          "options": { "buildTarget": "origin-ui:build" },
+          "options": {
+            "buildTarget": "origin-ui:build",
+            "webpackConfig": "webpack/webpack.config.js"
+          },
           "configurations": {
             "production": { "buildTarget": "origin-ui:build:production" }
           }
@@ -959,6 +962,126 @@
           "outputs": ["coverage/libs/ui/shared-state"],
           "options": {
             "jestConfig": "libs/ui/shared-state/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-view": {
+      "root": "libs/organization/view",
+      "sourceRoot": "libs/organization/view/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/view",
+            "tsConfig": "libs/organization/view/tsconfig.lib.json",
+            "project": "libs/organization/view/package.json",
+            "entryFile": "libs/organization/view/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/view/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/view"],
+          "options": {
+            "jestConfig": "libs/organization/view/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-data": {
+      "root": "libs/organization/data",
+      "sourceRoot": "libs/organization/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/data",
+            "tsConfig": "libs/organization/data/tsconfig.lib.json",
+            "project": "libs/organization/data/package.json",
+            "entryFile": "libs/organization/data/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/data"],
+          "options": {
+            "jestConfig": "libs/organization/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-logic": {
+      "root": "libs/organization/logic",
+      "sourceRoot": "libs/organization/logic/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/logic",
+            "tsConfig": "libs/organization/logic/tsconfig.lib.json",
+            "project": "libs/organization/logic/package.json",
+            "entryFile": "libs/organization/logic/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/logic/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/logic"],
+          "options": {
+            "jestConfig": "libs/organization/logic/jest.config.js",
             "passWithNoTests": true
           }
         }

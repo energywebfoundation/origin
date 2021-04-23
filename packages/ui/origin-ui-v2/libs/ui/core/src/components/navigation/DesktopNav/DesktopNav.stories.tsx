@@ -52,14 +52,12 @@ const menuSections = [
     sectionTitle: 'Section 1 title',
     show: true,
     rootUrl: '/section-1-link',
-    isOpen: true,
     menuList: section1MenuList,
   },
   {
     sectionTitle: 'Section 2 title',
     show: true,
     rootUrl: '/section-2-link',
-    isOpen: false,
     menuList: section2MenuList,
   },
 ];

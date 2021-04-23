@@ -1,32 +1,24 @@
-import React, { useState } from 'react';
-import { TopBar, NavBar, ErrorFallback } from '@energyweb/origin-ui-core';
+import React from 'react';
+import { ErrorFallback, MainLayout } from '@energyweb/origin-ui-core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { OriginGlobalStyles } from './OriginGlobalStyles';
+import { topBarButtons, userAndOrgData } from '../__mocks__/mainLayout';
+import { useAppEffects } from './App.effects';
+import { Routes, Route } from 'react-router-dom';
+import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
+import { initializeI18N } from '@energyweb/origin-ui-utils';
+import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 
 export function App() {
-  // Mock
-  const buttons = [
-    {
-      label: 'Register',
-      onClick: () => {
-        console.log('Register clicked');
-      },
-    },
-    {
-      label: 'Login',
-      onClick: () => {
-        console.log('Login clicked');
-      },
-    },
-  ];
+  const { orgMenu } = useAppEffects();
 
   // Mock
   const menuSections = [
+    orgMenu,
     {
       sectionTitle: 'Devices',
       show: true,
       rootUrl: '/devices',
-      isOpen: true,
       menuList: [
         {
           url: 'all-devices',
@@ -40,50 +32,23 @@ export function App() {
         },
       ],
     },
-    {
-      sectionTitle: 'Exchange',
-      show: true,
-      rootUrl: '/exchange',
-      isOpen: false,
-      menuList: [
-        {
-          url: 'view-market',
-          label: 'View Market',
-          show: true,
-        },
-        {
-          url: 'my-orders',
-          label: 'My orders',
-          show: true,
-        },
-      ],
-    },
   ];
-  // Mock
-  const userData = {
-    username: 'John Doe',
-  };
-  // Mock
-  const orgData = {
-    orgName: 'World Trade Organization',
-    orgPending: true,
-    orgTooltip: 'Your organization status is Pending',
-  };
 
-  // Mock
-  const [mobilenav, setnav] = useState(false);
+  initializeI18N(getOriginLanguage());
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <OriginGlobalStyles />
-      <TopBar buttons={buttons} onMobileNavOpen={() => setnav(true)} />
-      <NavBar
-        openMobile={mobilenav}
-        onMobileClose={() => setnav(false)}
+      <MainLayout
+        topbarButtons={topBarButtons}
         menuSections={menuSections}
-        userData={userData}
-        orgData={orgData}
-      />
+        userData={userAndOrgData.userData}
+        orgData={userAndOrgData.orgData}
+      >
+        <Routes>
+          <Route path="organization/*" element={<OrganizationApp />} />
+        </Routes>
+      </MainLayout>
     </ErrorBoundary>
   );
 }

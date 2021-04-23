@@ -8,7 +8,7 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
   palette: {
     primary: {
       main: styleConfig.PRIMARY_COLOR,
-      contrastText: styleConfig.WHITE,
+      contrastText: styleConfig.SIMPLE_TEXT_COLOR,
     },
     background: {
       paper: styleConfig.MAIN_BACKGROUND_COLOR,
@@ -17,7 +17,6 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     text: {
       primary: styleConfig.WHITE,
       secondary: styleConfig.TEXT_COLOR_DEFAULT,
-      // hint: '#f50057',
       disabled: styleConfig.TEXT_COLOR_DEFAULT,
     },
     mode: 'dark',
@@ -27,15 +26,14 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     fontSize: styleConfig.FONT_SIZE,
   },
   components: {
-    MuiInput: {
+    MuiFilledInput: {
       styleOverrides: {
-        underline: {
-          '&:before': {
-            borderBottom: `2px solid ${LightenColor(
-              styleConfig.MAIN_BACKGROUND_COLOR,
-              13
-            )}`,
-          },
+        root: {
+          backgroundColor: LightenColor(
+            styleConfig.MAIN_BACKGROUND_COLOR,
+            -0.5
+          ),
+          borderRadius: 5,
         },
       },
     },
@@ -71,30 +69,38 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     MuiTable: {
       styleOverrides: {
         root: {
-          color: styleConfig.TEXT_COLOR_DEFAULT,
           borderBottom: `2px solid ${styleConfig.PRIMARY_COLOR}`,
-          backgroundColor: styleConfig.MAIN_BACKGROUND_COLOR,
         },
       },
     },
     MuiTableHead: {
       styleOverrides: {
         root: {
-          '& > .MuiTableRow-root': {
-            background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 0.5),
+          background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 0.5),
+        },
+      },
+    },
+    MuiTableBody: {
+      styleOverrides: {
+        root: {
+          'tr:nth-of-type(1n)': {
+            backgroundColor: LightenColor(
+              styleConfig.MAIN_BACKGROUND_COLOR,
+              3.5
+            ),
+          },
+          'tr:nth-of-type(2n)': {
+            backgroundColor: LightenColor(
+              styleConfig.MAIN_BACKGROUND_COLOR,
+              0.5
+            ),
           },
         },
       },
     },
-    MuiTableRow: {
+    MuiTableFooter: {
       styleOverrides: {
         root: {
-          background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 3.5),
-          '&:nth-child(even)': {
-            background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 0.5),
-          },
-        },
-        footer: {
           background: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, 0.5),
         },
       },
@@ -102,32 +108,11 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: `1px solid ${styleConfig.MAIN_BACKGROUND_COLOR}`,
-          fontSize: variables.fontSize,
+          padding: 16,
+          borderBottom: 'none',
         },
         body: {
           color: styleConfig.TEXT_COLOR_DEFAULT,
-        },
-        head: {
-          color: styleConfig.TEXT_COLOR_DEFAULT,
-          borderBottom: 'none',
-        },
-      },
-    },
-    MuiTableSortLabel: {
-      styleOverrides: {
-        root: {
-          color: styleConfig.TEXT_COLOR_DEFAULT,
-        },
-      },
-    },
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          color: styleConfig.SIMPLE_TEXT_COLOR,
-        },
-        icon: {
-          color: styleConfig.FIELD_ICON_COLOR,
         },
       },
     },
@@ -148,6 +133,9 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
         },
         body1: {
           fontFamily: styleConfig.FONT_FAMILY_SECONDARY,
+        },
+        gutterBottom: {
+          marginBottom: '1rem',
         },
       },
     },
