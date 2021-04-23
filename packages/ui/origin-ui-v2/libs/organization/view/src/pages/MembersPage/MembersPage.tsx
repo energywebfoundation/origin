@@ -4,7 +4,7 @@ import React from 'react';
 import { FC } from 'react';
 
 export const MembersPage: FC = () => {
-  const mockData: TableComponentProps = {
+  const mockData: TableComponentProps<number> = {
     header: {
       firstName: 'First Name',
       lastName: 'Last name',
@@ -12,6 +12,7 @@ export const MembersPage: FC = () => {
       role: 'Role',
       actions: '',
     },
+    totalPages: 3,
     data: [
       {
         id: 2,
@@ -58,5 +59,5 @@ export const MembersPage: FC = () => {
     ],
   };
 
-  return <TableComponent header={mockData.header} data={mockData.data} />;
+  return <TableComponent {...mockData} />;
 };

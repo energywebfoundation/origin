@@ -1,12 +1,13 @@
-import { TableComponent } from '@energyweb/origin-ui-core';
+import { TableComponent, TableComponentProps } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 
 export const InvitationsPage: FC = () => {
-  const mockData = {
+  const mockData: TableComponentProps<number> = {
     header: {
       email: 'Email',
       status: 'Status',
     },
+    totalPages: 5,
     data: [
       { id: 2, email: 'testUser@mail.com', status: 'Pending' },
       { id: 25, email: 'realUser@mail.com', status: 'Active' },
@@ -14,5 +15,5 @@ export const InvitationsPage: FC = () => {
     ],
   };
 
-  return <TableComponent header={mockData.header} data={mockData.data} />;
+  return <TableComponent {...mockData} />;
 };
