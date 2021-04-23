@@ -2,8 +2,9 @@
 import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 import { COUNTRY_OPTIONS_ISO } from '../select-options';
+import { PrimaryContactDetailsForms } from './types';
 
-export const primaryContactDetails: MultiStepFormItem = {
+export const primaryContactDetails: MultiStepFormItem<PrimaryContactDetailsForms> = {
   formTitle: 'Primary Contact Details',
   formTitleVariant: 'h5',
   inputsVariant: 'filled',

@@ -2,8 +2,9 @@
 import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 import { COUNTRY_OPTIONS_ISO } from '../select-options';
+import { SignatoryInfoFormValues } from './types';
 
-export const signatoryInfoForm: MultiStepFormItem = {
+export const signatoryInfoForm: MultiStepFormItem<SignatoryInfoFormValues> = {
   formTitle: 'Authorized Signatory Information',
   formTitleVariant: 'h5',
   inputsVariant: 'filled',

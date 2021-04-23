@@ -1,10 +1,10 @@
-import { MultiStepFormItem } from '@energyweb/origin-ui-core';
+import { MultiStepFormProps } from '@energyweb/origin-ui-core';
 import { leadUserDetals } from './leadUserDetails';
 import { primaryContactDetails } from './primaryContactDetails';
-import { orgInfoForm } from './registrationInfo';
+import { registrationInfo } from './registrationInfo';
+import { FormUnionType, FormMergedType } from './types';
 
-export const registerIRecForm: MultiStepFormItem[] = [
-  orgInfoForm,
-  primaryContactDetails,
-  leadUserDetals,
-];
+export const registerIRecForm: MultiStepFormProps<
+  FormUnionType,
+  FormMergedType
+>['forms'] = [registrationInfo, primaryContactDetails, leadUserDetals];

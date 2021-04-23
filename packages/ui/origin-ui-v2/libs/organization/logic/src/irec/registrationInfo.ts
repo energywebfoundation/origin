@@ -6,8 +6,9 @@ import {
   NUMBER_OF_EMPLOYEES_OPTIONS,
   IREC_ACCOUNT_TYPE_OPTIONS,
 } from '../select-options';
+import { IRecRegistrationInfoForm } from './types';
 
-export const orgInfoForm: MultiStepFormItem = {
+export const registrationInfo: MultiStepFormItem<IRecRegistrationInfoForm> = {
   formTitle: 'I-REC Registration information',
   formTitleVariant: 'h5',
   inputsVariant: 'filled',

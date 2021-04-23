@@ -1,17 +1,14 @@
-// @should localize and use import for Role from backend-core
+// @should localize
+import { Role } from '@energyweb/origin-backend-core';
 import { GenericFormProps } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 
-export enum Role {
-  OrganizationAdmin = 1,
-  OrganizationDeviceManager = 2,
-  OrganizationUser = 4,
-  Issuer = 8,
-  Admin = 16,
-  SupportAgent = 32,
-}
+type InviteFormValues = {
+  email: string;
+  role: Role;
+};
 
-export const inviteForm: GenericFormProps = {
+export const inviteForm: GenericFormProps<InviteFormValues> = {
   initialValues: {
     email: '',
     role: Role.OrganizationUser,

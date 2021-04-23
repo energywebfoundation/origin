@@ -5,8 +5,9 @@ import {
   BUSINESS_LEGAL_TYPE_OPTIONS,
   COUNTRY_OPTIONS_ISO,
 } from '../select-options';
+import { OrganizationInfoFormValues } from './types';
 
-export const orgInfoForm: MultiStepFormItem = {
+export const orgInfoForm: MultiStepFormItem<OrganizationInfoFormValues> = {
   formTitle: 'Organization Information',
   formTitleVariant: 'h5',
   inputsVariant: 'filled',
