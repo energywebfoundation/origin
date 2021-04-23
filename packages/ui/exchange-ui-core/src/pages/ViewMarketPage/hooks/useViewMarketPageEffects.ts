@@ -6,12 +6,11 @@ import {
     getConfiguration,
     useIntervalFetch
 } from '@energyweb/origin-ui-core';
+import { ExchangeClient, TOrderBook } from '../../../utils';
 import {
-    ExchangeClient,
     getOrdersTotalVolume,
-    IOrdersTotalVolume,
-    TOrderBook
-} from '../../../utils';
+    IOrdersTotalVolume
+} from '../../../utils/exchange/ordersTotalVolume';
 import { directBuyOrder, getEnvironment, getExchangeClient } from '../../../features';
 import { useCallback, useState } from 'react';
 import { Filter, ProductFilterDTO } from '@energyweb/exchange-irec-client';
