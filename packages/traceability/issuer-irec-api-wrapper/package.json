@@ -43,7 +43,7 @@
         "@types/qs": "6.9.6",
         "ts-node": "9.1.1",
         "typedoc": "0.20.36",
-        "typedoc-plugin-markdown": "3.7.1"
+        "typedoc-plugin-markdown": "3.7.2"
     },
     "publishConfig": {
         "access": "public",
