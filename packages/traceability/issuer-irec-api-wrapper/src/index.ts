@@ -1,4 +1,5 @@
 export * from './Account';
+export * from './Beneficiary';
 export * from './Device';
 export * from './Fuel';
 export * from './IRECAPIClient';
