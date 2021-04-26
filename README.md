@@ -98,8 +98,7 @@ We recommend using Docker based setup as follows (requires psql command line too
 
 ```
 docker pull postgres
-docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
-psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
+docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=origin -d -p 5432:5432 postgres
 ```
 
 4. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
