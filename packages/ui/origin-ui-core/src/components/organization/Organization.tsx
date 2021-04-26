@@ -7,7 +7,8 @@ import { useLinks } from '../../hooks';
 export const Organization = () => {
     const { organizationPageUrl } = useLinks();
     const organizationMenuList = useOrganizationMenu();
-    const firstNotHiddenRoute = organizationMenuList.filter((i) => i.show)[0]?.key;
+    const displayableMenuList = organizationMenuList.filter((i) => i.show);
+    const firstNotHiddenRoute = displayableMenuList[0]?.key;
 
     return (
         <div className="PageWrapper">
@@ -15,7 +16,7 @@ export const Organization = () => {
                 path={`${organizationPageUrl}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
-                    const matches = organizationMenuList.filter((item) => {
+                    const matches = displayableMenuList.filter((item) => {
                         return item.key === key;
                     });
 
