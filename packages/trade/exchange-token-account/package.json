@@ -34,7 +34,7 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "@ethersproject/contracts": "5.1.0",
-        "@ethersproject/providers": "5.1.0",
+        "@ethersproject/providers": "5.1.2",
         "chai": "4.3.0",
         "ethers": "5.1.0"
     },
