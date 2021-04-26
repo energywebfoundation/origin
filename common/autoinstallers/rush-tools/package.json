@@ -6,6 +6,6 @@
         "concurrently": "6.0.2",
         "wait-on": "5.2.1",
         "ganache-cli": "6.12.2",
-        "lerna": "3.22.1"
+        "lerna": "4.0.0"
     }
 }
