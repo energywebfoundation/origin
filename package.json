@@ -50,6 +50,7 @@
         "packages/apps/*",
         "packages/devices/*",
         "packages/organizations/*",
+        "packages/api-clients/react-query/*",
         "packages/tools/*",
         "packages/traceability/*",
         "packages/trade/*",

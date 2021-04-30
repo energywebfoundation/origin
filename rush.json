@@ -172,7 +172,7 @@
      * and set projectFolderMaxDepth to a large number.
      */
     // "projectFolderMinDepth": 2,
-    "projectFolderMaxDepth": 3,
+    "projectFolderMaxDepth": 4,
 
     /**
      * Today the npmjs.com registry enforces fairly strict naming rules for packages, but in the early
@@ -531,6 +531,42 @@
         {
             "packageName": "@energyweb/utils-general",
             "projectFolder": "packages/utils/utils-general"
+        },
+        {
+            "packageName": "@energyweb/exchange-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/exchange"
+        },
+        {
+            "packageName": "@energyweb/exchange-irec-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/exchange-irec"
+        },
+        {
+            "packageName": "@energyweb/origin-device-registry-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-device-registry-api"
+        },
+        {
+            "packageName": "@energyweb/origin-device-registry-irec-form-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-device-registry-irec-form-api"
+        },
+        {
+            "packageName": "@energyweb/origin-device-registry-irec-local-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-device-registry-irec-local-api"
+        },
+        {
+            "packageName": "@energyweb/origin-energy-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-energy-api"
+        },
+        {
+            "packageName": "@energyweb/origin-organization-irec-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-organization-irec-api"
+        },
+        {
+            "packageName": "@energyweb/origin-backend-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-backend"
+        },
+        {
+            "packageName": "@energyweb/issuer-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/issuer-api"
         }
         // {
         //   /**
