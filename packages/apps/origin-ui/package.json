@@ -45,7 +45,7 @@
         "process": "0.11.10",
         "react": "17.0.2",
         "react-dom": "17.0.2",
-        "react-i18next": "11.8.13",
+        "react-i18next": "11.8.15",
         "react-redux": "7.2.4",
         "react-router-dom": "5.2.0",
         "redux": "4.1.0",
@@ -66,7 +66,7 @@
     },
     "devDependencies": {
         "typescript": "4.2.4",
-        "@types/react": "17.0.3",
+        "@types/react": "17.0.4",
         "@types/react-dom": "17.0.3",
         "copy-webpack-plugin": "8.1.1",
         "css-loader": "5.2.4",
