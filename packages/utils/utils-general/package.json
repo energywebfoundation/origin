@@ -30,7 +30,7 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "chai": "4.3.0",
-        "eth-sig-util": "2.5.4",
+        "eth-sig-util": "3.0.1",
         "ethers": "5.1.4",
         "jsonschema": "1.4.0",
         "moment": "2.29.1",
