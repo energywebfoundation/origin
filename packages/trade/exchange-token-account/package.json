@@ -50,7 +50,7 @@
         "truffle": "5.3.3",
         "solc": "0.5.16",
         "@openzeppelin/cli": "2.8.2",
-        "@openzeppelin/contracts-ethereum-package": "2.5.0",
+        "@openzeppelin/contracts-ethereum-package": "3.0.0",
         "@openzeppelin/upgrades": "2.8.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
