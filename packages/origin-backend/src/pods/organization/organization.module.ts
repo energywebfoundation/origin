@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FileModule } from '../file/file.module';
+import { FileModule } from '../file';
 
 import { Handlers } from './handlers';
 import { UserModule } from '../user';
