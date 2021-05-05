@@ -1,7 +1,12 @@
-import { useOrganizationMenu } from '@energyweb/origin-ui-organization-logic';
+import { getOrganizationMenu } from '@energyweb/origin-ui-organization-logic';
+import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
+import { useTranslation } from 'react-i18next';
 
 export const useAppEffects = () => {
-  const orgMenu = useOrganizationMenu({
+  const { t } = useTranslation();
+
+  const orgMenu = getOrganizationMenu({
+    t,
     isLoggedIn: true,
     userHasOrg: true,
     userIsAdminOrSupport: false,
@@ -10,5 +15,17 @@ export const useAppEffects = () => {
     userOrgHasIRec: false,
     invitationsExist: true,
   });
-  return { orgMenu };
+
+  const deviceMenu = getDeviceMenu({
+    t,
+    showAllDevices: true,
+    showMapView: true,
+    showMyDevices: true,
+    showPendingDevices: true,
+    showRegisterDevice: true,
+    showDeviceImport: true,
+  });
+
+  const menuSections = [orgMenu, deviceMenu];
+  return { menuSections };
 };

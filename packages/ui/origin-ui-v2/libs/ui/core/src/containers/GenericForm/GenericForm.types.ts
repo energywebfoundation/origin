@@ -1,8 +1,17 @@
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
-import { FormInputProps, FormSelectOption } from '../../components/form';
+import {
+  FormInputProps,
+  FormSelectOption,
+  HierarchicalSelectOptions,
+} from '../../components/form';
 import * as yup from 'yup';
-import { BoxProps, TypographyVariant } from '@material-ui/core';
+import {
+  BaseTextFieldProps,
+  BoxProps,
+  TypographyVariant,
+} from '@material-ui/core';
 import { DeepPartial, UnpackNestedValue } from 'react-hook-form';
+import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
   name: string;
@@ -13,16 +22,21 @@ export type GenericFormField = {
   autocomplete?: boolean;
   multiple?: boolean;
   maxValues?: number;
+  hierarchical?: boolean;
+  hierarchicalOptions?: HierarchicalSelectOptions;
+  datePicker?: boolean;
+  datePickerProps?: Omit<DatePickerProps, 'value' | 'onChange' | 'renderInput'>;
   startAdornment?: ReactNode;
   endAdornment?: {
     element: ReactNode;
     isValidCheck?: boolean;
   };
+  textFieldProps?: BaseTextFieldProps;
 };
 
 export interface GenericFormProps<FormValuesType> {
   submitHandler: (values: UnpackNestedValue<FormValuesType>) => void;
-  validationSchema: yup.ObjectSchema<any>;
+  validationSchema: yup.AnyObjectSchema;
   initialValues: UnpackNestedValue<DeepPartial<FormValuesType>>;
   fields: GenericFormField[];
   buttonText: string;
@@ -32,7 +46,7 @@ export interface GenericFormProps<FormValuesType> {
   formTitleVariant?: TypographyVariant;
   formClass?: string;
   inputsVariant?: FormInputProps['variant'];
-  inputsClass?: string;
+  formInputsProps?: BaseTextFieldProps;
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
 }

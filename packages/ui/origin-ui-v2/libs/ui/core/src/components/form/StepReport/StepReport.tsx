@@ -24,7 +24,7 @@ export const StepReport: FC<StepReportProps> = ({ labels, activeStep }) => {
       className={classes.stepper}
       activeStep={activeStep}
     >
-      {labels.map((label, index) => {
+      {labels.map((label) => {
         const stepProps: { completed?: boolean } = {};
         const labelProps: { optional?: React.ReactNode } = {};
         return (

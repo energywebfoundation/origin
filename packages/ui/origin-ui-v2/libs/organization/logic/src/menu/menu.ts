@@ -1,7 +1,7 @@
-// @should-localize
 import { TMenuSection } from '@energyweb/origin-ui-core';
 
-type TUseOrganizationMenuArgs = {
+type TGetOrganizationMenuArgs = {
+  t: (tag: string) => string;
   isLoggedIn: boolean;
   userHasOrg: boolean;
   userIsAdminOrSupport: boolean;
@@ -11,11 +11,12 @@ type TUseOrganizationMenuArgs = {
   invitationsExist: boolean;
 };
 
-type TUseOrganizationMenu = (
-  args?: TUseOrganizationMenuArgs
+type TGetOrganizationMenu = (
+  args?: TGetOrganizationMenuArgs
 ) => Omit<TMenuSection, 'isOpen'>;
 
-export const useOrganizationMenu: TUseOrganizationMenu = ({
+export const getOrganizationMenu: TGetOrganizationMenu = ({
+  t,
   isLoggedIn,
   userHasOrg,
   userIsAdminOrSupport,
@@ -27,43 +28,43 @@ export const useOrganizationMenu: TUseOrganizationMenu = ({
   const menuList = [
     {
       url: '/register',
-      label: 'Register',
+      label: t('navigation.organization.register'),
       show: !userHasOrg,
     },
     {
       url: '/my',
-      label: 'My Organization',
+      label: t('navigation.organization.my'),
       show: userHasOrg,
     },
     {
       url: '/members',
-      label: 'Members',
+      label: t('navigation.organization.members'),
       show: userHasOrg && userIsOrgAdmin,
     },
     {
       url: '/invitations',
-      label: 'Invitations',
+      label: t('navigation.organization.invitations'),
       show: userHasOrg && userIsOrgAdmin ? true : invitationsExist,
     },
     {
       url: '/invite',
-      label: 'Invite',
+      label: t('navigation.organization.invite'),
       show: userIsActive && userHasOrg && userIsOrgAdmin,
     },
     {
       url: '/all',
-      label: 'All Organizations',
+      label: t('navigation.organization.all'),
       show: isLoggedIn && userIsActive && userIsAdminOrSupport,
     },
     {
       url: '/register-irec',
-      label: 'Register I-REC',
+      label: t('navigation.organization.registerIRec'),
       show: userHasOrg && !userOrgHasIRec && !userIsAdminOrSupport,
     },
   ];
 
   return {
-    sectionTitle: 'Organization',
+    sectionTitle: t('navigation.organization.sectionTitle'),
     show: true,
     rootUrl: '/organization',
     menuList,

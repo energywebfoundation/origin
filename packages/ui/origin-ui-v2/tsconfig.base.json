@@ -55,14 +55,8 @@
       "@energyweb/origin-ui-user-state-management": [
         "libs/user/state-management/src/index.ts"
       ],
-      "@energyweb/origin-ui-device-state-management": [
-        "libs/device/state-management/src/index.ts"
-      ],
       "@energyweb/origin-ui-device-logic": ["libs/device/logic/src/index.ts"],
       "@energyweb/origin-ui-device-view": ["libs/device/view/src/index.ts"],
-      "@energyweb/origin-ui-device-data-access": [
-        "libs/device/data-access/src/index.ts"
-      ],
       "@energyweb/origin-ui-shared-state": [
         "libs/ui/shared-state/src/index.ts"
       ],
@@ -78,7 +72,8 @@
       "@energy-web/origin-ui-forms": ["libs/ui/forms/src/index.ts"],
       "@energy-web/origin-ui-validation": ["libs/ui/validation/src/index.ts"],
       "@energy-web/origin-ui-api-clients": ["libs/ui/api-clients/src/index.ts"],
-      "stream": ["node_modules/readable-stream"]
+      "stream": ["node_modules/readable-stream"],
+      "@energyweb/origin-ui-device-data": ["libs/device/data/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

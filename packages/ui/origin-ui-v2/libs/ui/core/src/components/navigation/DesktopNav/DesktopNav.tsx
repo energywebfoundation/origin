@@ -22,8 +22,8 @@ export const DesktopNav: FC<DesktopNavProps> = ({
   const classes = useStyles();
   return (
     <Drawer anchor="left" open variant="permanent" className={classes.drawer}>
-      <IconLink url="/" className={classes.logo}>
-        <EnergyWebLogo />
+      <IconLink url="/">
+        <EnergyWebLogo className={classes.logo} />
       </IconLink>
       <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />
       <List className={classes.list}>

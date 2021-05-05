@@ -8,7 +8,7 @@ export const formatDate = (
 ) => {
   const formatToUse = includeTime
     ? DateFormatEnum.DATE_FORMAT_INCLUDING_TIME
-    : DateFormatEnum.DATE_FORMAT_DMY;
+    : DateFormatEnum.DATE_FORMAT_MDY;
 
   return dayjs(date)
     .tz(timezone || dayjs.tz.guess())

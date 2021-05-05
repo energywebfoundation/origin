@@ -1,3 +1,3 @@
-export * from './lib/theme-provider/OriginThemeProvider';
-export * from './lib/config/variables';
-export * from './lib/utils/colors';
+export * from './theme-provider/OriginThemeProvider';
+export * from './config/variables';
+export * from './utils/colors';

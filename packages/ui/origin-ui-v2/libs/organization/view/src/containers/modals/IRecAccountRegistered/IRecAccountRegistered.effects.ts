@@ -3,7 +3,7 @@ import { iRecAccountRegisteredLogic } from '@energyweb/origin-ui-organization-lo
 import { useState } from 'react';
 
 export const useIRecAccountRegisteredEffects = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const { title, text, buttons } = iRecAccountRegisteredLogic();
 

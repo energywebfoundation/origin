@@ -5,3 +5,4 @@ export * from './FormSelect';
 export * from './DisabledFormView';
 export * from './DoubleColumnForm';
 export * from './SingleColumnForm';
+export * from './HierarchicalSelect';

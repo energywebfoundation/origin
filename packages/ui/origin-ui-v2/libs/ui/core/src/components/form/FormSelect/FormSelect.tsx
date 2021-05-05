@@ -30,7 +30,7 @@ export const FormSelect: TFormSelect = ({
 }) => {
   return (
     <Controller
-      name={field.name}
+      name={field.name as any}
       control={control}
       render={({ field: { value, onChange } }) =>
         field.autocomplete ? (
@@ -43,15 +43,17 @@ export const FormSelect: TFormSelect = ({
             multiple={field.multiple}
             maxValues={field.maxValues}
             variant={variant}
+            textFieldProps={field.textFieldProps}
           />
         ) : (
           <SelectRegular
             field={field}
             errorExists={errorExists}
             errorText={errorText}
-            value={value}
+            value={value as any}
             onChange={onChange}
             variant={variant}
+            textFieldProps={field.textFieldProps}
           />
         )
       }

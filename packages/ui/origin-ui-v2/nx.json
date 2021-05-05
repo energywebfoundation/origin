@@ -44,10 +44,8 @@
     "user-view": { "tags": [] },
     "user-logic": { "tags": [] },
     "user-state-management": { "tags": [] },
-    "device-state-management": { "tags": [] },
     "device-logic": { "tags": [] },
     "device-view": { "tags": [] },
-    "device-data-access": { "tags": [] },
     "ui-core-e2e": { "tags": [], "implicitDependencies": ["ui-core"] },
     "ui-shared-state": { "tags": [] },
     "organization-view": { "tags": [] },
@@ -55,6 +53,7 @@
     "organization-logic": { "tags": [] },
     "ui-forms": { "tags": [] },
     "ui-validation": { "tags": [] },
-    "ui-api-clients": { "tags": [] }
+    "ui-api-clients": { "tags": [] },
+    "device-data": { "tags": [] }
   }
 }

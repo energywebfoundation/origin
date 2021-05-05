@@ -7,7 +7,6 @@ import { registerIRecForm } from '@energyweb/origin-ui-organization-logic';
 import { submitIRecRegistration } from '@energyweb/origin-ui-organization-data';
 
 import { useStyles } from './RegisterIRecPage.styles';
-import { IRecRegisteredThankYou } from '../../containers/modals';
 
 export const RegisterIRecPage: FC = () => {
   const classes = useStyles();
@@ -20,7 +19,6 @@ export const RegisterIRecPage: FC = () => {
           submitHandler={submitIRecRegistration}
         />
       </Paper>
-      <IRecRegisteredThankYou />
     </>
   );
 };

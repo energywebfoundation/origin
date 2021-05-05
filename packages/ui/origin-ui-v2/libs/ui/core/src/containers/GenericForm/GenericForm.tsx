@@ -18,7 +18,7 @@ export const GenericForm: TGenericForm = memo(
     children,
     formClass,
     inputsVariant,
-    inputsClass,
+    formInputsProps,
     partOfMultiForm,
     twoColumns,
   }) => {
@@ -53,7 +53,7 @@ export const GenericForm: TGenericForm = memo(
             register={register}
             errors={errors}
             dirtyFields={dirtyFields}
-            inputsClass={inputsClass}
+            formInputsProps={formInputsProps}
             inputsVariant={inputsVariant}
           />
         ) : (
@@ -63,7 +63,7 @@ export const GenericForm: TGenericForm = memo(
             register={register}
             errors={errors}
             dirtyFields={dirtyFields}
-            inputsClass={inputsClass}
+            formInputsProps={formInputsProps}
             inputsVariant={inputsVariant}
           />
         )}

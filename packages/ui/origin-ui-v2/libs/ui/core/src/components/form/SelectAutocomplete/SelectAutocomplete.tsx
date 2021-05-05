@@ -1,5 +1,10 @@
 import React, { FC } from 'react';
-import { TextField, Autocomplete, Chip } from '@material-ui/core';
+import {
+  TextField,
+  Autocomplete,
+  Chip,
+  BaseTextFieldProps,
+} from '@material-ui/core';
 import { FormSelectOption } from '../FormSelect';
 import { useSelectAutocompleteEffects } from './SelectAutocomplete.effects';
 import { useStyles } from './SelectAutocomplete.styles';
@@ -15,6 +20,7 @@ export interface SelectAutocompleteProps {
   maxValues?: number;
   disabled?: boolean;
   required?: boolean;
+  textFieldProps?: BaseTextFieldProps;
 }
 
 export const SelectAutocomplete: FC<SelectAutocompleteProps> = ({
@@ -28,6 +34,7 @@ export const SelectAutocomplete: FC<SelectAutocompleteProps> = ({
   disabled,
   required,
   variant,
+  textFieldProps,
 }) => {
   const {
     textValue,
@@ -60,6 +67,7 @@ export const SelectAutocomplete: FC<SelectAutocompleteProps> = ({
           error={errorExists}
           variant={variant ?? 'filled'}
           fullWidth
+          {...textFieldProps}
         />
       )}
       renderTags={(value, getTagProps) =>

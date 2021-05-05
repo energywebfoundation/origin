@@ -10,7 +10,8 @@ import { UseFormRegister, FieldValues } from 'react-hook-form';
 export type FormInputField = Omit<
   GenericFormField,
   'options' | 'select' | 'autocomplete' | 'multiple' | 'maxValues'
->;
+> &
+  BaseTextFieldProps;
 
 export interface FormInputProps extends BaseTextFieldProps {
   field: FormInputField;
@@ -53,6 +54,7 @@ export const FormInput: FC<FormInputProps> = memo(
         }}
         onChange={onChange}
         onBlur={onBlur}
+        {...field.textFieldProps}
         {...rest}
       />
     );

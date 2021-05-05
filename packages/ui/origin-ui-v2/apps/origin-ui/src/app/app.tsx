@@ -10,33 +10,12 @@ import { topBarButtons, userAndOrgData } from '../__mocks__/mainLayout';
 import { useAppEffects } from './App.effects';
 import { Routes, Route } from 'react-router-dom';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
+import { DeviceApp } from '@energyweb/origin-ui-device-view';
 import { initializeI18N } from '@energyweb/origin-ui-utils';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 
 export function App() {
-  const { orgMenu } = useAppEffects();
-
-  // Mock
-  const menuSections = [
-    orgMenu,
-    {
-      sectionTitle: 'Devices',
-      show: true,
-      rootUrl: '/devices',
-      menuList: [
-        {
-          url: 'all-devices',
-          label: 'All devices',
-          show: true,
-        },
-        {
-          url: 'my-devices',
-          label: 'My devices',
-          show: true,
-        },
-      ],
-    },
-  ];
+  const { menuSections } = useAppEffects();
 
   initializeI18N(getOriginLanguage());
 
@@ -53,6 +32,7 @@ export function App() {
           >
             <Routes>
               <Route path="organization/*" element={<OrganizationApp />} />
+              <Route path="device/*" element={<DeviceApp />} />
             </Routes>
           </MainLayout>
         </AuthProvider>

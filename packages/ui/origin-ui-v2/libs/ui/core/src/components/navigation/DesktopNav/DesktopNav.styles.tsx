@@ -9,9 +9,7 @@ export const useStyles = makeStyles({
   },
   logo: {
     margin: '20px',
-    '& img': {
-      width: 120,
-    },
+    width: 120,
   },
   userAndOrg: {
     margin: '0 10px 20px 20px',

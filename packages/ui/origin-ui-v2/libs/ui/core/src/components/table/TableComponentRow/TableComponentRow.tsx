@@ -16,16 +16,19 @@ export type TTableComponentRow = <Id>(
 export const TableComponentRow: TTableComponentRow = ({ row, headerData }) => {
   const headerKeys = Object.keys(headerData);
   return (
-    <TableRow key={row.id.toString()}>
-      {headerKeys.map((key, idx) =>
+    <TableRow>
+      {headerKeys.map((key) =>
         key === 'actions' ? (
           <TableComponentActions
-            key={key + idx}
+            key={key + row.id.toString()}
             id={row.id}
             actions={row.actions}
           />
         ) : (
-          <TableComponentCell key={key + idx} cellData={row[key]} />
+          <TableComponentCell
+            key={key + row.id.toString()}
+            cellData={row[key]}
+          />
         )
       )}
     </TableRow>

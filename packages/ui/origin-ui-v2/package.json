@@ -39,8 +39,10 @@
     "@hookform/resolvers": "^2.3.0",
     "@material-ui/core": "^5.0.0-alpha.29",
     "@material-ui/icons": "^5.0.0-alpha.28",
+    "@material-ui/lab": "^5.0.0-alpha.32",
     "@material-ui/styles": "^5.0.0-alpha.29",
     "@material-ui/system": "^5.0.0-alpha.29",
+    "@react-google-maps/api": "^2.1.1",
     "axios": "^0.21.1",
     "core-js": "3.6.5",
     "dayjs": "^1.10.4",
@@ -57,6 +59,7 @@
     "react-hook-form": "^7.1.0",
     "react-i18next": "^11.8.13",
     "react-is": "17.0.2",
+    "react-material-ui-carousel": "^2.2.4",
     "react-query": "3.2.0-beta.39",
     "react-router": "6.0.0-beta.0",
     "react-router-dom": "6.0.0-beta.0",
@@ -77,13 +80,13 @@
     "@nrwl/jest": "11.6.1",
     "@nrwl/linter": "11.6.1",
     "@nrwl/react": "11.6.1",
-    "@nrwl/storybook": "^11.6.1",
+    "@nrwl/storybook": "^12.0.8",
     "@nrwl/tao": "11.6.1",
     "@nrwl/web": "11.6.1",
     "@nrwl/workspace": "11.6.1",
-    "@storybook/addon-essentials": "^6.2.2",
-    "@storybook/addon-knobs": "^6.1.11",
-    "@storybook/react": "^6.1.11",
+    "@storybook/addon-essentials": "^6.2.9",
+    "@storybook/addon-knobs": "^6.2.9",
+    "@storybook/react": "^6.2.9",
     "@svgr/webpack": "^5.4.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "11.1.2",
@@ -115,20 +118,20 @@
     "jest": "26.2.2",
     "jest-fetch-mock": "^3.0.3",
     "jest-localstorage-mock": "^2.4.9",
+    "orval": "^5.0.0-alpha.9",
     "prettier": "2.2.1",
     "test-react-hooks": "^2.0.4",
     "ts-jest": "26.4.0",
     "ts-node": "~9.1.1",
     "typescript": "~4.0.3",
     "url-loader": "^3.0.0",
-    "webpack-bundle-analyzer": "^4.4.0",
-    "orval": "^5.0.0-alpha.9"
+    "webpack-bundle-analyzer": "^4.4.0"
   },
   "workspaces": [
     "./apps/*",
     "./libs/*"
   ],
   "resolutions": {
-    "acorn": "8.0.1"
+    "acorn": "^8.2.1"
   }
 }

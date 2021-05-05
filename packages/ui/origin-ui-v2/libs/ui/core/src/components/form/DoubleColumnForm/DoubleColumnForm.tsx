@@ -1,6 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { SingleColumnForm, SingleColumnFormProps } from '../SingleColumnForm';
+import { useDoubleColumnFormEffects } from './DoubleColumnForm.effects';
+import { useStyles } from './DoubleColumnForm.styles';
 
 export interface DoubleColumnFormProps extends SingleColumnFormProps {}
 
@@ -15,15 +17,13 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
   errors,
   dirtyFields,
   inputsVariant,
-  inputsClass,
+  formInputsProps,
 }) => {
-  const firstSliceRange = Math.floor(fields.length / 2);
-  const firstColumn = fields.slice(0, firstSliceRange);
-  const secondColumn = fields.slice(firstSliceRange, fields.length);
-
+  const { firstColumn, secondColumn } = useDoubleColumnFormEffects(fields);
+  const classes = useStyles();
   return (
-    <Grid container spacing={3}>
-      <Grid item sm={12} lg={6}>
+    <Grid container>
+      <Grid className={classes.item} item sm={12} lg={6}>
         <SingleColumnForm
           fields={firstColumn}
           control={control}
@@ -31,10 +31,10 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
           errors={errors}
           dirtyFields={dirtyFields}
           inputsVariant={inputsVariant}
-          inputsClass={inputsClass}
+          formInputsProps={formInputsProps}
         />
       </Grid>
-      <Grid item sm={12} lg={6}>
+      <Grid className={classes.item} item sm={12} lg={6}>
         <SingleColumnForm
           fields={secondColumn}
           control={control}
@@ -42,7 +42,7 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
           errors={errors}
           dirtyFields={dirtyFields}
           inputsVariant={inputsVariant}
-          inputsClass={inputsClass}
+          formInputsProps={formInputsProps}
         />
       </Grid>
     </Grid>

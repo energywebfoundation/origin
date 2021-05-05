@@ -1,1 +1,1 @@
-export * from './lib/device-view';
+export * from './DeviceApp';

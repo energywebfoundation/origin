@@ -3,7 +3,7 @@ import { IRecRegisteredThankYouLogic } from '@energyweb/origin-ui-organization-l
 import { useState } from 'react';
 
 export const useIRecRegisteredThankYouEffects = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const { title, text, buttons } = IRecRegisteredThankYouLogic();
 

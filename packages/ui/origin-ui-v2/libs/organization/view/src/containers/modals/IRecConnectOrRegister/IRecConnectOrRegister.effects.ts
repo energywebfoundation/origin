@@ -2,7 +2,7 @@ import { iRecConnectOrRegisterLogic } from '@energyweb/origin-ui-organization-lo
 import { useState } from 'react';
 
 export const useIRecConnectOrRegisterEffects = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const { title, text, buttons } = iRecConnectOrRegisterLogic(setOpen);
 

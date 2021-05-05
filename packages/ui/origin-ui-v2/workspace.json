@@ -768,43 +768,6 @@
         }
       }
     },
-    "device-state-management": {
-      "root": "libs/device/state-management",
-      "sourceRoot": "libs/device/state-management/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/device/state-management",
-            "tsConfig": "libs/device/state-management/tsconfig.lib.json",
-            "project": "libs/device/state-management/package.json",
-            "entryFile": "libs/device/state-management/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/device/state-management/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/device/state-management"],
-          "options": {
-            "jestConfig": "libs/device/state-management/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "device-logic": {
       "root": "libs/device/logic",
       "sourceRoot": "libs/device/logic/src",
@@ -870,41 +833,6 @@
           "outputs": ["coverage/libs/device/view"],
           "options": {
             "jestConfig": "libs/device/view/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "device-data-access": {
-      "root": "libs/device/data-access",
-      "sourceRoot": "libs/device/data-access/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/device/data-access",
-            "tsConfig": "libs/device/data-access/tsconfig.lib.json",
-            "project": "libs/device/data-access/package.json",
-            "entryFile": "libs/device/data-access/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/device/data-access/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/device/data-access"],
-          "options": {
-            "jestConfig": "libs/device/data-access/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -1145,6 +1073,41 @@
           "outputs": ["coverage/libs/ui/api-clients"],
           "options": {
             "jestConfig": "libs/ui/api-clients/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "device-data": {
+      "root": "libs/device/data",
+      "sourceRoot": "libs/device/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/device/data",
+            "tsConfig": "libs/device/data/tsconfig.lib.json",
+            "project": "libs/device/data/package.json",
+            "entryFile": "libs/device/data/src/index.ts",
+            "external": ["react", "react-dom"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/device/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/device/data"],
+          "options": {
+            "jestConfig": "libs/device/data/jest.config.js",
             "passWithNoTests": true
           }
         }
