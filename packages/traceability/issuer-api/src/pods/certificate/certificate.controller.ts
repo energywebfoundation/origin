@@ -19,7 +19,8 @@ import {
     HttpStatus,
     Query,
     UsePipes,
-    ValidationPipe
+    ValidationPipe,
+    NotFoundException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -70,6 +71,10 @@ export class CertificateController {
             new GetCertificateQuery(id)
         );
 
+        if (!certificate) {
+            throw new NotFoundException(`Certificate with ID ${id} does not exist.`);
+        }
+
         return certificateToDto(certificate, blockchainAddress);
     }
 
@@ -87,6 +92,10 @@ export class CertificateController {
         const certificate = await this.queryBus.execute<GetCertificateByTokenIdQuery, Certificate>(
             new GetCertificateByTokenIdQuery(tokenId)
         );
+
+        if (!certificate) {
+            throw new NotFoundException(`Certificate with token ID ${tokenId} does not exist.`);
+        }
 
         return certificateToDto(certificate, blockchainAddress);
     }
