@@ -6,8 +6,8 @@ import { Wallet, BigNumber } from 'ethers';
 
 import { getProviderWithFallback } from '@energyweb/utils-general';
 
-import { migrateIssuer, migrateRegistry } from '../migrate';
-import { Certificate, CertificateUtils, IClaimData, IBlockchainProperties } from '..';
+import { migrateIssuer, migrateRegistry } from '../src/migrate';
+import { Certificate, CertificateUtils, IClaimData, IBlockchainProperties } from '../src';
 
 describe('Certificate tests', () => {
     let blockchainProperties: IBlockchainProperties;

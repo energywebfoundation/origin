@@ -3,10 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./Registry.sol";
 
-contract Issuer is Initializable, OwnableUpgradeable {
+contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     event CertificationRequested(address indexed _owner, uint256 indexed _id);
     event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
     event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
@@ -39,6 +40,7 @@ contract Issuer is Initializable, OwnableUpgradeable {
 
         registry = Registry(_registry);
         OwnableUpgradeable.__Ownable_init();
+        UUPSUpgradeable.__UUPSUpgradeable_init();
     }
 
     function setPrivateIssuer(address _privateIssuer) public onlyOwner {
@@ -159,4 +161,6 @@ contract Issuer is Initializable, OwnableUpgradeable {
 
         return !request.approved && !request.revoked;
     }
+    
+	function _authorizeUpgrade(address) internal override onlyOwner {}
 }

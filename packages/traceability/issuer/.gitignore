@@ -6,3 +6,4 @@ build
 .openzeppelin/.session
 schemas
 src/ethers
+contracts/IssuerUpgradeTest.sol

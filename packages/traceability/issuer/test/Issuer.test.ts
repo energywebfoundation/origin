@@ -6,9 +6,9 @@ import moment from 'moment';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { Wallet, BigNumber } from 'ethers';
-import { migrateIssuer, migratePrivateIssuer, migrateRegistry } from '../migrate';
+import { migrateIssuer, migratePrivateIssuer, migrateRegistry } from '../src/migrate';
 import { CertificationRequest, IBlockchainProperties } from '..';
-import { decodeData, encodeData } from '../blockchain-facade/CertificateUtils';
+import { decodeData, encodeData } from '../src/blockchain-facade/CertificateUtils';
 
 describe('Issuer', () => {
     let blockchainProperties: IBlockchainProperties;

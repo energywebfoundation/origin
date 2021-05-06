@@ -1,11 +1,21 @@
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+
 module.exports = {
     networks: {
         development: {
-            host: 'localhost',
+            host: '127.0.0.1',
             port: 8560,
             network_id: '*',
-            gas: 8000000,
-            gasPrice: 0
+            gas: 5000000
+        },
+        volta: {
+            provider: function () {
+                return new HDWalletProvider(
+                    'chalk park staff buzz chair purchase wise oak receive avoid avoid home',
+                    'https://volta.rpc.anyblock.tools/'
+                );
+            },
+            network_id: 73799
         }
     },
     compilers: {
