@@ -1,11 +1,9 @@
-// @should-localize
-import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 import { COUNTRY_OPTIONS_ISO } from '../select-options';
-import { SignatoryInfoFormValues } from './types';
+import { TCreateSignatoryInfoForm } from './types';
 
-export const signatoryInfoForm: MultiStepFormItem<SignatoryInfoFormValues> = {
-  formTitle: 'Authorized Signatory Information',
+export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
+  formTitle: t('organization.register.signatoryFormTitle'),
   formTitleVariant: 'h5',
   inputsVariant: 'filled',
   initialValues: {
@@ -20,57 +18,66 @@ export const signatoryInfoForm: MultiStepFormItem<SignatoryInfoFormValues> = {
   validationSchema: yup.object().shape({
     signatoryFullName: yup
       .string()
-      .required('Signatory Full Name is a required field'),
+      .required()
+      .label(t('organization.register.signatoryName')),
     signatoryAddress: yup
       .string()
-      .required('Signatory Address is a required field'),
+      .required()
+      .label(t('organization.register.signatoryAddress')),
     signatoryZipCode: yup
       .string()
-      .required('Signatory Zip Code is a required field'),
-    signatoryCity: yup.string().required('Signatory City is a required field'),
+      .required()
+      .label(t('organization.register.signatoryZipCode')),
+    signatoryCity: yup
+      .string()
+      .required()
+      .label(t('organization.register.signatoryCity')),
     signatoryCountry: yup
       .string()
-      .required('Signatory Country is a required field'),
+      .required()
+      .label(t('organization.register.signatoryCountry')),
     signatoryEmail: yup
       .string()
-      .email('Signatory Email should be a valid email')
-      .required('Signatory Email is a required field'),
+      .email()
+      .required()
+      .label(t('organization.register.signatoryEmail')),
     signatoryTelephone: yup
       .string()
-      .required('Signatory Telephone is a required field'),
+      .required()
+      .label(t('organization.register.signatoryTelephone')),
   }),
   fields: [
     {
       name: 'signatoryFullName',
-      label: 'Signatory Full Name',
+      label: t('organization.register.signatoryName'),
     },
     {
       name: 'signatoryAddress',
-      label: 'Signatory Address',
+      label: t('organization.register.signatoryAddress'),
     },
     {
       name: 'signatoryZipCode',
-      label: 'Signatory Zip Code',
+      label: t('organization.register.signatoryZipCode'),
     },
     {
       name: 'signatoryCity',
-      label: 'Signatory City',
+      label: t('organization.register.signatoryCity'),
     },
     {
       name: 'signatoryCountry',
-      label: 'Signatory Country',
+      label: t('organization.register.signatoryCountry'),
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
     },
     {
       name: 'signatoryEmail',
-      label: 'Signatory Email',
+      label: t('organization.register.signatoryEmail'),
     },
     {
       name: 'signatoryTelephone',
-      label: 'Signatory Telephone',
+      label: t('organization.register.signatoryTelephone'),
     },
   ],
-  buttonText: 'Submit form',
-};
+  buttonText: t('form.submit'),
+});

@@ -1,15 +1,15 @@
-// @should-localize
-import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 import {
   COUNTRY_OPTIONS_ISO,
   NUMBER_OF_EMPLOYEES_OPTIONS,
   IREC_ACCOUNT_TYPE_OPTIONS,
 } from '../select-options';
-import { IRecRegistrationInfoForm } from './types';
+import { TCreateIRecRegistrationInfoForm } from './types';
 
-export const registrationInfo: MultiStepFormItem<IRecRegistrationInfoForm> = {
-  formTitle: 'I-REC Registration information',
+export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
+  t
+) => ({
+  formTitle: t('organization.registerIRec.registrationInfoFormTitle'),
   formTitleVariant: 'h5',
   inputsVariant: 'filled',
   initialValues: {
@@ -29,82 +29,85 @@ export const registrationInfo: MultiStepFormItem<IRecRegistrationInfoForm> = {
     accountType: yup
       .string()
       .required()
-      .label('organization.registration.IRECAccountType'),
+      .label(t('organization.registerIRec.IRECAccountType')),
     headquarterCountry: yup
       .string()
       .required()
-      .label('organization.registration.orgHeadquartersCountry'),
+      .label(t('organization.registerIRec.orgHeadquartersCountry')),
     registrationYear: yup
       .number()
       .min(1900)
       .required()
-      .label('organization.registration.yearOfRegistration'),
+      .label(t('organization.registerIRec.yearOfregisterIRec')),
     employeesNumber: yup
       .string()
       .required()
-      .label('organization.registration.numberOfEmployees'),
+      .label(t('organization.registerIRec.numberOfEmployees')),
     shareholders: yup
       .string()
       .required()
-      .label('organization.registration.shareholderNames'),
+      .label(t('organization.registerIRec.shareholderNames')),
     website: yup
       .string()
       .url()
       .required()
-      .label('organization.registration.orgWebsite'),
+      .label(t('organization.registerIRec.orgWebsite')),
     activeCountries: yup
       .array()
       .required()
-      .label('organization.registration.activeCountries'),
+      .label(t('organization.registerIRec.activeCountries')),
     mainBusiness: yup
       .string()
       .required()
-      .label('organization.registration.mainBusiness'),
-    ceoName: yup.string().required().label('organization.registration.ceoName'),
+      .label(t('organization.registerIRec.mainBusiness')),
+    ceoName: yup
+      .string()
+      .required()
+      .label(t('organization.registerIRec.ceoName')),
     ceoPassportNumber: yup
       .string()
       .required()
-      .label('organization.registration.ceoPassport'),
+      .label(t('organization.registerIRec.ceoPassport')),
     balanceSheetTotal: yup
       .string()
       .required()
-      .label('organization.registration.lastBalance'),
+      .label(t('organization.registerIRec.lastBalance')),
   }),
   fields: [
     {
       name: 'accountType',
-      label: 'IREC Account Type',
+      label: t('organization.registerIRec.IRECAccountType'),
       select: true,
       options: IREC_ACCOUNT_TYPE_OPTIONS,
     },
     {
       name: 'headquarterCountry',
-      label: 'Organization headquarter country',
+      label: t('organization.registerIRec.orgHeadquartersCountry'),
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
     },
     {
-      name: 'registrationYear',
-      label: 'Year of registration',
+      name: 'registerIRecYear',
+      label: t('organization.registerIRec.yearOfregisterIRec'),
     },
     {
       name: 'employeesNumber',
-      label: 'Number of employees',
+      label: t('organization.registerIRec.numberOfEmployees'),
       select: true,
       options: NUMBER_OF_EMPLOYEES_OPTIONS,
     },
     {
       name: 'shareholders',
-      label: 'Shareholders names',
+      label: t('organization.registerIRec.shareholderNames'),
     },
     {
       name: 'website',
-      label: 'Organization website',
+      label: t('organization.registerIRec.orgWebsite'),
     },
     {
       name: 'activeCountries',
-      label: 'Active Countries',
+      label: t('organization.registerIRec.activeCountries'),
       select: true,
       options: COUNTRY_OPTIONS_ISO,
       autocomplete: true,
@@ -113,20 +116,20 @@ export const registrationInfo: MultiStepFormItem<IRecRegistrationInfoForm> = {
     },
     {
       name: 'mainBusiness',
-      label: 'Main business',
+      label: t('organization.registerIRec.mainBusiness'),
     },
     {
       name: 'ceoName',
-      label: 'Name of the Chief Executive Officer/General Manager',
+      label: t('organization.registerIRec.ceoName'),
     },
     {
       name: 'ceoPassportNumber',
-      label: 'Chief Executive Officer/General Manager passport number',
+      label: t('organization.registerIRec.ceoPassport'),
     },
     {
       name: 'balanceSheetTotal',
-      label: 'Balance sheet total for last financial year',
+      label: t('organization.registerIRec.balanceSheetTotal'),
     },
   ],
-  buttonText: 'Next step',
-};
+  buttonText: t('form.nextStep'),
+});

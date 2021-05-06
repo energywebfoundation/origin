@@ -1,14 +1,14 @@
-// @should localize
+import { useTranslation } from 'react-i18next';
 import { TIRecAccountRegisteredLogic } from './types';
 
-export const iRecAccountRegisteredLogic: TIRecAccountRegisteredLogic = () => {
+export const useIRecAccountRegisteredLogic: TIRecAccountRegisteredLogic = () => {
+  const { t } = useTranslation();
   return {
-    title: 'Thank you for registering an I-REC account!',
-    text:
-      'We will forward your application to I-REC and inform you as soon as it is approved.',
+    title: t('organization.modals.iRecAccountRegistered.title'),
+    text: t('organization.modals.iRecAccountRegistered.text'),
     buttons: [
       {
-        label: 'Ok',
+        label: t('general.buttons.ok'),
         onClick: () =>
           console.log(
             'Should close this modal, show notification and open another'

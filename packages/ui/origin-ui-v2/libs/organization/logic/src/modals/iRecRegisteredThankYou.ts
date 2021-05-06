@@ -1,13 +1,14 @@
-// @should localize
+import { useTranslation } from 'react-i18next';
 import { TIRecRegisteredThankYouLogic } from './types';
 
-export const IRecRegisteredThankYouLogic: TIRecRegisteredThankYouLogic = () => {
+export const useIRecRegisteredThankYouLogic: TIRecRegisteredThankYouLogic = () => {
+  const { t } = useTranslation();
   return {
-    title: 'Thank you for registering!',
-    text: 'Your account is being approved.',
+    title: t('organization.modals.IRecRegisteredThankYou.title'),
+    text: t('organization.modals.IRecRegisteredThankYou.text'),
     buttons: [
       {
-        label: 'Ok',
+        label: t('general.buttons.ok'),
         onClick: () =>
           console.log('Should be redirect to default my organization'),
       },

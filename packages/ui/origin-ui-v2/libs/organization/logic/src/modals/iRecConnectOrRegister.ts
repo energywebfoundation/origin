@@ -1,19 +1,24 @@
-// @should localize
+import { useTranslation } from 'react-i18next';
 import { TIRecConnectOrRegisterLogic } from './types';
 
-export const iRecConnectOrRegisterLogic: TIRecConnectOrRegisterLogic = (
+export const useIRecConnectOrRegisterLogic: TIRecConnectOrRegisterLogic = (
   setOpen
 ) => {
+  const { t } = useTranslation();
   return {
-    title: 'Thank you for registering an organization on the marketplace!',
+    title: t('organization.modals.iRecConnectOrRegister.title'),
     text: [
-      'We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.',
-      'In order to register devices and request I-RECs, users also need to connect an I-REC account.',
+      t('organization.modals.iRecConnectOrRegister.text1'),
+      t('organization.modals.iRecConnectOrRegister.text2'),
     ],
     buttons: [
-      { label: 'Not now', onClick: () => setOpen(false), variant: 'outlined' },
       {
-        label: 'Register New I-REC account',
+        label: t('general.buttons.notNow'),
+        onClick: () => setOpen(false),
+        variant: 'outlined',
+      },
+      {
+        label: t('organization.modals.iRecConnectOrRegister.buttonRegister'),
         onClick: () => console.log('Navigate to register I-Rec'),
       },
     ],

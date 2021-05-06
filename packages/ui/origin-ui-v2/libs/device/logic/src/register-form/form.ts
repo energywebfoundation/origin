@@ -146,5 +146,5 @@ export const createRegisterDeviceForm: TRegisterDeviceForm = (
       label: t('device.register.longitude'),
     },
   ],
-  buttonText: t('general.buttons.register'),
+  buttonText: t('form.register'),
 });

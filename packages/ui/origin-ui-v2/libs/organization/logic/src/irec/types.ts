@@ -1,4 +1,9 @@
-import { FormSelectOption } from '@energyweb/origin-ui-core';
+import {
+  FormSelectOption,
+  MultiStepFormItem,
+  MultiStepFormProps,
+} from '@energyweb/origin-ui-core';
+import { TFunction } from 'i18next';
 
 export type IRecRegistrationInfoForm = {
   accountType: string;
@@ -14,6 +19,10 @@ export type IRecRegistrationInfoForm = {
   balanceSheetTotal: string;
 };
 
+export type TCreateIRecRegistrationInfoForm = (
+  t: TFunction
+) => MultiStepFormItem<IRecRegistrationInfoForm>;
+
 export type PrimaryContactDetailsForms = {
   primaryContactOrganizationName: string;
   primaryContactOrganizationAddress: string;
@@ -26,7 +35,11 @@ export type PrimaryContactDetailsForms = {
   primaryContactFax: string;
 };
 
-export type LeadUserDetailsForms = {
+export type TCreatePrimaryContactDetailsForms = (
+  t: TFunction
+) => MultiStepFormItem<PrimaryContactDetailsForms>;
+
+type LeadUserDetailsForms = {
   leadUserTitle: string;
   leadUserTitleInput?: string;
   leadUserFirstName: string;
@@ -36,6 +49,10 @@ export type LeadUserDetailsForms = {
   leadUserFax: string;
 };
 
+export type TCreateLeadUserDetailsForm = (
+  t: TFunction
+) => MultiStepFormItem<LeadUserDetailsForms>;
+
 export type FormUnionType =
   | IRecRegistrationInfoForm
   | PrimaryContactDetailsForms
@@ -44,3 +61,7 @@ export type FormUnionType =
 export type FormMergedType = IRecRegistrationInfoForm &
   PrimaryContactDetailsForms &
   LeadUserDetailsForms;
+
+export type TUseRegisterIRecFormLogic = (
+  t: TFunction
+) => MultiStepFormProps<FormUnionType, FormMergedType>['forms'];

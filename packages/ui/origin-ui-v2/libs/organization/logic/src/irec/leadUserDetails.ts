@@ -1,11 +1,9 @@
-// @should-localize
-import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 import { TITLE_OPTIONS } from '../select-options';
-import { LeadUserDetailsForms } from './types';
+import { TCreateLeadUserDetailsForm } from './types';
 
-export const leadUserDetals: MultiStepFormItem<LeadUserDetailsForms> = {
-  formTitle: 'Lead User Details',
+export const createLeadUserDetailsForm: TCreateLeadUserDetailsForm = (t) => ({
+  formTitle: t('organization.registerIRec.leadUserFormTitle'),
   formTitleVariant: 'h5',
   inputsVariant: 'filled',
   initialValues: {
@@ -20,56 +18,56 @@ export const leadUserDetals: MultiStepFormItem<LeadUserDetailsForms> = {
     leadUserTitle: yup
       .string()
       .required()
-      .label('organization.registration.leadUserTitle'),
+      .label(t('organization.registerIRec.leadUserTitle')),
     leadUserFirstName: yup
       .string()
       .required()
-      .label('organization.registration.leadUserFirstName'),
+      .label(t('organization.registerIRec.leadUserFirstName')),
     leadUserLastName: yup
       .string()
       .required()
-      .label('organization.registration.leadUserLastName'),
+      .label(t('organization.registerIRec.leadUserLastName')),
     leadUserEmail: yup
       .string()
       .email()
       .required()
-      .label('organization.registration.leadUserEmail'),
+      .label(t('organization.registerIRec.leadUserEmail')),
     leadUserPhoneNumber: yup
       .string()
       .required()
-      .label('organization.registration.leadUserPhoneNumber'),
+      .label(t('organization.registerIRec.leadUserPhoneNumber')),
     leadUserFax: yup
       .string()
       .required()
-      .label('organization.registration.leadUserFax'),
+      .label(t('organization.registerIRec.leadUserFax')),
   }),
   fields: [
     {
       name: 'leadUserTitle',
-      label: 'Title',
+      label: t('organization.registerIRec.leadUserTitle'),
       select: true,
       options: TITLE_OPTIONS,
     },
     {
       name: 'leadUserFirstName',
-      label: 'First name',
+      label: t('organization.registerIRec.leadUserFirstName'),
     },
     {
       name: 'leadUserLastName',
-      label: 'Last name',
+      label: t('organization.registerIRec.leadUserLastName'),
     },
     {
       name: 'leadUserEmail',
-      label: 'Email',
+      label: t('organization.registerIRec.leadUserEmail'),
     },
     {
       name: 'leadUserPhoneNumber',
-      label: 'Phone number',
+      label: t('organization.registerIRec.leadUserPhoneNumber'),
     },
     {
       name: 'leadUserFax',
-      label: 'Fax',
+      label: t('organization.registerIRec.leadUserFax'),
     },
   ],
-  buttonText: 'Submit form',
-};
+  buttonText: t('form.submit'),
+});

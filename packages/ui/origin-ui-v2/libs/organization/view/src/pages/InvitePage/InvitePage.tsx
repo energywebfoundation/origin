@@ -1,7 +1,7 @@
-import { GenericForm } from '@energyweb/origin-ui-core';
-import { inviteForm } from '@energyweb/origin-ui-organization-logic';
-import { Paper } from '@material-ui/core';
 import React, { FC } from 'react';
+import { Paper } from '@material-ui/core';
+import { GenericForm } from '@energyweb/origin-ui-core';
+import { useInviteFormLogic } from '@energyweb/origin-ui-organization-logic';
 import { useStyles } from './InvitePage.styles';
 
 export const InvitePage: FC = () => {
@@ -9,9 +9,8 @@ export const InvitePage: FC = () => {
     fields,
     initialValues,
     validationSchema,
-    submitHandler,
     buttonText,
-  } = inviteForm;
+  } = useInviteFormLogic();
   const classes = useStyles();
   return (
     <Paper className={classes.paper}>
@@ -19,7 +18,8 @@ export const InvitePage: FC = () => {
         fields={fields}
         initialValues={initialValues}
         validationSchema={validationSchema}
-        submitHandler={submitHandler}
+        // should add from data package
+        submitHandler={(values) => console.log(values)}
         buttonText={buttonText}
         inputsVariant="filled"
         twoColumns={true}

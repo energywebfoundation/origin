@@ -1,6 +1,6 @@
 import { GenericModal } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
-import { useRegisterThankYouEffects } from './RegisterThankYou.effect';
+import { useRegisterThankYouEffects } from './RegisterThankYou.effects';
 
 export const RegisterThankYou: FC = () => {
   const {

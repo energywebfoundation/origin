@@ -1,9 +1,9 @@
-import { MultiStepFormProps } from '@energyweb/origin-ui-core';
-import { orgInfoForm } from './orgInfoForm';
-import { signatoryInfoForm } from './signatoryInfoForm';
-import { FormMergedType, FormUnionType } from './types';
+import { TUseRegisterOrganizationFormLogic } from './types';
+import { createOrgInfoForm } from './orgInfoForm';
+import { createSignatoryInfoForm } from './signatoryInfoForm';
 
-export const registerOrganizationForm: MultiStepFormProps<
-  FormUnionType,
-  FormMergedType
->['forms'] = [orgInfoForm, signatoryInfoForm];
+export const useRegisterOrganizationFormLogic: TUseRegisterOrganizationFormLogic = (
+  t
+) => {
+  return [createOrgInfoForm(t), createSignatoryInfoForm(t)];
+};

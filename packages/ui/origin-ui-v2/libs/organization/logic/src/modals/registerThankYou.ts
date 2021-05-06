@@ -1,14 +1,14 @@
-// @should localize
+import { useTranslation } from 'react-i18next';
 import { TRegisterThankYouLogic } from './types';
 
-export const registerThankYouLogic: TRegisterThankYouLogic = () => {
+export const useRegisterThankYouLogic: TRegisterThankYouLogic = () => {
+  const { t } = useTranslation();
   return {
-    title: 'Thank you for registering!',
-    text:
-      'Your registration is reviewed by the platform administrator and you will be notified when your account is activated.',
+    title: t('organization.modals.registerThankYou.title'),
+    text: t('organization.modals.registerThankYou.text1'),
     buttons: [
       {
-        label: 'Ok',
+        label: t('general.buttons.ok'),
         onClick: () =>
           console.log('Here should be func to navigate to default page'),
       },

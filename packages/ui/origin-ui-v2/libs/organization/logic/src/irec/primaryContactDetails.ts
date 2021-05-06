@@ -1,11 +1,11 @@
-// @should-localize
-import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 import { COUNTRY_OPTIONS_ISO } from '../select-options';
-import { PrimaryContactDetailsForms } from './types';
+import { TCreatePrimaryContactDetailsForms } from './types';
 
-export const primaryContactDetails: MultiStepFormItem<PrimaryContactDetailsForms> = {
-  formTitle: 'Primary Contact Details',
+export const createPrimaryContactDetailsForm: TCreatePrimaryContactDetailsForms = (
+  t
+) => ({
+  formTitle: t('organization.registerIRec.primaryContactFormTitle'),
   formTitleVariant: 'h5',
   inputsVariant: 'filled',
   initialValues: {
@@ -23,80 +23,80 @@ export const primaryContactDetails: MultiStepFormItem<PrimaryContactDetailsForms
     primaryContactOrganizationName: yup
       .string()
       .required()
-      .label('organization.registration.primaryContactOrgName'),
+      .label(t('organization.registerIRec.primaryContactOrgName')),
     primaryContactOrganizationAddress: yup
       .string()
       .required()
-      .label('organization.registration.primaryContactOrgAddress'),
+      .label(t('organization.registerIRec.primaryContactOrgAddress')),
     primaryContactOrganizationPostalCode: yup
       .string()
       .required()
-      .label('organization.registration.primaryContactOrgPostalCode'),
+      .label(t('organization.registerIRec.primaryContactOrgPostalCode')),
     primaryContactOrganizationCountry: yup
       .string()
       .required()
-      .label('organization.registration.primaryContactOrgCountry'),
+      .label(t('organization.registerIRec.primaryContactOrgCountry')),
     subsidiaries: yup
       .string()
-      .label('organization.registration.existingIRECOrg'),
+      .label(t('organization.registerIRec.existingIRECOrg')),
     primaryContactName: yup
       .string()
       .required()
-      .label('organization.registration.primaryContactName'),
+      .label(t('organization.registerIRec.primaryContactName')),
     primaryContactEmail: yup
       .string()
       .email()
       .required()
-      .label('organization.registration.primaryContactEmail'),
+      .label(t('organization.registerIRec.primaryContactEmail')),
     primaryContactPhoneNumber: yup
       .string()
       .required()
-      .label('organization.registration.primaryContactPhoneNumber'),
+      .label(t('organization.registerIRec.primaryContactPhoneNumber')),
     primaryContactFax: yup
       .string()
       .required()
-      .label('organization.registration.primaryContactFax'),
+      .label(t('organization.registerIRec.primaryContactFax')),
   }),
   fields: [
     {
       name: 'primaryContactOrganizationName',
-      label: 'Organization Name',
+      label: t('organization.registerIRec.primaryContactOrgName'),
     },
     {
       name: 'primaryContactOrganizationAddress',
-      label: 'Organization Address',
+      label: t('organization.registerIRec.primaryContactOrgAddress'),
     },
     {
       name: 'primaryContactOrganizationPostalCode',
-      label: 'Organization postal code',
+      label: t('organization.registerIRec.primaryContactOrgPostalCode'),
     },
     {
       name: 'primaryContactOrganizationCountry',
-      label: 'Organization Country',
+      label: t('organization.registerIRec.primaryContactOrgCountry'),
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
     },
     {
       name: 'subsidiaries',
-      label: 'Existing I-REC organization(s) to become subsidiary',
+      label: t('organization.registerIRec.existingIRECOrg'),
     },
     {
       name: 'primaryContactName',
-      label: 'Contact person name',
+      label: t('organization.registerIRec.primaryContactName'),
     },
     {
       name: 'primaryContactEmail',
-      label: 'Contact person email',
+      label: t('organization.registerIRec.primaryContactEmail'),
     },
     {
       name: 'primaryContactPhoneNumber',
-      label: 'Contact person telephone',
+      label: t('organization.registerIRec.primaryContactPhoneNumber'),
     },
     {
       name: 'primaryContactFax',
-      label: 'Contact person fax',
+      label: t('organization.registerIRec.primaryContactFax'),
     },
   ],
-  buttonText: 'Next step',
-};
+  buttonText: t('form.nextStep'),
+});

@@ -1,15 +1,18 @@
-// @should localize
+import { useTranslation } from 'react-i18next';
 import { TOrganizationAlreadyExistsLogic } from './types';
 
-export const organizationAlreadyExistsLogic: TOrganizationAlreadyExistsLogic = (
+export const useOrganizationAlreadyExistsLogic: TOrganizationAlreadyExistsLogic = (
   setOpen
 ) => {
+  const { t } = useTranslation();
   return {
-    title: 'Sorry but this organization could not be registered.',
+    title: t('organization.modals.organizationAlreadyExists.title'),
     text: [
-      'There already exists an organization with the same information.',
-      'Our support team will get in contact with you shortly to sort out the issue.',
+      t('organization.modals.organizationAlreadyExists.text1'),
+      t('organization.modals.organizationAlreadyExists.text2'),
     ],
-    buttons: [{ label: 'Ok', onClick: () => setOpen(false) }],
+    buttons: [
+      { label: t('general.buttons.ok'), onClick: () => setOpen(false) },
+    ],
   };
 };

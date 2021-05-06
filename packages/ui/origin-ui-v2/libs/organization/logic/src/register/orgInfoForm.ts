@@ -1,14 +1,12 @@
-// @should-localize
-import { MultiStepFormItem } from '@energyweb/origin-ui-core';
 import * as yup from 'yup';
 import {
   BUSINESS_LEGAL_TYPE_OPTIONS,
   COUNTRY_OPTIONS_ISO,
 } from '../select-options';
-import { OrganizationInfoFormValues } from './types';
+import { TCreateOrgInfoForm } from './types';
 
-export const orgInfoForm: MultiStepFormItem<OrganizationInfoFormValues> = {
-  formTitle: 'Organization Information',
+export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
+  formTitle: t('organization.register.orgInfoTitle'),
   formTitleVariant: 'h5',
   inputsVariant: 'filled',
   initialValues: {
@@ -22,55 +20,71 @@ export const orgInfoForm: MultiStepFormItem<OrganizationInfoFormValues> = {
     vatNumber: '',
   },
   validationSchema: yup.object().shape({
-    name: yup.string().required('Organization Name is a required field'),
-    address: yup.string().required('Organization Address is a required field'),
-    zipCode: yup.string().required('Zip Code is a required field'),
-    city: yup.string().required('City is a required field'),
-    country: yup.string().required('Country is a required field'),
-    businessType: yup.string().required('Business Type is a required field'),
+    name: yup.string().required().label(t('organization.register.orgInfoName')),
+    address: yup
+      .string()
+      .required()
+      .label(t('organization.register.orgInfoAddress')),
+    zipCode: yup
+      .string()
+      .required()
+      .label(t('organization.register.orgInfozipCode')),
+    city: yup.string().required().label(t('organization.register.orgInfoCity')),
+    country: yup
+      .string()
+      .required()
+      .label(t('organization.register.orgInfoCountry')),
+    businessType: yup
+      .string()
+      .required()
+      .label(t('organization.register.orgInfoBusinessType')),
     tradeRegistryCompanyNumber: yup
       .string()
-      .required('Trade Registry Company Number is a required field'),
-    vatNumber: yup.string().required('VAT Number is a required field'),
+      .required()
+      .label(t('organization.register.orgInfoTradeRegistryCompanyNumber')),
+    vatNumber: yup
+      .string()
+      .required()
+      .label(t('organization.register.orgInfoVatNumber')),
   }),
   fields: [
     {
       name: 'name',
-      label: 'Organization Name',
+      label: t('organization.register.orgInfoName'),
     },
     {
       name: 'address',
-      label: 'Organization Address',
+      label: t('organization.register.orgInfoAddress'),
     },
     {
       name: 'zipCode',
-      label: 'Zip Code',
+      label: t('organization.register.orgInfozipCode'),
     },
     {
       name: 'city',
-      label: 'City',
+      label: t('organization.register.orgInfoCity'),
     },
     {
       name: 'country',
-      label: 'Country',
+      label: t('organization.register.orgInfoCountry'),
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
     },
     {
       name: 'businessType',
-      label: 'Business Type',
+      label: t('organization.register.orgInfoBusinessType'),
       select: true,
       options: BUSINESS_LEGAL_TYPE_OPTIONS,
     },
     {
       name: 'tradeRegistryCompanyNumber',
-      label: 'Trade Registry Company Number',
+      label: t('organization.register.orgInfoTradeRegistryCompanyNumber'),
     },
     {
       name: 'vatNumber',
-      label: 'VAT Number',
+      label: t('organization.register.orgInfoVatNumber'),
     },
   ],
-  buttonText: 'Next step',
-};
+  buttonText: t('form.nextStep'),
+});
