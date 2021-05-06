@@ -38,12 +38,12 @@
             "shellCommand": "pretty-quick --staged"
         },
         {
+            "commandKind": "bulk",
             "name": "test:ci:contracts",
-            "commandKind": "global",
-            "summary": "Run ci:contracts test",
+            "summary": "Tests the smart contracts",
             "safeForSimultaneousRushProcesses": false,
-            "autoinstallerName": "rush-tools",
-            "shellCommand": "lerna run --scope @energyweb/issuer --scope @energyweb/utils-general test:concurrent --parallel --stream",
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
             "allowWarningsInSuccessfulBuild": true
         },
         {

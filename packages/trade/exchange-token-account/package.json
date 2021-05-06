@@ -27,7 +27,7 @@
         "lint-fix": "solium -d contracts --fix && eslint \"src/**/*{.ts,.tsx}\" --fix",
         "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8570",
         "test": "truffle test",
-        "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
+        "test:e2e": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
         "clean": "shx rm -rf build dist src/ethers",
         "typechain:ethers": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/TokenAccount.json'"
     },
@@ -49,8 +49,8 @@
         "mocha": "8.3.2",
         "truffle": "5.3.4",
         "solc": "0.8.4",
-        "@openzeppelin/contracts": "4.0.0",
-        "@openzeppelin/contracts-upgradeable": "4.0.0"
+        "@openzeppelin/contracts": "4.1.0",
+        "@openzeppelin/contracts-upgradeable": "4.1.0"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {
