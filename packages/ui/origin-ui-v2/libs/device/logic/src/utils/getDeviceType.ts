@@ -1,4 +1,4 @@
-import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-react-query-client';
 
 export const getDeviceMainType = (device: DeviceDTO) => {
   return device.deviceType.split(';')[0];

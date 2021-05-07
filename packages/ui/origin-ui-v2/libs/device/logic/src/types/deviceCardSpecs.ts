@@ -1,4 +1,4 @@
-import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-react-query-client';
 import { IconTextProps, SpecFieldProps } from '@energyweb/origin-ui-core';
 
 export type TPrepareDeviceSpecsForCardArgs = {

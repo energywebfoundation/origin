@@ -1,4 +1,7 @@
-import { OrderSide, OrderStatus } from '@energyweb/exchange-irec-client';
+import {
+  OrderSide,
+  OrderStatus,
+} from '@energyweb/exchange-irec-react-query-client';
 import { Order } from '../types';
 
 export class ActiveOrders extends Array<Order> {

@@ -1,5 +1,5 @@
 // @should-change type from void to actual return value
-import { RegistrationDTO } from '@energyweb/origin-organization-irec-api-client';
+import { RegistrationDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 
 type TSubmitIRecRegistration = (values: RegistrationDTO) => void;
 

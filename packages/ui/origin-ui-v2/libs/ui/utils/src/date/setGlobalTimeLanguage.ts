@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { SupportedLanguagesEnum } from '@energyweb/origin-ui-localization';
+// import { SupportedLanguagesEnum } from '@energyweb/origin-ui-localization';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -14,10 +14,10 @@ export enum DateFormatEnum {
   DATE_FORMAT_INCLUDING_TIME = `MMM D, YYYY hh:mm a`,
 }
 
-export async function setGlobalTimeLanguage(
-  language: SupportedLanguagesEnum = SupportedLanguagesEnum.en
-) {
-  import(`dayjs/locale/${language}`).then((value) => {
-    dayjs.locale(value);
-  });
-}
+// export async function setGlobalTimeLanguage(
+//   language: SupportedLanguagesEnum = SupportedLanguagesEnum.en
+// ) {
+//   import(`dayjs/locale/${language}`).then((value) => {
+//     dayjs.locale(value);
+//   });
+// }

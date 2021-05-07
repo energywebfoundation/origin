@@ -22,6 +22,7 @@
         "run:ui-core": "lerna run start --scope @energyweb/origin-ui-core --stream",
         "run:exchange-ui": "lerna run start --scope @energyweb/exchange-ui-core --stream",
         "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",
+        "run:ui-v2": "lerna run start --scope ui-packages --stream",
         "run:irec-ui": "lerna run start --scope @energyweb/origin-ui-irec-core --stream",
         "run:ganache": "ganache-cli -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
         "run:simulator": "lerna run start --scope @energyweb/solar-simulator --stream",

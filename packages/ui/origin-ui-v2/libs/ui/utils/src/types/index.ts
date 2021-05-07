@@ -4,10 +4,10 @@ import {
   ProductDTO,
   OrderSide,
   OrderStatus,
-} from '@energyweb/exchange-irec-client';
+} from '@energyweb/exchange-irec-react-query-client';
 import { DemandStatus, TimeFrame } from '@energyweb/utils-general';
 import { BigNumber } from 'ethers';
-import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-react-query-client';
 
 export enum EnergyTypeEnum {
   GASEOUS = 'gaseous',

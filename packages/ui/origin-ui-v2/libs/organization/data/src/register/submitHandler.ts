@@ -1,5 +1,5 @@
 // @should-change type from void to actual return value
-import { NewOrganizationDTO } from '@energyweb/origin-backend-client';
+import { NewOrganizationDTO } from '@energyweb/origin-backend-react-query-client';
 
 type TSubmitOrganizationRegister = (values: NewOrganizationDTO) => void;
 

@@ -1,5 +1,5 @@
 import { OriginEnvironment } from '@energyweb/origin-ui-shared-state';
-import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-react-query-client';
 import { isEmpty } from 'lodash';
 
 export const getDeviceById = (
