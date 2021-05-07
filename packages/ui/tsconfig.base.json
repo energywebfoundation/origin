@@ -19,7 +19,6 @@
     "paths": {
       "@energyweb/origin-ui-core": ["libs/ui/core/src/index.ts"],
       "@energyweb/origin-ui-utils": ["libs/ui/utils/src/index.ts"],
-      "@energyweb/origin-ui-formatters": ["libs/ui/formatters/src/index.ts"],
       "@energyweb/origin-ui-localization": [
         "libs/ui/localization/src/index.ts"
       ],
@@ -57,6 +56,7 @@
       ],
       "@energyweb/origin-ui-device-logic": ["libs/device/logic/src/index.ts"],
       "@energyweb/origin-ui-device-view": ["libs/device/view/src/index.ts"],
+      "@energyweb/origin-ui-device-data": ["libs/device/data/src/index.ts"],
       "@energyweb/origin-ui-shared-state": [
         "libs/ui/shared-state/src/index.ts"
       ],
@@ -69,11 +69,8 @@
       "@energyweb/origin-ui-organization-logic": [
         "libs/organization/logic/src/index.ts"
       ],
-      "@energy-web/origin-ui-forms": ["libs/ui/forms/src/index.ts"],
-      "@energy-web/origin-ui-validation": ["libs/ui/validation/src/index.ts"],
       "@energy-web/origin-ui-api-clients": ["libs/ui/api-clients/src/index.ts"],
-      "stream": ["node_modules/readable-stream"],
-      "@energyweb/origin-ui-device-data": ["libs/device/data/src/index.ts"]
+      "stream": ["node_modules/readable-stream"]
     }
   },
   "exclude": ["node_modules", "tmp"]

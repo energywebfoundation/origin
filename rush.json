@@ -550,7 +550,7 @@
         },
         {
             "packageName": "ui-packages",
-            "projectFolder": "packages/ui/origin-ui-v2"
+            "projectFolder": "packages/ui"
         }
         // {
         //   /**

@@ -28,7 +28,6 @@
     "origin-ui-e2e": { "tags": [], "implicitDependencies": ["origin-ui"] },
     "ui-core": { "tags": [] },
     "ui-utils": { "tags": [] },
-    "ui-formatters": { "tags": [] },
     "ui-localization": { "tags": [] },
     "ui-theme": { "tags": [] },
     "ui-assets": { "tags": [] },
@@ -51,8 +50,6 @@
     "organization-view": { "tags": [] },
     "organization-data": { "tags": [] },
     "organization-logic": { "tags": [] },
-    "ui-forms": { "tags": [] },
-    "ui-validation": { "tags": [] },
     "ui-api-clients": { "tags": [] },
     "device-data": { "tags": [] }
   }

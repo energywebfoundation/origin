@@ -198,41 +198,6 @@
         }
       }
     },
-    "ui-formatters": {
-      "root": "libs/ui/formatters",
-      "sourceRoot": "libs/ui/formatters/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/ui/formatters",
-            "tsConfig": "libs/ui/formatters/tsconfig.lib.json",
-            "project": "libs/ui/formatters/package.json",
-            "entryFile": "libs/ui/formatters/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/ui/formatters/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/ui/formatters"],
-          "options": {
-            "jestConfig": "libs/ui/formatters/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "ui-localization": {
       "root": "libs/ui/localization",
       "sourceRoot": "libs/ui/localization/src",
@@ -1010,48 +975,6 @@
           "outputs": ["coverage/libs/organization/logic"],
           "options": {
             "jestConfig": "libs/organization/logic/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "ui-forms": {
-      "root": "libs/ui/forms",
-      "sourceRoot": "libs/ui/forms/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/ui/forms/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/ui/forms"],
-          "options": {
-            "jestConfig": "libs/ui/forms/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "ui-validation": {
-      "root": "libs/ui/validation",
-      "sourceRoot": "libs/ui/validation/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/ui/validation/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/ui/validation"],
-          "options": {
-            "jestConfig": "libs/ui/validation/jest.config.js",
             "passWithNoTests": true
           }
         }
