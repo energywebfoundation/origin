@@ -88,15 +88,6 @@
             "summary": "Runs the full Origin development suite with a local blockchain",
             "safeForSimultaneousRushProcesses": false,
             "autoinstallerName": "rush-tools",
-            "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n ganache,backend,ui \"yarn run:ganache\" \"wait-on tcp:8545 && yarn migrate:demo && yarn run:backend\" \"wait-on tcp:3030 && yarn run:ui\" \"wait-on tcp:3030 && yarn run:ui-core\" \"wait-on tcp:3030 && yarn run:exchange-ui\"",
-            "allowWarningsInSuccessfulBuild": true
-        },
-        {
-            "name": "run:origin-ui-v2",
-            "commandKind": "global",
-            "summary": "Runs the full Origin development suite with UI version 2 and I-Rec backend",
-            "safeForSimultaneousRushProcesses": false,
-            "autoinstallerName": "rush-tools",
             "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n ganache,backend-irec,ui \"yarn run:ganache\" \"wait-on tcp:8545 && yarn migrate:irec-demo && yarn run:irec-backend\" \"wait-on tcp:3030 && yarn run:ui-v2\"",
             "allowWarningsInSuccessfulBuild": true
         },
@@ -107,24 +98,6 @@
             "safeForSimultaneousRushProcesses": false,
             "autoinstallerName": "rush-tools",
             "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n backend,ui \"yarn migrate:demo:web3 && yarn run:backend\" \"wait-on tcp:3030 && yarn run:ui\" \"wait-on tcp:3030 && yarn run:ui-core\" \"wait-on tcp:3030 && yarn run:exchange-ui\"",
-            "allowWarningsInSuccessfulBuild": true
-        },
-        {
-            "name": "run:irec-origin",
-            "commandKind": "global",
-            "summary": "Runs the full I-REC Origin development suite with a local blockchain",
-            "safeForSimultaneousRushProcesses": false,
-            "autoinstallerName": "rush-tools",
-            "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n ganache,backend-irec,ui \"yarn run:ganache\" \"wait-on tcp:8545 && yarn migrate:irec-demo && yarn run:irec-backend\" \"wait-on tcp:3030 && yarn run:ui\" \"wait-on tcp:3030 && yarn run:ui-core\" \"wait-on tcp:3030 && yarn run:exchange-ui\" \"wait-on tcp:3030 && yarn run:irec-ui\"",
-            "allowWarningsInSuccessfulBuild": true
-        },
-        {
-            "name": "cypress:open",
-            "commandKind": "global",
-            "summary": "Launches Origin development suite and opens Cypress UI",
-            "safeForSimultaneousRushProcesses": false,
-            "autoinstallerName": "rush-tools",
-            "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n ganache,backend,ui \"yarn run:ganache\" \"wait-on tcp:8545 && yarn migrate:demo && yarn run:backend\" \"wait-on tcp:3030 && yarn run:ui\" \"wait-on tcp:3030 && yarn run:ui-core\" \"wait-on tcp:3030 && yarn run:exchange-ui\" \"wait-on tcp:3030 && lerna run cypress:open --scope @energyweb/origin-ui --stream\"",
             "allowWarningsInSuccessfulBuild": true
         }
         // {
