@@ -2,10 +2,6 @@ import React from 'react';
 import { ErrorFallback, MainLayout } from '@energyweb/origin-ui-core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { OriginGlobalStyles } from './OriginGlobalStyles';
-// import {
-//   AuthProvider,
-//   OriginQueryClientProvider,
-// } from '@energy-web/origin-ui-api-clients';
 import { topBarButtons, userAndOrgData } from '../__mocks__/mainLayout';
 import { useAppEffects } from './App.effects';
 import { Routes, Route } from 'react-router-dom';
@@ -21,8 +17,6 @@ export function App() {
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      {/* <OriginQueryClientProvider>
-        <AuthProvider initialState={null}> */}
       <OriginGlobalStyles />
       <MainLayout
         topbarButtons={topBarButtons}
@@ -35,8 +29,6 @@ export function App() {
           <Route path="device/*" element={<DeviceApp />} />
         </Routes>
       </MainLayout>
-      {/* </AuthProvider>
-      </OriginQueryClientProvider> */}
     </ErrorBoundary>
   );
 }
