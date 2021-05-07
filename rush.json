@@ -389,10 +389,6 @@
             "projectFolder": "packages/apps/origin-backend-irec-app"
         },
         {
-            "packageName": "@energyweb/origin-ui",
-            "projectFolder": "packages/apps/origin-ui"
-        },
-        {
             "packageName": "@energyweb/device-registry",
             "projectFolder": "packages/device-registry"
         },
@@ -507,22 +503,6 @@
         {
             "packageName": "@energyweb/exchange-token-account",
             "projectFolder": "packages/trade/exchange-token-account"
-        },
-        {
-            "packageName": "@energyweb/exchange-ui-core",
-            "projectFolder": "packages/ui/exchange-ui-core"
-        },
-        {
-            "packageName": "@energyweb/localization",
-            "projectFolder": "packages/ui/localization"
-        },
-        {
-            "packageName": "@energyweb/origin-ui-core",
-            "projectFolder": "packages/ui/origin-ui-core"
-        },
-        {
-            "packageName": "@energyweb/origin-ui-irec-core",
-            "projectFolder": "packages/ui/origin-ui-irec-core"
         },
         {
             "packageName": "@energyweb/origin-backend-utils",
