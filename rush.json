@@ -567,6 +567,10 @@
         {
             "packageName": "@energyweb/issuer-api-react-query-client",
             "projectFolder": "packages/api-clients/react-query/issuer-api"
+        },
+        {
+            "packageName": "ui-packages",
+            "projectFolder": "packages/ui/origin-ui-v2"
         }
         // {
         //   /**

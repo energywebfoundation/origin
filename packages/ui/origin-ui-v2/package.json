@@ -1,7 +1,5 @@
 {
-  "name": "energy-web",
-  "version": "0.0.0",
-  "license": "MIT",
+  "name": "ui-packages",
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
