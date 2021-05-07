@@ -90,8 +90,6 @@ export function OrganizationInvite() {
                 email: values.email,
                 role: values.role
             });
-
-            showNotification(`Invitation sent`, NotificationTypeEnum.Success);
             formikActions.resetForm();
             showNotification(
                 t('organization.invitations.notification.invitationSent'),

@@ -253,7 +253,7 @@ export const DeviceTable = (props: IOwnProps) => {
                             aria-label="add"
                             style={{ position: 'relative', marginTop: '20px', float: 'right' }}
                         >
-                            <Add />
+                            <Add data-cy="plus-device-button" />
                         </Fab>
                     </Tooltip>
                 </Link>

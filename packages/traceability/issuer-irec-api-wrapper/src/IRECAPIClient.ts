@@ -24,6 +24,7 @@ import { Redemption, Transfer } from './Transfer';
 import { AccountItem, CodeName } from './Items';
 import { Fuel, FuelType } from './Fuel';
 import { Organisation } from './Organisation';
+import { Beneficiary, BeneficiaryCreateParams, BeneficiaryUpdateParams } from './Beneficiary';
 
 export type AccessTokens = {
     expiryDate: Date;
@@ -238,6 +239,51 @@ export class IRECAPIClient extends EventEmitter {
                 const response = await this.axiosInstance.get<unknown>(url, this.config);
 
                 return plainToClass(IssueWithStatus, response.data);
+            }
+        };
+    }
+
+    public get beneficiary() {
+        const beneficiaryManagementUrl = `${this.endPointUrl}/api/irec/v1/beneficiaries`;
+
+        return {
+            create: async (params: BeneficiaryCreateParams): Promise<void> => {
+                const beneficiaryParams =
+                    params instanceof BeneficiaryCreateParams
+                        ? params
+                        : plainToClass(BeneficiaryCreateParams, params);
+
+                await validateOrReject(beneficiaryParams);
+
+                const url = `${beneficiaryManagementUrl}/create`;
+                await this.axiosInstance.post(url, classToPlain(beneficiaryParams), this.config);
+            },
+            update: async (id: string | number, params: BeneficiaryUpdateParams): Promise<void> => {
+                const beneficiaryParams =
+                    params instanceof BeneficiaryUpdateParams
+                        ? params
+                        : plainToClass(BeneficiaryUpdateParams, params);
+
+                await validateOrReject(beneficiaryParams);
+
+                const url = `${beneficiaryManagementUrl}/${id}/edit`;
+
+                await this.axiosInstance.put(url, classToPlain(beneficiaryParams), this.config);
+            },
+            get: async (id: string | number): Promise<Beneficiary> => {
+                const url = `${beneficiaryManagementUrl}/${id}`;
+
+                const response = await this.axiosInstance.get<unknown>(url, this.config);
+
+                return plainToClass(Beneficiary, response.data);
+            },
+            getAll: async (): Promise<Beneficiary[]> => {
+                const response = await this.axiosInstance.get<unknown[]>(
+                    beneficiaryManagementUrl,
+                    this.config
+                );
+
+                return response.data.map((b) => plainToClass(Beneficiary, b));
             }
         };
     }

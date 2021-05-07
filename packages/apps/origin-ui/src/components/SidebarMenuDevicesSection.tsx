@@ -20,7 +20,7 @@ export const SidebarMenuDevicesSection = memo(
         return (
             enabledFeatures.includes(OriginFeature.Devices) && (
                 <>
-                    <li className="mainMenu">
+                    <li data-cy="devices-menu" className="mainMenu">
                         <NavLink to={devicesPath}>{t('header.devices')}</NavLink>
                     </li>
                     <SidebarSubMenu

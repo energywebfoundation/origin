@@ -2,19 +2,30 @@
 import { expect } from 'chai';
 import { validateOrReject } from 'class-validator';
 import moment from 'moment/moment';
+import fs from 'fs';
 
-import { IRECAPIClient } from '../src/IRECAPIClient';
-import { Device, DeviceCreateParams, DeviceState } from '../src/Device';
 import { credentials, getClient } from './helpers';
-import { Organisation } from '../src/Organisation';
-import { Issue, IssueStatus, IssueWithStatus } from '../src/Issue';
+import {
+    Beneficiary,
+    BeneficiaryCreateParams,
+    Device,
+    DeviceCreateParams,
+    DeviceState,
+    IRECAPIClient,
+    Issue,
+    IssueStatus,
+    IssueWithStatus,
+    Organisation
+} from '../src';
 
 describe('API flows', () => {
     let issuerClient: IRECAPIClient;
     let registrantClient: IRECAPIClient;
+    let participantClient: IRECAPIClient;
 
     let issuerOrg: Organisation;
     let registrantOrg: Organisation;
+    let participantOrg: Organisation;
 
     const tradeAccount = 'ACCOUNTTRADE001';
     const issueAccount = 'ACCOUNTISSUE001';
@@ -42,14 +53,22 @@ describe('API flows', () => {
     before(async () => {
         issuerClient = await getClient(credentials.issuer);
         registrantClient = await getClient(credentials.registrant);
+        participantClient = await getClient(credentials.participant);
 
         issuerOrg = await issuerClient.organisation.get();
         registrantOrg = await registrantClient.organisation.get();
+        participantOrg = await participantClient.organisation.get();
     });
 
     it('should pass create and approve device flow', async () => {
+        const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
+        const [fileId] = await registrantClient.file.upload([file]);
+
         const params = getDeviceParams();
-        const createdDevice: Device = await registrantClient.device.create(params);
+        const createdDevice: Device = await registrantClient.device.create({
+            ...params,
+            files: [fileId]
+        });
 
         let device: Device = await registrantClient.device.get(createdDevice.code);
         const deviceCode: string = device.code;
@@ -89,6 +108,9 @@ describe('API flows', () => {
     }).timeout(10000);
 
     it('should pass create and approve issue flow', async () => {
+        const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
+        const [fileId] = await registrantClient.file.upload([file]);
+
         const params = getDeviceParams();
         const device: Device = await registrantClient.device.create(params);
         const deviceCode: string = device.code;
@@ -103,7 +125,8 @@ describe('API flows', () => {
             end: moment().subtract(1, 'day').toDate(),
             production: 10,
             fuel: device.fuel,
-            notes: 'Some note'
+            notes: 'Some note',
+            files: [fileId]
         };
         const issueCode: string = await registrantClient.issue.create(issueParams);
         let issue: IssueWithStatus = await registrantClient.issue.get(issueCode);
@@ -144,5 +167,30 @@ describe('API flows', () => {
         expect(issue.status).to.equal(IssueStatus.Issued);
         issuerIssue = await issuerClient.issue.get(issueCode);
         expect(issuerIssue.status).to.equal(IssueStatus.Issued);
+    }).timeout(10000);
+
+    it('should create and update beneficiary', async () => {
+        const beneficiaryParams: BeneficiaryCreateParams = {
+            name: `My Test Beneficiary ${Date.now()}`,
+            countryCode: 'GB',
+            location: 'The Shire, Hobbiton',
+            active: false
+        };
+        await participantClient.beneficiary.create(beneficiaryParams);
+        const beneficiaries: Beneficiary[] = await participantClient.beneficiary.getAll();
+        const newBeneficiary = beneficiaries.find((b) => b.name === beneficiaryParams.name);
+
+        expect(newBeneficiary).to.be.not.equal(undefined);
+        expect(newBeneficiary.id).to.be.a('number');
+        expect(newBeneficiary.active).to.equal(false);
+
+        let beneficiary = await participantClient.beneficiary.get(newBeneficiary.id);
+        expect(beneficiary.name).to.equal(newBeneficiary.name);
+        expect(beneficiary.location).to.equal(newBeneficiary.location);
+        expect(beneficiary.active).to.equal(false);
+
+        await participantClient.beneficiary.update(newBeneficiary.id, { active: true });
+        beneficiary = await participantClient.beneficiary.get(newBeneficiary.id);
+        expect(beneficiary.active).to.equal(true);
     }).timeout(10000);
 });
