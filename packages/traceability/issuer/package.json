@@ -59,7 +59,7 @@
         "typechain": "4.0.3",
         "@types/mocha": "8.2.2",
         "@types/node": "14.14.44",
-        "mocha": "8.3.2",
+        "mocha": "8.4.0",
         "truffle": "5.3.5",
         "solc": "0.5.16",
         "winston-transport": "4.4.0",
