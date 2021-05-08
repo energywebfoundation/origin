@@ -46,7 +46,7 @@
         "ethlint": "1.2.5",
         "@types/mocha": "8.2.2",
         "@types/node": "14.14.44",
-        "mocha": "8.3.2",
+        "mocha": "8.4.0",
         "winston": "3.3.3",
         "winston-transport": "4.4.0",
         "@types/chai": "4.2.15",
