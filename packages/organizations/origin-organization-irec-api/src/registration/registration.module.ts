@@ -1,20 +1,26 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from '@energyweb/origin-backend';
 
 import { RegistrationController } from './registration.controller';
 import { Registration } from './registration.entity';
 import { RegistrationService } from './registration.service';
+import { Handlers } from './handlers';
+import { IrecOrganizationService } from './irec-organization.service';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Registration]),
+        UserModule,
         CqrsModule,
-        PassportModule.register({ defaultStrategy: 'jwt' })
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        ConfigModule
     ],
-    providers: [RegistrationService],
-    exports: [RegistrationService],
+    providers: [...Handlers, RegistrationService, IrecOrganizationService],
+    exports: [...Handlers, RegistrationService, IrecOrganizationService],
     controllers: [RegistrationController]
 })
 export class RegistrationModule {}

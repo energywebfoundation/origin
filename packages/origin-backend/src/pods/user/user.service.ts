@@ -104,6 +104,10 @@ export class UserService {
         );
     }
 
+    async getPlatformAdmin() {
+        return this.findOne({ rights: Role.Admin });
+    }
+
     async findByIds(
         ids: number[],
         conditions: FindConditions<User> = {}
