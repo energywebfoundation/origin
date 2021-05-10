@@ -20,8 +20,8 @@ import {
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { Registry } from '@energyweb/issuer/src/ethers/Registry';
-import { Issuer } from '@energyweb/issuer/src/ethers/Issuer';
+import { Registry } from '@energyweb/issuer/dist/js/src/ethers/Registry';
+import { Issuer } from '@energyweb/issuer/dist/js/src/ethers/Issuer';
 import { ConfigService } from '@nestjs/config';
 import { Certificate } from '@energyweb/issuer';
 import { ExchangeErc1888Module } from '../src';
