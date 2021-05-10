@@ -29,10 +29,11 @@
         "test": "truffle test",
         "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
         "clean": "shx rm -rf build dist src/ethers",
-        "typechain:ethers": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/TokenAccount.json'"
+        "typechain:ethers": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/TokenAccount.json'"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
+        "@ethersproject/abi": "5.1.2",
         "@ethersproject/contracts": "5.1.1",
         "@ethersproject/providers": "5.1.2",
         "chai": "4.3.0",
@@ -41,9 +42,9 @@
     "devDependencies": {
         "typescript": "4.2.4",
         "@energyweb/issuer": "3.2.0",
-        "@typechain/ethers-v5": "1.0.0",
+        "@typechain/ethers-v5": "7.0.0",
         "truffle-typings": "1.0.8",
-        "typechain": "4.0.3",
+        "typechain": "5.0.0",
         "@types/mocha": "8.2.2",
         "@types/node": "14.14.44",
         "mocha": "8.4.0",
