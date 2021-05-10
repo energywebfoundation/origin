@@ -15,7 +15,8 @@ export class BlockchainPropertiesService {
         issuer: string,
         rpcNode: string,
         platformOperatorPrivateKey: string,
-        rpcNodeFallback?: string
+        rpcNodeFallback?: string,
+        privateIssuer?: string
     ): Promise<BlockchainProperties> {
         const blockchain = this.repository.create({
             netId,
@@ -23,7 +24,8 @@ export class BlockchainPropertiesService {
             issuer,
             rpcNode,
             rpcNodeFallback,
-            platformOperatorPrivateKey
+            platformOperatorPrivateKey,
+            privateIssuer
         });
 
         return this.repository.save(blockchain);
@@ -42,6 +44,7 @@ export class BlockchainPropertiesService {
             netId: blockchainProperties.netId,
             registry: blockchainProperties.registry,
             issuer: blockchainProperties.issuer,
+            privateIssuer: blockchainProperties.privateIssuer,
             rpcNode: blockchainProperties.rpcNode,
             rpcNodeFallback: blockchainProperties.rpcNodeFallback
         };

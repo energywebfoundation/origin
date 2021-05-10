@@ -88,8 +88,9 @@ describe('Deposits using deployed registry', () => {
 
         await sleep(5000);
 
-        const res = await request(app.getHttpServer()).get('/transfer/all');
-        const [transfer] = res.body as Transfer[];
+        const {
+            body: [transfer]
+        } = await request(app.getHttpServer()).get('/transfer/all');
 
         // eslint-disable-next-line no-unused-expressions
         expect(transfer.id).to.be.ok;
