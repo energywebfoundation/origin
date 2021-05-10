@@ -2,7 +2,7 @@ import fs from 'fs';
 
 const issuerContract = fs.readFileSync('./contracts/Issuer.sol', 'utf8');
 
-// Fixes an issue where attaching multiple files to FormData doesn't work
+// Creates a different copy of the Issuer contract
 const upgradedIssuerContract = issuerContract
     .replace(`contract Issuer is `, `contract IssuerUpgradeTest is `)
     .replace(`return "v0.1";`, `return "v0.2";`);
