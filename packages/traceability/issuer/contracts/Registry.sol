@@ -7,7 +7,7 @@ import "./ERC1888/IERC1888.sol";
 contract Registry is ERC1155, ERC1888 {
 
 	mapping(uint256 => Certificate) public certificateStorage;
-	mapping(uint256 => mapping(address => uint256)) public _claimedBalances;
+	mapping(uint256 => mapping(address => uint256)) public claimedBalances;
 
     uint256 private _latestCertificateId;
 
@@ -110,7 +110,7 @@ contract Registry is ERC1155, ERC1888 {
 	}
 
 	function claimedBalanceOf(address _owner, uint256 _id) external override view returns (uint256) {
-		return _claimedBalances[_id][_owner];
+		return claimedBalances[_id][_owner];
 	}
 
 	function claimedBalanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external override view returns (uint256[] memory) {
@@ -128,7 +128,7 @@ contract Registry is ERC1155, ERC1888 {
 	function _burn(address _from, uint256 _id, uint256 _value) internal override {
 		ERC1155._burn(_from, _id, _value);
 
-		_claimedBalances[_id][_from] = _claimedBalances[_id][_from] + _value;
+		claimedBalances[_id][_from] = claimedBalances[_id][_from] + _value;
 	}
 
 	function _validate(address _verifier, bytes memory _validityData) internal view {

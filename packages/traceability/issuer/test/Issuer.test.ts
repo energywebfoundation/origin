@@ -7,7 +7,7 @@ import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { Wallet, BigNumber } from 'ethers';
 import { migrateIssuer, migratePrivateIssuer, migrateRegistry } from '../src/migrate';
-import { CertificationRequest, IBlockchainProperties } from '..';
+import { CertificationRequest, IBlockchainProperties } from '../src';
 import { decodeData, encodeData } from '../src/blockchain-facade/CertificateUtils';
 
 describe('Issuer', () => {

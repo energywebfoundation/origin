@@ -18,12 +18,12 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     Registry public registry;
     address public privateIssuer;
 
-    mapping(uint256 => CertificationRequest) private certificationRequests;
+    mapping(uint256 => CertificationRequest) private _certificationRequests;
     mapping(uint256 => uint256) private requestToCertificate;
 
-    uint256 private latestCertificationRequestId;
+    uint256 private _latestCertificationRequestId;
 
-    mapping(uint256 => bool) private revokedCertificates;
+    mapping(uint256 => bool) private _revokedCertificates;
 
     struct CertificationRequest {
         address owner;
@@ -55,13 +55,13 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	*/
 
     function getCertificationRequest(uint256 _requestId) public view returns (CertificationRequest memory) {
-        return certificationRequests[_requestId];
+        return _certificationRequests[_requestId];
     }
 
     function requestCertificationFor(bytes memory _data, address _owner) public returns (uint256) {
-        uint256 id = ++latestCertificationRequestId;
+        uint256 id = ++_latestCertificationRequestId;
 
-        certificationRequests[id] = CertificationRequest({
+        _certificationRequests[id] = CertificationRequest({
             owner: _owner,
             data: _data,
             approved: false,
@@ -79,17 +79,17 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function isRequestValid(uint256 _requestId) external view returns (bool) {
-        CertificationRequest memory request = certificationRequests[_requestId];
+        CertificationRequest memory request = _certificationRequests[_requestId];
         uint certificateId = requestToCertificate[_requestId];
 
-        return _requestId <= latestCertificationRequestId
+        return _requestId <= _latestCertificationRequestId
             && request.approved
             && !request.revoked
-            && !revokedCertificates[certificateId];
+            && !_revokedCertificates[certificateId];
     }
 
     function revokeRequest(uint256 _requestId) external {
-        CertificationRequest storage request = certificationRequests[_requestId];
+        CertificationRequest storage request = _certificationRequests[_requestId];
 
         require(_msgSender() == request.owner || _msgSender() == OwnableUpgradeable.owner(), "revokeRequest(): Only the request creator can revoke the request.");
         require(!request.revoked, "revokeRequest(): Already revoked");
@@ -101,8 +101,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function revokeCertificate(uint256 _certificateId) external onlyOwner {
-        require(!revokedCertificates[_certificateId], "revokeCertificate(): Already revoked");
-        revokedCertificates[_certificateId] = true;
+        require(!_revokedCertificates[_certificateId], "revokeCertificate(): Already revoked");
+        _revokedCertificates[_certificateId] = true;
 
         emit CertificateRevoked(_certificateId);
     }
@@ -115,7 +115,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         require(_msgSender() == owner() || _msgSender() == privateIssuer, "approveCertificationRequest(): caller is not the owner or private issuer contract");
         require(_requestNotApprovedOrRevoked(_requestId), "approveCertificationRequest(): request already approved or revoked");
 
-        CertificationRequest storage request = certificationRequests[_requestId];
+        CertificationRequest storage request = _certificationRequests[_requestId];
         request.approved = true;
 
         uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, _value, request.data);
@@ -157,7 +157,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	*/
 
     function _requestNotApprovedOrRevoked(uint256 _requestId) internal view returns (bool) {
-        CertificationRequest memory request = certificationRequests[_requestId];
+        CertificationRequest memory request = _certificationRequests[_requestId];
 
         return !request.approved && !request.revoked;
     }
