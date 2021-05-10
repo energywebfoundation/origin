@@ -29,7 +29,7 @@
         "test": "truffle test",
         "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
         "clean": "shx rm -rf build dist src/ethers",
-        "typechain:ethers": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/TokenAccount.json'"
+        "typechain:ethers": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/TokenAccount.json'"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
