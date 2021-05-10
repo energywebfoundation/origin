@@ -58,7 +58,6 @@
     "devDependencies": {
         "typescript": "4.2.4",
         "@typechain/ethers-v5": "7.0.0",
-        "@truffle/hdwallet-provider": "1.3.0",
         "ethlint": "1.2.5",
         "truffle-typings": "1.0.8",
         "typechain": "5.0.0",
