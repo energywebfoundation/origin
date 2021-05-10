@@ -47,15 +47,6 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
-            "name": "test:ci:apps",
-            "commandKind": "global",
-            "summary": "Run ci:apps test",
-            "safeForSimultaneousRushProcesses": false,
-            "autoinstallerName": "rush-tools",
-            "shellCommand": "lerna run --scope @energyweb/exchange --scope @energyweb/origin-backend test:concurrent --parallel --stream",
-            "allowWarningsInSuccessfulBuild": true
-        },
-        {
             "name": "test:e2e",
             "commandKind": "global",
             "summary": "Run all test:e2e in packages",
