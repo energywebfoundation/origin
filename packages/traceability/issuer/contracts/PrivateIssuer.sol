@@ -17,15 +17,15 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
 	event PrivateTransferRequested(address indexed _owner, uint256 indexed _certificateId);
 	event CertificateMigratedToPublic(uint256 indexed _certificateId, address indexed _owner, uint256 indexed _amount);
 
-	uint256 private requestMigrateToPublicNonce;
-	uint256 private requestPrivateTransferNonce;
+	uint256 private _requestMigrateToPublicNonce;
+	uint256 private _requestPrivateTransferNonce;
 
-	mapping(uint256 => RequestStateChange) private requestMigrateToPublicStorage;
-	mapping(uint256 => PrivateTransferRequest) private requestPrivateTransferStorage;
-	mapping(uint256 => uint256) private requestToCertificate;
+	mapping(uint256 => RequestStateChange) private _requestMigrateToPublicStorage;
+	mapping(uint256 => PrivateTransferRequest) private _requestPrivateTransferStorage;
+	mapping(uint256 => uint256) private _requestToCertificate;
 
-	mapping(uint256 => bool) private migrations;
-	mapping(uint256 => bytes32) private commitments;
+	mapping(uint256 => bool) private _migrations;
+	mapping(uint256 => bytes32) private _commitments;
 
     struct PrivateTransferRequest {
 		address owner;
@@ -58,7 +58,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
 	*/
 
     function getCertificateCommitment(uint certificateId) public view returns (bytes32) {
-        return commitments[certificateId];
+        return _commitments[certificateId];
     }
 
     function approveCertificationRequestPrivate(
@@ -90,11 +90,11 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
 		Private transfer
 	*/
 	function requestPrivateTransfer(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external {
-		PrivateTransferRequest storage currentRequest = requestPrivateTransferStorage[_certificateId];
+		PrivateTransferRequest storage currentRequest = _requestPrivateTransferStorage[_certificateId];
 
         require(currentRequest.owner == address(0x0), "Only one private transfer can be requested at a time.");
 
-		requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
+		_requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
 			owner: _msgSender(),
 			hash: _ownerAddressLeafHash
 		});
@@ -108,12 +108,12 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
         bytes32 _previousCommitment,
         bytes32 _commitment
     ) external onlyOwner returns (bool) {
-		PrivateTransferRequest storage pendingRequest = requestPrivateTransferStorage[_certificateId];
+		PrivateTransferRequest storage pendingRequest = _requestPrivateTransferStorage[_certificateId];
 
         require(pendingRequest.owner != address(0x0), "approvePrivateTransfer(): Can't approve a non-existing private transfer.");
 		require(validateMerkle(pendingRequest.hash, _commitment, _proof), "approvePrivateTransfer(): Wrong merkle tree");
 
-        requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
+        _requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
 			owner: address(0x0),
 			hash: ''
 		});
@@ -136,18 +136,18 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
 	}
 
     function getPrivateTransferRequest(uint _certificateId) external view onlyOwner returns (PrivateTransferRequest memory) {
-        return requestPrivateTransferStorage[_certificateId];
+        return _requestPrivateTransferStorage[_certificateId];
     }
 
     function getMigrationRequest(uint _requestId) external view onlyOwner returns (RequestStateChange memory) {
-        return requestMigrateToPublicStorage[_requestId];
+        return _requestMigrateToPublicStorage[_requestId];
     }
 
     function getMigrationRequestId(uint _certificateId) external view onlyOwner returns (uint256 _migrationRequestId) {
         bool found = false;
 
-		for (uint i = 1; i <= requestMigrateToPublicNonce; i++) {
-            if (requestMigrateToPublicStorage[i].certificateId == _certificateId) {
+		for (uint i = 1; i <= _requestMigrateToPublicNonce; i++) {
+            if (_requestMigrateToPublicStorage[i].certificateId == _certificateId) {
                 found = true;
 			    return i;
             }
@@ -162,19 +162,19 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
         string calldata _salt,
         Proof[] calldata _proof
     ) external onlyOwner {
-		RequestStateChange storage request = requestMigrateToPublicStorage[_requestId];
+		RequestStateChange storage request = _requestMigrateToPublicStorage[_requestId];
 
 		require(!request.approved, "migrateToPublic(): Request already approved");
-        require(!migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
+        require(!_migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
 		require(request.hash == keccak256(abi.encodePacked(request.owner, _volume, _salt)), "Requested hash does not match");
-        require(validateOwnershipProof(request.owner, _volume, _salt, commitments[request.certificateId], _proof), "Invalid proof");
+        require(validateOwnershipProof(request.owner, _volume, _salt, _commitments[request.certificateId], _proof), "Invalid proof");
 
 		request.approved = true;
 
         registry.mint(request.certificateId, request.owner, _volume);
-        migrations[request.certificateId] = true;
+        _migrations[request.certificateId] = true;
 
-        _updateCommitment(request.certificateId, commitments[request.certificateId], 0x0);
+        _updateCommitment(request.certificateId, _commitments[request.certificateId], 0x0);
 
         emit CertificateMigratedToPublic(request.certificateId, request.owner, _volume);
 	}
@@ -215,9 +215,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
 	*/
 
 	function _updateCommitment(uint256 _id, bytes32 _previousCommitment, bytes32 _commitment) private {
-		require(commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
+		require(_commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
 
-		commitments[_id] = _commitment;
+		_commitments[_id] = _commitment;
 
 		emit CommitmentUpdated(_msgSender(), _id, _commitment);
 	}
@@ -225,8 +225,8 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
     function _migrationRequestExists(uint _certificateId) private view returns (bool) {
         bool exists = false;
 
-		for (uint i = 1; i <= requestMigrateToPublicNonce; i++) {
-            if (requestMigrateToPublicStorage[i].certificateId == _certificateId) {
+		for (uint i = 1; i <= _requestMigrateToPublicNonce; i++) {
+            if (_requestMigrateToPublicStorage[i].certificateId == _certificateId) {
                 exists = true;
                 return exists;
             }
@@ -239,9 +239,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable {
         bool exists = _migrationRequestExists(_certificateId);
         require(!exists, "migration request for this certificate already exists");
 
-		uint256 id = ++requestMigrateToPublicNonce;
+		uint256 id = ++_requestMigrateToPublicNonce;
 
-		requestMigrateToPublicStorage[id] = RequestStateChange({
+		_requestMigrateToPublicStorage[id] = RequestStateChange({
 			owner: _forAddress,
 			hash: _ownerAddressLeafHash,
 			certificateId: _certificateId,
