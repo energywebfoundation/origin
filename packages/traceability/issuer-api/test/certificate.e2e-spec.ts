@@ -128,7 +128,7 @@ describe('Certificate tests', () => {
             });
     });
 
-    it('should transfer a certificate', async () => {
+    xit('should transfer a certificate', async () => {
         const {
             body: { id: certificateId }
         } = await request(app.getHttpServer())

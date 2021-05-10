@@ -28,7 +28,7 @@
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8551",
         "test": "mocha -r ts-node/register src/test/*.test.ts --timeout 60000 --exit",
-        "test:concurrent": "yarn test",
+        "test:e2e": "yarn test",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf build dist dist-shakeable schemas"
     },

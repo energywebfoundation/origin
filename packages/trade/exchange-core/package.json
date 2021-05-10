@@ -27,7 +27,7 @@
         "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "test": "mocha -r ts-node/register test/*.test.ts --exit",
-        "test:concurrent": "yarn test",
+        "test:e2e": "yarn test",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf build dist dist-shakeable schemas",
         "precommit": "lint-staged"
