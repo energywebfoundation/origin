@@ -25,6 +25,7 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
 import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
+import { RequestBulkClaimDTO } from './dto/request-bulk-claim.dto';
 import { RequestClaimDTO } from './dto/request-claim.dto';
 import { ClaimBeingProcessedError } from './errors/claim-being-processed.error';
 import { WithdrawalBeingProcessedError } from './errors/withdrawal-being-processed.error';
@@ -91,6 +92,35 @@ export class TransferController {
                 ownerId,
                 'requestClaim',
                 () => this.transferService.requestClaim(ownerId, claim),
+                new ClaimBeingProcessedError()
+            );
+
+            return result;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            if (error instanceof ClaimBeingProcessedError) {
+                throw new ConflictException({ message: error.message });
+            }
+
+            throw new ForbiddenException();
+        }
+    }
+
+    @Post('claim/bulk')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: RequestBulkClaimDTO })
+    @ApiResponse({ status: HttpStatus.CREATED, type: String, description: 'Request a claim' })
+    public async requestBulkClaim(
+        @UserDecorator() { ownerId }: ILoggedInUser,
+        @Body() bulkClaim: RequestBulkClaimDTO
+    ): Promise<string> {
+        try {
+            const result = await ensureSingleProcessOnly(
+                ownerId,
+                'requestClaim',
+                () => this.transferService.requestBulkClaim(ownerId, bulkClaim),
                 new ClaimBeingProcessedError()
             );
 
