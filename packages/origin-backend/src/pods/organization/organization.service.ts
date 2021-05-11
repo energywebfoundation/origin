@@ -231,6 +231,10 @@ export class OrganizationService {
         );
     }
 
+    async updateBeneficiaryId(organizationId: number, beneficiaryId: string) {
+        await this.repository.update({ id: organizationId }, { beneficiaryId });
+    }
+
     private async isNameAlreadyTaken(name: string) {
         const existingOrganizations = await this.repository
             .createQueryBuilder()
