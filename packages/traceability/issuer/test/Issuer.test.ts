@@ -6,8 +6,9 @@ import moment from 'moment';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { Wallet, BigNumber } from 'ethers';
-import { migrateIssuer, migrateRegistry } from '../migrate';
-import { CertificationRequest, IBlockchainProperties } from '..';
+import { migrateIssuer, migratePrivateIssuer, migrateRegistry } from '../src/migrate';
+import { CertificationRequest, IBlockchainProperties } from '../src';
+import { decodeData, encodeData } from '../src/blockchain-facade/CertificateUtils';
 
 describe('Issuer', () => {
     let blockchainProperties: IBlockchainProperties;
@@ -71,6 +72,34 @@ describe('Issuer', () => {
             registry,
             issuer
         };
+    });
+
+    it('should be able to set private issuer contract', async () => {
+        const privateIssuer = await migratePrivateIssuer(
+            provider,
+            issuerPK,
+            blockchainProperties.issuer.address
+        );
+
+        await blockchainProperties.issuer.setPrivateIssuer(privateIssuer.address);
+
+        assert.equal(
+            await blockchainProperties.issuer.getPrivateIssuerAddress(),
+            privateIssuer.address
+        );
+    });
+
+    it('encodes and decodes data properly', async () => {
+        const generationStartTime = 1;
+        const generationEndTime = 2;
+        const deviceId = 'device123';
+
+        const encodedData = encodeData({ generationStartTime, generationEndTime, deviceId });
+        const decodedData = decodeData(encodedData);
+
+        assert.equal(generationStartTime, decodedData.generationStartTime);
+        assert.equal(generationEndTime, decodedData.generationEndTime);
+        assert.equal(deviceId, decodedData.deviceId);
     });
 
     it('gets all certification requests', async () => {
@@ -182,28 +211,6 @@ describe('Issuer', () => {
         assert.isTrue(failed);
     });
 
-    // it('should fail to request 2 certificates with the same generation period', async () => {
-    //     setActiveUser(deviceOwnerWallet);
-
-    //     const fromTime = timestamp;
-    //     // Simulate time moving forward 1 month
-    //     timestamp += 30 * 24 * 3600;
-    //     const toTime = timestamp;
-    //     const device = '1';
-
-    //     await createCertificationRequest(fromTime, toTime, device);
-
-    //     let failed = false;
-
-    //     try {
-    //         await createCertificationRequest(fromTime, toTime, device);
-    //     } catch (e) {
-    //         failed = true;
-    //     }
-
-    //     assert.isTrue(failed);
-    // });
-
     it('should request the same certificate after revoking one', async () => {
         setActiveUser(deviceOwnerWallet);
 
@@ -225,39 +232,6 @@ describe('Issuer', () => {
 
         assert.exists(newCertificationRequest);
     });
-
-    // it('user correctly requests private issuance', async () => {
-    //     const volume = BigNumber.from(1e9);
-    //     const certificationRequest = await createCertificationRequest(volume);
-
-    //     assert.isAbove(Number(certificationRequest.id), -1);
-
-    //     assert.deepOwnInclude(certificationRequest, {
-    //         deviceId: '1',
-    //         owner: deviceOwnerWallet.address,
-    //         approved: false,
-    //         energy: volume
-    //     } as Partial<CertificationRequest>);
-    // });
-
-    // it('issuer correctly approves private issuance', async () => {
-    //     const volume = BigNumber.from(1e9);
-    //     let certificationRequest = await createCertificationRequest(volume);
-
-    //     setActiveUser(issuerWallet);
-
-    //     const certificateId = await certificationRequest.approve();
-
-    //     certificationRequest = await certificationRequest.sync();
-
-    //     assert.isTrue(certificationRequest.approved);
-
-    //     const deviceOwnerBalance = await blockchainProperties.registry.balanceOf(
-    //         deviceOwnerWallet.address,
-    //         Number(certificateId)
-    //     );
-    //     assert.equal(deviceOwnerBalance.toString(), '0');
-    // });
 
     it('should be able to request for other address', async () => {
         setActiveUser(deviceOwnerWallet);

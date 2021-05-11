@@ -23,7 +23,6 @@
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet --fix",
         "test": "jest --env 'node' --passWithNoTests",
-        "test:concurrent": "yarn test",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
