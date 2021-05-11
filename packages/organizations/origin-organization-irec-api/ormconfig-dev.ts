@@ -1,5 +1,4 @@
 import { ConnectionOptions } from 'typeorm';
-import { User } from '@energyweb/origin-backend';
 
 const getDBConnectionOptions = (): ConnectionOptions => {
     return process.env.DATABASE_URL
@@ -22,7 +21,7 @@ const getDBConnectionOptions = (): ConnectionOptions => {
 
 const config: ConnectionOptions = {
     ...getDBConnectionOptions(),
-    entities: ['src/**/*.entity.ts', User],
+    entities: ['src/**/*.entity.ts'],
     synchronize: false,
     migrationsRun: true,
     migrations: ['migrations/*.ts'],

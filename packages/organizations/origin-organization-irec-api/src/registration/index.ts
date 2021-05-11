@@ -5,6 +5,5 @@ export * from './registration.dto';
 export * from './registration.entity';
 export * from './registration.module';
 export * from './registration.service';
-export * from './irec-organization.service';
 export * from './registration-response.dto';
 export * from './new-registration.dto';

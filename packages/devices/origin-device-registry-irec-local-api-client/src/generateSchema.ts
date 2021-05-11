@@ -4,7 +4,6 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { entities as orgEntities } from '@energyweb/origin-organization-irec-api';
 import { AppModule, entities } from '@energyweb/origin-device-registry-irec-local-api';
-import { entities as OriginBackendEntities } from '@energyweb/origin-backend';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Yaml = require('json-to-pretty-yaml');
@@ -19,7 +18,7 @@ export const generateSchema = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [...entities, ...orgEntities, ...OriginBackendEntities],
+                entities: [...entities, ...orgEntities],
                 logging: ['info']
             }),
             AppModule

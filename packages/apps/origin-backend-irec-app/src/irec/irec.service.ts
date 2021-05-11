@@ -1,14 +1,17 @@
-import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
-import { AccessTokens, IRECAPIClient } from '@energyweb/issuer-irec-api-wrapper';
-import { GetConnectionCommand, RefreshTokensCommand } from '../connection';
+import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { AccessTokens, Beneficiary, IRECAPIClient } from '@energyweb/issuer-irec-api-wrapper';
+import {
+    GetConnectionCommand,
+    RefreshTokensCommand
+} from '@energyweb/origin-organization-irec-api';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
 @Injectable()
-export class IrecOrganizationService {
+export class IrecService {
     constructor(
         private readonly commandBus: CommandBus,
         private readonly configService: ConfigService
@@ -41,12 +44,18 @@ export class IrecOrganizationService {
     async createBeneficiary(
         user: UserIdentifier,
         organization: IPublicOrganization
-    ): Promise<void> {
+    ): Promise<Beneficiary> {
         if (!this.isIrecIntegrationEnabled()) {
-            return;
+            return {
+                id: 1,
+                name: 'Test Beneficiary',
+                active: true,
+                countryCode: 'GB',
+                location: 'Hobbiton, The Shire'
+            };
         }
         const irecClient = await this.getIrecClient(user);
-        await irecClient.beneficiary.create({
+        return await irecClient.beneficiary.create({
             name: organization.name,
             countryCode: organization.country,
             location: `${organization.city} ${organization.address}`,

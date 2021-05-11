@@ -92,7 +92,4 @@ export class Registration extends ExtendedBaseEntity {
 
     @Column({ default: '' })
     leadUserFax: string;
-
-    @Column({ default: '' })
-    beneficiaryId: string;
 }
