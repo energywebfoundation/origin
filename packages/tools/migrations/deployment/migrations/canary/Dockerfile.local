@@ -1,5 +1,7 @@
 FROM energyweb/origin-backend-app:canary
 
+RUN apk --no-cache add curl
+
 RUN mkdir -p /var/deployment
 COPY ./ /var/deployment
 

@@ -27,7 +27,7 @@ describe('Active user profile email block interactions', () => {
         cy.dataCy('email-edit-button').click();
         cy.clearInput('email');
 
-        cy.dataCy('email').type(newEmail);
+        cy.dataCy('email').find('input').type(newEmail).blur();
         cy.dataCy('email').find('input').should('have.value', newEmail);
         cy.dataCy('email-save-button').should('not.be.disabled');
 
@@ -52,7 +52,7 @@ describe('Active user profile email block interactions', () => {
         cy.dataCy('email-edit-button').click();
         cy.clearInput('email');
 
-        cy.dataCy('email').type(newEmail);
+        cy.dataCy('email').find('input').type(newEmail).blur();
         cy.dataCy('email-save-button').should('not.be.disabled');
         cy.dataCy('email-save-button').click();
 

@@ -19,6 +19,8 @@
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
+        "build:container:canary": "make build-canary",
+        "build:container:latest": "make build-stable",
         "start": "ts-node src/main.ts",
         "start:defaultConfigs": "yarn start -c ./config/demo-config.json -s ./config/seed.sql -e ../../../.env",
         "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8553 && yarn start:redeploy\"",
@@ -36,19 +38,19 @@
         "@energyweb/utils-general": "11.0.2",
         "@types/pg": "7.14.11",
         "commander": "6.2.1",
-        "dotenv": "8.2.0",
-        "ethers": "5.0.31",
-        "pg": "8.5.1",
+        "dotenv": "9.0.1",
+        "ethers": "5.1.4",
+        "pg": "8.6.0",
         "winston": "3.3.3",
         "winston-transport": "4.4.0",
         "write-json-file": "4.3.0",
         "yaeti": "1.0.2"
     },
     "devDependencies": {
-        "typescript": "4.1.5",
+        "typescript": "4.2.4",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.14.37",
-        "mocha": "8.3.2"
+        "@types/node": "14.14.44",
+        "mocha": "8.4.0"
     },
     "publishConfig": {
         "access": "public",

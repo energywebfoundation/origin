@@ -11,9 +11,9 @@ contract('MetaCoin', ([deployer, wallet]: string[]) => {
         console.log(`Proxy wallet creation gasUsed: ${gasUsed}`);
     });
     it('should transfer to the wallet', async () => {
-        const token = await TestToken.new();
+        const token = await TestToken.new('');
 
-        await token.create(1000, '', deployer);
+        await token.create(1000, deployer);
 
         const proxyAccount = await TokenAccount.new(wallet);
 
@@ -33,10 +33,10 @@ contract('MetaCoin', ([deployer, wallet]: string[]) => {
     });
 
     it('should transfer batch to the wallet', async () => {
-        const token = await TestToken.new();
+        const token = await TestToken.new('');
 
-        await token.create(1000, '', deployer);
-        await token.create(1000, '', deployer);
+        await token.create(1000, deployer);
+        await token.create(1000, deployer);
 
         const proxyAccount = await TokenAccount.new(wallet);
 

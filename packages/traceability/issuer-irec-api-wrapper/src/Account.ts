@@ -15,12 +15,6 @@ export enum TransactionType {
     Transfer = 'Transfer'
 }
 
-export class Beneficiary {
-    id: number;
-
-    name: string;
-}
-
 export class AccountDetails {
     name: string;
 
@@ -98,10 +92,16 @@ export class TransactionResult extends Transaction {
     recipient: string;
 }
 
+export class RedeemBeneficiary {
+    id: number;
+
+    name: string;
+}
+
 export class RedeemTransaction extends Transaction {
     purpose: string;
 
-    beneficiary: Beneficiary;
+    beneficiary: RedeemBeneficiary;
 
     @Expose({ name: 'period_start', toPlainOnly: true })
     @Transform((value) => moment.tz(value.date, value.timezone).toDate())

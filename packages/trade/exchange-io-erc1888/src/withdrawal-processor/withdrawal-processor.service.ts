@@ -240,7 +240,11 @@ export class WithdrawalProcessorService implements OnModuleInit {
         const hasLog = logs
             .map((log: any) => this.blockchainProperties.registry.interface.parseLog(log))
             .filter((log: any) => log.name === logName)
-            .some((log: any) => this.hasMatchingLog(transfer, log));
+            .some((log: any) =>
+                transfer.direction == TransferDirection.Withdrawal
+                    ? this.hasMatchingTransferLog(transfer, log)
+                    : this.hasMatchingClaimLog(transfer, log)
+            );
 
         if (!hasLog) {
             this.logger.error(
@@ -252,14 +256,26 @@ export class WithdrawalProcessorService implements OnModuleInit {
         return this.transferService.setAsConfirmed(transactionHash, blockNumber);
     }
 
-    private hasMatchingLog(transfer: Transfer, { args }: ethers.utils.LogDescription) {
-        const _to = String(args._to).toLowerCase();
-        const _from = String(args._from).toLowerCase();
+    private hasMatchingTransferLog(transfer: Transfer, { args }: ethers.utils.LogDescription) {
+        const to = String(args.to).toLowerCase();
+        const from = String(args.from).toLowerCase();
+
+        return (
+            args.id.toString() === transfer.asset.tokenId &&
+            from === this.wallet.address.toLowerCase() &&
+            to === transfer.address.toLowerCase() &&
+            args.value.toString() === transfer.amount
+        );
+    }
+
+    private hasMatchingClaimLog(transfer: Transfer, { args }: ethers.utils.LogDescription) {
+        const to = String(args._claimIssuer).toLowerCase();
+        const from = String(args._claimSubject).toLowerCase();
 
         return (
             args._id.toString() === transfer.asset.tokenId &&
-            _from === this.wallet.address.toLowerCase() &&
-            _to === transfer.address.toLowerCase() &&
+            from === this.wallet.address.toLowerCase() &&
+            to === transfer.address.toLowerCase() &&
             args._value.toString() === transfer.amount
         );
     }

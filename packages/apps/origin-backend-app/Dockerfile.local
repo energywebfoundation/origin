@@ -10,4 +10,4 @@ COPY ./ /var/deployment
 
 WORKDIR /var/deployment/packages/apps/origin-backend-app
 
-CMD ["/bin/bash", "-c", "origin-backend-app"]
+CMD ["/bin/bash", "-c", "bin/origin-backend-app"]

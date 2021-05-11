@@ -1,6 +1,14 @@
-import { EventFilter, utils, providers, BigNumber, ContractTransaction, Contract } from 'ethers';
+import {
+    EventFilter,
+    utils,
+    providers,
+    BigNumber,
+    ContractTransaction,
+    Contract,
+    constants
+} from 'ethers';
 
-import { Certificate, IClaimData, ICertificate } from './Certificate';
+import { Certificate, IClaimData, ICertificate, IData } from './Certificate';
 import { getEventsFromContract, IBlockchainEvent } from '../utils/events';
 import { IBlockchainProperties } from './BlockchainProperties';
 
@@ -47,6 +55,28 @@ export const decodeClaimData = (encodedClaimData: string): IClaimData => {
         countryCode,
         fromDate,
         toDate
+    };
+};
+
+export const encodeData = (data: IData): string => {
+    const { generationStartTime, generationEndTime, deviceId } = data;
+
+    return utils.defaultAbiCoder.encode(
+        ['uint256', 'uint256', 'string'],
+        [generationStartTime, generationEndTime, deviceId]
+    );
+};
+
+export const decodeData = (encodedData: string): IData => {
+    const [generationStartTime, generationEndTime, deviceId] = utils.defaultAbiCoder.decode(
+        ['uint256', 'uint256', 'string'],
+        encodedData
+    );
+
+    return {
+        generationStartTime: generationStartTime.toNumber(),
+        generationEndTime: generationEndTime.toNumber(),
+        deviceId
     };
 };
 
@@ -121,14 +151,15 @@ export async function transferCertificates(
 export async function getAllCertificates(
     blockchainProperties: IBlockchainProperties
 ): Promise<Certificate[]> {
-    const { issuer } = blockchainProperties;
+    const { registry } = blockchainProperties;
 
-    const certificationRequestApprovedEvents = await getEventsFromContract(
-        issuer,
-        issuer.filters.CertificationRequestApproved(null, null, null)
+    const issuanceEvents = await getEventsFromContract(
+        registry,
+        registry.filters.IssuanceSingle(null, null, null)
     );
-    const certificatePromises = certificationRequestApprovedEvents.map((event) =>
-        new Certificate(event._certificateId.toNumber(), blockchainProperties).sync()
+
+    const certificatePromises = issuanceEvents.map((event) =>
+        new Certificate(event._id.toNumber(), blockchainProperties).sync()
     );
 
     return Promise.all(certificatePromises);
@@ -145,7 +176,7 @@ export async function getAllOwnedCertificates(
         registry.filters.TransferSingle(null, null, owner, null, null)
     );
     const certificateIds = [
-        ...new Set<number>(transfers.map((transfer) => transfer._id.toNumber()))
+        ...new Set<number>(transfers.map((transfer) => transfer.id.toNumber()))
     ];
     const balances = await registry.balanceOfBatch(
         Array(certificateIds.length).fill(owner),
@@ -195,7 +226,10 @@ export const getAllCertificateEvents = async (
                     decodeEvent(eventName, event, registry)
             )
         );
-        return parsedLogs.filter((event) => event._id.toNumber() === certId);
+
+        return parsedLogs.filter(
+            (event) => event._id?.toNumber() === certId || event.id?.toNumber() === certId
+        );
     };
 
     const issuanceSingleEvents = await getEvent(
@@ -203,9 +237,19 @@ export const getAllCertificateEvents = async (
         'IssuanceSingle'
     );
 
+    const issuanceBatchEvents = await getEvent(
+        registry.filters.IssuanceBatch(null, null, null),
+        'IssuanceBatch'
+    );
+
     const transferSingleEvents = await getEvent(
         registry.filters.TransferSingle(null, null, null, null, null),
         'TransferSingle'
+    );
+
+    const transferBatchEvents = await getEvent(
+        registry.filters.TransferBatch(null, null, null, null, null),
+        'TransferBatch'
     );
 
     const claimSingleEvents = await getEvent(
@@ -213,7 +257,19 @@ export const getAllCertificateEvents = async (
         'ClaimSingle'
     );
 
-    return [...issuanceSingleEvents, ...transferSingleEvents, ...claimSingleEvents];
+    const claimBatchEvents = await getEvent(
+        registry.filters.ClaimBatch(null, null, null, null, null, null),
+        'ClaimBatch'
+    );
+
+    return [
+        ...issuanceSingleEvents,
+        ...issuanceBatchEvents,
+        ...transferSingleEvents,
+        ...transferBatchEvents,
+        ...claimSingleEvents,
+        ...claimBatchEvents
+    ];
 };
 
 export const calculateOwnership = async (
@@ -228,18 +284,18 @@ export const calculateOwnership = async (
             registry,
             registry.filters.TransferSingle(null, null, null, null, null)
         )
-    ).filter((event) => event._id.eq(certificateId));
+    ).filter((event) => event.id.eq(certificateId));
 
     const transferBatchEvents = (
         await getEventsFromContract(
             registry,
             registry.filters.TransferBatch(null, null, null, null, null)
         )
-    ).filter((e) => e._ids.some((id: BigNumber) => id.eq(certificateId)));
+    ).filter((e) => e.ids.some((id: BigNumber) => id.eq(certificateId)));
 
     const allHistoricOwners = [
-        ...new Set([...transferSingleEvents, ...transferBatchEvents].map((event) => event._to))
-    ];
+        ...new Set([...transferSingleEvents, ...transferBatchEvents].map((event) => event.to))
+    ].filter((address) => address !== constants.AddressZero);
 
     const allHistoricOwnersBalances = await Promise.all(
         allHistoricOwners.map((ownerAddress) => registry.balanceOf(ownerAddress, certificateId))
@@ -275,7 +331,7 @@ export const calculateClaims = async (
 
     const allHistoricClaimers = [
         ...new Set([...claimSingleEvents, ...claimBatchEvents].map((event) => event._claimSubject))
-    ];
+    ].filter((address) => address !== constants.AddressZero);
 
     const allHistoricClaimersBalances = await Promise.all(
         allHistoricClaimers.map((claimerAddress) =>

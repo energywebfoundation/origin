@@ -111,6 +111,7 @@ export const UserDataEditForm = (): JSX.Element => {
                             <Grid container spacing={3}>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="first-name"
                                         label={t('user.properties.firstName')}
                                         property="firstName"
                                         disabled={fieldDisabled}
@@ -131,6 +132,7 @@ export const UserDataEditForm = (): JSX.Element => {
                                     />
 
                                     <FormInput
+                                        data-cy="telephone"
                                         label={t('user.properties.telephone')}
                                         property="telephone"
                                         disabled={fieldDisabled}
@@ -140,6 +142,7 @@ export const UserDataEditForm = (): JSX.Element => {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <FormInput
+                                        data-cy="last-name"
                                         label={t('user.properties.lastName')}
                                         property="lastName"
                                         disabled={fieldDisabled}
@@ -203,6 +206,7 @@ export const UserDataEditForm = (): JSX.Element => {
                             </Grid>
                             {isEditing && (
                                 <Button
+                                    data-cy="info-save-button"
                                     style={{ marginRight: 10 }}
                                     type="button"
                                     variant="contained"
@@ -225,6 +229,7 @@ export const UserDataEditForm = (): JSX.Element => {
                             )}
                             {isEditing && (
                                 <Button
+                                    data-cy="info-cancel-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -239,6 +244,7 @@ export const UserDataEditForm = (): JSX.Element => {
                             )}
                             {!isEditing && (
                                 <Button
+                                    data-cy="info-edit-button"
                                     type="button"
                                     variant="contained"
                                     color="primary"

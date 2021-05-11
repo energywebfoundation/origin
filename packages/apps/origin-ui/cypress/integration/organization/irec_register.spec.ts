@@ -98,7 +98,7 @@ describe('I-REC organization registration', () => {
         cy.contains('Registrant and Participant').click();
 
         cy.dataCy(headquarterCountryCy).click();
-        cy.get('[data-value="AT"]').click();
+        cy.contains('Austria').click();
 
         cy.dataCy(employeesNumberCy).click();
         cy.contains('50-100').click();
@@ -109,7 +109,7 @@ describe('I-REC organization registration', () => {
         cy.contains('Andorra').click();
 
         cy.dataCy(primaryContactOrganizationCountryCy).click();
-        cy.get('[data-value="AT"]').click();
+        cy.contains('Austria').click();
         cy.dataCy('register-irec-button').should('be.disabled');
 
         cy.dataCy(leadUserTitleCy).click();
@@ -124,13 +124,11 @@ describe('I-REC organization registration', () => {
         cy.contains('button', 'Ok').click();
 
         cy.notification('Organization registered');
-        cy.contains('Connect Blockchain Address');
-        cy.contains('create an exchange deposit address');
-        cy.contains('button', 'Connect Blockchain Account');
+        cy.wait(500);
     });
 
-    it('should redirect to default page after choosing Maybe Later', () => {
-        cy.contains('button', 'Maybe Later').click();
+    it('should redirect to default page after clicking Ok', () => {
+        cy.contains('button', 'Ok').click();
         cy.url().should('include', 'devices/production');
     });
 

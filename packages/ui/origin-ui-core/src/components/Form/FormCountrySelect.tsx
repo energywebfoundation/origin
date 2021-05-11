@@ -19,7 +19,7 @@ const COUNTRY_OPTIONS_ISO = Countries.map((country) => ({
 
 export function FormCountrySelect(props: IFormCountrySelectProps) {
     return (
-        <div className={props.className}>
+        <div data-cy={props['data-cy']} className={props.className}>
             <SelectAutocomplete {...props} options={COUNTRY_OPTIONS_ISO} />
         </div>
     );

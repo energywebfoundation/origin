@@ -27,33 +27,33 @@
         "lint-fix": "solium -d contracts --fix && eslint \"src/**/*{.ts,.tsx}\" --fix",
         "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8570",
         "test": "truffle test",
-        "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
+        "test:e2e": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
         "clean": "shx rm -rf build dist src/ethers",
-        "typechain:ethers": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/TokenAccount.json'"
+        "typechain:ethers": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/TokenAccount.json'"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@ethersproject/contracts": "5.0.11",
-        "@ethersproject/providers": "5.0.24",
+        "@ethersproject/abi": "5.1.2",
+        "@ethersproject/contracts": "5.1.1",
+        "@ethersproject/providers": "5.1.2",
         "chai": "4.3.0",
-        "ethers": "5.0.31"
+        "ethers": "5.1.4"
     },
     "devDependencies": {
-        "typescript": "4.1.5",
-        "@energyweb/issuer": "3.2.0",
-        "@typechain/ethers-v5": "1.0.0",
-        "truffle-typings": "1.0.8",
-        "typechain": "4.0.3",
-        "@types/mocha": "8.2.2",
-        "@types/node": "14.14.37",
-        "mocha": "8.3.2",
-        "truffle": "5.3.0",
-        "solc": "0.5.16",
-        "@ethersproject/abstract-provider": "5.1.0",
-        "@ethersproject/abi": "5.1.0",
         "@openzeppelin/cli": "2.8.2",
-        "@openzeppelin/contracts-ethereum-package": "2.5.0",
-        "@openzeppelin/upgrades": "2.8.0"
+        "@openzeppelin/contracts": "4.1.0",
+        "@openzeppelin/contracts-upgradeable": "4.1.0",
+        "@openzeppelin/upgrades": "2.8.0",
+        "typescript": "4.2.4",
+        "@energyweb/issuer": "3.2.0",
+        "@typechain/ethers-v5": "7.0.0",
+        "truffle-typings": "1.0.8",
+        "typechain": "5.0.0",
+        "@types/mocha": "8.2.2",
+        "@types/node": "14.14.44",
+        "mocha": "8.4.0",
+        "truffle": "5.3.5",
+        "solc": "0.8.4"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

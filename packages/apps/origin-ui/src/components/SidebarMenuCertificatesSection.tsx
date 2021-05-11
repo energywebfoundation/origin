@@ -29,7 +29,7 @@ export const SidebarMenuCertificatesSection = memo((props: IProps) => {
         ((enabledFeatures.includes(OriginFeature.Certificates) && userIsActiveAndPartOfOrg) ||
             isUserIssuer) && (
             <>
-                <li className="mainMenu">
+                <li data-cy="certificates-menu" className="mainMenu">
                     <NavLink to={certificatesPath}>{t('header.certificates')}</NavLink>
                 </li>
                 <SidebarSubMenu

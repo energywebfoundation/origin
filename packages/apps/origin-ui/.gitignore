@@ -3,4 +3,3 @@ node_modules
 dist
 .vscode
 env-config.json
-cypress.env.json

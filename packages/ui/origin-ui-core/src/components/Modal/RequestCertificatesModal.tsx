@@ -88,6 +88,8 @@ export function RequestCertificatesModal(props: IProps) {
     }, [device]);
 
     function handleClose() {
+        setFiles([]);
+        setEnergyInDisplayUnit('');
         setShowModal(false);
     }
 
@@ -116,6 +118,7 @@ export function RequestCertificatesModal(props: IProps) {
                 </DialogTitle>
                 <DialogContent>
                     <DatePicker
+                        data-cy="request-certificates-date-from"
                         label={t('certificate.properties.from')}
                         value={fromDate}
                         onChange={(date) =>
@@ -133,6 +136,7 @@ export function RequestCertificatesModal(props: IProps) {
                     />
 
                     <DatePicker
+                        data-cy="request-certificates-date-to"
                         label={t('certificate.properties.to')}
                         value={toDate}
                         onChange={(date) =>
@@ -149,6 +153,7 @@ export function RequestCertificatesModal(props: IProps) {
                         format={DATE_FORMAT_DMY}
                     />
                     <TextField
+                        data-cy="request-certificates-capacity"
                         label={EnergyFormatter.displayUnit}
                         value={energyInDisplayUnit}
                         onChange={(event) => setEnergyInDisplayUnit(event.target.value)}
@@ -156,13 +161,20 @@ export function RequestCertificatesModal(props: IProps) {
                         fullWidth
                     />
 
-                    <Upload onChange={(newFiles) => setFiles(newFiles)} />
+                    <div data-cy="request-certificates-upload">
+                        <Upload onChange={(newFiles) => setFiles(newFiles)} />
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="secondary">
                         {t('general.actions.cancel')}
                     </Button>
-                    <Button onClick={requestCerts} color="primary" disabled={!isFormValid}>
+                    <Button
+                        data-cy="request-certificates-submit"
+                        onClick={requestCerts}
+                        color="primary"
+                        disabled={!isFormValid}
+                    >
                         {t('certificate.actions.request')}
                     </Button>
                 </DialogActions>

@@ -14,7 +14,7 @@ const LightTooltip = withStyles((theme: Theme) => ({
     }
 }))(Tooltip);
 
-const Dot = memo(() => (
+const Dot = memo((props) => (
     <span
         style={{
             backgroundColor: 'rgb(255,215,0)',
@@ -24,6 +24,7 @@ const Dot = memo(() => (
             display: 'inline-block',
             marginLeft: '4px'
         }}
+        {...props}
     />
 ));
 
@@ -38,7 +39,9 @@ export const UsernameAndOrg = () => {
             <Typography variant="h6">
                 {user?.status === UserStatus.Pending && (
                     <LightTooltip arrow title={t('user.popover.yourAccountIsPending')}>
-                        <Dot />
+                        <span>
+                            <Dot data-cy="user-pending-badge" />
+                        </span>
                     </LightTooltip>
                 )}
                 <span>
@@ -48,7 +51,9 @@ export const UsernameAndOrg = () => {
             <Typography>
                 {user?.organization?.status === OrganizationStatus.Submitted && (
                     <LightTooltip arrow title={t('user.popover.yourOrganizationIsPending')}>
-                        <Dot />
+                        <span>
+                            <Dot data-cy="organization-pending-badge" />
+                        </span>
                     </LightTooltip>
                 )}
                 <span>{user?.organization ? `${user.organization.name}` : ''}</span>
