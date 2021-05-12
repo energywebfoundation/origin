@@ -226,20 +226,20 @@ export class MatchingEngine<TProduct, TProductFilter> {
     }
 
     private match() {
-        this.logger.debug(`Triggering match`);
+        // this.logger.debug(`Triggering match`);
         const { bids, asks } = this.orderBook();
-        this.logger.debug(`Order book view: asks: ${prettyJSON(asks)} bids: ${prettyJSON(bids)}`);
+        // this.logger.debug(`Order book view: asks: ${prettyJSON(asks)} bids: ${prettyJSON(bids)}`);
         const executed = this.generateTrades(asks, bids);
-        this.logger.debug(
-            `Executed trades: ${prettyJSON(
-                executed.map((t) => ({
-                    ask: t.ask.id,
-                    bid: t.bid.id,
-                    vol: t.volume.toString(10),
-                    price: t.price
-                }))
-            )} `
-        );
+        // this.logger.debug(
+        //     `Executed trades: ${prettyJSON(
+        //         executed.map((t) => ({
+        //             ask: t.ask.id,
+        //             bid: t.bid.id,
+        //             vol: t.volume.toString(10),
+        //             price: t.price
+        //         }))
+        //     )} `
+        // );
 
         return executed;
     }
@@ -327,11 +327,11 @@ export class MatchingEngine<TProduct, TProductFilter> {
         const hasPriceMatched = ask.price <= bid.price;
         const sameOwner = bid.userId === ask.userId;
 
-        this.logger.debug(
-            `[ask: ${ask.id} <-> bid: ${
-                bid.id
-            }] hasProductMatched: ${hasProductMatched} hasAskVolume: ${hasAskVolume} hasBidVolume: ${hasBidVolume} hasPriceMatched: ${hasPriceMatched} notSameOwner: ${!sameOwner}`
-        );
+        // this.logger.debug(
+        //     `[ask: ${ask.id} <-> bid: ${
+        //         bid.id
+        //     }] hasProductMatched: ${hasProductMatched} hasAskVolume: ${hasAskVolume} hasBidVolume: ${hasBidVolume} hasPriceMatched: ${hasPriceMatched} notSameOwner: ${!sameOwner}`
+        // );
 
         return hasPriceMatched && hasAskVolume && hasBidVolume && hasProductMatched && !sameOwner;
     }
