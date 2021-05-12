@@ -5,5 +5,5 @@ export class RequestBulkClaimDTO {
     @ApiProperty({ type: [String] })
     @IsNotEmpty()
     @IsUUID('all', { each: true })
-    public readonly assetIds: string;
+    public readonly assetIds: string[];
 }

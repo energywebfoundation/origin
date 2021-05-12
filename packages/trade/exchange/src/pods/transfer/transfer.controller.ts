@@ -115,7 +115,7 @@ export class TransferController {
     public async requestBulkClaim(
         @UserDecorator() { ownerId }: ILoggedInUser,
         @Body() bulkClaim: RequestBulkClaimDTO
-    ): Promise<string> {
+    ): Promise<string[]> {
         try {
             const result = await ensureSingleProcessOnly(
                 ownerId,

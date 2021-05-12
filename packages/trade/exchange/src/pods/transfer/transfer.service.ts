@@ -131,17 +131,21 @@ export class TransferService {
         userId: string,
         { assetIds }: RequestBulkClaimDTO,
         transaction?: EntityManager
-    ): Promise<Transfer['id']> {
+    ): Promise<Transfer['id'][]> {
         const { address } = await this.accountService.getAccount(userId);
+
+        const transferIds = [];
 
         for (const assetId of assetIds) {
             await this.validateEnoughFunds(userId, assetId, '1');
 
-            const amount = await this.queryBus.execute(new GetAssetAmountQuery(userId, assetId));
+            const { amount } = await this.queryBus.execute(
+                new GetAssetAmountQuery(userId, assetId)
+            );
 
             const claim: Partial<Transfer> = {
                 userId,
-                amount,
+                amount: amount.toString(10),
                 address,
                 asset: { id: assetId } as Asset,
                 status: TransferStatus.Accepted,
@@ -155,17 +159,19 @@ export class TransferService {
                     tr.getRepository<Transfer>(Transfer).save(claim)
                 );
 
-                this.logger.debug(`Created new claim with id=${storedClaim.id}`);
+                this.logger.error(`Created new claim with id=${storedClaim.id}`);
 
                 this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
 
-                return storedClaim.id;
+                transferIds.push(storedClaim.id);
             } catch (error) {
                 this.logger.error(error.message);
 
                 throw error;
             }
         }
+
+        return transferIds;
     }
 
     public async createDeposit(depositDTO: CreateDepositDTO) {
