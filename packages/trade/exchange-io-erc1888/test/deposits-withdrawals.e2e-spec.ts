@@ -16,7 +16,8 @@ import {
     Transfer,
     TransferService,
     DB_TABLE_PREFIX,
-    testUtils
+    testUtils,
+    RequestBulkClaimDTO
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
@@ -53,6 +54,7 @@ describe('Deposits using deployed registry', () => {
 
     let depositAddress: string;
     let tokenId: number;
+    let token2Id: number;
 
     const tokenReceiverPrivateKey =
         '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
@@ -81,10 +83,18 @@ describe('Deposits using deployed registry', () => {
             generationFrom,
             generationTo
         );
+
+        token2Id = await issueToken(
+            issuer,
+            tokenReceiver.address,
+            `${500 * MWh}`,
+            generationFrom,
+            generationTo
+        );
     };
 
-    const depositToExchangeAddress = async (amount: string) => {
-        await depositToken(registry, tokenReceiver, depositAddress, amount, tokenId);
+    const depositToExchangeAddress = async (amount: string, id?: number): Promise<string> => {
+        await depositToken(registry, tokenReceiver, depositAddress, amount, id ?? tokenId);
 
         await sleep(5000);
 
@@ -307,5 +317,42 @@ describe('Deposits using deployed registry', () => {
 
         const [claimDetails] = await certificate.getClaimedData();
         expect(claimDetails.claimData.beneficiary).to.equal(depositAddress);
+    });
+
+    it('should bulk claim from the exchange', async () => {
+        const tokenAmount = '10';
+        const token2Amount = '5';
+        const exchangeAddress = configService.get('EXCHANGE_WALLET_PUB');
+
+        const assetId = await depositToExchangeAddress(tokenAmount);
+        const asset2Id = await depositToExchangeAddress(token2Amount, token2Id);
+
+        const bulkClaim: RequestBulkClaimDTO = {
+            assetIds: [assetId, asset2Id]
+        };
+
+        const balance = await getBalance(exchangeAddress, tokenId);
+        const balance2 = await getBalance(exchangeAddress, token2Id);
+
+        expect(balance.toNumber()).to.be.least(Number(tokenAmount));
+        expect(balance2.toNumber()).to.be.least(Number(token2Amount));
+
+        await request(app.getHttpServer())
+            .post('/transfer/claim/bulk')
+            .send(bulkClaim)
+            .expect(HttpStatus.CREATED);
+
+        await sleep(10000);
+
+        const claimedBalance = await getClaimedBalance(exchangeAddress, tokenId);
+        const claimed2Balance = await getClaimedBalance(exchangeAddress, token2Id);
+
+        console.log({
+            claimedBalance,
+            claimed2Balance
+        });
+
+        expect(claimedBalance.toNumber()).to.be.least(Number(tokenAmount));
+        expect(claimed2Balance.toNumber()).to.be.least(Number(token2Amount));
     });
 });
