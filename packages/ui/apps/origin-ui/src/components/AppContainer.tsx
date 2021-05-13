@@ -1,7 +1,11 @@
 import React, { FC } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { ErrorFallback, MainLayout } from '@energyweb/origin-ui-core';
+import {
+  ErrorFallback,
+  MainLayout,
+  NotificationsCenter,
+} from '@energyweb/origin-ui-core';
 
 import { OriginGlobalStyles } from './OriginGlobalStyles';
 import { useAppContainerEffects } from './AppContainer.effects';
@@ -14,6 +18,7 @@ export const AppContainer: FC = ({ children: routes }) => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <OriginGlobalStyles />
+      <NotificationsCenter />
       <MainLayout
         topbarButtons={topBarButtons}
         menuSections={menuSections}
