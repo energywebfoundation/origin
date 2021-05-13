@@ -9,7 +9,6 @@ import { OrganizationForm } from './OrganizationForm';
 import { OrganizationTable } from './OrganizationTable';
 import { OrganizationView } from './OrganizationView';
 import { fromUsersSelectors } from '../../features';
-import { useOriginConfiguration } from '../../utils/configuration';
 
 interface IOrganizationMenuItem {
     key: string;
@@ -18,11 +17,14 @@ interface IOrganizationMenuItem {
     show: boolean;
 }
 
-export const useOrganizationMenu = (): IOrganizationMenuItem[] => {
+interface Params {
+    enabledFeatures: OriginFeature[];
+}
+
+export const useOrganizationMenu = ({ enabledFeatures }: Params): IOrganizationMenuItem[] => {
     const user = useSelector(fromUsersSelectors.getUserOffchain);
     const invitations = useSelector(fromUsersSelectors.getInvitations);
     const iRecAccount = useSelector(fromUsersSelectors.getIRecAccount);
-    const config = useOriginConfiguration();
 
     const showInvitations: boolean =
         user?.organization?.id && isRole(user, Role.OrganizationAdmin)
@@ -80,8 +82,7 @@ export const useOrganizationMenu = (): IOrganizationMenuItem[] => {
             label: 'Register I-REC',
             component: IRECRegisterForm,
             show:
-                config &&
-                config.enabledFeatures.includes(OriginFeature.IRec) &&
+                enabledFeatures.includes(OriginFeature.IRec) &&
                 organization &&
                 iRecAccount.length === 0 &&
                 !isRole(user, Role.Admin, Role.SupportAgent)
