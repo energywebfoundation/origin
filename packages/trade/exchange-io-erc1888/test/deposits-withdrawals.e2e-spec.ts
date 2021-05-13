@@ -342,17 +342,10 @@ describe('Deposits using deployed registry', () => {
             .send(bulkClaim)
             .expect(HttpStatus.CREATED);
 
-        await sleep(10000);
+        await sleep(5000);
 
         const claimedBalance = await getClaimedBalance(exchangeAddress, tokenId);
-        const claimed2Balance = await getClaimedBalance(exchangeAddress, token2Id);
 
-        console.log({
-            claimedBalance,
-            claimed2Balance
-        });
-
-        expect(claimedBalance.toNumber()).to.be.least(Number(tokenAmount));
-        expect(claimed2Balance.toNumber()).to.be.least(Number(token2Amount));
+        expect(claimedBalance.toNumber()).to.be.least(Number(tokenAmount) + Number(token2Amount));
     });
 });

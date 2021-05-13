@@ -248,7 +248,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         if (!hasLog) {
             this.logger.error(
-                `[Transaction ${id}] Expected event ${logName} was not found in the transaction ${transactionHash}`
+                `[Transfer ${id}] Expected event ${logName} was not found in the transaction ${transactionHash}`
             );
             return this.transferService.setAsError(id);
         }
@@ -275,7 +275,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
         return (
             args._id.toString() === transfer.asset.tokenId &&
             from === this.wallet.address.toLowerCase() &&
-            to === transfer.address.toLowerCase() &&
+            to === this.wallet.address.toLowerCase() &&
             args._value.toString() === transfer.amount
         );
     }
