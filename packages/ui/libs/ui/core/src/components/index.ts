@@ -5,3 +5,4 @@ export * from './form';
 export * from './modal';
 export * from './images';
 export * from './text';
+export * from './notification';
