@@ -1,35 +1,24 @@
 import React from 'react';
-import { ErrorFallback, MainLayout } from '@energyweb/origin-ui-core';
-import { ErrorBoundary } from 'react-error-boundary';
-import { OriginGlobalStyles } from './OriginGlobalStyles';
-import { topBarButtons, userAndOrgData } from '../__mocks__/mainLayout';
-import { useAppEffects } from './App.effects';
 import { Routes, Route } from 'react-router-dom';
+
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
 import { initializeI18N } from '@energyweb/origin-ui-utils';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 
-export function App() {
-  const { menuSections } = useAppEffects();
+import { AppContainer } from '../components/AppContainer';
 
+export function App() {
+  // @should check if this is the best place for it
   initializeI18N(getOriginLanguage());
 
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <OriginGlobalStyles />
-      <MainLayout
-        topbarButtons={topBarButtons}
-        menuSections={menuSections}
-        userData={userAndOrgData.userData}
-        orgData={userAndOrgData.orgData}
-      >
-        <Routes>
-          <Route path="organization/*" element={<OrganizationApp />} />
-          <Route path="device/*" element={<DeviceApp />} />
-        </Routes>
-      </MainLayout>
-    </ErrorBoundary>
+    <AppContainer>
+      <Routes>
+        <Route path="organization/*" element={<OrganizationApp />} />
+        <Route path="device/*" element={<DeviceApp />} />
+      </Routes>
+    </AppContainer>
   );
 }
 
