@@ -42,4 +42,4 @@ export type FormMergedType = OrganizationInfoFormValues &
 
 export type TUseRegisterOrganizationFormLogic = (
   t: TFunction
-) => MultiStepFormProps<FormUnionType, FormMergedType>['forms'];
+) => Omit<MultiStepFormProps<FormUnionType, FormMergedType>, 'submitHandler'>;

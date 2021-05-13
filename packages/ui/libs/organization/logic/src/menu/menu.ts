@@ -1,14 +1,15 @@
 import { TMenuSection } from '@energyweb/origin-ui-core';
+import { TFunction } from 'i18next';
 
 type TGetOrganizationMenuArgs = {
-  t: (tag: string) => string;
-  isLoggedIn: boolean;
-  userHasOrg: boolean;
-  userIsAdminOrSupport: boolean;
-  userIsOrgAdmin: boolean;
-  userIsActive: boolean;
-  userOrgHasIRec: boolean;
-  invitationsExist: boolean;
+  t: TFunction;
+  showRegisterOrg: boolean;
+  showMyOrg: boolean;
+  showMembers: boolean;
+  showInvitations: boolean;
+  showInvite: boolean;
+  showAllOrgs: boolean;
+  showRegisterIRec: boolean;
 };
 
 type TGetOrganizationMenu = (
@@ -17,49 +18,49 @@ type TGetOrganizationMenu = (
 
 export const getOrganizationMenu: TGetOrganizationMenu = ({
   t,
-  isLoggedIn,
-  userHasOrg,
-  userIsAdminOrSupport,
-  userIsOrgAdmin,
-  userIsActive,
-  userOrgHasIRec,
-  invitationsExist,
+  showRegisterOrg,
+  showMyOrg,
+  showMembers,
+  showInvitations,
+  showInvite,
+  showAllOrgs,
+  showRegisterIRec,
 }) => {
   const menuList = [
     {
       url: '/register',
       label: t('navigation.organization.register'),
-      show: !userHasOrg,
+      show: showRegisterOrg,
     },
     {
       url: '/my',
       label: t('navigation.organization.my'),
-      show: userHasOrg,
+      show: showMyOrg,
     },
     {
       url: '/members',
       label: t('navigation.organization.members'),
-      show: userHasOrg && userIsOrgAdmin,
+      show: showMembers,
     },
     {
       url: '/invitations',
       label: t('navigation.organization.invitations'),
-      show: userHasOrg && userIsOrgAdmin ? true : invitationsExist,
+      show: showInvitations,
     },
     {
       url: '/invite',
       label: t('navigation.organization.invite'),
-      show: userIsActive && userHasOrg && userIsOrgAdmin,
+      show: showInvite,
     },
     {
       url: '/all',
       label: t('navigation.organization.all'),
-      show: isLoggedIn && userIsActive && userIsAdminOrSupport,
+      show: showAllOrgs,
     },
     {
       url: '/register-irec',
       label: t('navigation.organization.registerIRec'),
-      show: userHasOrg && !userOrgHasIRec && !userIsAdminOrSupport,
+      show: showRegisterIRec,
     },
   ];
 

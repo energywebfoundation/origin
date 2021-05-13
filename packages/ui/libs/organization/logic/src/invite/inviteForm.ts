@@ -1,27 +1,29 @@
 import { Role } from '@energyweb/origin-backend-core';
 import { GenericFormProps } from '@energyweb/origin-ui-core';
-import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import * as yup from 'yup';
 
-type InviteFormValues = {
+export type InviteFormValues = {
   email: string;
   role: Role;
 };
 
-type TUseInviteFormLogic = () => Omit<
-  GenericFormProps<InviteFormValues>,
-  'submitHandler'
->;
+type TUseInviteFormLogic = (
+  t: TFunction
+) => Omit<GenericFormProps<InviteFormValues>, 'submitHandler'>;
 
-export const useInviteFormLogic: TUseInviteFormLogic = () => {
-  const { t } = useTranslation();
+export const getInviteFormLogic: TUseInviteFormLogic = (t) => {
   return {
     initialValues: {
       email: '',
       role: Role.OrganizationUser,
     },
     validationSchema: yup.object({
-      email: yup.string().email().required().label('Email'),
+      email: yup
+        .string()
+        .email()
+        .required()
+        .label(t('organization.invite.email')),
     }),
     fields: [
       {

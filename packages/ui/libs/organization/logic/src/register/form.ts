@@ -2,8 +2,11 @@ import { TUseRegisterOrganizationFormLogic } from './types';
 import { createOrgInfoForm } from './orgInfoForm';
 import { createSignatoryInfoForm } from './signatoryInfoForm';
 
-export const useRegisterOrganizationFormLogic: TUseRegisterOrganizationFormLogic = (
+export const createRegisterOrganizationFormLogic: TUseRegisterOrganizationFormLogic = (
   t
 ) => {
-  return [createOrgInfoForm(t), createSignatoryInfoForm(t)];
+  return {
+    heading: t('organization.register.formTitle'),
+    forms: [createOrgInfoForm(t), createSignatoryInfoForm(t)],
+  };
 };

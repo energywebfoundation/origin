@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import {
   COUNTRY_OPTIONS_ISO,
   NUMBER_OF_EMPLOYEES_OPTIONS,
-  IREC_ACCOUNT_TYPE_OPTIONS,
+  createIRecAccountTypeOptions,
 } from '../select-options';
 import { TCreateIRecRegistrationInfoForm } from './types';
 
@@ -13,7 +13,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
   formTitleVariant: 'h5',
   inputsVariant: 'filled',
   initialValues: {
-    accountType: '',
+    accountType: null,
     headquarterCountry: '',
     registrationYear: '',
     employeesNumber: '',
@@ -27,7 +27,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
   },
   validationSchema: yup.object().shape({
     accountType: yup
-      .string()
+      .number()
       .required()
       .label(t('organization.registerIRec.IRECAccountType')),
     headquarterCountry: yup
@@ -36,6 +36,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       .label(t('organization.registerIRec.orgHeadquartersCountry')),
     registrationYear: yup
       .number()
+      .transform((value) => (isNaN(value) ? 0 : value))
       .min(1900)
       .required()
       .label(t('organization.registerIRec.yearOfregisterIRec')),
@@ -78,7 +79,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       name: 'accountType',
       label: t('organization.registerIRec.IRECAccountType'),
       select: true,
-      options: IREC_ACCOUNT_TYPE_OPTIONS,
+      options: createIRecAccountTypeOptions(t),
     },
     {
       name: 'headquarterCountry',
@@ -88,7 +89,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       options: COUNTRY_OPTIONS_ISO,
     },
     {
-      name: 'registerIRecYear',
+      name: 'registrationYear',
       label: t('organization.registerIRec.yearOfregisterIRec'),
     },
     {
@@ -131,5 +132,5 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       label: t('organization.registerIRec.balanceSheetTotal'),
     },
   ],
-  buttonText: t('form.nextStep'),
+  buttonText: t('general.buttons.nextStep'),
 });

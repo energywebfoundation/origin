@@ -1,12 +1,17 @@
 import { createLeadUserDetailsForm } from './leadUserDetails';
 import { createPrimaryContactDetailsForm } from './primaryContactDetails';
 import { createIRecRegistrationInfoForm } from './registrationInfo';
-import { TUseRegisterIRecFormLogic } from './types';
+import { TCreateRegisterIRecFormLogic } from './types';
 
-export const useRegisterIRecFormLogic: TUseRegisterIRecFormLogic = (t) => {
-  return [
-    createIRecRegistrationInfoForm(t),
-    createPrimaryContactDetailsForm(t),
-    createLeadUserDetailsForm(t),
-  ];
+export const createRegisterIRecFormLogic: TCreateRegisterIRecFormLogic = (
+  t
+) => {
+  return {
+    heading: t('organization.registerIRec.registerOrgInIRec'),
+    forms: [
+      createIRecRegistrationInfoForm(t),
+      createPrimaryContactDetailsForm(t),
+      createLeadUserDetailsForm(t),
+    ],
+  };
 };

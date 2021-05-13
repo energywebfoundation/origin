@@ -98,5 +98,5 @@ export const createPrimaryContactDetailsForm: TCreatePrimaryContactDetailsForms 
       label: t('organization.registerIRec.primaryContactFax'),
     },
   ],
-  buttonText: t('form.nextStep'),
+  buttonText: t('general.buttons.nextStep'),
 });

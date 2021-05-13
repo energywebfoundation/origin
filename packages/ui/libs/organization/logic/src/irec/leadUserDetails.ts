@@ -69,5 +69,5 @@ export const createLeadUserDetailsForm: TCreateLeadUserDetailsForm = (t) => ({
       label: t('organization.registerIRec.leadUserFax'),
     },
   ],
-  buttonText: t('form.submit'),
+  buttonText: t('general.buttons.submit'),
 });

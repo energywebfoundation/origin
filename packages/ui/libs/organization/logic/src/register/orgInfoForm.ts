@@ -28,7 +28,7 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
     zipCode: yup
       .string()
       .required()
-      .label(t('organization.register.orgInfozipCode')),
+      .label(t('organization.register.orgInfoZipCode')),
     city: yup.string().required().label(t('organization.register.orgInfoCity')),
     country: yup
       .string()
@@ -58,7 +58,7 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
     },
     {
       name: 'zipCode',
-      label: t('organization.register.orgInfozipCode'),
+      label: t('organization.register.orgInfoZipCode'),
     },
     {
       name: 'city',
@@ -86,5 +86,5 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
       label: t('organization.register.orgInfoVatNumber'),
     },
   ],
-  buttonText: t('form.nextStep'),
+  buttonText: t('general.buttons.nextStep'),
 });

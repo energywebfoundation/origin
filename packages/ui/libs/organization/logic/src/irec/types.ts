@@ -1,3 +1,4 @@
+import { IRECAccountType } from '../utils';
 import {
   FormSelectOption,
   MultiStepFormItem,
@@ -6,7 +7,7 @@ import {
 import { TFunction } from 'i18next';
 
 export type IRecRegistrationInfoForm = {
-  accountType: string;
+  accountType: IRECAccountType;
   headquarterCountry: string;
   registrationYear: string;
   employeesNumber: string;
@@ -53,15 +54,18 @@ export type TCreateLeadUserDetailsForm = (
   t: TFunction
 ) => MultiStepFormItem<LeadUserDetailsForms>;
 
-export type FormUnionType =
+export type IRecRegisterFormUnionType =
   | IRecRegistrationInfoForm
   | PrimaryContactDetailsForms
   | LeadUserDetailsForms;
 
-export type FormMergedType = IRecRegistrationInfoForm &
+export type IRecRegisterFormMergedType = IRecRegistrationInfoForm &
   PrimaryContactDetailsForms &
   LeadUserDetailsForms;
 
-export type TUseRegisterIRecFormLogic = (
+export type TCreateRegisterIRecFormLogic = (
   t: TFunction
-) => MultiStepFormProps<FormUnionType, FormMergedType>['forms'];
+) => Omit<
+  MultiStepFormProps<IRecRegisterFormUnionType, IRecRegisterFormMergedType>,
+  'submitHandler'
+>;

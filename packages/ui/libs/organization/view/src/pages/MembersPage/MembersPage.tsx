@@ -1,63 +1,15 @@
-import { TableComponent, TableComponentProps } from '@energyweb/origin-ui-core';
-import { Delete } from '@material-ui/icons';
+import { TableComponent } from '@energyweb/origin-ui-core';
+import { CircularProgress } from '@material-ui/core';
 import React from 'react';
 import { FC } from 'react';
+import { useMembersPageEffects } from './MembersPage.effects';
 
 export const MembersPage: FC = () => {
-  const mockData: TableComponentProps<number> = {
-    header: {
-      firstName: 'First Name',
-      lastName: 'Last name',
-      email: 'Email',
-      role: 'Role',
-      actions: '',
-    },
-    totalPages: 3,
-    data: [
-      {
-        id: 2,
-        firstName: 'Device',
-        lastName: 'Manager',
-        email: 'testUser@mail.com',
-        role: 'Admin',
-        actions: [
-          {
-            name: 'Delete user',
-            icon: <Delete />,
-            onClick: (id) => console.log(id),
-          },
-        ],
-      },
-      {
-        id: 4,
-        firstName: 'First',
-        lastName: 'Person',
-        email: 'userPerson@mail.com',
-        role: 'Device Manager',
-        actions: [
-          {
-            name: 'Delete user',
-            icon: <Delete />,
-            onClick: (id) => console.log(id),
-          },
-        ],
-      },
-      {
-        id: 6,
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@mail.com',
-        role: 'Member',
-      },
-      {
-        id: 10,
-        firstName: 'Jane',
-        lastName: 'Doe',
-        email: 'jane@mail.com',
-        role: 'Member',
-      },
-    ],
-  };
+  const { isLoading, tableData } = useMembersPageEffects();
 
-  return <TableComponent {...mockData} />;
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  return <TableComponent {...tableData} />;
 };
