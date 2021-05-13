@@ -40,7 +40,8 @@
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
-        "precommit": "lint-staged"
+        "precommit": "lint-staged",
+        "audit": "mythx -c .mythx.yml analyze --remap-import \"@openzeppelin/=$(pwd)/node_modules/@openzeppelin/\""
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {

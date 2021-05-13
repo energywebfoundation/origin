@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.0;
+pragma solidity 0.8.4;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "./ERC1888/IERC1888.sol";
@@ -11,7 +11,7 @@ contract Registry is ERC1155, ERC1888 {
 
     uint256 private _latestCertificateId;
 
-	constructor(string memory _uri) ERC1155(_uri) {}
+	constructor(string memory _uri) public ERC1155(_uri) {}
 
 	function issue(address _to, bytes calldata _validityData, int256 _topic, uint256 _value, bytes calldata _data) external override returns (uint256 _id) {
 		_validate(_msgSender(), _validityData);
