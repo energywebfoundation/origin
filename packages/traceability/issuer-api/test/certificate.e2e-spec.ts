@@ -228,7 +228,7 @@ describe('Certificate tests', () => {
             })
             .expect(HttpStatus.OK);
 
-        await sleep(5000);
+        await sleep(10000);
 
         await request(app.getHttpServer())
             .put(`/certificate/${id}/claim`)
