@@ -12,6 +12,7 @@ import {
     OrderCreationTimePickStrategy,
     Trade
 } from '.';
+import { TestLogger } from './TestLogger';
 
 interface ITestCase<TProduct, TProductFilter> {
     orders: (IMatchableOrder<TProduct, TProductFilter> | DirectBuy | string)[];
@@ -85,7 +86,10 @@ export class Testing<TProduct, TProductFilter> {
         const expectedTrades = List(testCase.expectedTrades);
 
         strategies.forEach((priceStrategy: IPriceStrategy) => {
-            const matchingEngine = new MatchingEngine<TProduct, TProductFilter>(priceStrategy);
+            const matchingEngine = new MatchingEngine<TProduct, TProductFilter>(
+                priceStrategy,
+                new TestLogger()
+            );
 
             testCase.orders.forEach((a) => {
                 if (typeof a === 'string') {
@@ -141,7 +145,10 @@ export class Testing<TProduct, TProductFilter> {
             new OrderCreationTimePickStrategy()
         ];
         strategies.forEach((priceStrategy) => {
-            const matchingEngine = new MatchingEngine<TProduct, TProductFilter>(priceStrategy);
+            const matchingEngine = new MatchingEngine<TProduct, TProductFilter>(
+                priceStrategy,
+                new TestLogger()
+            );
 
             asks.forEach((b) => matchingEngine.submitOrder(b));
             bids.forEach((a) => matchingEngine.submitOrder(a));
