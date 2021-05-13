@@ -1,5 +1,5 @@
 module.exports = {
-    exchangeRestClient: {
+    organizationIRecClient: {
         input: {
             target: './src/schema.yaml'
         },

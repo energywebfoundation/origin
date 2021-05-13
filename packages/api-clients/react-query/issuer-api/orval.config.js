@@ -1,5 +1,5 @@
 module.exports = {
-    exchangeRestClient: {
+    issuerClient: {
         input: {
             target: './src/schema.yaml'
         },

@@ -1,5 +1,5 @@
 module.exports = {
-    exchangeRestClient: {
+    backendClient: {
         input: {
             target: './src/schema.yaml'
         },
@@ -7,7 +7,6 @@ module.exports = {
             client: 'react-query',
             mode: 'tags',
             target: './src/client',
-            // schemas: './src/schemas',
             override: {
                 mutator: {
                     path: './src/mutator/customInstance.ts',

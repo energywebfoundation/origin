@@ -1,5 +1,5 @@
 module.exports = {
-    exchangeRestClient: {
+    energyClient: {
         input: {
             target: './src/schema.yaml'
         },

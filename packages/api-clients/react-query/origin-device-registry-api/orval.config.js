@@ -1,5 +1,5 @@
 module.exports = {
-    exchangeRestClient: {
+    deviceRegistryClient: {
         input: {
             target: './src/schema.yaml'
         },

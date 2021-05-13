@@ -1,5 +1,5 @@
 module.exports = {
-    exchangeRestClient: {
+    localIRecDeviceRegistryClient: {
         input: {
             target: './src/schema.yaml'
         },
