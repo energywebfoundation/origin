@@ -10,7 +10,7 @@ export type TableActionData<Id> = {
 };
 
 export type TableRowData<Id> = {
-  id: Id;
+  id?: Id;
   actions?: TableActionData<Id>[];
   [key: string]: any;
 };

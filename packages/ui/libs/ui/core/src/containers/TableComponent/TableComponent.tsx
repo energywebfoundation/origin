@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableContainer, Paper } from '@material-ui/core';
+import { Table, Typography, TypographyProps } from '@material-ui/core';
 import {
   TableRowData,
   TableHeaderData,
@@ -15,6 +15,8 @@ export interface TableComponentProps<Id> {
   data: TableRowData<Id>[];
   header: TableHeaderData;
   totalPages: number;
+  tableTitle?: string;
+  tableTitleProps?: TypographyProps;
   pageSize?: number;
 }
 
@@ -22,10 +24,17 @@ export const TableComponent: TTableComponent = ({
   data,
   header,
   pageSize,
+  tableTitle,
+  tableTitleProps,
   totalPages,
 }) => {
   return (
-    <TableContainer component={Paper}>
+    <>
+      {tableTitle && (
+        <Typography gutterBottom {...tableTitleProps}>
+          {tableTitle}
+        </Typography>
+      )}
       <Table size="small" aria-label="a dense table">
         <TableComponentHeader headerData={header} />
         <TableComponentBody allRows={data} headerData={header} />
@@ -34,6 +43,6 @@ export const TableComponent: TTableComponent = ({
           totalPages={totalPages}
         />
       </Table>
-    </TableContainer>
+    </>
   );
 };

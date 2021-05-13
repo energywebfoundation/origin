@@ -16,12 +16,14 @@ export const useMultiStepFormEffects = <Union, Merged>({
   const [activeStep, setActiveStep] = useState(0);
   const [store, setStore] = useState<Merged>(null);
 
-  const nextButtonHandler = (values: UnpackNestedValue<Union>): void => {
+  const nextButtonHandler = async (
+    values: UnpackNestedValue<Union>
+  ): Promise<void> => {
     if (activeStep + 1 === forms.length) {
-      return submitHandler({ ...store, values });
+      return await submitHandler({ ...store, ...values });
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setStore({ ...store, values });
+    setStore({ ...store, ...values });
   };
 
   const getCurrentForm = (step: number) => {

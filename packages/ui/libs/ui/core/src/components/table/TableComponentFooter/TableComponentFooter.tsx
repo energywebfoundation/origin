@@ -17,7 +17,7 @@ export const TableComponentFooter: FC<TableComponentFooterProps> = ({
     <TableFooter>
       <TableRow>
         <TablePagination
-          count={totalPages}
+          count={isNaN(totalPages) ? 0 : totalPages}
           rowsPerPage={pageSize}
           page={currentPage - 1}
           onPageChange={(event, zeroIndexBasedPage) => {

@@ -29,7 +29,7 @@ export const TableComponentActions: TTableComponentActions = ({
   if (!actions) {
     return <TableCell></TableCell>;
   }
-
+  console.log(id, actions);
   return (
     <TableCell className={classes.wrapper}>
       <SpeedDial
@@ -43,10 +43,10 @@ export const TableComponentActions: TTableComponentActions = ({
       >
         {actions.map((action) => (
           <SpeedDialAction
-            key={action.name}
+            tooltipOpen
+            key={action.name + id}
             icon={action.icon}
             tooltipTitle={action.name}
-            tooltipOpen
             onClick={() => action.onClick(id)}
             classes={{
               fab: classes.speedDialActionButton,

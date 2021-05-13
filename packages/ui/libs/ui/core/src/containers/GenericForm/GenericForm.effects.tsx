@@ -39,7 +39,7 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   });
   const { isValid, errors, dirtyFields } = formState;
 
-  const onSubmit = handleSubmit((values) => submitHandler(values));
+  const onSubmit = handleSubmit(async (values) => await submitHandler(values));
 
   const nextForm =
     initialValues && Object.keys(initialValues)[0] in dirtyFields;
