@@ -80,4 +80,19 @@ export class AccountBalanceService {
             return accountAsset && accountAsset.amount.gte(amount);
         });
     }
+
+    public async getAssetAmounts(userId: string, assetId: string): Promise<AssetAmount> {
+        this.logger.debug(`Checking available amount for user ${userId} asset ${assetId}...`);
+
+        const { available } = await this.getAccountBalance(userId);
+
+        const accountAsset = available.find(({ asset }) => asset.id === assetId);
+
+        this.logger.debug(`Available amount is ${accountAsset?.amount.toString(10) ?? 0}`);
+
+        return {
+            id: assetId,
+            amount: accountAsset ? accountAsset.amount : new BN(0)
+        };
+    }
 }

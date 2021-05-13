@@ -218,7 +218,7 @@ describe('Demand orders trading', () => {
                 expect(bid2.status).equals(OrderStatus.PendingCancellation);
             });
 
-        await sleep(3000);
+        await sleep(5000);
 
         await request(app.getHttpServer())
             .get(`/demand/${demandId}`)
