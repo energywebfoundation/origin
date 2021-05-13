@@ -1,7 +1,7 @@
 export const myDevicesMock = [
   {
     id: 1,
-    name: 'Wuthering Heights',
+    facilityName: 'Wuthering Heights',
     imageUrl:
       'https://open4business.com.ua/wp-content/uploads/2019/07/wind-farm-sunset-903691050-5b9c0da9c9e77c00503b0fa2.jpg',
     capacityInW: 50000000,
@@ -12,7 +12,7 @@ export const myDevicesMock = [
   },
   {
     id: 2,
-    name: 'Wind Heights',
+    facilityName: 'Wind Heights',
     imageUrl:
       'https://open4business.com.ua/wp-content/uploads/2019/07/wind-farm-sunset-903691050-5b9c0da9c9e77c00503b0fa2.jpg',
     capacityInW: 60000000,
@@ -23,7 +23,7 @@ export const myDevicesMock = [
   },
   {
     id: 3,
-    name: 'Solar farm',
+    facilityName: 'Solar farm',
     imageUrl:
       'https://open4business.com.ua/wp-content/uploads/2019/07/wind-farm-sunset-903691050-5b9c0da9c9e77c00503b0fa2.jpg',
     capacityInW: 2000000,

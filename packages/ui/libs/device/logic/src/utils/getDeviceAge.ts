@@ -1,5 +1,5 @@
-export const getDeviceAgeInYears = (operationalSince: number) => {
-  const registerDate = new Date(operationalSince * 1000);
+export const getDeviceAgeInYears = (commissioningDate: string) => {
+  const registerDate = new Date(commissioningDate);
   const nowDate = new Date();
   return nowDate.getFullYear() - registerDate.getFullYear();
 };

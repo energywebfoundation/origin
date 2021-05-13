@@ -32,7 +32,7 @@ export const prepareDeviceSpecsForCard: TPrepareDeviceSpecsForCard = ({
     },
     {
       icon: ThailandFlag,
-      title: device.region + ', ' + device.province,
+      title: device.province + ', ' + device.region,
     },
   ];
 

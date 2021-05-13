@@ -11,7 +11,7 @@ export const MyDevicesPage: FC = () => {
     <Grid container spacing={3} className={classes.wrapper}>
       {myDevicesMock.map((device) => (
         <Grid key={`my-device-${device.id}`} item>
-          <DeviceCard device={device} />
+          <DeviceCard device={null} />
         </Grid>
       ))}
     </Grid>

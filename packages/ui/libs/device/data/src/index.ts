@@ -1,1 +1,3 @@
-export * from './register';
+export * from './allDevices';
+
+export * from './types';

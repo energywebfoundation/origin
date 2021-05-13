@@ -7,7 +7,9 @@ type TUseDeviceCardEffectsArgs = {
 
 export const useDeviceCardEffects = ({ device }: TUseDeviceCardEffectsArgs) => {
   const { t } = useTranslation();
+
   const { specsData, iconsData } = prepareDeviceSpecsForCard({ t, device });
   const hoverText = t('device.card.hoverText').toUpperCase();
+
   return { specsData, iconsData, hoverText };
 };

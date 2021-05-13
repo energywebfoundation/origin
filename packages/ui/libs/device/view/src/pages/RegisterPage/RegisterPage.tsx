@@ -1,5 +1,4 @@
 import { GenericForm } from '@energyweb/origin-ui-core';
-import { registerDeviceSubmitHandler } from '@energyweb/origin-ui-device-data';
 import { Paper } from '@material-ui/core';
 import React from 'react';
 import { useRegisterPageEffects } from './RegisterPage.effects';
@@ -13,7 +12,7 @@ export const RegisterPage: React.FC = () => {
       <Paper classes={{ root: classes.paper }}>
         <GenericForm
           twoColumns={true}
-          submitHandler={registerDeviceSubmitHandler}
+          submitHandler={(values) => console.log(values)}
           {...pageEffects}
         />
       </Paper>

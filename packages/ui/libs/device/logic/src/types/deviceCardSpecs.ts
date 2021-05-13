@@ -1,9 +1,12 @@
-import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-react-query-client';
+// import {
+//   ComposedPublicDevice,
+//   ComposedDevice,
+// } from '@energyweb/origin-ui-device-data';
 import { IconTextProps, SpecFieldProps } from '@energyweb/origin-ui-core';
 
 export type TPrepareDeviceSpecsForCardArgs = {
   t: (tag: string) => string;
-  device: DeviceDTO;
+  device: any; //ComposedPublicDevice | ComposedDevice;
 };
 
 export type PrepareDeviceSpecsForCardReturnType = {
