@@ -19,6 +19,109 @@
         "invite": "Invite",
         "all": "All Organizations",
         "registerIRec": "Register I-REC"
+      },
+      "layout": {
+        "userPendingTooltip": "Your user account status is pending",
+        "orgPendingTooltip": "Your organization status is pending"
+      }
+    },
+    "organization": {
+      "register": {
+        "formTitle": "Register New Organization",
+        "orgInfoTitle": "Organization information",
+        "orgInfoName": "Organization Name",
+        "orgInfoAddress": "Organization Address",
+        "orgInfoZipCode": "Zip code",
+        "orgInfoCity": "City",
+        "orgInfoCountry": "Country",
+        "orgInfoBusinessType": "Business Type",
+        "orgInfoTradeRegistryCompanyNumber": "Trade Registry Company number",
+        "orgInfoVatNumber": "VAT number",
+        "signatoryFormTitle": "Authorized Signatory Information",
+        "signatoryName": "Signatory Full Name",
+        "signatoryAddress": "Signatory Address",
+        "signatoryZipCode": "Zip code",
+        "signatoryCity": "City",
+        "signatoryCountry": "Country",
+        "signatoryEmail": "Signatory Email",
+        "signatoryPhoneNumber": "Signatory phone number"
+      },
+      "view": {
+        "title": "Organization Information",
+        "name": "Organization Name",
+        "address": "Organization Address",
+        "businessType": "Business Type",
+        "tradeRegistry": "Trade Registry Company number",
+        "vat": "VAT number",
+        "signatoryName": "Signatory Full Name",
+        "signatoryAddress": "Signatory Address",
+        "signatoryEmail": "Signatory Email",
+        "signatoryPhone": "Signatory Phone Number",
+        "status": "Status"
+      },
+      "members": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "role": "Role",
+        "roleOrgAdmin": "Admin",
+        "roleOrgDeviceManager": "Device Manager",
+        "roleOrgMember": "Member"
+      },
+      "invite": {
+        "email": "Email",
+        "role": "Role",
+        "member": "Member",
+        "deviceManager": "Device Manager",
+        "organizationAdmin": "Admin",
+        "inviteButton": "Invite"
+      },
+      "invitations": {
+        "sentTableTitle": "Sent",
+        "receivedTableTitle": "Received",
+        "email": "Email",
+        "status": "Status",
+        "organization": "Organization",
+        "accept": "Accept",
+        "decline": "Decline",
+        "noInvitations": "You have no Sent or Received invitations"
+      },
+      "registerIRec": {
+        "registerOrgInIRec": "Register organization in I-REC",
+        "registrationInfoFormTitle": "I-REC Registration information",
+        "IRECAccountType": "I-REC Account type",
+        "accountType": {
+          "registrant": "Registrant Account for managing devices",
+          "participant": "Participant Account for managing certificates outside of the marketplace",
+          "both": "Both Registrant and Participant Account"
+        },
+        "orgHeadquartersCountry": "Organization Headquarters Country",
+        "yearOfregisterIRec": "Year of Registration",
+        "numberOfEmployees": "Number of employees",
+        "shareholderNames": "Shareholder Names (over 10%)",
+        "orgWebsite": "Organization Website",
+        "activeCountries": "Active Countries",
+        "mainBusiness": "Main Business",
+        "ceoName": "Name of the Chief Executive Officer/General Manager",
+        "ceoPassport": "Chief Executive Officer/General Manager passport number",
+        "balanceSheetTotal": "Balance sheet total for last financial year",
+        "primaryContactFormTitle": "Primary Contact Details",
+        "primaryContactOrgName": "Organization name",
+        "primaryContactOrgAddress": "Organization address",
+        "primaryContactOrgPostalCode": "Organization postal code",
+        "primaryContactOrgCountry": "Organization country",
+        "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+        "primaryContactName": "Contact person name",
+        "primaryContactEmail": "Contact person email",
+        "primaryContactPhoneNumber": "Contact person telephone",
+        "primaryContactFax": "Contact person fax",
+        "leadUserFormTitle": "Lead User Details",
+        "leadUserTitle": "Title",
+        "leadUserFirstName": "First Name",
+        "leadUserLastName": "Last Name",
+        "leadUserEmail": "Email",
+        "leadUserPhoneNumber": "Phone number",
+        "leadUserFax": "Fax"
       }
     },
     "device": {
