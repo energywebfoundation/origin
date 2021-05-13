@@ -19,6 +19,7 @@ import { RequestClaimDTO } from './dto/request-claim.dto';
 import { ClaimRequestedEvent } from './events/claim-requested.event';
 import { RequestBulkClaimDTO } from './dto/request-bulk-claim.dto';
 import { GetAssetAmountQuery } from '../account-balance/queries/get-asset-amount.query';
+import { AssetAmount } from '../account-balance/account-balance.service';
 
 @Injectable()
 export class TransferService {
@@ -99,32 +100,17 @@ export class TransferService {
 
         const { address } = await this.accountService.getAccount(userId);
 
-        const claim: Partial<Transfer> = {
-            userId,
-            amount,
-            address,
-            asset: { id: assetId } as Asset,
-            status: TransferStatus.Accepted,
-            direction: TransferDirection.Claim
-        };
-
-        const manager = transaction || this.repository.manager;
-
-        try {
-            const storedClaim = await manager.transaction((tr) =>
-                tr.getRepository<Transfer>(Transfer).save(claim)
-            );
-
-            this.logger.debug(`Created new claim with id=${storedClaim.id}`);
-
-            this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
-
-            return storedClaim.id;
-        } catch (error) {
-            this.logger.error(error.message);
-
-            throw error;
-        }
+        return this.triggerClaim(
+            {
+                userId,
+                amount,
+                address,
+                asset: { id: assetId } as Asset,
+                status: TransferStatus.Accepted,
+                direction: TransferDirection.Claim
+            },
+            transaction
+        );
     }
 
     public async requestBulkClaim(
@@ -137,38 +123,29 @@ export class TransferService {
         const transferIds = [];
 
         for (const assetId of assetIds) {
-            await this.validateEnoughFunds(userId, assetId, '1');
-
-            const { amount } = await this.queryBus.execute(
+            const { amount } = await this.queryBus.execute<GetAssetAmountQuery, AssetAmount>(
                 new GetAssetAmountQuery(userId, assetId)
             );
 
-            const claim: Partial<Transfer> = {
-                userId,
-                amount: amount.toString(10),
-                address,
-                asset: { id: assetId } as Asset,
-                status: TransferStatus.Accepted,
-                direction: TransferDirection.Claim
-            };
-
-            const manager = transaction || this.repository.manager;
-
-            try {
-                const storedClaim = await manager.transaction((tr) =>
-                    tr.getRepository<Transfer>(Transfer).save(claim)
+            if (amount.eq(new BN(0))) {
+                this.logger.error(
+                    `Skipping claiming because the user doesn't own any tokens in asset with ID ${assetId}`
                 );
-
-                this.logger.error(`Created new claim with id=${storedClaim.id}`);
-
-                this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
-
-                transferIds.push(storedClaim.id);
-            } catch (error) {
-                this.logger.error(error.message);
-
-                throw error;
             }
+
+            const id = await this.triggerClaim(
+                {
+                    userId,
+                    amount: amount.toString(10),
+                    address,
+                    asset: { id: assetId } as Asset,
+                    status: TransferStatus.Accepted,
+                    direction: TransferDirection.Claim
+                },
+                transaction
+            );
+
+            transferIds.push(id);
         }
 
         return transferIds;
@@ -268,6 +245,29 @@ export class TransferService {
             );
         } catch (error) {
             this.logger.error(error.message);
+        }
+    }
+
+    private async triggerClaim(
+        claim: Partial<Transfer>,
+        transaction?: EntityManager
+    ): Promise<Transfer['id']> {
+        const manager = transaction || this.repository.manager;
+
+        try {
+            const storedClaim = await manager.transaction((tr) =>
+                tr.getRepository<Transfer>(Transfer).save(claim)
+            );
+
+            this.logger.error(`Created new claim with id=${storedClaim.id}`);
+
+            this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
+
+            return storedClaim.id;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
         }
     }
 
