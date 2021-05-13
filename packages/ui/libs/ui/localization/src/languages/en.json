@@ -166,6 +166,14 @@
     },
     "validation": {
       "requiredField": "{field} is a required field"
+    },
+    "notifications": {
+      "title": {
+        "success": "Success",
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Info"
+      }
     }
   }
 }
