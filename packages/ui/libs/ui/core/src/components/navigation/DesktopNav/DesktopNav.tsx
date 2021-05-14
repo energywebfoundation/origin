@@ -9,15 +9,17 @@ import { useDesktopNavEffects } from './DesktopNav.effects';
 export interface DesktopNavProps {
   userAndOrgData: UsernameAndOrgProps;
   menuSections: TMenuSection[];
+  isAuthenticated: boolean;
 }
 
 export const DesktopNav: FC<DesktopNavProps> = ({
   userAndOrgData,
-  menuSections,
+  menuSections = [],
+  isAuthenticated,
 }) => {
   // @should-update to a robust and real default value
   const { openSection, setOpenSection } = useDesktopNavEffects(
-    menuSections[0].rootUrl
+    menuSections[0]?.rootUrl
   );
   const classes = useStyles();
   return (
@@ -25,7 +27,9 @@ export const DesktopNav: FC<DesktopNavProps> = ({
       <IconLink url="/">
         <EnergyWebLogo className={classes.logo} />
       </IconLink>
-      <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />
+      {isAuthenticated && (
+        <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />
+      )}
       <List className={classes.list}>
         {menuSections.map((section) => (
           <NavBarSection

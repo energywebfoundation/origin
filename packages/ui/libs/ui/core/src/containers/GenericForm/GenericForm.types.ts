@@ -14,6 +14,7 @@ import { DeepPartial, UnpackNestedValue } from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
+  disabled?: boolean;
   name: string;
   label: string;
   type?: string;
@@ -49,6 +50,8 @@ export interface GenericFormProps<FormValuesType> {
   formInputsProps?: BaseTextFieldProps;
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
+  processing?: boolean;
+  editDisabled?: boolean;
 }
 
 export type TGenericForm = <FormValuesType>(

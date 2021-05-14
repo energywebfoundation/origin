@@ -16,6 +16,8 @@ export interface SingleColumnFormProps {
   dirtyFields: DeepMap<any, true>;
   inputsVariant?: FormInputProps['variant'];
   formInputsProps?: BaseTextFieldProps;
+  processing?: boolean;
+  editDisabled?: boolean;
 }
 
 export const SingleColumnForm: FC<SingleColumnFormProps> = ({
@@ -26,6 +28,8 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
   dirtyFields,
   inputsVariant,
   formInputsProps,
+  processing,
+  editDisabled,
 }) => {
   return (
     <>
@@ -33,6 +37,7 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
         (field) =>
           (field.select && (
             <FormSelect
+              disable={editDisabled}
               key={field.label}
               field={field}
               control={control}
@@ -64,6 +69,7 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
             <FormInput
               key={field.label}
               field={field}
+              disable={editDisabled}
               register={register}
               errorExists={!isEmpty(errors[field.name])}
               errorText={errors[field.name]?.message ?? ''}

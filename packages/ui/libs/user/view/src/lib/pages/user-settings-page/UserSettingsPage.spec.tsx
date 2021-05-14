@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import UserDataAccess from './user-data-access';
+import UserSettingsPage from './UserSettingsPage';
 
-describe('UserDataAccess', () => {
+describe('UserSettingsPage', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<UserDataAccess />);
+    const { baseElement } = render(<UserSettingsPage />);
     expect(baseElement).toBeTruthy();
   });
 });

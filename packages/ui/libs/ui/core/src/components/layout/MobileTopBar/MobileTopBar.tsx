@@ -4,6 +4,7 @@ import { Menu } from '@material-ui/icons';
 
 export interface MobileTopBarProps {
   onMobileNavOpen: () => void;
+  onNavigate: (url: string) => void;
 }
 
 export const MobileTopBar: FC<MobileTopBarProps> = memo(

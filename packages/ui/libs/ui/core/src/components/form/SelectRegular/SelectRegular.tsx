@@ -24,6 +24,7 @@ export const SelectRegular: FC<SelectRegularProps> = ({
 }) => {
   return (
     <TextField
+      disabled={field.disabled}
       select
       name={field.name}
       label={field.label}

@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@material-ui/core';
 import React, { memo } from 'react';
-import { DoubleColumnForm, SingleColumnForm } from '../../components/form';
+import { DoubleColumnForm, SingleColumnForm } from '../../components';
 import { useGenericFormEffects } from './GenericForm.effects';
 import { TGenericForm } from './GenericForm.types';
 
@@ -21,6 +21,8 @@ export const GenericForm: TGenericForm = memo(
     formInputsProps,
     partOfMultiForm,
     twoColumns,
+    processing,
+    editDisabled,
   }) => {
     const {
       control,
@@ -48,6 +50,7 @@ export const GenericForm: TGenericForm = memo(
 
         {twoColumns ? (
           <DoubleColumnForm
+            processing={processing}
             fields={fields}
             control={control}
             register={register}
@@ -58,6 +61,7 @@ export const GenericForm: TGenericForm = memo(
           />
         ) : (
           <SingleColumnForm
+            processing={processing}
             fields={fields}
             control={control}
             register={register}

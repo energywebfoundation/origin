@@ -34,10 +34,7 @@ export const getDeviceRegistryControllerGetAllQueryKey = () => [
   `/api/device-registry`,
 ];
 
-export const useDeviceRegistryControllerGetAll = <
-  Data extends unknown = unknown,
-  Error extends unknown = unknown
->(
+export const useDeviceRegistryControllerGetAll = (
   queryConfig?: UseQueryOptions<
     AsyncReturnType<typeof deviceRegistryControllerGetAll>,
     Error
@@ -48,7 +45,7 @@ export const useDeviceRegistryControllerGetAll = <
   const query = useQuery<
     AsyncReturnType<typeof deviceRegistryControllerGetAll>,
     Error
-  >(queryKey, () => deviceRegistryControllerGetAll<Data>(), queryConfig);
+  >(queryKey, () => deviceRegistryControllerGetAll(), queryConfig);
 
   return {
     queryKey,

@@ -7,7 +7,6 @@ import { TGetOriginLanguage, TSetOriginLanguage } from './types';
 
 export const setOriginLanguage: TSetOriginLanguage = (language) => {
   localStorage.setItem(ORIGIN_LANGUAGE, language);
-
   location.reload();
 };
 

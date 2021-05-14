@@ -1,4 +1,4 @@
-import { TMenuSection } from '@energyweb/origin-ui-core';
+import { TMenuSection, TModuleMenuItem } from '@energyweb/origin-ui-core';
 import { TFunction } from 'i18next';
 
 type TGetOrganizationMenuArgs = {
@@ -26,7 +26,7 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
   showAllOrgs,
   showRegisterIRec,
 }) => {
-  const menuList = [
+  const menuList: TModuleMenuItem[] = [
     {
       url: '/register',
       label: t('navigation.organization.register'),
