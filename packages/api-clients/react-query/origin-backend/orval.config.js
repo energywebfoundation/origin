@@ -6,13 +6,7 @@ module.exports = {
         output: {
             client: 'react-query',
             mode: 'tags',
-            target: './src/client',
-            override: {
-                mutator: {
-                    path: './src/mutator/customInstance.ts',
-                    name: 'customInstance'
-                }
-            }
+            target: './src/client'
         }
     }
 };

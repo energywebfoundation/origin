@@ -25,9 +25,9 @@ export const useApiUserLogIn = () => {
 
   const submitHandler: TApiLogInUserSubmitHandler = useCallback(
     (values: UnpackNestedValue<TUserLoginFormValues>) => {
-      mutateAsync({ data: values }).then((value) => {
-        setTokenValue(value.accessToken);
-        setAuthenticationToken(value.accessToken);
+      mutateAsync({ data: values }).then(({ data: response }) => {
+        setTokenValue(response.accessToken);
+        setAuthenticationToken(response.accessToken);
         navigate('/');
       });
     },

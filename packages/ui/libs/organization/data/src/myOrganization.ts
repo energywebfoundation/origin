@@ -1,7 +1,9 @@
 import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
 
 export const useMyOrganizationData = () => {
-  const { isLoading, data: user } = useUserControllerMe();
+  const { isLoading, data } = useUserControllerMe();
 
-  return { isLoading, organization: user.organization };
+  const organization = data?.data?.organization;
+
+  return { isLoading, organization };
 };

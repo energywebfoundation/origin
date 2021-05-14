@@ -23,6 +23,6 @@ export const useApiAdminFetchUserAccountData = () => {
     isSuccess,
     isError,
     error,
-    data,
+    data: data?.data,
   };
 };

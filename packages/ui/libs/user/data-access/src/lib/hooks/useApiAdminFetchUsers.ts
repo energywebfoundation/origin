@@ -16,6 +16,6 @@ export const useApiAdminFetchUsers = () => {
     isSuccess,
     isError,
     error,
-    data,
+    data: data?.data,
   };
 };

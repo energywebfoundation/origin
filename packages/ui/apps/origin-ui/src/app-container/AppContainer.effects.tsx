@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import axios from 'axios';
 
 import { getOrganizationMenu } from '@energyweb/origin-ui-organization-logic';
 import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
@@ -42,6 +44,16 @@ export const useAppContainerEffects = () => {
   const navigate = useNavigate();
 
   const menuSections = [orgMenu, deviceMenu, accountMenu, adminMenu];
+
+  // set backend url
+  useEffect(() => {
+    axios.interceptors.request.use((config) => {
+      return {
+        ...config,
+        baseURL: process.env.NX_BACKEND_URL,
+      };
+    });
+  }, []);
 
   return {
     navigate: (url: string) => {
