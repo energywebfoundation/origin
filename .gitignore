@@ -75,3 +75,8 @@ common/autoinstallers/*/.npmrc
 !.env.test
 
 dist/
+
+site/
+
+deployment/
+!packages/tools/migrations/deployment/

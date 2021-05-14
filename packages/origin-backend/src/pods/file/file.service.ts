@@ -2,7 +2,7 @@ import { LoggedInUser, Role } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import path from 'path';
-import { Connection, IsNull, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { File } from './file.entity';
@@ -80,21 +80,26 @@ export class FileService {
         let isOwner = true;
 
         for (const documentId of ids) {
-            const count = await this.repository.count({
-                where: [
-                    {
-                        id: documentId,
-                        userId: user.id.toString(),
-                        organizationId: user.organizationId?.toString()
-                    },
-                    {
-                        id: documentId,
-                        userId: user.id.toString(),
-                        organizationId: IsNull()
-                    }
-                ]
-            });
-            if (count !== 1) {
+            const hasOrganization = user.organizationId && user.organizationId > 0;
+
+            const where = hasOrganization
+                ? {
+                      id: documentId,
+                      userId: user.id.toString(),
+                      organizationId: user.organizationId.toString()
+                  }
+                : {
+                      id: documentId,
+                      userId: user.id.toString()
+                  };
+
+            const count = await this.repository.count({ where });
+
+            this.logger.debug(
+                `Found ${count} documents matching user ID ${user.id} and org ID ${user.organizationId}`
+            );
+
+            if (count == 0) {
                 isOwner = false;
                 break;
             }

@@ -82,12 +82,34 @@ Preview packages are built on a special `preview` branch, this is mostly used as
 
 Install using `yarn add @energyweb/{package}@preview`
 
-## Installation
+## Preparation
 
-Make sure have latest `@microsoft/rush` package manager installed.
+1. Make sure you are using Node 14.x.x
+2. Make sure have latest `@microsoft/rush` package manager installed.
 
 ```shell
-rush install
+npm install -g @microsoft/rush
+```
+
+3. Make sure you have Java runtime installed
+4. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
+
+We recommend using Docker based setup as follows (requires psql command line tool installed):
+
+```
+docker pull postgres
+docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=origin -d -p 5432:5432 postgres
+```
+
+4. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
+   Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
+
+5. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
+
+## Installation
+
+```shell
+rush update
 ```
 
 ## Build
@@ -103,26 +125,6 @@ rush test:e2e
 ```
 
 ## Run demo
-
-### Preparation
-
-0. Make sure you are using Node 14.x.x
-1. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
-
-We recommend using Docker based setup as follows (requires psql command line tool installed):
-
-```
-docker pull postgres
-docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
-psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
-```
-
-2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
-   Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
-
-3. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
-
-### Running
 
 After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
 

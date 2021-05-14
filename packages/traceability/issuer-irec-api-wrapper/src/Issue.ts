@@ -1,5 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 import { IsDate, IsPositive, IsOptional, IsString, IsNotEmpty } from 'class-validator';
+import { FileIds } from './File';
 
 export enum IssueStatus {
     Draft = 'Draft',
@@ -13,7 +14,7 @@ export enum IssueStatus {
     Issued = 'Issued'
 }
 
-export class Issue {
+export class Issue extends FileIds {
     @Expose({ name: 'device_code', toPlainOnly: true })
     @IsString()
     @IsNotEmpty()

@@ -10,6 +10,7 @@ import {
     IsPositive,
     IsString
 } from 'class-validator';
+import { FileIds } from './File';
 
 export enum DeviceState {
     Draft = 'Draft',
@@ -18,7 +19,7 @@ export enum DeviceState {
     Approved = 'Approved'
 }
 
-export class DeviceCreateParams {
+export class DeviceCreateParams extends FileIds {
     @IsString()
     name: string;
 
@@ -82,7 +83,7 @@ export class DeviceCreateParams {
     active: boolean;
 }
 
-export class DeviceUpdateParams {
+export class DeviceUpdateParams extends FileIds {
     @IsOptional()
     @IsString()
     name?: string;
