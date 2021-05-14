@@ -1,59 +1,95 @@
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
-  useEffect,
-  useState,
 } from 'react';
 
-import { AXIOS_INSTANCE } from '../api/mutator/custom-mutator';
+import {
+  removeAuthenticationToken,
+  setAuthenticationToken,
+} from '@energyweb/origin-ui-shared-state';
+import { useAuthProviderEffects } from './useAuthProviderEffects';
 
-type Dispatch = (Auth: string) => void;
+type TDispatchSetTokenValue = (token: string) => void;
+type TDispatchLogoutUser = () => void;
+type TAuthContextState = string;
 
-type AuthProviderProps = { children: ReactNode; initialState?: string | null };
+type TAuthProviderProps = {
+  children: ReactNode;
+  initialState?: string | null;
+};
 
-const AuthContext = createContext<string | null>(null);
-const AuthDispatchContext = createContext<Dispatch | null>(null);
+const AuthContext = createContext<TAuthContextState>(null);
 
-const AuthProvider = ({ children, initialState = null }: AuthProviderProps) => {
-  const [token, setToken] = useState(initialState);
+const AuthDispatchSetTokenValueContext = createContext<TDispatchSetTokenValue>(
+  null
+);
 
-  useEffect(() => {
-    const interceptorId = AXIOS_INSTANCE.interceptors.request.use((config) => ({
-      ...config,
-      headers: token
-        ? {
-            ...config.headers,
-            Authorization: `Bearer ${token}`,
-          }
-        : config.headers,
-    }));
+const AuthDispatchLogoutUserContext = createContext<TDispatchLogoutUser>(null);
 
-    return () => {
-      AXIOS_INSTANCE.interceptors.request.eject(interceptorId);
-    };
-  }, [token]);
-
+const AuthProvider = ({ children, initialState }: TAuthProviderProps) => {
+  const { token, setToken } = useAuthProviderEffects(initialState);
   return (
     <AuthContext.Provider value={token}>
-      <AuthDispatchContext.Provider value={setToken}>
-        {children}
-      </AuthDispatchContext.Provider>
+      <AuthDispatchSetTokenValueContext.Provider
+        value={useCallback(
+          (token) => {
+            setToken(token);
+            setAuthenticationToken(token);
+          },
+          [setToken]
+        )}
+      >
+        <AuthDispatchLogoutUserContext.Provider
+          value={useCallback(() => {
+            removeAuthenticationToken();
+            setToken(null);
+          }, [setToken])}
+        >
+          {children}
+        </AuthDispatchLogoutUserContext.Provider>
+      </AuthDispatchSetTokenValueContext.Provider>
     </AuthContext.Provider>
   );
 };
 
-const useAuth = (): string | null => {
-  return useContext<string | null>(AuthContext);
+AuthProvider.displayName = 'AuthProvider';
+
+const useAuthIsAuthenticated = (): boolean => {
+  const isAuthenticated = useContext<string>(AuthContext);
+  return Boolean(isAuthenticated);
 };
 
-const useAuthDispatch = (): Dispatch => {
-  const context = useContext<Dispatch | null>(AuthDispatchContext);
+const useAuthDispatchSetTokenValue = (): TDispatchSetTokenValue => {
+  const context = useContext<TDispatchSetTokenValue | null>(
+    AuthDispatchSetTokenValueContext
+  );
 
   if (context === null) {
-    throw new Error('useAuthDispatch must be used within a AuthProvider');
+    throw new Error(
+      '*useAuthDispatchSetTokenValue* must be used within a *AuthProvider*'
+    );
   }
   return context;
 };
 
-export { AuthProvider, useAuth, useAuthDispatch };
+const useAuthDispatchLogoutUser = (): TDispatchLogoutUser => {
+  const context = useContext<TDispatchLogoutUser | null>(
+    AuthDispatchLogoutUserContext
+  );
+
+  if (context === null) {
+    throw new Error(
+      '*useAuthDispatchSetTokenValue* must be used within a *AuthProvider*'
+    );
+  }
+  return context;
+};
+
+export {
+  AuthProvider,
+  useAuthIsAuthenticated,
+  useAuthDispatchSetTokenValue,
+  useAuthDispatchLogoutUser,
+};

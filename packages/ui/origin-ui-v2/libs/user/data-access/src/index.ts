@@ -1,1 +1,5 @@
-export * from './lib/user-data-access';
+export function useApiResetPassword() {
+  return { submitHandler: () => {} };
+}
+
+export * from './lib';

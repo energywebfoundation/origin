@@ -16,6 +16,7 @@ interface MainLayoutProps {
   menuSections: TMenuSection[];
   userData: UserNavData;
   orgData: OrgNavData;
+  isAuthenticated: boolean;
 }
 
 export const MainLayout: FC<MainLayoutProps> = ({
@@ -24,16 +25,18 @@ export const MainLayout: FC<MainLayoutProps> = ({
   menuSections,
   userData,
   orgData,
+  isAuthenticated,
 }) => {
   const { mobileNavOpen, setMobileNavOpen } = useMainLayoutEffects();
-
   return (
     <>
       <TopBar
+        isAuthenticated={isAuthenticated}
         buttons={topbarButtons}
         onMobileNavOpen={() => setMobileNavOpen(true)}
       />
       <NavBar
+        isAuthenticated={isAuthenticated}
         openMobile={mobileNavOpen}
         onMobileClose={() => setMobileNavOpen(false)}
         menuSections={menuSections}

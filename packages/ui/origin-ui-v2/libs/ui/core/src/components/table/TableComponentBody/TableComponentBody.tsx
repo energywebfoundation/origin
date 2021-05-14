@@ -1,11 +1,14 @@
-import { TableBody } from '@material-ui/core';
-import React, { PropsWithChildren, ReactElement } from 'react';
+import { Box, Skeleton, TableBody } from '@material-ui/core';
+import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { TableHeaderData, TableRowData } from '../../../containers';
-import { TableComponentRow } from '../TableComponentRow/TableComponentRow';
+import { TableComponentRow } from '../TableComponentRow';
+import { range } from 'lodash';
 
 interface TableComponentBodyProps<Id> {
-  allRows: TableRowData<Id>[];
+  rowData: TableRowData<Id>[];
   headerData: TableHeaderData;
+  pageSize: number;
+  loading: boolean;
 }
 
 export type TTableComponentBody = <Id>(
@@ -13,18 +16,46 @@ export type TTableComponentBody = <Id>(
 ) => ReactElement;
 
 export const TableComponentBody: TTableComponentBody = ({
-  allRows,
+  loading,
+  rowData,
   headerData,
+  pageSize,
 }) => {
   return (
     <TableBody>
-      {allRows.map((row) => (
-        <TableComponentRow
-          key={row.id.toString()}
-          row={row}
-          headerData={headerData}
+      {loading ? (
+        <TableRowsLoadingComponent
+          colSpan={Object.keys(headerData).length}
+          pageSize={pageSize}
         />
-      ))}
+      ) : (
+        rowData.map((row) => (
+          <TableComponentRow
+            key={row.id.toString()}
+            row={row}
+            headerData={headerData}
+          />
+        ))
+      )}
     </TableBody>
+  );
+};
+
+const TableRowsLoadingComponent: FC<{ pageSize?: number; colSpan: number }> = ({
+  pageSize,
+  colSpan,
+}) => {
+  return (
+    <>
+      {range(pageSize).map((value) => (
+        <tr key={value.toString()}>
+          <td colSpan={colSpan}>
+            <Box m={'10px'}>
+              <Skeleton height={'60px'} />
+            </Box>
+          </td>
+        </tr>
+      ))}
+    </>
   );
 };

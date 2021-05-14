@@ -13,6 +13,8 @@ export interface SingleColumnFormProps {
   dirtyFields: DeepMap<any, true>;
   inputsVariant?: FormInputProps['variant'];
   inputsClass?: string;
+  processing?: boolean;
+  editDisabled?: boolean;
 }
 
 export const SingleColumnForm: FC<SingleColumnFormProps> = ({
@@ -23,12 +25,14 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
   dirtyFields,
   inputsVariant,
   inputsClass,
+  editDisabled,
 }) => {
   return (
     <>
       {fields.map((field) =>
         field.select ? (
           <FormSelect
+            disable={editDisabled}
             key={field.label}
             field={field}
             control={control}
@@ -38,6 +42,7 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
           />
         ) : (
           <FormInput
+            disable={editDisabled}
             className={inputsClass}
             key={field.label}
             field={field}

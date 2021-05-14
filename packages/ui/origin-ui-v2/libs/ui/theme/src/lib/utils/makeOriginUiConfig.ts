@@ -3,8 +3,6 @@ import { Theme } from '@material-ui/core/styles';
 import { OriginUiThemeVariables, variables } from '../config/variables';
 import createSliderStyleForOrigin from './createSliderStyleForOrigin';
 import createMaterialThemeForOrigin from '../config/themeConfig';
-import { setGlobalTimeLanguage } from '@energyweb/origin-ui-utils';
-import { SupportedLanguagesEnum } from '@energyweb/origin-ui-localization';
 
 export interface IOriginStyleConfig {
   PRIMARY_COLOR: string;
@@ -75,7 +73,7 @@ const makeOriginUiConfig = (
       );
     }
   }
-  setGlobalTimeLanguage(SupportedLanguagesEnum.en);
+  // setGlobalTimeLanguage(SupportedLanguagesEnum.en);
   return newConfiguration;
 };
 

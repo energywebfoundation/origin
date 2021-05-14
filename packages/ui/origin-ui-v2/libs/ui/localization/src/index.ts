@@ -1,7 +1,7 @@
 import en from './languages/en.json';
 import pl from './languages/pl.json';
 
-export const enum SupportedLanguagesEnum {
+export enum SupportedLanguagesEnum {
   en = 'en',
   pl = 'pl',
 }

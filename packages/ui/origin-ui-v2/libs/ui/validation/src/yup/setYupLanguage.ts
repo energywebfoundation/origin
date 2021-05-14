@@ -42,7 +42,7 @@ export const setYupLanguage = (t: TFunction) => {
       min: translate('string.min'),
       max: translate('string.max'),
       matches: translate('string.matches'),
-      email: translate('string.email'),
+      username: translate('string.email'),
       url: translate('string.url'),
       trim: translate('string.trim'),
       lowercase: translate('string.lowercase'),

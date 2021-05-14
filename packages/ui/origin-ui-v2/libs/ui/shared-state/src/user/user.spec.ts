@@ -31,7 +31,7 @@ describe('User', () => {
     localStorage.setItem(ORIGIN_USER, stringUser);
 
     const user = getUser();
-    expect(user.email).toEqual(userMock.email);
+    expect(user.username).toEqual(userMock.username);
     expect(user.organization.status).toEqual(userMock.organization.status);
   });
 

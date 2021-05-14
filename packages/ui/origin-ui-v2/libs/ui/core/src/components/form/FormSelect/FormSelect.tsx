@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { Control, Controller } from 'react-hook-form';
-import { GenericFormField } from '../../../containers/GenericForm';
+import { GenericFormField } from '../../../containers';
 import { SelectAutocomplete } from '../SelectAutocomplete';
 import { SelectRegular } from '../SelectRegular/SelectRegular';
 
@@ -15,6 +15,7 @@ export interface FormSelectProps<FormValuesType> {
   errorExists: boolean;
   errorText: string;
   variant?: 'standard' | 'outlined' | 'filled';
+  disable: boolean;
 }
 
 export type TFormSelect = <FormValuesType>(

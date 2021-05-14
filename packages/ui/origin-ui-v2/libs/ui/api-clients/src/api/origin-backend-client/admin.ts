@@ -38,10 +38,7 @@ export const getAdminControllerGetUsersQueryKey = (
   params?: AdminControllerGetUsersParams
 ) => [`/api/admin/users`, ...(params ? [params] : [])];
 
-export const useAdminControllerGetUsers = <
-  Data extends unknown = unknown,
-  Error extends unknown = unknown
->(
+export const useAdminControllerGetUsers = (
   params?: AdminControllerGetUsersParams,
   queryConfig?: UseQueryOptions<
     AsyncReturnType<typeof adminControllerGetUsers>,
@@ -53,7 +50,7 @@ export const useAdminControllerGetUsers = <
   const query = useQuery<
     AsyncReturnType<typeof adminControllerGetUsers>,
     Error
-  >(queryKey, () => adminControllerGetUsers<Data>(params), queryConfig);
+  >(queryKey, () => adminControllerGetUsers(params), queryConfig);
 
   return {
     queryKey,
@@ -72,10 +69,7 @@ export const adminControllerUpdateUser = <Data = unknown>(
   });
 };
 
-export const useAdminControllerUpdateUser = <
-  Data extends unknown = unknown,
-  Error extends unknown = unknown
->(
+export const useAdminControllerUpdateUser = (
   mutationConfig?: UseMutationOptions<
     AsyncReturnType<typeof adminControllerUpdateUser>,
     Error,
@@ -89,6 +83,6 @@ export const useAdminControllerUpdateUser = <
   >((props) => {
     const { id, data } = props || {};
 
-    return adminControllerUpdateUser<Data>(id, data);
+    return adminControllerUpdateUser(id, data);
   }, mutationConfig);
 };
