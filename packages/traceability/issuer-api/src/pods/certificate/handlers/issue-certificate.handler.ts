@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -11,13 +11,15 @@ import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { CertificateDTO } from '../certificate.dto';
 import { certificateToDto } from '../utils';
+import { CertificatePersistedEvent } from '../events/certificate-persisted.event';
 
 @CommandHandler(IssueCertificateCommand)
 export class IssueCertificateHandler implements ICommandHandler<IssueCertificateCommand> {
     constructor(
         @InjectRepository(Certificate)
         private readonly repository: Repository<Certificate>,
-        private readonly blockchainPropertiesService: BlockchainPropertiesService
+        private readonly blockchainPropertiesService: BlockchainPropertiesService,
+        private readonly eventBus: EventBus
     ) {}
 
     async execute({
@@ -67,6 +69,8 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
             latestCommitment: isPrivate ? commitment : null
         });
         const savedCertificate = await this.repository.save(certificate);
+
+        this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
 
         return certificateToDto(savedCertificate, userId);
     }
