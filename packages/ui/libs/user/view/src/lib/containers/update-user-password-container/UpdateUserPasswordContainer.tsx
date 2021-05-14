@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-import { IUser } from '@energyweb/origin-backend-core';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 /* eslint-disable-next-line */
 export interface UpdateUserPasswordContainerProps {
-  user: IUser;
+  user: UserDTO;
 }
 
-export function UpdateUserPasswordContainer() {
+export const UpdateUserPasswordContainer: FC<UpdateUserPasswordContainerProps> = () => {
   return <h1>Welcome to UpdateUserPasswordContainer!</h1>;
-}
+};
 
 export default UpdateUserPasswordContainer;

@@ -17,6 +17,8 @@ export const createSentInvitationsTable = (
       email: t('organization.invitations.email'),
       status: t('organization.invitations.status'),
     },
+    // @should be received from query
+    loading: false,
     pageSize: 5,
     totalPages: Math.ceil(invitations?.length / 5),
     tableTitle: t('organization.invitations.sentTableTitle'),

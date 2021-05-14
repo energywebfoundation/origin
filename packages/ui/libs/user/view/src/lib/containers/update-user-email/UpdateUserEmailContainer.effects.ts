@@ -1,8 +1,10 @@
-import { IUser } from '@energyweb/origin-backend-core';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { useApiUpdateUserAccountEmail } from '@energyweb/origin-ui-user-data-access';
 import { useUpdateUserAccountEmailFormConfig } from '@energyweb/origin-ui-user-logic';
 
-export const useUpdateUserEmailContainerEffects = (initialUserData: IUser) => {
+export const useUpdateUserEmailContainerEffects = (
+  initialUserData: UserDTO
+) => {
   const { submitHandler } = useApiUpdateUserAccountEmail();
   const formConfig = useUpdateUserAccountEmailFormConfig(
     initialUserData,

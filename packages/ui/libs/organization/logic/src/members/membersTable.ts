@@ -15,6 +15,8 @@ export const createMembersTable = (
       role: t('organization.members.role'),
       actions: '',
     },
+    // @should be received from query
+    loading: false,
     pageSize: 5,
     totalPages: Math.ceil(users?.length / 5),
     data: formatOrgMembers(t, users) ?? [],

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TableComponent, TableRowData } from '@energyweb/origin-ui-core';
-import { UserDTO } from '@energyweb/origin-backend-client';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { useAdminManageUsersPageEffects } from './AdminManageUsersPage.effects';
 
 /* eslint-disable-next-line */

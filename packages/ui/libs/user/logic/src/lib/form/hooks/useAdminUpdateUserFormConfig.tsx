@@ -2,7 +2,10 @@ import { GenericFormProps } from '@energyweb/origin-ui-core';
 import { UnpackNestedValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import {
+  UserStatus,
+  KYCStatus,
+} from '@energyweb/origin-backend-react-query-client';
 
 export type TAdminUserUpdateFormValues = {
   title: string;

@@ -13,6 +13,8 @@ export const pendingDevicesMock: TableComponentProps<number> = {
     toBeCertified: 'To be certified for 2020/20219(MWh)',
   },
   totalPages: 1,
+  // @should be received from query
+  loading: false,
   data: [
     {
       id: 1,

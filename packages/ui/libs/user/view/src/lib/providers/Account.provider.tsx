@@ -1,5 +1,5 @@
 import React, { createContext, memo, ReactNode, useContext } from 'react';
-import { UserDTO } from '@energyweb/origin-backend-client';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { useAccountProviderEffects } from './AccountProvider.effects';
 
 type AccountProviderProps = {

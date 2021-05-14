@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { IUser } from '@energyweb/origin-backend-core';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 /* eslint-disable-next-line */
 export interface UserBlochainAdressesContainerProps {
-  user: IUser;
+  user: UserDTO;
 }
 
 export const UserBlochainAdressesContainer = (

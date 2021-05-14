@@ -1,8 +1,8 @@
 import { useApiUpdateUserAccountData } from '@energyweb/origin-ui-user-data-access';
 import { useUpdateUserAccountDataFormConfig } from '@energyweb/origin-ui-user-logic';
-import { IUser } from '@energyweb/origin-backend-core';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
-export const useUpdateUserDataContainerEffects = (initialUserData: IUser) => {
+export const useUpdateUserDataContainerEffects = (initialUserData: UserDTO) => {
   const { submitHandler } = useApiUpdateUserAccountData();
   const formConfig = useUpdateUserAccountDataFormConfig(
     initialUserData,

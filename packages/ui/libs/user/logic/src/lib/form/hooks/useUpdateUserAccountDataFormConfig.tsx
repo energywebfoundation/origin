@@ -3,6 +3,7 @@ import { UnpackNestedValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 export type TUpdateUserDataFormValues = Omit<IUser, 'id'>;
 
@@ -24,7 +25,7 @@ const INITIAL_FORM_VALUES: IUser = {
 };
 
 export const useUpdateUserAccountDataFormConfig = (
-  initiAlData: IUser,
+  initialData: UserDTO,
   formSubmitHandler: (
     values: UnpackNestedValue<TUpdateUserDataFormValues>
   ) => void

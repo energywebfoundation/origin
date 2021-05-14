@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { GenericForm } from '@energyweb/origin-ui-core';
-import { IUser } from '@energyweb/origin-backend-core';
 import { useUpdateUserEmailContainerEffects } from './UpdateUserEmailContainer.effects';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 /* eslint-disable-next-line */
 export interface UpdateUserEmailProps {
-  userAccountData: IUser;
+  userAccountData: UserDTO;
 }
 
 export const UpdateUserEmailContainer = ({
