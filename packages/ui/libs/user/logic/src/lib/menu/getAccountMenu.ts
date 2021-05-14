@@ -3,8 +3,8 @@ import { TFunction } from 'i18next';
 
 interface IAccountMenuFnArgs {
   t: TFunction;
-  isLoggedIn: boolean;
-  onCloseMobileNav: () => void;
+  showSettings: boolean;
+  showUserProfile: boolean;
 }
 
 type TGetAccountMenuFn = (
@@ -13,23 +13,22 @@ type TGetAccountMenuFn = (
 
 export const getAccountMenu: TGetAccountMenuFn = ({
   t,
-  isLoggedIn,
-  onCloseMobileNav,
+  showSettings,
+  showUserProfile,
 }) => ({
-  sectionTitle: 'Settings',
-  closeMobileNav: onCloseMobileNav,
+  sectionTitle: t('navigation.account.sectionTitle'),
   rootUrl: 'account',
   show: true,
   menuList: [
     {
       url: 'settings',
-      label: t('settings.navigation.settings'),
-      show: true,
+      label: t('navigation.account.settings'),
+      show: showSettings,
     },
     {
       url: 'user-profile',
-      label: t('settings.navigation.userProfile'),
-      show: isLoggedIn,
+      label: t('navigation.account.userProfile'),
+      show: showUserProfile,
     },
   ],
 });

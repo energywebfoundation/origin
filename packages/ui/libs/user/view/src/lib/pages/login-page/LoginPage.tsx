@@ -23,18 +23,15 @@ export const LoginPage: FC<LoginPageProps> = memo(
         <EnergyWebLogo />
         <GenericForm {...formConfig}>
           <Box>
-            <Button
-              variant={'text'}
-              onClick={handleNavigateToResetPasswordPage}
-            >
-              {t('user.actions.forgotPasswordAsk')}
+            <Button variant="text" onClick={handleNavigateToResetPasswordPage}>
+              {t('account.login.forgotPassword')}
             </Button>
           </Box>
         </GenericForm>
         <Box>
-          <Typography>{t('user.dialog.dontHaveAccAsk')}</Typography>
+          <Typography>{t('account.login.dontHaveAcc')}</Typography>
           <Button onClick={handleNavigateToRegisterUserPage}>
-            {t('user.actions.registerNow')}
+            {t('account.login.registerNow')}
           </Button>
         </Box>
       </Paper>

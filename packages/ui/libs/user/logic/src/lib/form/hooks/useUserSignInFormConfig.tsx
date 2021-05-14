@@ -28,33 +28,33 @@ export const useUserSignInFormConfig = (
 ): GenericFormProps<TUserSignInFormValues> => {
   const { t } = useTranslation();
   return {
-    buttonText: t('user.actions.register'),
+    buttonText: t('general.buttons.register'),
     fields: [
       {
-        label: t('user.properties.title'),
+        label: t('account.register.title'),
         name: 'title',
         select: true,
         options: TITLE_OPTIONS.map((opt) => ({ label: opt, value: opt })),
       },
       {
-        label: t('user.properties.firstName'),
+        label: t('account.register.firstName'),
         name: 'firstName',
       },
       {
-        label: t('user.properties.lastName'),
+        label: t('account.register.lastName'),
         name: 'lastName',
       },
       {
-        label: t('user.properties.email'),
-        name: 'username',
+        label: t('account.register.email'),
+        name: 'email',
       },
       {
-        label: t('user.properties.telephone'),
+        label: t('account.register.telephone'),
         name: 'telephone',
       },
       {
         type: 'password',
-        label: t('user.properties.password'),
+        label: t('account.register.password'),
         name: 'password',
       },
     ],
@@ -63,15 +63,12 @@ export const useUserSignInFormConfig = (
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
-      title: Yup.string().label(t('user.properties.title')).required(),
-      firstName: Yup.string().label(t('user.properties.firstName')).required(),
-      lastName: Yup.string().label(t('user.properties.lastName')).required(),
-      telephone: Yup.string().label(t('user.properties.telephone')).required(),
-      username: Yup.string()
-        .email()
-        .label(t('user.properties.email'))
-        .required(),
-      password: Yup.string().label(t('user.properties.password')).required(),
+      title: Yup.string().label(t('account.register.title')).required(),
+      firstName: Yup.string().label(t('account.register.firstName')).required(),
+      lastName: Yup.string().label(t('account.register.lastName')).required(),
+      telephone: Yup.string().label(t('account.register.telephone')).required(),
+      email: Yup.string().email().label(t('account.register.email')).required(),
+      password: Yup.string().label(t('account.register.password')).required(),
     }),
   };
 };

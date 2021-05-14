@@ -3,29 +3,29 @@ import { TMenuSection } from '@energyweb/origin-ui-core';
 
 interface IGetAdminMenuFnArgs {
   t: TFunction;
-  onCloseMobileNav: () => void;
+  showUsers: boolean;
+  showClaims: boolean;
 }
 
 type TUseAdminMenuFn = (
   args?: IGetAdminMenuFnArgs
 ) => Omit<TMenuSection, 'isOpen'>;
 
-export const getAdminMenu: TUseAdminMenuFn = ({ t, onCloseMobileNav }) => {
+export const getAdminMenu: TUseAdminMenuFn = ({ t, showUsers, showClaims }) => {
   return {
-    sectionTitle: t('Admin'),
-    closeMobileNav: onCloseMobileNav,
+    sectionTitle: t('navigation.admin.sectionTitle'),
     rootUrl: 'admin',
     show: true,
     menuList: [
       {
-        url: 'manage-user',
+        url: 'users',
         label: t('navigation.admin.users'),
-        show: true,
+        show: showUsers,
       },
       {
         url: 'claims',
         label: t('navigation.admin.claims'),
-        show: true,
+        show: showClaims,
       },
     ],
   };

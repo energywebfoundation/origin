@@ -13,8 +13,10 @@ import { useAccount } from '@energyweb/origin-ui-user-view';
 
 export const useAppContainerEffects = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isAuthenticated = useAuthIsAuthenticated();
   const accountData = useAccount();
+
   const orgMenu = getOrganizationMenu({
     t,
     showRegisterOrg: true,
@@ -34,14 +36,16 @@ export const useAppContainerEffects = () => {
     showRegisterDevice: true,
     showDeviceImport: true,
   });
-
   const accountMenu = getAccountMenu({
     t,
-    isLoggedIn: isAuthenticated,
-    onCloseMobileNav: () => ({}),
+    showSettings: true,
+    showUserProfile: true,
   });
-  const adminMenu = getAdminMenu({ t, onCloseMobileNav: () => {} });
-  const navigate = useNavigate();
+  const adminMenu = getAdminMenu({
+    t,
+    showClaims: true,
+    showUsers: true,
+  });
 
   const menuSections = [orgMenu, deviceMenu, accountMenu, adminMenu];
 

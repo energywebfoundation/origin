@@ -20,6 +20,16 @@
         "all": "All Organizations",
         "registerIRec": "Register I-REC"
       },
+      "account": {
+        "sectionTitle": "Account",
+        "settings": "Settings",
+        "userProfile": "User profile"
+      },
+      "admin": {
+        "sectionTitle": "Admin",
+        "users": "Users",
+        "claims": "Claims"
+      },
       "layout": {
         "userPendingTooltip": "Your user account status is pending",
         "orgPendingTooltip": "Your organization status is pending"
@@ -155,6 +165,28 @@
       "map": {
         "owner": "Owner",
         "seeMore": "See more"
+      }
+    },
+    "account": {
+      "settings": {
+        "notifications": "Notifications",
+        "language": "Language"
+      },
+      "register": {
+        "title": "Title",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "telephone": "Telephone",
+        "password": "Password"
+      },
+      "login": {
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "buttonLogin": "Login",
+        "dontHaveAcc": "Don't have an account?",
+        "registerNow": "Register now"
       }
     },
     "general": {

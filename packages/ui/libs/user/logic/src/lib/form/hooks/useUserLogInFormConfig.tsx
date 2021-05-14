@@ -20,14 +20,14 @@ export const useUserLogInFormConfig = (
 
   return {
     buttonFullWidth: true,
-    buttonText: 'Login',
+    buttonText: t('account.login.buttonLogin'),
     fields: [
       {
-        label: t('user.properties.email'),
+        label: t('account.login.email'),
         name: 'username',
       },
       {
-        label: t('user.properties.password'),
+        label: t('account.login.password'),
         type: 'password',
         name: 'password',
       },
@@ -36,11 +36,8 @@ export const useUserLogInFormConfig = (
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
-      username: Yup.string()
-        .email()
-        .label(t('user.properties.email'))
-        .required(),
-      password: Yup.string().label(t('user.properties.password')).required(),
+      username: Yup.string().email().label(t('account.login.email')).required(),
+      password: Yup.string().label(t('account.login.password')).required(),
     }),
   };
 };

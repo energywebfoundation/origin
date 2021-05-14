@@ -38,18 +38,18 @@ export function UserSettingsPage() {
               name="notifications"
             />
           }
-          label={t('settings.properties.notifications')}
+          label={t('account.settings.notifications')}
         />
       </Box>
       <Box width={1}>
         <FormControl fullWidth>
-          <InputLabel>{t('settings.properties.language')}</InputLabel>
+          <InputLabel>{t('account.settings.language')}</InputLabel>
           <Select
             value={selectedLanguage}
             onChange={(event) =>
               setSelectedLanguage(event.target.value as string)
             }
-            name="notifications"
+            name="language"
           >
             {Object.entries(SupportedLanguagesEnum).map(([key, val]) => (
               <MenuItem key={key} value={val}>
