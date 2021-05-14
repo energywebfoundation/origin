@@ -1035,6 +1035,46 @@
           }
         }
       }
+    },
+    "ui-providers": {
+      "root": "libs/ui/providers",
+      "sourceRoot": "libs/ui/providers/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/providers",
+            "tsConfig": "libs/ui/providers/tsconfig.lib.json",
+            "project": "libs/ui/providers/package.json",
+            "entryFile": "libs/ui/providers/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/providers/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/providers"],
+          "options": {
+            "jestConfig": "libs/ui/providers/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }

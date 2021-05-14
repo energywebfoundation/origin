@@ -8,7 +8,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import {
   AuthProvider,
   OriginQueryClientProvider,
-} from '@energy-web/origin-ui-api-clients';
+} from '@energyweb/origin-ui-react-query-providers';
 import {
   AccountProvider,
   SettingsProvider,

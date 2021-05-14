@@ -1,4 +1,5 @@
-import { useAuthIsAuthenticated } from '@energy-web/origin-ui-api-clients';
+import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
+
 import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
 
 export const useApiAdminFetchUserAccountData = () => {

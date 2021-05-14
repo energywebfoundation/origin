@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { AXIOS_INSTANCE } from '../api/mutator/custom-mutator';
+import axios from 'axios';
 
 export const useAuthProviderEffects = (initialState: string) => {
   const [token, setToken] = useState<string>(initialState);
 
   useEffect(() => {
-    const interceptorId = AXIOS_INSTANCE.interceptors.request.use((config) => ({
+    const interceptorId = axios.interceptors.request.use((config) => ({
       ...config,
       headers: token
         ? {
@@ -16,7 +16,7 @@ export const useAuthProviderEffects = (initialState: string) => {
     }));
 
     return () => {
-      AXIOS_INSTANCE.interceptors.request.eject(interceptorId);
+      axios.interceptors.request.eject(interceptorId);
     };
   }, [token]);
 

@@ -51,6 +51,7 @@
     "organization-data": { "tags": [] },
     "organization-logic": { "tags": [] },
     "ui-api-clients": { "tags": [] },
-    "device-data": { "tags": [] }
+    "device-data": { "tags": [] },
+    "ui-providers": { "tags": [] }
   }
 }

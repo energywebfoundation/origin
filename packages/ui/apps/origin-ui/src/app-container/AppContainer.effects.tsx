@@ -6,7 +6,7 @@ import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
 import { getAccountMenu } from '@energyweb/origin-ui-user-logic';
 import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
-import { useAuthIsAuthenticated } from '@energy-web/origin-ui-api-clients';
+import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
 import { useAccount } from '@energyweb/origin-ui-user-view';
 
 export const useAppContainerEffects = () => {

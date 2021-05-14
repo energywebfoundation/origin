@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: 'ui-api-clients',
+  displayName: 'ui-providers',
   preset: '../../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/libs/ui/api-clients',
+  coverageDirectory: '../../../coverage/libs/ui/providers',
 };

@@ -1,4 +1,4 @@
-import { useAuthDispatchLogoutUser } from '@energy-web/origin-ui-api-clients';
+import { useAuthDispatchLogoutUser } from '@energyweb/origin-ui-react-query-providers';
 
 export const useLogoutPageEffects = () => {
   const logoutUser = useAuthDispatchLogoutUser();

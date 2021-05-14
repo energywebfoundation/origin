@@ -1,4 +1,4 @@
-import { originBackendClient } from '@energy-web/origin-ui-api-clients';
+import { useUserControllerUpdateOwnPassword } from '@energyweb/origin-backend-react-query-client';
 import { UnpackNestedValue } from 'react-hook-form';
 import { TUserResetPasswordFormValues } from '@energyweb/origin-ui-user-logic';
 import { useCallback } from 'react';
@@ -10,7 +10,8 @@ export const useApiUserResetPassword = () => {
     isError,
     isSuccess,
     status,
-  } = originBackendClient.useAppControllerResetPassword();
+    // here should be reset controller
+  } = useUserControllerUpdateOwnPassword();
 
   return {
     status,

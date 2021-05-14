@@ -1,4 +1,4 @@
-import { useAuthDispatchSetTokenValue } from '@energy-web/origin-ui-api-clients';
+import { useAuthDispatchSetTokenValue } from '@energyweb/origin-ui-react-query-providers';
 import { useAppControllerLogin } from '@energyweb/origin-backend-react-query-client';
 import { UnpackNestedValue } from 'react-hook-form';
 import { TUserLoginFormValues } from '@energyweb/origin-ui-user-logic';

@@ -69,8 +69,10 @@
       "@energyweb/origin-ui-organization-logic": [
         "libs/organization/logic/src/index.ts"
       ],
-      "@energy-web/origin-ui-api-clients": ["libs/ui/api-clients/src/index.ts"],
-      "stream": ["node_modules/readable-stream"]
+      "stream": ["node_modules/readable-stream"],
+      "@energyweb/origin-ui-react-query-providers": [
+        "libs/ui/providers/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
