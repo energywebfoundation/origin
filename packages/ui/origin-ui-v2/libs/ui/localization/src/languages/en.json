@@ -426,7 +426,8 @@
         "blockchainAddress": "Blockchain Address",
         "blockchainAddresses": "Blockchain Addresses",
         "userBlockchainAddress": "User Blockchain Address",
-        "emailConfirmed": "Email Confirmed"
+        "emailConfirmed": "Email Confirmed",
+        "organization": "Organization"
       },
       "actions": {
         "register": "Register",

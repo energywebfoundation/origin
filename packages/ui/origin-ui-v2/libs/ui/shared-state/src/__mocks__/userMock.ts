@@ -10,7 +10,7 @@ export const userMock: OriginUser = {
   title: 'Mr',
   firstName: 'Test',
   lastName: 'User',
-  email: 'testuser@mail.com',
+  username: 'testuser@mail.com',
   telephone: '111-111-111',
   blockchainAccountAddress: '0x111111111111111f123',
   blockchainAccountSignedMessage: '0x11111112233abc',

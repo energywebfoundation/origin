@@ -1,10 +1,11 @@
-import { PropsWithChildren, ReactElement, ReactNode } from 'react';
-import { FormInputProps, FormSelectOption } from '../../components/form';
 import * as yup from 'yup';
+import { PropsWithChildren, ReactElement, ReactNode } from 'react';
+import { FormInputProps, FormSelectOption } from '../../components';
 import { BoxProps, TypographyVariant } from '@material-ui/core';
 import { DeepPartial, UnpackNestedValue } from 'react-hook-form';
 
 export type GenericFormField = {
+  disabled?: boolean;
   name: string;
   label: string;
   type?: string;
@@ -35,6 +36,8 @@ export interface GenericFormProps<FormValuesType> {
   inputsClass?: string;
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
+  processing?: boolean;
+  editDisabled?: boolean;
 }
 
 export type TGenericForm = <FormValuesType>(

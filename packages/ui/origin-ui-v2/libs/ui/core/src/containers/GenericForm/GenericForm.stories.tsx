@@ -14,7 +14,7 @@ Default.args = {
     console.log(values);
   },
   validationSchema: yup.object().shape({
-    email: yup
+    username: yup
       .string()
       .email('This should be a valid email')
       .required('Email is required field'),
@@ -22,7 +22,7 @@ Default.args = {
     url: yup.string().url('Should be a valid url').notRequired(),
   }),
   initialValues: {
-    email: '',
+    username: '',
     password: '',
     url: '',
   },

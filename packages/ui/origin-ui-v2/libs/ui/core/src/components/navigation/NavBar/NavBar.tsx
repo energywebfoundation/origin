@@ -1,6 +1,6 @@
 import { Hidden } from '@material-ui/core';
 import React, { FC } from 'react';
-import { UsernameAndOrgProps } from '../../layout/UsernameAndOrg';
+import { UsernameAndOrgProps } from '../../layout';
 import { DesktopNav } from '../DesktopNav';
 import { MobileNav } from '../MobileNav';
 import { TMenuSection } from '../NavBarSection';
@@ -20,6 +20,7 @@ export interface NavBarProps {
   openMobile: boolean;
   onMobileClose: () => void;
   menuSections: TMenuSection[];
+  isAuthenticated: boolean;
 }
 
 export const NavBar: FC<NavBarProps> = ({
@@ -28,6 +29,7 @@ export const NavBar: FC<NavBarProps> = ({
   onMobileClose,
   userData,
   orgData,
+  isAuthenticated,
 }) => {
   return (
     <>
@@ -40,6 +42,7 @@ export const NavBar: FC<NavBarProps> = ({
       </Hidden>
       <Hidden lgDown>
         <DesktopNav
+          isAuthenticated={isAuthenticated}
           userAndOrgData={{ ...userData, ...orgData }}
           menuSections={menuSections}
         />

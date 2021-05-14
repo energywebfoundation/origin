@@ -19,6 +19,7 @@ export interface FormInputProps extends BaseTextFieldProps {
   errorText: string;
   isDirty: boolean;
   variant?: 'standard' | 'outlined' | 'filled';
+  disable: boolean;
 }
 
 export const FormInput: FC<FormInputProps> = memo(
@@ -31,6 +32,7 @@ export const FormInput: FC<FormInputProps> = memo(
     return (
       <TextField
         name={name ?? ''}
+        disabled={field.disabled}
         label={field.label ?? ''}
         type={field.type ?? 'text'}
         inputRef={ref}

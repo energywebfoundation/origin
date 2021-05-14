@@ -1,31 +1,41 @@
 import { TableFooter, TablePagination, TableRow } from '@material-ui/core';
-import React from 'react';
+import React, { memo } from 'react';
 import { FC } from 'react';
-import { useTableFooterEffects } from './TableComponentFooter.effects';
 
 interface TableComponentFooterProps {
-  totalPages: number;
+  totalPages?: number;
   pageSize: number;
+  handlePageChange: (currentPage: number) => void;
+  currentPage: number;
+  rowsPerPageOptions?: Array<number>;
+  totalRows: number;
 }
 
-export const TableComponentFooter: FC<TableComponentFooterProps> = ({
-  totalPages,
-  pageSize,
-}) => {
-  const { currentPage, setCurrentPage } = useTableFooterEffects();
-  return (
-    <TableFooter>
-      <TableRow>
-        <TablePagination
-          count={totalPages}
-          rowsPerPage={pageSize}
-          page={currentPage - 1}
-          onPageChange={(event, zeroIndexBasedPage) => {
-            setCurrentPage(zeroIndexBasedPage + 1);
-          }}
-          rowsPerPageOptions={[]}
-        />
-      </TableRow>
-    </TableFooter>
-  );
-};
+export const TableComponentFooter: FC<TableComponentFooterProps> = memo(
+  ({
+    pageSize,
+    currentPage,
+    handlePageChange,
+    totalRows,
+    rowsPerPageOptions = [],
+  }) => {
+    return (
+      <TableFooter>
+        <TableRow>
+          <TablePagination
+            count={totalRows}
+            rowsPerPage={pageSize}
+            page={currentPage}
+            showFirstButton={true}
+            onPageChange={(event, zeroIndexBasedPage) => {
+              handlePageChange(zeroIndexBasedPage);
+            }}
+            rowsPerPageOptions={rowsPerPageOptions}
+          />
+        </TableRow>
+      </TableFooter>
+    );
+  }
+);
+
+TableComponentFooter.displayName = 'TableComponentFooter';

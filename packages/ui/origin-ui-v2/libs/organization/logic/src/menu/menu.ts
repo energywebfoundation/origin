@@ -1,5 +1,5 @@
 // @should-localize
-import { TMenuSection } from '@energyweb/origin-ui-core';
+import { TMenuSection, TModuleMenuItem } from '@energyweb/origin-ui-core';
 
 type TUseOrganizationMenuArgs = {
   isLoggedIn: boolean;
@@ -24,7 +24,7 @@ export const useOrganizationMenu: TUseOrganizationMenu = ({
   userOrgHasIRec,
   invitationsExist,
 }) => {
-  const menuList = [
+  const menuList: TModuleMenuItem[] = [
     {
       url: '/register',
       label: 'Register',
