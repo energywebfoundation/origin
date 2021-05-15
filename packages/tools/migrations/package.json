@@ -38,7 +38,7 @@
         "@energyweb/utils-general": "11.0.2",
         "@types/pg": "7.14.11",
         "commander": "6.2.1",
-        "dotenv": "9.0.1",
+        "dotenv": "9.0.2",
         "ethers": "5.1.4",
         "pg": "8.6.0",
         "winston": "3.3.3",
