@@ -64,7 +64,7 @@
         "@types/yup": "0.29.11",
         "eslint-plugin-react": "7.23.2",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.14.44",
+        "@types/node": "14.14.45",
         "mocha": "8.4.0"
     },
     "repository": {
