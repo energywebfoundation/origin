@@ -3,10 +3,12 @@ import { Route, Redirect } from 'react-router-dom';
 import { PageContent } from '../Layout';
 import { useOrganizationMenu } from './organizationMenu';
 import { useLinks } from '../../hooks';
+import { useOriginConfiguration } from '../../utils/configuration';
 
 export const Organization = () => {
     const { organizationPageUrl } = useLinks();
-    const organizationMenuList = useOrganizationMenu();
+    const config = useOriginConfiguration();
+    const organizationMenuList = useOrganizationMenu(config);
     const displayableMenuList = organizationMenuList.filter((i) => i.show);
     const firstNotHiddenRoute = displayableMenuList[0]?.key;
 

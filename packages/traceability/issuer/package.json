@@ -40,7 +40,8 @@
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
-        "precommit": "lint-staged"
+        "precommit": "lint-staged",
+        "audit": "mythx -c .mythx.yml analyze --remap-import \"@openzeppelin/=$(pwd)/node_modules/@openzeppelin/\""
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
@@ -48,7 +49,7 @@
         "@ethersproject/abi": "5.1.2",
         "@ethersproject/contracts": "5.1.1",
         "@ethersproject/providers": "5.1.2",
-        "dotenv": "9.0.1",
+        "dotenv": "9.0.2",
         "ethers": "5.1.4",
         "ganache-cli": "6.12.2",
         "moment": "2.29.1",
@@ -62,9 +63,9 @@
         "truffle-typings": "1.0.8",
         "typechain": "5.0.0",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.14.44",
+        "@types/node": "14.14.45",
         "mocha": "8.4.0",
-        "truffle": "5.3.5",
+        "truffle": "5.3.6",
         "solc": "0.8.4",
         "winston-transport": "4.4.0",
         "@types/dotenv": "6.1.1",
@@ -72,7 +73,7 @@
         "chai": "4.3.0",
         "@openzeppelin/contracts": "4.1.0",
         "@openzeppelin/contracts-upgradeable": "4.1.0",
-        "@openzeppelin/truffle-upgrades": "1.6.1",
+        "@openzeppelin/truffle-upgrades": "1.7.0",
         "shx": "0.3.3",
         "@types/supertest": "2.0.11",
         "ts-node": "9.1.1"

@@ -14,7 +14,7 @@ interface IProps {
 export const SidebarMenuOrganizationSection = memo(
     ({ enabledFeatures = [], organizationPageUrl, isOpen }: IProps) => {
         const { t } = useTranslation();
-        const organizationMenuList = useOrganizationMenu();
+        const organizationMenuList = useOrganizationMenu({ enabledFeatures });
         return (
             <>
                 <li data-cy="organizations-menu" className="mainMenu">

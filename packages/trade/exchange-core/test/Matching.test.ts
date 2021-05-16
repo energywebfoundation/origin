@@ -13,6 +13,7 @@ import {
 import { TestProduct } from './Product';
 import { Testing } from '../src/Testing';
 import { OneTimeMatchOrder } from '../src/OneTimeMatchOrder';
+import { TestLogger } from '../src/TestLogger';
 
 type Bid = IMatchableOrder<string, string>;
 type Ask = Bid;
@@ -461,7 +462,10 @@ describe('Matching tests', () => {
 
     describe('should test clearing matching engine cache', () => {
         it('should clear cache', () => {
-            const matchingEngine = new MatchingEngine<string, string>(new AskPriceStrategy());
+            const matchingEngine = new MatchingEngine<string, string>(
+                new AskPriceStrategy(),
+                new TestLogger()
+            );
 
             matchingEngine.submitOrder(createAsk({ userId: defaultSeller, price: 100 }));
 

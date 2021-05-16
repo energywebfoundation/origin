@@ -152,7 +152,7 @@ dependencies:
   extract-text-webpack-plugin: 4.0.0-beta.0_webpack@5.36.2
   file-loader: 6.2.0_webpack@5.36.2
   fork-ts-checker-webpack-plugin: 6.2.6
-  form-data: 3.0.1
+  form-data: 4.0.0
   formik: 2.2.6_react@17.0.2
   formik-material-ui: 3.0.1_dec119c38e832c1dc2e37452acf26395
   formik-material-ui-pickers: 0.0.12_06fdca0fb382fb76b807a7c0f15a55ea
@@ -14708,7 +14708,6 @@ packages:
     dev: false
     engines:
       node: '>= 6'
-    optional: true
     resolution:
       integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
   /format/0.2.2:
@@ -31342,7 +31341,7 @@ packages:
       class-transformer: 0.3.1
       class-validator: 0.13.1
       dotenv: 9.0.1
-      form-data: 3.0.1
+      form-data: 4.0.0
       mocha: 8.4.0
       moment: 2.29.1
       moment-timezone: 0.5.33
@@ -31355,7 +31354,7 @@ packages:
     dev: false
     name: '@rush-temp/issuer-irec-api-wrapper'
     resolution:
-      integrity: sha512-VqK52l7ua3FAZFm3cxgw7w7Juo8uR+fTG5CJKylWVLUnC3eWvKy7uxcuhDMUEa2pRsdb9dKu9ifJ9Frx+ChQhw==
+      integrity: sha512-XVi4xfcFScnfFK5Rzi+AQDxz1dD4fi2/dc95kv4uR6MeccQCF0fkty+/pEzdfc2qYrurQNWCSM+BGeCWl4D2UA==
       tarball: file:projects/issuer-irec-api-wrapper.tgz
     version: 0.0.0
   file:projects/issuer.tgz_react@17.0.2:
@@ -32362,6 +32361,7 @@ packages:
     resolution:
       tarball: https://codeload.github.com/web3-js/scrypt-shim/tar.gz/aafdadda13e660e25e1c525d1f5b2443f5eb1ebb
     version: 0.1.0
+registry: ''
 specifiers:
   '@babel/core': 7.14.0
   '@date-io/moment': 1.3.13
@@ -32516,7 +32516,7 @@ specifiers:
   extract-text-webpack-plugin: 4.0.0-beta.0
   file-loader: 6.2.0
   fork-ts-checker-webpack-plugin: 6.2.6
-  form-data: 3.0.1
+  form-data: 4.0.0
   formik: 2.2.6
   formik-material-ui: 3.0.1
   formik-material-ui-pickers: 0.0.12
