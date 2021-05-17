@@ -31,6 +31,9 @@ export class Certificate extends ExtendedBaseEntity {
     @IsPositive()
     creationTime: number;
 
+    @Column({ default: '' })
+    metadata: string;
+
     @Column('simple-json')
     owners: CertificateUtils.IShareInCertificate;
 

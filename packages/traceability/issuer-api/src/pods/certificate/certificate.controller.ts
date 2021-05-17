@@ -161,7 +161,8 @@ export class CertificateController {
                 dto.toTime,
                 dto.deviceId,
                 blockchainAddress,
-                dto.isPrivate
+                dto.isPrivate,
+                dto.metadata
             )
         );
     }

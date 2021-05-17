@@ -59,7 +59,7 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         const { issuer, activeUser } = blockchainProperties;
         const issuerWithSigner = issuer.connect(activeUser);
 
-        const data = encodeData({ generationStartTime, generationEndTime, deviceId });
+        const data = encodeData({ generationStartTime, generationEndTime, deviceId, metadata: '' });
 
         const tx = await (forAddress
             ? issuerWithSigner.requestCertificationFor(data, forAddress)

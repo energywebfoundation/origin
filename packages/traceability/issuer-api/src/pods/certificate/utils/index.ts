@@ -31,6 +31,7 @@ export const certificateToDto = async (
         generationStartTime: certificate.generationStartTime,
         generationEndTime: certificate.generationEndTime,
         creationTime: certificate.creationTime,
+        metadata: certificate.metadata,
         creationBlockHash: certificate.creationBlockHash,
         energy: {
             publicVolume: publicVolume.toString(),

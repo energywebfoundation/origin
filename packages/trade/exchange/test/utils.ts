@@ -16,13 +16,13 @@ export const issueToken = async (
     const data = await CertificateUtils.encodeData({
         generationStartTime: generationFrom,
         generationEndTime: generationTo,
-        deviceId
+        deviceId,
+        metadata: ''
     });
 
-    const requestReceipt = await ((await issuer.requestCertificationFor(
-        data,
-        address
-    )) as ContractTransaction).wait();
+    const requestReceipt = await (
+        (await issuer.requestCertificationFor(data, address)) as ContractTransaction
+    ).wait();
 
     const [log] = requestReceipt.logs;
 
@@ -33,11 +33,13 @@ export const issueToken = async (
         requestId.toString()
     ]);
 
-    const approvalReceipt = await ((await issuer.approveCertificationRequest(
-        requestId,
-        amount,
-        validityData
-    )) as ContractTransaction).wait();
+    const approvalReceipt = await (
+        (await issuer.approveCertificationRequest(
+            requestId,
+            amount,
+            validityData
+        )) as ContractTransaction
+    ).wait();
 
     const { args } = approvalReceipt.events.find(
         (e: any) => e.event === 'CertificationRequestApproved'

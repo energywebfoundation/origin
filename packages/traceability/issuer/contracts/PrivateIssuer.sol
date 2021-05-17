@@ -46,7 +46,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	}
 
     function initialize(address _issuer) public initializer {
-        require(_issuer != address(0), "initialize: Cannot use address 0x0 as Issuer address.");
+        require(_issuer != address(0), "PrivateIssuer::initialize: Cannot use address 0x0 as Issuer address.");
 
         issuer = Issuer(_issuer);
 		registry = Registry(issuer.getRegistryAddress());
@@ -94,7 +94,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	function requestPrivateTransfer(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external {
 		PrivateTransferRequest storage currentRequest = _requestPrivateTransferStorage[_certificateId];
 
-        require(currentRequest.owner == address(0x0), "Only one private transfer can be requested at a time.");
+        require(currentRequest.owner == address(0x0), "PrivateIssuer::requestPrivateTransfer:Only one private transfer can be requested at a time.");
 
 		_requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
 			owner: _msgSender(),
@@ -112,8 +112,8 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     ) external onlyOwner returns (bool) {
 		PrivateTransferRequest storage pendingRequest = _requestPrivateTransferStorage[_certificateId];
 
-        require(pendingRequest.owner != address(0x0), "approvePrivateTransfer(): Can't approve a non-existing private transfer.");
-		require(validateMerkle(pendingRequest.hash, _commitment, _proof), "approvePrivateTransfer(): Wrong merkle tree");
+        require(pendingRequest.owner != address(0x0), "PrivateIssuer::approvePrivateTransfer: Can't approve a non-existing private transfer.");
+		require(validateMerkle(pendingRequest.hash, _commitment, _proof), "PrivateIssuer::approvePrivateTransfer: Wrong merkle tree");
 
         _requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
 			owner: address(0x0),
@@ -166,10 +166,10 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     ) external onlyOwner {
 		RequestStateChange storage request = _requestMigrateToPublicStorage[_requestId];
 
-		require(!request.approved, "migrateToPublic(): Request already approved");
-        require(!_migrations[request.certificateId], "migrateToPublic(): certificate already migrated");
-		require(request.hash == keccak256(abi.encodePacked(request.owner, _volume, _salt)), "Requested hash does not match");
-        require(validateOwnershipProof(request.owner, _volume, _salt, _commitments[request.certificateId], _proof), "Invalid proof");
+		require(!request.approved, "PrivateIssuer::migrateToPublic: Request already approved");
+        require(!_migrations[request.certificateId], "PrivateIssuer::migrateToPublic: certificate already migrated");
+		require(request.hash == keccak256(abi.encodePacked(request.owner, _volume, _salt)), "PrivateIssuer::migrateToPublic: Requested hash does not match");
+        require(validateOwnershipProof(request.owner, _volume, _salt, _commitments[request.certificateId], _proof), "PrivateIssuer::migrateToPublic: Invalid proof");
 
 		request.approved = true;
 
@@ -217,7 +217,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	*/
 
 	function _updateCommitment(uint256 _id, bytes32 _previousCommitment, bytes32 _commitment) private {
-		require(_commitments[_id] == _previousCommitment, "updateCommitment: previous commitment invalid");
+		require(_commitments[_id] == _previousCommitment, "PrivateIssuer::updateCommitment: previous commitment invalid");
 
 		_commitments[_id] = _commitment;
 
@@ -239,7 +239,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function _requestMigrateToPublicFor(uint256 _certificateId, bytes32 _ownerAddressLeafHash, address _forAddress) private returns (uint256 _migrationRequestId) {
         bool exists = _migrationRequestExists(_certificateId);
-        require(!exists, "migration request for this certificate already exists");
+        require(!exists, "PrivateIssuer::_requestMigrateToPublicFor: migration request for this certificate already exists");
 
 		uint256 id = ++_requestMigrateToPublicNonce;
 
