@@ -6,6 +6,7 @@ export class IssueCertificateCommand {
         public readonly toTime: number,
         public readonly deviceId: string,
         public readonly userId: string,
-        public readonly isPrivate = false
+        public readonly isPrivate = false,
+        public readonly metadata = ''
     ) {}
 }
