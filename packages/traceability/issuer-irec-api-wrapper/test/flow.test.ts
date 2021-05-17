@@ -176,7 +176,9 @@ describe('API flows', () => {
             location: 'The Shire, Hobbiton',
             active: false
         };
-        await participantClient.beneficiary.create(beneficiaryParams);
+        const b = await participantClient.beneficiary.create(beneficiaryParams);
+        expect(b.id).to.be.a('number');
+        expect(b.name).to.be.a('string');
         const beneficiaries: Beneficiary[] = await participantClient.beneficiary.getAll();
         const newBeneficiary = beneficiaries.find((b) => b.name === beneficiaryParams.name);
 
