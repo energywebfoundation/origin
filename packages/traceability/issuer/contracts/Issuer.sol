@@ -34,7 +34,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function initialize(int _certificateTopic, address _registry) public initializer {
-        require(_registry != address(0), "initialize: Cannot use address 0x0 as registry address.");
+        require(_registry != address(0), "Issuer::initialize: Cannot use address 0x0 as registry address.");
 
         certificateTopic = _certificateTopic;
 
@@ -44,8 +44,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function setPrivateIssuer(address _privateIssuer) public onlyOwner {
-        require(_privateIssuer != address(0), "setPrivateIssuer(): Cannot use address 0x0 as the private issuer address.");
-        require(privateIssuer == address(0), "setPrivateIssuer(): private issuance contract already set.");
+        require(_privateIssuer != address(0), "Issuer::setPrivateIssuer: Cannot use address 0x0 as the private issuer address.");
+        require(privateIssuer == address(0), "Issuer::setPrivateIssuer: private issuance contract already set.");
 
         privateIssuer = _privateIssuer;
     }
@@ -91,9 +91,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     function revokeRequest(uint256 _requestId) external {
         CertificationRequest storage request = _certificationRequests[_requestId];
 
-        require(_msgSender() == request.owner || _msgSender() == OwnableUpgradeable.owner(), "revokeRequest(): Only the request creator can revoke the request.");
-        require(!request.revoked, "revokeRequest(): Already revoked");
-        require(!request.approved, "revokeRequest(): You can't revoke approved requests");
+        require(_msgSender() == request.owner || _msgSender() == OwnableUpgradeable.owner(), "Issuer::revokeRequest: Only the request creator can revoke the request.");
+        require(!request.revoked, "Issuer::revokeRequest: Already revoked");
+        require(!request.approved, "Issuer::revokeRequest: You can't revoke approved requests");
 
         request.revoked = true;
 
@@ -101,7 +101,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function revokeCertificate(uint256 _certificateId) external onlyOwner {
-        require(!_revokedCertificates[_certificateId], "revokeCertificate(): Already revoked");
+        require(!_revokedCertificates[_certificateId], "Issuer::revokeCertificate: Already revoked");
         _revokedCertificates[_certificateId] = true;
 
         emit CertificateRevoked(_certificateId);
@@ -112,8 +112,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         uint256 _value,
         bytes memory _validityData
     ) public returns (uint256) {
-        require(_msgSender() == owner() || _msgSender() == privateIssuer, "approveCertificationRequest(): caller is not the owner or private issuer contract");
-        require(_requestNotApprovedOrRevoked(_requestId), "approveCertificationRequest(): request already approved or revoked");
+        require(_msgSender() == owner() || _msgSender() == privateIssuer, "Issuer::approveCertificationRequest: caller is not the owner or private issuer contract");
+        require(_requestNotApprovedOrRevoked(_requestId), "Issuer::approveCertificationRequest: request already approved or revoked");
 
         CertificationRequest storage request = _certificationRequests[_requestId];
         request.approved = true;
