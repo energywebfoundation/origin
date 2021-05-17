@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
-import { IUser, UserLoginReturnData } from '@energyweb/origin-backend-core';
+import { IUser, UserLoginReturnData, Role } from '@energyweb/origin-backend-core';
 
 import { UserService } from '../pods/user/user.service';
 
 export interface IJWTPayload {
-    id: number;
-    email: string;
+    id?: number;
+    did?: string,
+    email?: string;
+    verifiedRoles?: { name: Role; nameSpace: string }[];
 }
 
 @Injectable()
