@@ -34,18 +34,11 @@ export const encodeClaimData = (claimData: IClaimData): string => {
 };
 
 export const decodeClaimData = (encodedClaimData: string): IClaimData => {
-    const [
-        beneficiary,
-        address,
-        region,
-        zipCode,
-        countryCode,
-        fromDate,
-        toDate
-    ] = utils.defaultAbiCoder.decode(
-        ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
-        encodedClaimData
-    );
+    const [beneficiary, address, region, zipCode, countryCode, fromDate, toDate] =
+        utils.defaultAbiCoder.decode(
+            ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
+            encodedClaimData
+        );
 
     return {
         beneficiary,
@@ -59,24 +52,23 @@ export const decodeClaimData = (encodedClaimData: string): IClaimData => {
 };
 
 export const encodeData = (data: IData): string => {
-    const { generationStartTime, generationEndTime, deviceId } = data;
+    const { generationStartTime, generationEndTime, deviceId, metadata } = data;
 
     return utils.defaultAbiCoder.encode(
-        ['uint256', 'uint256', 'string'],
-        [generationStartTime, generationEndTime, deviceId]
+        ['uint256', 'uint256', 'string', 'string'],
+        [generationStartTime, generationEndTime, deviceId, metadata]
     );
 };
 
 export const decodeData = (encodedData: string): IData => {
-    const [generationStartTime, generationEndTime, deviceId] = utils.defaultAbiCoder.decode(
-        ['uint256', 'uint256', 'string'],
-        encodedData
-    );
+    const [generationStartTime, generationEndTime, deviceId, metadata] =
+        utils.defaultAbiCoder.decode(['uint256', 'uint256', 'string', 'string'], encodedData);
 
     return {
         generationStartTime: generationStartTime.toNumber(),
         generationEndTime: generationEndTime.toNumber(),
-        deviceId
+        deviceId,
+        metadata
     };
 };
 

@@ -93,13 +93,20 @@ describe('Issuer', () => {
         const generationStartTime = 1;
         const generationEndTime = 2;
         const deviceId = 'device123';
+        const metadata = '{ someMetaData: 123 }';
 
-        const encodedData = encodeData({ generationStartTime, generationEndTime, deviceId });
+        const encodedData = encodeData({
+            generationStartTime,
+            generationEndTime,
+            deviceId,
+            metadata
+        });
         const decodedData = decodeData(encodedData);
 
         assert.equal(generationStartTime, decodedData.generationStartTime);
         assert.equal(generationEndTime, decodedData.generationEndTime);
         assert.equal(deviceId, decodedData.deviceId);
+        assert.equal(metadata, decodedData.metadata);
     });
 
     it('gets all certification requests', async () => {

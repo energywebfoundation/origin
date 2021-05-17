@@ -56,7 +56,7 @@ describe('Certificate tests', () => {
         blockchainProperties.activeUser = wallet;
     };
 
-    const issueCertificate = async (volume: BigNumber, address: string) => {
+    const issueCertificate = async (volume: BigNumber, address: string, metadata?: string) => {
         setActiveUser(issuerWallet);
 
         const generationStartTime = timestamp;
@@ -71,7 +71,8 @@ describe('Certificate tests', () => {
             generationStartTime,
             generationEndTime,
             deviceId,
-            blockchainProperties
+            blockchainProperties,
+            metadata
         );
     };
 
@@ -360,5 +361,16 @@ describe('Certificate tests', () => {
         }
 
         assert.isTrue(failed);
+    });
+
+    it('stores the metadata', async () => {
+        const metadata = { someRandomId: '123ID' };
+        let certificate = await issueCertificate(
+            totalVolume,
+            deviceOwnerWallet.address,
+            JSON.stringify(metadata)
+        );
+
+        assert.equal(JSON.parse(certificate.metadata).someRandomId, metadata.someRandomId);
     });
 });
