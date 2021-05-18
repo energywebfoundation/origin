@@ -31,9 +31,9 @@ export const DisabledFormView: FC<DisabledFormViewProps> = ({
 }) => {
   const classes = useStyles();
 
-  const firstSliceRange = Math.floor(data.length / 2);
-  const firstColumn = data.slice(0, firstSliceRange);
-  const secondColumn = data.slice(firstSliceRange, data.length);
+  const firstSliceRange = Math.floor(data?.length / 2);
+  const firstColumn = data?.slice(0, firstSliceRange);
+  const secondColumn = data?.slice(firstSliceRange, data.length);
 
   if (!data) {
     return <></>;
