@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { IPublicOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
+import { IFullOrganization, OrganizationStatus } from '@energyweb/origin-backend-core';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { IsArray, IsEnum, IsISO31661Alpha2, IsString } from 'class-validator';
 import { Optional } from '@nestjs/common';
@@ -8,7 +8,7 @@ import { Invitation } from '../invitation/invitation.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'platform_organization' })
-export class Organization extends ExtendedBaseEntity implements IPublicOrganization {
+export class Organization extends ExtendedBaseEntity implements IFullOrganization {
     constructor(organization?: Partial<Organization>) {
         super();
         Object.assign(this, organization);
