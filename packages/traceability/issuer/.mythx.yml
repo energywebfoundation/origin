@@ -2,7 +2,7 @@ output: mythx.json
 format: json
 
 analyze:
-    mode: quick
+    mode: standard
     create-group: true
     group-name: Smart contract analysis
     solc: 0.8.4

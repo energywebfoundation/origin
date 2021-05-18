@@ -30,10 +30,10 @@ contract Registry is ERC1155, ERC1888 {
 	}
 
 	function mint(uint256 _id, address _to, uint256 _quantity) external {
-		require(_quantity > 0, "issue(): _value must be higher than 0.");
+		require(_quantity > 0, "Registry::mint: _value must be higher than 0.");
 
 		Certificate memory cert = certificateStorage[_id];
-		require(_msgSender() == cert.issuer, "mint(): only the original certificate issuer can mint more tokens");
+		require(_msgSender() == cert.issuer, "Registry::mint: only the original certificate issuer can mint more tokens");
 
 		ERC1155._mint(_to, _id, _quantity, new bytes(0));
 	}
@@ -50,9 +50,9 @@ contract Registry is ERC1155, ERC1888 {
 
 		_validate(cert.issuer,  cert.validityData);
 
-        require(_to != address(0x0), "safeTransferAndClaimFrom: _to must be non-zero.");
+        require(_to != address(0x0), "Registry::safeTransferAndClaimFrom: _to must be non-zero.");
         require(_from == _msgSender() || ERC1155.isApprovedForAll(_from, _msgSender()), "safeTransferAndClaimFrom: Need operator approval for 3rd party claims.");
-        require(ERC1155.balanceOf(_from, _id) > 0, "safeTransferAndClaimFrom: _from balance has to be higher than 0");
+        require(ERC1155.balanceOf(_from, _id) > 0, "Registry::safeTransferAndClaimFrom: _from balance has to be higher than 0");
 
 		if (_from != _to) {
 			safeTransferFrom(_from, _to, _id, _value, _data);
@@ -73,14 +73,14 @@ contract Registry is ERC1155, ERC1888 {
 	) external override {
 		uint numberOfClaims = _ids.length;
 
-        require(_to != address(0x0), "safeBatchTransferAndClaimFrom: _to address must be non-zero.");
-        require(_ids.length == _values.length, "safeBatchTransferAndClaimFrom: _ids and _values array length must match.");
-        require(_from == _msgSender() || ERC1155.isApprovedForAll(_from, _msgSender()), "safeBatchTransferAndClaimFrom: Need operator approval for 3rd party transfers.");
+        require(_to != address(0x0), "Registry::safeBatchTransferAndClaimFrom: _to address must be non-zero.");
+        require(_ids.length == _values.length, "Registry::safeBatchTransferAndClaimFrom: _ids and _values array length must match.");
+        require(_from == _msgSender() || ERC1155.isApprovedForAll(_from, _msgSender()), "Registry::safeBatchTransferAndClaimFrom: Need operator approval for 3rd party transfers.");
 
-		require(numberOfClaims > 0, "safeBatchTransferAndClaimFrom: at least one certificate has to be present.");
+		require(numberOfClaims > 0, "Registry::safeBatchTransferAndClaimFrom: at least one certificate has to be present.");
 		require(
 			_values.length == numberOfClaims && _claimData.length == numberOfClaims,
-			"safeBatchTransferAndClaimFrom: not all arrays are of the same length."
+			"Registry::safeBatchTransferAndClaimFrom: not all arrays are of the same length."
 		);
 
 		int256[] memory topics = new int256[](numberOfClaims);
@@ -103,7 +103,7 @@ contract Registry is ERC1155, ERC1888 {
 	}
 
 	function getCertificate(uint256 _id) external override view returns (address issuer, int256 topic, bytes memory validityData, bytes memory data) {
-		require(_id <= _latestCertificateId, "getCertificate: _id out of bounds");
+		require(_id <= _latestCertificateId, "Registry::getCertificate: _id out of bounds");
 
 		Certificate memory certificate = certificateStorage[_id];
 		return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
@@ -114,7 +114,7 @@ contract Registry is ERC1155, ERC1888 {
 	}
 
 	function claimedBalanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external override view returns (uint256[] memory) {
-        require(_owners.length == _ids.length, "ERC1155: _owners and ids length mismatch");
+        require(_owners.length == _ids.length, "Registry::ERC1155: _owners and ids length mismatch");
 
         uint256[] memory batchClaimBalances = new uint256[](_owners.length);
 
@@ -136,7 +136,7 @@ contract Registry is ERC1155, ERC1888 {
 
 		require(
 			success && abi.decode(result, (bool)),
-			"_validate(): Request/certificate invalid, please check with your issuer."
+			"Registry::_validate: Request/certificate invalid, please check with your issuer."
 		);
 	}
 }

@@ -29,7 +29,8 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
         toTime,
         deviceId,
         isPrivate,
-        userId
+        userId,
+        metadata
     }: IssueCertificateCommand): Promise<CertificateDTO> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
@@ -43,7 +44,8 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
                 fromTime,
                 toTime,
                 deviceId,
-                blockchainProperties.wrap()
+                blockchainProperties.wrap(),
+                metadata
             );
         } else {
             ({ certificate: cert, proof: commitment } = await CertificateFacade.createPrivate(
@@ -52,7 +54,8 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
                 fromTime,
                 toTime,
                 deviceId,
-                blockchainProperties.wrap()
+                blockchainProperties.wrap(),
+                metadata
             ));
         }
 
@@ -63,6 +66,7 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
             generationStartTime: cert.generationStartTime,
             generationEndTime: cert.generationEndTime,
             creationTime: cert.creationTime,
+            metadata: cert.metadata,
             creationBlockHash: cert.creationBlockHash,
             owners: cert.owners,
             issuedPrivately: isPrivate ?? false,
