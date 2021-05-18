@@ -70,7 +70,10 @@
         "signatoryAddress": "Signatory Address",
         "signatoryEmail": "Signatory Email",
         "signatoryPhone": "Signatory Phone Number",
-        "status": "Status"
+        "status": "Status",
+        "documents": "Documents",
+        "companyProof": "Company Proof",
+        "signatoryId": "Signatory ID"
       },
       "members": {
         "firstName": "First name",
