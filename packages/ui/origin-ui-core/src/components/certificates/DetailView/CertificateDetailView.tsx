@@ -102,13 +102,13 @@ export function CertificateDetailView(props: IProps) {
                 case 'TransferSingle':
                     if (event._from === '0x0000000000000000000000000000000000000000') {
                         label = t('certificate.event.name.initialOwner');
-                        description = transformAddress(event._to);
+                        description = transformAddress(event.to);
                     } else {
                         label = t('certificate.event.name.changedOwnership');
                         description = t('certificate.event.description.transferred', {
-                            amount: EnergyFormatter.format(event._value, true),
-                            newOwner: transformAddress(event._to),
-                            oldOwner: transformAddress(event._from)
+                            amount: EnergyFormatter.format(event.value, true),
+                            newOwner: transformAddress(event.to),
+                            oldOwner: transformAddress(event.from)
                         });
                     }
                     break;
