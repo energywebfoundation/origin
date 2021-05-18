@@ -3,3 +3,4 @@ export * from './GenericForm';
 export * from './MainLayout';
 export * from './TableComponent';
 export * from './CardWithImage';
+export * from './FileUpload';

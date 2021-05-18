@@ -28,6 +28,13 @@ export const useMultiStepFormEffects = <Union, Merged>({
 
   const getCurrentForm = (step: number) => {
     const props = forms[step];
+
+    if (props.customStep && props.component) {
+      const CustomForm = props.component;
+
+      return <CustomForm submitHandler={nextButtonHandler} {...props} />;
+    }
+
     return (
       <GenericForm
         partOfMultiForm={step > 0 ? true : false}
