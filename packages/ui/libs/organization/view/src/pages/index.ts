@@ -1,6 +1,6 @@
 export * from './RegisterPage';
 export * from './RegisterIRecPage';
-export * from './MyOrganizationPage';
+export * from './OrganizationViewPage';
 export * from './InvitationsPage';
 export * from './MembersPage';
 export * from './InvitePage';

@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import {
   RegisterPage,
   RegisterIRecPage,
-  MyOrganizationPage,
+  OrganizationViewPage,
   InvitationsPage,
   MembersPage,
   InvitePage,
@@ -13,7 +13,7 @@ import {
 export const OrganizationApp: FC = () => {
   return (
     <Routes>
-      <Route path="my" element={<MyOrganizationPage />} />
+      <Route path="my" element={<OrganizationViewPage />} />
 
       <Route path="invitations" element={<InvitationsPage />} />
 
