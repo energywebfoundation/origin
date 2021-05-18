@@ -55,7 +55,7 @@ dependencies:
   '@rush-temp/origin-backend-app': file:projects/origin-backend-app.tgz_c7583a13723f86f9d08ee181def1a597
   '@rush-temp/origin-backend-client': file:projects/origin-backend-client.tgz_d512aae8451a10ae4e6a42d9eec24fa0
   '@rush-temp/origin-backend-core': file:projects/origin-backend-core.tgz
-  '@rush-temp/origin-backend-irec-app': file:projects/origin-backend-irec-app.tgz_2573e38080f3d37d862ba13540775466
+  '@rush-temp/origin-backend-irec-app': file:projects/origin-backend-irec-app.tgz_c7583a13723f86f9d08ee181def1a597
   '@rush-temp/origin-backend-utils': file:projects/origin-backend-utils.tgz_36559b3b6e3725ce644dd306475d116a
   '@rush-temp/origin-device-registry-api': file:projects/origin-device-registry-api.tgz_82f93a035f197073872c988a64d304a8
   '@rush-temp/origin-device-registry-api-client': file:projects/origin-device-registry-api-client.tgz_dd47a4775a36df65513025cee21e04b9
@@ -179,7 +179,6 @@ dependencies:
   moment-range: 4.0.2_moment@2.29.1
   moment-timezone: 0.5.33
   multer: 1.4.2
-  node-sass: 5.0.0
   nodemailer: 6.6.0
   os-browserify: 0.3.0
   passport: 0.4.1
@@ -205,9 +204,9 @@ dependencies:
   redux-devtools-extension: 2.13.9_redux@4.1.0
   redux-saga: 1.1.3
   reflect-metadata: 0.1.13
-  resolve-url-loader: 3.1.3
+  resolve-url-loader: 4.0.0
   rxjs: 6.6.7
-  sass-loader: 11.1.1_node-sass@5.0.0+webpack@5.37.0
+  sass-loader: 11.1.1_webpack@5.37.0
   shx: 0.3.3
   solc: 0.8.4
   source-map-loader: 2.0.1_webpack@5.37.0
@@ -7907,7 +7906,7 @@ packages:
       node: '>= 0.12.0'
     resolution:
       integrity: sha512-aT6camzM4xEA54YVJYSqxz1kv4IHnQZRtThJJHhUMRExaU5spC7jX5ugSwTaTgJliIgs4VhZOk7htClvQ/LmRA==
-  /adjust-sourcemap-loader/3.0.0:
+  /adjust-sourcemap-loader/4.0.0:
     dependencies:
       loader-utils: 2.0.0
       regex-parser: 2.2.11
@@ -7915,7 +7914,7 @@ packages:
     engines:
       node: '>=8.9'
     resolution:
-      integrity: sha512-YBrGyT2/uVQ/c6Rr+t6ZJXniY03YtHGMJQYal368burRGYKqhx9qGTWqcBU5s1CwYY9E/ri63RYyG1IacMZtqw==
+      integrity: sha512-OXwN5b9pCUXNQHJpwwD2qP40byEmSgzj8B4ydSN0uMNYWiFmJ6x6KwUllMmfk8Rwu/HJDFR7U8ubsWBoN0Xp0A==
   /aes-js/3.0.0:
     dev: false
     resolution:
@@ -8482,10 +8481,6 @@ packages:
       node: '>=6.0'
     resolution:
       integrity: sha512-o/HelwhuKpTj/frsOsbNLNgnNGVIFsVP/SW2BSF14gVl7kAfMOJ6/8wUAUvG1R1NHKrfG+2sHZTu0yauT1qBrA==
-  /arity-n/1.0.4:
-    dev: false
-    resolution:
-      integrity: sha1-2edrEXM+CFacCEeuezmyhgswt0U=
   /arr-diff/2.0.0:
     dependencies:
       arr-flatten: 1.1.0
@@ -11301,12 +11296,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==
-  /compose-function/3.0.3:
-    dependencies:
-      arity-n: 1.0.4
-    dev: false
-    resolution:
-      integrity: sha1-ntZ18TzFRQHTCVCkhv9qe6OrGF8=
   /compound-subject/0.0.1:
     dev: false
     optional: true
@@ -11510,10 +11499,6 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
-  /convert-source-map/0.3.5:
-    dev: false
-    resolution:
-      integrity: sha1-8dgClQr33SYxof6+BZZVDIarMZA=
   /convert-source-map/1.7.0:
     dependencies:
       safe-buffer: 5.1.2
@@ -11934,6 +11919,7 @@ packages:
       source-map-resolve: 0.5.3
       urix: 0.1.0
     dev: false
+    optional: true
     resolution:
       integrity: sha512-oUnjmWpy0niI3x/mPL8dVEI1l7MnG3+HHyRPHf+YFSbK+svOhXpmSOcDURUh2aOCgl2grzrOPt1nHLuCVFULLw==
   /cssesc/3.0.0:
@@ -13066,12 +13052,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
-  /emojis-list/2.1.0:
-    dev: false
-    engines:
-      node: '>= 0.10'
-    resolution:
-      integrity: sha1-TapNnbAPmBmIDHn6RXrlsJof04k=
   /emojis-list/3.0.0:
     dev: false
     engines:
@@ -19649,16 +19629,6 @@ packages:
       node: '>=6.11.5'
     resolution:
       integrity: sha512-92+huvxMvYlMzMt0iIOukcwYBFpkYJdpl2xsZ7LrlayO7E8SOv+JJUEK17B/dJIHAOLMfh2dZZ/Y18WgmGtYNw==
-  /loader-utils/1.2.3:
-    dependencies:
-      big.js: 5.2.2
-      emojis-list: 2.1.0
-      json5: 1.0.1
-    dev: false
-    engines:
-      node: '>=4.0.0'
-    resolution:
-      integrity: sha512-fkpz8ejdnEMG3s37wGL07iSBDg99O9D5yflE9RGNH3hRdx9SOwYfnGYdZOUIZitN8E+E2vkq3MUMYMvPYl5ZZA==
   /loader-utils/1.4.0:
     dependencies:
       big.js: 5.2.2
@@ -23000,16 +22970,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-97DXOFbQJhk71ne5/Mt6cOu6yxsSfM0QGQyl0L25Gca4yGWEGJaig7l7gbCX623VqTBNGLRLaVUCnNkcedlRSQ==
-  /postcss/7.0.21:
-    dependencies:
-      chalk: 2.4.2
-      source-map: 0.6.1
-      supports-color: 6.1.0
-    dev: false
-    engines:
-      node: '>=6.0.0'
-    resolution:
-      integrity: sha512-uIFtJElxJo29QC753JzhidoAhvp/e/Exezkdhfmt8AymWT6/5B7W1WmponYWkHk2eg6sONyTch0A3nkMPun3SQ==
   /postcss/7.0.35:
     dependencies:
       chalk: 2.4.2
@@ -25146,23 +25106,26 @@ packages:
     dev: false
     resolution:
       integrity: sha512-kI5ffTiZWmJaS/huM8wZfEMer1eRd7oJQhDuxeCLe3t7N7mX3z94CN0xPxBQxFYQTSNz9T0i+v6inKqSdK8xrQ==
-  /resolve-url-loader/3.1.3:
+  /resolve-url-loader/4.0.0:
     dependencies:
-      adjust-sourcemap-loader: 3.0.0
-      camelcase: 5.3.1
-      compose-function: 3.0.3
+      adjust-sourcemap-loader: 4.0.0
       convert-source-map: 1.7.0
-      es6-iterator: 2.0.3
-      loader-utils: 1.2.3
-      postcss: 7.0.21
-      rework: 1.0.1
-      rework-visit: 1.0.0
+      loader-utils: 2.0.0
+      postcss: 7.0.35
       source-map: 0.6.1
     dev: false
     engines:
-      node: '>=6.0.0'
+      node: '>=8.9'
+    peerDependencies:
+      rework: 1.0.1
+      rework-visit: 1.0.0
+    peerDependenciesMeta:
+      rework:
+        optional: true
+      rework-visit:
+        optional: true
     resolution:
-      integrity: sha512-WbDSNFiKPPLem1ln+EVTE+bFUBdTTytfQZWbmghroaFNFaAVmGq0Saqw6F/306CwgPXsGwXVxbODE+3xAo/YbA==
+      integrity: sha512-05VEMczVREcbtT7Bz+C+96eUO5HDNvdthIiMB34t7FcF8ehcu4wC0sSgPUubs3XW2Q3CNLJk/BJrCU9wVRymiA==
   /resolve-url/0.2.1:
     deprecated: https://github.com/lydell/resolve-url#deprecated
     dev: false
@@ -25251,17 +25214,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==
-  /rework-visit/1.0.0:
-    dev: false
-    resolution:
-      integrity: sha1-mUWygD8hni96ygCtuLyfZA+ELJo=
-  /rework/1.0.1:
-    dependencies:
-      convert-source-map: 0.3.5
-      css: 2.2.4
-    dev: false
-    resolution:
-      integrity: sha1-MIBqhBNCtUUQqkEQhQzUhTQUSqc=
   /rifm/0.7.0_react@17.0.2:
     dependencies:
       '@babel/runtime': 7.14.0
@@ -25441,11 +25393,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-VFWDAHOe6mRuT4mZRd4eKE+d8Uedrk6Xnh7Sh9b4NGufQLQjOrvf/MQoOdx+0s92L89FeyUUNfU597j/3uNpag==
-  /sass-loader/11.1.1_node-sass@5.0.0+webpack@5.37.0:
+  /sass-loader/11.1.1_webpack@5.37.0:
     dependencies:
       klona: 2.0.4
       neo-async: 2.6.2
-      node-sass: 5.0.0
       webpack: 5.37.0_webpack-cli@4.7.0
     dev: false
     engines:
@@ -31973,13 +31924,14 @@ packages:
       integrity: sha512-qbepTDvRbBagZ9dTZyOjBFJ3xSXzeKzuAboZTPV/9jt4bbUCGFTKaXglxgv3RkCohBv6tHYAZVt7Xd1QlId0wA==
       tarball: file:projects/origin-backend-core.tgz
     version: 0.0.0
-  file:projects/origin-backend-irec-app.tgz_2573e38080f3d37d862ba13540775466:
+  file:projects/origin-backend-irec-app.tgz_c7583a13723f86f9d08ee181def1a597:
     dependencies:
       '@nestjs-modules/mailer': 1.5.1_4c1efad5614aad18fb76ce8d876b0379
       '@nestjs/common': 7.6.15_fbc9982997ba253269f25bdc348cb93c
       '@nestjs/config': 0.6.3_2ef5148cf119d2e6a2825daac1d64a18
       '@nestjs/core': 7.6.15_19fd72ad6e93e20796310d8f58ce21b0
       '@nestjs/cqrs': 7.0.1_ee85dd4d1195054ef85be608c1ad8c77
+      '@nestjs/passport': 7.1.5_829a9ce5dbb5f1a36ae717115f40c1f8
       '@nestjs/schedule': 0.4.3_a4eba26968d72bf015d9bf44e71ae9b6
       '@nestjs/swagger': 4.8.0_2948ce970589f2b7609e72e50d0b80d7
       '@nestjs/testing': 7.6.15_1c895fe2530e9c7ea231db6d21b4ac4c
@@ -32007,10 +31959,11 @@ packages:
       class-transformer: '*'
       express: '*'
       nodemailer: '*'
+      passport: '*'
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-5Rv4v/gtPlH2zuE/pWhDvpTGt7AxRpcLQ92ce0daoxRPbYeA2vGO5uZYbFzV+eVqSVBIVPl6Mlujr52p9Nne8Q==
+      integrity: sha512-gGnNX97ARC1hanAQW9Q8AP5+PiE6viZA3msLfSXoQ+RxFmY3dZHF+IMfAAxwwSlIHRNSt2f+FqgqReF0FR6yrQ==
       tarball: file:projects/origin-backend-irec-app.tgz
     version: 0.0.0
   file:projects/origin-backend-utils.tgz_36559b3b6e3725ce644dd306475d116a:
@@ -32666,8 +32619,8 @@ packages:
       redux-devtools-extension: 2.13.9_redux@4.1.0
       redux-logger: 4.0.0
       redux-saga: 1.1.3
-      resolve-url-loader: 3.1.3
-      sass-loader: 11.1.1_node-sass@5.0.0+webpack@5.37.0
+      resolve-url-loader: 4.0.0
+      sass-loader: 11.1.1_webpack@5.37.0
       source-map-loader: 2.0.1_webpack@5.37.0
       stream-browserify: 3.0.0
       stream-http: 3.2.0
@@ -32689,7 +32642,7 @@ packages:
     peerDependencies:
       jest: '*'
     resolution:
-      integrity: sha512-MPqXIi5obsuKvJdnl2VS3VuU2VOMVfm4GEqHLa4agm2Y23UsYidnC+xTOYwdBdQy8wbTb/g8IZbzNIMwhB+e9w==
+      integrity: sha512-+XpEAf1YKz3yeNUWjRuXfYR7gPG8il1aWZefj12wkcTHrMM3xl4b5KqfrJfIlBgSKsGwf9c5YPcVIKLFM04vdA==
       tarball: file:projects/origin-ui.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -32975,7 +32928,6 @@ specifiers:
   moment-range: 4.0.2
   moment-timezone: 0.5.33
   multer: 1.4.2
-  node-sass: 5.0.0
   nodemailer: 6.6.0
   os-browserify: 0.3.0
   passport: 0.4.1
@@ -33001,7 +32953,7 @@ specifiers:
   redux-devtools-extension: 2.13.9
   redux-saga: 1.1.3
   reflect-metadata: 0.1.13
-  resolve-url-loader: 3.1.3
+  resolve-url-loader: 4.0.0
   rxjs: 6.6.7
   sass-loader: 11.1.1
   shx: 0.3.3
