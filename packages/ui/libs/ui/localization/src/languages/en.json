@@ -54,7 +54,10 @@
         "signatoryCity": "City",
         "signatoryCountry": "Country",
         "signatoryEmail": "Signatory Email",
-        "signatoryPhoneNumber": "Signatory phone number"
+        "signatoryPhoneNumber": "Signatory phone number",
+        "docsFormTitle": "Upload documents",
+        "companyProofDocsHeading": "Upload Company Proof",
+        "signatoryIdDocsHeading": "Upload Signatory ID"
       },
       "view": {
         "title": "Organization Information",
@@ -205,6 +208,11 @@
         "error": "Error",
         "warning": "Warning",
         "info": "Info"
+      }
+    },
+    "file": {
+      "upload": {
+        "dropOrClick": "Drop files here or click to select files"
       }
     }
   }
