@@ -7,6 +7,7 @@ import {
   InvitationsPage,
   MembersPage,
   InvitePage,
+  AllOrganizationsPage,
 } from './pages';
 
 export const OrganizationApp: FC = () => {
@@ -19,6 +20,8 @@ export const OrganizationApp: FC = () => {
       <Route path="invite" element={<InvitePage />} />
 
       <Route path="members" element={<MembersPage />} />
+
+      <Route path="all" element={<AllOrganizationsPage />} />
 
       <Route path="register" element={<RegisterPage />} />
 

@@ -33,12 +33,23 @@ export type TCreateSignatoryInfoForm = (
   t: TFunction
 ) => MultiStepFormItem<SignatoryInfoFormValues>;
 
+export type DocsUploadFormValues = {
+  signatoryDocumentIds: string[];
+  documentIds: string[];
+};
+
+export type TCreateDocsUploadForm = (
+  t: TFunction
+) => MultiStepFormItem<DocsUploadFormValues>;
+
 export type FormUnionType =
   | OrganizationInfoFormValues
-  | SignatoryInfoFormValues;
+  | SignatoryInfoFormValues
+  | DocsUploadFormValues;
 
 export type FormMergedType = OrganizationInfoFormValues &
-  SignatoryInfoFormValues;
+  SignatoryInfoFormValues &
+  DocsUploadFormValues;
 
 export type TUseRegisterOrganizationFormLogic = (
   t: TFunction
