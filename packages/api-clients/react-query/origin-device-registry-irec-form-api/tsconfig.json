@@ -7,5 +7,5 @@
         "target": "es2015",
         "types": ["node", "mocha"]
     },
-    "include": ["src/index.ts", "src/client/*"]
+    "include": ["src/index.ts", "src/client/*", "src/response-type.ts"]
 }
