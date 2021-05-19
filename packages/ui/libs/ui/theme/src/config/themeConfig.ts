@@ -15,7 +15,7 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
       default: 'rgb(244,67,54)',
     },
     text: {
-      primary: styleConfig.WHITE,
+      primary: styleConfig.SIMPLE_TEXT_COLOR,
       secondary: styleConfig.TEXT_COLOR_DEFAULT,
       disabled: styleConfig.TEXT_COLOR_DEFAULT,
     },

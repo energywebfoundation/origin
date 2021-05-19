@@ -36,17 +36,18 @@ export const useFileUploadEffects = ({
   const upload = async (file: File) => {
     const fileIndex = files.indexOf(file);
 
-    const { data: uploadedArray } = await apiUploadFunction([file as Blob], {
-      onUploadProgress: (progressEvent) => {
-        dispatch({
-          type: 'setFileProgress',
-          payload: {
-            id: fileIndex,
-            uploadProgress: (progressEvent.loaded * 90) / progressEvent.total,
-          },
-        });
-      },
-    });
+    const { data: uploadedArray } = await apiUploadFunction([file as Blob]);
+    //   , {
+    //   onUploadProgress: (progressEvent) => {
+    //     dispatch({
+    //       type: 'setFileProgress',
+    //       payload: {
+    //         id: fileIndex,
+    //         uploadProgress: (progressEvent.loaded * 90) / progressEvent.total,
+    //       },
+    //     });
+    //   },
+    // });
 
     dispatch({
       type: 'setFile',
@@ -91,5 +92,5 @@ export const useFileUploadEffects = ({
     onChange(Object.entries(state).map(([, value]) => value));
   }, [state]);
 
-  return { getRootProps, getInputProps, files, state, dispatch, upload };
+  return { getRootProps, getInputProps, files, state, dispatch };
 };

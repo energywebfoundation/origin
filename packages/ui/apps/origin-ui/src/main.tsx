@@ -21,7 +21,9 @@ ReactDOM.render(
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <BrowserRouter>
           <OriginQueryClientProvider>
-            <AuthProvider initialState={localStorage.getItem('authToken')}>
+            <AuthProvider
+              initialState={localStorage.getItem('AUTHENTICATION_TOKEN')}
+            >
               <AccountProvider>
                 <SettingsProvider>
                   <AppContainer />

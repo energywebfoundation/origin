@@ -48,7 +48,7 @@ export type FileUploadAction =
     };
 
 export type ApiUploadFunction = (
-  files: Blob[],
+  file: Blob[],
   options?: any
 ) => Promise<AxiosResponse<string[]>>;
 

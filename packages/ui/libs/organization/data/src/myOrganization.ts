@@ -1,4 +1,7 @@
-import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
+import {
+  useUserControllerMe,
+  fileControllerDownload,
+} from '@energyweb/origin-backend-react-query-client';
 
 export const useMyOrganizationData = () => {
   const { isLoading, data } = useUserControllerMe();
@@ -6,4 +9,8 @@ export const useMyOrganizationData = () => {
   const organization = data?.data?.organization;
 
   return { isLoading, organization };
+};
+
+export const fileUDownloadHandler = async (id: string) => {
+  return await fileControllerDownload(id);
 };

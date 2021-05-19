@@ -79,5 +79,5 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
       label: t('organization.register.signatoryPhoneNumber'),
     },
   ],
-  buttonText: t('general.buttons.submit'),
+  buttonText: t('general.buttons.nextStep'),
 });

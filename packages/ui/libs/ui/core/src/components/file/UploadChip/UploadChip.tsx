@@ -2,13 +2,13 @@ import { Chip } from '@material-ui/core';
 import { Cancel, Delete, Replay } from '@material-ui/icons';
 import React, { Dispatch, FC } from 'react';
 import { FileUploadAction, UploadedFile } from '../../../containers/FileUpload';
+import { useColors } from './UploadChip.colors';
 
 export interface UploadChipProps {
   file: File;
   index: number;
   uploadedFile: UploadedFile;
   dispatch: Dispatch<FileUploadAction>;
-  upload: (file: File) => Promise<void>;
 }
 
 export const UploadChip: FC<UploadChipProps> = ({
@@ -16,8 +16,9 @@ export const UploadChip: FC<UploadChipProps> = ({
   index,
   uploadedFile,
   dispatch,
-  upload,
 }) => {
+  const { lightenBgColor, bgColorLight } = useColors();
+
   const chipLabel = `${
     file.name.length > 20 ? file.name.slice(0, 20) + '...' : file.name
   }${uploadedFile.cancelled ? ' (Cancelled, click to retry)' : ''}`;
@@ -33,7 +34,6 @@ export const UploadChip: FC<UploadChipProps> = ({
 
   const clickHandler = () => {
     if (!uploadedFile.cancelled) return;
-    upload(file);
   };
 
   const deleteHandler = () => {
@@ -67,14 +67,15 @@ export const UploadChip: FC<UploadChipProps> = ({
         clickable={uploadedFile.cancelled}
         onClick={clickHandler}
         onDelete={deleteHandler}
-        // style={{
-        //     background: `-webkit-linear-gradient(left, ${
-        //         uploadedFile.cancelled ? lightenBgColor : bgColorLight
-        //     } ${
-        //         uploadedFile.cancelled ? '100' : uploadedFile.uploadProgress
-        //     }%, rgba(255, 255, 255, 0) 0%)`,
-        //     cursor: uploadedFile.cancelled ? 'pointer' : 'default'
-        // }}
+        style={{
+          margin: 5,
+          background: `-webkit-linear-gradient(left, ${
+            uploadedFile.cancelled ? lightenBgColor : bgColorLight
+          } ${
+            uploadedFile.cancelled ? '100' : uploadedFile.uploadProgress
+          }%, rgba(255, 255, 255, 0) 0%)`,
+          cursor: uploadedFile.cancelled ? 'pointer' : 'default',
+        }}
         key={index}
       />
     </>
