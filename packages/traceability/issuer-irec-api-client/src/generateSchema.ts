@@ -2,7 +2,7 @@ import fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { entities, AppModule } from '@energyweb/issuer-irec-api';
+import { entities, usedEntities, AppModule } from '@energyweb/issuer-irec-api';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Yaml = require('json-to-pretty-yaml');
@@ -17,7 +17,7 @@ export const generateSchema = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities,
+                entities: [...usedEntities, ...entities],
                 logging: ['info']
             }),
             AppModule

@@ -1,4 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
+import { entities } from './src';
 
 const getDBConnectionOptions = (): ConnectionOptions => {
     return process.env.DATABASE_URL
@@ -21,14 +22,14 @@ const getDBConnectionOptions = (): ConnectionOptions => {
 
 const config: ConnectionOptions = {
     ...getDBConnectionOptions(),
-    entities: ['src/**/*.entity.ts'],
+    entities,
     synchronize: false,
     migrationsRun: true,
     migrations: [
         `${__dirname}/node_modules/@energyweb/issuer-api/dist/js/migrations/*.js`,
         'migrations/*.ts'
     ],
-    migrationsTableName: 'migrations_irec_issuer',
+    migrationsTableName: 'migrations_issuer',
     cli: {
         migrationsDir: 'migrations'
     }

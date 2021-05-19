@@ -5,6 +5,8 @@ export * from '@energyweb/issuer-api/src/pods/certification-request/certificatio
 export * from '@energyweb/issuer-api/src/pods/certification-request/sync-certification-request.task';
 
 export * from './handlers';
+export * from './commands';
+export * from './events';
 export * from './certification-request.controller';
 export * from './certification-request.dto';
 export * from './certification-request.entity';

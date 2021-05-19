@@ -1,23 +1,24 @@
 import { CertificationRequest as CertificationRequestFacade } from '@energyweb/issuer';
 import { BadRequestException, Logger } from '@nestjs/common';
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 import { getAddress, isAddress } from 'ethers/lib/utils';
 
-import {
-    BlockchainPropertiesService,
-    CertificationRequest,
-    CertificationRequestDTO,
-    CertificationRequestStatus
-} from '@energyweb/issuer-api';
-import { CreateIrecCertificationRequestCommand } from '../commands/create-irec-certification-request.command';
+import { BlockchainPropertiesService, CertificationRequestStatus } from '@energyweb/issuer-api';
+import { FileService, UserService } from '@energyweb/origin-backend';
+import { CreateIrecCertificationRequestCommand } from '../commands';
+import { IrecCertificateService } from '../irec-certificate.service';
+import { CertificationRequestIrecDTO } from '../certification-request.dto';
+import { CertificationRequest } from '../certification-request.entity';
+import { createReadStream } from 'fs';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateCertificationRequestHandler
-    implements ICommandHandler<CreateIrecCertificationRequestCommand> {
+    implements ICommandHandler<CreateIrecCertificationRequestCommand>
+{
     private readonly logger = new Logger(CreateCertificationRequestHandler.name);
 
     private readonly requestQueue = new Subject<number>();
@@ -26,7 +27,11 @@ export class CreateCertificationRequestHandler
         @InjectRepository(CertificationRequest)
         private readonly repository: Repository<CertificationRequest>,
         private readonly blockchainPropertiesService: BlockchainPropertiesService,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
+        private readonly commandBus: CommandBus,
+        private readonly irecCertificateService: IrecCertificateService,
+        private readonly userService: UserService,
+        private readonly fileService: FileService
     ) {
         this.requestQueue.pipe(concatMap((id) => this.process(id))).subscribe();
     }
@@ -40,7 +45,7 @@ export class CreateCertificationRequestHandler
         deviceId,
         files,
         isPrivate
-    }: CreateIrecCertificationRequestCommand): Promise<CertificationRequestDTO> {
+    }: CreateIrecCertificationRequestCommand): Promise<CertificationRequestIrecDTO> {
         if (!isAddress(to)) {
             throw new BadRequestException(
                 'Invalid "to" parameter, it has to be ethereum address string'
@@ -48,6 +53,7 @@ export class CreateCertificationRequestHandler
         }
 
         const certificationRequest = this.repository.create({
+            userId: String(user.id),
             deviceId,
             energy,
             fromTime,
@@ -88,7 +94,33 @@ export class CreateCertificationRequestHandler
 
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
-        const { fromTime, toTime, deviceId, owner } = request;
+        const { userId, fromTime, toTime, deviceId, owner } = request;
+
+        const platformAdmin = await this.userService.getPlatformAdmin();
+
+        let fileIds: string[];
+        if (request.files?.length) {
+            const files = await Promise.all(
+                request.files.map((fileId) => this.fileService.get(fileId))
+            );
+            fileIds = await this.irecCertificateService.uploadFiles(
+                userId,
+                files.map((file) => createReadStream(file.data))
+            );
+        }
+        const irecDevice = await this.irecCertificateService.getDevice(userId, request.deviceId);
+        const platformTradeAccount = await this.irecCertificateService.getTradeAccountCode(
+            platformAdmin.id
+        );
+        const irecIssue = await this.irecCertificateService.createIrecIssue(platformAdmin.id, {
+            device: request.deviceId,
+            fuel: irecDevice.fuel,
+            recipient: platformTradeAccount,
+            start: new Date(),
+            end: new Date(),
+            production: 100500
+        });
+        await this.repository.update(request.id, { irecIssueId: irecIssue.code, files: fileIds });
 
         try {
             const { created, id } = await CertificationRequestFacade.create(

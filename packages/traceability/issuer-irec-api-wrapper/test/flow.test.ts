@@ -128,7 +128,8 @@ describe('API flows', () => {
             notes: 'Some note',
             files: [fileId]
         };
-        const issueCode: string = await registrantClient.issue.create(issueParams);
+        const createdIssue = await registrantClient.issue.create(issueParams);
+        const issueCode = createdIssue.code;
         let issue: IssueWithStatus = await registrantClient.issue.get(issueCode);
         expect(issue.code).to.equal(issueCode);
         expect(issue.status).to.equal(IssueStatus.Draft);

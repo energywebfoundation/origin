@@ -4,6 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
 import {
     AccessTokens,
+    Account,
+    AccountType,
+    Device,
     IRECAPIClient,
     Issue,
     IssueStatus,
@@ -13,6 +16,7 @@ import {
     GetConnectionCommand,
     RefreshTokensCommand
 } from '@energyweb/origin-organization-irec-api';
+import { ReadStream } from 'fs';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
@@ -87,5 +91,25 @@ export class IrecCertificateService {
     async getIssue(user: UserIdentifier, code: string): Promise<IssueWithStatus> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.issue.get(code);
+    }
+
+    async getDevice(user: UserIdentifier, code: string): Promise<Device> {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.device.get(code);
+    }
+
+    async uploadFiles(user: UserIdentifier, files: Blob[] | ReadStream[]) {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.file.upload(files);
+    }
+
+    async getAccountInfo(user: UserIdentifier): Promise<Account[]> {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.account.getAll();
+    }
+
+    async getTradeAccountCode(user: UserIdentifier): Promise<string> {
+        const accounts = await this.getAccountInfo(user);
+        return accounts.find((account: Account) => account.type === AccountType.Trade)?.code || '';
     }
 }

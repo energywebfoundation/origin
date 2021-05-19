@@ -3,11 +3,18 @@ import fs from 'fs';
 import { Module, ValidationPipe } from '@nestjs/common';
 
 import { APP_PIPE } from '@nestjs/core';
-import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
+import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
+import {
+    AppModule as OriginBackendModule,
+    FileModule,
+    UserModule
+} from '@energyweb/origin-backend';
 import { CertificateModule, BlockchainPropertiesModule } from '@energyweb/issuer-api';
 import { CertificationRequestModule } from './pods/certification-request';
+
+export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUnitsOfEnergy];
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
@@ -26,8 +33,6 @@ const getEnvFilePath = () => {
     return finalPath;
 };
 
-export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUnitsOfEnergy];
-
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -35,6 +40,9 @@ export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUn
             isGlobal: true
         }),
         ScheduleModule.forRoot(),
+        OriginBackendModule,
+        UserModule,
+        FileModule,
         CertificateModule,
         BlockchainPropertiesModule,
         CertificationRequestModule

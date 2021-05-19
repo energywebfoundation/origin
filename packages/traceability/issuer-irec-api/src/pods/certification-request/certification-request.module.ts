@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 
+import { FileModule, UserModule } from '@energyweb/origin-backend';
 import {
     BlockchainPropertiesModule,
     CertificateModule,
@@ -21,7 +22,9 @@ import { IrecCertificateService } from './irec-certificate.service';
         TypeOrmModule.forFeature([CertificationRequest, Certificate]),
         BlockchainPropertiesModule,
         CertificateModule,
-        ConfigModule
+        ConfigModule,
+        UserModule,
+        FileModule
     ],
     controllers: [CertificationRequestController],
     providers: [...Handlers, SyncCertificationRequestsTask, IrecCertificateService],

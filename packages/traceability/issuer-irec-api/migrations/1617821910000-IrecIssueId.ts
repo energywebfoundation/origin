@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Missing1606392690489 implements MigrationInterface {
-    name = '1617821910000-IrecIssueId';
+export class IrecIssueId1617821910000 implements MigrationInterface {
+    name = 'IrecIssueId1617821910000';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
