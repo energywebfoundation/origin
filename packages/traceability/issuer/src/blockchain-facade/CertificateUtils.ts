@@ -289,8 +289,9 @@ export const calculateOwnership = async (
         ...new Set([...transferSingleEvents, ...transferBatchEvents].map((event) => event.to))
     ].filter((address) => address !== constants.AddressZero);
 
-    const allHistoricOwnersBalances = await Promise.all(
-        allHistoricOwners.map((ownerAddress) => registry.balanceOf(ownerAddress, certificateId))
+    const allHistoricOwnersBalances = await registry.balanceOfBatch(
+        allHistoricOwners,
+        Array(allHistoricOwners.length).fill(certificateId.toString())
     );
 
     allHistoricOwners.forEach((owner, index) => {
@@ -325,10 +326,9 @@ export const calculateClaims = async (
         ...new Set([...claimSingleEvents, ...claimBatchEvents].map((event) => event._claimSubject))
     ].filter((address) => address !== constants.AddressZero);
 
-    const allHistoricClaimersBalances = await Promise.all(
-        allHistoricClaimers.map((claimerAddress) =>
-            registry.claimedBalanceOf(claimerAddress, certificateId)
-        )
+    const allHistoricClaimersBalances = await registry.claimedBalanceOfBatch(
+        allHistoricClaimers,
+        Array(allHistoricClaimers.length).fill(certificateId.toString())
     );
 
     allHistoricClaimers.forEach((owner, index) => {
