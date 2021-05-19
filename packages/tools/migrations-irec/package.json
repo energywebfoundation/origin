@@ -21,7 +21,7 @@
         "build:ts": "tsc -b tsconfig.json",
         "build:container:canary": "make build-canary",
         "build:container:latest": "make build-stable",
-        "start": "ts-node src/main.ts",
+        "start": "npx ts-node src/main.ts",
         "start:defaultConfigs": "yarn start -c ./config/demo-config.json -s ./config/seed.sql -e ../../../.env",
         "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8553 && yarn start:redeploy\"",
         "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0 -p 8553",
