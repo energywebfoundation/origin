@@ -22,9 +22,7 @@ export const useRegisterOrgDocsEffects = () => {
   const companyProofHeading = t(
     'organization.register.companyProofDocsHeading'
   );
-  const signatoryIdTHeading = t(
-    'organization.register.companyProofDocsHeading'
-  );
+  const signatoryIdTHeading = t('organization.register.signatoryIdDocsHeading');
 
   const uploadFunction = fileUploadHandler;
   const onCompanyProofsChange = (newValues) => setCompanyProofs(newValues);
