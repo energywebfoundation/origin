@@ -17,9 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 export const useInvitationsPageEffects = () => {
   const { t } = useTranslation();
-  const { data: userData } = useUserControllerMe();
-
-  const user = userData?.data;
+  const { data: user } = useUserControllerMe();
 
   const {
     isLoading: isSentLoading,

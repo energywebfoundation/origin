@@ -11,17 +11,18 @@ export const useSentOrgInvitationsData = (
   orgId: UserDTO['organization']['id']
 ) => {
   const {
-    data,
+    data: invitations,
     isLoading,
   } = useOrganizationControllerGetInvitationsForOrganization(orgId);
-  const invitations = data?.data;
 
   return { isLoading, invitations };
 };
 
 export const useReceivedInvitationsData = () => {
-  const { isLoading, data } = useInvitationControllerGetInvitations();
-  const invitations = data?.data;
+  const {
+    isLoading,
+    data: invitations,
+  } = useInvitationControllerGetInvitations();
 
   return { isLoading, invitations };
 };
