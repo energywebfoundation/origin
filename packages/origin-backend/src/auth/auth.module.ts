@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserModule } from '../pods/user/user.module';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
+import { DidStrategy } from './did.strategy';
 import { JwtStrategy } from './jwt.strategy';
 
 @Global()
@@ -21,7 +22,7 @@ import { JwtStrategy } from './jwt.strategy';
             inject: [ConfigService]
         })
     ],
-    providers: [AuthService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, LocalStrategy, DidStrategy, JwtStrategy],
     exports: [AuthService, PassportModule, JwtModule]
 })
 export class AuthModule {}

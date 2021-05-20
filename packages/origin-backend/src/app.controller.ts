@@ -22,4 +22,13 @@ export class AppController {
     async login(@Request() req: ExpressRequest): Promise<LoginReturnDataDTO> {
         return this.authService.login(req.user as Omit<IUser, 'password'>);
     }
+
+    @UseGuards(AuthGuard('did'))
+    @Post('auth/login-did')
+    @HttpCode(HttpStatus.OK)
+    @ApiBody({ type: LoginDataDTO })
+    @ApiResponse({ status: HttpStatus.OK, type: LoginReturnDataDTO, description: 'Log in' })
+    async loginDid(@Request() req: ExpressRequest): Promise<LoginReturnDataDTO> {
+        return this.authService.loginDid(req.user as Omit<IUser, 'password'>);
+    }
 }
