@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { RoleChanged } from './containers/modals/RoleChanged/RoleChanged';
 import {
   RegisterPage,
   RegisterIRecPage,
@@ -26,6 +27,8 @@ export const OrganizationApp: FC = () => {
       <Route path="register" element={<RegisterPage />} />
 
       <Route path="register-irec" element={<RegisterIRecPage />} />
+
+      <RoleChanged />
     </Routes>
   );
 };

@@ -16,7 +16,9 @@ export const useInvitePageEffects = () => {
     buttonText,
   } = getInviteFormLogic(t);
 
-  const submitHandler = useOrganizationInviteHandler();
+  const { submitHandler, apiLoading } = useOrganizationInviteHandler();
+
+  const pageLoading = apiLoading;
 
   const formData: GenericFormProps<InviteFormValues> = {
     fields,
@@ -26,5 +28,5 @@ export const useInvitePageEffects = () => {
     submitHandler,
   };
 
-  return { formData };
+  return { formData, pageLoading };
 };

@@ -10,7 +10,8 @@ const prepareSentInvitation = (invite: InvitationDTO) => ({
 
 export const createSentInvitationsTable = (
   t: TFunction,
-  invitations: InvitationDTO[]
+  invitations: InvitationDTO[],
+  loading: boolean
 ): TableComponentProps<InvitationDTO['id']> => {
   return {
     header: {
@@ -18,7 +19,7 @@ export const createSentInvitationsTable = (
       status: t('organization.invitations.status'),
     },
     // @should be received from query
-    loading: false,
+    loading,
     pageSize: 5,
     totalPages: Math.ceil(invitations?.length / 5),
     tableTitle: t('organization.invitations.sentTableTitle'),

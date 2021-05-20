@@ -1,11 +1,11 @@
 import { TableComponent } from '@energyweb/origin-ui-core';
-import { CircularProgress, Grid, Typography } from '@material-ui/core';
+import { Grid, Skeleton, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useInvitationsPageEffects } from './InvitationsPage.effects';
 
 export const InvitationsPage: FC = () => {
   const {
-    isLoading,
+    pageLoading,
     showSentTable,
     showReceivedTable,
     showNoInvitationsText,
@@ -14,8 +14,13 @@ export const InvitationsPage: FC = () => {
     receivedInvitationsTable,
   } = useInvitationsPageEffects();
 
-  if (isLoading) {
-    return <CircularProgress />;
+  if (pageLoading) {
+    return (
+      <>
+        <Skeleton width="100%" height={300} />
+        <Skeleton width="100%" height={300} />
+      </>
+    );
   }
 
   return (

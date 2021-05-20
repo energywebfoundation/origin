@@ -17,13 +17,17 @@ import { useTranslation } from 'react-i18next';
 
 export const useInvitationsPageEffects = () => {
   const { t } = useTranslation();
-  const { data: user } = useUserControllerMe();
+  const { data: user, isLoading: userLoading } = useUserControllerMe();
 
   const {
     isLoading: isSentLoading,
     invitations: sentInvitations,
   } = useSentOrgInvitationsData(user?.organization?.id);
-  const sentInvitationsTable = createSentInvitationsTable(t, sentInvitations);
+  const sentInvitationsTable = createSentInvitationsTable(
+    t,
+    sentInvitations,
+    isSentLoading
+  );
 
   const { acceptInvite, rejectInvite } = useReceivedInvitationsActions();
   const receivedInvitationsActions = [
@@ -45,10 +49,11 @@ export const useInvitationsPageEffects = () => {
   const receivedInvitationsTable = createReceivedInvitationsTable(
     t,
     receivedInvitations,
-    receivedInvitationsActions
+    receivedInvitationsActions,
+    isReceivedLoading
   );
 
-  const isLoading = isSentLoading && isReceivedLoading;
+  const pageLoading = userLoading || isSentLoading || isReceivedLoading;
 
   const showSentTable = sentInvitationsTable.data.length > 0;
   const showReceivedTable = receivedInvitationsTable.data.length > 0;
@@ -56,7 +61,7 @@ export const useInvitationsPageEffects = () => {
   const noInvitationsText = t('organization.invitations.noInvitations');
 
   return {
-    isLoading,
+    pageLoading,
     showSentTable,
     showReceivedTable,
     showNoInvitationsText,

@@ -22,7 +22,8 @@ const prepareReceivedInvitation = (
 export const createReceivedInvitationsTable = (
   t: TFunction,
   invitations: InvitationDTO[],
-  actions: TableActionData<InvitationDTO['id']>[]
+  actions: TableActionData<InvitationDTO['id']>[],
+  loading: boolean
 ): TableComponentProps<InvitationDTO['id']> => {
   return {
     header: {
@@ -31,8 +32,7 @@ export const createReceivedInvitationsTable = (
       status: t('organization.invitations.status'),
       actions: '',
     },
-    // @should be received from query
-    loading: false,
+    loading,
     pageSize: 5,
     totalPages: Math.ceil(invitations?.length / 5),
     tableTitle: t('organization.invitations.receivedTableTitle'),
