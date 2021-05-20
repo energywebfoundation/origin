@@ -3,8 +3,17 @@ import React, { ReactElement } from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { retry: false } },
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+      onError: (error) => {
+        console.log(error);
+      },
+    },
+  },
 });
+
 export const OriginQueryClientProvider = ({
   children,
 }: {
