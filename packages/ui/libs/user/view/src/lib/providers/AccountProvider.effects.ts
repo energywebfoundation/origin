@@ -9,12 +9,15 @@ export const useAccountProviderEffects = () => {
     userAccountData: null,
   });
   const { isFetched, isFetching, data } = useApiAdminFetchUserAccountData();
+
   useEffect(() => {
-    setAccount({
-      userAccountData: data,
-      isUserAccountDataFetched: isFetched,
-      isFetchingUserAccountData: isFetching,
-    });
+    if (isFetched) {
+      setAccount({
+        userAccountData: data,
+        isUserAccountDataFetched: isFetched,
+        isFetchingUserAccountData: isFetching,
+      });
+    }
   }, [isFetched]);
 
   return useMemo(() => ({ account, setAccount }), [account]);

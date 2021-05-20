@@ -1,5 +1,4 @@
 import { GenericFormProps } from '@energyweb/origin-ui-core';
-import { SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
@@ -24,7 +23,7 @@ const INITIAL_FORM_VALUES: TUserSignInFormValues = {
 const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 
 export const useUserSignInFormConfig = (
-  formSubmitHandler: SubmitHandler<TUserSignInFormValues>
+  formSubmitHandler: GenericFormProps<TUserSignInFormValues>['submitHandler']
 ): GenericFormProps<TUserSignInFormValues> => {
   const { t } = useTranslation();
   return {
