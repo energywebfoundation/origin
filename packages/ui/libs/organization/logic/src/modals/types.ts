@@ -5,22 +5,29 @@ import { TFunction } from 'i18next';
 type ModalLogicFunctionReturnType = Omit<GenericModalProps, 'open' | 'icon'>;
 
 export type TIRecConnectOrRegisterLogic = (
-  setOpen: (value: boolean) => void
+  notNow: () => void,
+  register: () => void
 ) => ModalLogicFunctionReturnType;
 
-export type TRegisterThankYouLogic = () => ModalLogicFunctionReturnType;
+export type TRegisterThankYouLogic = (
+  closeModal: () => void
+) => ModalLogicFunctionReturnType;
 
 export type TOrganizationAlreadyExistsLogic = (
-  setOpen: (value: boolean) => void
+  closeModal: () => void
 ) => ModalLogicFunctionReturnType;
 
-export type TIRecAccountRegisteredLogic = () => ModalLogicFunctionReturnType;
+export type TIRecAccountRegisteredLogic = (
+  closeModal: () => void
+) => ModalLogicFunctionReturnType;
 
-export type TIRecRegisteredThankYouLogic = () => ModalLogicFunctionReturnType;
+export type TIRecRegisteredThankYouLogic = (
+  closeModal: () => void
+) => ModalLogicFunctionReturnType;
 
 type RoleChangeLogicArgs = {
   t: TFunction;
-  setOpen: (value: boolean) => void;
+  closeModal: () => void;
   role: Role;
   orgName: string;
   ownerName: string;

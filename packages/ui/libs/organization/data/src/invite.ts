@@ -1,11 +1,9 @@
 import {
   useOrganizationControllerGetInvitationsForOrganization,
-  InviteDTO,
   useInvitationControllerInvite,
   useUserControllerMe,
 } from '@energyweb/origin-backend-react-query-client';
 import {
-  GenericFormProps,
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';

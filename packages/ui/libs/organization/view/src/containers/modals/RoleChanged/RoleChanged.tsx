@@ -17,6 +17,7 @@ export const RoleChanged: FC = () => {
     buttons,
   } = useRoleChangedEffects();
   const classes = useStyles();
+
   return (
     <GenericModal
       open={open}

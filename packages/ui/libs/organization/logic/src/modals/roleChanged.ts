@@ -3,7 +3,7 @@ import { RoleDescription, TRoleChangedLogic } from './types';
 
 export const getRoleChangedLogic: TRoleChangedLogic = ({
   t,
-  setOpen,
+  closeModal,
   role,
   orgName,
   ownerName,
@@ -75,6 +75,6 @@ export const getRoleChangedLogic: TRoleChangedLogic = ({
       ownerName: ownerName,
     }),
     roleDescriptions,
-    buttons: [{ label: 'Ok', onClick: () => setOpen(false) }],
+    buttons: [{ label: 'Ok', onClick: closeModal }],
   };
 };

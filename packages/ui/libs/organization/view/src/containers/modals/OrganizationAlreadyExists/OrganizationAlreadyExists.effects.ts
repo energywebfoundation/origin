@@ -1,11 +1,25 @@
 import { GenericModalProps } from '@energyweb/origin-ui-core';
 import { useOrganizationAlreadyExistsLogic } from '@energyweb/origin-ui-organization-logic';
-import { useState } from 'react';
+import {
+  OrganizationModalsActionsEnum,
+  useOrgModalsDispatch,
+  useOrgModalsStore,
+} from '../../../context';
 
 export const useOrganizationAlreadyExistsEffects = () => {
-  const [open, setOpen] = useState(true);
+  const { organizationAlreadyExists: open } = useOrgModalsStore();
+  const dispatchModals = useOrgModalsDispatch();
 
-  const { title, text, buttons } = useOrganizationAlreadyExistsLogic(setOpen);
+  const closeModal = () => {
+    dispatchModals({
+      type: OrganizationModalsActionsEnum.SHOW_ORGANIZATION_ALREADY_EXISTS,
+      payload: false,
+    });
+  };
+
+  const { title, text, buttons } = useOrganizationAlreadyExistsLogic(
+    closeModal
+  );
 
   const dialogProps: GenericModalProps['dialogProps'] = {
     maxWidth: 'sm',

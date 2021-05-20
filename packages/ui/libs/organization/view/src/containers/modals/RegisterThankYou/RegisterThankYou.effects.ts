@@ -1,11 +1,26 @@
 import { GenericModalProps } from '@energyweb/origin-ui-core';
 import { useRegisterThankYouLogic } from '@energyweb/origin-ui-organization-logic';
-import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import {
+  OrganizationModalsActionsEnum,
+  useOrgModalsDispatch,
+  useOrgModalsStore,
+} from '../../../context';
 
 export const useRegisterThankYouEffects = () => {
-  const [open, setOpen] = useState(true);
+  const { registerThankYou: open } = useOrgModalsStore();
+  const dispatchModals = useOrgModalsDispatch();
+  const navigate = useNavigate();
 
-  const { title, text, buttons } = useRegisterThankYouLogic();
+  const closeModal = () => {
+    dispatchModals({
+      type: OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU,
+      payload: false,
+    });
+    navigate('/');
+  };
+
+  const { title, text, buttons } = useRegisterThankYouLogic(closeModal);
 
   const dialogProps: GenericModalProps['dialogProps'] = {
     maxWidth: 'sm',

@@ -1,10 +1,23 @@
 import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
 import { getRoleChangedLogic } from '@energyweb/origin-ui-organization-logic';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  OrganizationModalsActionsEnum,
+  useOrgModalsDispatch,
+  useOrgModalsStore,
+} from '../../../context';
 
 export const useRoleChangedEffects = () => {
-  const [open, setOpen] = useState(false);
+  const { roleChanged: open } = useOrgModalsStore();
+  const dispatchModals = useOrgModalsDispatch();
+
+  const closeModal = () => {
+    dispatchModals({
+      type: OrganizationModalsActionsEnum.SHOW_ROLE_CHANGED,
+      payload: false,
+    });
+  };
+
   const { t } = useTranslation();
   const { data: user } = useUserControllerMe();
 
@@ -17,7 +30,7 @@ export const useRoleChangedEffects = () => {
 
   const modalLogic = getRoleChangedLogic({
     t,
-    setOpen,
+    closeModal,
     role,
     orgName,
     ownerName,

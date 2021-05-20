@@ -11,6 +11,7 @@ export const OrganizationAlreadyExists: FC = () => {
     buttons,
     dialogProps,
   } = useOrganizationAlreadyExistsEffects();
+
   return (
     <GenericModal
       icon={<OrganizationAdded />}

@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { TIRecAccountRegisteredLogic } from './types';
 
-export const useIRecAccountRegisteredLogic: TIRecAccountRegisteredLogic = () => {
+export const useIRecAccountRegisteredLogic: TIRecAccountRegisteredLogic = (
+  closeModal
+) => {
   const { t } = useTranslation();
   return {
     title: t('organization.modals.iRecAccountRegistered.title'),
@@ -9,10 +11,7 @@ export const useIRecAccountRegisteredLogic: TIRecAccountRegisteredLogic = () => 
     buttons: [
       {
         label: t('general.buttons.ok'),
-        onClick: () =>
-          console.log(
-            'Should close this modal, show notification and open another'
-          ),
+        onClick: closeModal,
       },
     ],
   };
