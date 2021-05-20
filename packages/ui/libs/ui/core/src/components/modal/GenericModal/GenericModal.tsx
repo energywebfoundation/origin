@@ -8,8 +8,8 @@ import {
   DialogTitle,
   Grid,
   Typography,
+  TypographyProps,
 } from '@material-ui/core';
-import { TypographyProps } from '@material-ui/system';
 import React, { FC, ReactNode } from 'react';
 import { ModalTextContent } from '../ModalTextContent';
 import { useStyles } from './GenericModal.styles';
@@ -22,7 +22,7 @@ type ModalButtonData = ButtonProps & {
 export interface GenericModalProps {
   open: boolean;
   title: string;
-  text: string | string[];
+  text?: string | string[];
   buttons: ModalButtonData[];
   customContent?: ReactNode;
   icon?: ReactNode;
@@ -61,7 +61,7 @@ export const GenericModal: FC<GenericModalProps> = ({
           </DialogTitle>
           <DialogContent>
             {customContent ?? (
-              <ModalTextContent typographyProps={textProps} text={text} />
+              <ModalTextContent textProps={textProps} text={text} />
             )}
           </DialogContent>
         </Grid>

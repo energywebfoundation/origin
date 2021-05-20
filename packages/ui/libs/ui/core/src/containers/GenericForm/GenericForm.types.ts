@@ -10,7 +10,7 @@ import {
   BoxProps,
   TypographyVariant,
 } from '@material-ui/core';
-import { DeepPartial, UnpackNestedValue } from 'react-hook-form';
+import { DeepPartial, UnpackNestedValue, UseFormReset } from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
@@ -36,7 +36,10 @@ export type GenericFormField = {
 };
 
 export interface GenericFormProps<FormValuesType> {
-  submitHandler: (values: UnpackNestedValue<FormValuesType>) => void;
+  submitHandler: (
+    values: UnpackNestedValue<FormValuesType>,
+    resetForm: UseFormReset<FormValuesType>
+  ) => void;
   validationSchema: yup.AnyObjectSchema;
   initialValues: UnpackNestedValue<DeepPartial<FormValuesType>>;
   fields: GenericFormField[];

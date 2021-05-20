@@ -1,27 +1,24 @@
 import { Typography } from '@material-ui/core';
+import { TypographyProps } from '@material-ui/core';
 import React, { FC } from 'react';
 import { GenericModalProps } from '../GenericModal';
 
 export interface ModalTextContentProps {
   text: GenericModalProps['text'];
-  typographyProps?: GenericModalProps['textProps'];
+  textProps?: TypographyProps;
 }
 
 export const ModalTextContent: FC<ModalTextContentProps> = ({
   text,
-  typographyProps,
+  textProps,
 }) => {
   return (
     <>
       {typeof text === 'string' ? (
-        <Typography {...typographyProps}>{text}</Typography>
+        <Typography {...textProps}>{text}</Typography>
       ) : (
         text.map((paragraph, idx) => (
-          <Typography
-            key={'dialogText' + idx}
-            gutterBottom
-            {...typographyProps}
-          >
+          <Typography key={'dialogText' + idx} gutterBottom {...textProps}>
             {paragraph}
           </Typography>
         ))
