@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IUser } from '@energyweb/origin-backend-core';
+import { IUser, Role } from '@energyweb/origin-backend-core';
 
 import { UserService } from '../pods/user/user.service';
 import { IJWTPayload } from './auth.service';
@@ -21,12 +21,33 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: IJWTPayload): Promise<IUser> {
-        const user = await this.userService.findByEmail(payload.email);
+        let user;
 
-        if (user) {
+        if (payload.verifiedRoles) {
+            // TODO: find user record by another criteria in case of DID
+            user = await this.userService.findByEmail(payload.email);
+        } else {
+            user = await this.userService.findByEmail(payload.email);
             return user;
         }
 
-        return null;
+        if (!user) {
+            return null;
+        }
+
+        /** TODO: filter out roles not included in ACCEPTED_ROLES env var passed to
+         *    passport-did-auth LoginStrategy constructor
+         */
+        const roles: Role[] = payload.verifiedRoles
+            .map((role) => role.name)
+            .map((roleName: keyof typeof Role) => Role[roleName]);
+
+        let rights = roles.reduce((acc, role) => {
+            return acc | role;
+        }, 0);
+
+        user.rights = rights;
+
+        return user;
     }
 }
