@@ -90,7 +90,14 @@
         "member": "Member",
         "deviceManager": "Device Manager",
         "organizationAdmin": "Admin",
-        "inviteButton": "Invite"
+        "inviteButton": "Invite",
+        "notifications": {
+          "invitationSent": "Invitation sent",
+          "unauthorized": "Unauthorized",
+          "alreadySent": "You have already sent an invitation for this user",
+          "onlyActiveUserCan": "Only active users can perform this action. Your status is ${status}",
+          "unableToInvite": "Could not invite user to organization"
+        }
       },
       "invitations": {
         "sentTableTitle": "Sent",
@@ -100,7 +107,13 @@
         "organization": "Organization",
         "accept": "Accept",
         "decline": "Decline",
-        "noInvitations": "You have no Sent or Received invitations"
+        "noInvitations": "You have no Sent or Received invitations",
+        "notifications": {
+          "acceptedSuccess": "Invitation accepted",
+          "acceptedFailure": "Could not accept invitation",
+          "rejectedSuccess": "Invitation rejected",
+          "rejectedFailure": "Could not reject invitation"
+        }
       },
       "registerIRec": {
         "registerOrgInIRec": "Register organization in I-REC",
@@ -138,6 +151,28 @@
         "leadUserEmail": "Email",
         "leadUserPhoneNumber": "Phone number",
         "leadUserFax": "Fax"
+      },
+      "modals": {
+        "roleChanged": {
+          "title": "Successfully joined {organizationName}",
+          "text": "You have successfully joined {organizationName} of {ownerName}.",
+          "asMemberYouCan": "As an Organization Member you can:",
+          "canPlaceOrder": "Place orders on the exchange",
+          "canBuyCertificates": "Directly buy {certificateType}",
+          "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
+          "canRedeemCertificates": "Redeem {certificateType}",
+          "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
+          "asDeviceManagerYouCan": "As a Device Manager you have permission to:",
+          "canRegisterDevices": "Register devices and device groups",
+          "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
+          "canConfigureAutomatedOrderCreation": "Configure automated order creation",
+          "asOrgAdminYouCan": "As an Organization Admin you have permission to:",
+          "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
+          "canEditUserRoles": "Give and edit user roles",
+          "connectOrgToIRec": "Connect the organization to the I-REC registry",
+          "asDeviceManagerYouCanAlso": "You can also perform all actions of a Device Manager:",
+          "asAMemberYouCanAlso": "You can also perform all actions that a regular Organization Member can perform:"
+        }
       }
     },
     "device": {
