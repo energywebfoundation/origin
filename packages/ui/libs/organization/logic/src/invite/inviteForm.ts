@@ -2,6 +2,7 @@ import { Role } from '@energyweb/origin-backend-core';
 import { GenericFormProps } from '@energyweb/origin-ui-core';
 import { TFunction } from 'i18next';
 import * as yup from 'yup';
+import { roleNamesInvitePage } from '../utils';
 
 export type InviteFormValues = {
   email: string;
@@ -34,20 +35,7 @@ export const getInviteFormLogic: TUseInviteFormLogic = (t) => {
         name: 'role',
         label: t('organization.invite.role'),
         select: true,
-        options: [
-          {
-            value: Role.OrganizationUser,
-            label: t('organization.invite.member'),
-          },
-          {
-            value: Role.OrganizationDeviceManager,
-            label: t('organization.invite.deviceManager'),
-          },
-          {
-            value: Role.OrganizationAdmin,
-            label: t('organization.invite.organizationAdmin'),
-          },
-        ],
+        options: roleNamesInvitePage(t),
       },
     ],
     submitHandler: (values) => console.log(values),

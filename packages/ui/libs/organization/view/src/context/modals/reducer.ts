@@ -1,12 +1,4 @@
-export interface IOrganizationModalsStore {
-  iRecAccountRegistered: boolean;
-  iRecConnectOrRegister: boolean;
-  iRecRegisteredThankYou: boolean;
-  organizationAlreadyExists: boolean;
-  registerThankYou: boolean;
-  roleChanged: boolean;
-  changeMemberOrgRole: boolean;
-}
+import { IOrganizationModalsStore, TOrganizationModalsAction } from './types';
 
 export enum OrganizationModalsActionsEnum {
   SHOW_IREC_ACCOUNT_REGISTERED = 'SHOW_IREC_ACCOUNT_REGISTERED',
@@ -18,11 +10,6 @@ export enum OrganizationModalsActionsEnum {
   SHOW_CHANGE_MEMBER_ORG_ROLE = 'SHOW_CHANGE_MEMBER_ORG_ROLE',
 }
 
-export type TOrganizationModalsAction = {
-  type: OrganizationModalsActionsEnum;
-  payload: boolean;
-};
-
 export const orgModalsInitialState: IOrganizationModalsStore = {
   iRecAccountRegistered: false,
   iRecConnectOrRegister: false,
@@ -30,33 +17,36 @@ export const orgModalsInitialState: IOrganizationModalsStore = {
   organizationAlreadyExists: false,
   registerThankYou: false,
   roleChanged: false,
-  changeMemberOrgRole: false,
+  changeMemberOrgRole: {
+    open: false,
+    userToUpdate: null,
+  },
 };
 
 export const orgModalsReducer = (
-  state: IOrganizationModalsStore,
-  { type, payload }: TOrganizationModalsAction
+  state = orgModalsInitialState,
+  action: TOrganizationModalsAction
 ): IOrganizationModalsStore => {
-  switch (type) {
+  switch (action.type) {
     case OrganizationModalsActionsEnum.SHOW_IREC_ACCOUNT_REGISTERED:
-      return { ...state, iRecAccountRegistered: payload };
+      return { ...state, iRecAccountRegistered: action.payload };
 
     case OrganizationModalsActionsEnum.SHOW_IREC_CONNECT_OR_REGISTER:
-      return { ...state, iRecConnectOrRegister: payload };
+      return { ...state, iRecConnectOrRegister: action.payload };
 
     case OrganizationModalsActionsEnum.SHOW_IREC_REGISTERED_THANK_YOU:
-      return { ...state, iRecRegisteredThankYou: payload };
+      return { ...state, iRecRegisteredThankYou: action.payload };
 
     case OrganizationModalsActionsEnum.SHOW_ORGANIZATION_ALREADY_EXISTS:
-      return { ...state, organizationAlreadyExists: payload };
+      return { ...state, organizationAlreadyExists: action.payload };
 
     case OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU:
-      return { ...state, registerThankYou: payload };
+      return { ...state, registerThankYou: action.payload };
 
     case OrganizationModalsActionsEnum.SHOW_ROLE_CHANGED:
-      return { ...state, roleChanged: payload };
+      return { ...state, roleChanged: action.payload };
 
     case OrganizationModalsActionsEnum.SHOW_CHANGE_MEMBER_ORG_ROLE:
-      return { ...state, changeMemberOrgRole: payload };
+      return { ...state, changeMemberOrgRole: { ...action.payload } };
   }
 };

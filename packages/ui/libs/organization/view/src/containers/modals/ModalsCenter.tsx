@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { ChangeMemberRole } from './ChangeMemberRole';
 import { IRecAccountRegistered } from './IRecAccountRegistered';
 import { IRecConnectOrRegisterModal } from './IRecConnectOrRegister';
 import { IRecRegisteredThankYou } from './IRecRegisteredThankYou';
@@ -15,6 +16,7 @@ export const ModalsCenter: FC = () => {
       <OrganizationAlreadyExists />
       <RegisterThankYou />
       <RoleChanged />
+      <ChangeMemberRole />
     </>
   );
 };

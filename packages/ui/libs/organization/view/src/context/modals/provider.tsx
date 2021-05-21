@@ -1,10 +1,6 @@
 import React, { createContext, useContext, useReducer } from 'react';
-import {
-  orgModalsInitialState,
-  orgModalsReducer,
-  IOrganizationModalsStore,
-  TOrganizationModalsAction,
-} from './reducer';
+import { orgModalsInitialState, orgModalsReducer } from './reducer';
+import { IOrganizationModalsStore, TOrganizationModalsAction } from './types';
 
 const OrganizationModalsStore = createContext<IOrganizationModalsStore>(null);
 const OrganizationModalsDispatch = createContext<

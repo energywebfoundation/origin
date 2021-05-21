@@ -33,8 +33,6 @@ export const createReceivedInvitationsTable = (
       actions: '',
     },
     loading,
-    pageSize: 5,
-    totalPages: Math.ceil(invitations?.length / 5),
     tableTitle: t('organization.invitations.receivedTableTitle'),
     data:
       invitations?.map((invite) =>

@@ -1,6 +1,10 @@
-import { GenericModalProps } from '@energyweb/origin-ui-core';
+import {
+  GenericModalProps,
+  SelectRegularProps,
+} from '@energyweb/origin-ui-core';
 import { Role } from '@energyweb/origin-backend-core';
 import { TFunction } from 'i18next';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 type ModalLogicFunctionReturnType = Omit<GenericModalProps, 'open' | 'icon'>;
 
@@ -45,3 +49,14 @@ export type TRoleChangedLogic = (
   subtitle: string;
   roleDescriptions: RoleDescription[];
 };
+
+type TChangeMemberRoleArgs = {
+  userToUpdate: UserDTO;
+  closeModal: () => void;
+  changeRoleHandler: () => void;
+  buttonDisabled: boolean;
+};
+export type TChangeMemberRoleLogic = (
+  props: TChangeMemberRoleArgs
+) => ModalLogicFunctionReturnType &
+  Omit<SelectRegularProps, 'value' | 'onChange'>;
