@@ -34,7 +34,7 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Column()
     telephone: string;
 
-    @Column({ select: false })
+    @Column({ nullable: true, select: false })
     @Exclude()
     password: string;
 
