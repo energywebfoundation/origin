@@ -12,8 +12,9 @@ export const OrganizationViewPage: FC = () => {
 
   const {
     docsBlockHeading,
-    isOrgLoading,
+    pageLoading,
     orgFormData,
+    iRecDataForms,
     showDocuments,
     showCompanyProofDocs,
     showSignatoryIdDocs,
@@ -21,13 +22,16 @@ export const OrganizationViewPage: FC = () => {
     signatoryData,
   } = useOrganizationViewPageEffects();
 
-  if (isOrgLoading) {
+  console.log(iRecDataForms);
+
+  if (pageLoading) {
     return <CircularProgress />;
   }
 
   return (
     <Box>
       <DisabledFormView paperClass={classes.paper} {...orgFormData} />
+
       {showDocuments && (
         <>
           <Box>
@@ -47,6 +51,14 @@ export const OrganizationViewPage: FC = () => {
           )}
         </>
       )}
+      {iRecDataForms &&
+        iRecDataForms.map((form) => (
+          <DisabledFormView
+            key={form.heading}
+            paperClass={classes.paper}
+            {...form}
+          />
+        ))}
     </Box>
   );
 };

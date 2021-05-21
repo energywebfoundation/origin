@@ -17,7 +17,7 @@ export const useRegisterThankYouEffects = () => {
       type: OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU,
       payload: false,
     });
-    navigate('/');
+    navigate('/organization/my');
   };
 
   const { title, text, buttons } = useRegisterThankYouLogic(closeModal);

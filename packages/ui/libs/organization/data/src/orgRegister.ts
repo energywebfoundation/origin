@@ -1,25 +1,33 @@
 import {
   fileControllerUpload,
+  getUserControllerMeQueryKey,
   NewOrganizationDTO,
   useOrganizationControllerRegister,
 } from '@energyweb/origin-backend-react-query-client';
 import {
-  GenericFormProps,
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
+import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useQueryClient } from 'react-query';
 
-export const useOrganizationRegisterHandler = () => {
+interface IUseOrganizationRegisterHandlerProps {
+  openRoleChangedModal: () => void;
+  openAlreadyExistsModal: () => void;
+}
+
+export const useOrganizationRegisterHandler = ({
+  openRoleChangedModal,
+  openAlreadyExistsModal,
+}: IUseOrganizationRegisterHandlerProps) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { mutate } = useOrganizationControllerRegister();
+  const queryClient = useQueryClient();
 
-  const registerHandler: GenericFormProps<NewOrganizationDTO>['submitHandler'] = (
-    values,
-    reset
-  ) => {
+  const { mutate } = useOrganizationControllerRegister();
+  const userKey = getUserControllerMeQueryKey();
+
+  const registerHandler = (values: NewOrganizationDTO) => {
     mutate(
       { data: values },
       {
@@ -28,15 +36,29 @@ export const useOrganizationRegisterHandler = () => {
             t('organization.register.notifications.registeredSuccess'),
             NotificationTypeEnum.Success
           );
-          reset();
-          navigate('/my');
+          queryClient.invalidateQueries(userKey);
+          openRoleChangedModal();
         },
-        onError: (error) => {
-          console.log(error);
-          showNotification(
-            t('organization.register.notifications.registeredFailure'),
-            NotificationTypeEnum.Error
-          );
+        onError: (error: AxiosError) => {
+          console.warn('Error while registering an organization', error);
+
+          if (error?.response?.status === 401) {
+            showNotification(
+              t('organization.register.notifications.unauthorized'),
+              NotificationTypeEnum.Error
+            );
+          } else if (error?.response?.status === 400) {
+            openAlreadyExistsModal();
+            showNotification(
+              error?.response?.data?.message,
+              NotificationTypeEnum.Error
+            );
+          } else {
+            showNotification(
+              t('organization.register.notifications.registeredFailure'),
+              NotificationTypeEnum.Error
+            );
+          }
         },
       }
     );
