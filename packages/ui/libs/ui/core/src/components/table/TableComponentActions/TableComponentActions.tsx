@@ -29,7 +29,7 @@ export const TableComponentActions: TTableComponentActions = ({
   if (!actions) {
     return <TableCell></TableCell>;
   }
-  console.log(id, actions);
+
   return (
     <TableCell className={classes.wrapper}>
       <SpeedDial

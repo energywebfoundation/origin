@@ -21,9 +21,9 @@ type ModalButtonData = ButtonProps & {
 
 export interface GenericModalProps {
   open: boolean;
-  title: string;
+  title?: string;
   text?: string | string[];
-  buttons: ModalButtonData[];
+  buttons?: ModalButtonData[];
   customContent?: ReactNode;
   icon?: ReactNode;
   dialogProps?: Omit<DialogProps, 'open'>;
@@ -54,11 +54,13 @@ export const GenericModal: FC<GenericModalProps> = ({
         )}
 
         <Grid item md={icon ? (dialogWidthSmall ? 9 : 10) : 12} xs={12}>
-          <DialogTitle disableTypography>
-            <Typography variant="h5" {...titleProps}>
-              {title}
-            </Typography>
-          </DialogTitle>
+          {title && (
+            <DialogTitle disableTypography>
+              <Typography variant="h5" {...titleProps}>
+                {title}
+              </Typography>
+            </DialogTitle>
+          )}
           <DialogContent>
             {customContent ?? (
               <ModalTextContent textProps={textProps} text={text} />
@@ -68,16 +70,17 @@ export const GenericModal: FC<GenericModalProps> = ({
 
         <Grid item xs={12}>
           <DialogActions className={classes.dialogActions}>
-            {buttons?.map((button) => (
-              <Button
-                key={button.label}
-                variant={button.variant ?? 'contained'}
-                onClick={button.onClick}
-                {...button}
-              >
-                {button.label}
-              </Button>
-            ))}
+            {buttons &&
+              buttons?.map((button) => (
+                <Button
+                  key={button.label}
+                  variant={button.variant ?? 'contained'}
+                  onClick={button.onClick}
+                  {...button}
+                >
+                  {button.label}
+                </Button>
+              ))}
           </DialogActions>
         </Grid>
       </Grid>
