@@ -125,7 +125,16 @@
         "role": "Role",
         "roleOrgAdmin": "Admin",
         "roleOrgDeviceManager": "Device Manager",
-        "roleOrgMember": "Member"
+        "roleOrgMember": "Member",
+        "editRole": "Edit role",
+        "remove": "Remove",
+        "notifications": {
+          "cantRemoveYourself": "You can't remove yourself from organization",
+          "removeSuccess": "User removed",
+          "removeError": "Could not remove user",
+          "roleChangeSuccess": "Member role updated",
+          "roleChangeError": "Error while changing member role"
+        }
       },
       "invite": {
         "email": "Email",
@@ -221,6 +230,9 @@
           "asDeviceManagerYouCanAlso": "You can also perform all actions of a Device Manager:",
           "asAMemberYouCanAlso": "You can also perform all actions that a regular Organization Member can perform:"
         },
+        "changeMemberRole": {
+          "title": "Change role for {username}"
+        },
         "iRecAccountRegistered": {
           "title": "Thank you for registering an I-REC account!",
           "text": "We will forward your application to I-REC and inform you as soon as it is approved."
@@ -306,7 +318,9 @@
         "ok": "Ok",
         "nextStep": "Next Step",
         "submit": "Submit",
-        "register": "Register"
+        "register": "Register",
+        "cancel": "Cancel",
+        "change": "Change"
       }
     },
     "validation": {
