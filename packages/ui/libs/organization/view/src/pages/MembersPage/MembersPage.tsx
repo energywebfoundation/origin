@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { useMembersPageEffects } from './MembersPage.effects';
 
 export const MembersPage: FC = () => {
-  const { isLoading, tableData } = useMembersPageEffects();
+  const { tableData } = useMembersPageEffects();
 
   return <TableComponent {...tableData} />;
 };

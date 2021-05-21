@@ -20,7 +20,7 @@ export const getUserAndOrgData = (
         userTooltip: '',
       },
       orgData: {
-        orgName: userAccountData?.organization?.name,
+        orgName: userAccountData.organization?.name,
         orgPending: false,
         orgTooltip: '',
       },

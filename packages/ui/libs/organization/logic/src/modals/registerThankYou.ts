@@ -7,7 +7,7 @@ export const useRegisterThankYouLogic: TRegisterThankYouLogic = (
   const { t } = useTranslation();
   return {
     title: t('organization.modals.registerThankYou.title'),
-    text: t('organization.modals.registerThankYou.text1'),
+    text: t('organization.modals.registerThankYou.text'),
     buttons: [
       {
         label: t('general.buttons.ok'),

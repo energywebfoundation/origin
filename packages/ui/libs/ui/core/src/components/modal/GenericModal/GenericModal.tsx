@@ -71,7 +71,7 @@ export const GenericModal: FC<GenericModalProps> = ({
         <Grid item xs={12}>
           <DialogActions className={classes.dialogActions}>
             {buttons &&
-              buttons?.map((button) => (
+              buttons.map((button) => (
                 <Button
                   key={button.label}
                   variant={button.variant ?? 'contained'}

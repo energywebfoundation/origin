@@ -51,20 +51,14 @@ export const getRoleChangedLogic: TRoleChangedLogic = ({
       isIRecEnabled && t('organization.modals.roleChanged.connectOrgToIRec'),
     ],
   };
-  let roleDescriptions: RoleDescription[] = [];
-
-  switch (role) {
-    case Role.OrganizationUser:
-      roleDescriptions = [memberActions(true)];
-    case Role.OrganizationDeviceManager:
-      roleDescriptions = [deviceManagerActions(true), memberActions(false)];
-    case Role.OrganizationAdmin:
-      roleDescriptions = [
-        orgAdminActions,
-        deviceManagerActions(false),
-        memberActions(false),
-      ];
-  }
+  const roleDescriptions: RoleDescription[] =
+    role === Role.OrganizationUser
+      ? [memberActions(true)]
+      : role === Role.OrganizationDeviceManager
+      ? [deviceManagerActions(true), memberActions(false)]
+      : role === Role.OrganizationAdmin
+      ? [orgAdminActions, deviceManagerActions(false), memberActions(false)]
+      : [];
 
   return {
     title: t('organization.modals.roleChanged.title', {

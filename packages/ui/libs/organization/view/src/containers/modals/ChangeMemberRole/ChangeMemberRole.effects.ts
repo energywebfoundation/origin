@@ -1,5 +1,4 @@
 import { Role } from '@energyweb/origin-backend-core';
-import { useUserControllerGet } from '@energyweb/origin-backend-react-query-client';
 import {
   GenericModalProps,
   SelectRegularProps,

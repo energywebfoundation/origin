@@ -71,11 +71,11 @@ export const organizationViewLogic: TOrganizationViewLogic = (
   },
   docsBlockHeading: t('organization.view.regular.documents'),
   companyProofData: {
-    documents: organization?.documentIds,
+    documents: organization.documentIds,
     blockTitle: t('organization.view.regular.companyProof'),
   },
   signatoryData: {
-    documents: organization?.signatoryDocumentIds,
+    documents: organization.signatoryDocumentIds,
     blockTitle: t('organization.view.regular.signatoryId'),
   },
 });
