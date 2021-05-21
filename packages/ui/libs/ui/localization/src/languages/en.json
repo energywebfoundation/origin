@@ -316,6 +316,7 @@
     "general": {
       "buttons": {
         "ok": "Ok",
+        "notNow": "Not now",
         "nextStep": "Next Step",
         "submit": "Submit",
         "register": "Register",
