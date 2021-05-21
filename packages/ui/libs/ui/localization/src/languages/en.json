@@ -60,24 +60,63 @@
         "signatoryIdDocsHeading": "Upload Signatory ID",
         "notifications": {
           "registeredSuccess": "Organization registered.",
-          "registeredFailure": "Organization could not be created."
+          "registeredFailure": "Organization could not be created.",
+          "unauthorized": "Unauthorized"
         }
       },
       "view": {
-        "title": "Organization Information",
-        "name": "Organization Name",
-        "address": "Organization Address",
-        "businessType": "Business Type",
-        "tradeRegistry": "Trade Registry Company number",
-        "vat": "VAT number",
-        "signatoryName": "Signatory Full Name",
-        "signatoryAddress": "Signatory Address",
-        "signatoryEmail": "Signatory Email",
-        "signatoryPhone": "Signatory Phone Number",
-        "status": "Status",
-        "documents": "Documents",
-        "companyProof": "Company Proof",
-        "signatoryId": "Signatory ID"
+        "regular": {
+          "title": "Organization Information",
+          "name": "Organization Name",
+          "address": "Organization Address",
+          "businessType": "Business Type",
+          "tradeRegistry": "Trade Registry Company number",
+          "vat": "VAT number",
+          "signatoryName": "Signatory Full Name",
+          "signatoryAddress": "Signatory Address",
+          "signatoryEmail": "Signatory Email",
+          "signatoryPhone": "Signatory Phone Number",
+          "status": "Status",
+          "documents": "Documents",
+          "companyProof": "Company Proof",
+          "signatoryId": "Signatory ID"
+        },
+        "iRec": {
+          "registrationInfoFormTitle": "I-REC Registration information",
+          "accountTypeLabel": "I-REC Account type",
+          "accountType": {
+            "registrant": "Registrant Account for managing devices",
+            "participant": "Participant Account for managing certificates outside of the marketplace",
+            "both": "Both Registrant and Participant Account"
+          },
+          "orgHeadquartersCountry": "Organization Headquarters Country",
+          "yearOfregisterIRec": "Year of Registration",
+          "numberOfEmployees": "Number of employees",
+          "shareholderNames": "Shareholder Names (over 10%)",
+          "orgWebsite": "Organization Website",
+          "activeCountries": "Active Countries",
+          "mainBusiness": "Main Business",
+          "ceoName": "Name of the Chief Executive Officer/General Manager",
+          "ceoPassport": "Chief Executive Officer/General Manager passport number",
+          "balanceSheetTotal": "Balance sheet total for last financial year",
+          "primaryContactFormTitle": "Primary Contact Details",
+          "primaryContactOrgName": "Organization name",
+          "primaryContactOrgAddress": "Organization address",
+          "primaryContactOrgPostalCode": "Organization postal code",
+          "primaryContactOrgCountry": "Organization country",
+          "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+          "primaryContactName": "Contact person name",
+          "primaryContactEmail": "Contact person email",
+          "primaryContactPhoneNumber": "Contact person telephone",
+          "primaryContactFax": "Contact person fax",
+          "leadUserFormTitle": "Lead User Details",
+          "leadUserTitle": "Title",
+          "leadUserFirstName": "First Name",
+          "leadUserLastName": "Last Name",
+          "leadUserEmail": "Email",
+          "leadUserPhoneNumber": "Phone number",
+          "leadUserFax": "Fax"
+        }
       },
       "members": {
         "firstName": "First name",
@@ -154,7 +193,12 @@
         "leadUserLastName": "Last Name",
         "leadUserEmail": "Email",
         "leadUserPhoneNumber": "Phone number",
-        "leadUserFax": "Fax"
+        "leadUserFax": "Fax",
+        "notifications": {
+          "unauthorized": "Unauthorized",
+          "registerErorr": "Organization could not be created",
+          "registerSuccess": "Organization registered"
+        }
       },
       "modals": {
         "roleChanged": {
