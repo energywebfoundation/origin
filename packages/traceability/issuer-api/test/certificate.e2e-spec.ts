@@ -213,13 +213,16 @@ describe('Certificate tests', () => {
         } = await request(app.getHttpServer())
             .post('/certificate')
             .set({ 'test-user': TestUser.Issuer })
-            .send(certificateTestData)
+            .send({
+                ...certificateTestData,
+                energy: '1000000'
+            })
             .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/claim`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({ amount: claimAmount, claimData })
+            .send({ amount: '200000', claimData })
             .expect(HttpStatus.OK);
 
         await sleep(10000);
@@ -233,20 +236,17 @@ describe('Certificate tests', () => {
 
         expect(isOwned).to.be.true;
         expect(isClaimed).to.be.true;
-        expect(energy.publicVolume).to.equal(
-            BigNumber.from(certificateTestData.energy).sub(claimAmount).toString()
-        );
-        expect(energy.claimedVolume).to.equal(claimAmount);
+        expect(energy.publicVolume).to.equal('800000');
+        expect(energy.claimedVolume).to.equal('200000');
         expect(
             myClaims.some(
                 (claim: IClaim) =>
                     claim.to === deviceManager.address &&
                     claim.from === deviceManager.address &&
                     JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                    claim.value === parseInt(claimAmount, 10)
+                    claim.value === parseInt('200000', 10)
             )
         ).to.be.true;
-        expect(claims).to.deep.equal(myClaims);
     });
 
     it('should return all claiming information', async () => {
