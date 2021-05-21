@@ -7,6 +7,10 @@ import { IUser, Role } from '@energyweb/origin-backend-core';
 import { UserService } from '../pods/user/user.service';
 import { IJWTPayload } from './auth.service';
 
+const acceptedRoles: string[] = process.env.ACCEPTED_ROLES
+    ? process.env.ACCEPTED_ROLES.split(',')
+    : [];
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
@@ -35,10 +39,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             return null;
         }
 
-        /** TODO: filter out roles not included in ACCEPTED_ROLES env var passed to
-         *    passport-did-auth LoginStrategy constructor
-         */
         const roles: Role[] = payload.verifiedRoles
+            .filter((role) => acceptedRoles.indexOf(role.nameSpace) > -1)
             .map((role) => role.name)
             .map((roleName: keyof typeof Role) => Role[roleName]);
 
