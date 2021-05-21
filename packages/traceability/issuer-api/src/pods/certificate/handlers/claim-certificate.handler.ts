@@ -42,9 +42,9 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
         const amountToClaim = amount ? BigNumber.from(amount) : claimerBalance;
 
-        if (amountToClaim > claimerBalance) {
+        if (amountToClaim.gt(claimerBalance)) {
             return ResponseFailure(
-                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amount}.`,
+                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amountToClaim}.`,
                 HttpStatus.BAD_REQUEST
             );
         }
