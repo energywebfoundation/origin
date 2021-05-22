@@ -35,7 +35,7 @@
         "connected-react-router": "6.9.1",
         "dayjs": "^1.10.4",
         "ethers": "5.1.4",
-        "formik": "2.2.6",
+        "formik": "2.2.8",
         "formik-material-ui": "3.0.1",
         "formik-material-ui-pickers": "0.0.12",
         "history": "4.10.1",

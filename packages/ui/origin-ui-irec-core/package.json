@@ -33,7 +33,7 @@
         "axios": "0.21.1",
         "connected-react-router": "6.9.1",
         "ethers": "5.1.4",
-        "formik": "2.2.6",
+        "formik": "2.2.8",
         "formik-material-ui": "3.0.1",
         "history": "4.10.1",
         "i18next": "20.2.4",
