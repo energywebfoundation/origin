@@ -36,7 +36,7 @@
         "@energyweb/origin-backend-irec-app": "1.1.0",
         "@energyweb/origin-backend-core": "8.0.1",
         "@energyweb/utils-general": "11.0.2",
-        "@types/pg": "7.14.11",
+        "@types/pg": "8.6.0",
         "commander": "6.2.1",
         "dotenv": "9.0.2",
         "ethers": "5.1.4",
