@@ -29,7 +29,7 @@
     "devDependencies": {
         "typescript": "4.2.4",
         "@nestjs/swagger": "4.8.0",
-        "@nestjs/testing": "7.6.15",
+        "@nestjs/testing": "7.6.17",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.2.6",
         "json-to-pretty-yaml": "1.2.2",
