@@ -26,15 +26,15 @@
     "dependencies": {
         "@energyweb/energy-api-influxdb": "0.7.0",
         "@energyweb/origin-backend-core": "8.0.1",
-        "@nestjs/common": "7.6.15",
+        "@nestjs/common": "7.6.17",
         "@nestjs/config": "0.6.3",
-        "@nestjs/core": "7.6.15",
+        "@nestjs/core": "7.6.17",
         "@nestjs/passport": "7.1.5",
         "@nestjs/swagger": "4.8.0"
     },
     "devDependencies": {
         "typescript": "4.2.4",
-        "@nestjs/testing": "7.6.15",
+        "@nestjs/testing": "7.6.17",
         "influx": "5.9.0",
         "prettier": "2.3.0",
         "superagent-use": "0.1.0",
