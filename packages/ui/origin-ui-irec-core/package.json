@@ -29,7 +29,7 @@
         "@material-ui/lab": "4.0.0-alpha.58",
         "@material-ui/pickers": "3.3.10",
         "@material-ui/styles": "4.11.4",
-        "@react-google-maps/api": "2.1.1",
+        "@react-google-maps/api": "2.2.0",
         "axios": "0.21.1",
         "connected-react-router": "6.9.1",
         "ethers": "5.1.4",
@@ -50,7 +50,7 @@
     },
     "devDependencies": {
         "typescript": "4.2.4",
-        "@types/react": "17.0.5",
+        "@types/react": "17.0.6",
         "@types/react-redux": "7.1.16",
         "@types/react-router-dom": "5.1.7",
         "@types/yup": "0.29.11",
