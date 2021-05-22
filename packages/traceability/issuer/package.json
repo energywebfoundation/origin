@@ -46,7 +46,7 @@
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
         "@energyweb/utils-general": "11.0.2",
-        "@ethersproject/abi": "5.1.2",
+        "@ethersproject/abi": "5.2.0",
         "@ethersproject/contracts": "5.1.1",
         "@ethersproject/providers": "5.1.2",
         "dotenv": "9.0.2",
