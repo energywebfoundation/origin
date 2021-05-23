@@ -2,7 +2,7 @@ import { Expose, Transform } from 'class-transformer';
 import { IsDate, IsIn, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 import { FileIds } from './File';
 
-export enum IssueStatus {
+export enum IssuanceStatus {
     Draft = 'Draft',
     InProgress = 'In-progress',
     Rejected = 'Rejected',
@@ -71,15 +71,6 @@ export class IssueWithStatus extends Issue {
 
     @IsNotEmpty()
     @IsString()
-    @IsIn(Object.values(IssueStatus))
-    status:
-        | IssueStatus.Approved
-        | IssueStatus.Draft
-        | IssueStatus.InProgress
-        | IssueStatus.Rejected
-        | IssueStatus.Referred
-        | IssueStatus.Verified
-        | IssueStatus.Issued
-        | IssueStatus.Submitted
-        | IssueStatus.Withdrawn;
+    @IsIn(Object.values(IssuanceStatus))
+    status: IssuanceStatus;
 }

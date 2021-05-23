@@ -9,7 +9,7 @@ import {
     Device,
     IRECAPIClient,
     Issue,
-    IssueStatus,
+    IssuanceStatus,
     IssueWithStatus
 } from '@energyweb/issuer-irec-api-wrapper';
 import {
@@ -55,14 +55,14 @@ export class IrecCertificateService {
         if (!this.isIrecIntegrationEnabled()) {
             return {
                 ...issue,
-                status: IssueStatus.InProgress,
+                status: IssuanceStatus.InProgress,
                 code: ''
             };
         }
         const irecClient = await this.getIrecClient(user);
         const irecIssue: IssueWithStatus = await irecClient.issue.create(issue);
         await irecClient.issue.submit(irecIssue.code);
-        irecIssue.status = IssueStatus.InProgress;
+        irecIssue.status = IssuanceStatus.InProgress;
         return irecIssue;
     }
 
@@ -70,21 +70,21 @@ export class IrecCertificateService {
         if (!this.isIrecIntegrationEnabled()) {
             return {
                 ...issue,
-                status: IssueStatus.InProgress,
+                status: IssuanceStatus.InProgress,
                 code
             } as IssueWithStatus;
         }
 
         const irecClient = await this.getIrecClient(user);
         const irecIssue = await irecClient.issue.get(code);
-        if (irecIssue.status === IssueStatus.InProgress) {
+        if (irecIssue.status === IssuanceStatus.InProgress) {
             throw new BadRequestException('Issue in "In Progress" state is not available to edit');
         }
 
         await irecClient.issue.update(code, issue);
         const updatedIredIssue = await irecClient.issue.get(code);
         await irecClient.device.submit(code);
-        updatedIredIssue.status = IssueStatus.InProgress;
+        updatedIredIssue.status = IssuanceStatus.InProgress;
         return updatedIredIssue;
     }
 

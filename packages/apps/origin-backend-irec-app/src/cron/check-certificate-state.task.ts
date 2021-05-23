@@ -7,7 +7,7 @@ import {
     GetAllCertificationRequestsQuery,
     ApproveCertificationRequestCommand
 } from '@energyweb/issuer-irec-api';
-import { IssueStatus } from '@energyweb/issuer-irec-api-wrapper';
+import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
 
 @Injectable()
 export class CheckCertificateStateTask {
@@ -34,14 +34,14 @@ export class CheckCertificateStateTask {
                 certificateRequest.irecIssueId
             );
 
-            if (irecIssue.status === IssueStatus.Approved) {
+            if (irecIssue.status === IssuanceStatus.Approved) {
                 await this.commandBus.execute(
                     new ApproveCertificationRequestCommand(certificateRequest.id)
                 );
                 this.eventBus.publish(
                     new CertificationRequestStatusChangedEvent(
                         certificateRequest,
-                        IssueStatus.Approved
+                        IssuanceStatus.Approved
                     )
                 );
             }
