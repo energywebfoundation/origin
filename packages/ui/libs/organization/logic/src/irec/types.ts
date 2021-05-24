@@ -63,9 +63,7 @@ export type IRecRegisterFormMergedType = IRecRegistrationInfoForm &
   PrimaryContactDetailsForms &
   LeadUserDetailsForms;
 
-export type TCreateRegisterIRecFormLogic = (
-  t: TFunction
-) => Omit<
+export type TUseRegisterIRecFormLogic = () => Omit<
   MultiStepFormProps<IRecRegisterFormUnionType, IRecRegisterFormMergedType>,
   'submitHandler'
 >;

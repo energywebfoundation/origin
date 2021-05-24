@@ -57,23 +57,66 @@
         "signatoryPhoneNumber": "Signatory phone number",
         "docsFormTitle": "Upload documents",
         "companyProofDocsHeading": "Upload Company Proof",
-        "signatoryIdDocsHeading": "Upload Signatory ID"
+        "signatoryIdDocsHeading": "Upload Signatory ID",
+        "notifications": {
+          "registeredSuccess": "Organization registered.",
+          "registeredFailure": "Organization could not be created.",
+          "unauthorized": "Unauthorized"
+        }
       },
       "view": {
-        "title": "Organization Information",
-        "name": "Organization Name",
-        "address": "Organization Address",
-        "businessType": "Business Type",
-        "tradeRegistry": "Trade Registry Company number",
-        "vat": "VAT number",
-        "signatoryName": "Signatory Full Name",
-        "signatoryAddress": "Signatory Address",
-        "signatoryEmail": "Signatory Email",
-        "signatoryPhone": "Signatory Phone Number",
-        "status": "Status",
-        "documents": "Documents",
-        "companyProof": "Company Proof",
-        "signatoryId": "Signatory ID"
+        "regular": {
+          "title": "Organization Information",
+          "name": "Organization Name",
+          "address": "Organization Address",
+          "businessType": "Business Type",
+          "tradeRegistry": "Trade Registry Company number",
+          "vat": "VAT number",
+          "signatoryName": "Signatory Full Name",
+          "signatoryAddress": "Signatory Address",
+          "signatoryEmail": "Signatory Email",
+          "signatoryPhone": "Signatory Phone Number",
+          "status": "Status",
+          "documents": "Documents",
+          "companyProof": "Company Proof",
+          "signatoryId": "Signatory ID"
+        },
+        "iRec": {
+          "registrationInfoFormTitle": "I-REC Registration information",
+          "accountTypeLabel": "I-REC Account type",
+          "accountType": {
+            "registrant": "Registrant Account for managing devices",
+            "participant": "Participant Account for managing certificates outside of the marketplace",
+            "both": "Both Registrant and Participant Account"
+          },
+          "orgHeadquartersCountry": "Organization Headquarters Country",
+          "yearOfregisterIRec": "Year of Registration",
+          "numberOfEmployees": "Number of employees",
+          "shareholderNames": "Shareholder Names (over 10%)",
+          "orgWebsite": "Organization Website",
+          "activeCountries": "Active Countries",
+          "mainBusiness": "Main Business",
+          "ceoName": "Name of the Chief Executive Officer/General Manager",
+          "ceoPassport": "Chief Executive Officer/General Manager passport number",
+          "balanceSheetTotal": "Balance sheet total for last financial year",
+          "primaryContactFormTitle": "Primary Contact Details",
+          "primaryContactOrgName": "Organization name",
+          "primaryContactOrgAddress": "Organization address",
+          "primaryContactOrgPostalCode": "Organization postal code",
+          "primaryContactOrgCountry": "Organization country",
+          "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+          "primaryContactName": "Contact person name",
+          "primaryContactEmail": "Contact person email",
+          "primaryContactPhoneNumber": "Contact person telephone",
+          "primaryContactFax": "Contact person fax",
+          "leadUserFormTitle": "Lead User Details",
+          "leadUserTitle": "Title",
+          "leadUserFirstName": "First Name",
+          "leadUserLastName": "Last Name",
+          "leadUserEmail": "Email",
+          "leadUserPhoneNumber": "Phone number",
+          "leadUserFax": "Fax"
+        }
       },
       "members": {
         "firstName": "First name",
@@ -82,7 +125,16 @@
         "role": "Role",
         "roleOrgAdmin": "Admin",
         "roleOrgDeviceManager": "Device Manager",
-        "roleOrgMember": "Member"
+        "roleOrgMember": "Member",
+        "editRole": "Edit role",
+        "remove": "Remove",
+        "notifications": {
+          "cantRemoveYourself": "You can't remove yourself from organization",
+          "removeSuccess": "User removed",
+          "removeError": "Could not remove user",
+          "roleChangeSuccess": "Member role updated",
+          "roleChangeError": "Error while changing member role"
+        }
       },
       "invite": {
         "email": "Email",
@@ -90,7 +142,14 @@
         "member": "Member",
         "deviceManager": "Device Manager",
         "organizationAdmin": "Admin",
-        "inviteButton": "Invite"
+        "inviteButton": "Invite",
+        "notifications": {
+          "invitationSent": "Invitation sent",
+          "unauthorized": "Unauthorized",
+          "alreadySent": "You have already sent an invitation for this user",
+          "onlyActiveUserCan": "Only active users can perform this action. Your status is ${status}",
+          "unableToInvite": "Could not invite user to organization"
+        }
       },
       "invitations": {
         "sentTableTitle": "Sent",
@@ -100,7 +159,13 @@
         "organization": "Organization",
         "accept": "Accept",
         "decline": "Decline",
-        "noInvitations": "You have no Sent or Received invitations"
+        "noInvitations": "You have no Sent or Received invitations",
+        "notifications": {
+          "acceptedSuccess": "Invitation accepted",
+          "acceptedFailure": "Could not accept invitation",
+          "rejectedSuccess": "Invitation rejected",
+          "rejectedFailure": "Could not reject invitation"
+        }
       },
       "registerIRec": {
         "registerOrgInIRec": "Register organization in I-REC",
@@ -137,7 +202,60 @@
         "leadUserLastName": "Last Name",
         "leadUserEmail": "Email",
         "leadUserPhoneNumber": "Phone number",
-        "leadUserFax": "Fax"
+        "leadUserFax": "Fax",
+        "notifications": {
+          "unauthorized": "Unauthorized",
+          "registerErorr": "Organization could not be created",
+          "registerSuccess": "Organization registered"
+        }
+      },
+      "modals": {
+        "roleChanged": {
+          "title": "Successfully joined {organizationName}",
+          "text": "You have successfully joined {organizationName} of {ownerName}.",
+          "asMemberYouCan": "As an Organization Member you can:",
+          "canPlaceOrder": "Place orders on the exchange",
+          "canBuyCertificates": "Directly buy {certificateType}",
+          "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
+          "canRedeemCertificates": "Redeem {certificateType}",
+          "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
+          "asDeviceManagerYouCan": "As a Device Manager you have permission to:",
+          "canRegisterDevices": "Register devices and device groups",
+          "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
+          "canConfigureAutomatedOrderCreation": "Configure automated order creation",
+          "asOrgAdminYouCan": "As an Organization Admin you have permission to:",
+          "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
+          "canEditUserRoles": "Give and edit user roles",
+          "connectOrgToIRec": "Connect the organization to the I-REC registry",
+          "asDeviceManagerYouCanAlso": "You can also perform all actions of a Device Manager:",
+          "asAMemberYouCanAlso": "You can also perform all actions that a regular Organization Member can perform:"
+        },
+        "changeMemberRole": {
+          "title": "Change role for {username}"
+        },
+        "iRecAccountRegistered": {
+          "title": "Thank you for registering an I-REC account!",
+          "text": "We will forward your application to I-REC and inform you as soon as it is approved."
+        },
+        "iRecConnectOrRegister": {
+          "title": "Thank you for registering an organization on the marketplace!",
+          "text1": "We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.",
+          "text2": "In order to register devices and request I-RECs, users also need to connect an I-REC account.",
+          "buttonRegister": "Register new I-REC account"
+        },
+        "iRecRegisteredThankYou": {
+          "title": "Thank you for registering!",
+          "text": "Your account is being approved."
+        },
+        "organizationAlreadyExists": {
+          "title": "Sorry but this organization could not be registered.",
+          "text1": "There already exists an organization with the same information.",
+          "text2": "Our support team will get in contact with you shortly to sort out the issue."
+        },
+        "registerThankYou": {
+          "title": "Thank you for registering!",
+          "text": "Your registration is reviewed by the platform administrator and you will be notified when your account is activated."
+        }
       }
     },
     "device": {
@@ -197,9 +315,13 @@
     },
     "general": {
       "buttons": {
+        "ok": "Ok",
+        "notNow": "Not now",
         "nextStep": "Next Step",
         "submit": "Submit",
-        "register": "Register"
+        "register": "Register",
+        "cancel": "Cancel",
+        "change": "Change"
       }
     },
     "validation": {

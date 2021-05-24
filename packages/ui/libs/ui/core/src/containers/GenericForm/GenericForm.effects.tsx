@@ -32,14 +32,16 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   submitHandler,
   partOfMultiForm,
 }) => {
-  const { control, register, handleSubmit, formState } = useForm({
+  const { control, register, handleSubmit, formState, reset } = useForm({
     mode: 'onBlur',
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
   const { isValid, errors, dirtyFields } = formState;
 
-  const onSubmit = handleSubmit(async (values) => await submitHandler(values));
+  const onSubmit = handleSubmit(async (values) => {
+    await submitHandler(values, reset);
+  });
 
   const nextForm =
     initialValues && Object.keys(initialValues)[0] in dirtyFields;

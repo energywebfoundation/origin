@@ -1,4 +1,4 @@
-import { AxiosResponse, CancelTokenSource } from 'axios';
+import { CancelTokenSource } from 'axios';
 
 export type UploadedFile = {
   uploadedName: string;
@@ -50,6 +50,6 @@ export type FileUploadAction =
 export type ApiUploadFunction = (
   file: Blob[],
   options?: any
-) => Promise<AxiosResponse<string[]>>;
+) => Promise<string[]>;
 
 export type FileUploadOnChangeFunction = (files: UploadedFile[]) => void;

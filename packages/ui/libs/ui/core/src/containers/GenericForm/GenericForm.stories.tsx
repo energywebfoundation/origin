@@ -1,6 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { GenericForm, GenericFormProps } from './GenericForm';
+import { GenericForm } from './GenericForm';
+import { GenericFormProps } from './GenericForm.types';
 import * as yup from 'yup';
 
 export default {
@@ -8,7 +9,15 @@ export default {
   component: GenericForm,
 } as Meta;
 
-export const Default = (args: GenericFormProps) => <GenericForm {...args} />;
+type DefaultFormValues = {
+  username: string;
+  password: string;
+  url: string;
+};
+
+export const Default = (args: GenericFormProps<DefaultFormValues>) => (
+  <GenericForm {...args} />
+);
 Default.args = {
   submitHandler: (values: any) => {
     console.log(values);

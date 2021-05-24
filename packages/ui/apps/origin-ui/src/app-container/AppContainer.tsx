@@ -14,7 +14,12 @@ export const AppContainer = () => {
     menuSections,
     accountData,
     isAuthenticated,
+    appLoading,
   } = useAppContainerEffects();
+
+  if (appLoading) {
+    return <></>;
+  }
 
   return (
     <>

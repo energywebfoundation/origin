@@ -1,72 +1,74 @@
-// @should localize & should finish
-// import { Role } from "@energyweb/origin-backend-core";
-import { TRoleChangedLogic } from './types';
+import { Role } from '@energyweb/origin-backend-core';
+import { RoleDescription, TRoleChangedLogic } from './types';
 
-export const roleChangedLogic: TRoleChangedLogic = ({
-  setOpen,
+export const getRoleChangedLogic: TRoleChangedLogic = ({
+  t,
+  closeModal,
   role,
   orgName,
-  iRecPlatform,
+  ownerName,
+  isIRecEnabled,
 }) => {
-  // const getAsRoleYouCan = (role: Role) => {
-  //   switch (role) {
-  //       case Role.OrganizationAdmin:
-  //           return ('user.feedback.roleChanged.asOrgAdminYouCan');
-  //       case Role.OrganizationDeviceManager:
-  //           return ('user.feedback.roleChanged.asDeviceManYouCan');
-  //       case Role.OrganizationUser:
-  //           return ('user.feedback.roleChanged.asMemberYouCan');
-  //   }
-  // };
+  const memberActions = (isMainRole: boolean) => ({
+    title: isMainRole
+      ? t('organization.modals.roleChanged.asMemberYouCan')
+      : t('organization.modals.roleChanged.asAMemberYouCanAlso'),
+    actions: [
+      t('organization.modals.roleChanged.canPlaceOrder'),
+      t('organization.modals.roleChanged.canBuyCertificates', {
+        certificateType: isIRecEnabled ? 'I-RECs' : 'certificates',
+      }),
+      t('organization.modals.roleChanged.canCreateAndBuyCertificateBundles', {
+        certificateType: isIRecEnabled ? 'I-REC' : 'certificate',
+      }),
+      t('organization.modals.roleChanged.canRedeemCertificates', {
+        certificateType: isIRecEnabled ? 'I-RECs' : 'certificates',
+      }),
+      t('organization.modals.roleChanged.canWithdrawCertificates', {
+        certificateType: isIRecEnabled ? 'I-RECs' : 'certificates',
+      }),
+    ],
+  });
 
-  //   const allowedActions = (role: Role) => {
-  //     let actions: string[];
-  //     switch (role) {
-  //         case Role.OrganizationUser:
-  //             actions = [
-  //                 t('user.feedback.roleChanged.canPlaceOrder'),
-  //                 t('user.feedback.roleChanged.canBuyCertificates', {
-  //                     certificateType: iRecPlatform ? 'I-RECs' : 'certificates'
-  //                 }),
-  //                 t('user.feedback.roleChanged.canCreateAndBuyCertificateBundles', {
-  //                     certificateType: iRecPlatform ? 'I-REC' : 'certificate'
-  //                 }),
-  //                 t('user.feedback.roleChanged.canRedeemCertificates', {
-  //                     certificateType: iRecPlatform ? 'I-RECs' : 'certificates'
-  //                 }),
-  //                 t('user.feedback.roleChanged.canWithdrawCertificates', {
-  //                     certificateType: iRecPlatform ? 'I-RECs' : 'certificates'
-  //                 })
-  //             ];
-  //             break;
-  //         case Role.OrganizationDeviceManager:
-  //             actions = [
-  //                 t('user.feedback.roleChanged.canRegisterDevices'),
-  //                 t('user.feedback.roleChanged.canRequestIssuenceOfCertificates', {
-  //                     certificateType: iRecPlatform ? 'I-RECs' : 'certificates'
-  //                 }),
-  //                 t('user.feedback.roleChanged.canConfigureAutomatedOrderCreation')
-  //             ];
-  //             break;
-  //         case Role.OrganizationAdmin:
-  //             actions = [
-  //                 ('user.feedback.roleChanged.canAddOrRemoveOrgMembers'),
-  //                 ('user.feedback.roleChanged.canEditUserRoles')
-  //             ];
-  //             if (iRecPlatform) {
-  //                 actions.push(('user.feedback.roleChanged.connectOrgToIRec'));
-  //             }
-  //             break;
-  //         default:
-  //             actions = [];
-  //             break;
-  //     }
-  //     return actions.map((action) => action);
-  // };
+  const deviceManagerActions = (isMainRole: boolean) => ({
+    title: isMainRole
+      ? t('organization.modals.roleChanged.asDeviceManagerYouCan')
+      : t('organization.modals.roleChanged.asDeviceManagerYouCanAlso'),
+    actions: [
+      t('organization.modals.roleChanged.canRegisterDevices'),
+      t('organization.modals.roleChanged.canRequestIssuenceOfCertificates', {
+        certificateType: isIRecEnabled ? 'I-RECs' : 'certificates',
+      }),
+      t('organization.modals.roleChanged.canConfigureAutomatedOrderCreation'),
+    ],
+  });
+
+  const orgAdminActions = {
+    title: t('organization.modals.roleChanged.asOrgAdminYouCan'),
+    actions: [
+      t('organization.modals.roleChanged.canAddOrRemoveOrgMembers'),
+      t('organization.modals.roleChanged.canEditUserRoles'),
+      isIRecEnabled && t('organization.modals.roleChanged.connectOrgToIRec'),
+    ],
+  };
+  const roleDescriptions: RoleDescription[] =
+    role === Role.OrganizationUser
+      ? [memberActions(true)]
+      : role === Role.OrganizationDeviceManager
+      ? [deviceManagerActions(true), memberActions(false)]
+      : role === Role.OrganizationAdmin
+      ? [orgAdminActions, deviceManagerActions(false), memberActions(false)]
+      : [];
 
   return {
-    title: `Successfully joined ${orgName}`,
-    roleDescriptions: [],
-    buttons: [{ label: 'Ok', onClick: () => setOpen(false) }],
+    title: t('organization.modals.roleChanged.title', {
+      organizationName: orgName,
+    }),
+    subtitle: t('organization.modals.roleChanged.text', {
+      organizationName: orgName,
+      ownerName: ownerName,
+    }),
+    roleDescriptions,
+    buttons: [{ label: 'Ok', onClick: closeModal }],
   };
 };

@@ -1,6 +1,6 @@
 import React, { FC, memo } from 'react';
 
-import { useStyles } from '../sign-in-page/SignInPage.styles';
+import { useStyles } from './LoginPage.styles';
 import { Box, Button, Paper, Typography } from '@material-ui/core';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';

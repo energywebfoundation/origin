@@ -2,7 +2,7 @@ import React, { PropsWithChildren, ReactElement } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { GenericFormField } from '../../../containers';
 import { SelectAutocomplete } from '../SelectAutocomplete';
-import { SelectRegular } from '../SelectRegular/SelectRegular';
+import { SelectRegular } from '../SelectRegular';
 
 export type FormSelectOption = {
   value: string | number;

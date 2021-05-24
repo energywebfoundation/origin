@@ -4,7 +4,7 @@ import {
   TableActionData,
   TableComponentProps,
 } from '@energyweb/origin-ui-core';
-import { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const prepareReceivedInvitation = (
   invite: InvitationDTO,
@@ -19,11 +19,12 @@ const prepareReceivedInvitation = (
       OrganizationInvitationStatus.Pending && actions,
 });
 
-export const createReceivedInvitationsTable = (
-  t: TFunction,
+export const useReceivedInvitationsTableLogic = (
   invitations: InvitationDTO[],
-  actions: TableActionData<InvitationDTO['id']>[]
+  actions: TableActionData<InvitationDTO['id']>[],
+  loading: boolean
 ): TableComponentProps<InvitationDTO['id']> => {
+  const { t } = useTranslation();
   return {
     header: {
       orgName: t('organization.invitations.organization'),
@@ -31,10 +32,7 @@ export const createReceivedInvitationsTable = (
       status: t('organization.invitations.status'),
       actions: '',
     },
-    // @should be received from query
-    loading: false,
-    pageSize: 5,
-    totalPages: Math.ceil(invitations?.length / 5),
+    loading,
     tableTitle: t('organization.invitations.receivedTableTitle'),
     data:
       invitations?.map((invite) =>

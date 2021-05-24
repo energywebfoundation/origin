@@ -1,14 +1,14 @@
 import { TableComponent } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@material-ui/core';
+import { Skeleton } from '@material-ui/core';
 import React from 'react';
 import { FC } from 'react';
 import { useMembersPageEffects } from './MembersPage.effects';
 
 export const MembersPage: FC = () => {
-  const { isLoading, tableData } = useMembersPageEffects();
+  const { tableData, pageLoading } = useMembersPageEffects();
 
-  if (isLoading) {
-    return <CircularProgress />;
+  if (pageLoading) {
+    return <Skeleton height={200} width="100%" />;
   }
 
   return <TableComponent {...tableData} />;

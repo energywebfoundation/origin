@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { TIRecConnectOrRegisterLogic } from './types';
 
 export const useIRecConnectOrRegisterLogic: TIRecConnectOrRegisterLogic = (
-  setOpen
+  notNow,
+  register
 ) => {
   const { t } = useTranslation();
   return {
@@ -14,12 +15,12 @@ export const useIRecConnectOrRegisterLogic: TIRecConnectOrRegisterLogic = (
     buttons: [
       {
         label: t('general.buttons.notNow'),
-        onClick: () => setOpen(false),
+        onClick: notNow,
         variant: 'outlined',
       },
       {
         label: t('organization.modals.iRecConnectOrRegister.buttonRegister'),
-        onClick: () => console.log('Navigate to register I-Rec'),
+        onClick: register,
       },
     ],
   };

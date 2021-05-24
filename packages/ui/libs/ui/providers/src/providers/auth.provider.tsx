@@ -20,7 +20,7 @@ type TAuthProviderProps = {
   initialState?: string | null;
 };
 
-const AuthContext = createContext<TAuthContextState>(null);
+export const AuthContext = createContext<TAuthContextState>(null);
 
 const AuthDispatchSetTokenValueContext = createContext<TDispatchSetTokenValue>(
   null

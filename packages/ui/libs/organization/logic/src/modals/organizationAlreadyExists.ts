@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { TOrganizationAlreadyExistsLogic } from './types';
 
 export const useOrganizationAlreadyExistsLogic: TOrganizationAlreadyExistsLogic = (
-  setOpen
+  closeModal
 ) => {
   const { t } = useTranslation();
   return {
@@ -11,8 +11,6 @@ export const useOrganizationAlreadyExistsLogic: TOrganizationAlreadyExistsLogic 
       t('organization.modals.organizationAlreadyExists.text1'),
       t('organization.modals.organizationAlreadyExists.text2'),
     ],
-    buttons: [
-      { label: t('general.buttons.ok'), onClick: () => setOpen(false) },
-    ],
+    buttons: [{ label: t('general.buttons.ok'), onClick: closeModal }],
   };
 };

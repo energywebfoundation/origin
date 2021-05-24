@@ -36,18 +36,7 @@ export const useFileUploadEffects = ({
   const upload = async (file: File) => {
     const fileIndex = files.indexOf(file);
 
-    const { data: uploadedArray } = await apiUploadFunction([file as Blob]);
-    //   , {
-    //   onUploadProgress: (progressEvent) => {
-    //     dispatch({
-    //       type: 'setFileProgress',
-    //       payload: {
-    //         id: fileIndex,
-    //         uploadProgress: (progressEvent.loaded * 90) / progressEvent.total,
-    //       },
-    //     });
-    //   },
-    // });
+    const uploadedArray = await apiUploadFunction([file as Blob]);
 
     dispatch({
       type: 'setFile',

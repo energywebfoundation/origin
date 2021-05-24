@@ -1,43 +1,35 @@
 import { useTranslation } from 'react-i18next';
-import { useMyOrganizationData } from '@energyweb/origin-ui-organization-data';
-import { organizationViewLogic } from '@energyweb/origin-ui-organization-logic';
-import { DisabledFormViewProps } from '@energyweb/origin-ui-core';
-import { DownloadOrgDocsProps } from '../../containers';
+import {
+  useMyIRecOrganizationData,
+  useMyOrganizationData,
+} from '@energyweb/origin-ui-organization-data';
+import {
+  getOrganizationViewLogic,
+  getIRecOrganizationViewLogic,
+} from '@energyweb/origin-ui-organization-logic';
 
 export const useOrganizationViewPageEffects = () => {
   const { t } = useTranslation();
-  const { isLoading: isOrgLoading, organization } = useMyOrganizationData();
+  const { organizationLoading, organization } = useMyOrganizationData();
+  const { iRecOrgLoading, iRecOrganization } = useMyIRecOrganizationData();
 
-  const {
-    orgData,
-    orgViewHeading,
-    docsBlockHeading,
-    companyProofBlockTitle,
-    signatoryIdBlockTitle,
-  } = !!organization && organizationViewLogic(t, organization);
+  const { orgFormData, docsBlockHeading, companyProofData, signatoryData } =
+    !!organization && getOrganizationViewLogic(t, organization);
+
+  const iRecDataForms =
+    !iRecOrgLoading &&
+    !!iRecOrganization &&
+    getIRecOrganizationViewLogic(t, iRecOrganization);
 
   const showCompanyProofDocs = organization?.documentIds?.length;
   const showSignatoryIdDocs = organization?.signatoryDocumentIds?.length;
   const showDocuments = showCompanyProofDocs || showSignatoryIdDocs;
-
-  const companyProofData: DownloadOrgDocsProps = {
-    documents: organization?.documentIds,
-    blockTitle: companyProofBlockTitle,
-  };
-
-  const signatoryData: DownloadOrgDocsProps = {
-    documents: organization?.signatoryDocumentIds,
-    blockTitle: signatoryIdBlockTitle,
-  };
-
-  const orgFormData: DisabledFormViewProps = {
-    data: orgData,
-    heading: orgViewHeading,
-  };
+  const pageLoading = organizationLoading || iRecOrgLoading;
 
   return {
-    isOrgLoading,
+    pageLoading,
     orgFormData,
+    iRecDataForms,
     docsBlockHeading,
     showDocuments,
     showCompanyProofDocs,
