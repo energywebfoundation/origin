@@ -1,14 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { DeleteOutline, PermIdentityOutlined } from '@material-ui/icons';
-import {
-    IUser,
-    getRolesFromRights,
-    isRole,
-    Role,
-    UserStatus
-} from '@energyweb/origin-backend-core';
+import { getRolesFromRights, isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { fromGeneralActions, fromGeneralSelectors } from '../../features';
 import { showNotification, NotificationTypeEnum, roleNames } from '../../utils';
 import {
@@ -17,21 +11,20 @@ import {
     usePaginatedLoader
 } from '../Table';
 import { IRecord } from '../admin/AdminUsersTable';
-import { ChangeRoleModal } from '../Modal';
 import { fromUsersSelectors } from '../../features';
+import { OrganizationModalsActionsEnum, useOrgModalsDispatch } from '../../context';
 
 export function OrganizationUsersTable() {
     const { t } = useTranslation();
+    const dispatchModals = useOrgModalsDispatch();
 
-    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
-        ?.organizationClient;
+    const organizationClient = useSelector(
+        fromGeneralSelectors.getBackendClient
+    )?.organizationClient;
     const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
     const userIsActive = userOffchain && userOffchain.status === UserStatus.Active;
 
     const dispatch = useDispatch();
-
-    const [selectedUser, setSelectedUser] = useState<IUser>(null);
-    const [showUserRoleChangeModal, setShowUserRoleChangeModal] = useState(false);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -106,20 +99,21 @@ export function OrganizationUsersTable() {
     }
 
     async function changeRole(rowIndex: number) {
-        const user = paginatedData[rowIndex]?.user;
+        const selectedUser = paginatedData[rowIndex]?.user;
 
         if (!isRole(userOffchain, Role.OrganizationAdmin)) {
             showNotification(`Only the Admin can change user roles.`, NotificationTypeEnum.Error);
             return;
         }
 
-        setSelectedUser(user);
-        setShowUserRoleChangeModal(true);
-    }
-
-    async function changeRoleCallback() {
-        setShowUserRoleChangeModal(false);
-        await loadPage(1);
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_CHANGE_MEMBER_ORG_ROLE,
+            payload: {
+                open: true,
+                userToUpdate: selectedUser,
+                reloadCallback: async () => await loadPage(1)
+            }
+        });
     }
 
     const actions = [];
@@ -166,12 +160,6 @@ export function OrganizationUsersTable() {
                 total={total}
                 pageSize={pageSize}
                 actions={actions}
-            />
-
-            <ChangeRoleModal
-                user={selectedUser}
-                showModal={showUserRoleChangeModal}
-                callback={changeRoleCallback}
             />
         </div>
     );

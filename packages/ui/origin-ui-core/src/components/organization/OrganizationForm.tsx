@@ -23,17 +23,12 @@ import { LightenColor } from '../../utils/colors';
 import { Upload, IUploadedFile } from '../Documents';
 import { FormInput, FormCountrySelect, FormBusinessTypeSelect } from '../Form';
 import {
-    RoleChangedModal,
-    IRECConnectOrRegisterModal,
-    RegisterThankYouMessageModal,
-    OrganizationAlreadyExistsModal
-} from '../Modal';
-import {
     fromGeneralActions,
     fromGeneralSelectors,
     fromUsersActions,
     fromUsersSelectors
 } from '../../features';
+import { OrganizationModalsActionsEnum, useOrgModalsDispatch } from '../../context';
 
 interface IProps {
     entity: IFullOrganization;
@@ -102,22 +97,17 @@ const VALIDATION_SCHEMA = Yup.object({
 
 export const OrganizationForm = (props: IProps) => {
     const { entity, readOnly } = props;
-    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
-        ?.organizationClient;
-    const [
-        initialFormValuesFromExistingEntity,
-        setInitialFormValuesFromExistingEntity
-    ] = useState<IFormValues>(null);
+    const organizationClient = useSelector(
+        fromGeneralSelectors.getBackendClient
+    )?.organizationClient;
+    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] =
+        useState<IFormValues>(null);
     const [companyProofs, setCompanyProofs] = useState<IUploadedFile[]>([]);
     const [signatoryId, setSignatoryId] = useState<IUploadedFile[]>([]);
     const user = useSelector(fromUsersSelectors.getUserOffchain);
     const { t } = useTranslation();
     const dispatch = useDispatch();
-
-    const [showRoleModal, setShowRoleModal] = useState(false);
-    const [showIRecModal, setShowIRecModal] = useState(false);
-    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
-    const [showAlreadyExistsModal, setShowAlreadyExistsModal] = useState(false);
+    const dispatchModals = useOrgModalsDispatch();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -171,7 +161,10 @@ export const OrganizationForm = (props: IProps) => {
             dispatch(fromUsersActions.setUserOffchain({ ...user, organization }));
 
             if (organization) {
-                setShowRoleModal(true);
+                dispatchModals({
+                    type: OrganizationModalsActionsEnum.SHOW_ROLE_CHANGED,
+                    payload: true
+                });
                 showNotification('Organization registered.', NotificationTypeEnum.Success);
             }
         } catch (error) {
@@ -180,7 +173,10 @@ export const OrganizationForm = (props: IProps) => {
             if (error?.response?.status === 401) {
                 showNotification('Unauthorized.', NotificationTypeEnum.Error);
             } else if (error?.response?.status === 400) {
-                setShowAlreadyExistsModal(true);
+                dispatchModals({
+                    type: OrganizationModalsActionsEnum.SHOW_ORGANIZATION_ALREADY_EXISTS,
+                    payload: true
+                });
                 showNotification(error?.response?.data?.message, NotificationTypeEnum.Error);
             } else {
                 showNotification('Organization could not be created.', NotificationTypeEnum.Error);
@@ -448,25 +444,6 @@ export const OrganizationForm = (props: IProps) => {
                     );
                 }}
             </Formik>
-            <RoleChangedModal
-                showModal={showRoleModal}
-                setShowModal={setShowRoleModal}
-                setShowIRec={setShowIRecModal}
-                setShowBlockchainModal={setShowBlockchainModal}
-            />
-            <IRECConnectOrRegisterModal
-                showModal={showIRecModal}
-                setShowModal={setShowIRecModal}
-                setShowBlockchainModal={setShowBlockchainModal}
-            />
-            <RegisterThankYouMessageModal
-                showModal={showBlockchainModal}
-                setShowModal={setShowBlockchainModal}
-            />
-            <OrganizationAlreadyExistsModal
-                showModal={showAlreadyExistsModal}
-                setShowModal={setShowAlreadyExistsModal}
-            />
         </Paper>
     );
 };
