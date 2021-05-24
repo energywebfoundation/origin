@@ -20,7 +20,6 @@ export const AppContainer = () => {
   if (appLoading) {
     return <></>;
   }
-  // console.log('renders app container');
 
   return (
     <>
