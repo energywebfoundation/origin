@@ -35,7 +35,7 @@
     "dependencies": {
         "@ethersproject/abi": "5.2.0",
         "@ethersproject/contracts": "5.2.0",
-        "@ethersproject/providers": "5.1.2",
+        "@ethersproject/providers": "5.2.0",
         "chai": "4.3.0",
         "ethers": "5.1.4"
     },
