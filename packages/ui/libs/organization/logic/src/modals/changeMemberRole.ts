@@ -13,7 +13,7 @@ export const useChangeMemberRoleLogic: TChangeMemberRoleLogic = ({
   return {
     title: userToUpdate
       ? t('organization.modals.changeMemberRole.title', {
-          username: `${userToUpdate?.firstName}  ${userToUpdate?.lastName}`,
+          username: `${userToUpdate.firstName}  ${userToUpdate.lastName}`,
         })
       : '',
     errorExists: false,

@@ -1,5 +1,4 @@
 import {
-  UserDTO,
   useInvitationControllerGetInvitations,
   useOrganizationControllerGetInvitationsForOrganization,
   useInvitationControllerUpdateInvitation,

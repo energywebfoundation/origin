@@ -1,6 +1,5 @@
 import { useIRecRegisterHandler } from '@energyweb/origin-ui-organization-data';
 import { useRegisterIRecFormLogic } from '@energyweb/origin-ui-organization-logic';
-import { useTranslation } from 'react-i18next';
 import {
   OrganizationModalsActionsEnum,
   useOrgModalsDispatch,
