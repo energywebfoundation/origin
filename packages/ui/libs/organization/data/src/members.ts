@@ -16,18 +16,19 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useOrganizationMembersData = () => {
-  const { data: user } = useUserControllerMe();
+  const { data: user, isLoading: isUserLoading } = useUserControllerMe();
   const organizationId = user?.organization?.id;
 
-  const { isLoading, data: members } = useOrganizationControllerGetUsers(
-    organizationId
-  );
+  const {
+    isLoading: isMembersLoading,
+    data: members,
+  } = useOrganizationControllerGetUsers(organizationId);
 
-  return { isLoading, members };
+  return { isLoading: isUserLoading || isMembersLoading, members };
 };
 
 export const useOrganizationMemberRemove = () => {
-  const { data: user } = useUserControllerMe();
+  const { data: user, isLoading } = useUserControllerMe();
   const organizationId = user?.organization?.id;
 
   const { t } = useTranslation();
@@ -68,7 +69,7 @@ export const useOrganizationMemberRemove = () => {
     );
   };
 
-  return removeHandler;
+  return { removeHandler, isLoading };
 };
 
 export const useOrganizationMemberRoleUpdate = () => {

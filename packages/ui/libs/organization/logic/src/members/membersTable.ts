@@ -5,18 +5,19 @@ import {
   TableComponentProps,
   TableRowData,
 } from '@energyweb/origin-ui-core';
-import { TFunction } from 'i18next';
+import { TFunction, useTranslation } from 'react-i18next';
 import { roleNamesMatcherForMembersPage } from '../utils';
 
 type TCreateMembersTableArgs = {
-  t: TFunction;
   users: User[];
   actions: TableActionData<User['id']>[];
   loading: boolean;
 };
 
 type TFormatOrgMembers = (
-  props: Omit<TCreateMembersTableArgs, 'loading'>
+  props: Omit<TCreateMembersTableArgs, 'loading'> & {
+    t: TFunction<'translation'>;
+  }
 ) => TableRowData<User['id']>[];
 
 export const formatOrgMembers: TFormatOrgMembers = ({ t, users, actions }) => {
@@ -36,12 +37,12 @@ export const formatOrgMembers: TFormatOrgMembers = ({ t, users, actions }) => {
   }));
 };
 
-export const createMembersTable = ({
-  t,
+export const useMembersTableLogic = ({
   users,
   actions,
   loading,
 }: TCreateMembersTableArgs): TableComponentProps<User['id']> => {
+  const { t } = useTranslation();
   return {
     header: {
       firstName: t('organization.members.firstName'),

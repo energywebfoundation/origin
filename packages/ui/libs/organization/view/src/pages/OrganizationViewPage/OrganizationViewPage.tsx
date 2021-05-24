@@ -22,8 +22,6 @@ export const OrganizationViewPage: FC = () => {
     signatoryData,
   } = useOrganizationViewPageEffects();
 
-  console.log(iRecDataForms);
-
   if (pageLoading) {
     return <CircularProgress />;
   }

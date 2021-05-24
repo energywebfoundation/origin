@@ -17,19 +17,14 @@ export const OrganizationApp: FC = () => {
     <OrganizationModalsProvider>
       <Routes>
         <Route path="my" element={<OrganizationViewPage />} />
-
         <Route path="invitations" element={<InvitationsPage />} />
-
         <Route path="invite" element={<InvitePage />} />
-
         <Route path="members" element={<MembersPage />} />
-
         <Route path="all" element={<AllOrganizationsPage />} />
-
         <Route path="register" element={<RegisterPage />} />
-
         <Route path="register-irec" element={<RegisterIRecPage />} />
       </Routes>
+
       <ModalsCenter />
     </OrganizationModalsProvider>
   );

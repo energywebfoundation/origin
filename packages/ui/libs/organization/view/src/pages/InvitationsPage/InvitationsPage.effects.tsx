@@ -1,15 +1,12 @@
-import {
-  InvitationDTO,
-  useUserControllerMe,
-} from '@energyweb/origin-backend-react-query-client';
+import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
 import {
   useReceivedInvitationsActions,
   useReceivedInvitationsData,
   useSentOrgInvitationsData,
 } from '@energyweb/origin-ui-organization-data';
 import {
-  createReceivedInvitationsTable,
-  createSentInvitationsTable,
+  useReceivedInvitationsTableLogic,
+  useSentInvitationsTableLogic,
 } from '@energyweb/origin-ui-organization-logic';
 import { Check, Clear } from '@material-ui/icons';
 import React from 'react';
@@ -17,14 +14,12 @@ import { useTranslation } from 'react-i18next';
 
 export const useInvitationsPageEffects = () => {
   const { t } = useTranslation();
-  const { data: user, isLoading: userLoading } = useUserControllerMe();
 
   const {
     isLoading: isSentLoading,
     invitations: sentInvitations,
-  } = useSentOrgInvitationsData(user?.organization?.id);
-  const sentInvitationsTable = createSentInvitationsTable(
-    t,
+  } = useSentOrgInvitationsData();
+  const sentInvitationsTable = useSentInvitationsTableLogic(
     sentInvitations,
     isSentLoading
   );
@@ -46,14 +41,13 @@ export const useInvitationsPageEffects = () => {
     isLoading: isReceivedLoading,
     invitations: receivedInvitations,
   } = useReceivedInvitationsData();
-  const receivedInvitationsTable = createReceivedInvitationsTable(
-    t,
+  const receivedInvitationsTable = useReceivedInvitationsTableLogic(
     receivedInvitations,
     receivedInvitationsActions,
     isReceivedLoading
   );
 
-  const pageLoading = userLoading || isSentLoading || isReceivedLoading;
+  const pageLoading = isSentLoading || isReceivedLoading;
 
   const showSentTable = sentInvitationsTable.data.length > 0;
   const showReceivedTable = receivedInvitationsTable.data.length > 0;

@@ -10,7 +10,7 @@ type TOrganizationViewLogic = (
   organization: RegistrationDTO
 ) => DisabledFormViewProps[];
 
-export const iRecOrganizationViewLogic: TOrganizationViewLogic = (
+export const getIRecOrganizationViewLogic: TOrganizationViewLogic = (
   t,
   iRecOrganization
 ) => [

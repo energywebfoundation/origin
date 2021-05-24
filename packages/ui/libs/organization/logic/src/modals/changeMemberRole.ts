@@ -11,9 +11,11 @@ export const useChangeMemberRoleLogic: TChangeMemberRoleLogic = ({
   const { t } = useTranslation();
 
   return {
-    title: t('organization.modals.changeMemberRole.title', {
-      username: `${userToUpdate?.firstName}  ${userToUpdate?.lastName}`,
-    }),
+    title: userToUpdate
+      ? t('organization.modals.changeMemberRole.title', {
+          username: `${userToUpdate?.firstName}  ${userToUpdate?.lastName}`,
+        })
+      : '',
     errorExists: false,
     errorText: '',
     field: {

@@ -7,6 +7,7 @@ import {
   OrganizationInvitationStatus,
   getInvitationControllerGetInvitationsQueryKey,
   getUserControllerMeQueryKey,
+  useUserControllerMe,
 } from '@energyweb/origin-backend-react-query-client';
 import { useQueryClient } from 'react-query';
 import {
@@ -15,15 +16,17 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 
-export const useSentOrgInvitationsData = (
-  orgId: UserDTO['organization']['id']
-) => {
+export const useSentOrgInvitationsData = () => {
+  const { data: user, isLoading: userLoading } = useUserControllerMe();
+
   const {
     data: invitations,
-    isLoading,
-  } = useOrganizationControllerGetInvitationsForOrganization(orgId);
+    isLoading: invitationsLoading,
+  } = useOrganizationControllerGetInvitationsForOrganization(
+    user?.organization?.id
+  );
 
-  return { isLoading, invitations };
+  return { isLoading: userLoading || invitationsLoading, invitations };
 };
 
 export const useReceivedInvitationsData = () => {
@@ -36,6 +39,7 @@ export const useReceivedInvitationsData = () => {
 };
 
 export const useReceivedInvitationsActions = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const invitationsKey = getInvitationControllerGetInvitationsQueryKey();
   const userKey = getUserControllerMeQueryKey();
@@ -46,7 +50,6 @@ export const useReceivedInvitationsActions = () => {
       queryClient.invalidateQueries(userKey);
     },
   });
-  const { t } = useTranslation();
 
   const acceptInvite = (id: InvitationDTO['id']) =>
     mutate(

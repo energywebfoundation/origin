@@ -1,11 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { createLeadUserDetailsForm } from './leadUserDetails';
 import { createPrimaryContactDetailsForm } from './primaryContactDetails';
 import { createIRecRegistrationInfoForm } from './registrationInfo';
-import { TCreateRegisterIRecFormLogic } from './types';
+import { TUseRegisterIRecFormLogic } from './types';
 
-export const createRegisterIRecFormLogic: TCreateRegisterIRecFormLogic = (
-  t
-) => {
+export const useRegisterIRecFormLogic: TUseRegisterIRecFormLogic = () => {
+  const { t } = useTranslation();
   return {
     heading: t('organization.registerIRec.registerOrgInIRec'),
     forms: [

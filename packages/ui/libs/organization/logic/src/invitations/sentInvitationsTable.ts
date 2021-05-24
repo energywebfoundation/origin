@@ -1,6 +1,6 @@
 import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
 import { TableComponentProps } from '@energyweb/origin-ui-core';
-import { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const prepareSentInvitation = (invite: InvitationDTO) => ({
   id: invite.id,
@@ -8,17 +8,17 @@ const prepareSentInvitation = (invite: InvitationDTO) => ({
   status: invite.status,
 });
 
-export const createSentInvitationsTable = (
-  t: TFunction,
+export const useSentInvitationsTableLogic = (
   invitations: InvitationDTO[],
   loading: boolean
 ): TableComponentProps<InvitationDTO['id']> => {
+  const { t } = useTranslation();
+
   return {
     header: {
       email: t('organization.invitations.email'),
       status: t('organization.invitations.status'),
     },
-    // @should be received from query
     loading,
     pageSize: 5,
     totalPages: Math.ceil(invitations?.length / 5),

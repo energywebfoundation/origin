@@ -20,7 +20,7 @@ type TOrganizationViewLogic = (
   organization: FullOrganizationInfoDTO
 ) => TViewLogicReturnType;
 
-export const organizationViewLogic: TOrganizationViewLogic = (
+export const getOrganizationViewLogic: TOrganizationViewLogic = (
   t,
   organization
 ) => ({

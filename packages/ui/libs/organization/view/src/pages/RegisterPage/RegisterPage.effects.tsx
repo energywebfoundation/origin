@@ -1,14 +1,12 @@
 import { useOrganizationRegisterHandler } from '@energyweb/origin-ui-organization-data';
-import { createRegisterOrganizationFormLogic } from '@energyweb/origin-ui-organization-logic';
+import { useRegisterOrganizationFormLogic } from '@energyweb/origin-ui-organization-logic';
 import { RegisterOrgDocs } from '../../containers/file';
-import { useTranslation } from 'react-i18next';
 import {
   OrganizationModalsActionsEnum,
   useOrgModalsDispatch,
 } from '../../context';
 
 export const useRegisterPageEffects = () => {
-  const { t } = useTranslation();
   const dispatchModals = useOrgModalsDispatch();
 
   const openRoleChangedModal = () =>
@@ -27,7 +25,7 @@ export const useRegisterPageEffects = () => {
     openRoleChangedModal,
     openAlreadyExistsModal,
   });
-  const formsLogic = createRegisterOrganizationFormLogic(t);
+  const formsLogic = useRegisterOrganizationFormLogic();
 
   const formsWithDocsUpload = formsLogic.forms.map((form) =>
     form.customStep

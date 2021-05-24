@@ -4,8 +4,8 @@ import {
   useMyOrganizationData,
 } from '@energyweb/origin-ui-organization-data';
 import {
-  organizationViewLogic,
-  iRecOrganizationViewLogic,
+  getOrganizationViewLogic,
+  getIRecOrganizationViewLogic,
 } from '@energyweb/origin-ui-organization-logic';
 
 export const useOrganizationViewPageEffects = () => {
@@ -14,12 +14,12 @@ export const useOrganizationViewPageEffects = () => {
   const { iRecOrgLoading, iRecOrganization } = useMyIRecOrganizationData();
 
   const { orgFormData, docsBlockHeading, companyProofData, signatoryData } =
-    !!organization && organizationViewLogic(t, organization);
+    !!organization && getOrganizationViewLogic(t, organization);
 
   const iRecDataForms =
     !iRecOrgLoading &&
     !!iRecOrganization &&
-    iRecOrganizationViewLogic(t, iRecOrganization);
+    getIRecOrganizationViewLogic(t, iRecOrganization);
 
   const showCompanyProofDocs = organization?.documentIds?.length;
   const showSignatoryIdDocs = organization?.signatoryDocumentIds?.length;

@@ -1,6 +1,6 @@
 import { Role } from '@energyweb/origin-backend-core';
 import { GenericFormProps } from '@energyweb/origin-ui-core';
-import { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { roleNamesInvitePage } from '../utils';
 
@@ -9,11 +9,14 @@ export type InviteFormValues = {
   role: Role;
 };
 
-type TUseInviteFormLogic = (
-  t: TFunction
-) => Omit<GenericFormProps<InviteFormValues>, 'submitHandler'>;
+type TUseInviteFormLogic = () => Omit<
+  GenericFormProps<InviteFormValues>,
+  'submitHandler'
+>;
 
-export const getInviteFormLogic: TUseInviteFormLogic = (t) => {
+export const useInviteFormLogic: TUseInviteFormLogic = () => {
+  const { t } = useTranslation();
+
   return {
     initialValues: {
       email: '',
@@ -38,7 +41,6 @@ export const getInviteFormLogic: TUseInviteFormLogic = (t) => {
         options: roleNamesInvitePage(t),
       },
     ],
-    submitHandler: (values) => console.log(values),
     buttonText: t('organization.invite.inviteButton'),
   };
 };
