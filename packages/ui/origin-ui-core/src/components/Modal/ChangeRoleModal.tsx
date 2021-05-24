@@ -13,38 +13,48 @@ import {
     MenuItem,
     Select
 } from '@material-ui/core';
-import { Role, IUser, getRolesFromRights, isRole } from '@energyweb/origin-backend-core';
+import { Role, getRolesFromRights, isRole } from '@energyweb/origin-backend-core';
 import { NotificationTypeEnum, showNotification } from '../../utils/notifications';
 import { roleNames } from '../../utils/organizationRoles';
 import { fromGeneralActions, fromGeneralSelectors, fromUsersSelectors } from '../../features';
+import {
+    OrganizationModalsActionsEnum,
+    useOrgModalsDispatch,
+    useOrgModalsStore
+} from '../../context';
 
-interface IProps {
-    user: IUser;
-    showModal: boolean;
-    callback: () => void;
-}
-
-export function ChangeRoleModal(props: IProps) {
+export function ChangeRoleModal() {
     const { t } = useTranslation();
+    const {
+        changeMemberOrgRole: { open, userToUpdate, reloadCallback }
+    } = useOrgModalsStore();
+    const dispatchModals = useOrgModalsDispatch();
 
-    const { user, callback, showModal } = props;
-
-    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
-        ?.organizationClient;
+    const organizationClient = useSelector(
+        fromGeneralSelectors.getBackendClient
+    )?.organizationClient;
     const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
 
-    const [currentUserRole] = getRolesFromRights(user?.rights);
-
+    const [currentUserRole] = getRolesFromRights(userToUpdate?.rights);
     const [selectedRole, setSelectedRole] = useState<Role>(null);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        setSelectedRole(currentUserRole);
+        if (currentUserRole) {
+            setSelectedRole(currentUserRole);
+        }
     }, [currentUserRole]);
 
     async function handleClose() {
-        callback();
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_CHANGE_MEMBER_ORG_ROLE,
+            payload: {
+                open: false,
+                userToUpdate: null,
+                reloadCallback: null
+            }
+        });
     }
 
     async function changeRole() {
@@ -56,10 +66,14 @@ export function ChangeRoleModal(props: IProps) {
         dispatch(fromGeneralActions.setLoading(true));
 
         try {
-            await organizationClient.changeMemberRole(userOffchain.organization.id, user.id, {
-                role: Number(selectedRole)
-            });
-
+            await organizationClient.changeMemberRole(
+                userOffchain.organization.id,
+                userToUpdate.id,
+                {
+                    role: Number(selectedRole)
+                }
+            );
+            reloadCallback();
             showNotification(`User role updated.`, NotificationTypeEnum.Success);
         } catch (error) {
             showNotification(
@@ -77,8 +91,8 @@ export function ChangeRoleModal(props: IProps) {
     const buttonDisabled = currentUserRole === selectedRole;
 
     return (
-        <Dialog open={showModal} onClose={handleClose}>
-            <DialogTitle>{`Change role for ${user?.firstName} ${user?.lastName}`}</DialogTitle>
+        <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>{`Change role for ${userToUpdate?.firstName} ${userToUpdate?.lastName}`}</DialogTitle>
             <DialogContent>
                 <FormControl
                     data-cy="new-role-selector"

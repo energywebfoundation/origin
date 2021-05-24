@@ -8,6 +8,11 @@ import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
 import { fromUsersSelectors } from '../../features';
 import { useLinks } from '../../hooks';
+import {
+    useOrgModalsStore,
+    useOrgModalsDispatch,
+    OrganizationModalsActionsEnum
+} from '../../context';
 
 interface IProps {
     showModal: boolean;
@@ -21,27 +26,35 @@ export enum STEP_NAMES {
     REGISTER_IREC = 2
 }
 
-export const IRECConnectOrRegisterModal = ({
-    showModal,
-    setShowModal,
-    setShowBlockchainModal
-}: IProps) => {
+export const IRECConnectOrRegisterModal = () => {
     const { t } = useTranslation();
     const {
         typography: { fontSizeMd }
     } = useTheme();
+
     const { organizationIRecRegisterUrl, getOrganizationDetailsPageUrl } = useLinks();
     const user = useSelector(fromUsersSelectors.getUserOffchain);
     const orgId = user.organization?.id;
+
     const history = useHistory();
     const { enabledFeatures } = useContext(OriginConfigurationContext);
 
+    const { iRecConnectOrRegister: open } = useOrgModalsStore();
+    const dispatchModals = useOrgModalsDispatch();
+
     const onClose = (step) => {
-        setShowModal(false);
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_IREC_CONNECT_OR_REGISTER,
+            payload: false
+        });
+
         switch (step) {
             case STEP_NAMES.NOT_NOW:
-                if (!user.organization?.blockchainAccountAddress) {
-                    setShowBlockchainModal(true);
+                if (!user?.organization?.blockchainAccountAddress) {
+                    dispatchModals({
+                        type: OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU,
+                        payload: true
+                    });
                 } else {
                     history.push(getOrganizationDetailsPageUrl(String(orgId)));
                 }
@@ -53,7 +66,7 @@ export const IRECConnectOrRegisterModal = ({
     };
 
     return (
-        <Dialog open={showModal} onClose={() => onClose(0)} maxWidth={'md'} fullWidth={true}>
+        <Dialog open={open} onClose={() => onClose(0)} maxWidth={'md'} fullWidth={true}>
             <DialogTitle>
                 <Grid item container>
                     <Grid item xs={2}>
