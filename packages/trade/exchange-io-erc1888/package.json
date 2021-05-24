@@ -42,7 +42,7 @@
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/passport": "7.1.5",
         "@nestjs/typeorm": "7.1.5",
-        "ethers": "5.1.4",
+        "ethers": "5.2.0",
         "moment": "2.29.1",
         "rxjs": "6.6.7"
     },
@@ -64,7 +64,7 @@
         "mocha": "8.4.0",
         "@types/chai": "4.2.15",
         "chai": "4.3.0",
-        "@ethersproject/providers": "5.1.2",
+        "@ethersproject/providers": "5.2.0",
         "@ethersproject/abstract-provider": "5.2.0",
         "@ethersproject/contracts": "5.2.0",
         "@ethersproject/abi": "5.2.0"
