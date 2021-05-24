@@ -432,7 +432,7 @@ describe('Certificate tests', () => {
             .put(`/certificate/${id}/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
-                to: testUsers.get(TestUser.Issuer).blockchainAccountAddress,
+                to: testUsers.get(TestUser.Issuer).organization.blockchainAccountAddress,
                 amount: certificateTestData.energy
             })
             .expect(HttpStatus.OK);

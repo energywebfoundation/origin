@@ -125,7 +125,7 @@ export const RoleChangedModal = ({
         setShowModal(false);
         if (setShowIRec && iRecEnabled) {
             setShowIRec(true);
-        } else if (!user.blockchainAccountAddress) {
+        } else if (!user.organization?.blockchainAccountAddress) {
             setShowBlockchainModal(true);
         } else {
             history.push(defaultPageUrl);
@@ -135,10 +135,10 @@ export const RoleChangedModal = ({
         if (
             (!setShowIRec &&
                 newRole === Role.OrganizationAdmin &&
-                !user.blockchainAccountAddress) ||
+                !user.organization?.blockchainAccountAddress) ||
             (!setShowIRec &&
                 newRole === Role.OrganizationDeviceManager &&
-                !user.blockchainAccountAddress)
+                !user.organization?.blockchainAccountAddress)
         ) {
             setShowBlockchainModal(true);
         }

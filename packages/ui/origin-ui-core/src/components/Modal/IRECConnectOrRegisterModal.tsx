@@ -40,7 +40,7 @@ export const IRECConnectOrRegisterModal = ({
         setShowModal(false);
         switch (step) {
             case STEP_NAMES.NOT_NOW:
-                if (!user.blockchainAccountAddress) {
+                if (!user.organization?.blockchainAccountAddress) {
                     setShowBlockchainModal(true);
                 } else {
                     history.push(getOrganizationDetailsPageUrl(String(orgId)));

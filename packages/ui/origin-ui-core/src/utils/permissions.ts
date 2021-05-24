@@ -18,7 +18,7 @@ export enum Requirement {
     IsActiveUser,
     IsPartOfApprovedOrg,
     HasExchangeDepositAddress,
-    HasUserBlockchainAddress
+    HasOrganizationBlockchainAddress
 }
 
 type Requirements = Requirement[];
@@ -54,9 +54,9 @@ export function usePermissions(config = DefaultRequirements): { canAccessPage: I
             label: t('general.feedback.organizationHasToHaveExchangeDeposit'),
             passing: Boolean(exchangeAddress)
         },
-        [Requirement.HasUserBlockchainAddress]: {
-            label: t('general.feedback.userHasToHaveBlockchainAccount'),
-            passing: Boolean(user?.blockchainAccountAddress)
+        [Requirement.HasOrganizationBlockchainAddress]: {
+            label: t('general.feedback.organizationHasToHaveBlockchainAccount'),
+            passing: !!user?.organization?.blockchainAccountAddress
         }
     };
 

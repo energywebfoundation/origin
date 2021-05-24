@@ -64,10 +64,13 @@ export const testUsers = new Map([
         TestUser.OrganizationDeviceManager,
         {
             id: 1,
-            organization: { id: 1000, status: OrganizationStatus.Active },
+            organization: {
+                id: 1000,
+                status: OrganizationStatus.Active,
+                blockchainAccountAddress: deviceManager.address
+            },
             status: UserStatus.Active,
-            rights: Role.OrganizationDeviceManager,
-            blockchainAccountAddress: deviceManager.address
+            rights: Role.OrganizationDeviceManager
         } as IUser
     ],
     [
@@ -83,20 +86,26 @@ export const testUsers = new Map([
         TestUser.Issuer,
         {
             id: 3,
-            organization: { id: 1003, status: OrganizationStatus.Active },
+            organization: {
+                id: 1003,
+                status: OrganizationStatus.Active,
+                blockchainAccountAddress: registryDeployer.address
+            },
             status: UserStatus.Active,
-            rights: Role.Issuer,
-            blockchainAccountAddress: registryDeployer.address
+            rights: Role.Issuer
         } as IUser
     ],
     [
         TestUser.OtherOrganizationDeviceManager,
         {
             id: 1,
-            organization: { id: 1000, status: OrganizationStatus.Active },
+            organization: {
+                id: 1000,
+                status: OrganizationStatus.Active,
+                blockchainAccountAddress: otherDeviceManager.address
+            },
             status: UserStatus.Active,
-            rights: Role.OrganizationDeviceManager,
-            blockchainAccountAddress: otherDeviceManager.address
+            rights: Role.OrganizationDeviceManager
         } as IUser
     ]
 ]);
@@ -111,7 +120,8 @@ const authGuard: CanActivate = {
 
 @QueryHandler(ValidateDeviceOwnershipQuery)
 export class StubValidateDeviceOwnershipQueryHandler
-    implements IQueryHandler<ValidateDeviceOwnershipQuery> {
+    implements IQueryHandler<ValidateDeviceOwnershipQuery>
+{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async execute(query: ValidateDeviceOwnershipQuery): Promise<boolean> {
         return true;

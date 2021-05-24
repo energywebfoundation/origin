@@ -30,7 +30,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -51,7 +53,9 @@ VALUES (
         'GB',
         'issuer@mailinator.com',
         'Phone number',
-        'Active'
+        'Active',
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     );
 INSERT INTO public."platform_organization" (
         "createdAt",
@@ -72,7 +76,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -114,7 +120,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -156,7 +164,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -198,7 +208,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -234,8 +246,6 @@ INSERT INTO public."user" (
         email,
         telephone,
         password,
-        "blockchainAccountAddress",
-        "blockchainAccountSignedMessage",
         notifications,
         rights,
         "organizationId",

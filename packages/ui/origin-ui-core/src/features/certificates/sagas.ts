@@ -327,12 +327,13 @@ function* assertCorrectBlockchainAccount() {
     );
 
     if (user) {
-        if (!user.blockchainAccountAddress || !activeBlockchainAddress) {
+        if (!user.organization?.blockchainAccountAddress || !activeBlockchainAddress) {
             yield put(fromGeneralActions.setNoAccountModalVisibility(true));
 
             return false;
         } else if (
-            user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress?.toLowerCase()
+            user.organization.blockchainAccountAddress.toLowerCase() ===
+            activeBlockchainAddress.toLowerCase()
         ) {
             return true;
         }

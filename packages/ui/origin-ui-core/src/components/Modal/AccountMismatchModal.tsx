@@ -52,7 +52,7 @@ export const AccountMismatchModal = () => {
                         {t('general.info.tryingToSignAndBoundIs')}
                         <br />
                         <br />
-                        {user?.blockchainAccountAddress?.toLowerCase()}
+                        {user?.organization?.blockchainAccountAddress?.toLowerCase()}
                         <br />
                         <br />
                         {t('general.info.andYouAreTrying')}

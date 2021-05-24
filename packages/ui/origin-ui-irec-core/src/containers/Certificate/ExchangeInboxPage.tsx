@@ -42,7 +42,7 @@ export function ExchangeInboxPage(): JSX.Element {
     }
 
     async function withdraw(certs: IInboxCertificateData[], callback: () => void) {
-        const address = user.blockchainAccountAddress;
+        const address = user.organization?.blockchainAccountAddress;
 
         certs.forEach((certificate) => {
             const assetId = certificate.assetId;
