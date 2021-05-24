@@ -48,6 +48,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             return acc | role;
         }, 0);
 
+        if (user.rights !== rights) {
+            // if DID roles are changed on Switchboard, they need to be synchronized to what we have in the Origin DB
+            await this.userService.changeRole(user.id, ...roles);
+        }
+
         user.rights = rights;
 
         return user;
