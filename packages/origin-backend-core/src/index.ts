@@ -9,4 +9,3 @@ export * from './OriginConfiguration';
 export * from './User';
 export * from './UserRegistrationData';
 export * from './queries';
-export * from './Signing';
