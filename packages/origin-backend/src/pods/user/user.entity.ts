@@ -31,6 +31,9 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Column({ unique: true })
     email: string;
 
+    @Column({ nullable: true, unique: true })
+    did: string;
+
     @Column()
     telephone: string;
 

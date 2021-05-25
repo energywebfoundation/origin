@@ -53,6 +53,7 @@ export interface IUserProperties {
     firstName: string;
     lastName: string;
     email: string;
+    did?: string;
     telephone: string;
     notifications: boolean;
     rights: number;

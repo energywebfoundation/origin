@@ -37,6 +37,11 @@ export class UserDTO implements IUser {
     @IsString()
     email: string;
 
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    did?: string;
+
     @ApiProperty({ type: String })
     @IsNotEmpty()
     @IsString()
