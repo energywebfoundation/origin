@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { DidStrategy } from './did.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { JwtBasicStrategy } from './jwt-basic.strategy';
 
 @Global()
 @Module({
@@ -22,7 +23,7 @@ import { JwtStrategy } from './jwt.strategy';
             inject: [ConfigService]
         })
     ],
-    providers: [AuthService, LocalStrategy, DidStrategy, JwtStrategy],
+    providers: [AuthService, LocalStrategy, DidStrategy, JwtStrategy, JwtBasicStrategy],
     exports: [AuthService, PassportModule, JwtModule]
 })
 export class AuthModule {}

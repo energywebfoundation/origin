@@ -66,7 +66,7 @@ export class UserController {
 
     @Post('register-did')
     @ApiBody({ type: RegisterDidUserDTO })
-    // TODO: protect with JWT guard, but with no User entity checks
+    @UseGuards(AuthGuard('jwt-basic'))
     @ApiResponse({ status: HttpStatus.CREATED, type: UserDTO, description: 'Register a user' })
     public async registerDid(@Body() userRegistrationData: RegisterDidUserDTO): Promise<UserDTO> {
         return this.userService.createDid(userRegistrationData);
