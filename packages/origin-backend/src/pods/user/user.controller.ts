@@ -44,6 +44,7 @@ import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
+import { RegisterDidUserDTO } from './dto/register-did-user.dto';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
@@ -61,6 +62,14 @@ export class UserController {
     @ApiResponse({ status: HttpStatus.CREATED, type: UserDTO, description: 'Register a user' })
     public async register(@Body() userRegistrationData: RegisterUserDTO): Promise<UserDTO> {
         return this.userService.create(userRegistrationData);
+    }
+
+    @Post('register-did')
+    @ApiBody({ type: RegisterDidUserDTO })
+    // TODO: protect with JWT guard, but with no User entity checks
+    @ApiResponse({ status: HttpStatus.CREATED, type: UserDTO, description: 'Register a user' })
+    public async registerDid(@Body() userRegistrationData: RegisterDidUserDTO): Promise<UserDTO> {
+        return this.userService.createDid(userRegistrationData);
     }
 
     @Get('me')
