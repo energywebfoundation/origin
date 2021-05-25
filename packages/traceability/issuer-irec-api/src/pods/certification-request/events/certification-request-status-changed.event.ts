@@ -1,5 +1,5 @@
 import { IssueStatus } from '@energyweb/issuer-irec-api-wrapper';
-import { CertificationRequest } from '../certification-request.entity';
+import { CertificationRequest } from '@energyweb/issuer-api';
 
 export class CertificationRequestStatusChangedEvent {
     constructor(

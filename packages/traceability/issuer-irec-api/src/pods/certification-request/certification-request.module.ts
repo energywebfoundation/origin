@@ -8,18 +8,19 @@ import {
     BlockchainPropertiesModule,
     CertificateModule,
     Certificate,
-    SyncCertificationRequestsTask
+    SyncCertificationRequestsTask,
+    CertificationRequest
 } from '@energyweb/issuer-api';
 
 import { Handlers } from './handlers';
-import { CertificationRequest } from './certification-request.entity';
+import { IrecCertificationRequest } from './irec-certification-request.entity';
 import { CertificationRequestController } from './certification-request.controller';
 import { IrecCertificateService } from './irec-certificate.service';
 
 @Module({
     imports: [
         CqrsModule,
-        TypeOrmModule.forFeature([CertificationRequest, Certificate]),
+        TypeOrmModule.forFeature([CertificationRequest, Certificate, IrecCertificationRequest]),
         BlockchainPropertiesModule,
         CertificateModule,
         ConfigModule,

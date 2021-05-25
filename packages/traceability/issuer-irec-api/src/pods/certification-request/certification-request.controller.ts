@@ -40,7 +40,7 @@ import {
     ValidateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import { CreateIrecCertificationRequestCommand } from './commands';
-import { CertificationRequestIrecDTO } from './certification-request.dto';
+import { FullCertificationRequestDTO } from './full-certification-request.dto';
 
 @ApiTags('certification-requests')
 @ApiBearerAuth('access-token')
@@ -53,12 +53,12 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: CertificationRequestIrecDTO,
+        type: FullCertificationRequestDTO,
         description: 'Returns a Certification Request'
     })
     public async get(
         @Param('id', new ParseIntPipe()) id: number
-    ): Promise<CertificationRequestIrecDTO> {
+    ): Promise<FullCertificationRequestDTO> {
         return this.queryBus.execute(new GetCertificationRequestQuery(id));
     }
 
@@ -66,10 +66,10 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [CertificationRequestIrecDTO],
+        type: [FullCertificationRequestDTO],
         description: 'Returns all Certification Requests'
     })
-    public async getAll(): Promise<CertificationRequestIrecDTO[]> {
+    public async getAll(): Promise<FullCertificationRequestDTO[]> {
         return this.queryBus.execute(new GetAllCertificationRequestsQuery());
     }
 
@@ -77,12 +77,12 @@ export class CertificationRequestController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: CertificationRequestIrecDTO,
+        type: FullCertificationRequestDTO,
         description: 'Returns a Certification Request by a certificate ID'
     })
     public async getByCertificate(
         @Param('certificateId', new ParseIntPipe()) certificateId: number
-    ): Promise<CertificationRequestIrecDTO | SuccessResponseDTO> {
+    ): Promise<FullCertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.queryBus.execute<
             CertificateBoundToCertificationRequestCommand,
             ISuccessResponse
@@ -100,14 +100,14 @@ export class CertificationRequestController {
     @Roles(Role.Issuer, Role.Admin, Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: CertificationRequestIrecDTO,
+        type: FullCertificationRequestDTO,
         description: 'Creates a Certification Request'
     })
     @ApiBody({ type: CreateCertificationRequestDTO })
     public async create(
         @UserDecorator() user: ILoggedInUser,
         @Body() dto: CreateCertificationRequestDTO
-    ): Promise<CertificationRequestIrecDTO | SuccessResponseDTO> {
+    ): Promise<FullCertificationRequestDTO | SuccessResponseDTO> {
         const isOwnerOfTheDevice = await this.queryBus.execute(
             new ValidateDeviceOwnershipQuery(user.ownerId, dto.deviceId)
         );

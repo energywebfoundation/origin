@@ -332,7 +332,7 @@ function* assertCorrectBlockchainAccount() {
 
             return false;
         } else if (
-            user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress?.toLowerCase()
+            user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress.toLowerCase()
         ) {
             return true;
         }

@@ -5,15 +5,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Subject } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
-import { getAddress, isAddress } from 'ethers/lib/utils';
+import { createReadStream } from 'fs';
 
-import { BlockchainPropertiesService, CertificationRequestStatus } from '@energyweb/issuer-api';
+import { getAddress, isAddress } from 'ethers/lib/utils';
+import {
+    BlockchainPropertiesService,
+    CertificationRequestStatus,
+    CertificationRequest
+} from '@energyweb/issuer-api';
 import { FileService, UserService } from '@energyweb/origin-backend';
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { IrecCertificateService } from '../irec-certificate.service';
-import { CertificationRequestIrecDTO } from '../certification-request.dto';
-import { CertificationRequest } from '../certification-request.entity';
-import { createReadStream } from 'fs';
+import { FullCertificationRequestDTO } from '../full-certification-request.dto';
+import { IrecCertificationRequest } from '../irec-certification-request.entity';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateCertificationRequestHandler
@@ -26,6 +30,8 @@ export class CreateCertificationRequestHandler
     constructor(
         @InjectRepository(CertificationRequest)
         private readonly repository: Repository<CertificationRequest>,
+        @InjectRepository(CertificationRequest)
+        private readonly irecRepository: Repository<IrecCertificationRequest>,
         private readonly blockchainPropertiesService: BlockchainPropertiesService,
         private readonly eventBus: EventBus,
         private readonly commandBus: CommandBus,
@@ -45,7 +51,7 @@ export class CreateCertificationRequestHandler
         deviceId,
         files,
         isPrivate
-    }: CreateIrecCertificationRequestCommand): Promise<CertificationRequestIrecDTO> {
+    }: CreateIrecCertificationRequestCommand): Promise<FullCertificationRequestDTO> {
         if (!isAddress(to)) {
             throw new BadRequestException(
                 'Invalid "to" parameter, it has to be ethereum address string'
@@ -53,7 +59,6 @@ export class CreateCertificationRequestHandler
         }
 
         const certificationRequest = this.repository.create({
-            userId: String(user.id),
             deviceId,
             energy,
             fromTime,
@@ -66,11 +71,16 @@ export class CreateCertificationRequestHandler
             owner: getAddress(to) // it returns checksum address
         });
 
+        const irecCertificationRequest = this.irecRepository.create({
+            certificationRequestId: certificationRequest.id,
+            userId: String(user.id)
+        });
+
         const stored = await this.repository.save(certificationRequest);
 
         this.requestQueue.next(stored.id);
 
-        return stored;
+        return { ...certificationRequest, userId: irecCertificationRequest.userId };
     }
 
     private async process(requestId: number) {
@@ -94,7 +104,11 @@ export class CreateCertificationRequestHandler
 
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
-        const { userId, fromTime, toTime, deviceId, owner } = request;
+        const { fromTime, toTime, deviceId, owner } = request;
+        const irecCertificationRequest = await this.irecRepository.findOne({
+            certificationRequestId: request.id
+        });
+        const { userId } = irecCertificationRequest;
 
         const platformAdmin = await this.userService.getPlatformAdmin();
 
@@ -120,7 +134,10 @@ export class CreateCertificationRequestHandler
             end: new Date(),
             production: 100500
         });
-        await this.repository.update(request.id, { irecIssueId: irecIssue.code, files: fileIds });
+        await this.repository.update(request.id, { files: fileIds });
+        await this.irecRepository.update(irecCertificationRequest.id, {
+            irecIssueId: irecIssue.code
+        });
 
         try {
             const { created, id } = await CertificationRequestFacade.create(

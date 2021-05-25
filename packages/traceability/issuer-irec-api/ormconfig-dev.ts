@@ -25,11 +25,8 @@ const config: ConnectionOptions = {
     entities,
     synchronize: false,
     migrationsRun: true,
-    migrations: [
-        `${__dirname}/node_modules/@energyweb/issuer-api/dist/js/migrations/*.js`,
-        'migrations/*.ts'
-    ],
-    migrationsTableName: 'migrations_issuer',
+    migrations: ['migrations/*.ts'],
+    migrationsTableName: 'migrations_irec_issuer',
     cli: {
         migrationsDir: 'migrations'
     }
