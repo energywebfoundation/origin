@@ -38,12 +38,6 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Exclude()
     password: string;
 
-    @Column({ nullable: true, unique: true })
-    blockchainAccountAddress: string;
-
-    @Column({ nullable: true })
-    blockchainAccountSignedMessage: string;
-
     @Column({ nullable: true })
     notifications: boolean;
 

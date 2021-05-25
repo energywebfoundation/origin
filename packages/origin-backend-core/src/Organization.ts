@@ -17,6 +17,9 @@ export interface IPublicOrganization {
     tradeRegistryCompanyNumber: string;
     vatNumber: string;
     status: OrganizationStatus;
+
+    blockchainAccountAddress?: string;
+    blockchainAccountSignedMessage?: string;
 }
 
 export interface IFullOrganization extends IPublicOrganization {

@@ -21,124 +21,122 @@ interface IProps {
     handleValidation: ValidationHandlerReturnType;
 }
 
-export const BlockchainAddressesForm = memo(
-    (props: IProps): ReactElement => {
-        const { t } = useTranslation();
-        const {
-            onUpdateBlockchainAccount,
-            onCreateExchangeAddress,
-            isLoading,
-            exchangeAddress,
-            user,
-            formData,
-            handleValidation
-        } = props;
-        return (
-            <Formik
-                initialValues={formData}
-                validateOnMount={true}
-                onSubmit={() => null}
-                validate={handleValidation}
-            >
-                {(formikProps) => {
-                    const { setFieldValue, values } = formikProps;
+export const BlockchainAddressesForm = memo((props: IProps): ReactElement => {
+    const { t } = useTranslation();
+    const {
+        onUpdateBlockchainAccount,
+        onCreateExchangeAddress,
+        isLoading,
+        exchangeAddress,
+        user,
+        formData,
+        handleValidation
+    } = props;
+    return (
+        <Formik
+            initialValues={formData}
+            validateOnMount={true}
+            onSubmit={() => null}
+            validate={handleValidation}
+        >
+            {(formikProps) => {
+                const { setFieldValue, values } = formikProps;
 
-                    if (values.exchangeDepositAddress !== exchangeAddress) {
-                        setFieldValue('exchangeDepositAddress', exchangeAddress);
-                    }
+                if (values.exchangeDepositAddress !== exchangeAddress) {
+                    setFieldValue('exchangeDepositAddress', exchangeAddress);
+                }
 
-                    return (
-                        <Form translate="no">
-                            <Paper className="container">
-                                <Typography variant="h5">
-                                    {t('user.properties.blockchainAddresses')}
+                return (
+                    <Form translate="no">
+                        <Paper className="container">
+                            <Typography variant="h5">
+                                {t('user.properties.blockchainAddresses')}
+                            </Typography>
+                            <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                                <Typography variant="h6">
+                                    {t('user.properties.exchangeAddressTitle')}
                                 </Typography>
-                                <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
-                                    <Typography variant="h6">
-                                        {t('user.properties.exchangeAddressTitle')}
-                                    </Typography>
-                                    <Box className="buttonAndIconHolder">
-                                        {exchangeAddress ? (
-                                            <Grid item lg={6} md={10} xs={12}>
-                                                <FormInput
-                                                    data-cy="exchange-deposit-address"
-                                                    property="exchangeDepositAddress"
-                                                    disabled={true}
-                                                />
-                                            </Grid>
-                                        ) : (
-                                            <Button
-                                                data-cy="exchange-address-create-button"
-                                                type="button"
-                                                variant="contained"
-                                                color="primary"
-                                                disabled={isLoading}
-                                                onClick={onCreateExchangeAddress}
-                                            >
-                                                {t('user.actions.createDepositAddress')}
-                                            </Button>
-                                        )}
-                                        <IconPopover
-                                            data-cy="exchange-address-info-icon"
-                                            icon={Info}
-                                            iconSize={IconSize.Large}
-                                            popoverText={[
-                                                t('user.popover.exchangeAddressWhatFor'),
-                                                t('user.popover.exchangeAddressHowTo')
-                                            ]}
-                                            className="infoIcon"
-                                        />
-                                    </Box>
-                                </Grid>
-                                <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
-                                    <Typography variant="h6">
-                                        {t('user.properties.userBlockchainAddress')}
-                                    </Typography>
-
-                                    {user?.blockchainAccountAddress && (
-                                        <Grid container>
-                                            <Grid item lg={6} md={10} xs={12}>
-                                                <FormInput
-                                                    property="blockchainAccountAddress"
-                                                    disabled={true}
-                                                />
-                                            </Grid>
+                                <Box className="buttonAndIconHolder">
+                                    {exchangeAddress ? (
+                                        <Grid item lg={6} md={10} xs={12}>
+                                            <FormInput
+                                                data-cy="exchange-deposit-address"
+                                                property="exchangeDepositAddress"
+                                                disabled={true}
+                                            />
                                         </Grid>
-                                    )}
-                                    <Box className="buttonAndIconHolder">
+                                    ) : (
                                         <Button
+                                            data-cy="exchange-address-create-button"
                                             type="button"
                                             variant="contained"
                                             color="primary"
                                             disabled={isLoading}
-                                            onClick={() => {
-                                                onUpdateBlockchainAccount();
-                                            }}
+                                            onClick={onCreateExchangeAddress}
                                         >
-                                            {!user?.blockchainAccountAddress
-                                                ? t('user.actions.connectBlockchain')
-                                                : t('user.actions.connectNewBlockchain')}
+                                            {t('user.actions.createDepositAddress')}
                                         </Button>
-                                        <IconPopover
-                                            data-cy="blockchain-address-info-icon"
-                                            icon={Info}
-                                            iconSize={IconSize.Large}
-                                            popoverText={[
-                                                t('user.popover.blockchainWhatIs'),
-                                                t('user.popover.blockchainWhatFor'),
-                                                t('user.popover.blockchainHowTo')
-                                            ]}
-                                            className="infoIcon"
-                                        />
-                                    </Box>
-                                </Grid>
-                            </Paper>
-                        </Form>
-                    );
-                }}
-            </Formik>
-        );
-    }
-);
+                                    )}
+                                    <IconPopover
+                                        data-cy="exchange-address-info-icon"
+                                        icon={Info}
+                                        iconSize={IconSize.Large}
+                                        popoverText={[
+                                            t('user.popover.exchangeAddressWhatFor'),
+                                            t('user.popover.exchangeAddressHowTo')
+                                        ]}
+                                        className="infoIcon"
+                                    />
+                                </Box>
+                            </Grid>
+                            <Grid style={{ paddingTop: '20px', paddingBottom: '20px' }}>
+                                <Typography variant="h6">
+                                    {t('user.properties.organizationBlockchainAddress')}
+                                </Typography>
+
+                                {user?.organization?.blockchainAccountAddress && (
+                                    <Grid container>
+                                        <Grid item lg={6} md={10} xs={12}>
+                                            <FormInput
+                                                property="blockchainAccountAddress"
+                                                disabled={true}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                )}
+                                <Box className="buttonAndIconHolder">
+                                    <Button
+                                        type="button"
+                                        variant="contained"
+                                        color="primary"
+                                        disabled={isLoading}
+                                        onClick={() => {
+                                            onUpdateBlockchainAccount();
+                                        }}
+                                    >
+                                        {!user?.organization?.blockchainAccountAddress
+                                            ? t('user.actions.connectBlockchain')
+                                            : t('user.actions.connectNewBlockchain')}
+                                    </Button>
+                                    <IconPopover
+                                        data-cy="blockchain-address-info-icon"
+                                        icon={Info}
+                                        iconSize={IconSize.Large}
+                                        popoverText={[
+                                            t('user.popover.blockchainWhatIs'),
+                                            t('user.popover.blockchainWhatFor'),
+                                            t('user.popover.blockchainHowTo')
+                                        ]}
+                                        className="infoIcon"
+                                    />
+                                </Box>
+                            </Grid>
+                        </Paper>
+                    </Form>
+                );
+            }}
+        </Formik>
+    );
+});
 
 BlockchainAddressesForm.displayName = 'BlockchainAddressesForm';

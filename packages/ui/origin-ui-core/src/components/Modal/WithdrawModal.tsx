@@ -59,9 +59,8 @@ export function WithdrawModal(props: IProps) {
         switch (event.target.id) {
             case 'energyInDisplayUnitInput':
                 const newEnergyInDisplayUnit = Number(event.target.value);
-                const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-                    newEnergyInDisplayUnit
-                );
+                const newEnergyInBaseValueUnit =
+                    EnergyFormatter.getBaseValueFromValueInDisplayUnit(newEnergyInDisplayUnit);
 
                 const ownedPublicVolume = certificate.energy.publicVolume;
 
@@ -87,10 +86,9 @@ export function WithdrawModal(props: IProps) {
             return;
         }
         const assetId = certificate.assetId;
-        const address = user.blockchainAccountAddress;
-        const amount = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-            energyInDisplayUnit
-        ).toString();
+        const address = user.organization?.blockchainAccountAddress;
+        const amount =
+            EnergyFormatter.getBaseValueFromValueInDisplayUnit(energyInDisplayUnit).toString();
         dispatch(
             requestWithdrawCertificate({
                 assetId,

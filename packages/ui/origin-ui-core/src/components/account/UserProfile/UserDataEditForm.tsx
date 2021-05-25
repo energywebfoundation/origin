@@ -21,8 +21,6 @@ const INITIAL_FORM_VALUES: IUser = {
     lastName: '',
     email: '',
     telephone: '',
-    blockchainAccountAddress: '',
-    blockchainAccountSignedMessage: '',
     notifications: null,
     organization: null,
     rights: 0,

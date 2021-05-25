@@ -9,9 +9,7 @@ import {
     IUserFilter,
     ILoggedInUser
 } from '@energyweb/origin-backend-core';
-import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 import {
-    BadRequestException,
     ConflictException,
     Injectable,
     Logger,
@@ -26,7 +24,6 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
-import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { UpdateUserDTO } from '../admin/dto/update-user.dto';
 
 export type TUserBaseEntity = ExtendedBaseEntity & IUser;
@@ -112,46 +109,13 @@ export class UserService {
         ids: number[],
         conditions: FindConditions<User> = {}
     ): Promise<TUserBaseEntity[]> {
-        return (this.repository.findByIds(ids, conditions) as Promise<IUser[]>) as Promise<
+        return this.repository.findByIds(ids, conditions) as Promise<IUser[]> as Promise<
             TUserBaseEntity[]
         >;
     }
 
     hashPassword(password: string) {
         return bcrypt.hashSync(password, this.config.get<number>('PASSWORD_HASH_COST'));
-    }
-
-    async updateBlockchainAddress(
-        id: number,
-        signedMessage: BindBlockchainAccountDTO['signedMessage']
-    ): Promise<ExtendedBaseEntity & IUser> {
-        if (!signedMessage) {
-            throw new BadRequestException('Signed message is empty.');
-        }
-
-        const user = await this.findById(id);
-
-        const address = await recoverTypedSignatureAddress(
-            this.config.get<string>('REGISTRATION_MESSAGE_TO_SIGN'),
-            signedMessage
-        );
-
-        const alreadyExistingUserWithAddress = await this.repository.findOne({
-            blockchainAccountAddress: address
-        });
-
-        if (alreadyExistingUserWithAddress) {
-            throw new Error(
-                `This blockchain address has already been linked to a different account.`
-            );
-        }
-
-        user.blockchainAccountSignedMessage = signedMessage;
-        user.blockchainAccountAddress = address;
-
-        await this.repository.save(user);
-
-        return user;
     }
 
     async setNotifications(id: number, notifications: boolean): Promise<TUserBaseEntity> {
@@ -169,9 +133,9 @@ export class UserService {
     }
 
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
-        const user = await ((this.repository.findOne(conditions, {
+        const user = await (this.repository.findOne(conditions, {
             relations: ['organization']
-        }) as Promise<IUser>) as Promise<TUserBaseEntity>);
+        }) as Promise<IUser> as Promise<TUserBaseEntity>);
 
         if (user) {
             const emailConfirmation = await this.emailConfirmationService.get(user.id);

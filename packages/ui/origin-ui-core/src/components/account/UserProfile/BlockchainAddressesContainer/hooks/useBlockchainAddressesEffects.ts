@@ -16,7 +16,7 @@ export const useBlockchainAddressesEffects = () => {
     const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     const formData = {
-        blockchainAccountAddress: user.blockchainAccountAddress ?? '',
+        blockchainAccountAddress: user.organization?.blockchainAccountAddress ?? '',
         exchangeDepositAddress: exchangeAddress ?? ''
     };
 

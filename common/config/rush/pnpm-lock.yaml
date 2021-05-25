@@ -34,6 +34,7 @@ dependencies:
   '@openzeppelin/truffle-upgrades': 1.7.0_truffle@5.3.7
   '@openzeppelin/upgrades': 2.8.0
   '@react-google-maps/api': 2.2.0_react-dom@17.0.2+react@17.0.2
+  '@reduxjs/toolkit': 1.5.1
   '@rush-temp/device-registry': file:projects/device-registry.tgz
   '@rush-temp/exchange': file:projects/exchange.tgz_b8311556de7f9bff62c8dfdc9a67c4f0
   '@rush-temp/exchange-client': file:projects/exchange-client.tgz_6ae67c83cb729b58096abc0777e2b5d6
@@ -87,7 +88,6 @@ dependencies:
   '@types/cron': 1.7.2
   '@types/dotenv': 6.1.1
   '@types/enzyme': 3.10.8
-  '@types/eth-sig-util': 2.1.0
   '@types/express': 4.17.11
   '@types/jest': 26.0.23
   '@types/jsonwebtoken': 8.5.1
@@ -114,6 +114,7 @@ dependencies:
   '@types/ws': 7.4.4
   '@types/yup': 0.29.11
   '@unicef/material-ui-currency-textfield': 0.8.6_f543984b3e6c18c2e2e104a9ecbda934
+  '@vmw/queue-for-redux-saga': 0.3.0_dabc9aab316ba0825f295ac4fdb4520c
   axios: 0.21.1
   babel-loader: 8.2.2_303f800143e2efa12d42f5e3c0abbfbc
   bcryptjs: 2.4.3
@@ -145,7 +146,6 @@ dependencies:
   eslint-plugin-jest: 24.3.6_typescript@4.2.4
   eslint-plugin-react: 7.23.2
   eslint-plugin-react-hooks: 4.2.0
-  eth-sig-util: 2.5.4
   ethers: 5.2.0
   ethlint: 1.2.5
   express: 4.17.1
@@ -197,12 +197,14 @@ dependencies:
   react-chartjs-2: 2.11.2_f236ea5690127753093b714bf94225a6
   react-dom: 17.0.2_react@17.0.2
   react-dropzone: 11.3.2_react@17.0.2
+  react-error-boundary: 3.1.3_react@17.0.2
   react-hook-form: 6.15.7_react@17.0.2
   react-i18next: 11.8.15_i18next@20.3.0+react@17.0.2
   react-redux: 7.2.4_react-dom@17.0.2+react@17.0.2
   react-router-dom: 5.2.0_react@17.0.2
   redux: 4.1.0
   redux-devtools-extension: 2.13.9_redux@4.1.0
+  redux-logger: 4.0.0
   redux-saga: 1.1.3
   reflect-metadata: 0.1.13
   resolve-url-loader: 4.0.0
@@ -24265,12 +24267,6 @@ packages:
       redux: ^3.4.0 || ^4.0.0
     resolution:
       integrity: sha512-X8JRBCzX2ADSMp+iiV7YQ8uoTNyEm0VPFPd4T854coz6lvRiBrFSqAr9YAS2n8Kzxx8CJQotR0QF9wsMM+3DvA==
-  /redux-logger/3.0.6:
-    dependencies:
-      deep-diff: 0.3.8
-    dev: false
-    resolution:
-      integrity: sha1-91VZZvMJjzyIYExEnPC69XeCdL8=
   /redux-logger/4.0.0:
     dependencies:
       deep-diff: 0.3.8
@@ -31231,7 +31227,7 @@ packages:
     dev: false
     name: '@rush-temp/exchange-ui-core'
     resolution:
-      integrity: sha512-nRXyPQyuLtGLJ0x25WFhFzXice0wcYR7s0G3smXw1gL/LqgrvOzH/WGtkrnbF0m+/6gMtKLePA4GNlRPMr3CPA==
+      integrity: sha512-YnheegAiJWwQ7qrihwqOXcQzcAMQEvX+EWivjxeff339N3eUX7yC3sVnY5iC9TQiemw1Vc2xgD2VlVxCsCeRFQ==
       tarball: file:projects/exchange-ui-core.tgz
     version: 0.0.0
   file:projects/exchange.tgz_b8311556de7f9bff62c8dfdc9a67c4f0:
@@ -32171,7 +32167,7 @@ packages:
       react-redux: 7.2.4_react-dom@17.0.2+react@17.0.2
       react-router-dom: 5.2.0_react@17.0.2
       redux: 4.1.0
-      redux-logger: 3.0.6
+      redux-logger: 4.0.0
       redux-saga: 1.1.3
       toastr: 2.1.4
       ts-jest: 26.5.6_jest@26.6.3+typescript@4.2.4
@@ -32187,7 +32183,7 @@ packages:
       webpack-cli: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-6Oqm8AXhbHBQBul9d6yino7TiUdlhMkP4XGU6r4Pa5W7MNS7FF8RD9l7ATYD/wP66NnCRLYoifubeqeRylfA1g==
+      integrity: sha512-GgY0RHfVORMXhlAcXFTiRxOoKCpnODzenPZ3b8Aim+jp9+4hBpfqR0zzqwhEHrIriOpASnNW5Wpmd9n0vLcYhA==
       tarball: file:projects/origin-ui-core.tgz
     version: 0.0.0
   file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1:
@@ -32356,7 +32352,7 @@ packages:
     dev: false
     name: '@rush-temp/utils-general'
     resolution:
-      integrity: sha512-lC66ck00cAlC5cN2KjXxWu7ydTGB3uakeDtfoDw8xZLIXTTpP75MtZ5HvlSoMdqh7iGIj54w31HmmMo8/vNF4Q==
+      integrity: sha512-qAL3Z6uOK39cK44JKXQlBppoFghz0SkZkOsghNEBlFMGSpcSNANGg6ElVfEJSTzm0wd6vlBnIo3sAiMdAxYpuw==
       tarball: file:projects/utils-general.tgz
     version: 0.0.0
   github.com/Digital-MOB-Filecoin/filecoin-signing-tools-js/8f8e92157cac2556d35cab866779e9a8ea8a4e25:
@@ -32448,6 +32444,7 @@ specifiers:
   '@openzeppelin/truffle-upgrades': 1.7.0
   '@openzeppelin/upgrades': 2.8.0
   '@react-google-maps/api': 2.2.0
+  '@reduxjs/toolkit': 1.5.1
   '@rush-temp/device-registry': file:./projects/device-registry.tgz
   '@rush-temp/exchange': file:./projects/exchange.tgz
   '@rush-temp/exchange-client': file:./projects/exchange-client.tgz
@@ -32501,7 +32498,6 @@ specifiers:
   '@types/cron': 1.7.2
   '@types/dotenv': 6.1.1
   '@types/enzyme': 3.10.8
-  '@types/eth-sig-util': 2.1.0
   '@types/express': 4.17.11
   '@types/jest': 26.0.23
   '@types/jsonwebtoken': 8.5.1
@@ -32528,6 +32524,7 @@ specifiers:
   '@types/ws': 7.4.4
   '@types/yup': 0.29.11
   '@unicef/material-ui-currency-textfield': 0.8.6
+  '@vmw/queue-for-redux-saga': 0.3.0
   axios: 0.21.1
   babel-loader: 8.2.2
   bcryptjs: 2.4.3
@@ -32559,7 +32556,6 @@ specifiers:
   eslint-plugin-jest: 24.3.6
   eslint-plugin-react: 7.23.2
   eslint-plugin-react-hooks: 4.2.0
-  eth-sig-util: 2.5.4
   ethers: 5.2.0
   ethlint: 1.2.5
   express: 4.17.1
@@ -32611,12 +32607,14 @@ specifiers:
   react-chartjs-2: 2.11.2
   react-dom: 17.0.2
   react-dropzone: 11.3.2
+  react-error-boundary: 3.1.3
   react-hook-form: 6.15.7
   react-i18next: 11.8.15
   react-redux: 7.2.4
   react-router-dom: 5.2.0
   redux: 4.1.0
   redux-devtools-extension: 2.13.9
+  redux-logger: 4.0.0
   redux-saga: 1.1.3
   reflect-metadata: 0.1.13
   resolve-url-loader: 4.0.0

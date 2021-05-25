@@ -88,7 +88,7 @@ export function BlockchainInboxPage(): JSX.Element {
         Requirement.IsLoggedIn,
         Requirement.IsActiveUser,
         Requirement.IsPartOfApprovedOrg,
-        Requirement.HasUserBlockchainAddress
+        Requirement.HasOrganizationBlockchainAddress
     ];
 
     const { canAccessPage } = usePermissions(pageRequirements);

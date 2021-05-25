@@ -8,6 +8,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import {
     ActiveUserGuard,
+    NotDeletedUserGuard,
     NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
@@ -39,13 +40,14 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { InvitationDTO } from '../invitation/invitation.dto';
 import { User } from '../user';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
 import { NewOrganizationDTO } from './dto/new-organization.dto';
 import { UpdateMemberDTO } from './dto/organization-update-member.dto';
 import { OrganizationUpdateDTO } from './dto/organization-update.dto';
 import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
-import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
-import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
+import { OrganizationDocumentOwnershipMismatchError } from './errors/organization-document-ownership-mismatch.error';
+import { OrganizationNameAlreadyTakenError } from './errors/organization-name-taken.error';
 import { OrganizationService } from './organization.service';
 
 @ApiTags('organization')
@@ -286,6 +288,25 @@ export class OrganizationController {
         await this.organizationService.changeMemberRole(loggedUser.organizationId, memberId, role);
 
         return ResponseSuccess();
+    }
+
+    @Post('chain-address')
+    @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
+    @ApiBody({ type: BindBlockchainAccountDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: `Set the organization blockchain address`
+    })
+    public async setBlockchainAddress(
+        @UserDecorator() { organizationId }: ILoggedInUser,
+        @Body() { signedMessage }: BindBlockchainAccountDTO
+    ): Promise<SuccessResponseDTO> {
+        if (!organizationId) {
+            throw new NotFoundException('User is not a part of an organization.');
+        }
+
+        return this.organizationService.setBlockchainAddress(organizationId, signedMessage);
     }
 
     private ensureOrganizationMemberOrAdmin(user: ILoggedInUser, organizationId: number) {
