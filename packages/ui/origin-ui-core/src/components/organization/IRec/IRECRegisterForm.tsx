@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Formik, Form, FormikHelpers } from 'formik';
@@ -25,10 +25,9 @@ import {
     IAutocompleteMultiSelectOptionType,
     FormSelect
 } from '../../Form';
-import { IRecAccountRegisteredModal } from '../../Modal';
 import irecLogo from '../../../../assets/logo-i-rec.svg';
-import { IRecRegisterThankYouMessageModal } from '../../Modal/IRecRegisterThankYouMessageModal';
 import { fromGeneralActions, fromGeneralSelectors, fromUsersActions } from '../../../features';
+import { OrganizationModalsActionsEnum, useOrgModalsDispatch } from '../../../context';
 
 interface IFormValues {
     accountType: string;
@@ -101,8 +100,7 @@ export const IRECRegisterForm = (): JSX.Element => {
     const { spacing }: Theme = useTheme();
     const { t } = useTranslation();
     const { Yup } = useValidation();
-    const [showIRecRegisteredModal, setShowIRecRegisteredModal] = useState<boolean>(false);
-    const [showApprovalMessageModal, setShowApprovalMessageModal] = useState(false);
+    const dispatchModals = useOrgModalsDispatch();
 
     const iRecClient = useSelector(fromGeneralSelectors.getIRecClient);
     const dispatch = useDispatch();
@@ -167,7 +165,7 @@ export const IRECRegisterForm = (): JSX.Element => {
 
             const formData: RegistrationIRecPostData = {
                 ...values,
-                accountType: (values.accountType as unknown) as IRECAccountType,
+                accountType: values.accountType as unknown as IRECAccountType,
                 registrationYear: parseInt(values.registrationYear, 10),
                 activeCountries: values.activeCountries.map((i) => i?.code),
                 leadUserTitle:
@@ -181,7 +179,10 @@ export const IRECRegisterForm = (): JSX.Element => {
             if (iRecAccount) {
                 setSubmitting(false);
                 dispatch(fromUsersActions.setIRecAccount(iRecAccount));
-                setShowIRecRegisteredModal(true);
+                dispatchModals({
+                    type: OrganizationModalsActionsEnum.SHOW_IREC_ACCOUNT_REGISTERED,
+                    payload: true
+                });
             }
         } catch (error) {
             console.warn('Error while registering an organization', error);
@@ -644,15 +645,6 @@ export const IRECRegisterForm = (): JSX.Element => {
                     );
                 }}
             </Formik>
-            <IRecAccountRegisteredModal
-                showModal={showIRecRegisteredModal}
-                setShowModal={setShowIRecRegisteredModal}
-                onClose={() => setShowApprovalMessageModal(true)}
-            />
-            <IRecRegisterThankYouMessageModal
-                showModal={showApprovalMessageModal}
-                setShowModal={setShowApprovalMessageModal}
-            />
         </Paper>
     );
 };

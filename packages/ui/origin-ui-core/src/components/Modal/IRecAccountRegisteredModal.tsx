@@ -3,27 +3,37 @@ import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
 import { showNotification, NotificationTypeEnum } from '../../utils';
 import iconAdded from '../../../assets/icon-org-added.svg';
+import {
+    useOrgModalsStore,
+    useOrgModalsDispatch,
+    OrganizationModalsActionsEnum
+} from '../../context';
 
-interface IProps {
-    showModal: boolean;
-    setShowModal: (showModal: boolean) => void;
-    onClose?: () => void;
-}
-
-export const IRecAccountRegisteredModal = ({ showModal, setShowModal, onClose }: IProps) => {
+export const IRecAccountRegisteredModal = () => {
     const {
         typography: { fontSizeMd }
     } = useTheme();
     const { t } = useTranslation();
 
+    const { iRecAccountRegistered: open } = useOrgModalsStore();
+    const dispatchModals = useOrgModalsDispatch();
+
     const onCloseHandler = () => {
-        setShowModal(false);
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_IREC_ACCOUNT_REGISTERED,
+            payload: false
+        });
+
         showNotification('Organization registered.', NotificationTypeEnum.Success);
-        onClose();
+
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_IREC_REGISTERED_THANK_YOU,
+            payload: true
+        });
     };
 
     return (
-        <Dialog open={showModal} onClose={() => onCloseHandler()} maxWidth={'sm'} fullWidth={true}>
+        <Dialog open={open} onClose={() => onCloseHandler()} maxWidth={'sm'} fullWidth={true}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={2}>

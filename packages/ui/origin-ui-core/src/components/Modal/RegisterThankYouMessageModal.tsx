@@ -13,13 +13,27 @@ import {
     createStyles
 } from '@material-ui/core';
 import { useLinks } from '../../hooks';
+import {
+    useOrgModalsStore,
+    useOrgModalsDispatch,
+    OrganizationModalsActionsEnum
+} from '../../context';
 
-interface IProps {
-    showModal?: boolean;
-    setShowModal?: (showModal: boolean) => void;
-}
+const useStyles = makeStyles(() =>
+    createStyles({
+        maybeButton: {
+            marginRight: '1rem'
+        },
+        modalContent: {
+            fontSize: '16px'
+        },
+        modalTitle: {
+            fontSize: '24px'
+        }
+    })
+);
 
-export const RegisterThankYouMessageModal = ({ showModal, setShowModal }: IProps): JSX.Element => {
+export const RegisterThankYouMessageModal = (): JSX.Element => {
     const history = useHistory();
     const { t } = useTranslation();
     const { defaultPageUrl } = useLinks();
@@ -28,28 +42,21 @@ export const RegisterThankYouMessageModal = ({ showModal, setShowModal }: IProps
         typography: { fontSizeMd }
     } = useTheme();
 
-    const useStyles = makeStyles(() =>
-        createStyles({
-            maybeButton: {
-                marginRight: '1rem'
-            },
-            modalContent: {
-                fontSize: '16px'
-            },
-            modalTitle: {
-                fontSize: '24px'
-            }
-        })
-    );
-    const classes = useStyles(useTheme());
+    const { registerThankYou: open } = useOrgModalsStore();
+    const dispatchModals = useOrgModalsDispatch();
 
     const closeModal = () => {
-        setShowModal(false);
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU,
+            payload: false
+        });
         history.push(defaultPageUrl);
     };
 
+    const classes = useStyles(useTheme());
+
     return (
-        <Dialog open={showModal} onClose={() => closeModal()} maxWidth={'sm'} fullWidth={true}>
+        <Dialog open={open} onClose={closeModal} maxWidth={'sm'} fullWidth={true}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs>
@@ -64,7 +71,7 @@ export const RegisterThankYouMessageModal = ({ showModal, setShowModal }: IProps
             </DialogTitle>
             <DialogActions>
                 <Box p={2}>
-                    <Button variant="contained" color="primary" onClick={() => closeModal()}>
+                    <Button variant="contained" color="primary" onClick={closeModal}>
                         {t('general.responses.ok')}
                     </Button>
                 </Box>

@@ -13,19 +13,19 @@ import {
     createStyles
 } from '@material-ui/core';
 import { useLinks } from '../../hooks';
+import {
+    useOrgModalsStore,
+    useOrgModalsDispatch,
+    OrganizationModalsActionsEnum
+} from '../../context';
 
-interface IProps {
-    showModal?: boolean;
-    setShowModal?: (showModal: boolean) => void;
-}
-
-export const IRecRegisterThankYouMessageModal = ({
-    showModal,
-    setShowModal
-}: IProps): JSX.Element => {
+export const IRecRegisterThankYouMessageModal = (): JSX.Element => {
     const history = useHistory();
     const { t } = useTranslation();
     const { defaultPageUrl } = useLinks();
+
+    const { iRecRegisteredThankYou: open } = useOrgModalsStore();
+    const dispatchModals = useOrgModalsDispatch();
 
     const {
         typography: { fontSizeMd }
@@ -47,12 +47,15 @@ export const IRecRegisterThankYouMessageModal = ({
     const classes = useStyles(useTheme());
 
     const closeModal = () => {
-        setShowModal(false);
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_IREC_REGISTERED_THANK_YOU,
+            payload: false
+        });
         history.push(defaultPageUrl);
     };
 
     return (
-        <Dialog open={showModal} onClose={() => closeModal()} maxWidth={'sm'} fullWidth={true}>
+        <Dialog open={open} onClose={() => closeModal()} maxWidth={'sm'} fullWidth={true}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs>
