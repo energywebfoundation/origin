@@ -2,9 +2,11 @@
 /* eslint-disable no-return-assign */
 import { getRolesFromRights, Role } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
+import { recoverTypedSignatureAddress, signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import crypto from 'crypto';
+import { utils, Wallet } from 'ethers';
 import request from 'supertest';
 
 import { InvitationDTO } from '../src/pods/invitation/invitation.dto';
@@ -28,12 +30,8 @@ describe('Organization e2e tests', () => {
 
     before(async () => {
         try {
-            ({
-                app,
-                databaseService,
-                organizationService,
-                userService
-            } = await bootstrapTestInstance());
+            ({ app, databaseService, organizationService, userService } =
+                await bootstrapTestInstance());
 
             await app.init();
         } catch (e) {
@@ -451,5 +449,117 @@ describe('Organization e2e tests', () => {
             } as NewOrganizationDTO)
             .set('Authorization', `Bearer ${otherUserAccessToken}`)
             .expect(HttpStatus.FORBIDDEN);
+    });
+
+    it('should be able to set blockchain address before being approved user', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser
+        ]);
+
+        const wallet = Wallet.createRandom();
+        const signedMessage = await signTypedMessagePrivateKey(
+            wallet.privateKey.substring(2),
+            process.env.REGISTRATION_MESSAGE_TO_SIGN
+        );
+
+        await request(app.getHttpServer())
+            .post(`/organization/chain-address`)
+            .send({ signedMessage })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(HttpStatus.CREATED);
+    });
+
+    it('metamask blockchain address should match', async () => {
+        const wallet = Wallet.createRandom();
+        const signedMessage = await signTypedMessagePrivateKey(
+            wallet.privateKey.substring(2),
+            process.env.REGISTRATION_MESSAGE_TO_SIGN
+        );
+
+        const originatingAddress = await recoverTypedSignatureAddress(
+            process.env.REGISTRATION_MESSAGE_TO_SIGN,
+            signedMessage
+        );
+
+        const checksummedOriginatingAddress = utils.getAddress(originatingAddress);
+        expect(checksummedOriginatingAddress).to.equal(wallet.address);
+    });
+
+    it('should not be able to set blockchain address before user is a part of an organization', async () => {
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(userToRegister)
+            .expect(HttpStatus.CREATED);
+
+        const accessToken = await loginUser(app, userToRegister.email, userToRegister.password);
+
+        const wallet = Wallet.createRandom();
+        const signedMessage = await signTypedMessagePrivateKey(
+            wallet.privateKey.substring(2),
+            process.env.REGISTRATION_MESSAGE_TO_SIGN
+        );
+
+        await request(app.getHttpServer())
+            .post(`/organization/chain-address`)
+            .send({ signedMessage })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should not be able to change blockchain address', async () => {
+        const { accessToken } = await registerAndLogin(app, userService, organizationService, [
+            Role.OrganizationUser
+        ]);
+
+        const wallet = Wallet.createRandom();
+        const signedMessage = await signTypedMessagePrivateKey(
+            wallet.privateKey.substring(2),
+            process.env.REGISTRATION_MESSAGE_TO_SIGN
+        );
+
+        await request(app.getHttpServer())
+            .post(`/organization/chain-address`)
+            .send({ signedMessage })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(HttpStatus.CREATED);
+
+        await request(app.getHttpServer())
+            .post(`/organization/chain-address`)
+            .send({ signedMessage })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(HttpStatus.CONFLICT);
+    });
+
+    it('admin should be able to change blockchain address', async () => {
+        const { organization, accessToken } = await registerAndLogin(
+            app,
+            userService,
+            organizationService,
+            [Role.Admin]
+        );
+
+        const wallet = Wallet.createRandom();
+        const signedMessage = await signTypedMessagePrivateKey(
+            wallet.privateKey.substring(2),
+            process.env.REGISTRATION_MESSAGE_TO_SIGN
+        );
+
+        await request(app.getHttpServer())
+            .post(`/organization/chain-address`)
+            .send({ signedMessage })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(HttpStatus.CREATED);
+
+        await request(app.getHttpServer())
+            .put(`/admin/organization/${organization.id}/chain-address`)
+            .send({ address: wallet.address })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(HttpStatus.CONFLICT);
+
+        await request(app.getHttpServer())
+            .put(`/admin/organization/${organization.id}/chain-address`)
+            .send({ address: Wallet.createRandom().address })
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(HttpStatus.OK);
     });
 });

@@ -36,6 +36,12 @@ export class Organization extends ExtendedBaseEntity implements IPublicOrganizat
     @IsISO31661Alpha2()
     country: string;
 
+    @Column({ nullable: true, unique: true })
+    blockchainAccountAddress: string;
+
+    @Column({ nullable: true })
+    blockchainAccountSignedMessage: string;
+
     @Column()
     @IsString()
     businessType: string;

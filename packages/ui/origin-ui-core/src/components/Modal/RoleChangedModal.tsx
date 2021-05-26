@@ -156,7 +156,7 @@ export const RoleChangedModal = ({
                 type: OrganizationModalsActionsEnum.SHOW_IREC_CONNECT_OR_REGISTER,
                 payload: true
             });
-        } else if (!user.blockchainAccountAddress) {
+        } else if (!user.organization?.blockchainAccountAddress) {
             const blockchainModalOpener = setShowBlockchainModal
                 ? () => setShowBlockchainModal(true)
                 : openRegisterThankModalFromContext;
@@ -170,10 +170,10 @@ export const RoleChangedModal = ({
         if (
             (!setShowIRec &&
                 newRole === Role.OrganizationAdmin &&
-                !user.blockchainAccountAddress) ||
+                !user.organization?.blockchainAccountAddress) ||
             (!setShowIRec &&
                 newRole === Role.OrganizationDeviceManager &&
-                !user.blockchainAccountAddress)
+                !user.organization?.blockchainAccountAddress)
         ) {
             setShowBlockchainModal(true);
         }

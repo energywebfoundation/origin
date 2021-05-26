@@ -5,10 +5,12 @@ import {
     BlockchainPropertiesClient
 } from '@energyweb/issuer-api-client';
 import { OriginFeature, signTypedMessage } from '@energyweb/utils-general';
-import { UserClient } from '@energyweb/origin-backend-client';
+import { OrganizationClient, UserClient } from '@energyweb/origin-backend-client';
 import { UserStatus, OrganizationStatus } from '@energyweb/origin-backend-core';
 import { call, put, select, take, fork, all, getContext, apply } from 'redux-saga/effects';
 import { SagaIterator } from 'redux-saga';
+import { providers } from 'ethers';
+
 import {
     UsersActions,
     ISetAuthenticationTokenAction,
@@ -199,7 +201,7 @@ function* fetchOffchainUserDetails(): SagaIterator {
     }
 }
 
-function* updateBlockchainAddress(): SagaIterator {
+function* setBlockchainAddress(): SagaIterator {
     while (true) {
         const { payload }: IUpdateUserBlockchainAction = yield take(
             UsersActions.updateUserBlockchain
@@ -208,16 +210,18 @@ function* updateBlockchainAddress(): SagaIterator {
 
         yield put(fromGeneralActions.setLoading(true));
 
-        const web3 = yield select(getWeb3);
+        const web3: providers.JsonRpcProvider = yield select(getWeb3);
         const environment = yield select(fromGeneralSelectors.getEnvironment);
         const backendClient: BackendClient = yield select(fromGeneralSelectors.getBackendClient);
-        const userClient: UserClient = backendClient.userClient;
+        const organizationClient: OrganizationClient = backendClient.organizationClient;
         const i18n = getI18n();
 
         try {
             if (activeAccount === null) {
                 throw Error(i18n.t('user.profile.noBlockchainConnection'));
-            } else if (user?.blockchainAccountAddress === activeAccount.toLowerCase()) {
+            } else if (
+                user?.organization?.blockchainAccountAddress === activeAccount.toLowerCase()
+            ) {
                 throw Error(i18n.t('user.feedback.thisAccountAlreadyConnected'));
             }
 
@@ -228,7 +232,7 @@ function* updateBlockchainAddress(): SagaIterator {
                 web3
             );
 
-            yield apply(userClient, userClient.updateOwnBlockchainAddress, [
+            yield apply(organizationClient, organizationClient.setBlockchainAddress, [
                 { signedMessage: message }
             ]);
 
@@ -321,7 +325,7 @@ export function* usersSaga(): SagaIterator {
         fork(persistAuthenticationToken),
         fork(updateClients),
         fork(fetchOffchainUserDetails),
-        fork(updateBlockchainAddress),
+        fork(setBlockchainAddress),
         fork(createUserExchangeAddress),
         fork(logOutSaga)
     ]);

@@ -104,7 +104,7 @@ export function CertificateTable(props: IProps): JSX.Element {
     const [depositModalVisibility, setDepositModalVisibility] = useState(false);
 
     const user = useSelector(fromUsersSelectors.getUserOffchain);
-    const hasBlockchainAccount = Boolean(user.blockchainAccountAddress);
+    const hasBlockchainAccount = !!user?.organization?.blockchainAccountAddress;
 
     async function getPaginatedData({
         requestedPageSize,
@@ -156,14 +156,10 @@ export function CertificateTable(props: IProps): JSX.Element {
         };
     }
 
-    const {
-        loadPage,
-        paginatedData,
-        pageSize,
-        total
-    } = usePaginatedLoaderFiltered<IEnrichedCertificateData>({
-        getPaginatedData
-    });
+    const { loadPage, paginatedData, pageSize, total } =
+        usePaginatedLoaderFiltered<IEnrichedCertificateData>({
+            getPaginatedData
+        });
 
     useEffect(() => {
         loadPage(1);
@@ -421,7 +417,7 @@ export function CertificateTable(props: IProps): JSX.Element {
                         onClick: publishForSale
                     };
                 });
-                if (user.blockchainAccountAddress !== null) {
+                if (user.organization?.blockchainAccountAddress !== null) {
                     actions.push({
                         id: TableActionId.Withdraw,
                         name: t('certificate.actions.withdraw'),
@@ -444,59 +440,61 @@ export function CertificateTable(props: IProps): JSX.Element {
     const batchableActions = getBatchableActions();
     const actions = getActions();
 
-    const columns = ([
-        {
-            id: 'deviceType',
-            label: t('certificate.properties.deviceType'),
-            sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
-        },
-        {
-            id: 'commissioningDate',
-            label: t('device.properties.vintageCod'),
-            sortProperties: [
-                (record: IEnrichedCertificateData) => record?.producingDevice?.operationalSince
-            ]
-        },
-        ...getDeviceColumns(environment, t, [
-            (record: IEnrichedCertificateData) => record?.locationText,
-            (record: IEnrichedCertificateData) => record?.gridOperatorText
-        ]),
-        { id: 'compliance', label: t('certificate.properties.compliance') },
-        {
-            id: CERTIFICATION_DATE_COLUMN_ID,
-            label: t('certificate.properties.certificationDate'),
-            sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
-        },
-        {
-            id: 'energy',
-            label: `${t('certificate.properties.certifiedEnergy')} (${
-                EnergyFormatter.displayUnit
-            })`,
-            sortProperties: [
-                [
-                    (record: IEnrichedCertificateData) => {
-                        const owned = record?.certificate?.energy;
-                        if (!owned) return null;
-
-                        let energy;
-
-                        if (selectedState === SelectedState.Claimed) {
-                            energy = owned.claimedVolume;
-                        } else {
-                            energy = owned.publicVolume.add(owned.privateVolume);
-                        }
-
-                        return energy.toString();
-                    },
-                    (value: string) => value
+    const columns = (
+        [
+            {
+                id: 'deviceType',
+                label: t('certificate.properties.deviceType'),
+                sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
+            },
+            {
+                id: 'commissioningDate',
+                label: t('device.properties.vintageCod'),
+                sortProperties: [
+                    (record: IEnrichedCertificateData) => record?.producingDevice?.operationalSince
                 ]
-            ]
-        },
-        {
-            id: 'source',
-            label: `${t('certificate.properties.source')}`
-        }
-    ] as const).filter((column) => !hiddenColumns.includes(column.id));
+            },
+            ...getDeviceColumns(environment, t, [
+                (record: IEnrichedCertificateData) => record?.locationText,
+                (record: IEnrichedCertificateData) => record?.gridOperatorText
+            ]),
+            { id: 'compliance', label: t('certificate.properties.compliance') },
+            {
+                id: CERTIFICATION_DATE_COLUMN_ID,
+                label: t('certificate.properties.certificationDate'),
+                sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
+            },
+            {
+                id: 'energy',
+                label: `${t('certificate.properties.certifiedEnergy')} (${
+                    EnergyFormatter.displayUnit
+                })`,
+                sortProperties: [
+                    [
+                        (record: IEnrichedCertificateData) => {
+                            const owned = record?.certificate?.energy;
+                            if (!owned) return null;
+
+                            let energy;
+
+                            if (selectedState === SelectedState.Claimed) {
+                                energy = owned.claimedVolume;
+                            } else {
+                                energy = owned.publicVolume.add(owned.privateVolume);
+                            }
+
+                            return energy.toString();
+                        },
+                        (value: string) => value
+                    ]
+                ]
+            },
+            {
+                id: 'source',
+                label: `${t('certificate.properties.source')}`
+            }
+        ] as const
+    ).filter((column) => !hiddenColumns.includes(column.id));
     const rows = paginatedData.map((enrichedData) => {
         let deviceType = '';
         let commissioningDate = '';

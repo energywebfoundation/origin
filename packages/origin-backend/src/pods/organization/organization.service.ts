@@ -1,16 +1,20 @@
 import {
     isRole,
+    ISuccessResponse,
     IUser,
     LoggedInUser,
     OrganizationStatus,
+    ResponseSuccess,
     Role
 } from '@energyweb/origin-backend-core';
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
-import { FileService } from '../file/file.service';
+import { ConfigService } from '@nestjs/config';
+import { recoverTypedSignatureAddress } from '@energyweb/utils-general';
 
+import { FileService } from '../file/file.service';
 import { User, UserService } from '../user';
 import {
     OrganizationMemberRemovedEvent,
@@ -20,9 +24,11 @@ import {
     OrganizationStatusChangedEvent
 } from './events';
 import { NewOrganizationDTO } from './dto/new-organization.dto';
-import { OrganizationDocumentOwnershipMismatchError } from './organization-document-ownership-mismatch.error';
-import { OrganizationNameAlreadyTakenError } from './organization-name-taken.error';
+import { OrganizationDocumentOwnershipMismatchError } from './errors/organization-document-ownership-mismatch.error';
+import { OrganizationNameAlreadyTakenError } from './errors/organization-name-taken.error';
 import { Organization } from './organization.entity';
+import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
+import { utils } from 'ethers';
 
 @Injectable()
 export class OrganizationService {
@@ -33,6 +39,7 @@ export class OrganizationService {
         private readonly repository: Repository<Organization>,
         private readonly userService: UserService,
         private readonly fileService: FileService,
+        private readonly config: ConfigService,
         private readonly eventBus: EventBus
     ) {}
 
@@ -233,6 +240,53 @@ export class OrganizationService {
 
     async updateBeneficiaryId(organizationId: number, beneficiaryId: string) {
         await this.repository.update({ id: organizationId }, { beneficiaryId });
+    }
+
+    async setBlockchainAddress(
+        id: number,
+        signedMessage: BindBlockchainAccountDTO['signedMessage']
+    ): Promise<ISuccessResponse> {
+        if (!signedMessage) {
+            throw new BadRequestException('Signed message is empty.');
+        }
+
+        const organization = await this.findOne(id);
+
+        if (organization.blockchainAccountAddress) {
+            throw new ConflictException('Organization already has a blockchain address');
+        }
+
+        const address = await recoverTypedSignatureAddress(
+            this.config.get<string>('REGISTRATION_MESSAGE_TO_SIGN'),
+            signedMessage
+        );
+
+        return this.updateBlockchainAddress(id, utils.getAddress(address), signedMessage);
+    }
+
+    async updateBlockchainAddress(
+        orgId: number,
+        address: string,
+        signedMessage?: string
+    ): Promise<ISuccessResponse> {
+        const organization = await this.findOne(orgId);
+
+        const alreadyExistingOrganizationWithAddress = await this.repository.count({
+            blockchainAccountAddress: address
+        });
+
+        if (alreadyExistingOrganizationWithAddress > 0) {
+            throw new ConflictException(
+                `This blockchain address has already been linked to a different organization.`
+            );
+        }
+
+        organization.blockchainAccountSignedMessage = signedMessage;
+        organization.blockchainAccountAddress = address;
+
+        await this.repository.save(organization);
+
+        return ResponseSuccess();
     }
 
     private async isNameAlreadyTaken(name: string) {

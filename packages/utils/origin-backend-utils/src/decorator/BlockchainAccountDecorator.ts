@@ -5,7 +5,7 @@ export const BlockchainAccountDecorator = createParamDecorator(
         const request = ctx.switchToHttp().getRequest();
 
         try {
-            return request.user?.blockchainAccountAddress;
+            return request.user?.organization?.blockchainAccountAddress;
         } catch (e) {
             return null;
         }

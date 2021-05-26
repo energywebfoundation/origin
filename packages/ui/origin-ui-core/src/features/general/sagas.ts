@@ -280,7 +280,10 @@ export function* fetchDataAfterConfigurationChange(update = false): SagaIterator
     const user = yield select(fromUsersSelectors.getUserOffchain);
 
     if (user) {
-        const { blockchainAccountAddress, status }: IUser = user;
+        const {
+            organization: { blockchainAccountAddress },
+            status
+        }: IUser = user;
         if (status === UserStatus.Active) {
             const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
             const { data: allCertificates }: { data: ICertificate[] } = yield apply(

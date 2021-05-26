@@ -315,7 +315,7 @@
                 "haveToBeLoggedInUser": "You need to be a logged in user.",
                 "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
                 "organizationHasToHaveExchangeDeposit": "The organization has to have a blockchain exchange deposit address attached to the account.",
-                "userHasToHaveBlockchainAccount": "The user has to have a blockchain account attached to the account.",
+                "organizationHasToHaveBlockchainAccount": "Your organization has to have a blockchain account attached.",
                 "blockchainAccountMismatch": "Blockchain account mismatch",
                 "noBlockchainAccount": "No blockchain account detected",
                 "registerOrLoginTryAgain": "Please log in or register to the platform, then try again.",
@@ -425,7 +425,7 @@
                 "exchangeAddressTitle": "Exchange Deposit Address",
                 "blockchainAddress": "Blockchain Address",
                 "blockchainAddresses": "Blockchain Addresses",
-                "userBlockchainAddress": "User Blockchain Address",
+                "organizationBlockchainAddress": "Organization Blockchain Address",
                 "emailConfirmed": "Email Confirmed"
             },
             "actions": {
