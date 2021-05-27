@@ -6,7 +6,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { FC, ReactNode } from 'react';
-import { ImageWithHoverText, FallbackIcon } from '../../components';
+import { ImageWithHoverText } from '../../images';
+import { FallbackIcon } from '../../icons';
 import { useStyles } from './CardWithImage.styles';
 
 export interface CardWithImageProps {
