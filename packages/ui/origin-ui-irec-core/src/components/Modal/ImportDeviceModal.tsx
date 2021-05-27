@@ -21,7 +21,11 @@ const INITIAL_VALUES = {
     timezone: '',
     gridOperator: '',
     smartMeterId: '',
-    description: ''
+    description: '',
+    country: '',
+    postalCode: '',
+    region: '',
+    subregion: ''
 };
 
 export function ImportDeviceModal(props: {
@@ -85,7 +89,11 @@ export function ImportDeviceModal(props: {
         description: device?.description ?? '',
         smartMeterId: device?.smartMeterId ?? '',
         gridOperator: device?.gridOperator ?? '',
-        timezone: device?.timezone ?? ''
+        timezone: device?.timezone ?? '',
+        country: device?.country ?? '',
+        postalCode: device?.postalCode ?? '',
+        region: device?.region ?? '',
+        subregion: device?.subregion ?? ''
     };
 
     async function submitForm(
@@ -100,7 +108,11 @@ export function ImportDeviceModal(props: {
                 const irecResponse = await iRecClient.importIrecDevice({
                     code: device.code,
                     timezone: values.timezone,
-                    gridOperator: values.gridOperator
+                    gridOperator: values.gridOperator,
+                    country: values.country,
+                    postalCode: values.postalCode,
+                    region: values.region,
+                    subregion: values.subregion
                 });
 
                 localIrecDevice = irecResponse.data;

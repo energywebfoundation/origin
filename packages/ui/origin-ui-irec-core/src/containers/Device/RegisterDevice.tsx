@@ -47,6 +47,10 @@ interface IFormValues {
     longitude: string;
     supported: boolean;
     projectStory: string;
+    country: string;
+    postalCode: string;
+    region: string;
+    subregion: string;
 }
 
 const INITIAL_FORM_VALUES: IFormValues = {
@@ -58,7 +62,11 @@ const INITIAL_FORM_VALUES: IFormValues = {
     latitude: '',
     longitude: '',
     supported: false,
-    projectStory: ''
+    projectStory: '',
+    country: '',
+    postalCode: '',
+    region: '',
+    subregion: ''
 };
 
 const useStyles = makeStyles(() =>
@@ -180,7 +188,11 @@ export const RegisterDevice = () => {
                 smartMeterId: '',
                 description: values.projectStory,
                 externalDeviceIds,
-                imageIds: ['']
+                imageIds: [''],
+                country: values.country,
+                postalCode: values.postalCode,
+                region: values.region,
+                subregion: values.subregion
             })
         );
         formikActions.setSubmitting(false);

@@ -32,7 +32,11 @@ describe('Device e2e tests', () => {
         latitude: '10',
         longitude: '10',
         gridOperator: 'OP',
-        timezone: 'Asia/Bangkok'
+        timezone: 'Asia/Bangkok',
+        postalCode: '12345',
+        country: 'TH',
+        region: 'Some place',
+        subregion: 'Another place'
     };
 
     before(async () => {
@@ -162,7 +166,15 @@ describe('Device e2e tests', () => {
 
         const { body: createdDevice } = await test
             .post('/irec/device-registry/import-irec-device')
-            .send({ code: deviceToImport.code, timezone: 'some', gridOperator: 'some' })
+            .send({
+                code: deviceToImport.code,
+                timezone: 'some',
+                gridOperator: 'some',
+                country: 'TH',
+                postalCode: '12345',
+                region: 'Shire',
+                subregion: 'Hobbiton'
+            })
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
         expect(createdDevice.id).to.be.a('string');
