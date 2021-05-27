@@ -42,23 +42,23 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
         const amountToClaim = amount ? BigNumber.from(amount) : claimerBalance;
 
-        if (amountToClaim > claimerBalance) {
+        if (amountToClaim.gt(claimerBalance)) {
             return ResponseFailure(
-                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amount}.`,
+                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amountToClaim}.`,
                 HttpStatus.BAD_REQUEST
             );
         }
 
         // Transfer private certificates to public
         if (certificate.issuedPrivately) {
-            const { activeUser, issuer } = certificate.blockchain.wrap();
-            const issuerWithSigner = issuer.connect(activeUser);
+            const { activeUser, privateIssuer } = certificate.blockchain.wrap();
+            const privateIssuerWithSigner = privateIssuer.connect(activeUser);
 
             const ownerAddressLeafHash = certificate.latestCommitment.leafs.find(
                 (leaf) => leaf.key === checksummedForAddress
             ).hash;
 
-            const requestTx = await issuerWithSigner.requestMigrateToPublicFor(
+            const requestTx = await privateIssuerWithSigner.requestMigrateToPublicFor(
                 certificate.tokenId,
                 ownerAddressLeafHash,
                 checksummedForAddress
@@ -82,7 +82,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
             const { salt } = theProof;
 
-            const migrateTx = await issuerWithSigner.migrateToPublic(
+            const migrateTx = await privateIssuerWithSigner.migrateToPublic(
                 requestId.toString(),
                 amountToClaim.toString(),
                 salt,

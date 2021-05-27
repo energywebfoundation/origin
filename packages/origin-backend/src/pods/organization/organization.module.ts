@@ -1,9 +1,10 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FileModule } from '../file/file.module';
+import { FileModule } from '../file';
 
-import { UserModule } from '../user/user.module';
+import { Handlers } from './handlers';
+import { UserModule } from '../user';
 import { OrganizationController } from './organization.controller';
 import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
@@ -15,8 +16,8 @@ import { OrganizationService } from './organization.service';
         FileModule,
         CqrsModule
     ],
-    providers: [OrganizationService],
-    controllers: [OrganizationController],
-    exports: [OrganizationService]
+    exports: [...Handlers, OrganizationService],
+    providers: [...Handlers, OrganizationService],
+    controllers: [OrganizationController]
 })
 export class OrganizationModule {}

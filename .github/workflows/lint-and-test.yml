@@ -56,6 +56,3 @@ jobs:
 
     - name: Run all test:ci:contracts
       run: node common/scripts/install-run-rush.js test:ci:contracts
-
-    - name: Run all test:ci:apps
-      run: node common/scripts/install-run-rush.js test:ci:apps

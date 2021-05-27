@@ -27,14 +27,14 @@
         "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "test": "mocha -r ts-node/register test/*.test.ts --exit",
-        "test:concurrent": "yarn test",
+        "test:e2e": "yarn test",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "clean": "shx rm -rf build dist dist-shakeable schemas",
         "precommit": "lint-staged"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@nestjs/common": "7.6.15",
+        "@nestjs/common": "7.6.17",
         "bn.js": "5.2.0",
         "chai": "4.3.0",
         "immutable": "4.0.0-rc.12",
@@ -44,8 +44,8 @@
     "devDependencies": {
         "typescript": "4.2.4",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.14.43",
-        "mocha": "8.3.2",
+        "@types/node": "14.17.0",
+        "mocha": "8.4.0",
         "@types/bn.js": "5.1.0",
         "@types/chai": "4.2.15",
         "ts-node": "9.1.1"

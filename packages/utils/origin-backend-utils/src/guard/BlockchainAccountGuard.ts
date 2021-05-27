@@ -14,7 +14,7 @@ export class BlockchainAccountGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
 
         try {
-            return !!request.user?.blockchainAccountAddress;
+            return !!request.user?.organization?.blockchainAccountAddress;
         } catch (e) {
             throw new PreconditionFailedException(e.message);
         }

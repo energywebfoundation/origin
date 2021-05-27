@@ -1,4 +1,4 @@
-import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber } from 'ethers';
+import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber, utils } from 'ethers';
 
 import { Timestamp } from '@energyweb/utils-general';
 
@@ -8,7 +8,9 @@ import {
     decodeClaimData,
     IShareInCertificate,
     calculateOwnership,
-    calculateClaims
+    calculateClaims,
+    decodeData,
+    encodeData
 } from './CertificateUtils';
 import { IBlockchainProperties } from './BlockchainProperties';
 import { MAX_ENERGY_PER_CERTIFICATE } from './CertificationRequest';
@@ -28,6 +30,13 @@ export interface IClaimData {
     toDate?: string;
 }
 
+export interface IData {
+    deviceId: string;
+    generationStartTime: number;
+    generationEndTime: number;
+    metadata: string;
+}
+
 export interface IClaim {
     id: number;
     from: string;
@@ -37,12 +46,9 @@ export interface IClaim {
     claimData: IClaimData;
 }
 
-export interface ICertificate {
+export interface ICertificate extends IData {
     id: number;
     issuer: string;
-    deviceId: string;
-    generationStartTime: number;
-    generationEndTime: number;
     certificationRequestId: number;
     creationTime: number;
     creationBlockHash: string;
@@ -67,7 +73,7 @@ export class Certificate implements ICertificate {
 
     public initialized = false;
 
-    public data: string;
+    public metadata: string;
 
     public owners: IShareInCertificate;
 
@@ -78,10 +84,11 @@ export class Certificate implements ICertificate {
     public static async create(
         to: string,
         value: BigNumber,
-        fromTime: Timestamp,
-        toTime: Timestamp,
+        generationStartTime: Timestamp,
+        generationEndTime: Timestamp,
         deviceId: string,
-        blockchainProperties: IBlockchainProperties
+        blockchainProperties: IBlockchainProperties,
+        metadata?: string
     ): Promise<Certificate> {
         if (value.gt(MAX_ENERGY_PER_CERTIFICATE)) {
             throw new Error(
@@ -97,7 +104,12 @@ export class Certificate implements ICertificate {
         const { issuer } = blockchainProperties;
         const issuerWithSigner = issuer.connect(blockchainProperties.activeUser);
 
-        const data = await issuer.encodeData(fromTime, toTime, deviceId);
+        const data = encodeData({
+            generationStartTime,
+            generationEndTime,
+            deviceId,
+            metadata: metadata ?? ''
+        });
 
         const properChecksumToAddress = ethers.utils.getAddress(to);
 
@@ -112,10 +124,11 @@ export class Certificate implements ICertificate {
     public static async createPrivate(
         to: string,
         value: BigNumber,
-        fromTime: Timestamp,
-        toTime: Timestamp,
+        generationStartTime: Timestamp,
+        generationEndTime: Timestamp,
         deviceId: string,
-        blockchainProperties: IBlockchainProperties
+        blockchainProperties: IBlockchainProperties,
+        metadata?: string
     ): Promise<{ certificate: Certificate; proof: IOwnershipCommitmentProofWithTx }> {
         if (value.gt(MAX_ENERGY_PER_CERTIFICATE)) {
             throw new Error(
@@ -126,12 +139,19 @@ export class Certificate implements ICertificate {
         const newCertificate = new Certificate(null, blockchainProperties);
 
         const getIdFromEvents = (logs: BlockchainEvent[]): number =>
-            Number(logs.find((log) => log.event === 'CertificationRequestApproved').topics[2]);
+            Number(
+                logs.find((log) => log.event === 'PrivateCertificationRequestApproved').topics[2]
+            );
 
-        const { issuer } = blockchainProperties;
-        const issuerWithSigner = issuer.connect(blockchainProperties.activeUser);
+        const { privateIssuer } = blockchainProperties;
+        const privateIssuerWithSigner = privateIssuer.connect(blockchainProperties.activeUser);
 
-        const data = await issuer.encodeData(fromTime, toTime, deviceId);
+        const data = encodeData({
+            generationStartTime,
+            generationEndTime,
+            deviceId,
+            metadata: metadata ?? ''
+        });
 
         const properChecksumToAddress = ethers.utils.getAddress(to);
 
@@ -141,7 +161,7 @@ export class Certificate implements ICertificate {
 
         const commitmentProof = PreciseProofUtils.generateProofs(ownershipCommitment);
 
-        const tx = await issuerWithSigner.issuePrivate(
+        const tx = await privateIssuerWithSigner.issuePrivate(
             properChecksumToAddress,
             commitmentProof.rootHash,
             data
@@ -167,11 +187,9 @@ export class Certificate implements ICertificate {
         const { registry } = this.blockchainProperties;
         const certOnChain = await registry.getCertificate(this.id);
 
-        this.data = certOnChain.data;
-
         const { issuer } = this.blockchainProperties;
 
-        const decodedData = await issuer.decodeData(this.data);
+        const decodedData = decodeData(certOnChain.data);
 
         const allIssuanceLogs = await getEventsFromContract(
             registry,
@@ -182,9 +200,11 @@ export class Certificate implements ICertificate {
         )[0];
         const issuanceBlock = await registry.provider.getBlock(issuanceLog.blockHash);
 
-        this.generationStartTime = Number(decodedData['0']);
-        this.generationEndTime = Number(decodedData['1']);
-        this.deviceId = decodedData['2'];
+        this.generationStartTime = decodedData.generationStartTime;
+        this.generationEndTime = decodedData.generationEndTime;
+        this.deviceId = decodedData.deviceId;
+        this.metadata = decodedData.metadata;
+
         this.issuer = certOnChain.issuer;
         this.creationTime = Number(issuanceBlock.timestamp);
         this.creationBlockHash = issuanceLog.blockHash;
@@ -222,14 +242,16 @@ export class Certificate implements ICertificate {
             throw new Error(`claim(): ${claimAddress} does not own a share in the certificate.`);
         }
 
+        const fromAddress = from ?? activeUserAddress;
+
         const encodedClaimData = encodeClaimData(claimData);
 
         return registryWithSigner.safeTransferAndClaimFrom(
-            from ?? activeUserAddress,
+            fromAddress,
             claimAddress,
             this.id,
             amount ?? ownedVolume,
-            this.data,
+            encodedClaimData, // TO-DO: Check the difference between data and claimData
             encodedClaimData
         );
     }
@@ -252,7 +274,7 @@ export class Certificate implements ICertificate {
             toAddress,
             this.id,
             amount ?? ownedVolume,
-            this.data
+            utils.defaultAbiCoder.encode([], []) // TO-DO: Store more meaningful transfer data?
         );
     }
 
@@ -309,14 +331,8 @@ export class Certificate implements ICertificate {
             if (
                 claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber()).includes(this.id)
             ) {
-                const {
-                    _ids,
-                    _claimData,
-                    _claimIssuer,
-                    _claimSubject,
-                    _topics,
-                    _values
-                } = claimBatchEvent;
+                const { _ids, _claimData, _claimIssuer, _claimSubject, _topics, _values } =
+                    claimBatchEvent;
                 const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
 
                 const index = claimIds.indexOf(this.id);

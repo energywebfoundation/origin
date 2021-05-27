@@ -43,7 +43,12 @@ export class Organization extends ExtendedBaseEntity implements IFullOrganizatio
     @IsISO31661Alpha2()
     country: string;
 
-    @ApiProperty({ type: String })
+    @Column({ nullable: true, unique: true })
+    blockchainAccountAddress: string;
+
+    @Column({ nullable: true })
+    blockchainAccountSignedMessage: string;
+
     @Column()
     @IsString()
     businessType: string;
@@ -117,4 +122,7 @@ export class Organization extends ExtendedBaseEntity implements IFullOrganizatio
     @Optional()
     @IsArray()
     documentIds: string[];
+
+    @Column({ default: '' })
+    beneficiaryId: string;
 }

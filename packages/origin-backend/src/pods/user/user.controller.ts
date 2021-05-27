@@ -38,7 +38,6 @@ import {
 } from '@nestjs/swagger';
 
 import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
-import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { UpdateOwnUserSettingsDTO } from './dto/update-own-user-settings.dto';
 import { UpdatePasswordDTO } from './dto/update-password.dto';
@@ -134,21 +133,6 @@ export class UserController {
         @Body() body: UpdatePasswordDTO
     ): Promise<UserDTO> {
         return this.userService.updatePassword(email, body);
-    }
-
-    @Put('chainAddress')
-    @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
-    @ApiBody({ type: BindBlockchainAccountDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: UserDTO,
-        description: `Update your own blockchain address`
-    })
-    public async updateOwnBlockchainAddress(
-        @UserDecorator() { id }: ILoggedInUser,
-        @Body() { signedMessage }: BindBlockchainAccountDTO
-    ): Promise<UserDTO> {
-        return this.userService.updateBlockchainAddress(id, signedMessage);
     }
 
     @Put('confirm-email/:token')

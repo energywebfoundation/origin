@@ -35,6 +35,7 @@ import {
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
+    IrecModule,
     OrganizationMemberRemovedHandler,
     OrganizationMemberRoleChangedHandler,
     OrganizationRegisteredHandler,
@@ -95,7 +96,8 @@ const OriginAppTypeOrmModule = () => {
         UserModule,
         CqrsModule,
         RegistrationModule,
-        IrecDeviceModule
+        IrecDeviceModule,
+        IrecModule
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },

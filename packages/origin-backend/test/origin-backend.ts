@@ -9,11 +9,9 @@ import {
     UserStatus
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { signTypedMessagePrivateKey } from '@energyweb/utils-general';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
-import { ethers } from 'ethers';
 import request from 'supertest';
 
 import { entities } from '../src';
@@ -53,7 +51,7 @@ export const bootstrapTestInstance = async () => {
             TypeOrmModule.forRoot({
                 type: 'postgres',
                 host: process.env.DB_HOST ?? 'localhost',
-                port: Number(process.env.DB_PORT) ?? 5432,
+                port: Number(process.env.DB_PORT ?? 5432),
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
@@ -140,12 +138,6 @@ export const registerAndLogin = async (
         user = await userService.findOne({ email: userEmail });
         user.status = UserStatus.Active;
         await userService.update(userId, user);
-        const signedMessage = await signTypedMessagePrivateKey(
-            ethers.Wallet.createRandom().privateKey.substring(2),
-            process.env.REGISTRATION_MESSAGE_TO_SIGN
-        );
-
-        user = await userService.updateBlockchainAddress(user.id, signedMessage);
     }
 
     const organizationEmail = `org${orgSeed}@example.com`;

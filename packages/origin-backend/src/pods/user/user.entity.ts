@@ -46,15 +46,6 @@ export class User extends ExtendedBaseEntity implements IUser {
     @Exclude()
     password: string;
 
-    @ApiProperty({ type: String, nullable: true })
-    @Column({ nullable: true, unique: true })
-    blockchainAccountAddress: string;
-
-    @ApiProperty({ type: String, nullable: true })
-    @Column({ nullable: true })
-    blockchainAccountSignedMessage: string;
-
-    @ApiProperty({ type: Boolean, nullable: true })
     @Column({ nullable: true })
     notifications: boolean;
 
