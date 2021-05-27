@@ -22,7 +22,7 @@ export class GetAllCertificationRequestsHandler
     }: GetAllCertificationRequestsQuery): Promise<FullCertificationRequestDTO[]> {
         const certificationRequests = await this.repository.find(query);
         const irecCertificationRequests = await this.irecRepository.find({
-            id: In(certificationRequests.map((c) => c.id))
+            certificationRequestId: In(certificationRequests.map((c) => c.id))
         });
 
         return certificationRequests.map((certificationRequest) => {

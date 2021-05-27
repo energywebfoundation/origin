@@ -30,7 +30,7 @@ export const generateSchema = async () => {
 
     const options = new DocumentBuilder()
         .setTitle('Issuer API')
-        .setDescription('Swagger documentation for the Issuer API')
+        .setDescription('Swagger documentation for the Issuer IREC API')
         .setVersion('0.1')
         .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
         .build();

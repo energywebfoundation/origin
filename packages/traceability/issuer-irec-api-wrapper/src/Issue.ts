@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { IsDate, IsIn, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 import { FileIds } from './File';
 
 export enum IssuanceStatus {
@@ -70,7 +70,6 @@ export class IssueWithStatus extends Issue {
     code: string;
 
     @IsNotEmpty()
-    @IsString()
-    @IsIn(Object.values(IssuanceStatus))
+    @IsEnum(IssuanceStatus)
     status: IssuanceStatus;
 }

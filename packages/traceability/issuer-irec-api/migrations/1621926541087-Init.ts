@@ -6,13 +6,12 @@ export class Init1621926541087 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
             `CREATE TABLE "irec_issuer_certification_request" (
-                "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), 
-                "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), 
-                "id" SERIAL NOT NULL, 
-                "certificationRequestId" integer NOT NULL, 
-                "userId" character varying NOT NULL, 
-                "irecIssueId" character varying NOT NULL, 
-                CONSTRAINT "PK_d723daa2222d7cb23a68d181551" PRIMARY KEY ("id")
+                "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+                "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+                "certificationRequestId" integer NOT NULL,
+                "userId" character varying NOT NULL,
+                "irecIssueId" character varying NOT NULL,
+                CONSTRAINT "PK_d723daa2222d7cb23a68d181551" PRIMARY KEY ("certificationRequestId")
             )`
         );
     }

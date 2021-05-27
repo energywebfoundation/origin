@@ -135,7 +135,7 @@ export class CreateCertificationRequestHandler
             production: 100500
         });
         await this.repository.update(request.id, { files: fileIds });
-        await this.irecRepository.update(irecCertificationRequest.id, {
+        await this.irecRepository.update(irecCertificationRequest.certificationRequestId, {
             irecIssueId: irecIssue.code
         });
 

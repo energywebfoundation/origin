@@ -11,9 +11,6 @@ export class CertificationRequestFieldsIrec {
 
 export class IrecCertificationRequestDTO extends CertificationRequestFieldsIrec {
     @ApiProperty({ type: Number })
-    id: number;
-
-    @ApiProperty({ type: Number })
     certificationRequestId: number;
 }
 
