@@ -34,7 +34,7 @@ export const useRoleChangedEffects = () => {
         type: OrganizationModalsActionsEnum.SHOW_IREC_CONNECT_OR_REGISTER,
         payload: true,
       });
-    } else if (!user?.blockchainAccountAddress) {
+    } else if (!user?.organization?.blockchainAccountAddress) {
       dispatchModals({
         type: OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU,
         payload: true,

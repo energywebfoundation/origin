@@ -50,6 +50,16 @@ export class FullOrganizationInfoDTO extends PublicOrganizationInfoDTO {
     @Expose()
     signatoryDocumentIds?: string[];
 
+    @ApiProperty({ type: String })
+    @IsString()
+    @Expose()
+    blockchainAccountAddress: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    @Expose()
+    blockchainAccountSignedMessage: string;
+
     public static fromPlatformOrganization(
         platformOrganization: Organization
     ): FullOrganizationInfoDTO {
