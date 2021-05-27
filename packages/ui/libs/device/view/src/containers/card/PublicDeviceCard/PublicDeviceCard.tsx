@@ -4,16 +4,18 @@ import { CardWithImage } from '@energyweb/origin-ui-core';
 //   ComposedDevice,
 // } from '@energyweb/origin-ui-device-data';
 import React, { FC } from 'react';
-import { DeviceCardContent } from '../DeviceCardContent';
-import { useDeviceCardEffects } from './DeviceCard.effects';
-import { useStyles } from './DeviceCard.styles';
+import { PublicDeviceCardContent } from '../PublicDeviceCardContent';
+import { usePublicDeviceCardEffects } from './PublicDeviceCard.effects';
+import { useStyles } from './PublicDeviceCard.styles';
 
-export interface DeviceCardProps {
+export interface PublicDeviceCardProps {
   device: any; //ComposedPublicDevice | ComposedDevice;
 }
 
-export const DeviceCard: FC<DeviceCardProps> = ({ device }) => {
-  const { specsData, iconsData, hoverText } = useDeviceCardEffects({ device });
+export const PublicDeviceCard: FC<PublicDeviceCardProps> = ({ device }) => {
+  const { specsData, iconsData, hoverText } = usePublicDeviceCardEffects({
+    device,
+  });
   const classes = useStyles();
   return (
     <CardWithImage
@@ -23,7 +25,7 @@ export const DeviceCard: FC<DeviceCardProps> = ({ device }) => {
       fallbackIcon={iconsData[0].icon}
       fallbackIconProps={{ className: classes.icon }}
       content={
-        <DeviceCardContent
+        <PublicDeviceCardContent
           id={device.id}
           specsData={specsData}
           iconsData={iconsData}

@@ -6,19 +6,19 @@ import {
 } from '@energyweb/origin-ui-core';
 import { Divider } from '@material-ui/core';
 import React, { ReactElement } from 'react';
-import { useStyles } from './DeviceCardContent.styles';
+import { useStyles } from './PublicDeviceCardContent.styles';
 
-export interface DeviceCardContentProps<Id> {
+export interface PublicDeviceCardContentProps<Id> {
   id: Id;
   specsData: SpecFieldProps[];
   iconsData: IconTextProps[];
 }
 
-type TDeviceCardContent = <Id>(
-  props: DeviceCardContentProps<Id>
+type TPublicDeviceCardContent = <Id>(
+  props: PublicDeviceCardContentProps<Id>
 ) => ReactElement;
 
-export const DeviceCardContent: TDeviceCardContent = ({
+export const PublicDeviceCardContent: TPublicDeviceCardContent = ({
   id,
   specsData,
   iconsData,
