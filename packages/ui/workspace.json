@@ -303,43 +303,6 @@
         }
       }
     },
-    "certificate-data-access": {
-      "root": "libs/certificate/data-access",
-      "sourceRoot": "libs/certificate/data-access/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/certificate/data-access",
-            "tsConfig": "libs/certificate/data-access/tsconfig.lib.json",
-            "project": "libs/certificate/data-access/package.json",
-            "entryFile": "libs/certificate/data-access/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/certificate/data-access/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/certificate/data-access"],
-          "options": {
-            "jestConfig": "libs/certificate/data-access/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "exchange-data-access": {
       "root": "libs/exchange/data-access",
       "sourceRoot": "libs/exchange/data-access/src",
@@ -447,43 +410,6 @@
         }
       }
     },
-    "exchange-state-management": {
-      "root": "libs/exchange/state-management",
-      "sourceRoot": "libs/exchange/state-management/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/exchange/state-management",
-            "tsConfig": "libs/exchange/state-management/tsconfig.lib.json",
-            "project": "libs/exchange/state-management/package.json",
-            "entryFile": "libs/exchange/state-management/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/exchange/state-management/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/exchange/state-management"],
-          "options": {
-            "jestConfig": "libs/exchange/state-management/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "certificate-view": {
       "root": "libs/certificate/view",
       "sourceRoot": "libs/certificate/view/src",
@@ -514,43 +440,6 @@
           "outputs": ["coverage/libs/certificate/view"],
           "options": {
             "jestConfig": "libs/certificate/view/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
-    "certificate-state-management": {
-      "root": "libs/certificate/state-management",
-      "sourceRoot": "libs/certificate/state-management/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/certificate/state-management",
-            "tsConfig": "libs/certificate/state-management/tsconfig.lib.json",
-            "project": "libs/certificate/state-management/package.json",
-            "entryFile": "libs/certificate/state-management/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/certificate/state-management/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/certificate/state-management"],
-          "options": {
-            "jestConfig": "libs/certificate/state-management/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -1071,6 +960,41 @@
           "outputs": ["coverage/libs/ui/providers"],
           "options": {
             "jestConfig": "libs/ui/providers/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "certificate-data": {
+      "root": "libs/certificate/data",
+      "sourceRoot": "libs/certificate/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/certificate/data",
+            "tsConfig": "libs/certificate/data/tsconfig.lib.json",
+            "project": "libs/certificate/data/package.json",
+            "entryFile": "libs/certificate/data/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/certificate/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/certificate/data"],
+          "options": {
+            "jestConfig": "libs/certificate/data/jest.config.js",
             "passWithNoTests": true
           }
         }

@@ -99,6 +99,13 @@
             "autoinstallerName": "rush-tools",
             "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n backend,ui \"yarn migrate:demo:web3 && yarn run:backend\" \"wait-on tcp:3030 && yarn run:ui\" \"wait-on tcp:3030 && yarn run:ui-core\" \"wait-on tcp:3030 && yarn run:exchange-ui\"",
             "allowWarningsInSuccessfulBuild": true
+        },
+        {
+            "commandKind": "global",
+            "name": "storybook",
+            "summary": "Launch storybook UI in origin-ui-core package",
+            "shellCommand": "cd packages/ui && rushx nx serve ui-core:storybook",
+            "safeForSimultaneousRushProcesses": true
         }
         // {
         //   /**

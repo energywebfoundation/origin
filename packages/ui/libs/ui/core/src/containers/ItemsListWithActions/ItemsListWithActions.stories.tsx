@@ -1,0 +1,59 @@
+import React from 'react';
+import { Meta } from '@storybook/react';
+import { ItemsListWithActions } from './ItemsListWithActions';
+import { ItemsListWithActionsProps } from './ItemsListWithActions.types';
+import { Typography } from '@material-ui/core';
+
+export default {
+  title: 'Containers / ItemsListWithActions',
+  component: ItemsListWithActions,
+} as Meta;
+
+export const Default = (
+  args: Omit<ItemsListWithActionsProps<number, number>, 'content'>
+) => {
+  const content: ItemsListWithActionsProps<
+    number,
+    string
+  >['content'] = new Map();
+
+  content.set(1, {
+    containerComponent: <Typography>First container</Typography>,
+    items: [
+      {
+        id: '1',
+        component: (
+          <Typography>This is the first item of first container</Typography>
+        ),
+      },
+    ],
+  });
+  content.set(2, {
+    containerComponent: <Typography>Second container</Typography>,
+    items: [
+      {
+        id: '2',
+        component: (
+          <Typography>This is the first item of second container</Typography>
+        ),
+      },
+      {
+        id: '3',
+        component: (
+          <Typography>This is the second item of second container</Typography>
+        ),
+      },
+    ],
+  });
+
+  return <ItemsListWithActions content={content} {...args} />;
+};
+
+Default.args = {
+  actions: [
+    { name: 'Sell', content: <Typography>Sell action text</Typography> },
+    { name: 'Buy', content: <Typography>Buy action text</Typography> },
+  ],
+  listTitle: 'Items list with Actions',
+  selectAllText: 'Select all items and containers',
+};

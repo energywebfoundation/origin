@@ -1,5 +1,6 @@
 {
   "name": "ui-packages",
+  "version": "0.0.0",
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
