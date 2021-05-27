@@ -471,7 +471,11 @@ INSERT INTO public."irec_device_registry_device" (
         "notes",
         "status",
         "timezone",
-        "gridOperator"
+        "gridOperator",
+        "postalCode",
+        "country",
+        "region",
+        "subregion"
     )
 VALUES (
         '2020-03-30 09:36:02.607206+02',
@@ -495,7 +499,11 @@ VALUES (
         'Notes...',
         'Approved',
         'Asia/Bangkok',
-        'TH-PEA'
+        'TH-PEA',
+        '12345',
+        'TH',
+        'Some place',
+        'Another place'
     );
 INSERT INTO public."device_registry_device" (
         "createdAt",
@@ -537,7 +545,11 @@ INSERT INTO public."irec_device_registry_device" (
         "notes",
         "status",
         "timezone",
-        "gridOperator"
+        "gridOperator",
+        "postalCode",
+        "country",
+        "region",
+        "subregion"
     )
 VALUES (
         '2020-03-30 09:36:02.607206+02',
@@ -561,7 +573,11 @@ VALUES (
         'Notes...',
         'Approved',
         'Asia/Bangkok',
-        'TH-MEA'
+        'TH-MEA',
+        '12345',
+        'TH',
+        'Some place',
+        'Another place'
     );
 INSERT INTO public."device_registry_device" (
         "createdAt",
@@ -603,7 +619,11 @@ INSERT INTO public."irec_device_registry_device" (
         "notes",
         "status",
         "timezone",
-        "gridOperator"
+        "gridOperator",
+        "postalCode",
+        "country",
+        "region",
+        "subregion"
     )
 VALUES (
         '2020-03-30 09:36:02.607206+02',
@@ -627,7 +647,11 @@ VALUES (
         'Notes...',
         'Approved',
         'Asia/Bangkok',
-        'TH-PEA'
+        'TH-PEA',
+        '12345',
+        'TH',
+        'Some place',
+        'Another place'
     );
 INSERT INTO public."device_registry_device" (
         "createdAt",
