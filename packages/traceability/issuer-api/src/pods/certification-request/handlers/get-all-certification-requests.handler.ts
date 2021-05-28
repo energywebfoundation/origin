@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { GetAllCertificationRequestsQuery } from '../queries';
 import { CertificationRequest } from '../certification-request.entity';
+import { CertificationRequestDTO } from '../certification-request.dto';
 
 @QueryHandler(GetAllCertificationRequestsQuery)
 export class GetAllCertificationRequestsHandler
@@ -11,10 +12,10 @@ export class GetAllCertificationRequestsHandler
 {
     constructor(
         @InjectRepository(CertificationRequest)
-        private readonly repository: Repository<CertificationRequest>
+        readonly repository: Repository<CertificationRequest>
     ) {}
 
-    async execute({ query }: GetAllCertificationRequestsQuery): Promise<CertificationRequest[]> {
+    async execute({ query }: GetAllCertificationRequestsQuery): Promise<CertificationRequestDTO[]> {
         return this.repository.find(query);
     }
 }

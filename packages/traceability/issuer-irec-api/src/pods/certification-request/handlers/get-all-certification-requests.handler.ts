@@ -2,25 +2,32 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
-import { CertificationRequest, GetAllCertificationRequestsQuery } from '@energyweb/issuer-api';
+import {
+    CertificationRequest,
+    GetAllCertificationRequestsQuery,
+    GetAllCertificationRequestsHandler as OriginalHandler
+} from '@energyweb/issuer-api';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
 
 @QueryHandler(GetAllCertificationRequestsQuery)
 export class GetAllCertificationRequestsHandler
+    extends OriginalHandler
     implements IQueryHandler<GetAllCertificationRequestsQuery>
 {
     constructor(
         @InjectRepository(CertificationRequest)
-        private readonly repository: Repository<CertificationRequest>,
+        readonly repository: Repository<CertificationRequest>,
         @InjectRepository(IrecCertificationRequest)
-        private readonly irecRepository: Repository<IrecCertificationRequest>
-    ) {}
+        readonly irecRepository: Repository<IrecCertificationRequest>
+    ) {
+        super(repository);
+    }
 
     async execute({
         query
     }: GetAllCertificationRequestsQuery): Promise<FullCertificationRequestDTO[]> {
-        const certificationRequests = await this.repository.find(query);
+        const certificationRequests = await super.execute({ query });
         const irecCertificationRequests = await this.irecRepository.find({
             certificationRequestId: In(certificationRequests.map((c) => c.id))
         });
