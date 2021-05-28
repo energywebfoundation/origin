@@ -53,7 +53,10 @@ export class DeviceService {
             active: true
         };
 
-        const irecDevice = await this.irecDeviceService.createIrecDevice(user, deviceData);
+        const irecDevice = await this.irecDeviceService.createIrecDevice(user, {
+            ...deviceData,
+            address: this.getAddressLine(newDevice)
+        });
 
         const deviceToStore = new Device({
             ...deviceData,
@@ -79,8 +82,17 @@ export class DeviceService {
             return null;
         }
 
-        const irecDevice = await this.irecDeviceService.update(user, device.code, deviceData);
-        await this.repository.update(device.id, { ...irecDevice, status: DeviceState.InProgress });
+        const updatedDevice = { ...device, ...deviceData };
+        const irecDevice = await this.irecDeviceService.update(user, device.code, {
+            ...deviceData,
+            address: this.getAddressLine(updatedDevice)
+        });
+
+        await this.repository.update(device.id, {
+            ...irecDevice,
+            address: updatedDevice.address,
+            status: DeviceState.InProgress
+        });
 
         return this.findOne(id);
     }
@@ -144,5 +156,9 @@ export class DeviceService {
         this.eventBus.publish(new DeviceCreatedEvent(storedDevice, user.id));
 
         return storedDevice;
+    }
+
+    getAddressLine(device: CreateDeviceDTO): string {
+        return `${device.country}, ${device.postalCode}, ${device.region}, ${device.subregion}`;
     }
 }

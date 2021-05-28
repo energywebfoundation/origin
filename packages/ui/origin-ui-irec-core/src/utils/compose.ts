@@ -56,7 +56,11 @@ export function composeImportedDevices(
                 id: '',
                 ownerId: '',
                 timezone: '',
-                gridOperator: ''
+                gridOperator: '',
+                country: '',
+                postalCode: '',
+                region: '',
+                subregion: ''
             };
         })
     ];

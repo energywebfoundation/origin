@@ -75,7 +75,9 @@ export class CreateCertificationRequestHandler
     async process(requestId: number) {
         const request: CertificationRequest = await this.getCertificationRequest(requestId);
 
-        await this.mintCertificationRequest(request);
+        if (request) {
+            await this.mintCertificationRequest(request);
+        }
     }
 
     async getCertificationRequest(requestId: number): Promise<CertificationRequest> {
