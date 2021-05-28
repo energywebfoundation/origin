@@ -72,7 +72,8 @@
         "winston": "3.3.3",
         "yup": "0.32.9",
         "@reduxjs/toolkit": "1.5.1",
-        "@vmw/queue-for-redux-saga": "0.3.0"
+        "@vmw/queue-for-redux-saga": "0.3.0",
+        "iam-client-lib": "~2.2.0"
     },
     "devDependencies": {
         "@babel/core": "7.14.3",
