@@ -43,7 +43,7 @@
     "devDependencies": {
         "typescript": "4.2.4",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.17.0",
+        "@types/node": "14.17.1",
         "mocha": "8.4.0",
         "@types/bn.js": "5.1.0",
         "ts-node": "9.1.1"
