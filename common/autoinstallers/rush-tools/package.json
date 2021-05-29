@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "dependencies": {
-        "concurrently": "6.1.0",
+        "concurrently": "6.2.0",
         "wait-on": "5.2.1",
         "ganache-cli": "6.12.2",
         "lerna": "4.0.0"
