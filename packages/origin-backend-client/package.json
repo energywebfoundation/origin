@@ -27,7 +27,7 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "typescript": "4.2.4",
+        "typescript": "4.3.2",
         "@energyweb/origin-backend": "10.0.1",
         "@nestjs/swagger": "4.8.0",
         "@nestjs/testing": "7.6.17",
