@@ -52,7 +52,7 @@
         "@types/mocha": "8.2.2",
         "@types/node": "14.17.1",
         "mocha": "8.4.0",
-        "truffle": "5.3.7",
+        "truffle": "5.3.8",
         "solc": "0.8.4"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
