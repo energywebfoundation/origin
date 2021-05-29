@@ -33,7 +33,7 @@
         "@nestjs/swagger": "4.8.0"
     },
     "devDependencies": {
-        "typescript": "4.2.4",
+        "typescript": "4.3.2",
         "@nestjs/testing": "7.6.17",
         "influx": "5.9.0",
         "prettier": "2.3.0",
