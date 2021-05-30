@@ -22,7 +22,7 @@ import { Device, DeviceUpdateParams, DeviceCreateParams } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
 import { AccountItem, CodeName } from './Items';
-import { Fuel, FuelType } from './Fuel';
+import { DeviceType, FuelType } from './DeviceType';
 import { Organisation } from './Organisation';
 import { Beneficiary, BeneficiaryCreateParams, BeneficiaryUpdateParams } from './Beneficiary';
 
@@ -437,13 +437,13 @@ export class IRECAPIClient extends EventEmitter {
         const fuelUrl = `${this.endPointUrl}/api/irec/v1/fuels`;
 
         return {
-            getAll: async (): Promise<Fuel[]> => {
+            getDeviceTypes: async (): Promise<DeviceType[]> => {
                 const url = `${fuelUrl}/fuel`;
                 const response = await this.axiosInstance.get<unknown[]>(url, this.config);
 
-                return response.data.map((fuel) => plainToClass(Fuel, fuel));
+                return response.data.map((fuel) => plainToClass(DeviceType, fuel));
             },
-            getAllTypes: async (): Promise<FuelType[]> => {
+            getFuelTypes: async (): Promise<FuelType[]> => {
                 const url = `${fuelUrl}/type`;
                 const response = await this.axiosInstance.get<unknown[]>(url, this.config);
 

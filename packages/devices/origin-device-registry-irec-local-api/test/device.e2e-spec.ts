@@ -23,7 +23,7 @@ describe('Device e2e tests', () => {
         name: 'Test solar device',
         defaultAccount: 'MYTRADEACCOUNT001',
         deviceType: 'ES100',
-        fuel: 'TC110',
+        fuelType: 'TC110',
         countryCode: 'TH',
         capacity: 1000,
         commissioningDate: new Date('2020-01-01'),
@@ -92,10 +92,10 @@ describe('Device e2e tests', () => {
     });
 
     it('should return irec device types', async () => {
-        const { body: fuels } = await test.get('/irec/device-registry/device-type');
+        const { body: deviceTypes } = await test.get('/irec/device-registry/device-type');
 
-        expect(fuels).to.be.an('array');
-        fuels.forEach((fuel: any) => {
+        expect(deviceTypes).to.be.an('array');
+        deviceTypes.forEach((fuel: any) => {
             expect(fuel).to.be.an('object');
             expect(fuel.code).to.be.a('string');
             expect(fuel.name).to.be.a('string');

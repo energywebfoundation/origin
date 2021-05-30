@@ -18,7 +18,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
 import { DeviceCreatedEvent } from './events';
-import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
+import { IREC_DEVICE_TYPES, IREC_FUEL_TYPES } from './Fuels';
 import { IrecDeviceService } from './irec-device.service';
 
 @Injectable()
@@ -36,11 +36,11 @@ export class DeviceService {
     }
 
     async create(user: ILoggedInUser, newDevice: CreateDeviceDTO): Promise<Device> {
-        if (!this.isValidDeviceType(newDevice.deviceType)) {
+        if (!this.isValidFuelType(newDevice.fuelType)) {
             throw new BadRequestException('Invalid device type');
         }
 
-        if (!this.isValidFuelType(newDevice.fuel)) {
+        if (!this.isValidDeviceType(newDevice.deviceType)) {
             throw new BadRequestException('Invalid fuel type');
         }
 
@@ -101,20 +101,20 @@ export class DeviceService {
         await this.repository.update(id, { status });
     }
 
-    getDeviceTypes(): CodeNameDTO[] {
-        return IREC_FUELS;
-    }
-
     getFuelTypes(): CodeNameDTO[] {
         return IREC_FUEL_TYPES;
     }
 
-    isValidDeviceType(deviceType: string): boolean {
-        return !!this.getDeviceTypes().find((fuel) => fuel.code === deviceType);
+    getDeviceTypes(): CodeNameDTO[] {
+        return IREC_DEVICE_TYPES;
     }
 
-    isValidFuelType(fuelType: string): boolean {
-        return !!this.getFuelTypes().find((fuel) => fuel.code === fuelType);
+    isValidFuelType(deviceType: string): boolean {
+        return !!this.getFuelTypes().find((fuel) => fuel.code === deviceType);
+    }
+
+    isValidDeviceType(fuelType: string): boolean {
+        return !!this.getDeviceTypes().find((fuel) => fuel.code === fuelType);
     }
 
     async getDevicesToImport(user: ILoggedInUser): Promise<IrecDevice[]> {

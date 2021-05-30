@@ -28,13 +28,13 @@ export class CreateDeviceDTO {
     @IsString()
     @IsNotEmpty()
     @Expose()
-    deviceType: string;
+    fuelType: string;
 
     @ApiProperty({ type: String })
     @IsString()
     @IsNotEmpty()
     @Expose()
-    fuel: string;
+    deviceType: string;
 
     @ApiProperty({ type: String })
     @IsString()

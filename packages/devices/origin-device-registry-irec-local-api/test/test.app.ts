@@ -92,7 +92,7 @@ export const bootstrapTestInstance = async () => {
         registrantOrganization: 'REGORG',
         issuer: 'ISSUERORG',
         deviceType: 'ES100',
-        fuel: 'TC110',
+        fuelType: 'TC110',
         countryCode: 'TH',
         capacity: 1000,
         commissioningDate: new Date('2020-01-01'),

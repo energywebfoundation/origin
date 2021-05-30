@@ -37,8 +37,8 @@ describe('API flows', () => {
             commissioningDate: new Date('2001-08-10'),
             countryCode: 'GB',
             defaultAccount: tradeAccount,
-            deviceType: 'T020001',
-            fuel: 'ES200',
+            fuelType: 'TC110',
+            deviceType: 'ES100',
             issuer: issuerOrg.code,
             latitude: '53.405088',
             longitude: '-1.744222',
@@ -124,7 +124,7 @@ describe('API flows', () => {
             start: moment().subtract(2, 'day').toDate(),
             end: moment().subtract(1, 'day').toDate(),
             production: 10,
-            fuel: device.fuel,
+            deviceType: device.deviceType,
             notes: 'Some note',
             files: [fileId]
         };

@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 
 import {
     ApproveIssue,
-    Fuel,
+    DeviceType,
     FuelType,
     IRECAPIClient,
     Product,
@@ -95,7 +95,7 @@ describe('IREC API', () => {
             start: moment(lastItem.asset.end).add(1, 'day').toDate(),
             end: moment(lastItem.asset.end).add(2, 'day').toDate(),
             production: 100,
-            fuel: 'ES200'
+            deviceType: 'ES200'
         });
 
         await participantClient.issue.submit(createdIssue.code, 'Note');
@@ -161,22 +161,22 @@ describe('IREC API', () => {
         });
     });
 
-    describe('Fuel', () => {
-        it('should return all fuels', async () => {
-            const fuels: Fuel[] = await registrantClient.fuel.getAll();
+    describe('Fuel and Device types', () => {
+        it('should return all device types', async () => {
+            const deviceTypes: DeviceType[] = await registrantClient.fuel.getDeviceTypes();
 
-            expect(fuels).to.be.an('array');
-            fuels.forEach((fuel) => {
+            expect(deviceTypes).to.be.an('array');
+            deviceTypes.forEach((fuel) => {
                 expect(fuel.code).to.be.a('string');
                 expect(fuel.name).to.be.a('string');
             });
         });
 
         it('should return all fuel types', async () => {
-            const types: FuelType[] = await registrantClient.fuel.getAllTypes();
+            const fuelTypes: FuelType[] = await registrantClient.fuel.getFuelTypes();
 
-            expect(types).to.be.an('array');
-            types.forEach((type) => {
+            expect(fuelTypes).to.be.an('array');
+            fuelTypes.forEach((type) => {
                 expect(type.code).to.be.a('string');
                 expect(type.name).to.be.a('string');
             });

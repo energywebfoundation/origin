@@ -29,11 +29,11 @@ export class DeviceCreateParams extends FileIds {
 
     @Expose({ name: 'device_type_code', toPlainOnly: true })
     @IsString()
-    deviceType: string;
+    fuelType: string;
 
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
-    fuel: string;
+    deviceType: string;
 
     @Expose({ name: 'country_code', toPlainOnly: true })
     @IsString()
@@ -96,12 +96,12 @@ export class DeviceUpdateParams extends FileIds {
     @IsOptional()
     @Expose({ name: 'device_type_code', toPlainOnly: true })
     @IsString()
-    deviceType?: string;
+    fuelType?: string;
 
     @IsOptional()
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
-    fuel?: string;
+    deviceType?: string;
 
     @IsOptional()
     @Expose({ name: 'country_code', toPlainOnly: true })

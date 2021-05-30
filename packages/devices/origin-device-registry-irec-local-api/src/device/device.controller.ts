@@ -69,18 +69,6 @@ export class DeviceController {
         );
     }
 
-    @Get('/device-type')
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: [CodeNameDTO],
-        description: 'Returns all IREC fuels'
-    })
-    getFuels(): CodeNameDTO[] {
-        const deviceTypes = this.deviceService.getDeviceTypes();
-
-        return deviceTypes.map((deviceType) => plainToClass(CodeNameDTO, deviceType));
-    }
-
     @Get('/fuel-type')
     @ApiResponse({
         status: HttpStatus.OK,
@@ -90,7 +78,19 @@ export class DeviceController {
     getFuelTypes(): CodeNameDTO[] {
         const fuelTypes = this.deviceService.getFuelTypes();
 
-        return fuelTypes.map((fuelType) => plainToClass(CodeNameDTO, fuelType));
+        return fuelTypes.map((deviceType) => plainToClass(CodeNameDTO, deviceType));
+    }
+
+    @Get('/device-type')
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [CodeNameDTO],
+        description: 'Returns all IREC device types'
+    })
+    getDeviceTypes(): CodeNameDTO[] {
+        const deviceTypes = this.deviceService.getDeviceTypes();
+
+        return deviceTypes.map((fuelType) => plainToClass(CodeNameDTO, fuelType));
     }
 
     @Get('/device/:id')

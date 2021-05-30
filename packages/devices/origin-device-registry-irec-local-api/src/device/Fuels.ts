@@ -1,6 +1,6 @@
 import { CodeNameDTO } from './dto';
 
-export const IREC_FUELS: CodeNameDTO[] = [
+export const IREC_DEVICE_TYPES: CodeNameDTO[] = [
     { code: 'ES200', name: 'Wind' },
     { code: 'ES100', name: 'Solar' },
     { code: 'ES300', name: 'Hydro-electric' },
