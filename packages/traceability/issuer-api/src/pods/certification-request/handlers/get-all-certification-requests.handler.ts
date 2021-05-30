@@ -1,18 +1,21 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GetAllCertificationRequestsQuery } from '../queries/get-all-certification-requests.query';
+
+import { GetAllCertificationRequestsQuery } from '../queries';
 import { CertificationRequest } from '../certification-request.entity';
+import { CertificationRequestDTO } from '../certification-request.dto';
 
 @QueryHandler(GetAllCertificationRequestsQuery)
 export class GetAllCertificationRequestsHandler
-    implements IQueryHandler<GetAllCertificationRequestsQuery> {
+    implements IQueryHandler<GetAllCertificationRequestsQuery>
+{
     constructor(
         @InjectRepository(CertificationRequest)
-        private readonly repository: Repository<CertificationRequest>
+        readonly repository: Repository<CertificationRequest>
     ) {}
 
-    async execute(): Promise<CertificationRequest[]> {
-        return this.repository.find();
+    async execute({ query }: GetAllCertificationRequestsQuery): Promise<CertificationRequestDTO[]> {
+        return this.repository.find(query);
     }
 }

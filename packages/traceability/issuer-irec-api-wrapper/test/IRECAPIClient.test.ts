@@ -89,7 +89,7 @@ describe('IREC API', () => {
 
         const beforeTransactions = await participantClient.account.getTransactions(tradeAccount);
 
-        const code = await registrantClient.issue.create({
+        const createdIssue = await registrantClient.issue.create({
             device: 'DEVICE001',
             recipient: tradeAccount,
             start: moment(lastItem.asset.end).add(1, 'day').toDate(),
@@ -98,13 +98,13 @@ describe('IREC API', () => {
             fuel: 'ES200'
         });
 
-        await participantClient.issue.submit(code, 'Note');
-        await participantClient.issue.verify(code, 'Note');
+        await participantClient.issue.submit(createdIssue.code, 'Note');
+        await participantClient.issue.verify(createdIssue.code, 'Note');
 
         const approval = new ApproveIssue();
         approval.issuer = issueAccount;
 
-        await participantClient.issue.approve(code, approval);
+        await participantClient.issue.approve(createdIssue.code, approval);
 
         const afterTransactions = await registrantClient.account.getTransactions(tradeAccount);
 

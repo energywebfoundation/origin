@@ -1,7 +1,7 @@
 import {
     CertificateRequestApprovedEvent,
     GetCertificationRequestQuery
-} from '@energyweb/issuer-api';
+} from '@energyweb/issuer-irec-api';
 import { UserService } from '@energyweb/origin-backend';
 import { Role } from '@energyweb/origin-backend-core';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';

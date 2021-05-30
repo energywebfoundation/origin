@@ -181,18 +181,18 @@ export class IRECAPIClient extends EventEmitter {
         };
 
         return {
-            create: async (issue: Issue): Promise<string> => {
+            create: async (issue: Issue): Promise<IssueWithStatus> => {
                 const issueParams = issue instanceof Issue ? issue : plainToClass(Issue, issue);
                 await validateOrReject(issue);
 
                 const url = `${issueManagementUrl}/create`;
-                const response = await this.axiosInstance.post<{ code: string }>(
+                const response = await this.axiosInstance.post<IssueWithStatus>(
                     url,
                     classToPlain(issueParams),
                     this.config
                 );
 
-                return response.data.code;
+                return response.data;
             },
             update: async (code: string, issue: Issue): Promise<void> => {
                 await validateOrReject(issue, { skipMissingProperties: true });
