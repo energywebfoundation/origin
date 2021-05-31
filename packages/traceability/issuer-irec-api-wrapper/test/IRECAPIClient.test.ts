@@ -5,8 +5,8 @@ import moment from 'moment-timezone';
 
 import {
     ApproveIssue,
-    Fuel,
     FuelType,
+    DeviceType,
     IRECAPIClient,
     Product,
     Redemption,
@@ -95,7 +95,7 @@ describe('IREC API', () => {
             start: moment(lastItem.asset.end).add(1, 'day').toDate(),
             end: moment(lastItem.asset.end).add(2, 'day').toDate(),
             production: 100,
-            fuel: 'ES200'
+            fuelType: 'ES200'
         });
 
         await participantClient.issue.submit(createdIssue.code, 'Note');
@@ -163,7 +163,7 @@ describe('IREC API', () => {
 
     describe('Fuel', () => {
         it('should return all fuels', async () => {
-            const fuels: Fuel[] = await registrantClient.fuel.getAll();
+            const fuels: FuelType[] = await registrantClient.fuel.getFuelTypes();
 
             expect(fuels).to.be.an('array');
             fuels.forEach((fuel) => {
@@ -173,7 +173,7 @@ describe('IREC API', () => {
         });
 
         it('should return all fuel types', async () => {
-            const types: FuelType[] = await registrantClient.fuel.getAllTypes();
+            const types: DeviceType[] = await registrantClient.fuel.getDeviceTypes();
 
             expect(types).to.be.an('array');
             types.forEach((type) => {

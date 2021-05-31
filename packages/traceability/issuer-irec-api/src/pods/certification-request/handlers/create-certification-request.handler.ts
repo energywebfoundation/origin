@@ -90,7 +90,7 @@ export class CreateCertificationRequestHandler
         );
         const irecIssue = await this.irecCertificateService.createIrecIssue(platformAdmin.id, {
             device: request.deviceId,
-            fuel: irecDevice.fuel,
+            fuelType: irecDevice.fuelType,
             recipient: platformTradeAccount,
             start: new Date(request.fromTime),
             end: new Date(request.toTime),

@@ -172,7 +172,7 @@ export const RegisterDevice = () => {
                 code: '',
                 defaultAccount: '',
                 deviceType,
-                fuel: '',
+                fuelType: '',
                 countryCode: country,
                 capacity: PowerFormatter.getBaseValueFromValueInDisplayUnit(
                     parseFloat(values.capacity)

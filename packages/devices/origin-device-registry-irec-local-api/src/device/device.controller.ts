@@ -73,9 +73,9 @@ export class DeviceController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CodeNameDTO],
-        description: 'Returns all IREC fuels'
+        description: 'Returns all IREC device types'
     })
-    getFuels(): CodeNameDTO[] {
+    getDeviceTypes(): CodeNameDTO[] {
         const deviceTypes = this.deviceService.getDeviceTypes();
 
         return deviceTypes.map((deviceType) => plainToClass(CodeNameDTO, deviceType));
@@ -85,7 +85,7 @@ export class DeviceController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CodeNameDTO],
-        description: 'Returns all IREC fuels types'
+        description: 'Returns all IREC fuel types'
     })
     getFuelTypes(): CodeNameDTO[] {
         const fuelTypes = this.deviceService.getFuelTypes();

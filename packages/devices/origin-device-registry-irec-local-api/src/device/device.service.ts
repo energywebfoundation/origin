@@ -18,7 +18,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
 import { DeviceCreatedEvent } from './events';
-import { IREC_FUEL_TYPES, IREC_FUELS } from './Fuels';
+import { IREC_DEVICE_TYPES, IREC_FUEL_TYPES } from './Fuels';
 import { IrecDeviceService } from './irec-device.service';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class DeviceService {
             throw new BadRequestException('Invalid device type');
         }
 
-        if (!this.isValidFuelType(newDevice.fuel)) {
+        if (!this.isValidFuelType(newDevice.fuelType)) {
             throw new BadRequestException('Invalid fuel type');
         }
 
@@ -102,7 +102,7 @@ export class DeviceService {
     }
 
     getDeviceTypes(): CodeNameDTO[] {
-        return IREC_FUELS;
+        return IREC_DEVICE_TYPES;
     }
 
     getFuelTypes(): CodeNameDTO[] {
@@ -110,7 +110,7 @@ export class DeviceService {
     }
 
     isValidDeviceType(deviceType: string): boolean {
-        return !!this.getDeviceTypes().find((fuel) => fuel.code === deviceType);
+        return !!this.getDeviceTypes().find((device) => device.code === deviceType);
     }
 
     isValidFuelType(fuelType: string): boolean {
