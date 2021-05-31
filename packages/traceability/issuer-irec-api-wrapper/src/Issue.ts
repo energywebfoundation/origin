@@ -23,7 +23,7 @@ export class Issue extends FileIds {
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
     @IsNotEmpty()
-    fuel: string;
+    fuelType: string;
 
     @Expose({ name: 'recipient_account_code', toPlainOnly: true })
     @IsString()
