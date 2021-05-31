@@ -1,4 +1,4 @@
-import { prepareDeviceSpecsForCard } from '@energyweb/origin-ui-device-logic';
+// import { useSpecsForAllDeviceCard } from '@energyweb/origin-ui-device-logic';
 import { useTranslation } from 'react-i18next';
 
 type TUsePublicDeviceCardEffectsArgs = {
@@ -10,8 +10,8 @@ export const usePublicDeviceCardEffects = ({
 }: TUsePublicDeviceCardEffectsArgs) => {
   const { t } = useTranslation();
 
-  const { specsData, iconsData } = prepareDeviceSpecsForCard({ t, device });
+  // const { specsData, iconsData } = useSpecsForAllDeviceCard({ device });
   const hoverText = t('device.card.hoverText').toUpperCase();
 
-  return { specsData, iconsData, hoverText };
+  // return { specsData, iconsData, hoverText };
 };

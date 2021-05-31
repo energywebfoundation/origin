@@ -1,25 +1,43 @@
-import { HorizontalCard } from '@energyweb/origin-ui-core';
-import { Typography } from '@material-ui/core';
 import React from 'react';
+
+import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { HorizontalCard } from '@energyweb/origin-ui-core';
+import { ComposedDevice } from '@energyweb/origin-ui-device-data';
+
+import { MyDeviceCardHeader } from '../MyDeviceCardHeader';
+import { MyDeviceCardContent } from '../MyDeviceCardContent';
+
+import { useMyDeviceCardEffects } from './MyDeviceCard.effects';
+import { useStyles } from './MyDeviceCard.styles';
 
 export interface MyDeviceCardProps {
   selected: boolean;
   onClick: () => void;
-  device: any;
+  device: ComposedDevice;
+  allDeviceTypes: CodeNameDTO[];
 }
 
 export const MyDeviceCard: React.FC<MyDeviceCardProps> = ({
   device,
+  allDeviceTypes,
   selected,
   onClick,
 }) => {
+  const { imageUrl, fallbackIcon, cardHeaderProps, cardContentProps } =
+    useMyDeviceCardEffects(device, allDeviceTypes);
+  const classes = useStyles();
+
   return (
     <HorizontalCard
       selected={selected}
       onClick={onClick}
-      header={<Typography>{device.name}</Typography>}
-      content={<Typography>{device.deviceType}</Typography>}
-      imageUrl={device.imageUrl}
+      imageUrl={imageUrl}
+      fallbackIcon={fallbackIcon}
+      fallbackIconProps={{ className: classes.fallbackIcon }}
+      header={<MyDeviceCardHeader {...cardHeaderProps} />}
+      content={
+        <MyDeviceCardContent deviceId={device.id} {...cardContentProps} />
+      }
     />
   );
 };

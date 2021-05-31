@@ -1,2 +1,3 @@
-export * from './deviceListCard';
-export * from './detailViewCard';
+// export * from './allDeviceCard';
+// export * from './detailViewCard';
+export * from './myDeviceCard';

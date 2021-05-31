@@ -13,24 +13,25 @@ export interface PublicDeviceCardProps {
 }
 
 export const PublicDeviceCard: FC<PublicDeviceCardProps> = ({ device }) => {
-  const { specsData, iconsData, hoverText } = usePublicDeviceCardEffects({
-    device,
-  });
+  // const { specsData, iconsData, hoverText } = usePublicDeviceCardEffects({
+  //   device,
+  // });
   const classes = useStyles();
   return (
-    <CardWithImage
-      heading={device.facilityName}
-      hoverText={hoverText}
-      imageUrl={device.images}
-      fallbackIcon={iconsData[0].icon}
-      fallbackIconProps={{ className: classes.icon }}
-      content={
-        <PublicDeviceCardContent
-          id={device.id}
-          specsData={specsData}
-          iconsData={iconsData}
-        />
-      }
-    />
+    <></>
+    // <CardWithImage
+    //   heading={device.facilityName}
+    //   hoverText={hoverText}
+    //   imageUrl={device.images}
+    //   fallbackIcon={iconsData[0].icon}
+    //   fallbackIconProps={{ className: classes.icon }}
+    //   content={
+    //     <PublicDeviceCardContent
+    //       id={device.id}
+    //       specsData={specsData}
+    //       iconsData={iconsData}
+    //     />
+    //   }
+    // />
   );
 };

@@ -1,19 +1,14 @@
-import { useMyDevices } from '@energyweb/origin-ui-device-data';
-import { useState } from 'react';
+import {
+  useAllExistingDeviceTypes,
+  useMyDevices,
+} from '@energyweb/origin-ui-device-data';
 
 export const useMyDevicePageEffects = () => {
-  const [selected, setSelected] = useState(null);
-  const myDevices = useMyDevices();
+  const { myDevices, isLoading: myDevicesLoading } = useMyDevices();
+  const { allTypes: allDeviceTypes, isLoading: allTypesLoading } =
+    useAllExistingDeviceTypes();
 
-  const handleSelect = (id) => {
-    if (id === selected) {
-      setSelected(null);
-    } else {
-      setSelected(id);
-    }
-  };
+  const isLoading = myDevicesLoading || allTypesLoading;
 
-  console.log(myDevices);
-
-  return { selected, handleSelect };
+  return { myDevices, allDeviceTypes, isLoading };
 };

@@ -1,4 +1,4 @@
-import { prepareDeviceDetailViewSpecs } from '@energyweb/origin-ui-device-logic';
+// import { prepareDeviceDetailViewSpecs } from '@energyweb/origin-ui-device-logic';
 import { useTranslation } from 'react-i18next';
 
 type TUseDetailViewCardEffectsArgs = {
@@ -9,9 +9,9 @@ export const useDetailViewCardEffects = ({
   device,
 }: TUseDetailViewCardEffectsArgs) => {
   const { t } = useTranslation();
-  const { headingIcon, specsData } = prepareDeviceDetailViewSpecs({
-    t,
-    device,
-  });
-  return { headingIcon, specsData };
+  // const { headingIcon, specsData } = prepareDeviceDetailViewSpecs({
+  //   t,
+  //   device,
+  // });
+  // return { headingIcon, specsData };
 };
