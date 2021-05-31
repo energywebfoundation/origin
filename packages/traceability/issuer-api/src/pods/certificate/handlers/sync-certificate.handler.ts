@@ -17,24 +17,24 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
         private readonly repository: Repository<Certificate>
     ) {}
 
-    async handle({ tokenId }: SyncCertificateEvent): Promise<ISuccessResponse> {
-        this.logger.log(
-            `Detected a new event for certificate with tokenId ${tokenId}. Re-syncing...`
-        );
+    async handle({ id }: SyncCertificateEvent): Promise<ISuccessResponse> {
+        this.logger.log(`Detected a new event for certificate with id ${id}. Re-syncing...`);
 
-        const certificate = await this.repository.findOne(
-            { tokenId },
-            { relations: ['blockchain'] }
-        );
+        const certificate = await this.repository.findOne({ id }, { relations: ['blockchain'] });
 
-        if (!certificate.blockchain || !certificate.tokenId) {
-            throw new Error(
-                `Certificate ${certificate.id} is missing either blockchain (${certificate.blockchain}) or tokenId (${certificate.tokenId}) properties.`
+        if (!certificate) {
+            return ResponseFailure(`No certificate with ID ${id}.`, HttpStatus.NOT_FOUND);
+        }
+
+        if (!certificate.blockchain) {
+            return ResponseFailure(
+                `No certificate with ID ${id}.`,
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
 
         const onChainCert = await new OnChainCertificate(
-            certificate.tokenId,
+            certificate.id,
             certificate.blockchain.wrap()
         ).sync();
 
@@ -52,14 +52,12 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
                 );
             }
         } catch (e) {
-            this.logger.error(
-                `Failed to resync certificate ${tokenId}: ${JSON.stringify(e.message)}`
-            );
+            this.logger.error(`Failed to resync certificate ${id}: ${JSON.stringify(e.message)}`);
             this.logger.error(JSON.stringify(e));
             return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.logger.log(`Successfully re-synced certificate with tokenId ${tokenId}.`);
+        this.logger.log(`Successfully re-synced certificate with id ${id}.`);
         return ResponseSuccess();
     }
 }

@@ -7,11 +7,11 @@ import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/o
 import { HttpStatus } from '@nestjs/common';
 import { ValidateCertificationRequestCommand } from '../commands/validate-certification-request.command';
 import { CertificationRequest } from '../certification-request.entity';
-import { CertificationRequestStatus } from '../certification-request-status.enum';
 
 @CommandHandler(ValidateCertificationRequestCommand)
 export class ValidateCertificationRequestHandler
-    implements ICommandHandler<ValidateCertificationRequestCommand> {
+    implements ICommandHandler<ValidateCertificationRequestCommand>
+{
     constructor(
         @InjectRepository(CertificationRequest)
         private readonly repository: Repository<CertificationRequest>
@@ -26,8 +26,7 @@ export class ValidateCertificationRequestHandler
         const deviceCertificationRequests = await this.repository.find({
             where: {
                 revoked: false,
-                deviceId,
-                status: Not(CertificationRequestStatus.Error)
+                deviceId
             }
         });
 

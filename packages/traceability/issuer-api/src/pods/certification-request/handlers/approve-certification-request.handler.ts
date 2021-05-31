@@ -10,12 +10,12 @@ import { ApproveCertificationRequestCommand } from '../commands/approve-certific
 import { CertificationRequest } from '../certification-request.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { CertificateCreatedEvent } from '../../certificate/events/certificate-created-event';
-import { CertificationRequestStatus } from '../certification-request-status.enum';
 import { CertificateRequestApprovedEvent } from '../events';
 
 @CommandHandler(ApproveCertificationRequestCommand)
 export class ApproveCertificationRequestHandler
-    implements ICommandHandler<ApproveCertificationRequestCommand> {
+    implements ICommandHandler<ApproveCertificationRequestCommand>
+{
     private readonly logger = new Logger(ApproveCertificationRequestHandler.name);
 
     constructor(
@@ -28,20 +28,7 @@ export class ApproveCertificationRequestHandler
     async execute(command: ApproveCertificationRequestCommand): Promise<ISuccessResponse> {
         const { id } = command;
 
-        const {
-            requestId,
-            isPrivate,
-            energy,
-            approved,
-            owner,
-            status
-        } = await this.repository.findOne(id);
-
-        if (status !== CertificationRequestStatus.Executed) {
-            const msg = `Certificate #${id} has not been yet deployed`;
-            this.logger.debug(msg);
-            return ResponseFailure(msg, HttpStatus.BAD_REQUEST);
-        }
+        const { isPrivate, energy, approved, owner } = await this.repository.findOne(id);
 
         if (approved) {
             const msg = `Certificate #${id} has already been approved`;
@@ -52,7 +39,7 @@ export class ApproveCertificationRequestHandler
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
         const certReq = await new CertificationRequestFacade(
-            requestId,
+            id,
             blockchainProperties.wrap()
         ).sync();
 
@@ -74,7 +61,7 @@ export class ApproveCertificationRequestHandler
         await this.repository.update(id, {
             approved: true,
             approvedDate: certReq.approvedDate ?? new Date(),
-            issuedCertificateTokenId: newCertificateId
+            issuedCertificateId: newCertificateId
         });
 
         this.eventBus.publish(
