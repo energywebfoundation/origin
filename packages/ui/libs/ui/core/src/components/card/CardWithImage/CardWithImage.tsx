@@ -3,6 +3,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  CardProps,
   Typography,
 } from '@material-ui/core';
 import React, { FC, ReactNode } from 'react';
@@ -13,10 +14,12 @@ import { useStyles } from './CardWithImage.styles';
 export interface CardWithImageProps {
   heading: string;
   content: ReactNode;
+  onActionClick?: () => void;
   fallbackIcon?: FC<React.SVGProps<SVGSVGElement>>;
   fallbackIconProps?: React.SVGProps<SVGSVGElement>;
   imageUrl?: string;
   hoverText?: string;
+  cardProps?: CardProps;
 }
 
 export const CardWithImage: FC<CardWithImageProps> = ({
@@ -26,11 +29,13 @@ export const CardWithImage: FC<CardWithImageProps> = ({
   fallbackIconProps,
   imageUrl,
   hoverText,
+  onActionClick,
+  cardProps,
 }) => {
   const classes = useStyles();
   return (
-    <Card>
-      <CardActionArea>
+    <Card {...cardProps}>
+      <CardActionArea onClick={onActionClick}>
         {imageUrl ? (
           <ImageWithHoverText
             src={imageUrl}
