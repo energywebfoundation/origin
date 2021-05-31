@@ -269,7 +269,8 @@
         "toBeCertified": "To be certified",
         "otherGreenAttr": "Other green attributes",
         "publicSupport": "Public support",
-        "vintageCOD": "Vintage / (Commercial Operation Date)"
+        "vintageCOD": "Vintage / (Commercial Operation Date)",
+        "viewDetailsButton": "View Details"
       },
       "register": {
         "formTitle": "Register New Device",
@@ -285,6 +286,17 @@
         "latitude": "Latitude",
         "longitude": "Longitude",
         "projectStory": "Project story"
+      },
+      "my": {
+        "requestCertificates": {
+          "formTitle": "Request Certificates for",
+          "fromTime": "From",
+          "toTime": "To",
+          "energy": "Amount of energy in MW"
+        },
+        "notifications": {
+          "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates."
+        }
       },
       "map": {
         "owner": "Owner",
@@ -321,11 +333,13 @@
         "submit": "Submit",
         "register": "Register",
         "cancel": "Cancel",
-        "change": "Change"
+        "change": "Change",
+        "confirm": "Confirm"
       }
     },
     "validation": {
-      "requiredField": "{field} is a required field"
+      "requiredField": "{field} is a required field",
+      "positiveInt": "{field} should be a positive integer"
     },
     "notifications": {
       "title": {
