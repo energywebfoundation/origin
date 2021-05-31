@@ -11,11 +11,19 @@ import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-re
 
 export type TUseSpecsForAllDeviceCardArgs = {
   device: ComposedPublicDevice;
+  allTypes: CodeNameDTO[];
+  clickHandler: (link: string) => void;
 };
 
 export type TUseSpecsForAllDeviceCardReturnType = {
   specsData: SpecFieldProps[];
   iconsData: IconTextProps[];
+  cardProps: {
+    imageUrl: string;
+    fallbackIcon: FallbackIconProps['icon'];
+    hoverText: string;
+    heading: string;
+  };
 };
 
 export type TUseSpecsForAllDeviceCard = (

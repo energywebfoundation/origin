@@ -1,3 +1,2 @@
-// export * from './allDeviceCard';
-// export * from './detailViewCard';
+export * from './allDeviceCard';
 export * from './myDeviceCard';

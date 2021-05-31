@@ -1,5 +1,4 @@
 import { ThailandFlag } from '@energyweb/origin-ui-assets';
-// import { IconTextProps, SpecFieldProps } from '@energyweb/origin-ui-core';
 import { EnergyTypeEnum } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import {

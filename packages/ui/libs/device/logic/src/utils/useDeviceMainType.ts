@@ -10,10 +10,10 @@ export const useDeviceMainType = (
 ) => {
   try {
     const decodedType = allTypes.find((type) => type.code === deviceType).name;
+    const splitValue = decodedType.split(':');
 
-    const mainType = decodedType.split(':')[0];
-    const restType =
-      decodedType.split(':').length > 1 ? decodedType.slice(1) : '';
+    const mainType = splitValue[0];
+    const restType = splitValue.length > 1 ? splitValue.slice(1).join() : '';
 
     return { mainType, restType };
   } catch (error) {
