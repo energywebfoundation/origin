@@ -83,6 +83,16 @@ export const LoginForm = () => {
         formikActions.setSubmitting(false);
     }
 
+    async function loginWithMetamask() {
+        const { identityToken, did } = await iam.initializeConnection({
+            walletProvider: WalletProvider.MetaMask
+        });
+
+        console.log({ identityToken, did });
+
+        // TODO: handle all possible corner cases here
+    }
+
     const VALIDATION_SCHEMA = Yup.object().shape({
         email: Yup.string().email().label(t('user.properties.email')).required(),
         password: Yup.string().label(t('user.properties.password')).required()
@@ -154,6 +164,11 @@ export const LoginForm = () => {
                                     onClick={() => history.push(`${accountPageUrl}/user-register`)}
                                 >
                                     {t('user.actions.registerNow')}
+                                </Button>
+                            </Box>
+                            <Box pt={1} textAlign="left">
+                                <Button onClick={() => loginWithMetamask()}>
+                                    Login with DID and Metamask
                                 </Button>
                             </Box>
                         </Form>
