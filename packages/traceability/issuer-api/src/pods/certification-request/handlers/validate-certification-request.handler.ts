@@ -2,7 +2,7 @@ import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { HttpStatus } from '@nestjs/common';
 import { ValidateCertificationRequestCommand } from '../commands/validate-certification-request.command';

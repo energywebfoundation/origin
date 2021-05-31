@@ -50,6 +50,7 @@ import { Certificate } from './certificate.entity';
 @ApiTags('certificates')
 @ApiBearerAuth('access-token')
 @Controller('certificate')
+@UseInterceptors(ExceptionInterceptor)
 @UsePipes(ValidationPipe)
 export class CertificateController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
