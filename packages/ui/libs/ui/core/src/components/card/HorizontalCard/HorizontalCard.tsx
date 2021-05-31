@@ -1,5 +1,11 @@
 import React from 'react';
-import { Box, Card, CardMedia, CardContent } from '@material-ui/core';
+import {
+  Box,
+  Card,
+  CardMedia,
+  CardContent,
+  CardContentProps,
+} from '@material-ui/core';
 import { FallbackIcon } from '@energyweb/origin-ui-core';
 import { useStyles } from './HorizontalCard.styles';
 import { FallbackIconProps } from '../../icons';
@@ -12,6 +18,8 @@ export interface HorizontalCardProps {
   imageUrl?: string;
   fallbackIcon?: FallbackIconProps['icon'];
   fallbackIconProps?: FallbackIconProps['wrapperProps'];
+  cardHeaderProps?: CardContentProps;
+  cardContentProps?: CardContentProps;
 }
 
 export const HorizontalCard: React.FC<HorizontalCardProps> = ({
@@ -22,6 +30,8 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   imageUrl,
   fallbackIcon,
   fallbackIconProps,
+  cardHeaderProps,
+  cardContentProps,
 }) => {
   const classes = useStyles();
   const cardClass = `${classes.card} ${selected && classes.selectedCard}`;
@@ -36,8 +46,10 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
         </CardMedia>
       ) : null}
       <Box className={classes.contentWrapper}>
-        <CardContent className={classes.header}>{header}</CardContent>
-        <CardContent>{content}</CardContent>
+        <CardContent className={classes.header} {...cardHeaderProps}>
+          {header}
+        </CardContent>
+        <CardContent {...cardContentProps}>{content}</CardContent>
       </Box>
     </Card>
   );

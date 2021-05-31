@@ -16,6 +16,7 @@ export interface FileUploadProps extends TUseFileUploadEffectsArgs {
     React.HTMLAttributes<HTMLElement>,
     HTMLElement
   >;
+  dropzoneClassName?: string;
 }
 
 export const FileUpload: FC<FileUploadProps> = ({
@@ -25,22 +26,19 @@ export const FileUpload: FC<FileUploadProps> = ({
   heading,
   headingProps,
   wrapperProps,
+  dropzoneClassName,
 }) => {
-  const {
-    getRootProps,
-    getInputProps,
-    files,
-    state,
-    dispatch,
-  } = useFileUploadEffects({ apiUploadFunction, onChange });
+  const { getRootProps, getInputProps, files, state, dispatch } =
+    useFileUploadEffects({ apiUploadFunction, onChange });
   const classes = useStyles();
+  const dropzoneClasses = `${classes.dropzone} ${dropzoneClassName}`;
 
   return (
     <Box>
       {heading && <Typography {...headingProps}>{heading}</Typography>}
       <section className={classes.wrapper} {...wrapperProps}>
         <div
-          {...getRootProps({ className: classes.dropzone })}
+          {...getRootProps({ className: dropzoneClasses })}
           style={{
             ...(getRootProps().style as React.CSSProperties),
           }}

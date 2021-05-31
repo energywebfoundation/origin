@@ -6,6 +6,9 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     cursor: 'pointer',
     margin: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
   selectedCard: {
     boxShadow: `0 0 3pt 2pt ${LightenColor(
@@ -16,10 +19,14 @@ export const useStyles = makeStyles((theme) => ({
   },
   image: {
     width: 160,
-    height: 140,
+    minHeight: 140,
+    borderRight: `1px solid ${theme.palette.background.paper}`,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
   },
   contentWrapper: {
     width: '100%',
