@@ -10,14 +10,18 @@ import { BigNumber } from 'ethers';
 import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-react-query-client';
 
 export enum EnergyTypeEnum {
-  GASEOUS = 'gaseous',
-  HYDRO = 'hydro-electric head',
-  LIQUID = 'liquid',
-  SOLAR = 'solar',
-  SOLID = 'solid',
-  THERMAL = 'thermal',
   WIND = 'wind',
-  MARINE = 'marine',
+  SOLAR = 'solar',
+  HYDRO = 'hydro-electric',
+  MARINE_TIDAL = 'marine tidal',
+  MARINE_WAVE = 'marine wave',
+  MARINE_CURRENT = 'marine current',
+  MARINE_VERTICAL = 'marine vertical presure',
+  RENEWABLE_HEAT = 'renewable heat',
+  BIOMASS_SOLID = 'biomass solid',
+  BIOMASS_LIQUID = 'biomass liquid',
+  BIOGAS = 'biogas',
+  CO_FIRED_WITH_FOSSIL = 'co-fired with fossil',
 }
 
 export type DeviceVintageDTO = {
