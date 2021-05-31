@@ -1,7 +1,7 @@
-import { IconText, SpecField } from '@energyweb/origin-ui-core';
-import { Box, Card, CardContent } from '@material-ui/core';
+// import { IconText, SpecField } from '@energyweb/origin-ui-core';
+import { Card } from '@material-ui/core';
 import React, { FC } from 'react';
-import { useDetailViewCardEffects } from './DetailViewCard.effects';
+// import { useDetailViewCardEffects } from './DetailViewCard.effects';
 import { useStyles } from './DetailViewCard.styles';
 
 export interface DetailViewCardProps {

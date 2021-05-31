@@ -1,5 +1,5 @@
 import { SpecField, SpecFieldProps } from '@energyweb/origin-ui-core';
-import { Button, Typography, Grid } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
 import React from 'react';
 import { useMyDeviceCardHeaderEffects } from './MyDeviceCardHeader.effects';
