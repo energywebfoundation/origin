@@ -2,7 +2,7 @@ import fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { entities, AppModule } from '@energyweb/origin-organization-irec-api';
+import { AppModule, entities } from '@energyweb/origin-organization-irec-api';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Yaml = require('json-to-pretty-yaml');

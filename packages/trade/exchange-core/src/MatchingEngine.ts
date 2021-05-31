@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, LoggerService } from '@nestjs/common';
 import BN from 'bn.js';
 import { List } from 'immutable';
 import { Subject } from 'rxjs';
@@ -37,15 +37,11 @@ type OrderBookAction<TProduct, TProductFilter> = {
 const prettyJSON = (input: any) => JSON.stringify(input, null, 2);
 
 export class MatchingEngine<TProduct, TProductFilter> {
-    private logger = new Logger(MatchingEngine.name);
+    private bids: List<IMatchableOrder<TProduct, TProductFilter>> =
+        List<IMatchableOrder<TProduct, TProductFilter>>();
 
-    private bids: List<IMatchableOrder<TProduct, TProductFilter>> = List<
-        IMatchableOrder<TProduct, TProductFilter>
-    >();
-
-    private asks: List<IMatchableOrder<TProduct, TProductFilter>> = List<
-        IMatchableOrder<TProduct, TProductFilter>
-    >();
+    private asks: List<IMatchableOrder<TProduct, TProductFilter>> =
+        List<IMatchableOrder<TProduct, TProductFilter>>();
 
     private readonly triggers = new Subject();
 
@@ -55,7 +51,10 @@ export class MatchingEngine<TProduct, TProductFilter> {
 
     private pendingActions = List<OrderBookAction<TProduct, TProductFilter>>();
 
-    constructor(private readonly priceStrategy: IPriceStrategy) {
+    constructor(
+        private readonly priceStrategy: IPriceStrategy,
+        private logger: LoggerService = new Logger(MatchingEngine.name)
+    ) {
         this.triggers.pipe(concatMap(async () => this.trigger())).subscribe();
     }
 

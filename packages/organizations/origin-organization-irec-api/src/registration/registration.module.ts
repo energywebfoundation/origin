@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,7 +12,8 @@ import { RegistrationService } from './registration.service';
     imports: [
         TypeOrmModule.forFeature([Registration]),
         CqrsModule,
-        PassportModule.register({ defaultStrategy: 'jwt' })
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        ConfigModule
     ],
     providers: [RegistrationService],
     exports: [RegistrationService],

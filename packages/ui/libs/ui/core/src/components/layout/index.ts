@@ -6,3 +6,4 @@ export * from './PageWrapper';
 export * from './TopBar';
 export * from './ProgressLine';
 export * from './GenericMap';
+export * from './ResponsiveSidebar';

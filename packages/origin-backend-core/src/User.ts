@@ -58,9 +58,6 @@ export interface IUserProperties {
     rights: number;
     status: UserStatus;
     kycStatus: KYCStatus;
-
-    blockchainAccountAddress?: string;
-    blockchainAccountSignedMessage?: string;
 }
 
 export interface IUser extends IUserProperties {

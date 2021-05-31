@@ -61,14 +61,8 @@ const confirmDeposit = () => {
 
 describe('Demand orders trading', () => {
     before(async () => {
-        ({
-            transferService,
-            accountService,
-            databaseService,
-            demandService,
-            orderService,
-            app
-        } = await bootstrapTestInstance());
+        ({ transferService, accountService, databaseService, demandService, orderService, app } =
+            await bootstrapTestInstance());
 
         await app.init();
     });
@@ -218,7 +212,7 @@ describe('Demand orders trading', () => {
                 expect(bid2.status).equals(OrderStatus.PendingCancellation);
             });
 
-        await sleep(3000);
+        await sleep(5000);
 
         await request(app.getHttpServer())
             .get(`/demand/${demandId}`)

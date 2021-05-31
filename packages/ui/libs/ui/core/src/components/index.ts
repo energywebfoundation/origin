@@ -7,3 +7,4 @@ export * from './images';
 export * from './text';
 export * from './notification';
 export * from './list';
+export * from './card';

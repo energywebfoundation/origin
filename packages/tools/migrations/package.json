@@ -21,7 +21,7 @@
         "build:ts": "tsc -b tsconfig.json",
         "build:container:canary": "make build-canary",
         "build:container:latest": "make build-stable",
-        "start": "ts-node src/main.ts",
+        "start": "npx ts-node src/main.ts",
         "start:defaultConfigs": "yarn start -c ./config/demo-config.json -s ./config/seed.sql -e ../../../.env",
         "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8553 && yarn start:redeploy\"",
         "start-ganache": "ganache-cli -q -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0 -p 8553",
@@ -38,8 +38,8 @@
         "@energyweb/utils-general": "11.0.2",
         "@types/pg": "7.14.11",
         "commander": "6.2.1",
-        "dotenv": "8.2.0",
-        "ethers": "5.1.4",
+        "dotenv": "10.0.0",
+        "ethers": "5.2.0",
         "pg": "8.6.0",
         "winston": "3.3.3",
         "winston-transport": "4.4.0",
@@ -49,8 +49,8 @@
     "devDependencies": {
         "typescript": "4.2.4",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.14.43",
-        "mocha": "8.3.2"
+        "@types/node": "14.17.0",
+        "mocha": "8.4.0"
     },
     "publishConfig": {
         "access": "public",

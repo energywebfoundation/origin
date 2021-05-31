@@ -33,7 +33,7 @@ export function usePermissions(
     },
     [Requirement.HasUserBlockchainAddress]: {
       label: t('general.feedback.userHasToHaveBlockchainAccount'),
-      passing: Boolean(user?.blockchainAccountAddress),
+      passing: Boolean(user?.organization?.blockchainAccountAddress),
     },
   };
 

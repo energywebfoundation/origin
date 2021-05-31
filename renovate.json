@@ -13,6 +13,10 @@
             "groupName": "webpack"
         },
         {
+            "packagePatterns": ["ethers"],
+            "groupName": "ethers"
+        },
+        {
             "packagePatterns": ["jest"],
             "groupName": "jest"
         },

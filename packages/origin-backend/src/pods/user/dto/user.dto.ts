@@ -68,14 +68,4 @@ export class UserDTO implements IUser {
     @IsOptional()
     @IsBoolean()
     emailConfirmed?: boolean;
-
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
-    @IsString()
-    blockchainAccountAddress?: string;
-
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
-    @IsString()
-    blockchainAccountSignedMessage?: string;
 }

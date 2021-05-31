@@ -19,31 +19,51 @@ import {
 import { EnergyTypeEnum } from '@energyweb/origin-ui-utils';
 import { FC } from 'react';
 
+const images: {
+  [k: string]: { regular: FC; selected: FC };
+} = {
+  [EnergyTypeEnum.WIND]: { regular: WindRegular, selected: WindSelected },
+  [EnergyTypeEnum.SOLAR]: { regular: SolarRegular, selected: SolarSelected },
+  [EnergyTypeEnum.HYDRO]: { regular: HydroRegular, selected: HydroSelected },
+  [EnergyTypeEnum.MARINE_TIDAL]: {
+    regular: MarineRegular,
+    selected: MarineSelected,
+  },
+  [EnergyTypeEnum.MARINE_WAVE]: {
+    regular: MarineRegular,
+    selected: MarineSelected,
+  },
+  [EnergyTypeEnum.MARINE_CURRENT]: {
+    regular: MarineRegular,
+    selected: MarineSelected,
+  },
+  [EnergyTypeEnum.MARINE_VERTICAL]: {
+    regular: MarineRegular,
+    selected: MarineSelected,
+  },
+  [EnergyTypeEnum.RENEWABLE_HEAT]: {
+    regular: ThermalRegular,
+    selected: ThermalSelected,
+  },
+  [EnergyTypeEnum.BIOMASS_SOLID]: {
+    regular: SolidRegular,
+    selected: SolidSelected,
+  },
+  [EnergyTypeEnum.BIOMASS_LIQUID]: {
+    regular: LiquidRegular,
+    selected: LiquidSelected,
+  },
+  [EnergyTypeEnum.BIOGAS]: {
+    regular: GaseousRegular,
+    selected: GaseousSelected,
+  },
+  [EnergyTypeEnum.CO_FIRED_WITH_FOSSIL]: {
+    regular: SolidRegular,
+    selected: SolidSelected,
+  },
+};
+
 export const getEnergyTypeImage = (type: EnergyTypeEnum, selected = false) => {
-  const images: {
-    [k: string]: { regular: FC; selected: FC };
-  } = {
-    [EnergyTypeEnum.GASEOUS]: {
-      regular: GaseousRegular,
-      selected: GaseousSelected,
-    },
-    [EnergyTypeEnum.HYDRO]: { regular: HydroRegular, selected: HydroSelected },
-    [EnergyTypeEnum.LIQUID]: {
-      regular: LiquidRegular,
-      selected: LiquidSelected,
-    },
-    [EnergyTypeEnum.SOLAR]: { regular: SolarRegular, selected: SolarSelected },
-    [EnergyTypeEnum.SOLID]: { regular: SolidRegular, selected: SolidSelected },
-    [EnergyTypeEnum.THERMAL]: {
-      regular: ThermalRegular,
-      selected: ThermalSelected,
-    },
-    [EnergyTypeEnum.WIND]: { regular: WindRegular, selected: WindSelected },
-    [EnergyTypeEnum.MARINE]: {
-      regular: MarineRegular,
-      selected: MarineSelected,
-    },
-  };
   const deviceType = type || EnergyTypeEnum.SOLAR;
   return images[deviceType][selected ? 'selected' : 'regular'];
 };

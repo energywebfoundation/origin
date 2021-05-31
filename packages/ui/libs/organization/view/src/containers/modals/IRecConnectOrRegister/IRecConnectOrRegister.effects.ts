@@ -19,7 +19,7 @@ export const useIRecConnectOrRegisterEffects = () => {
       payload: false,
     });
 
-    if (!user?.blockchainAccountAddress) {
+    if (!user?.organization?.blockchainAccountAddress) {
       dispatchModals({
         type: OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU,
         payload: true,

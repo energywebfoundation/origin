@@ -42,6 +42,10 @@ export class CertificateDTO {
     @IsPositive()
     creationTime: number;
 
+    @ApiProperty({ type: String })
+    @IsString()
+    metadata: string;
+
     @ApiProperty({ type: EnergyDTO })
     @ValidateNested()
     energy: EnergyDTO;

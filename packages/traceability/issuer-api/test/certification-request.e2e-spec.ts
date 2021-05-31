@@ -255,7 +255,7 @@ describe('Certification Request tests', () => {
 
         expect(success).to.be.true;
 
-        await sleep(1000);
+        await sleep(3000);
 
         const {
             body: { issuedCertificateTokenId: newCertificateTokenId }

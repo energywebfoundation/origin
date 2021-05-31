@@ -1,19 +1,22 @@
+import { Skeleton } from '@material-ui/core';
 import React, { FC } from 'react';
-import { Grid } from '@material-ui/core';
-import { myDevicesMock } from '../../__mocks__/myDevicesMock';
-import { DeviceCard } from '../../containers';
-import { useStyles } from './MyDevicesPage.styles';
+import { MyDeviceCardsList } from '../../containers';
+import { useMyDevicePageEffects } from './MyDevicesPage.effects';
 
 export const MyDevicesPage: FC = () => {
-  const classes = useStyles();
+  const { myDevices, allDeviceTypes, isLoading } = useMyDevicePageEffects();
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <Skeleton width={1000} height={140} />
+        <Skeleton width={1000} height={140} />
+        <Skeleton width={1000} height={140} />
+      </div>
+    );
+  }
 
   return (
-    <Grid container spacing={3} className={classes.wrapper}>
-      {myDevicesMock.map((device) => (
-        <Grid key={`my-device-${device.id}`} item>
-          <DeviceCard device={device} />
-        </Grid>
-      ))}
-    </Grid>
+    <MyDeviceCardsList allDeviceTypes={allDeviceTypes} devices={myDevices} />
   );
 };

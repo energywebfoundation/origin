@@ -17,7 +17,7 @@ export class LoggedInUser implements ILoggedInUser {
         this.id = user.id;
         this.organizationId = user.organization?.id;
         this.email = user.email;
-        this.blockchainAccountAddress = user.blockchainAccountAddress;
+        this.blockchainAccountAddress = user.organization?.blockchainAccountAddress;
         this.rights = user.rights;
     }
 

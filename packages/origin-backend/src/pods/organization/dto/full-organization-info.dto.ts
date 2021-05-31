@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, plainToClass } from 'class-transformer';
-import { IsArray, IsISO31661Alpha2, IsString } from 'class-validator';
+import { IsArray, IsISO31661Alpha2, IsOptional, IsString } from 'class-validator';
 import { Organization } from '../organization.entity';
 import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
 
@@ -40,15 +40,25 @@ export class FullOrganizationInfoDTO extends PublicOrganizationInfoDTO {
     @Expose()
     signatoryPhoneNumber: string;
 
-    @ApiProperty({ type: [String], required: false })
+    @ApiPropertyOptional({ type: [String] })
     @IsArray()
     @Expose()
     documentIds?: string[];
 
-    @ApiProperty({ type: [String], required: false })
+    @ApiPropertyOptional({ type: [String] })
     @IsArray()
     @Expose()
     signatoryDocumentIds?: string[];
+
+    @ApiPropertyOptional({ type: String })
+    @IsString()
+    @IsOptional()
+    blockchainAccountAddress?: string;
+
+    @ApiPropertyOptional({ type: String })
+    @IsString()
+    @IsOptional()
+    blockchainAccountSignedMessage?: string;
 
     public static fromPlatformOrganization(
         platformOrganization: Organization
