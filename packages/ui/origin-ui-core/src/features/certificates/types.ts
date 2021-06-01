@@ -20,7 +20,6 @@ export interface ICertificate {
 
     // Blockchain specific properties
     blockchain?: any;
-    tokenId?: number;
     creationBlockHash?: string;
 }
 

@@ -50,14 +50,10 @@ import { ICertificate, ICertificateViewItem } from './types';
 import { fromGeneralSelectors } from '../general';
 import { fromUsersSelectors } from '../users';
 
-export function* getCertificate(id: number, byTokenId = false): any {
+export function* getCertificate(id: number): any {
     const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
-    const { data: certificate } = yield apply(
-        certificatesClient,
-        byTokenId ? certificatesClient.getByTokenId : certificatesClient.get,
-        [id]
-    );
+    const { data: certificate } = yield apply(certificatesClient, certificatesClient.get, [id]);
 
     return {
         ...certificate,

@@ -10,7 +10,7 @@ import {
 } from '../../Table';
 import { Skeleton } from '@material-ui/lab';
 import { Check } from '@material-ui/icons';
-import { CertificationRequestStatus } from '@energyweb/issuer-api-client';
+
 import { getConfiguration } from '../../../features/configuration';
 import { getAllDevices, fetchAllDevices } from '../../../features/devices';
 
@@ -104,7 +104,6 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
 
                 if (
                     (props.approved !== undefined && request.approved !== props.approved) ||
-                    request.status !== CertificationRequestStatus.Executed ||
                     (!isIssuer && user.organization?.id !== requestDevice?.organizationId)
                 ) {
                     continue;
