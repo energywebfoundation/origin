@@ -12,8 +12,6 @@ import supertest from 'supertest';
 import { bootstrapTestInstance, config, TestUser } from './origin';
 import { request } from './request';
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 describe('Issuer', () => {
     let app: INestApplication;
     let rpc: Ganache.Server;
