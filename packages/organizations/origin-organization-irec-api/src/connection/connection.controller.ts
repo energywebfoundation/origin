@@ -14,7 +14,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ConnectionDTO, CreateConnectionDTO } from './dto';
+import { CreateConnectionDTO } from '../irec';
+import { ConnectionDTO } from './dto';
 import { CreateConnectionCommand, GetConnectionCommand } from './commands';
 
 @ApiTags('irec_connection')

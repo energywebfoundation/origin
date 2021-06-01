@@ -8,11 +8,7 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
-import { AppModule } from '../src/app.module';
-import { Connection } from '../src/connection/connection.entity';
-import { Registration } from '../src/registration/registration.entity';
-import { RegistrationService } from '../src/registration/registration.service';
-import { IrecConnectionService } from '../src';
+import { AppModule, Connection, IrecService, Registration, RegistrationService } from '../src';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -77,7 +73,7 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
-        .overrideProvider(IrecConnectionService)
+        .overrideProvider(IrecService)
         .useValue({
             login: () => ({
                 expiryDate: new Date(),

@@ -7,4 +7,4 @@ import { IrecService } from './irec.service';
     exports: [IrecService],
     controllers: []
 })
-export class ConnectionModule {}
+export class IrecModule {}

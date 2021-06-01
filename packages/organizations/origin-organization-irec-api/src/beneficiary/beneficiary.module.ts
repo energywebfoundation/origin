@@ -16,4 +16,4 @@ import { Beneficiary } from './beneficiary.entity';
     exports: [],
     controllers: []
 })
-export class ConnectionModule {}
+export class BeneficiaryModule {}
