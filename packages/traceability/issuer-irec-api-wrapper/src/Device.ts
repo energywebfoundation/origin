@@ -33,7 +33,7 @@ export class DeviceCreateParams extends FileIds {
 
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
-    fuel: string;
+    fuelType: string;
 
     @Expose({ name: 'country_code', toPlainOnly: true })
     @IsString()
@@ -101,7 +101,7 @@ export class DeviceUpdateParams extends FileIds {
     @IsOptional()
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
-    fuel?: string;
+    fuelType?: string;
 
     @IsOptional()
     @Expose({ name: 'country_code', toPlainOnly: true })

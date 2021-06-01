@@ -34,7 +34,7 @@ export class CreateDeviceDTO {
     @IsString()
     @IsNotEmpty()
     @Expose()
-    fuel: string;
+    fuelType: string;
 
     @ApiProperty({ type: String })
     @IsString()

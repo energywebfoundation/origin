@@ -31,7 +31,7 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
     deviceType: string;
 
     @Column()
-    fuel: string;
+    fuelType: string;
 
     @Column()
     countryCode: string;

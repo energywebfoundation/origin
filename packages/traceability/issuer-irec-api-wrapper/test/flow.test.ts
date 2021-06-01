@@ -38,7 +38,7 @@ describe('API flows', () => {
             countryCode: 'GB',
             defaultAccount: tradeAccount,
             deviceType: 'T020001',
-            fuel: 'ES200',
+            fuelType: 'ES200',
             issuer: issuerOrg.code,
             latitude: '53.405088',
             longitude: '-1.744222',
@@ -124,7 +124,7 @@ describe('API flows', () => {
             start: moment().subtract(2, 'day').toDate(),
             end: moment().subtract(1, 'day').toDate(),
             production: 10,
-            fuel: device.fuel,
+            fuelType: device.fuelType,
             notes: 'Some note',
             files: [fileId]
         };
