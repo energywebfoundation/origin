@@ -38,8 +38,7 @@ export interface ICertificationRequest {
     revokedDate?: string;
 
     // Blockchain specific properties
-    requestId?: number;
-    issuedCertificateTokenId?: number;
+    issuedCertificateId?: number;
 }
 
 export interface ICertificateEnergy {

@@ -265,7 +265,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
 
                 const onChainCertificate: Certificate = yield call(
                     getBlockchainCertificate,
-                    certificate.tokenId
+                    certificate.id
                 );
 
                 const transferResult: ContractTransaction = yield call(
@@ -378,7 +378,7 @@ function* requestDepositSaga(): SagaIterator {
 
             const onChainCertificate: Certificate = yield call(
                 getBlockchainCertificate,
-                certificate.tokenId
+                certificate.id
             );
 
             yield call([onChainCertificate, onChainCertificate.transfer], account.address, amount);
@@ -427,7 +427,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
 
             const onChainCertificate: Certificate = yield call(
                 getBlockchainCertificate,
-                certificate.tokenId
+                certificate.id
             );
 
             const claimResult: ContractTransaction = yield call(
