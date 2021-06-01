@@ -28,7 +28,7 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
 
         if (!certificate.blockchain) {
             return ResponseFailure(
-                `No certificate with ID ${id}.`,
+                `Something went wrong. Certificate ${id} doesn't have blockchain properties attached.`,
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
