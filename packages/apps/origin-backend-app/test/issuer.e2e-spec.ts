@@ -97,7 +97,5 @@ describe('Issuer', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .send(certificationRequestTestData)
             .expect(HttpStatus.CREATED);
-
-        await sleep(500);
     });
 });

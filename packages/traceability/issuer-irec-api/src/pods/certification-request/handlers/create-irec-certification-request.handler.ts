@@ -5,17 +5,17 @@ import { createReadStream } from 'fs';
 import {
     BlockchainPropertiesService,
     CertificationRequest,
-    CreateCertificationRequestHandler as OriginalHandler
+    CreateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import { FileService, UserService } from '@energyweb/origin-backend';
+
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { IrecCertificateService } from '../irec-certificate.service';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
-export class CreateCertificationRequestHandler
-    extends OriginalHandler
+export class CreateIrecCertificationRequestHandler
     implements ICommandHandler<CreateIrecCertificationRequestCommand>
 {
     constructor(
@@ -30,40 +30,32 @@ export class CreateCertificationRequestHandler
         readonly irecCertificateService: IrecCertificateService,
         readonly userService: UserService,
         readonly fileService: FileService
-    ) {
-        super(repository, blockchainPropertiesService);
-    }
+    ) {}
 
     async execute(
         params: CreateIrecCertificationRequestCommand
     ): Promise<FullCertificationRequestDTO> {
-        const stored = await this.createCertificationRequest(params);
+        const certificationRequest = await this.commandBus.execute(
+            new CreateCertificationRequestCommand(
+                params.to,
+                params.energy,
+                params.fromTime,
+                params.toTime,
+                params.deviceId,
+                params.files,
+                params.isPrivate
+            )
+        );
 
-        this.addToQueue(stored.id);
-
-        return stored;
-    }
-
-    async createCertificationRequest(
-        params: CreateIrecCertificationRequestCommand
-    ): Promise<FullCertificationRequestDTO> {
-        const certificationRequest = await super.createCertificationRequest(params);
         const irecCertificationRequest = this.irecRepository.create({
             certificationRequestId: certificationRequest.id,
             userId: String(params.user.id)
         });
         await this.irecRepository.save(irecCertificationRequest);
 
+        await this.createIrecIssuanceRequest(certificationRequest);
+
         return { ...certificationRequest, userId: irecCertificationRequest.userId };
-    }
-
-    async process(requestId: number) {
-        const request: CertificationRequest = await this.getCertificationRequest(requestId);
-
-        if (request) {
-            await this.createIrecIssuanceRequest(request);
-            await this.mintCertificationRequest(request);
-        }
     }
 
     async createIrecIssuanceRequest(request: CertificationRequest): Promise<void> {

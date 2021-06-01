@@ -122,7 +122,7 @@ export class CertificationRequestController {
             new ValidateCertificationRequestCommand(dto)
         );
 
-        if (!validationCheck.success) {
+        if (!validationCheck?.success) {
             return validationCheck;
         }
 
