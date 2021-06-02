@@ -101,7 +101,4 @@ export class Organization extends ExtendedBaseEntity implements IPublicOrganizat
     @Optional()
     @IsArray()
     documentIds: string[];
-
-    @Column({ default: '' })
-    beneficiaryId: string;
 }
