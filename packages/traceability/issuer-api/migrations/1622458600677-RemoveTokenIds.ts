@@ -12,15 +12,13 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
         );
 
         await queryRunner.query(`ALTER TABLE "issuer_certificate" ALTER COLUMN "id" DROP DEFAULT`);
-        await queryRunner.query(`DROP SEQUENCE "issuer_certificate_id_seq"`);
+        await queryRunner.query(`DROP SEQUENCE IF EXISTS "issuer_certificate_id_seq"`);
 
-        await Promise.all(
-            oldCertificates.map(async (oldCertificate: any) => {
-                return queryRunner.query(
-                    `UPDATE "issuer_certificate" SET id = ${oldCertificate.tokenId} WHERE id = '${oldCertificate.id}'`
-                );
-            })
-        );
+        for (const oldCertificate of oldCertificates) {
+            await queryRunner.query(
+                `UPDATE "issuer_certificate" SET id = ${oldCertificate.tokenId} WHERE id = '${oldCertificate.id}'`
+            );
+        }
 
         await queryRunner.query(
             `ALTER TABLE "issuer_certificate" DROP CONSTRAINT "UQ_6489c34207c69cdc7b90afb4491"`
@@ -41,15 +39,13 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
         await queryRunner.query(
             `ALTER TABLE "issuer_certification_request" ALTER COLUMN "id" DROP DEFAULT`
         );
-        await queryRunner.query(`DROP SEQUENCE "issuer_certification_request_id_seq"`);
+        await queryRunner.query(`DROP SEQUENCE IF EXISTS "issuer_certification_request_id_seq"`);
 
-        await Promise.all(
-            oldCertificationRequests.map(async (oldCertReq: any) => {
-                return queryRunner.query(
-                    `UPDATE "issuer_certification_request" SET id = ${oldCertReq.requestId} WHERE id = '${oldCertReq.id}'`
-                );
-            })
-        );
+        for (const oldCertReq of oldCertificationRequests) {
+            await queryRunner.query(
+                `UPDATE "issuer_certification_request" SET id = ${oldCertReq.requestId} WHERE id = '${oldCertReq.id}'`
+            );
+        }
 
         await queryRunner.query(
             `ALTER TABLE "issuer_certification_request" DROP CONSTRAINT "UQ_551869cc9ee5caeccd53c966cdd"`
@@ -76,13 +72,11 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
             `ALTER TABLE "issuer_certificate" ADD CONSTRAINT "UQ_6489c34207c69cdc7b90afb4491" UNIQUE ("tokenId")`
         );
 
-        await Promise.all(
-            oldCertificates.map(async (oldCertificate: any) => {
-                return queryRunner.query(
-                    `UPDATE "issuer_certificate" SET "tokenId" = ${oldCertificate.id} WHERE id = '${oldCertificate.id}'`
-                );
-            })
-        );
+        for (const oldCertificate of oldCertificates) {
+            await queryRunner.query(
+                `UPDATE "issuer_certificate" SET "tokenId" = ${oldCertificate.id} WHERE id = '${oldCertificate.id}'`
+            );
+        }
 
         /*
             CERTIFICATION REQUESTS
@@ -109,12 +103,10 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
             `ALTER TABLE "issuer_certification_request" ADD CONSTRAINT "UQ_551869cc9ee5caeccd53c966cdd" UNIQUE ("requestId")`
         );
 
-        await Promise.all(
-            oldCertificationRequests.map(async (oldCertReq: any) => {
-                return queryRunner.query(
-                    `UPDATE "issuer_certification_request" SET "requestId" = ${oldCertReq.requestId} WHERE id = '${oldCertReq.id}'`
-                );
-            })
-        );
+        for (const oldCertReq of oldCertificationRequests) {
+            await queryRunner.query(
+                `UPDATE "issuer_certification_request" SET "requestId" = ${oldCertReq.requestId} WHERE id = '${oldCertReq.id}'`
+            );
+        }
     }
 }
