@@ -3,8 +3,8 @@ import { IPublicOrganization, OrganizationStatus } from '@energyweb/origin-backe
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { IsArray, IsEnum, IsISO31661Alpha2, IsString } from 'class-validator';
 import { Optional } from '@nestjs/common';
-import { User } from '../user/user.entity';
-import { Invitation } from '../invitation/invitation.entity';
+import { User } from '../user';
+import { Invitation } from '../invitation';
 
 @Entity({ name: 'platform_organization' })
 export class Organization extends ExtendedBaseEntity implements IPublicOrganization {

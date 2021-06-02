@@ -29,6 +29,8 @@ import { OrganizationNameAlreadyTakenError } from './errors/organization-name-ta
 import { Organization } from './organization.entity';
 import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { utils } from 'ethers';
+import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
+import { FindConditions } from 'typeorm/find-options/FindConditions';
 
 @Injectable()
 export class OrganizationService {
@@ -135,6 +137,10 @@ export class OrganizationService {
         });
     }
 
+    async find(conditions?: FindConditions<Organization>): Promise<Organization[]> {
+        return this.repository.find(conditions);
+    }
+
     async getAll(): Promise<Organization[]> {
         return this.repository.find();
     }
@@ -236,10 +242,6 @@ export class OrganizationService {
                 userToBeChanged.rights as Role
             )
         );
-    }
-
-    async updateBeneficiaryId(organizationId: number, beneficiaryId: string) {
-        await this.repository.update({ id: organizationId }, { beneficiaryId });
     }
 
     async setBlockchainAddress(
