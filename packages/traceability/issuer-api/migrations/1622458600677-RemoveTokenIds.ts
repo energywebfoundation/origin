@@ -13,10 +13,6 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
 
         await queryRunner.query(`ALTER TABLE "issuer_certificate" ALTER COLUMN "id" DROP DEFAULT`);
         await queryRunner.query(`DROP SEQUENCE "issuer_certificate_id_seq"`);
-        await queryRunner.query(
-            `ALTER TABLE "issuer_certificate" DROP CONSTRAINT "UQ_6489c34207c69cdc7b90afb4491"`
-        );
-        await queryRunner.query(`ALTER TABLE "issuer_certificate" DROP COLUMN "tokenId"`);
 
         await Promise.all(
             oldCertificates.map(async (oldCertificate: any) => {
@@ -26,18 +22,16 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
             })
         );
 
+        await queryRunner.query(
+            `ALTER TABLE "issuer_certificate" DROP CONSTRAINT "UQ_6489c34207c69cdc7b90afb4491"`
+        );
+        await queryRunner.query(`ALTER TABLE "issuer_certificate" DROP COLUMN "tokenId"`);
+
         /*
             CERTIFICATION REQUESTS
         */
         const oldCertificationRequests = await queryRunner.query(
             `SELECT id, "requestId" FROM "issuer_certification_request"`
-        );
-
-        await queryRunner.query(
-            `ALTER TABLE "issuer_certification_request" DROP CONSTRAINT "UQ_551869cc9ee5caeccd53c966cdd"`
-        );
-        await queryRunner.query(
-            `ALTER TABLE "issuer_certification_request" DROP COLUMN "requestId"`
         );
 
         await queryRunner.query(
@@ -55,6 +49,13 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
                     `UPDATE "issuer_certification_request" SET id = ${oldCertReq.requestId} WHERE id = '${oldCertReq.id}'`
                 );
             })
+        );
+
+        await queryRunner.query(
+            `ALTER TABLE "issuer_certification_request" DROP CONSTRAINT "UQ_551869cc9ee5caeccd53c966cdd"`
+        );
+        await queryRunner.query(
+            `ALTER TABLE "issuer_certification_request" DROP COLUMN "requestId"`
         );
     }
 

@@ -9,7 +9,7 @@ export class RmCertificationRequestStatus1622459627494 implements MigrationInter
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `ALTER TABLE "issuer_certification_request" ADD "status" character varying NOT NULL`
+            `ALTER TABLE "issuer_certification_request" ADD "status" varchar NOT NULL DEFAULT 'Executed'`
         );
     }
 }
