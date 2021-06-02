@@ -20,11 +20,20 @@ export interface FormInputProps extends BaseTextFieldProps {
   errorText: string;
   isDirty: boolean;
   variant?: 'standard' | 'outlined' | 'filled';
-  disable: boolean;
+  disabled: boolean;
 }
 
 export const FormInput: FC<FormInputProps> = memo(
-  ({ field, register, errorExists, errorText, isDirty, variant, ...rest }) => {
+  ({
+    field,
+    register,
+    errorExists,
+    errorText,
+    isDirty,
+    variant,
+    disabled,
+    ...rest
+  }) => {
     const { ref, name, onBlur, onChange } = register(field.name);
     const showEndAdornment = field.endAdornment?.isValidCheck
       ? !errorExists && isDirty
@@ -33,7 +42,7 @@ export const FormInput: FC<FormInputProps> = memo(
     return (
       <TextField
         name={name ?? ''}
-        disabled={field.disabled}
+        disabled={disabled}
         label={field.label ?? ''}
         type={field.type ?? 'text'}
         inputRef={ref}

@@ -5,10 +5,6 @@ import * as Yup from 'yup';
 
 export type TUpdateUserEmailFormValues = { email: string };
 
-const INITIAL_FORM_VALUES: TUpdateUserEmailFormValues = {
-  email: '',
-};
-
 export const useUpdateUserAccountEmailFormConfig = (
   initialValues: TUpdateUserEmailFormValues,
   formSubmitHandler: (
@@ -19,7 +15,7 @@ export const useUpdateUserAccountEmailFormConfig = (
 
   return {
     buttonFullWidth: true,
-    buttonText: t('Save'),
+    buttonText: t('user.profile.actions.changeEmail'),
     fields: [
       {
         label: t('user.properties.email'),
@@ -27,7 +23,7 @@ export const useUpdateUserAccountEmailFormConfig = (
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
-    initialValues: INITIAL_FORM_VALUES,
+    initialValues: { email: initialValues?.email },
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
       email: Yup.string().email().label(t('user.properties.email')).required(),

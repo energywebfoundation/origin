@@ -1,1 +1,1 @@
-export const useUSerBlockchainAdressesContainerEffects = () => {};
+export const useUserBlockchainAddressesContainerEffects = () => {};

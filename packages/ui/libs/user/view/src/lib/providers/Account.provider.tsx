@@ -1,6 +1,8 @@
 import React, { createContext, memo, ReactNode, useContext } from 'react';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { useAccountProviderEffects } from './AccountProvider.effects';
+import { assertHasContext } from '@energyweb/origin-ui-utils';
+import dayjs from 'dayjs';
 
 type AccountProviderProps = {
   children: ReactNode;
@@ -12,39 +14,51 @@ export interface IAccountContextState {
   isFetchingUserAccountData: boolean;
 }
 
-type Dispatch = (newContextState: IAccountContextState) => void;
+type DispatchSetRefreshToken = () => void;
 
 const AccountContext = createContext<IAccountContextState>({
   isFetchingUserAccountData: null,
   isUserAccountDataFetched: null,
   userAccountData: null,
 });
-const AccountDispatchContext = createContext<Dispatch | null>(null);
+
+const AccountSetRefreshTokenDispatchContext =
+  createContext<DispatchSetRefreshToken | null>(null);
 
 const AccountProvider = memo(({ children }: AccountProviderProps) => {
-  const { account, setAccount } = useAccountProviderEffects();
+  const { account, setRefreshTimestampToken } = useAccountProviderEffects();
   return (
     <AccountContext.Provider value={account}>
-      <AccountDispatchContext.Provider value={setAccount}>
+      <AccountSetRefreshTokenDispatchContext.Provider
+        value={() => setRefreshTimestampToken(dayjs().unix())}
+      >
         {children}
-      </AccountDispatchContext.Provider>
+      </AccountSetRefreshTokenDispatchContext.Provider>
     </AccountContext.Provider>
   );
 });
 
 const useAccount = (): IAccountContextState => {
+  assertHasContext(AccountContext, 'useAccount', 'AccountContext');
   return useContext<IAccountContextState>(AccountContext);
 };
 
 const useAccountUserRole = () => useAccount().userAccountData?.rights;
 
-const useAccountDispatch = (): Dispatch => {
-  const context = useContext<Dispatch | null>(AccountDispatchContext);
-
-  if (context === null) {
-    throw new Error('useAccountDispatch must be used within a AccountProvider');
-  }
-  return context;
+const useAccountSetRefreshTokenDispatch = (): DispatchSetRefreshToken => {
+  assertHasContext(
+    AccountSetRefreshTokenDispatchContext,
+    'useAccountDispatch',
+    'AccountSetRefreshTokenDispatchContext'
+  );
+  return useContext<DispatchSetRefreshToken | null>(
+    AccountSetRefreshTokenDispatchContext
+  );
 };
 
-export { AccountProvider, useAccount, useAccountDispatch, useAccountUserRole };
+export {
+  AccountProvider,
+  useAccount,
+  useAccountSetRefreshTokenDispatch,
+  useAccountUserRole,
+};

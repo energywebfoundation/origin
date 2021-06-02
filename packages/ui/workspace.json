@@ -999,6 +999,46 @@
           }
         }
       }
+    },
+    "ui-blockchain": {
+      "root": "libs/ui/blockchain",
+      "sourceRoot": "libs/ui/blockchain/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/blockchain",
+            "tsConfig": "libs/ui/blockchain/tsconfig.lib.json",
+            "project": "libs/ui/blockchain/package.json",
+            "entryFile": "libs/ui/blockchain/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/blockchain/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/blockchain"],
+          "options": {
+            "jestConfig": "libs/ui/blockchain/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }

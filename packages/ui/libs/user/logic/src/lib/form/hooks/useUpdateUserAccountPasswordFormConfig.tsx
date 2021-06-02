@@ -23,18 +23,21 @@ export const useUpdateUserAccountPasswordFormConfig = (
 
   return {
     buttonFullWidth: true,
-    buttonText: t('Save'),
+    buttonText: t('user.profile.actions.changePassword'),
     fields: [
       {
+        type: 'password',
         label: t('user.properties.currentPassword'),
         name: 'currentPassword',
       },
       {
+        type: 'password',
         label: t('user.properties.newPassword'),
         name: 'newPassword',
       },
       {
-        label: t('user.properties.newPassword'),
+        type: 'password',
+        label: t('user.properties.newPasswordConfirm'),
         name: 'newPasswordConfirm',
       },
     ],
@@ -42,14 +45,18 @@ export const useUpdateUserAccountPasswordFormConfig = (
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
-      currentPassword: Yup.string().label('Current Password').required(),
-      newPassword: Yup.string().label('New Password').required(),
+      currentPassword: Yup.string()
+        .label(t('user.properties.currentPassword'))
+        .required(),
+      newPassword: Yup.string()
+        .label(t('user.properties.newPassword'))
+        .required(),
       newPasswordConfirm: Yup.string()
         .oneOf(
           [Yup.ref('newPassword'), null],
-          "Entered value doesn't match new password"
+          t('user.properties.confirmDoesntMatch')
         )
-        .label('Confirm Password')
+        .label(t('user.properties.confirmPassword'))
         .required(),
     }),
   };

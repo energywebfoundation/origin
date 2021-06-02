@@ -25,5 +25,6 @@ module.exports = {
     '<rootDir>/libs/ui/api-clients',
     '<rootDir>/libs/device/data',
     '<rootDir>/libs/ui/providers',
+    '<rootDir>/libs/ui/blockchain',
   ],
 };

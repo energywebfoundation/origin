@@ -3,7 +3,7 @@ import {
   FormInputProps,
   FormSelectOption,
   HierarchicalSelectOptions,
-} from '../../components/form';
+} from '../../components';
 import * as yup from 'yup';
 import {
   BaseTextFieldProps,
@@ -14,10 +14,10 @@ import { DeepPartial, UnpackNestedValue, UseFormReset } from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
-  disabled?: boolean;
+  frozen?: boolean;
   name: string;
-  label: string;
-  type?: string;
+  label: string | null;
+  type?: 'text' | 'password';
   select?: boolean;
   options?: FormSelectOption[];
   autocomplete?: boolean;
@@ -36,6 +36,7 @@ export type GenericFormField = {
 };
 
 export interface GenericFormProps<FormValuesType> {
+  hideSubmitButton?: boolean;
   submitHandler: (
     values: UnpackNestedValue<FormValuesType>,
     resetForm: UseFormReset<FormValuesType>
@@ -54,7 +55,6 @@ export interface GenericFormProps<FormValuesType> {
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
   processing?: boolean;
-  editDisabled?: boolean;
 }
 
 export type TGenericForm = <FormValuesType>(

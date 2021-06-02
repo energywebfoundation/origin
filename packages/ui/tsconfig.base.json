@@ -66,7 +66,7 @@
       "@energyweb/origin-ui-user-state-management": [
         "libs/user/state-management/src/index.ts"
       ],
-      "stream": ["node_modules/readable-stream"]
+      "@energyweb/origin-ui-blockchain": ["libs/ui/blockchain/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

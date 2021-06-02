@@ -200,6 +200,7 @@ dependencies:
   react-router: 6.0.0-beta.0_history@5.0.0+react@17.0.2
   react-router-dom: 6.0.0-beta.0_d9087d3b29103f1c99eb8571e6a2a0c4
   react-toastify: 7.0.4_react-dom@17.0.2+react@17.0.2
+  react-use: 17.2.4_react-dom@17.0.2+react@17.0.2
   reflect-metadata: 0.1.13
   regenerator-runtime: 0.13.7
   rxjs: 6.6.7
@@ -11142,6 +11143,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-eo3VX9jGASSuv680D4VQ89UmuLZneNxv2MCZjfwlInav05zXVJTzfc//lavdV0GPwSxsXJTy2jALscB7Acqg0g==
+  /@types/js-cookie/2.2.6:
+    dev: false
+    resolution:
+      integrity: sha512-+oY0FDTO2GYKEV0YPvSshGq9t7YozVkgvXLty7zogQNuCxBhT9/3INX9Q7H1aRZ4SUDRXAKlJuA4EA5nTt7SNw==
   /@types/json-schema/7.0.7:
     dev: false
     resolution:
@@ -12415,6 +12420,10 @@ packages:
     optional: true
     resolution:
       integrity: sha512-Yw1akIogPhAT6XPYsRHlZZIS0tIGmAl9EYXHi2scf7LPKKqdqmow/Hu4kEqP2cJR3EjaU/9L0ZlAjFf3hFxmug==
+  /@xobotyi/scrollbar-width/1.9.5:
+    dev: false
+    resolution:
+      integrity: sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==
   /@xtuc/ieee754/1.2.0:
     dev: false
     resolution:
@@ -16847,6 +16856,13 @@ packages:
       node: '>4'
     resolution:
       integrity: sha512-BcxQSKTSEEQUftYpBVnsH4SF05NTuBokb19/sBt6asXGKZ/6VP7PLG1CBCkFDYOnhXhPh0jMhO6xZ71oYHXHBA==
+  /css-in-js-utils/2.0.1:
+    dependencies:
+      hyphenate-style-name: 1.0.4
+      isobject: 3.0.1
+    dev: false
+    resolution:
+      integrity: sha512-PJF0SpJT+WdbVVt0AOYp9C8GnuruRlL/UFW7932nLWmFLQTaWEzTBQEx7/hn4BuV+WON75iAViSUJLiU3PKbpA==
   /css-loader/3.4.2_webpack@4.42.0:
     dependencies:
       camelcase: 5.3.1
@@ -19879,10 +19895,18 @@ packages:
     optional: true
     resolution:
       integrity: sha512-n11RGP/lrWEFI/bWdygLxhI+pVeo1ZYIVwvvPkW7azl/rOy+F3HYRZ2K5zeE9mmkhQppyv9sQFx0JM9UabnpPQ==
+  /fast-shallow-equal/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-HPtaa38cPgWvaCFmRNhlc6NG7pv6NUHqjPgVAkWGoB9mQMwYB27/K0CvOM5Czy+qpT3e8XJ6Q4aPAnzpNpzNaw==
   /fast-text-encoding/1.0.3:
     dev: false
     resolution:
       integrity: sha512-dtm4QZH9nZtcDt8qJiOH9fcQd1NAgi+K1O2DbE6GG1PPCK/BWfOH3idCTRQ4ImXRUOyopDEgDEnVEE7Y/2Wrig==
+  /fastest-stable-stringify/2.0.2:
+    dev: false
+    resolution:
+      integrity: sha512-bijHueCGd0LqqNK9b5oCMHc0MluJAx0cwqASgbWMvkO01lCYgIhacVRLcaDz3QnyYIRNJRDwMb41VuT6pHJ91Q==
   /fastestsmallesttextencoderdecoder/1.0.22:
     dev: false
     optional: true
@@ -22445,6 +22469,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==
+  /inline-style-prefixer/6.0.0:
+    dependencies:
+      css-in-js-utils: 2.0.1
+    dev: false
+    resolution:
+      integrity: sha512-XTHvRUS4ZJNzC1GixJRmOlWSS45fSt+DJoyQC9ytj0WxQfcgofQtDtyKKYxHUqEsWCs+LIWftPF1ie7+i012Fg==
   /inquirer/6.5.2:
     dependencies:
       ansi-escapes: 3.2.0
@@ -24172,6 +24202,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
+  /js-cookie/2.2.1:
+    dev: false
+    resolution:
+      integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==
   /js-sha3/0.5.7:
     dev: false
     resolution:
@@ -26858,6 +26892,24 @@ packages:
     dev: false
     resolution:
       integrity: sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
+  /nano-css/5.3.1_react-dom@17.0.2+react@17.0.2:
+    dependencies:
+      css-tree: 1.1.2
+      csstype: 3.0.7
+      fastest-stable-stringify: 2.0.2
+      inline-style-prefixer: 6.0.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      rtl-css-js: 1.14.1
+      sourcemap-codec: 1.4.8
+      stacktrace-js: 2.0.2
+      stylis: 4.0.10
+    dev: false
+    peerDependencies:
+      react: '*'
+      react-dom: '*'
+    resolution:
+      integrity: sha512-ENPIyNzANQRyYVvb62ajDd7PAyIgS2LIUnT9ewih4yrXSZX4hKoUwssy8WjUH++kEOA5wUTMgNnV7ko5n34kUA==
   /nano-json-stream-parser/0.1.2:
     dev: false
     resolution:
@@ -30842,6 +30894,40 @@ packages:
       react-dom: '>=16.6.0'
     resolution:
       integrity: sha512-Djqr7OQ2aPUiYurhPalTrVy9ddmFCCzwhqQmtN+J3+3DzLO209Fdr70QrN8Z3DsglWql6iY1lDWAfpFiBtuKGw==
+  /react-universal-interface/0.6.2_react@17.0.2+tslib@2.2.0:
+    dependencies:
+      react: 17.0.2
+      tslib: 2.2.0
+    dev: false
+    peerDependencies:
+      react: '*'
+      tslib: '*'
+    resolution:
+      integrity: sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==
+  /react-use/17.2.4_react-dom@17.0.2+react@17.0.2:
+    dependencies:
+      '@types/js-cookie': 2.2.6
+      '@xobotyi/scrollbar-width': 1.9.5
+      copy-to-clipboard: 3.3.1
+      fast-deep-equal: 3.1.3
+      fast-shallow-equal: 1.0.0
+      js-cookie: 2.2.1
+      nano-css: 5.3.1_react-dom@17.0.2+react@17.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-universal-interface: 0.6.2_react@17.0.2+tslib@2.2.0
+      resize-observer-polyfill: 1.5.1
+      screenfull: 5.1.0
+      set-harmonic-interval: 1.0.1
+      throttle-debounce: 3.0.1
+      ts-easing: 0.2.0
+      tslib: 2.2.0
+    dev: false
+    peerDependencies:
+      react: ^16.8.0  || ^17.0.0
+      react-dom: ^16.8.0  || ^17.0.0
+    resolution:
+      integrity: sha512-vQGpsAM0F5UIlshw5UI8ULGPS4yn5rm7/qvn3T1Gnkrz7YRMEEMh+ynKcmRloOyiIeLvKWiQjMiwRGtdbgs5qQ==
   /react/17.0.2:
     dependencies:
       loose-envify: 1.4.0
@@ -31546,6 +31632,10 @@ packages:
     optional: true
     resolution:
       integrity: sha1-n8cxQXGZWubLC35YsGznUir0uvs=
+  /resize-observer-polyfill/1.5.1:
+    dev: false
+    resolution:
+      integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
   /resolve-cwd/2.0.0:
     dependencies:
       resolve-from: 3.0.0
@@ -31862,6 +31952,12 @@ packages:
       node: 6.* || >= 7.*
     resolution:
       integrity: sha512-nfMOlASu9OnRJo1mbEk2cz0D56a1MBNrJ7orjRZQG10XDyuvwksKbuXNp6qa+kbn839HwjwhBzhFmdsaEAfauA==
+  /rtl-css-js/1.14.1:
+    dependencies:
+      '@babel/runtime': 7.13.10
+    dev: false
+    resolution:
+      integrity: sha512-G9N1s/6329FpJr8k9e1U/Lg0IDWThv99sb7k0IrXHjSnubxe01h52/ajsPRafJK1/2Vqrhz3VKLe3E1dx6jS9Q==
   /run-async/2.4.1:
     dev: false
     engines:
@@ -32098,6 +32194,12 @@ packages:
       node: '>= 10.13.0'
     resolution:
       integrity: sha512-6D82/xSzO094ajanoOSbe4YvXWMfn2A//8Y1+MUqFAJul5Bs+yn36xbK9OtNDcRVSBJ9jjeoXftM6CfztsjOAA==
+  /screenfull/5.1.0:
+    dev: false
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha512-dYaNuOdzr+kc6J6CFcBrzkLCfyGcMg+gWkJ8us93IQ7y1cevhQAugFsaCdMHb6lw8KV3xPzSxzH7zM1dQap9mA==
   /scrypt-async/2.0.1:
     dev: false
     optional: true
@@ -32327,6 +32429,12 @@ packages:
     dev: false
     resolution:
       integrity: sha1-BF+XgtARrppoA93TgrJDkrPYkPc=
+  /set-harmonic-interval/1.0.1:
+    dev: false
+    engines:
+      node: '>=6.9'
+    resolution:
+      integrity: sha512-AhICkFV84tBP1aWqPwLZqFvAwqEoVA9kxNMniGEUvzOlm4vLmOFLiTT3UZ6bziJTy4bOVpzWGTfSCbmaayGx8g==
   /set-immediate-shim/1.0.1:
     dev: false
     engines:
@@ -32853,6 +32961,12 @@ packages:
       node: '>=0.8.0'
     resolution:
       integrity: sha1-wkvBRspRfBRx9drL4lcbK3+eM0Y=
+  /source-map/0.5.6:
+    dev: false
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-dc449SvwczxafwwRjYEzSiu19BI=
   /source-map/0.5.7:
     dev: false
     engines:
@@ -33058,6 +33172,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
+  /stack-generator/2.0.5:
+    dependencies:
+      stackframe: 1.2.0
+    dev: false
+    resolution:
+      integrity: sha512-/t1ebrbHkrLrDuNMdeAcsvynWgoH/i4o8EGGfX7dEYDoTXOYVAkEpFdtshlvabzc6JlJ8Kf9YdFEoz7JkzGN9Q==
   /stack-trace/0.0.10:
     dev: false
     resolution:
@@ -33074,6 +33194,21 @@ packages:
     dev: false
     resolution:
       integrity: sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
+  /stacktrace-gps/3.0.4:
+    dependencies:
+      source-map: 0.5.6
+      stackframe: 1.2.0
+    dev: false
+    resolution:
+      integrity: sha512-qIr8x41yZVSldqdqe6jciXEaSCKw1U8XTXpjDuy0ki/apyTn/r3w9hDAAQOhZdxvsC93H+WwwEu5cq5VemzYeg==
+  /stacktrace-js/2.0.2:
+    dependencies:
+      error-stack-parser: 2.0.6
+      stack-generator: 2.0.5
+      stacktrace-gps: 3.0.4
+    dev: false
+    resolution:
+      integrity: sha512-Je5vBeY4S1r/RnLydLl0TBTi3F2qdfWmYsGvtfZgEI+SCprPppaIhQf5nGcal4gI4cGpCV/duLcAzT1np6sQqg==
   /state-toggle/1.0.3:
     dev: false
     resolution:
@@ -34537,6 +34672,10 @@ packages:
       node: '>=6.10'
     resolution:
       integrity: sha512-HbmrG+lCgk5W8LQTALxBxQRBDeAhQKRzdqVhHLUkVd5nYT+b6zDzbRMjiA8wqrWDa33X09WdnW4zEsdwQArTaw==
+  /ts-easing/0.2.0:
+    dev: false
+    resolution:
+      integrity: sha512-Z86EW+fFFh/IFB1fqQ3/+7Zpf9t2ebOAxNI/V6Wo7r5gqiqtxmgTlQ1qbqQcjLKYeSHPTsEmvlJUDg/EuL0uHQ==
   /ts-essentials/1.0.4:
     dev: false
     resolution:
@@ -40079,6 +40218,7 @@ packages:
       react-router: 6.0.0-beta.0_history@5.0.0+react@17.0.2
       react-router-dom: 6.0.0-beta.0_d9087d3b29103f1c99eb8571e6a2a0c4
       react-toastify: 7.0.4_react-dom@17.0.2+react@17.0.2
+      react-use: 17.2.4_react-dom@17.0.2+react@17.0.2
       regenerator-runtime: 0.13.7
       test-react-hooks: 2.0.4_react-dom@17.0.2+react@17.0.2
       toastr: 2.1.4
@@ -40096,7 +40236,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-PVbSNWxOzHN2hqwU6/XUcxO+cO10+QFIiCjb155aiqVBJsLLsSuHbVXS5VAGRFnOgKBijdiBQKnoIbl8nvlChQ==
+      integrity: sha512-N5xftz2Cv0sHZXWR1hoOxf+utsCYVdmHMNB9qBVIApBJyN2q0qrgJAqARcvh/Sp+WYxxH+h1hUnmyRpo5bXjxQ==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -40375,6 +40515,7 @@ specifiers:
   react-router: 6.0.0-beta.0
   react-router-dom: 6.0.0-beta.0
   react-toastify: 7.0.4
+  react-use: ^17.2.4
   reflect-metadata: 0.1.13
   regenerator-runtime: 0.13.7
   rxjs: 6.6.7

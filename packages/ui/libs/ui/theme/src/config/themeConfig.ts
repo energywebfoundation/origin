@@ -65,6 +65,9 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     },
     MuiButton: {
       styleOverrides: {
+        root: {
+          textTransform: 'uppercase',
+        },
         contained: {
           '&.Mui-disabled': {
             color: styleConfig.TEXT_COLOR_DEFAULT,

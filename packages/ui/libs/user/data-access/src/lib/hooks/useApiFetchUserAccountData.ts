@@ -1,25 +1,18 @@
+import { useAccountControllerGetAccount } from '@energyweb/exchange-react-query-client';
 import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
 
-import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
-
-export const useApiAdminFetchUserAccountData = () => {
+export const useApiFetchUserAccountData = (refetchInterval?: number) => {
   const isAuthenticated = useAuthIsAuthenticated();
-  const {
-    isFetching,
-    isFetched,
-    error,
-    isError,
-    isSuccess,
-    status,
-    data,
-  } = useUserControllerMe({
-    enabled: isAuthenticated,
-  });
+  const { isLoading, error, isError, isSuccess, status, data } =
+    useAccountControllerGetAccount({
+      enabled: isAuthenticated,
+      refetchInterval,
+      refetchIntervalInBackground: Boolean(refetchInterval),
+    });
 
   return {
     status,
-    isFetching,
-    isFetched,
+    isLoading,
     isSuccess,
     isError,
     error,

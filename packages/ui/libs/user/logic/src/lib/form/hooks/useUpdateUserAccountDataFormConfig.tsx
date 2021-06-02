@@ -2,7 +2,7 @@ import { GenericFormProps } from '@energyweb/origin-ui-core';
 import { UnpackNestedValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import { IUser } from '@energyweb/origin-backend-core';
 import {
   FullOrganizationInfoDTO,
   UserDTO,
@@ -14,22 +14,6 @@ export type TUpdateUserDataFormValues = Omit<IUser, 'id'> &
     'blockchainAccountAddress' | 'blockchainAccountSignedMessage'
   >;
 
-const INITIAL_FORM_VALUES: TUpdateUserDataFormValues = {
-  title: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  telephone: '',
-  blockchainAccountAddress: '',
-  blockchainAccountSignedMessage: '',
-  notifications: null,
-  organization: null,
-  rights: null,
-  status: UserStatus.Pending,
-  kycStatus: KYCStatus.Pending,
-  emailConfirmed: false,
-};
-
 export const useUpdateUserAccountDataFormConfig = (
   initialData: UserDTO,
   formSubmitHandler: (
@@ -37,10 +21,9 @@ export const useUpdateUserAccountDataFormConfig = (
   ) => void
 ): GenericFormProps<TUpdateUserDataFormValues> => {
   const { t } = useTranslation();
-
   return {
     buttonFullWidth: true,
-    buttonText: t('Save'),
+    buttonText: t('user.actions.edit'),
     fields: [
       {
         label: t('user.properties.firstName'),
@@ -60,7 +43,7 @@ export const useUpdateUserAccountDataFormConfig = (
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
-    initialValues: INITIAL_FORM_VALUES,
+    initialValues: { ...(initialData as IUser) },
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
       username: Yup.string()

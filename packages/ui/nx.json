@@ -50,6 +50,7 @@
     "ui-api-clients": { "tags": [] },
     "device-data": { "tags": [] },
     "ui-providers": { "tags": [] },
-    "certificate-data": { "tags": [] }
+    "certificate-data": { "tags": [] },
+    "ui-blockchain": { "tags": [] }
   }
 }

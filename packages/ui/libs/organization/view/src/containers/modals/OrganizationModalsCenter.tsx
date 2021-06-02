@@ -7,7 +7,7 @@ import { OrganizationAlreadyExists } from './OrganizationAlreadyExists';
 import { RegisterThankYou } from './RegisterThankYou';
 import { RoleChanged } from './RoleChanged/RoleChanged';
 
-export const ModalsCenter: FC = () => {
+export const OrganizationModalsCenter: FC = () => {
   return (
     <>
       <IRecAccountRegistered />

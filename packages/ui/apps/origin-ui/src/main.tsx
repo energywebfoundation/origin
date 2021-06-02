@@ -14,6 +14,7 @@ import {
   SettingsProvider,
 } from '@energyweb/origin-ui-user-view';
 import AppContainer from './app-container/AppContainer';
+import { BlockchainProvider } from '@energyweb/origin-ui-blockchain';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -25,9 +26,11 @@ ReactDOM.render(
               initialState={localStorage.getItem('AUTHENTICATION_TOKEN')}
             >
               <AccountProvider>
-                <SettingsProvider>
-                  <AppContainer />
-                </SettingsProvider>
+                <BlockchainProvider>
+                  <SettingsProvider>
+                    <AppContainer />
+                  </SettingsProvider>
+                </BlockchainProvider>
               </AccountProvider>
             </AuthProvider>
           </OriginQueryClientProvider>

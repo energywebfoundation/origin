@@ -89,11 +89,11 @@ export const useAdminUserUpdateFormConfig = (
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object({
-      title: Yup.string().required().label('Mr'),
-      firstName: Yup.string().required().label('First Name'),
-      lastName: Yup.string().required().label('Last Name'),
-      telephone: Yup.string().required().label('Telephone'),
-      email: Yup.string().email().required().label('Email'),
+      title: Yup.string().required().label('Mr'), // TODO Probably want to chage that?
+      firstName: Yup.string().required().label(t('user.properties.firstName')),
+      lastName: Yup.string().required().label(t('user.properties.lastName')),
+      telephone: Yup.string().required().label(t('user.properties.telephone')),
+      email: Yup.string().email().required().label(t('user.properties.email')),
     }),
   };
 };

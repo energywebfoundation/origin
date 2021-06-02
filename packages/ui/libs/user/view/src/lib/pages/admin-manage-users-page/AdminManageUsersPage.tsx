@@ -3,6 +3,7 @@ import React from 'react';
 import { TableComponent, TableRowData } from '@energyweb/origin-ui-core';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { useAdminManageUsersPageEffects } from './AdminManageUsersPage.effects';
+import { DeleteOutline, PermIdentityOutlined } from '@material-ui/icons';
 
 /* eslint-disable-next-line */
 export interface AdminManageUsersPageProps {
@@ -37,20 +38,34 @@ export const AdminManageUsersPage = ({
   return (
     <TableComponent
       loading={isLoading}
-      data={data?.map(mapDataToTableRows)}
+      data={data?.map(mapDataToTableRows.bind(null, [, handleSetEditUserData]))}
       header={columns}
     />
   );
 };
 
-const mapDataToTableRows = (el): IAdminManageUsersTableRowDataConfig => ({
+const mapDataToTableRows = (
+  el,
+  handleSetEditUserData
+): IAdminManageUsersTableRowDataConfig => ({
   id: el.id,
   email: el.email,
   organization: el.organization.name,
   firstName: el.firstName,
   status: el.status,
   kycStatus: el.kycStatus,
-  actions: [{ name: 'update', icon: 'edit', onClick: () => {} }],
+  actions: [
+    {
+      icon: <DeleteOutline data-cy="remove-user-icon" />,
+      name: 'Remove',
+      onClick: () => {},
+    },
+    {
+      icon: <PermIdentityOutlined data-cy="edit-user-icon" />,
+      name: 'Edit Role',
+      onClick: () => handleSetEditUserData(el),
+    },
+  ],
 });
 
 export default AdminManageUsersPage;

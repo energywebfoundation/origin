@@ -5,7 +5,7 @@ import { Box, CircularProgress, Typography } from '@material-ui/core';
 
 import { useOrganizationViewPageEffects } from './OrganizationViewPage.effects';
 import { useStyles } from './OrganizationViewPage.styles';
-import { DownloadOrgDocs } from '../../containers/file';
+import { DownloadOrgDocs } from '../../containers';
 
 export const OrganizationViewPage: FC = () => {
   const classes = useStyles();

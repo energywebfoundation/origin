@@ -14,7 +14,7 @@ export const AdminApp = () => {
   return (
     <Routes>
       <Route
-        path={'manage-user'}
+        path={'users'}
         element={
           <AdminManageUsersPage
             handleSetEditUserData={(el) => setEditUserData(el)}

@@ -5,3 +5,5 @@ export * from './useAdminUpdateUserFormConfig';
 export * from './useUpdateUserAccountDataFormConfig';
 export * from './useUpdateUserAccountEmailFormConfig';
 export * from './useUpdateUserAccountPasswordFormConfig';
+export * from './useUserExchangeDepositAddressFormConfig';
+export * from './useUserBlockchainAccountAddressFormConfig';
