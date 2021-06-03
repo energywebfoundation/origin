@@ -15,5 +15,8 @@ export class Beneficiary extends ExtendedBaseEntity implements IBeneficiary {
     organizationId: number;
 
     @Column()
+    ownerOrganizationId: number;
+
+    @Column()
     active: true;
 }

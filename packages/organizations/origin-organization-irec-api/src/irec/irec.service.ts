@@ -2,7 +2,12 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 
-import { AccessTokens, Beneficiary, IRECAPIClient } from '@energyweb/issuer-irec-api-wrapper';
+import {
+    AccessTokens,
+    Beneficiary,
+    BeneficiaryUpdateParams,
+    IRECAPIClient
+} from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 
 import { CreateConnectionDTO } from './dto';
@@ -72,5 +77,23 @@ export class IrecService {
             location: `${organization.city}. ${organization.address}`,
             active: true
         });
+    }
+
+    async updateBeneficiary(
+        user: UserIdentifier,
+        beneficiaryId: number,
+        params: BeneficiaryUpdateParams
+    ): Promise<Beneficiary> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                id: 1,
+                name: 'Test Corp',
+                countryCode: 'GB',
+                location: `Manchester, Lennon street`,
+                active: params.active
+            };
+        }
+        const irecClient = await this.getIrecClient(user);
+        return await irecClient.beneficiary.update(beneficiaryId, params);
     }
 }

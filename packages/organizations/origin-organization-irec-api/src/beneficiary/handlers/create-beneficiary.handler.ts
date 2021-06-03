@@ -10,10 +10,10 @@ import { Beneficiary } from '../beneficiary.entity';
 @CommandHandler(CreateBeneficiaryCommand)
 export class CreateBeneficiaryHandler implements IEventHandler<CreateBeneficiaryCommand> {
     constructor(
-        private readonly userService: UserService,
-        private readonly irecService: IrecService,
         @InjectRepository(Beneficiary)
-        private readonly repository: Repository<Beneficiary>
+        private readonly repository: Repository<Beneficiary>,
+        private readonly userService: UserService,
+        private readonly irecService: IrecService
     ) {}
 
     public async handle({ organization }: CreateBeneficiaryCommand): Promise<Beneficiary> {
@@ -27,6 +27,7 @@ export class CreateBeneficiaryHandler implements IEventHandler<CreateBeneficiary
         const beneficiary = this.repository.create({
             irecBeneficiaryId: irecBeneficiary.id,
             organizationId: organization.id,
+            ownerOrganizationId: platformAdmin.organization.id,
             active: true
         });
 

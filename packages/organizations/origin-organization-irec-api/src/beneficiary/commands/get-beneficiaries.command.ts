@@ -1,3 +1,3 @@
 export class GetBeneficiariesCommand {
-    constructor() {}
+    constructor(public readonly organizationId: number) {}
 }
