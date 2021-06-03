@@ -585,43 +585,6 @@
         }
       }
     },
-    "user-state-management": {
-      "root": "libs/user/state-management",
-      "sourceRoot": "libs/user/state-management/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/user/state-management",
-            "tsConfig": "libs/user/state-management/tsconfig.lib.json",
-            "project": "libs/user/state-management/package.json",
-            "entryFile": "libs/user/state-management/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/user/state-management/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/user/state-management"],
-          "options": {
-            "jestConfig": "libs/user/state-management/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "device-logic": {
       "root": "libs/device/logic",
       "sourceRoot": "libs/device/logic/src",

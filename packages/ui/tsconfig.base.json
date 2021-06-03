@@ -63,9 +63,6 @@
       "@energyweb/origin-ui-user-data-access": [
         "libs/user/data-access/src/index.ts"
       ],
-      "@energyweb/origin-ui-user-state-management": [
-        "libs/user/state-management/src/index.ts"
-      ],
       "@energyweb/origin-ui-blockchain": ["libs/ui/blockchain/src/index.ts"]
     }
   },

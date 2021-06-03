@@ -39,7 +39,6 @@
     "user-data-access": { "tags": [] },
     "user-view": { "tags": [] },
     "user-logic": { "tags": [] },
-    "user-state-management": { "tags": [] },
     "device-logic": { "tags": [] },
     "device-view": { "tags": [] },
     "ui-core-e2e": { "tags": [], "implicitDependencies": ["ui-core"] },
