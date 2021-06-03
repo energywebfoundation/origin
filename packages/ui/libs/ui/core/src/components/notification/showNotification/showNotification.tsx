@@ -20,7 +20,10 @@ export const showNotification = (
   }
 
   return toast(
-    <NotificationContent message={content as string} type={type} />,
+    <NotificationContent
+      message={content as string}
+      type={type || NotificationTypeEnum.Info}
+    />,
     options
   );
 };

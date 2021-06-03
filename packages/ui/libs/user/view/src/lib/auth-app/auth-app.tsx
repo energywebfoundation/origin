@@ -4,6 +4,8 @@ import { Route, Routes, useNavigate } from 'react-router';
 import LoginPage from '../pages/login-page/LoginPage';
 import SignInPage from '../pages/sign-in-page/SignInPage';
 import LogoutPage from '../pages/logout-page/LogoutPage';
+import { UserModalsProvider } from '../context';
+import { UserModalsCenter } from '../containers/modals';
 
 /* eslint-disable-next-line */
 export interface AuthAppProps {
@@ -19,7 +21,7 @@ export const AuthApp: FC<AuthAppProps> = ({ paths }) => {
   const navigate = useNavigate();
 
   return (
-    <Routes>
+    <UserModalsProvider>
       <Routes>
         <Route
           path={paths.login}
@@ -36,16 +38,11 @@ export const AuthApp: FC<AuthAppProps> = ({ paths }) => {
             />
           }
         />
-        <Route
-          path={paths.register}
-          element={<SignInPage handleSuccess={useCallback(() => {}, [])} />}
-        />
-        <Route
-          path={paths.logout}
-          element={<LogoutPage handleSuccess={useCallback(() => {}, [])} />}
-        />
+        <Route path={paths.register} element={<SignInPage />} />
+        <Route path={paths.logout} element={<LogoutPage />} />
       </Routes>
-    </Routes>
+      <UserModalsCenter />
+    </UserModalsProvider>
   );
 };
 

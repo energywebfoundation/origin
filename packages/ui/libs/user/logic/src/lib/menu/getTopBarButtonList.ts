@@ -8,18 +8,14 @@ export const getTopBarButtonList = (
     {
       label: 'Register',
       url: '/auth/register',
-      onClick: () => {
-        console.log('Register clicked');
-      },
+      onClick: () => {},
       show: !isAuthenticated,
     },
     {
       label: 'Login',
       url: '/auth/login',
       show: !isAuthenticated,
-      onClick: () => {
-        console.log('Login clicked');
-      },
+      onClick: () => {},
     },
     {
       label: 'Logout',

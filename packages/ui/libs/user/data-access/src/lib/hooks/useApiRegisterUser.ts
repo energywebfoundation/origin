@@ -1,16 +1,41 @@
-import { useUserControllerRegister } from '@energyweb/origin-backend-react-query-client';
-import { UnpackNestedValue } from 'react-hook-form';
-import { TUserSignInFormValues } from '@energyweb/origin-ui-user-logic';
+import {
+  useUserControllerRegister,
+  RegisterUserDTO,
+} from '@energyweb/origin-backend-react-query-client';
+import {
+  NotificationTypeEnum,
+  showNotification,
+} from '@energyweb/origin-ui-core';
+import { AxiosError } from 'axios';
+import { useTranslation } from 'react-i18next';
 
-export const useApiRegisterUser = () => {
-  const {
-    mutateAsync,
-    status,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useUserControllerRegister();
+export const useApiRegisterUser = (showRegisteredModal: () => void) => {
+  const { t } = useTranslation();
+
+  const { mutate, status, isLoading, isSuccess, isError, error } =
+    useUserControllerRegister();
+
+  const submitHandler = (values: RegisterUserDTO) => {
+    mutate(
+      { data: values },
+      {
+        onSuccess: () => {
+          showNotification(
+            t('user.register.notifications.registerSuccess'),
+            NotificationTypeEnum.Success
+          ),
+            showRegisteredModal();
+        },
+        onError: (error: AxiosError) => {
+          console.log(error);
+          showNotification(
+            t('user.register.notifications.registerError'),
+            NotificationTypeEnum.Error
+          );
+        },
+      }
+    );
+  };
 
   return {
     status,
@@ -18,8 +43,6 @@ export const useApiRegisterUser = () => {
     isSuccess,
     isError,
     error,
-    submitHandler(values: UnpackNestedValue<TUserSignInFormValues>): void {
-      mutateAsync({ data: values }).then((value) => {});
-    },
+    submitHandler,
   };
 };

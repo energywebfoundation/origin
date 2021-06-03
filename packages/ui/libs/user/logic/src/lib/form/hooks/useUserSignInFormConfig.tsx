@@ -61,6 +61,7 @@ export const useUserSignInFormConfig = (
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
+    inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
       title: Yup.string().label(t('account.register.title')).required(),
       firstName: Yup.string().label(t('account.register.firstName')).required(),

@@ -6,8 +6,8 @@ export const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       padding: 15,
     },
-    [theme.breakpoints.up('sm')]: {
-      padding: 30,
+    [theme.breakpoints.up('md')]: {
+      padding: 20,
     },
   },
 }));
