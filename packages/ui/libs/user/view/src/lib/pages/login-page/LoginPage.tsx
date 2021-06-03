@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 
 import { useStyles } from './LoginPage.styles';
 import { Box, Button, Paper, Typography } from '@material-ui/core';
@@ -7,36 +7,30 @@ import { useTranslation } from 'react-i18next';
 import { useLogInPageEffects } from './LoginPage.effects';
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
 
-/* eslint-disable-next-line */
-export interface LoginPageProps {
-  handleNavigateToRegisterUserPage: () => void;
-  handleNavigateToResetPasswordPage: () => void;
-}
+export const LoginPage: FC = () => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+  const { formConfig, navigateToRegister, navigateToResetPassword } =
+    useLogInPageEffects();
 
-export const LoginPage: FC<LoginPageProps> = memo(
-  ({ handleNavigateToRegisterUserPage, handleNavigateToResetPasswordPage }) => {
-    const classes = useStyles();
-    const { t } = useTranslation();
-    const { formConfig } = useLogInPageEffects();
-    return (
-      <Paper className={classes.paper}>
-        <EnergyWebLogo />
-        <GenericForm {...formConfig}>
-          <Box>
-            <Button variant="text" onClick={handleNavigateToResetPasswordPage}>
-              {t('account.login.forgotPassword')}
-            </Button>
-          </Box>
-        </GenericForm>
+  return (
+    <Paper className={classes.paper}>
+      <EnergyWebLogo />
+      <GenericForm {...formConfig}>
         <Box>
-          <Typography>{t('account.login.dontHaveAcc')}</Typography>
-          <Button onClick={handleNavigateToRegisterUserPage}>
-            {t('account.login.registerNow')}
+          <Button variant="text" onClick={navigateToResetPassword}>
+            {t('user.login.forgotPassword')}
           </Button>
         </Box>
-      </Paper>
-    );
-  }
-);
+      </GenericForm>
+      <Box>
+        <Typography>{t('user.login.dontHaveAcc')}</Typography>
+        <Button onClick={navigateToRegister}>
+          {t('user.login.registerNow')}
+        </Button>
+      </Box>
+    </Paper>
+  );
+};
 
 export default LoginPage;

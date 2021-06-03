@@ -1,35 +1,47 @@
 import { useAuthDispatchSetTokenValue } from '@energyweb/origin-ui-react-query-providers';
-import { useAppControllerLogin } from '@energyweb/origin-backend-react-query-client';
-import { UnpackNestedValue } from 'react-hook-form';
-import { TUserLoginFormValues } from '@energyweb/origin-ui-user-logic';
+import {
+  LoginDataDTO,
+  useAppControllerLogin,
+} from '@energyweb/origin-backend-react-query-client';
 import { useCallback } from 'react';
 import { setAuthenticationToken } from '@energyweb/origin-ui-shared-state';
 import { useNavigate } from 'react-router';
+import { AxiosResponse } from 'axios';
+import {
+  NotificationTypeEnum,
+  showNotification,
+} from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
 
-export type TApiLogInUserSubmitHandler = (
-  values: UnpackNestedValue<TUserLoginFormValues>
-) => void;
+export type TApiLogInUserSubmitHandler = (values: LoginDataDTO) => void;
 
 export const useApiUserLogIn = () => {
   const setTokenValue = useAuthDispatchSetTokenValue();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const {
-    mutateAsync,
-    isLoading,
-    error,
-    isError,
-    isSuccess,
-    status,
-  } = useAppControllerLogin();
+  const { mutate, isLoading, error, isError, isSuccess, status } =
+    useAppControllerLogin();
 
-  const submitHandler: TApiLogInUserSubmitHandler = useCallback(
-    (values: UnpackNestedValue<TUserLoginFormValues>) => {
-      mutateAsync({ data: values }).then(({ accessToken }) => {
-        setTokenValue(accessToken);
-        setAuthenticationToken(accessToken);
-        navigate('/');
-      });
+  const submitHandler = useCallback(
+    (values: LoginDataDTO) => {
+      mutate(
+        { data: values },
+        {
+          onSuccess: ({ accessToken }) => {
+            setTokenValue(accessToken);
+            setAuthenticationToken(accessToken);
+            navigate('/');
+          },
+          onError: (error: AxiosResponse) => {
+            console.warn(t('user.login.notifications.loginError'), error);
+            showNotification(
+              t('user.login.notifications.loginError'),
+              NotificationTypeEnum.Error
+            );
+          },
+        }
+      );
     },
     [navigate, setAuthenticationToken, setTokenValue]
   );
@@ -39,6 +51,6 @@ export const useApiUserLogIn = () => {
     isSuccess,
     isError,
     error,
-    submitHandler: submitHandler,
+    submitHandler,
   };
 };

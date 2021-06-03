@@ -4,6 +4,6 @@ export * from './admin-update-user-page/AdminUpdateUserPage';
 export * from './login-page/LoginPage';
 export * from './logout-page/LogoutPage';
 export * from './reset-password-page/ResetPasswordPage';
-export * from './sign-in-page/SignInPage';
+export * from './RegisterPage/RegisterPage';
 export * from './user-account-page/UserAccountPage';
 export * from './user-settings-page/UserSettingsPage';

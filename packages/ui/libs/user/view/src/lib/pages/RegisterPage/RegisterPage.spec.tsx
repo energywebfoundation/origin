@@ -1,14 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import SignInPage from './SignInPage';
+import RegisterPage from './RegisterPage';
 import { AuthProvider } from '@energyweb/origin-ui-react-query-providers';
 
-describe('SignInPage', () => {
+describe('RegisterPage', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
       <AuthProvider>
-        <SignInPage />
+        <RegisterPage />
       </AuthProvider>
     );
     expect(baseElement).toBeTruthy();

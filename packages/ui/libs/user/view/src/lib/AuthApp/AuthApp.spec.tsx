@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import AuthApp from './auth-app';
+import { AuthApp } from './AuthApp';
 import { BrowserRouter, Routes } from 'react-router-dom';
 
 describe('AuthApp', () => {

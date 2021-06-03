@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import { useStyles } from './SignInPage.styles';
+import { useStyles } from './RegisterPage.styles';
 import { Paper } from '@material-ui/core';
 import { GenericForm } from '@energyweb/origin-ui-core';
-import { useSignInPageEffects } from './SignInPage.effects';
+import { useRegisterPageEffects } from './RegisterPage.effects';
 
-export const SignInPage: FC = () => {
+export const RegisterPage: FC = () => {
   const classes = useStyles();
-  const { formConfig } = useSignInPageEffects();
+  const { formConfig } = useRegisterPageEffects();
   return (
     <Paper className={classes.paper}>
       <GenericForm {...formConfig} />
@@ -14,4 +14,4 @@ export const SignInPage: FC = () => {
   );
 };
 
-export default SignInPage;
+export default RegisterPage;

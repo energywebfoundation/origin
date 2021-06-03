@@ -367,6 +367,16 @@
           "registerError": "Error while registering user"
         }
       },
+      "login": {
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "dontHaveAcc": "Don't have an account?",
+        "registerNow": "Register now",
+        "notifications": {
+          "loginError": "Could not log in with supplied credentials"
+        }
+      },
       "modals": {
         "userRegistered": {
           "title": "Thanks for registering as a user on the marketplace",

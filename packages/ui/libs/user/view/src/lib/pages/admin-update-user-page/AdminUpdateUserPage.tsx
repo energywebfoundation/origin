@@ -1,5 +1,4 @@
 import React from 'react';
-import { useStyles } from '../sign-in-page/SignInPage.styles';
 import { Paper } from '@material-ui/core';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useAdminUpdateUserPageEffects } from './AdminUpdateUserPage.effects';
@@ -15,10 +14,10 @@ export const AdminUpdateUserPage = ({
   userId,
   userData,
 }: AdminUpdateUserPageProps) => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const { formConfig } = useAdminUpdateUserPageEffects(userId);
   return (
-    <Paper className={classes.paper}>
+    <Paper>
       <GenericForm {...formConfig} initialValues={userData} />
     </Paper>
   );

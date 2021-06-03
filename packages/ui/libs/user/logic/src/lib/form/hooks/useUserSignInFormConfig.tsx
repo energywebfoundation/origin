@@ -30,30 +30,30 @@ export const useUserSignInFormConfig = (
     buttonText: t('general.buttons.register'),
     fields: [
       {
-        label: t('account.register.title'),
+        label: t('user.register.title'),
         name: 'title',
         select: true,
         options: TITLE_OPTIONS.map((opt) => ({ label: opt, value: opt })),
       },
       {
-        label: t('account.register.firstName'),
+        label: t('user.register.firstName'),
         name: 'firstName',
       },
       {
-        label: t('account.register.lastName'),
+        label: t('user.register.lastName'),
         name: 'lastName',
       },
       {
-        label: t('account.register.email'),
+        label: t('user.register.email'),
         name: 'email',
       },
       {
-        label: t('account.register.telephone'),
+        label: t('user.register.telephone'),
         name: 'telephone',
       },
       {
         type: 'password',
-        label: t('account.register.password'),
+        label: t('user.register.password'),
         name: 'password',
       },
     ],

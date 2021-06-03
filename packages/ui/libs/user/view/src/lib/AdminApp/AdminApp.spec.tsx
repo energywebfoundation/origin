@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import AdminApp from './admin-app';
+import { AdminApp } from './AdminApp';
 import { BrowserRouter, Routes } from 'react-router-dom';
 
 describe('AdminApp', () => {

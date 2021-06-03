@@ -20,9 +20,7 @@ export const getTopBarButtonList = (
     {
       label: 'Logout',
       show: isAuthenticated,
-      onClick: () => {
-        onLogout();
-      },
+      onClick: onLogout,
     },
   ];
 };

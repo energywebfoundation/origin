@@ -6,7 +6,10 @@ import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
 import { getAccountMenu } from '@energyweb/origin-ui-user-logic';
 import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
-import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
+import {
+  useAuthDispatchLogoutUser,
+  useAuthIsAuthenticated,
+} from '@energyweb/origin-ui-react-query-providers';
 import { useAccount } from '@energyweb/origin-ui-user-view';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useInvitationControllerGetInvitations } from '@energyweb/origin-backend-react-query-client';
@@ -17,14 +20,18 @@ export const useAppContainerEffects = () => {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const logoutUser = useAuthDispatchLogoutUser();
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/');
+  };
 
   const isAuthenticated = useAuthIsAuthenticated();
 
   const accountData = useAccount();
-  const {
-    data: invitations,
-    isLoading: invitationsLoading,
-  } = useInvitationControllerGetInvitations({ enabled: isAuthenticated });
+  const { data: invitations, isLoading: invitationsLoading } =
+    useInvitationControllerGetInvitations({ enabled: isAuthenticated });
   const user = accountData?.userAccountData;
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
@@ -67,10 +74,7 @@ export const useAppContainerEffects = () => {
   const menuSections = [orgMenu, deviceMenu, accountMenu, adminMenu];
 
   return {
-    navigate: (url: string) => {
-      console.log(`navigate => (${url})`);
-      navigate(url);
-    },
+    handleLogout,
     isAuthenticated,
     menuSections,
     accountData,

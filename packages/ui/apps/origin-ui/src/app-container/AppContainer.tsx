@@ -10,7 +10,7 @@ export interface AppContainerProps {}
 
 export const AppContainer = () => {
   const {
-    navigate,
+    handleLogout,
     menuSections,
     accountData,
     isAuthenticated,
@@ -29,7 +29,7 @@ export const AppContainer = () => {
         menuSections={menuSections}
         accountData={accountData}
         isAuthenticated={isAuthenticated}
-        handleNavigate={navigate}
+        handleLogout={handleLogout}
       />
     </>
   );

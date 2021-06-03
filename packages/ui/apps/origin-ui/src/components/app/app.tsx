@@ -14,27 +14,27 @@ import { DeviceApp } from '@energyweb/origin-ui-device-view';
 import { getUserAndOrgData } from '@energyweb/origin-ui-user-data-access';
 import { getTopBarButtonList } from '@energyweb/origin-ui-user-logic';
 
-/* eslint-disable-next-line */
 export interface AppProps {
   isAuthenticated: boolean;
   accountData: IAccountContextState;
   menuSections: TMenuSection[];
-  handleNavigate: (url: string) => void;
+  handleLogout: () => void;
 }
 
 initializeI18N(getOriginLanguage());
 
-export const App: FC<AppProps> = (props) => {
-  const { isAuthenticated, accountData, menuSections, handleNavigate } = props;
+export const App: FC<AppProps> = ({
+  isAuthenticated,
+  accountData,
+  menuSections,
+  handleLogout,
+}) => {
   const { orgData, userData } = getUserAndOrgData(accountData);
   return (
     <MainLayout
       isAuthenticated={isAuthenticated}
       topbarButtons={useMemo(
-        () =>
-          getTopBarButtonList(isAuthenticated, () => {
-            handleNavigate('/auth/logout');
-          }),
+        () => getTopBarButtonList(isAuthenticated, handleLogout),
         [isAuthenticated]
       )}
       menuSections={menuSections}
