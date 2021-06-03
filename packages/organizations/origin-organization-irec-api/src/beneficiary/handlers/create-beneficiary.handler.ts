@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '@energyweb/origin-backend';
 
 import { IrecService } from '../../irec';
-import { CreateBeneficiaryCommand } from '../commands';
+import { CreateBeneficiaryCommand } from '../commands/create-beneficiary.command';
 import { Beneficiary } from '../beneficiary.entity';
 
 @CommandHandler(CreateBeneficiaryCommand)
