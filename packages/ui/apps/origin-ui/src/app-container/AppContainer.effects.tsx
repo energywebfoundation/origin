@@ -12,7 +12,6 @@ import {
 } from '@energyweb/origin-ui-react-query-providers';
 import { useAccount } from '@energyweb/origin-ui-user-view';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
-import { useInvitationControllerGetInvitations } from '@energyweb/origin-backend-react-query-client';
 import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
 
 export const useAppContainerEffects = () => {
@@ -30,22 +29,18 @@ export const useAppContainerEffects = () => {
   const isAuthenticated = useAuthIsAuthenticated();
 
   const accountData = useAccount();
-  const { data: invitations, isLoading: invitationsLoading } =
-    useInvitationControllerGetInvitations({ enabled: isAuthenticated });
   const user = accountData?.userAccountData;
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsActive = user && user.status === UserStatus.Active;
   const userIsAdminOrSupport = isRole(user, Role.Admin, Role.SupportAgent);
-  const userHasInvitations = invitations && invitations.length > 0;
-  const appLoading = invitationsLoading;
 
   const orgMenu = getOrganizationMenu({
     t,
     showRegisterOrg: !userHasOrg,
     showMyOrg: userHasOrg,
     showMembers: userHasOrg && userIsOrgAdmin,
-    showInvitations: userHasOrg && userIsOrgAdmin ? true : userHasInvitations,
+    showInvitations: userHasOrg && userIsOrgAdmin ? true : false,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: true,
@@ -78,6 +73,5 @@ export const useAppContainerEffects = () => {
     isAuthenticated,
     menuSections,
     accountData,
-    appLoading,
   };
 };

@@ -21,7 +21,9 @@ export const useUserExchangeDepositAddressFormConfig = (
 ): GenericFormProps<TUserExchangeDepositAddressFormValues> => {
   const { t } = useTranslation();
   return {
-    buttonText: t('user.actions.createDepositAddress'),
+    formTitle: t('user.profile.exchangeAddressTitle'),
+    formTitleVariant: 'h6',
+    buttonText: t('user.profile.createExchangeAddressButton'),
     fields: [
       {
         label: null,
@@ -34,10 +36,9 @@ export const useUserExchangeDepositAddressFormConfig = (
               icon={Info}
               iconSize={IconSize.Large}
               popoverText={[
-                t('user.popover.exchangeAddressWhatFor'),
-                t('user.popover.exchangeAddressHowTo'),
+                t('user.profile.popover.exchangeAddressWhatFor'),
+                t('user.profile.popover.exchangeAddressHowTo'),
               ]}
-              // className={classes.infoIcon}
             />
           ),
         },
@@ -46,9 +47,10 @@ export const useUserExchangeDepositAddressFormConfig = (
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: { exchangeDepositAddress },
     submitHandler: formSubmitHandler,
+    inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
       exchangeDepositAddress: Yup.string().label(
-        t('user.properties.blockchainAddress')
+        t('user.profile.exchangeDepositAddress')
       ),
     }),
   };

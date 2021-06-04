@@ -303,57 +303,6 @@
         "seeMore": "See more"
       }
     },
-    "account": {
-      "settings": {
-        "notifications": "Notifications",
-        "language": "Language"
-      },
-      "register": {
-        "title": "Title",
-        "firstName": "First name",
-        "lastName": "Last name",
-        "email": "Email",
-        "telephone": "Telephone",
-        "password": "Password"
-      },
-      "login": {
-        "email": "Email",
-        "password": "Password",
-        "forgotPassword": "Forgot password?",
-        "buttonLogin": "Login",
-        "dontHaveAcc": "Don't have an account?",
-        "registerNow": "Register now"
-      }
-    },
-    "general": {
-      "buttons": {
-        "ok": "Ok",
-        "notNow": "Not now",
-        "nextStep": "Next Step",
-        "submit": "Submit",
-        "register": "Register",
-        "cancel": "Cancel",
-        "change": "Change",
-        "confirm": "Confirm"
-      }
-    },
-    "validation": {
-      "requiredField": "{field} is a required field",
-      "positiveInt": "{field} should be a positive integer"
-    },
-    "notifications": {
-      "title": {
-        "success": "Success",
-        "error": "Error",
-        "warning": "Warning",
-        "info": "Info"
-      }
-    },
-    "file": {
-      "upload": {
-        "dropOrClick": "Drop files here or click to select files"
-      }
-    },
     "user": {
       "register": {
         "title": "Title",
@@ -377,119 +326,68 @@
           "loginError": "Could not log in with supplied credentials"
         }
       },
+      "profile": {
+        "resendConfirmationEmail": "Re-send confirmation email",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "telephone": "Telephone",
+        "status": "Status",
+        "kycStatus": "KYC Status",
+        "email": "Email",
+        "changeEmail": "Change Email",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "newPasswordConfirm": "New Password Confirm",
+        "changePassword": "Change Password",
+        "blockchainAddresses": "Blockchain Addresses",
+        "exchangeAddressTitle": "Exchange Deposit Address",
+        "createExchangeAddressButton": "Create Exchange Deposit Address",
+        "blockchainAccountAddress": "Blockchain Account Address",
+        "connectBlockchain": "Connect Blockchain Address",
+        "connectNewBlockchain": "Connect New Blockchain Address",
+        "popover": {
+          "exchangeAddressWhatFor": "This blockchain address identifies you on the certificate exchange. You need it to trade certificates on the exchange.",
+          "exchangeAddressHowTo": "The platform automatically generates the deposit address and takes custody of it. You do not have to manage your own blockchain wallet.",
+          "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
+          "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
+          "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
+        }
+      },
       "modals": {
         "userRegistered": {
           "title": "Thanks for registering as a user on the marketplace",
           "text": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
         }
-      },
-
-      "properties": {
-        "title": "Title",
-        "firstName": "First name",
-        "lastName": "Last name",
-        "telephone": "Telephone",
-        "email": "Email",
-        "role": "Role",
-        "password": "Password",
-        "status": "Status",
-        "kycStatus": "KYC Status",
-        "exchangeAddressTitle": "Exchange Deposit Address",
-        "blockchainAddress": "Blockchain Address",
-        "blockchainAddresses": "Blockchain Addresses",
-        "userBlockchainAddress": "User Blockchain Address",
-        "emailConfirmed": "Email Confirmed",
-        "currentPassword": "Current Password",
-        "newPassword": "New Password",
-        "newPasswordConfirm": "New Password Confirm",
-        "confirmDoesntMatch": "Confirm doesn't match",
-        "organization": "Organization"
-      },
-      "actions": {
+      }
+    },
+    "general": {
+      "buttons": {
+        "ok": "Ok",
+        "notNow": "Not now",
+        "nextStep": "Next Step",
+        "submit": "Submit",
         "register": "Register",
-        "registerNow": "Register now",
-        "login": "Login",
-        "logout": "Logout",
-        "save": "Save",
-        "edit": "Edit",
         "cancel": "Cancel",
-        "resendConfirmationEmail": "Re-send confirmation email",
-        "forgotPasswordAsk": "Forgot password?",
-        "createDepositAddress": "Create Deposit Address",
-        "connectBlockchain": "Connect Blockchain Address",
-        "connectNewBlockchain": "Connect New Blockchain Address"
-      },
-      "popover": {
-        "exchangeAddressWhatFor": "This blockchain address identifies you on the certificate exchange. You need it to trade certificates on the exchange.",
-        "exchangeAddressHowTo": "The platform automatically generates the deposit address and takes custody of it. You do not have to manage your own blockchain wallet.",
-        "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
-        "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
-        "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet.",
-        "yourAccountIsPending": "Your user account status is pending",
-        "yourOrganizationIsPending": "Your organization status is pending"
-      },
-      "feedback": {
-        "userRegistered": "User registered.",
-        "errorWhileRegisteringUser": "Error while registering user.",
-        "errorUserExists": "The user with email {userEmail} has already been registered. Please log in using the original account.",
-        "userLoggedIn": "User logged in.",
-        "couldNotLogIn": "Could not log in with supplied credentials.",
-        "confirmationEmailResent": "Confirmation email re-sent.",
-        "confirmationEmailResentFailed": "Unable to send the confirmation email.",
-        "onlyActiveUsersCan": "Only active users can perform this action",
-        "onlyMembersOfActiveOrgCan": "Only members of active organization can perform this action",
-        "thisAccountAlreadyConnected": "This blockchain address is already connected to your account.",
-        "exchangeAddressSuccess": "Exchange Deposit Address created successfully.",
-        "exchangeAddressFailure": "Exchange Deposit Address could not be created.",
-        "emailConfirmation": {
-          "alreadyConfirmed": "Already confirmed.",
-          "confirmed": "Email confirmed successfully.",
-          "expired": "Confirmation link expired.",
-          "loading": "Loading..."
-        },
-        "roleChanged": {
-          "succesfullyJoinedOrg": "Successfully joined {{orgName}}",
-          "asMemberYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a member you can",
-          "asDeviceManYouCan": "You have successfully joined {{orgName}} of {{admin}}. As a Device Manager you have permission to",
-          "asOrgAdminYouCan": "You have successfully joined {{orgName}} of {{admin}}. As an Organization Admin you have permission to",
-          "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
-          "canEditUserRoles": "Give and edit user roles",
-          "canPlaceOrder": "Place orders on the exchange",
-          "canBuyCertificates": "Directly buy {certificateType}",
-          "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
-          "canRedeemCertificates": "Redeem {certificateType}",
-          "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
-          "canRegisterDevices": "Register devices and device groups",
-          "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
-          "canConfigureAutomatedOrderCreation": "Configure automated order creation",
-          "connectOrgToIRec": "Connect the organization to the I-REC registry",
-          "asDeviceManagerYouCanAlso": "You can also perform all actions of a device manager",
-          "asAMemberYouCanAlso": "You can also perform all actions that a regular organization member can perform"
-        }
-      },
-      "profile": {
-        "subtitle": {
-          "basicInformation": "User Information",
-          "email": "Email",
-          "security": "Change Password"
-        },
-        "actions": {
-          "changeEmail": "Change Email",
-          "changePassword": "Change Password"
-        },
-        "updateProfile": "User profile updated.",
-        "errorUpdateProfile": "Error to update User profile.",
-        "updatePassword": "User password updated.",
-        "errorUpdatePassword": "Error to update User password.",
-        "updateChainAddress": "User blockchain address update.",
-        "errorUpdateChainAddress": "Error to update User blockchain address.",
-        "noBlockchainConnection": "No blockchain connection detected, please visit <a href='https://metamask.io/' target='_blank'>metamask.io</a> and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.",
-        "blockchainAlreadyLinked": "User has blockchain account already linked."
-      },
-      "dialog": {
-        "dontHaveAccAsk": "Don't have an account?",
-        "userRegisteredModalTitle": "Thanks for registering as a user on the marketplace",
-        "userRegisteredModalContent": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
+        "change": "Change",
+        "confirm": "Confirm",
+        "edit": "Edit"
+      }
+    },
+    "validation": {
+      "requiredField": "{field} is a required field",
+      "positiveInt": "{field} should be a positive integer"
+    },
+    "notifications": {
+      "title": {
+        "success": "Success",
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Info"
+      }
+    },
+    "file": {
+      "upload": {
+        "dropOrClick": "Drop files here or click to select files"
       }
     }
   }

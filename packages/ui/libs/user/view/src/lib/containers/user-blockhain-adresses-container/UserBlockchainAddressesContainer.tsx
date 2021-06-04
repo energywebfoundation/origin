@@ -10,7 +10,7 @@ export const UserBlockchainAddressesContainer = () => {
   return (
     <>
       <Typography variant="h5">
-        {t('user.properties.blockchainAddresses')}
+        {t('user.profile.blockchainAddresses')}
       </Typography>
       <UserExchangeDepositAddressContainer />
       <UserOrganizationBlockchainAccountAddressContainer />

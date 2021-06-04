@@ -22,41 +22,39 @@ export const useUpdateUserAccountPasswordFormConfig = (
   const { t } = useTranslation();
 
   return {
-    buttonFullWidth: true,
-    buttonText: t('user.profile.actions.changePassword'),
+    buttonText: t('user.profile.changePassword'),
     fields: [
       {
         type: 'password',
-        label: t('user.properties.currentPassword'),
+        label: t('user.profile.currentPassword'),
         name: 'currentPassword',
       },
       {
         type: 'password',
-        label: t('user.properties.newPassword'),
+        label: t('user.profile.newPassword'),
         name: 'newPassword',
       },
       {
         type: 'password',
-        label: t('user.properties.newPasswordConfirm'),
+        label: t('user.profile.newPasswordConfirm'),
         name: 'newPasswordConfirm',
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: INITIAL_FORM_VALUES,
+    inputsVariant: 'filled',
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
       currentPassword: Yup.string()
-        .label(t('user.properties.currentPassword'))
+        .label(t('user.profile.currentPassword'))
         .required(),
-      newPassword: Yup.string()
-        .label(t('user.properties.newPassword'))
-        .required(),
+      newPassword: Yup.string().label(t('user.profile.newPassword')).required(),
       newPasswordConfirm: Yup.string()
         .oneOf(
           [Yup.ref('newPassword'), null],
-          t('user.properties.confirmDoesntMatch')
+          t('user.profile.confirmDoesntMatch')
         )
-        .label(t('user.properties.confirmPassword'))
+        .label(t('user.profile.confirmPassword'))
         .required(),
     }),
   };

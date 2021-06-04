@@ -22,14 +22,15 @@ export const useUserBlockchainAccountAddressFormConfig = (
   const { t } = useTranslation();
   return {
     hideSubmitButton: Boolean(activeBlockchainAccountAddress),
-    formTitle: t('user.properties.userBlockchainAddressAccountTitle'),
+    formTitle: t('user.profile.blockchainAccountAddress'),
     formTitleVariant: 'h6',
+    inputsVariant: 'filled',
     buttonText: !activeBlockchainAccountAddress
-      ? t('user.actions.connectBlockchain')
-      : t('user.actions.connectNewBlockchain'),
+      ? t('user.profile.connectBlockchain')
+      : t('user.profile.connectNewBlockchain'),
     fields: [
       {
-        label: t('user.properties.blockchainAccountAddress'),
+        label: null,
         name: 'blockchainAccountAddress',
         frozen: true,
         endAdornment: {
@@ -39,9 +40,9 @@ export const useUserBlockchainAccountAddressFormConfig = (
               icon={Info}
               iconSize={IconSize.Large}
               popoverText={[
-                t('user.popover.blockchainWhatIs'),
-                t('user.popover.blockchainWhatFor'),
-                t('user.popover.blockchainHowTo'),
+                t('user.profile.popover.blockchainWhatIs'),
+                t('user.profile.popover.blockchainWhatFor'),
+                t('user.profile.popover.blockchainHowTo'),
               ]}
             />
           ),
@@ -55,7 +56,7 @@ export const useUserBlockchainAccountAddressFormConfig = (
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
       blockchainAccountAddress: Yup.string().label(
-        t('user.properties.blockchainAddress')
+        t('user.profile.blockchainAddress')
       ),
     }),
   };

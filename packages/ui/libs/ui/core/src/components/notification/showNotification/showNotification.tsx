@@ -1,5 +1,5 @@
 import React from 'react';
-import { toast, ToastProps, ToastContent } from 'react-toastify';
+import { toast, ToastContent, ToastOptions, Slide } from 'react-toastify';
 import { NotificationContent } from '../NotificationContent';
 
 export enum NotificationTypeEnum {
@@ -13,7 +13,7 @@ export enum NotificationTypeEnum {
 export const showNotification = (
   content: ToastContent,
   type?: NotificationTypeEnum,
-  options?: Omit<ToastProps, 'children'>
+  options?: ToastOptions
 ) => {
   if (type === NotificationTypeEnum.Custom) {
     return toast(content, options);

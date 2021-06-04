@@ -42,11 +42,11 @@ export const App: FC<AppProps> = ({
       orgData={orgData}
     >
       <Routes>
-        <Route path={'auth/*'} element={<AuthApp />} />
-        <Route path={'account/*'} element={<SettingsApp />} />
-        <Route path={'admin/*'} element={<AdminApp />} />
-        <Route path={'organization/*'} element={<OrganizationApp />} />
-        <Route path={'device/*'} element={<DeviceApp />} />
+        <Route path="auth/*" element={<AuthApp />} />
+        <Route path="account/*" element={<SettingsApp />} />
+        <Route path="admin/*" element={<AdminApp />} />
+        <Route path="organization/*" element={<OrganizationApp />} />
+        <Route path="device/*" element={<DeviceApp />} />
       </Routes>
     </MainLayout>
   );

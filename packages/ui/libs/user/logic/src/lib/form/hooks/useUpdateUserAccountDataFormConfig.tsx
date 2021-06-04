@@ -22,35 +22,32 @@ export const useUpdateUserAccountDataFormConfig = (
 ): GenericFormProps<TUpdateUserDataFormValues> => {
   const { t } = useTranslation();
   return {
-    buttonFullWidth: true,
-    buttonText: t('user.actions.edit'),
+    buttonText: t('general.buttons.edit'),
     fields: [
       {
-        label: t('user.properties.firstName'),
+        label: t('user.profile.firstName'),
         name: 'firstName',
       },
       {
-        label: t('user.properties.lastName'),
+        label: t('user.profile.lastName'),
         name: 'lastName',
       },
       {
-        label: t('user.properties.telephone'),
+        label: t('user.profile.telephone'),
         name: 'telephone',
       },
       {
-        label: t('user.properties.kycStatus'),
+        label: t('user.profile.kycStatus'),
         name: 'kycStatus',
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: { ...(initialData as IUser) },
+    inputsVariant: 'filled',
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
-      username: Yup.string()
-        .email()
-        .label(t('user.properties.email'))
-        .required(),
-      password: Yup.string().label(t('user.properties.password')).required(),
+      username: Yup.string().email().label(t('user.profile.email')).required(),
+      password: Yup.string().label(t('user.profile.password')).required(),
     }),
   };
 };

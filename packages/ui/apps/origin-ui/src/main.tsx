@@ -16,15 +16,15 @@ import {
 import AppContainer from './app-container/AppContainer';
 import { BlockchainProvider } from '@energyweb/origin-ui-blockchain';
 
+const token = localStorage.getItem('AUTHENTICATION_TOKEN');
+
 ReactDOM.render(
   <React.StrictMode>
     <OriginThemeProvider>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <BrowserRouter>
           <OriginQueryClientProvider>
-            <AuthProvider
-              initialState={localStorage.getItem('AUTHENTICATION_TOKEN')}
-            >
+            <AuthProvider initialState={token}>
               <AccountProvider>
                 <BlockchainProvider>
                   <SettingsProvider>

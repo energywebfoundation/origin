@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ToastContainer, ToastContainerProps } from 'react-toastify';
+import { ToastContainer, ToastContainerProps, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { useStyles } from './NotificationsCenter.styles';
@@ -24,6 +24,7 @@ export const NotificationsCenter: FC<NotificationsCenterProps> = ({
       draggable
       pauseOnHover
       closeButton={false}
+      transition={Slide}
       toastClassName={classes.toast}
       {...containerProps}
     />

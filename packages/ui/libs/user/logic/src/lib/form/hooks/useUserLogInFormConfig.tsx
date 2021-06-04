@@ -35,6 +35,7 @@ export const useUserLogInFormConfig = (
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
+    inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
       username: Yup.string().email().label(t('account.login.email')).required(),
       password: Yup.string().label(t('account.login.password')).required(),

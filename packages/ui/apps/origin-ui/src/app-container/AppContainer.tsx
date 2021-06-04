@@ -5,21 +5,9 @@ import { useAppContainerEffects } from './AppContainer.effects';
 import { OriginGlobalStyles } from '../components/app/OriginGlobalStyles';
 import { NotificationsCenter } from '@energyweb/origin-ui-core';
 
-/* eslint-disable-next-line */
-export interface AppContainerProps {}
-
 export const AppContainer = () => {
-  const {
-    handleLogout,
-    menuSections,
-    accountData,
-    isAuthenticated,
-    appLoading,
-  } = useAppContainerEffects();
-
-  if (appLoading) {
-    return <></>;
-  }
+  const { handleLogout, menuSections, accountData, isAuthenticated } =
+    useAppContainerEffects();
 
   return (
     <>

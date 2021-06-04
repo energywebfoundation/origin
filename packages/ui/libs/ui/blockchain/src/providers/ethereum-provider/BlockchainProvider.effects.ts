@@ -18,6 +18,8 @@ import {
   getAccountControllerGetAccountQueryKey,
 } from '@energyweb/exchange-react-query-client';
 import { BlockchainPropertiesDTO } from '@energyweb/issuer-api-react-query-client';
+import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
+
 const checkBlockchainNetwork = (
   user: UserDTO,
   blockchainProperties: BlockchainPropertiesDTO
@@ -58,6 +60,7 @@ export const checkNetworkName = (netId: OriginPrimaryNetworksEnum) => {
 
 export const useBlockchainProviderEffects = () => {
   const { userAccountData: user } = useAccount();
+
   const queryClient = useQueryClient();
   useEffect(() => {
     if (user) {
@@ -80,7 +83,7 @@ export const useBlockchainProviderEffects = () => {
   blockchainProvider.enable();
   checkBlockchainNetwork(user, blockchainProperties);
 
-  const { data: backendAccountData } = useApiFetchUserAccountData(2000);
+  const { data: backendAccountData } = useApiFetchUserAccountData();
   const { data: backendAccountBalance } = useApiFetchUserAccountBalanceData();
 
   useEffect(() => {

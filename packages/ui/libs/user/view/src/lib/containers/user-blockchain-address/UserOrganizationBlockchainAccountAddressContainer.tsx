@@ -7,10 +7,8 @@ import { useUserBlockchainAccountAddressEffects } from './UserOrganizationBlockc
 export const UserOrganizationBlockchainAccountAddressContainer: FC = () => {
   const { formConfig } = useUserBlockchainAccountAddressEffects();
   return (
-    <Grid container>
-      <Grid item xs={12}>
-        <GenericForm {...formConfig} />
-      </Grid>
+    <Grid item md={8} xs={12}>
+      <GenericForm {...formConfig} />
     </Grid>
   );
 };

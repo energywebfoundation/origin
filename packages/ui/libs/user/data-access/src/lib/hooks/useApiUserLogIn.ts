@@ -1,5 +1,8 @@
 import { useAuthDispatchSetTokenValue } from '@energyweb/origin-ui-react-query-providers';
 import {
+  getInvitationControllerGetInvitationsQueryKey,
+  getUserControllerMeQueryKey,
+  userControllerMe,
   LoginDataDTO,
   useAppControllerLogin,
 } from '@energyweb/origin-backend-react-query-client';
@@ -12,39 +15,37 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from 'react-query';
+import {
+  getAccountBalanceControllerGetQueryKey,
+  getAccountControllerGetAccountQueryKey,
+} from '@energyweb/exchange-react-query-client';
+import { getBlockchainPropertiesControllerGetQueryKey } from '@energyweb/issuer-api-react-query-client';
 
 export type TApiLogInUserSubmitHandler = (values: LoginDataDTO) => void;
 
 export const useApiUserLogIn = () => {
-  const setTokenValue = useAuthDispatchSetTokenValue();
-  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  // const setTokenValue = useAuthDispatchSetTokenValue();
+  // const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { mutate, isLoading, error, isError, isSuccess, status } =
-    useAppControllerLogin();
+    useAppControllerLogin({
+      onSuccess: ({ accessToken }) => {
+        localStorage.setItem('AUTHENTICATION_TOKEN', accessToken);
+        queryClient.fetchQuery(getUserControllerMeQueryKey(), userControllerMe);
+      },
+      // onSettled: async () => {
+      //     queryClient.fetchQuery(getUserControllerMeQueryKey(), userControllerMe);
+      // }
+    });
 
-  const submitHandler = useCallback(
-    (values: LoginDataDTO) => {
-      mutate(
-        { data: values },
-        {
-          onSuccess: ({ accessToken }) => {
-            setTokenValue(accessToken);
-            setAuthenticationToken(accessToken);
-            navigate('/');
-          },
-          onError: (error: AxiosResponse) => {
-            console.warn(t('user.login.notifications.loginError'), error);
-            showNotification(
-              t('user.login.notifications.loginError'),
-              NotificationTypeEnum.Error
-            );
-          },
-        }
-      );
-    },
-    [navigate, setAuthenticationToken, setTokenValue]
-  );
+  const submitHandler = (values: LoginDataDTO) => {
+    navigate('/');
+    mutate({ data: values });
+  };
+
   return {
     status,
     isLoading,
@@ -53,4 +54,49 @@ export const useApiUserLogIn = () => {
     error,
     submitHandler,
   };
+  // const setTokenValue = useAuthDispatchSetTokenValue();
+  // const { t } = useTranslation();
+  // const navigate = useNavigate();
+
+  // const queryClient = useQueryClient();
+  // const userQueryKey = getUserControllerMeQueryKey();
+  // const invitationQueryKey = getInvitationControllerGetInvitationsQueryKey();
+  // const accountQueryKey = getAccountControllerGetAccountQueryKey();
+  // const accountBalanceQueryKey = getAccountBalanceControllerGetQueryKey();
+  // const blockchainPropsQueryKey = getBlockchainPropertiesControllerGetQueryKey();
+
+  // const { mutate, isLoading, error, isError, isSuccess, status } =
+  //   useAppControllerLogin({
+  //     onSuccess: async ({ accessToken }) => {
+  //       localStorage.setItem('AUTHENTICATION_TOKEN', accessToken)
+  //       setTokenValue(accessToken);
+  //       setAuthenticationToken(accessToken);
+  //       navigate('/');
+  //     },
+  //     onError: (error: AxiosResponse) => {
+  //       console.warn(t('user.login.notifications.loginError'), error);
+  //       showNotification(
+  //         t('user.login.notifications.loginError'),
+  //         NotificationTypeEnum.Error
+  //       );
+  //     },
+  //     onSettled: async () => {
+  //       queryClient.fetchQuery(getUserControllerMeQueryKey(), userControllerMe);
+  //   }
+  //   });
+
+  // const submitHandler = useCallback(
+  //   (values: LoginDataDTO) => {
+  //     mutate({ data: values });
+  //   },
+  //   [navigate, setAuthenticationToken, setTokenValue]
+  // );
+  // return {
+  //   status,
+  //   isLoading,
+  //   isSuccess,
+  //   isError,
+  //   error,
+  //   submitHandler,
+  // };
 };

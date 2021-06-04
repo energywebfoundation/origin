@@ -14,19 +14,19 @@ export const useUpdateUserAccountEmailFormConfig = (
   const { t } = useTranslation();
 
   return {
-    buttonFullWidth: true,
-    buttonText: t('user.profile.actions.changeEmail'),
+    buttonText: t('user.profile.changeEmail'),
     fields: [
       {
-        label: t('user.properties.email'),
+        label: t('user.profile.email'),
         name: 'email',
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: { email: initialValues?.email },
+    inputsVariant: 'filled',
     submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
-      email: Yup.string().email().label(t('user.properties.email')).required(),
+      email: Yup.string().email().label(t('user.profile.email')).required(),
     }),
   };
 };
