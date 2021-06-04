@@ -9,10 +9,10 @@ export interface SettingsAppProps {}
 export const SettingsApp: FC<SettingsAppProps> = (props) => {
   return (
     <Routes>
-      <Route path={'user-profile'} element={<UserAccountPage />}>
+      <Route path="profile" element={<UserAccountPage />}>
         <UserSettingsPage />
       </Route>
-      <Route path={'settings'} element={<UserSettingsPage />}>
+      <Route path="settings" element={<UserSettingsPage />}>
         <UserSettingsPage />
       </Route>
     </Routes>

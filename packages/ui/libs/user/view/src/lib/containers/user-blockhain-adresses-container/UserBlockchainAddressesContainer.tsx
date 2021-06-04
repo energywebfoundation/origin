@@ -4,8 +4,15 @@ import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UserExchangeDepositAddressContainer } from '../user-exchange-deposit-address';
 import { UserOrganizationBlockchainAccountAddressContainer } from '../user-blockchain-address';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
-export const UserBlockchainAddressesContainer = () => {
+interface UserBlockchainAddressesContainerProps {
+  userAccountData: UserDTO;
+}
+
+export const UserBlockchainAddressesContainer = ({
+  userAccountData,
+}: UserBlockchainAddressesContainerProps) => {
   const { t } = useTranslation();
   return (
     <>
@@ -13,7 +20,9 @@ export const UserBlockchainAddressesContainer = () => {
         {t('user.profile.blockchainAddresses')}
       </Typography>
       <UserExchangeDepositAddressContainer />
-      <UserOrganizationBlockchainAccountAddressContainer />
+      <UserOrganizationBlockchainAccountAddressContainer
+        userAccountData={userAccountData}
+      />
     </>
   );
 };

@@ -3,6 +3,12 @@ import { useApiUpdateUserAccountPassword } from '@energyweb/origin-ui-user-data-
 
 export const useUpdateUserPasswordContainerEffects = () => {
   const { submitHandler } = useApiUpdateUserAccountPassword();
-  const formConfig = useUpdateUserAccountPasswordFormConfig(submitHandler);
-  return { formConfig };
+  const formConfig = useUpdateUserAccountPasswordFormConfig();
+
+  const formProps = {
+    ...formConfig,
+    submitHandler,
+  };
+
+  return { formProps };
 };

@@ -1,12 +1,11 @@
 import { useUserBlockchainAccountAddressFormConfig } from '@energyweb/origin-ui-user-logic';
-import { useAccount } from '@energyweb/origin-ui-user-view';
 import { useApiUpdateOwnBlockchainAddress } from '@energyweb/origin-ui-user-data-access';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
-export const useUserBlockchainAccountAddressEffects = () => {
-  const { userAccountData } = useAccount();
+export const useUserBlockchainAccountAddressEffects = (user: UserDTO) => {
   const { submitHandler } = useApiUpdateOwnBlockchainAddress();
   const formConfig = useUserBlockchainAccountAddressFormConfig(
-    userAccountData.organization.blockchainAccountAddress,
+    user?.organization?.blockchainAccountAddress,
     submitHandler
   );
   return { formConfig };

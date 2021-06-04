@@ -20,14 +20,14 @@ export const useUserLogInFormConfig = (
 
   return {
     buttonFullWidth: true,
-    buttonText: t('account.login.buttonLogin'),
+    buttonText: t('user.login.loginButton'),
     fields: [
       {
-        label: t('account.login.email'),
+        label: t('user.login.email'),
         name: 'username',
       },
       {
-        label: t('account.login.password'),
+        label: t('user.login.password'),
         type: 'password',
         name: 'password',
       },

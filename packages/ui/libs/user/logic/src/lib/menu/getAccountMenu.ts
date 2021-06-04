@@ -26,7 +26,7 @@ export const getAccountMenu: TGetAccountMenuFn = ({
       show: showSettings,
     },
     {
-      url: 'user-profile',
+      url: 'profile',
       label: t('navigation.account.userProfile'),
       show: showUserProfile,
     },

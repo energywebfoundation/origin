@@ -14,10 +14,10 @@ import { DeepPartial, UnpackNestedValue, UseFormReset } from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
-  frozen?: boolean;
   name: string;
   label: string | null;
   type?: 'text' | 'password';
+  frozen?: boolean;
   select?: boolean;
   options?: FormSelectOption[];
   autocomplete?: boolean;

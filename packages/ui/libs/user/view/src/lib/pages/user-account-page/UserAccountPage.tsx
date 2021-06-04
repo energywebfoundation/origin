@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useStyles } from '../user-settings-page/UserSettingsPage.styles';
-import { Grid, Paper } from '@material-ui/core';
+import { CircularProgress, Grid, Paper } from '@material-ui/core';
 import {
   UpdateUserEmailContainer,
   UserResendConfirmationEmailContainer,
@@ -12,20 +12,19 @@ import {
 
 import { useUserAccountPageEffects } from './UserAccountPage.effects';
 
-/* eslint-disable-next-line */
-export interface UserAccountPageProps {}
-
 export const UserAccountPage = () => {
   const classes = useStyles();
-  const { userAccountData } = useUserAccountPageEffects();
-  return userAccountData ? (
+  const { userAccountData, isLoading } = useUserAccountPageEffects();
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  return (
     <Grid item xs={12} className={classes.wrapper}>
       <Grid container spacing={3}>
         <Grid xs={12} item>
           <Paper classes={{ root: classes.paper }}>
-            {userAccountData.email && !userAccountData.emailConfirmed && (
-              <UserResendConfirmationEmailContainer />
-            )}
             <UpdateUserDataContainer userAccountData={userAccountData} />
           </Paper>
         </Grid>
@@ -41,13 +40,13 @@ export const UserAccountPage = () => {
         </Grid>
         <Grid xs={12} item>
           <Paper classes={{ root: classes.paper }}>
-            <UserBlockchainAddressesContainer />
+            <UserBlockchainAddressesContainer
+              userAccountData={userAccountData}
+            />
           </Paper>
         </Grid>
       </Grid>
     </Grid>
-  ) : (
-    <div>Loading</div>
   );
 };
 

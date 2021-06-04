@@ -6,10 +6,12 @@ export const useUpdateUserEmailContainerEffects = (
   initialUserData: UserDTO
 ) => {
   const { submitHandler } = useApiUpdateUserAccountEmail();
-  const formConfig = useUpdateUserAccountEmailFormConfig(
-    initialUserData,
-    submitHandler
-  );
+  const formConfig = useUpdateUserAccountEmailFormConfig(initialUserData);
 
-  return { formConfig };
+  const formProps = {
+    ...formConfig,
+    submitHandler,
+  };
+
+  return { formProps };
 };

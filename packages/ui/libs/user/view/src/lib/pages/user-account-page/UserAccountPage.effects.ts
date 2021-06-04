@@ -1,6 +1,7 @@
-import { useAccount } from '@energyweb/origin-ui-user-view';
+import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
 
 export const useUserAccountPageEffects = () => {
-  const { userAccountData } = useAccount();
-  return { userAccountData };
+  const { data: userAccountData, isLoading } = useUserControllerMe();
+
+  return { userAccountData, isLoading };
 };

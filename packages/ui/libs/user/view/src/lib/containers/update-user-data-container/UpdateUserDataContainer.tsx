@@ -3,8 +3,10 @@ import React from 'react';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useUpdateUserDataContainerEffects } from './UpdateUserDataContainer.effects';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
+import { Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { UserResendConfirmationEmailContainer } from '../user-resend-confirmation-email-container/UserResendConfirmationEmailContainer';
 
-/* eslint-disable-next-line */
 export interface UpdateUserDataContainerProps {
   userAccountData: UserDTO;
 }
@@ -12,8 +14,19 @@ export interface UpdateUserDataContainerProps {
 export const UpdateUserDataContainer = ({
   userAccountData,
 }: UpdateUserDataContainerProps) => {
-  const { formConfig } = useUpdateUserDataContainerEffects(userAccountData);
-  return <GenericForm twoColumns {...formConfig} />;
+  const { t } = useTranslation();
+  const { formProps } = useUpdateUserDataContainerEffects(userAccountData);
+  return (
+    <>
+      <Typography variant="h5" gutterBottom>
+        {t('user.profile.userInfoTitle')}
+      </Typography>
+      {userAccountData.email && !userAccountData.emailConfirmed && (
+        <UserResendConfirmationEmailContainer />
+      )}
+      <GenericForm twoColumns {...formProps} />
+    </>
+  );
 };
 
 export default UpdateUserDataContainer;

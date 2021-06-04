@@ -33,13 +33,19 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
             styleConfig.MAIN_BACKGROUND_COLOR,
             -0.5
           ),
+          borderRadius: 5,
+          '&.Mui-disabled': {
+            backgroundColor: LightenColor(
+              styleConfig.MAIN_BACKGROUND_COLOR,
+              -2
+            ),
+          },
           '&.Mui-focused': {
             backgroundColor: LightenColor(
               styleConfig.MAIN_BACKGROUND_COLOR,
               -0.5
             ),
           },
-          borderRadius: 5,
         },
       },
     },

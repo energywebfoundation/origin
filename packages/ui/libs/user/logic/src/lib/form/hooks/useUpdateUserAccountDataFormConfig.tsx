@@ -2,24 +2,19 @@ import { GenericFormProps } from '@energyweb/origin-ui-core';
 import { UnpackNestedValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { IUser } from '@energyweb/origin-backend-core';
-import {
-  FullOrganizationInfoDTO,
-  UserDTO,
-} from '@energyweb/origin-backend-react-query-client';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
-export type TUpdateUserDataFormValues = Omit<IUser, 'id'> &
-  Pick<
-    FullOrganizationInfoDTO,
-    'blockchainAccountAddress' | 'blockchainAccountSignedMessage'
-  >;
+export type TUpdateUserDataFormValues = {
+  firstName: UserDTO['firstName'];
+  lastName: UserDTO['lastName'];
+  telephone: UserDTO['telephone'];
+  status: UserDTO['status'];
+  kycStatus: UserDTO['kycStatus'];
+};
 
 export const useUpdateUserAccountDataFormConfig = (
-  initialData: UserDTO,
-  formSubmitHandler: (
-    values: UnpackNestedValue<TUpdateUserDataFormValues>
-  ) => void
-): GenericFormProps<TUpdateUserDataFormValues> => {
+  initialFormData: TUpdateUserDataFormValues
+): Omit<GenericFormProps<TUpdateUserDataFormValues>, 'submitHandler'> => {
   const { t } = useTranslation();
   return {
     buttonText: t('general.buttons.edit'),
@@ -37,17 +32,23 @@ export const useUpdateUserAccountDataFormConfig = (
         name: 'telephone',
       },
       {
+        label: t('user.profile.status'),
+        name: 'status',
+        textFieldProps: { disabled: true },
+      },
+      {
         label: t('user.profile.kycStatus'),
         name: 'kycStatus',
+        textFieldProps: { disabled: true },
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
-    initialValues: { ...(initialData as IUser) },
+    initialValues: initialFormData,
     inputsVariant: 'filled',
-    submitHandler: formSubmitHandler,
     validationSchema: Yup.object().shape({
-      username: Yup.string().email().label(t('user.profile.email')).required(),
-      password: Yup.string().label(t('user.profile.password')).required(),
+      firstName: Yup.string().label(t('user.profile.firstName')).required(),
+      lastName: Yup.string().label(t('user.profile.lastName')).required(),
+      telephone: Yup.string().label(t('user.profile.telephone')).required(),
     }),
   };
 };
