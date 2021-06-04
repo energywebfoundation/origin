@@ -1,3 +1,3 @@
 export class RemoveOrganizationBeneficiaryCommand {
-    constructor(public readonly id: number) {}
+    constructor(public readonly id: number, public readonly ownerOrganizationId: number) {}
 }

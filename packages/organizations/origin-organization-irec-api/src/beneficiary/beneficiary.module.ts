@@ -4,17 +4,21 @@ import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PassportModule } from '@nestjs/passport';
 
+import { IrecModule, IrecService } from '../irec';
 import { Beneficiary } from './beneficiary.entity';
+import { BeneficiaryHandlers } from './handlers';
+import { BeneficiaryController } from './beneficiary.controller';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Beneficiary]),
         ConfigModule,
         CqrsModule,
-        PassportModule.register({ defaultStrategy: 'jwt' })
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        IrecModule
     ],
-    providers: [],
-    exports: [],
-    controllers: []
+    providers: [...BeneficiaryHandlers, IrecService],
+    exports: [...BeneficiaryHandlers],
+    controllers: [BeneficiaryController]
 })
 export class BeneficiaryModule {}

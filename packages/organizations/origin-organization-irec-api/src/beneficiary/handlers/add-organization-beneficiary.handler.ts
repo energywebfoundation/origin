@@ -6,7 +6,7 @@ import { UserService } from '@energyweb/origin-backend';
 import { AddOrganizationBeneficiaryCommand, GetBeneficiaryCommand } from '../commands';
 import { Beneficiary } from '../beneficiary.entity';
 import { NotFoundException } from '@nestjs/common';
-import { IPublicBeneficiary } from '../dto/beneficiary.dto';
+import { BeneficiaryDTO } from '../dto/beneficiary.dto';
 
 @CommandHandler(AddOrganizationBeneficiaryCommand)
 export class AddOrganizationBeneficiaryHandler
@@ -22,7 +22,7 @@ export class AddOrganizationBeneficiaryHandler
     public async handle({
         ownerOrganizationId,
         irecBeneficiaryId
-    }: AddOrganizationBeneficiaryCommand): Promise<IPublicBeneficiary> {
+    }: AddOrganizationBeneficiaryCommand): Promise<BeneficiaryDTO> {
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         const beneficiary = await this.repository.findOne({

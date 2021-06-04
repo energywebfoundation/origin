@@ -1,11 +1,13 @@
 import { Repository } from 'typeorm';
-import { CommandHandler, IEventHandler } from '@nestjs/cqrs';
+import { CommandBus, CommandHandler, IEventHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '@energyweb/origin-backend';
 
 import { IrecService } from '../../irec';
 import { CreateBeneficiaryCommand } from '../commands/create-beneficiary.command';
 import { Beneficiary } from '../beneficiary.entity';
+import { BeneficiaryDTO } from '../dto/beneficiary.dto';
+import { GetBeneficiaryCommand } from '../commands';
 
 @CommandHandler(CreateBeneficiaryCommand)
 export class CreateBeneficiaryHandler implements IEventHandler<CreateBeneficiaryCommand> {
@@ -13,10 +15,11 @@ export class CreateBeneficiaryHandler implements IEventHandler<CreateBeneficiary
         @InjectRepository(Beneficiary)
         private readonly repository: Repository<Beneficiary>,
         private readonly userService: UserService,
-        private readonly irecService: IrecService
+        private readonly irecService: IrecService,
+        private readonly commandBus: CommandBus
     ) {}
 
-    public async handle({ organization }: CreateBeneficiaryCommand): Promise<Beneficiary> {
+    public async handle({ organization }: CreateBeneficiaryCommand): Promise<BeneficiaryDTO> {
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         const irecBeneficiary = await this.irecService.createBeneficiary(
@@ -31,6 +34,8 @@ export class CreateBeneficiaryHandler implements IEventHandler<CreateBeneficiary
             active: true
         });
 
-        return this.repository.save(beneficiary);
+        const storedBeneficiary = await this.repository.save(beneficiary);
+
+        return this.commandBus.execute(new GetBeneficiaryCommand(storedBeneficiary.id));
     }
 }

@@ -1,15 +1,22 @@
-import { IPublicOrganization } from '@energyweb/origin-backend-core';
+import { ApiProperty } from '@nestjs/swagger';
+import { plainToClass, Type } from 'class-transformer';
+import { PublicOrganizationInfoDTO } from '@energyweb/origin-backend';
 
-export interface IBeneficiary {
+export class BeneficiaryDTO {
+    @ApiProperty({ type: Number })
     id: number;
-    irecBeneficiaryId: number;
-    organizationId: number;
-    active: boolean;
-}
 
-export interface IPublicBeneficiary {
-    id: number;
+    @ApiProperty({ type: Number })
     irecBeneficiaryId: number;
-    organization: IPublicOrganization;
+
+    @ApiProperty({ type: PublicOrganizationInfoDTO })
+    @Type(() => PublicOrganizationInfoDTO)
+    organization: PublicOrganizationInfoDTO;
+
+    @ApiProperty({ type: Boolean })
     active: boolean;
+
+    public static wrap(beneficiary: BeneficiaryDTO): BeneficiaryDTO {
+        return plainToClass(BeneficiaryDTO, beneficiary, { excludeExtraneousValues: true });
+    }
 }

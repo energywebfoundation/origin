@@ -8,7 +8,7 @@ import { RegistrationModule } from '../registration';
 import { IrecModule, IrecService } from '../irec';
 import { ConnectionController } from './connection.controller';
 import { Connection } from './connection.entity';
-import { Handlers } from './handlers';
+import { ConnectionHandlers } from './handlers';
 
 @Module({
     imports: [
@@ -19,8 +19,8 @@ import { Handlers } from './handlers';
         RegistrationModule,
         IrecModule
     ],
-    providers: [...Handlers, IrecService],
-    exports: [...Handlers],
+    providers: [...ConnectionHandlers, IrecService],
+    exports: [...ConnectionHandlers],
     controllers: [ConnectionController]
 })
 export class ConnectionModule {}

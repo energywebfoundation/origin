@@ -1,5 +1,13 @@
-export * from './add-organization-beneficiary.handler';
-export * from './create-beneficiary.handler';
-export * from './get-beneficiary.handler';
-export * from './get-beneficiaries.handler';
-export * from './remove-organization-beneficiary.handler';
+import { AddOrganizationBeneficiaryHandler } from './add-organization-beneficiary.handler';
+import { CreateBeneficiaryHandler } from './create-beneficiary.handler';
+import { GetBeneficiaryHandler } from './get-beneficiary.handler';
+import { GetBeneficiariesHandler } from './get-beneficiaries.handler';
+import { RemoveOrganizationBeneficiaryHandler } from './remove-organization-beneficiary.handler';
+
+export const BeneficiaryHandlers = [
+    AddOrganizationBeneficiaryHandler,
+    CreateBeneficiaryHandler,
+    GetBeneficiaryHandler,
+    GetBeneficiariesHandler,
+    RemoveOrganizationBeneficiaryHandler
+];

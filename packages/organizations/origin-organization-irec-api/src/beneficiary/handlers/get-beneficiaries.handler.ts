@@ -5,7 +5,7 @@ import { IPublicOrganization } from '@energyweb/origin-backend-core';
 import { GetOrganizationsCommand, UserService } from '@energyweb/origin-backend';
 
 import { Beneficiary } from '../beneficiary.entity';
-import { IPublicBeneficiary } from '../dto/beneficiary.dto';
+import { BeneficiaryDTO } from '../dto/beneficiary.dto';
 import { GetBeneficiariesCommand } from '../commands/get-beneficiaries.command';
 
 @CommandHandler(GetBeneficiariesCommand)
@@ -17,9 +17,7 @@ export class GetBeneficiariesHandler implements IEventHandler<GetBeneficiariesCo
         private readonly commandBus: CommandBus
     ) {}
 
-    public async handle({
-        organizationId
-    }: GetBeneficiariesCommand): Promise<IPublicBeneficiary[]> {
+    public async handle({ organizationId }: GetBeneficiariesCommand): Promise<BeneficiaryDTO[]> {
         let orgId = organizationId;
         if (!organizationId) {
             const platformAdmin = await this.userService.getPlatformAdmin();
@@ -39,12 +37,12 @@ export class GetBeneficiariesHandler implements IEventHandler<GetBeneficiariesCo
                 return;
             }
 
-            return {
+            return BeneficiaryDTO.wrap({
                 id: beneficiary.id,
                 irecBeneficiaryId: beneficiary.irecBeneficiaryId,
                 organization,
                 active: beneficiary.active
-            };
+            });
         });
     }
 }
