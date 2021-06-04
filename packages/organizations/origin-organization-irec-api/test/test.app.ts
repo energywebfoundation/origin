@@ -73,14 +73,6 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
-        .overrideProvider(IrecService)
-        .useValue({
-            login: () => ({
-                expiryDate: new Date(),
-                accessToken: 'someAccessToken',
-                refreshToken: 'someRefreshToken'
-            })
-        })
         .compile();
 
     const app = moduleFixture.createNestApplication();

@@ -52,6 +52,14 @@ export class IrecService {
         clientId,
         clientSecret
     }: CreateConnectionDTO): Promise<AccessTokens> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                expiryDate: new Date(),
+                accessToken: 'someAccessToken',
+                refreshToken: 'someRefreshToken'
+            };
+        }
+
         const client = new IRECAPIClient(process.env.IREC_API_URL);
 
         return client.login(userName, password, clientId, clientSecret);
