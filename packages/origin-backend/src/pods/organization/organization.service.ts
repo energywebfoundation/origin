@@ -29,7 +29,6 @@ import { OrganizationNameAlreadyTakenError } from './errors/organization-name-ta
 import { Organization } from './organization.entity';
 import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { utils } from 'ethers';
-import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
 import { FindConditions } from 'typeorm/find-options/FindConditions';
 
 @Injectable()

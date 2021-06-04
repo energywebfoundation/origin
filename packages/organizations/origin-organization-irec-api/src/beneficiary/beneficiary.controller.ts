@@ -6,22 +6,15 @@ import {
     Delete,
     Get,
     HttpStatus,
+    Param,
     Post,
-    Query,
     UseGuards,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
-import {
-    ApiBearerAuth,
-    ApiBody,
-    ApiCreatedResponse,
-    ApiQuery,
-    ApiResponse,
-    ApiTags
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { BeneficiaryDTO } from './dto/beneficiary.dto';
 import {
@@ -51,12 +44,12 @@ export class BeneficiaryController {
         return this.commandBus.execute(new GetBeneficiariesCommand());
     }
 
-    @Get()
+    @Get('/company')
     @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
         type: [BeneficiaryDTO],
-        description: 'Get company platform beneficiaries'
+        description: 'Get company beneficiaries'
     })
     public async removeOrganizationBeneficiary(
         @UserDecorator() user: ILoggedInUser
@@ -64,25 +57,19 @@ export class BeneficiaryController {
         return this.commandBus.execute(new GetBeneficiariesCommand(user.organizationId));
     }
 
-    @Delete()
+    @Delete('/:id')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin, Role.SupportAgent)
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Remove beneficiary from organizations beneficiary list'
     })
-    @ApiQuery({
-        name: 'beneficiaryId',
-        description: 'Beneficiary id to delete',
-        required: true,
-        type: Number
-    })
     public async getCompanyBeneficiaries(
         @UserDecorator() user: ILoggedInUser,
-        @Query('beneficiaryId') beneficiaryId: number
+        @Param('id') id: string
     ): Promise<void> {
         await this.commandBus.execute(
-            new RemoveOrganizationBeneficiaryCommand(beneficiaryId, user.organizationId)
+            new RemoveOrganizationBeneficiaryCommand(Number(id), user.organizationId)
         );
     }
 

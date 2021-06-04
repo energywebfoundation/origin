@@ -8,7 +8,8 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
-import { AppModule, Connection, IrecService, Registration, RegistrationService } from '../src';
+import { AppModule, Connection, Registration, RegistrationService } from '../src';
+import { Beneficiary } from '@energyweb/issuer-irec-api-wrapper';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -64,7 +65,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Registration, Connection],
+                entities: [Connection, Beneficiary, Registration],
                 logging: ['info']
             }),
             AppModule
