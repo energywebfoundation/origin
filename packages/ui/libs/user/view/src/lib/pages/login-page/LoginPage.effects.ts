@@ -1,11 +1,14 @@
 import { useUserLogInFormConfig } from '@energyweb/origin-ui-user-logic';
-import { useApiUserLogIn } from '@energyweb/origin-ui-user-data-access';
+import {
+  useApiUserLogIn,
+  useUserLogin,
+} from '@energyweb/origin-ui-user-data-access';
 import { useNavigate } from 'react-router';
 
 export const useLogInPageEffects = () => {
   const navigate = useNavigate();
 
-  const { submitHandler } = useApiUserLogIn();
+  const submitHandler = useUserLogin();
   const formConfig = useUserLogInFormConfig(submitHandler);
 
   const navigateToResetPassword = () => {

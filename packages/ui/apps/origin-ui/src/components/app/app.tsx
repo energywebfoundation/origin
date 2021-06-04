@@ -1,52 +1,49 @@
-import React, { FC, useMemo } from 'react';
-import { MainLayout, TMenuSection } from '@energyweb/origin-ui-core';
+import React, { FC } from 'react';
+import {
+  MainLayout,
+  TMenuSection,
+  TopBarButtonData,
+} from '@energyweb/origin-ui-core';
 import { Routes, Route } from 'react-router-dom';
 import { initializeI18N } from '@energyweb/origin-ui-utils';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
-import {
-  AuthApp,
-  AdminApp,
-  SettingsApp,
-  IAccountContextState,
-} from '@energyweb/origin-ui-user-view';
+import { AuthApp, AdminApp, SettingsApp } from '@energyweb/origin-ui-user-view';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
 import { getUserAndOrgData } from '@energyweb/origin-ui-user-data-access';
-import { getTopBarButtonList } from '@energyweb/origin-ui-user-logic';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 export interface AppProps {
   isAuthenticated: boolean;
-  accountData: IAccountContextState;
+  topbarButtons: TopBarButtonData[];
+  user: UserDTO;
   menuSections: TMenuSection[];
-  handleLogout: () => void;
 }
 
 initializeI18N(getOriginLanguage());
 
 export const App: FC<AppProps> = ({
   isAuthenticated,
-  accountData,
+  user,
   menuSections,
-  handleLogout,
+  topbarButtons,
 }) => {
-  const { orgData, userData } = getUserAndOrgData(accountData);
+  const { orgData, userData } = getUserAndOrgData(user);
+
   return (
     <MainLayout
       isAuthenticated={isAuthenticated}
-      topbarButtons={useMemo(
-        () => getTopBarButtonList(isAuthenticated, handleLogout),
-        [isAuthenticated]
-      )}
+      topbarButtons={topbarButtons}
       menuSections={menuSections}
       userData={userData}
       orgData={orgData}
     >
       <Routes>
+        <Route path="device/*" element={<DeviceApp />} />
+        <Route path="organization/*" element={<OrganizationApp />} />
         <Route path="auth/*" element={<AuthApp />} />
         <Route path="account/*" element={<SettingsApp />} />
         <Route path="admin/*" element={<AdminApp />} />
-        <Route path="organization/*" element={<OrganizationApp />} />
-        <Route path="device/*" element={<DeviceApp />} />
       </Routes>
     </MainLayout>
   );

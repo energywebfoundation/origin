@@ -37,8 +37,8 @@ export const useUserLogInFormConfig = (
     submitHandler: formSubmitHandler,
     inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
-      username: Yup.string().email().label(t('account.login.email')).required(),
-      password: Yup.string().label(t('account.login.password')).required(),
+      username: Yup.string().email().label(t('user.login.email')).required(),
+      password: Yup.string().label(t('user.login.password')).required(),
     }),
   };
 };

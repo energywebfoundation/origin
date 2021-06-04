@@ -4,9 +4,12 @@ import App from '../components/app/app';
 import { useAppContainerEffects } from './AppContainer.effects';
 import { OriginGlobalStyles } from '../components/app/OriginGlobalStyles';
 import { NotificationsCenter } from '@energyweb/origin-ui-core';
+import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
 
 export const AppContainer = () => {
-  const { handleLogout, menuSections, accountData, isAuthenticated } =
+  useAxiosInterceptors();
+
+  const { topbarButtons, menuSections, user, isAuthenticated } =
     useAppContainerEffects();
 
   return (
@@ -15,9 +18,9 @@ export const AppContainer = () => {
       <NotificationsCenter />
       <App
         menuSections={menuSections}
-        accountData={accountData}
+        user={user}
         isAuthenticated={isAuthenticated}
-        handleLogout={handleLogout}
+        topbarButtons={topbarButtons}
       />
     </>
   );

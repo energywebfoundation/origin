@@ -34,16 +34,19 @@ export const useApiUserLogIn = () => {
     useAppControllerLogin({
       onSuccess: ({ accessToken }) => {
         localStorage.setItem('AUTHENTICATION_TOKEN', accessToken);
-        queryClient.fetchQuery(getUserControllerMeQueryKey(), userControllerMe);
+        // queryClient.fetchQuery(getUserControllerMeQueryKey(), userControllerMe);
       },
-      // onSettled: async () => {
-      //     queryClient.fetchQuery(getUserControllerMeQueryKey(), userControllerMe);
-      // }
+      onSettled: async () => {
+        await queryClient.fetchQuery(
+          getUserControllerMeQueryKey(),
+          userControllerMe
+        );
+      },
     });
 
   const submitHandler = (values: LoginDataDTO) => {
-    navigate('/');
     mutate({ data: values });
+    navigate('/');
   };
 
   return {

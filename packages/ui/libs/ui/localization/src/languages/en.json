@@ -1,6 +1,11 @@
 {
   "translation": {
     "navigation": {
+      "topbar": {
+        "register": "Register",
+        "login": "Login",
+        "logout": "Logout"
+      },
       "device": {
         "sectionTitle": "Devices",
         "all": "All Devices",

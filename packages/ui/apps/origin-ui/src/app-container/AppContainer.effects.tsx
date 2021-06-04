@@ -1,35 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 
 import { getOrganizationMenu } from '@energyweb/origin-ui-organization-logic';
 import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
-import { getAccountMenu } from '@energyweb/origin-ui-user-logic';
+import {
+  getAccountMenu,
+  useTopbarButtonList,
+} from '@energyweb/origin-ui-user-logic';
 import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
-import {
-  useAuthDispatchLogoutUser,
-  useAuthIsAuthenticated,
-} from '@energyweb/origin-ui-react-query-providers';
-import { useAccount } from '@energyweb/origin-ui-user-view';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
-import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
+import { useUser } from '@energyweb/origin-ui-user-data-access';
 
 export const useAppContainerEffects = () => {
-  useAxiosInterceptors();
-
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const logoutUser = useAuthDispatchLogoutUser();
+  const { isAuthenticated, user, logout } = useUser();
 
-  const handleLogout = () => {
-    logoutUser();
-    navigate('/');
-  };
+  const topbarButtons = useTopbarButtonList(isAuthenticated, logout);
 
-  const isAuthenticated = useAuthIsAuthenticated();
-
-  const accountData = useAccount();
-  const user = accountData?.userAccountData;
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsActive = user && user.status === UserStatus.Active;
@@ -45,7 +32,6 @@ export const useAppContainerEffects = () => {
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: true,
   });
-
   const deviceMenu = getDeviceMenu({
     t,
     showAllDevices: true,
@@ -66,12 +52,12 @@ export const useAppContainerEffects = () => {
     showUsers: true,
   });
 
-  const menuSections = [orgMenu, deviceMenu, accountMenu, adminMenu];
+  const menuSections = [deviceMenu, orgMenu, accountMenu, adminMenu];
 
   return {
-    handleLogout,
+    topbarButtons,
     isAuthenticated,
     menuSections,
-    accountData,
+    user,
   };
 };

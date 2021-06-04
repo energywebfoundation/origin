@@ -1,29 +1,26 @@
 import { KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import {
+  OrganizationStatus,
+  UserDTO,
+} from '@energyweb/origin-backend-react-query-client';
 import { OrgNavData, UserNavData } from '@energyweb/origin-ui-core';
-import { IAccountContextState } from '@energyweb/origin-ui-user-view';
 
 export const getUserAndOrgData = (
-  accountContext: IAccountContextState
+  user: UserDTO
 ): { userData: UserNavData; orgData: OrgNavData } => {
-  if (
-    accountContext?.isUserAccountDataFetched &&
-    accountContext.userAccountData
-  ) {
-    const { userAccountData } = accountContext;
-    const userPending =
-      userAccountData.kycStatus === KYCStatus.Pending ||
-      userAccountData.status === UserStatus.Pending;
-    return {
-      userData: {
-        username: `${userAccountData.firstName} ${userAccountData.lastName}`,
-        userPending,
-        userTooltip: '',
-      },
-      orgData: {
-        orgName: userAccountData.organization?.name,
-        orgPending: false,
-        orgTooltip: '',
-      },
-    };
-  } else return { userData: null, orgData: null };
+  const userPending =
+    user?.kycStatus === KYCStatus.Pending ||
+    user?.status === UserStatus.Pending;
+  return {
+    userData: {
+      username: `${user?.firstName} ${user?.lastName}`,
+      userPending,
+      userTooltip: '',
+    },
+    orgData: {
+      orgName: user?.organization?.name,
+      orgPending: user?.organization?.status !== OrganizationStatus.Active,
+      orgTooltip: '',
+    },
+  };
 };
