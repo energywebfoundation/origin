@@ -59,7 +59,7 @@
         "@types/mocha": "8.2.2",
         "@types/node": "14.17.2",
         "mocha": "8.4.0",
-        "jest": "27.0.3"
+        "jest": "27.0.4"
     },
     "repository": {
         "type": "git",
