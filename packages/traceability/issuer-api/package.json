@@ -57,7 +57,7 @@
         "precise-proofs-js": "1.2.0",
         "rxjs": "6.6.7",
         "swagger-ui-express": "4.1.6",
-        "typeorm": "0.2.32",
+        "typeorm": "0.2.34",
         "ganache-cli": "6.12.2"
     },
     "devDependencies": {

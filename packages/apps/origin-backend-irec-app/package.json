@@ -62,7 +62,7 @@
         "cors": "2.8.5",
         "mandrill-nodemailer-transport": "1.2.1",
         "swagger-ui-express": "4.1.6",
-        "typeorm": "0.2.32"
+        "typeorm": "0.2.34"
     },
     "devDependencies": {
         "typescript": "4.3.2",
