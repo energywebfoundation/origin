@@ -36,7 +36,7 @@
         "typescript": "4.3.2",
         "@nestjs/testing": "7.6.17",
         "influx": "5.9.2",
-        "prettier": "2.3.0",
+        "prettier": "2.3.1",
         "superagent-use": "0.1.0",
         "supertest": "6.1.3",
         "supertest-capture-error": "1.0.0",
