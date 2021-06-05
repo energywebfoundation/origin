@@ -49,7 +49,7 @@
         "clsx": "1.1.1",
         "connected-react-router": "6.9.1",
         "ethers": "5.2.0",
-        "formik": "2.2.8",
+        "formik": "2.2.9",
         "formik-material-ui": "3.0.1",
         "formik-material-ui-pickers": "0.0.12",
         "history": "4.10.1",
