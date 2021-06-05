@@ -33,11 +33,11 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@ethersproject/abi": "5.2.0",
-        "@ethersproject/contracts": "5.2.0",
-        "@ethersproject/providers": "5.2.0",
+        "@ethersproject/abi": "5.3.0",
+        "@ethersproject/contracts": "5.3.0",
+        "@ethersproject/providers": "5.3.0",
         "chai": "4.3.0",
-        "ethers": "5.2.0"
+        "ethers": "5.3.0"
     },
     "devDependencies": {
         "@openzeppelin/cli": "2.8.2",
