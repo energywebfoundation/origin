@@ -84,7 +84,7 @@
         "source-map-loader": "3.0.0",
         "style-loader": "2.0.0",
         "ts-jest": "27.0.2",
-        "ts-loader": "9.2.2",
+        "ts-loader": "9.2.3",
         "url-loader": "4.1.1",
         "webpack": "5.38.1",
         "webpack-cli": "4.7.0",
