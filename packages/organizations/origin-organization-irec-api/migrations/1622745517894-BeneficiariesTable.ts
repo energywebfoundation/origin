@@ -12,7 +12,6 @@ export class BeneficiariesTable1622745517894 implements MigrationInterface {
                 "irecBeneficiaryId" integer NOT NULL, 
                 "organizationId" integer NOT NULL, 
                 "ownerOrganizationId" integer NOT NULL, 
-                "active" boolean NOT NULL,
                 CONSTRAINT "PK_d23471635c3409decbd1995f5eb" PRIMARY KEY ("id")
             )`
         );

@@ -8,15 +8,14 @@ export class BeneficiaryDTO {
 
     @ApiProperty({ type: Number })
     irecBeneficiaryId: number;
-
     @ApiProperty({ type: PublicOrganizationInfoDTO })
     @Type(() => PublicOrganizationInfoDTO)
     organization: PublicOrganizationInfoDTO;
 
-    @ApiProperty({ type: Boolean })
-    active: boolean;
+    @ApiProperty({ type: Number })
+    ownerOrganizationId: number;
 
     public static wrap(beneficiary: BeneficiaryDTO): BeneficiaryDTO {
-        return plainToClass(BeneficiaryDTO, beneficiary, { excludeExtraneousValues: true });
+        return plainToClass(BeneficiaryDTO, beneficiary);
     }
 }

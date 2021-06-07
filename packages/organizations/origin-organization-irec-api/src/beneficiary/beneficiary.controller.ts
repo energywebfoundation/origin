@@ -81,12 +81,12 @@ export class BeneficiaryController {
         type: BeneficiaryDTO,
         description: 'Adds beneficiary to organizations beneficiary list'
     })
-    public async register(
+    public async addOrganizationBeneficiary(
         @UserDecorator() user: ILoggedInUser,
-        @Body() { ownerOrganizationId, irecBeneficiaryId }: CreateBeneficiaryDTO
+        @Body() { irecBeneficiaryId }: CreateBeneficiaryDTO
     ): Promise<BeneficiaryDTO> {
         return this.commandBus.execute(
-            new AddOrganizationBeneficiaryCommand(ownerOrganizationId, irecBeneficiaryId)
+            new AddOrganizationBeneficiaryCommand(user.organizationId, irecBeneficiaryId)
         );
     }
 }

@@ -3,7 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PassportModule } from '@nestjs/passport';
-import { UserModule } from '@energyweb/origin-backend';
+import {
+    AppModule as OriginBackendModule,
+    OrganizationModule,
+    UserModule
+} from '@energyweb/origin-backend';
 
 import { IrecModule, IrecService } from '../irec';
 import { Beneficiary } from './beneficiary.entity';
@@ -17,7 +21,9 @@ import { BeneficiaryController } from './beneficiary.controller';
         CqrsModule,
         PassportModule.register({ defaultStrategy: 'jwt' }),
         IrecModule,
-        UserModule
+        UserModule,
+        OrganizationModule,
+        OriginBackendModule
     ],
     providers: [...BeneficiaryHandlers, IrecService],
     exports: [...BeneficiaryHandlers],
