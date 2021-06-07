@@ -1,9 +1,11 @@
-export * from './admin-manage-user-claims/AdminManageUserClaimsPage';
-export * from './admin-manage-users-page/AdminManageUsersPage';
-export * from './admin-update-user-page/AdminUpdateUserPage';
+export * from './AdminUsersPage';
+export * from './AdminUpdateUserPage';
+export * from './AdminClaimsPage';
+
 export * from './login-page/LoginPage';
 export * from './logout-page/LogoutPage';
 export * from './reset-password-page/ResetPasswordPage';
 export * from './RegisterPage/RegisterPage';
+
 export * from './user-account-page/UserAccountPage';
 export * from './user-settings-page/UserSettingsPage';

@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import AdminManageUserClaimsPage from './AdminManageUserClaimsPage';
+import { AdminClaimsPage } from './AdminClaimsPage';
 
 describe('AdminManageUserClaims', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<AdminManageUserClaimsPage />);
+    const { baseElement } = render(<AdminClaimsPage />);
     expect(baseElement).toBeTruthy();
   });
 });

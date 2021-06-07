@@ -7,7 +7,7 @@ export const useApiAdminFetchUsers = () => {
     isError,
     isSuccess,
     status,
-    data,
+    data: users,
   } = useAdminControllerGetUsers();
 
   return {
@@ -16,6 +16,6 @@ export const useApiAdminFetchUsers = () => {
     isSuccess,
     isError,
     error,
-    data,
+    users,
   };
 };

@@ -1,5 +1,4 @@
 import { GenericFormProps } from '@energyweb/origin-ui-core';
-import { UnpackNestedValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
@@ -44,6 +43,7 @@ export const useUpdateUserAccountDataFormConfig = (
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: initialFormData,
+    twoColumns: true,
     inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
       firstName: Yup.string().label(t('user.profile.firstName')).required(),

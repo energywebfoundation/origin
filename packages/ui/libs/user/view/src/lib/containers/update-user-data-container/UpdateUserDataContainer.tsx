@@ -24,7 +24,7 @@ export const UpdateUserDataContainer = ({
       {userAccountData.email && !userAccountData.emailConfirmed && (
         <UserResendConfirmationEmailContainer />
       )}
-      <GenericForm twoColumns {...formProps} />
+      <GenericForm {...formProps} />
     </>
   );
 };

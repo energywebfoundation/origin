@@ -384,6 +384,30 @@
         }
       }
     },
+    "admin": {
+      "users": {
+        "name": "Name",
+        "organization": "Organization",
+        "email": "Email",
+        "status": "Status",
+        "kycStatus": "KYC Status",
+        "update": "Update",
+        "remove": "Remove"
+      },
+      "updateUser": {
+        "title": "Title",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "telephone": "Telephone",
+        "status": "Status",
+        "kycStatus": "KYC Status",
+        "notifications": {
+          "userUpdateSuccess": "User successfully updated",
+          "userUpdateError": "Error while updating user"
+        }
+      }
+    },
     "general": {
       "buttons": {
         "ok": "Ok",
@@ -394,7 +418,8 @@
         "cancel": "Cancel",
         "change": "Change",
         "confirm": "Confirm",
-        "edit": "Edit"
+        "edit": "Edit",
+        "update": "Update"
       },
       "notifications": {
         "unknownError": "Unknown error"
