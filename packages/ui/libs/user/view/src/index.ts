@@ -10,5 +10,5 @@ export * from './lib/pages/login-page/LoginPage';
 export * from './lib/pages/RegisterPage/RegisterPage';
 export * from './lib/AuthApp';
 export * from './lib/AdminApp';
-export * from './lib/settings-app/settings-app';
+export * from './lib/SettingsApp';
 export * from './lib/providers';

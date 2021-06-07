@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import SettingsApp from './settings-app';
+import SettingsApp from './SettingsApp';
 import { BrowserRouter, Routes } from 'react-router-dom';
 
 describe('SettingsApp', () => {

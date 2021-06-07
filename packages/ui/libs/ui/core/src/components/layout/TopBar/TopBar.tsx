@@ -11,18 +11,13 @@ export interface TopBarProps {
 }
 
 export const TopBar: FC<TopBarProps> = ({ buttons, onMobileNavOpen }) => {
-  const navigate = useNavigate();
-  const navigateHandler = useCallback((url: string) => navigate(url), []);
   return (
     <>
       <Hidden lgDown>
-        <DesktopTopBar onNavigate={navigateHandler} buttons={buttons} />
+        <DesktopTopBar buttons={buttons} />
       </Hidden>
       <Hidden lgUp>
-        <MobileTopBar
-          onNavigate={navigateHandler}
-          onMobileNavOpen={onMobileNavOpen}
-        />
+        <MobileTopBar onMobileNavOpen={onMobileNavOpen} />
       </Hidden>
     </>
   );

@@ -18,7 +18,6 @@ import {
   getAccountControllerGetAccountQueryKey,
 } from '@energyweb/exchange-react-query-client';
 import { BlockchainPropertiesDTO } from '@energyweb/issuer-api-react-query-client';
-import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
 
 const checkBlockchainNetwork = (
   user: UserDTO,
@@ -74,38 +73,58 @@ export const useBlockchainProviderEffects = () => {
   const [accounts, setAccounts] = useState<string[]>([]);
   const { data: blockchainProperties, isFetched: blockchainPropertiesFetched } =
     useApiFetchUserBlockchainPropertiesData();
-  // @ts-ignore
-  const blockchainProvider = window.ethereum;
-  const web3ProviderInstance = new ethers.providers.Web3Provider(
-    blockchainProvider
-  );
 
-  blockchainProvider.enable();
+  let web3: ethers.providers.JsonRpcProvider = null;
+  const envWeb3 = process.env.NX_WEB3;
+  const blockchainProvider = (window as any).ethereum;
+  // const web3ProviderInstance = new ethers.providers.Web3Provider(
+  //   blockchainProvider
+  // );
+
+  if (blockchainProvider) {
+    web3 = new ethers.providers.Web3Provider(blockchainProvider);
+    try {
+      const requestAccAccess = async () => {
+        await blockchainProvider.enable();
+      };
+      requestAccAccess();
+    } catch (error) {
+      console.error({ metaMaskError: error });
+    }
+  } else if ((window as any).web3) {
+    web3 = new ethers.providers.Web3Provider(
+      (window as any).web3.currentProvider
+    );
+  } else if (envWeb3) {
+    web3 = new ethers.providers.JsonRpcProvider(envWeb3);
+  }
+
+  // blockchainProvider.enable();
   checkBlockchainNetwork(user, blockchainProperties);
 
   const { data: backendAccountData } = useApiFetchUserAccountData();
   const { data: backendAccountBalance } = useApiFetchUserAccountBalanceData();
 
   useEffect(() => {
-    web3ProviderInstance.listAccounts().then((value) => {
+    web3.listAccounts().then((value) => {
       setAccounts(value);
     });
-    blockchainProvider.on('accountsChanged', (accounts: string[]) => {
-      setAccounts(accounts);
-    });
+    // blockchainProvider?.on('accountsChanged', (accounts: string[]) => {
+    //   setAccounts(accounts);
+    // });
   }, []);
 
   return useMemo(
     () => ({
       get signer(): Signer {
-        return web3ProviderInstance.getSigner();
+        return web3.getSigner();
       },
       blockchainProperties,
       blockchainPropertiesFetched,
       accountList: accounts,
       backendAccountData,
       backendAccountBalance,
-      web3ProviderInstance,
+      web3,
       get defaultAccount() {
         return accounts[0];
       },
@@ -113,7 +132,7 @@ export const useBlockchainProviderEffects = () => {
     [
       backendAccountData,
       backendAccountBalance,
-      web3ProviderInstance,
+      web3,
       accounts,
       blockchainProperties,
     ]

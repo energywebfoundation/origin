@@ -11,14 +11,14 @@ import {
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router';
+import { useUser } from '../useUser';
 
 export const useApiUpdateUserAccountEmail = () => {
   const { mutate, isLoading, error, isError, isSuccess, status } =
     useUserControllerUpdateOwnProfile();
+  const { logout } = useUser();
 
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const userQueryKey = getUserControllerMeQueryKey();
 
@@ -38,10 +38,8 @@ export const useApiUpdateUserAccountEmail = () => {
             t('user.profile.notifications.userEmailUpdateSuccess'),
             NotificationTypeEnum.Success
           ),
-            queryClient.removeQueries(userQueryKey);
-          localStorage.removeItem('AUTHENTICATION_TOKEN');
-          navigate('/');
-          resetForm();
+            resetForm();
+          logout();
         },
         onError: (error: AxiosError) => {
           console.error(error);

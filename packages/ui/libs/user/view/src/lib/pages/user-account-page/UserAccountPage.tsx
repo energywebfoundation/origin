@@ -4,10 +4,9 @@ import { useStyles } from '../user-settings-page/UserSettingsPage.styles';
 import { CircularProgress, Grid, Paper } from '@material-ui/core';
 import {
   UpdateUserEmailContainer,
-  UserResendConfirmationEmailContainer,
   UpdateUserDataContainer,
   UpdateUserPasswordContainer,
-  UserBlockchainAddressesContainer,
+  BlockchainAddressesContainer,
 } from '../../containers';
 
 import { useUserAccountPageEffects } from './UserAccountPage.effects';
@@ -40,9 +39,7 @@ export const UserAccountPage = () => {
         </Grid>
         <Grid xs={12} item>
           <Paper classes={{ root: classes.paper }}>
-            <UserBlockchainAddressesContainer
-              userAccountData={userAccountData}
-            />
+            <BlockchainAddressesContainer userAccountData={userAccountData} />
           </Paper>
         </Grid>
       </Grid>

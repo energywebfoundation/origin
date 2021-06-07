@@ -1,5 +1,4 @@
 import {
-  getUserControllerMeQueryKey,
   UpdatePasswordDTO,
   useUserControllerUpdateOwnPassword,
 } from '@energyweb/origin-backend-react-query-client';
@@ -9,14 +8,11 @@ import {
 } from '@energyweb/origin-ui-core';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router';
+import { useUser } from '../useUser';
 
 export const useApiUpdateUserAccountPassword = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const userQueryKey = getUserControllerMeQueryKey();
+  const { logout } = useUser();
 
   const { mutate, isLoading, error, isError, isSuccess, status } =
     useUserControllerUpdateOwnPassword();
@@ -29,10 +25,8 @@ export const useApiUpdateUserAccountPassword = () => {
           showNotification(
             t('user.profile.notifications.userPasswordUpdateSuccess'),
             NotificationTypeEnum.Success
-          ),
-            queryClient.removeQueries(userQueryKey);
-          localStorage.removeItem('AUTHENTICATION_TOKEN');
-          navigate('/');
+          );
+          logout();
         },
         onError: (error: AxiosError) => {
           console.error(error);

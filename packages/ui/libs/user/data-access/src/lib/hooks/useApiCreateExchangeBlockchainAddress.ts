@@ -1,69 +1,79 @@
-import {
-  useAccount,
-  useAccountSetRefreshTokenDispatch,
-} from '@energyweb/origin-ui-user-view';
 import { useTranslation } from 'react-i18next';
 import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
-import { useAccountControllerCreate } from '@energyweb/exchange-react-query-client';
+import {
+  getAccountControllerGetAccountQueryKey,
+  useAccountControllerCreate,
+} from '@energyweb/exchange-react-query-client';
+import { useUser } from '../useUser';
+import { pollExchangeAddress } from '../pollExchangeAddress';
+import { useQueryClient } from 'react-query';
 
-export const useApiCreateExchangeBlockchainAddress = () => {
+export const useApiCreateExchangeBlockchainAddress = (
+  setIsCreating: (value: boolean) => void
+) => {
   const { mutateAsync, isLoading, error, isError, isSuccess, status } =
     useAccountControllerCreate();
 
-  const { userAccountData: user } = useAccount();
+  const { user } = useUser();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const exchangeAccountQueryKey = getAccountControllerGetAccountQueryKey();
+
+  const submitHandler = () => {
+    try {
+      if (user.status !== UserStatus.Active) {
+        showNotification(
+          t('user.profile.notifications.onlyActiveUsersCan'),
+          NotificationTypeEnum.Success
+        );
+        throw new Error(t('user.profile.notifications.onlyActiveUsersCan'));
+      } else if (
+        !user.organization ||
+        user.organization.status !== OrganizationStatus.Active
+      ) {
+        throw new Error(
+          t('user.profile.notifications.onlyMembersOfActiveOrgCan')
+        );
+      }
+
+      setIsCreating(true);
+      mutateAsync().then(async () => {
+        const createdAddress = await pollExchangeAddress(2000);
+        queryClient.setQueryData(exchangeAccountQueryKey, createdAddress);
+
+        showNotification(
+          t('user.profile.notifications.exchangeAddressSuccess'),
+          NotificationTypeEnum.Success
+        );
+
+        setIsCreating(false);
+      });
+    } catch (error) {
+      if (error?.message) {
+        showNotification(error?.message, NotificationTypeEnum.Error);
+      } else {
+        console.warn(
+          t('user.profile.notifications.exchangeAddressFailure'),
+          error
+        );
+        showNotification(
+          t('user.profile.notifications.exchangeAddressFailure'),
+          NotificationTypeEnum.Error
+        );
+      }
+    }
+  };
+
   return {
     status,
     isLoading,
     isSuccess,
     isError,
     error,
-    submitHandler: () => {
-      try {
-        if (user.status !== UserStatus.Active) {
-          showNotification(
-            t('user.feedback.onlyActiveUsersCan'),
-            NotificationTypeEnum.Success
-          );
-          throw new Error(t('user.feedback.onlyActiveUsersCan'));
-        } else if (
-          !user.organization ||
-          user.organization.status !== OrganizationStatus.Active
-        ) {
-          throw new Error(t('user.feedback.onlyMembersOfActiveOrgCan'));
-        }
-
-        mutateAsync().then(
-          () => {
-            useAccountSetRefreshTokenDispatch();
-            showNotification(
-              t('user.feedback.exchangeAddressSuccess'),
-              NotificationTypeEnum.Success
-            );
-          },
-          () => {
-            showNotification(
-              t('user.feedback.exchangeAddressSuccess'),
-              NotificationTypeEnum.Error
-            );
-          }
-        );
-      } catch (error) {
-        if (error?.message) {
-          showNotification(error?.message, NotificationTypeEnum.Error);
-        } else {
-          console.warn('Could not create exchange deposit address.', error);
-          showNotification(
-            t('user.feedback.exchangeAddressFailure'),
-            NotificationTypeEnum.Error
-          );
-        }
-      }
-      // yield put(fromGeneralActions.setLoading(false));
-    },
+    submitHandler,
   };
 };

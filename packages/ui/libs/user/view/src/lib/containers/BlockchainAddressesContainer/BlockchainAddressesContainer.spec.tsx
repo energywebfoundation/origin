@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import UserBlockchainAddressesContainer from './UserBlockchainAddressesContainer';
+import UserBlockchainAddressesContainer from './BlockchainAddressesContainer';
 import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
 const userMock: IUser = {

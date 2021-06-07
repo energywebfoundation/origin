@@ -14,16 +14,15 @@ export type TUserExchangeDepositAddressFormValues = {
 };
 
 export const useUserExchangeDepositAddressFormConfig = (
-  exchangeDepositAddress: string,
-  formSubmitHandler: (
-    values: UnpackNestedValue<TUserExchangeDepositAddressFormValues>
-  ) => void
-): GenericFormProps<TUserExchangeDepositAddressFormValues> => {
+  exchangeDepositAddress: string
+): Omit<
+  GenericFormProps<TUserExchangeDepositAddressFormValues>,
+  'submitHandler'
+> => {
   const { t } = useTranslation();
   return {
     formTitle: t('user.profile.exchangeAddressTitle'),
     formTitleVariant: 'h6',
-    buttonText: t('user.profile.createExchangeAddressButton'),
     fields: [
       {
         label: null,
@@ -44,14 +43,15 @@ export const useUserExchangeDepositAddressFormConfig = (
         },
       },
     ],
-    buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: { exchangeDepositAddress },
-    submitHandler: formSubmitHandler,
     inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
       exchangeDepositAddress: Yup.string().label(
         t('user.profile.exchangeDepositAddress')
       ),
     }),
+    buttonText: t('user.profile.createExchangeAddressButton'),
+    buttonWrapperProps: { justifyContent: 'flex-start' },
+    hideSubmitButton: Boolean(exchangeDepositAddress),
   };
 };
