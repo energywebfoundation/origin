@@ -10,7 +10,7 @@ import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 import { AuthApp, AdminApp, SettingsApp } from '@energyweb/origin-ui-user-view';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
-import { getUserAndOrgData } from '@energyweb/origin-ui-user-data-access';
+import { useUserAndOrgData } from '@energyweb/origin-ui-user-data-access';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 export interface AppProps {
@@ -28,7 +28,7 @@ export const App: FC<AppProps> = ({
   menuSections,
   topbarButtons,
 }) => {
-  const { orgData, userData } = getUserAndOrgData(user);
+  const { orgData, userData } = useUserAndOrgData(user);
 
   return (
     <MainLayout

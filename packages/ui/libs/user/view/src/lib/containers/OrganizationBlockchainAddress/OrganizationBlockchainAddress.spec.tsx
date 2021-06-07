@@ -1,12 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import UserOrganizationBlockchainAccountAddressContainer from './UserOrganizationBlockchainAccountAddressContainer';
+import { OrganizationBlockchainAddress } from './OrganizationBlockchainAddress';
 
 describe('UserBlockchainAddress', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
-      <UserOrganizationBlockchainAccountAddressContainer />
+      <OrganizationBlockchainAddress userAccountData={null} />
     );
     expect(baseElement).toBeTruthy();
   });

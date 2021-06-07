@@ -11,6 +11,7 @@ import {
 import { useUser } from '../useUser';
 import { pollExchangeAddress } from '../pollExchangeAddress';
 import { useQueryClient } from 'react-query';
+import { userApiErrorHandler } from '../notifications';
 
 export const useApiCreateExchangeBlockchainAddress = (
   setIsCreating: (value: boolean) => void
@@ -26,18 +27,16 @@ export const useApiCreateExchangeBlockchainAddress = (
   const submitHandler = () => {
     try {
       if (user.status !== UserStatus.Active) {
-        showNotification(
-          t('user.profile.notifications.onlyActiveUsersCan'),
-          NotificationTypeEnum.Success
+        throw Error(
+          t('user.profile.notifications.onlyActiveUserCan', {
+            status: user.status,
+          })
         );
-        throw new Error(t('user.profile.notifications.onlyActiveUsersCan'));
       } else if (
         !user.organization ||
         user.organization.status !== OrganizationStatus.Active
       ) {
-        throw new Error(
-          t('user.profile.notifications.onlyMembersOfActiveOrgCan')
-        );
+        throw Error(t('user.profile.notifications.onlyMembersOfActiveOrgCan'));
       }
 
       setIsCreating(true);
@@ -53,18 +52,7 @@ export const useApiCreateExchangeBlockchainAddress = (
         setIsCreating(false);
       });
     } catch (error) {
-      if (error?.message) {
-        showNotification(error?.message, NotificationTypeEnum.Error);
-      } else {
-        console.warn(
-          t('user.profile.notifications.exchangeAddressFailure'),
-          error
-        );
-        showNotification(
-          t('user.profile.notifications.exchangeAddressFailure'),
-          NotificationTypeEnum.Error
-        );
-      }
+      userApiErrorHandler(error, t);
     }
   };
 

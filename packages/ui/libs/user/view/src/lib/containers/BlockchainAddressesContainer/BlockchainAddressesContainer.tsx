@@ -3,7 +3,7 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UserExchangeDepositAddress } from '../UserExchangeDepositAddress';
-import { UserOrganizationBlockchainAccountAddressContainer } from '../user-blockchain-address';
+import { OrganizationBlockchainAddress } from '../OrganizationBlockchainAddress';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 interface BlockchainAddressesContainerProps {
@@ -20,9 +20,7 @@ export const BlockchainAddressesContainer = ({
         {t('user.profile.blockchainAddresses')}
       </Typography>
       <UserExchangeDepositAddress />
-      {/* <UserOrganizationBlockchainAccountAddressContainer
-        userAccountData={userAccountData}
-      /> */}
+      <OrganizationBlockchainAddress />
     </>
   );
 };

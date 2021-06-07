@@ -4,23 +4,26 @@ import {
   UserDTO,
 } from '@energyweb/origin-backend-react-query-client';
 import { OrgNavData, UserNavData } from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
 
-export const getUserAndOrgData = (
+export const useUserAndOrgData = (
   user: UserDTO
 ): { userData: UserNavData; orgData: OrgNavData } => {
-  const userPending =
-    user?.kycStatus === KYCStatus.Pending ||
-    user?.status === UserStatus.Pending;
+  const { t } = useTranslation();
   return {
     userData: {
       username: `${user?.firstName} ${user?.lastName}`,
-      userPending,
-      userTooltip: '',
+      userPending:
+        user?.kycStatus === KYCStatus.Pending ||
+        user?.status === UserStatus.Pending,
+      userTooltip: t('navigation.layout.userPendingTooltip'),
     },
     orgData: {
       orgName: user?.organization?.name,
-      orgPending: user?.organization?.status !== OrganizationStatus.Active,
-      orgTooltip: '',
+      orgPending:
+        user?.organization &&
+        user.organization.status !== OrganizationStatus.Active,
+      orgTooltip: t('navigation.layout.orgPendingTooltip'),
     },
   };
 };

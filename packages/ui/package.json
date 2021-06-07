@@ -50,7 +50,7 @@
     "core-js": "3.6.5",
     "dayjs": "^1.10.4",
     "document-register-element": "1.13.1",
-    "ethers": "5.1.4",
+    "ethers": "5.2.0",
     "history": "5.0.0",
     "i18next": "^20.2.1",
     "i18next-icu": "1.4.2",

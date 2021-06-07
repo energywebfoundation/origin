@@ -74,7 +74,7 @@ export const useBlockchainProviderEffects = () => {
   const { data: blockchainProperties, isFetched: blockchainPropertiesFetched } =
     useApiFetchUserBlockchainPropertiesData();
 
-  let web3: ethers.providers.JsonRpcProvider = null;
+  let web3ProviderInstance: ethers.providers.JsonRpcProvider = null;
   const envWeb3 = process.env.NX_WEB3;
   const blockchainProvider = (window as any).ethereum;
   // const web3ProviderInstance = new ethers.providers.Web3Provider(
@@ -82,7 +82,9 @@ export const useBlockchainProviderEffects = () => {
   // );
 
   if (blockchainProvider) {
-    web3 = new ethers.providers.Web3Provider(blockchainProvider);
+    web3ProviderInstance = new ethers.providers.Web3Provider(
+      blockchainProvider
+    );
     try {
       const requestAccAccess = async () => {
         await blockchainProvider.enable();
@@ -92,11 +94,11 @@ export const useBlockchainProviderEffects = () => {
       console.error({ metaMaskError: error });
     }
   } else if ((window as any).web3) {
-    web3 = new ethers.providers.Web3Provider(
+    web3ProviderInstance = new ethers.providers.Web3Provider(
       (window as any).web3.currentProvider
     );
   } else if (envWeb3) {
-    web3 = new ethers.providers.JsonRpcProvider(envWeb3);
+    web3ProviderInstance = new ethers.providers.JsonRpcProvider(envWeb3);
   }
 
   // blockchainProvider.enable();
@@ -106,7 +108,7 @@ export const useBlockchainProviderEffects = () => {
   const { data: backendAccountBalance } = useApiFetchUserAccountBalanceData();
 
   useEffect(() => {
-    web3.listAccounts().then((value) => {
+    web3ProviderInstance.listAccounts().then((value) => {
       setAccounts(value);
     });
     // blockchainProvider?.on('accountsChanged', (accounts: string[]) => {
@@ -117,14 +119,14 @@ export const useBlockchainProviderEffects = () => {
   return useMemo(
     () => ({
       get signer(): Signer {
-        return web3.getSigner();
+        return web3ProviderInstance.getSigner();
       },
       blockchainProperties,
       blockchainPropertiesFetched,
       accountList: accounts,
       backendAccountData,
       backendAccountBalance,
-      web3,
+      web3ProviderInstance,
       get defaultAccount() {
         return accounts[0];
       },
@@ -132,7 +134,7 @@ export const useBlockchainProviderEffects = () => {
     [
       backendAccountData,
       backendAccountBalance,
-      web3,
+      web3ProviderInstance,
       accounts,
       blockchainProperties,
     ]

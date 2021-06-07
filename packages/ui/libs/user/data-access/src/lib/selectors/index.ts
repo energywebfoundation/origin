@@ -1,1 +1,1 @@
-export * from './getUserAndOrgData';
+export * from './useUserAndOrgData';

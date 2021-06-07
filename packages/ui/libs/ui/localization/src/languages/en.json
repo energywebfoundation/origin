@@ -352,9 +352,8 @@
         "blockchainAddresses": "Blockchain Addresses",
         "exchangeAddressTitle": "Exchange Deposit Address",
         "createExchangeAddressButton": "Create Exchange Deposit Address",
-        "blockchainAccountAddress": "Blockchain Account Address",
+        "orgBlockchainAccountAddress": "Organization's Blockchain Account Address",
         "connectBlockchain": "Connect Blockchain Address",
-        "connectNewBlockchain": "Connect New Blockchain Address",
         "popover": {
           "exchangeAddressWhatFor": "This blockchain address identifies you on the certificate exchange. You need it to trade certificates on the exchange.",
           "exchangeAddressHowTo": "The platform automatically generates the deposit address and takes custody of it. You do not have to manage your own blockchain wallet.",
@@ -363,16 +362,19 @@
           "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
         },
         "notifications": {
-          "onlyActiveUserCan": "Only active users can perform this action. Your status is ${status}",
-          "onlyMembersOfActiveOrgCan": "Only members of active organization can perform this action",
-          "exchangeAddressSuccess": "Exchange Deposit Address created successfully",
-          "exchangeAddressFailure": "Exchange Deposit Address could not be created",
           "userInfoUpdateSuccess": "User information updated successfully",
           "userInfoUpdateError": "Error while updating user information",
           "userEmailUpdateSuccess": "User email updated successfully. Please log in using new email",
           "userEmailUpdateError": "Error while updating user email",
           "userPasswordUpdateSuccess": "User password updated successfully. Please log in using new password",
-          "userPasswordUpdateError": "Error while updating user password"
+          "userPasswordUpdateError": "Error while updating user password",
+          "onlyActiveUserCan": "Only active users can perform this action. Your status is {status}",
+          "onlyMembersOfActiveOrgCan": "Only members of active organization can perform this action",
+          "exchangeAddressSuccess": "Exchange Deposit Address created successfully",
+          "exchangeAddressFailure": "Exchange Deposit Address could not be created",
+          "noBlockchainConnection": "No blockchain connection detected, please visit metamask.io and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.",
+          "thisAccountAlreadyConnected": "This blockchain address is already connected to your account",
+          "blockchainAccountLinked": "Blockchain address successfully linked to your organization account"
         }
       },
       "modals": {
@@ -393,6 +395,9 @@
         "change": "Change",
         "confirm": "Confirm",
         "edit": "Edit"
+      },
+      "notifications": {
+        "unknownError": "Unknown error"
       }
     },
     "validation": {
