@@ -3,19 +3,26 @@ import { TMenuSection } from '@energyweb/origin-ui-core';
 
 interface IGetAdminMenuFnArgs {
   t: TFunction;
+  isOpen: boolean;
+  showSection: boolean;
   showUsers: boolean;
   showClaims: boolean;
 }
 
-type TUseAdminMenuFn = (
-  args?: IGetAdminMenuFnArgs
-) => Omit<TMenuSection, 'isOpen'>;
+type TUseAdminMenuFn = (args?: IGetAdminMenuFnArgs) => TMenuSection;
 
-export const getAdminMenu: TUseAdminMenuFn = ({ t, showUsers, showClaims }) => {
+export const getAdminMenu: TUseAdminMenuFn = ({
+  t,
+  isOpen,
+  showSection,
+  showUsers,
+  showClaims,
+}) => {
   return {
+    isOpen,
     sectionTitle: t('navigation.admin.sectionTitle'),
     rootUrl: 'admin',
-    show: true,
+    show: showSection,
     menuList: [
       {
         url: 'users',

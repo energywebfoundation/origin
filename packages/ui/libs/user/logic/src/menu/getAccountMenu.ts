@@ -3,20 +3,24 @@ import { TFunction } from 'i18next';
 
 interface IAccountMenuFnArgs {
   t: TFunction;
+  isOpen: boolean;
+  showSection: boolean;
   showSettings: boolean;
   showUserProfile: boolean;
 }
 
-type TGetAccountMenuFn = (
-  args?: IAccountMenuFnArgs
-) => Omit<TMenuSection, 'isOpen'>;
+type TGetAccountMenuFn = (args?: IAccountMenuFnArgs) => TMenuSection;
 
 export const getAccountMenu: TGetAccountMenuFn = ({
   t,
+  isOpen,
   showSettings,
   showUserProfile,
 }) => ({
-  sectionTitle: t('navigation.account.sectionTitle'),
+  isOpen,
+  sectionTitle: showUserProfile
+    ? t('navigation.account.sectionTitle')
+    : t('navigation.account.sectionTitleForUnlogged'),
   rootUrl: 'account',
   show: true,
   menuList: [

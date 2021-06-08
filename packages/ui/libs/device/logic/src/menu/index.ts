@@ -2,6 +2,8 @@ import { TMenuSection } from '@energyweb/origin-ui-core';
 
 type TGetDeviceMenuArgs = {
   t: (tag: string) => string;
+  isOpen: boolean;
+  showSection: boolean;
   showAllDevices: boolean;
   showMapView: boolean;
   showMyDevices: boolean;
@@ -10,12 +12,11 @@ type TGetDeviceMenuArgs = {
   showDeviceImport: boolean;
 };
 
-type TGetDeviceMenu = (
-  args?: TGetDeviceMenuArgs
-) => Omit<TMenuSection, 'isOpen'>;
+type TGetDeviceMenu = (args?: TGetDeviceMenuArgs) => TMenuSection;
 
 export const getDeviceMenu: TGetDeviceMenu = ({
   t,
+  isOpen,
   showAllDevices,
   showMapView,
   showMyDevices,
@@ -62,6 +63,7 @@ export const getDeviceMenu: TGetDeviceMenu = ({
   ];
 
   return {
+    isOpen,
     sectionTitle: t('navigation.device.sectionTitle'),
     show: true,
     rootUrl: '/device',

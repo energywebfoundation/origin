@@ -10,20 +10,35 @@ import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
+import { useActiveMenuTab } from '../components/activeTab';
 
 export const useAppContainerEffects = () => {
   const { t } = useTranslation();
   const { isAuthenticated, user, logout } = useUser();
 
   const topbarButtons = useTopbarButtonList(isAuthenticated, logout);
+  const {
+    isOrganizationTabActive,
+    isDeviceTabActive,
+    isAccountTabActive,
+    isAdminTabAcive,
+  } = useActiveMenuTab();
 
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsActive = user && user.status === UserStatus.Active;
   const userIsAdminOrSupport = isRole(user, Role.Admin, Role.SupportAgent);
+  const userIsOrgAdminOrAdminOrSupport = isRole(
+    user,
+    Role.OrganizationAdmin,
+    Role.Admin,
+    Role.SupportAgent
+  );
 
   const orgMenu = getOrganizationMenu({
     t,
+    isOpen: isOrganizationTabActive,
+    showSection: userIsOrgAdminOrAdminOrSupport,
     showRegisterOrg: !userHasOrg,
     showMyOrg: userHasOrg,
     showMembers: userHasOrg && userIsOrgAdmin,
@@ -34,6 +49,8 @@ export const useAppContainerEffects = () => {
   });
   const deviceMenu = getDeviceMenu({
     t,
+    isOpen: isDeviceTabActive,
+    showSection: true,
     showAllDevices: true,
     showMapView: true,
     showMyDevices: true,
@@ -43,11 +60,15 @@ export const useAppContainerEffects = () => {
   });
   const accountMenu = getAccountMenu({
     t,
+    isOpen: isAccountTabActive,
+    showSection: true,
     showSettings: true,
-    showUserProfile: true,
+    showUserProfile: isAuthenticated,
   });
   const adminMenu = getAdminMenu({
     t,
+    isOpen: isAdminTabAcive,
+    showSection: userIsAdminOrSupport,
     showClaims: true,
     showUsers: true,
   });

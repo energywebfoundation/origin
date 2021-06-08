@@ -27,6 +27,7 @@
       },
       "account": {
         "sectionTitle": "Account",
+        "sectionTitleForUnlogged": "Settings",
         "settings": "Settings",
         "userProfile": "User profile"
       },

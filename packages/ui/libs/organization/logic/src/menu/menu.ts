@@ -3,6 +3,8 @@ import { TFunction } from 'i18next';
 
 type TGetOrganizationMenuArgs = {
   t: TFunction;
+  isOpen: boolean;
+  showSection: boolean;
   showRegisterOrg: boolean;
   showMyOrg: boolean;
   showMembers: boolean;
@@ -12,12 +14,12 @@ type TGetOrganizationMenuArgs = {
   showRegisterIRec: boolean;
 };
 
-type TGetOrganizationMenu = (
-  args?: TGetOrganizationMenuArgs
-) => Omit<TMenuSection, 'isOpen'>;
+type TGetOrganizationMenu = (args?: TGetOrganizationMenuArgs) => TMenuSection;
 
 export const getOrganizationMenu: TGetOrganizationMenu = ({
   t,
+  isOpen,
+  showSection,
   showRegisterOrg,
   showMyOrg,
   showMembers,
@@ -65,8 +67,9 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
   ];
 
   return {
+    isOpen,
     sectionTitle: t('navigation.organization.sectionTitle'),
-    show: true,
+    show: showSection,
     rootUrl: '/organization',
     menuList,
   };
