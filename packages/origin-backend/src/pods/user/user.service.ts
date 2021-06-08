@@ -319,7 +319,7 @@ export class UserService {
 
         const isOwnUser = loggedInUser.id === userId;
         const isOrgAdmin =
-            loggedInUser.organizationId === user.organization.id &&
+            loggedInUser.organizationId === user.organization?.id &&
             loggedInUser.hasRole(Role.OrganizationAdmin);
         const isAdmin = loggedInUser.hasRole(Role.Issuer, Role.Admin, Role.SupportAgent);
 
