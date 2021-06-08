@@ -9,7 +9,7 @@ import {
 import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
-import { useUser } from '@energyweb/origin-ui-user-data-access';
+import { useUser } from '@energyweb/origin-ui-user-data';
 
 export const useAppContainerEffects = () => {
   const { t } = useTranslation();

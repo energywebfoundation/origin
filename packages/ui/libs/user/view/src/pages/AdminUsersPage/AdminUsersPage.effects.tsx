@@ -1,5 +1,5 @@
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
-import { useApiAdminFetchUsers } from '@energyweb/origin-ui-user-data-access';
+import { useApiAdminFetchUsers } from '@energyweb/origin-ui-user-data';
 import { useAdminUsersTableLogic } from '@energyweb/origin-ui-user-logic';
 import { PermIdentityOutlined } from '@material-ui/icons';
 import React from 'react';

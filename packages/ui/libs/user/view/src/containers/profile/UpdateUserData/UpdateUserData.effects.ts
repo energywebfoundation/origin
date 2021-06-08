@@ -1,4 +1,4 @@
-import { useApiUpdateUserAccountData } from '@energyweb/origin-ui-user-data-access';
+import { useApiUpdateUserAccountData } from '@energyweb/origin-ui-user-data';
 import {
   TUpdateUserDataFormValues,
   useUpdateUserAccountDataFormConfig,

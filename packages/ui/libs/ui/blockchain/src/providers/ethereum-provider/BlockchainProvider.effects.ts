@@ -11,9 +11,9 @@ import { ethers, Signer } from 'ethers';
 import {
   useApiFetchUserAccountData,
   useUser,
-} from '@energyweb/origin-ui-user-data-access';
-import { useApiFetchUserAccountBalanceData } from '@energyweb/origin-ui-user-data-access';
-import { useApiFetchUserBlockchainPropertiesData } from '@energyweb/origin-ui-user-data-access';
+} from '@energyweb/origin-ui-user-data';
+import { useApiFetchUserAccountBalanceData } from '@energyweb/origin-ui-user-data';
+import { useApiFetchUserBlockchainPropertiesData } from '@energyweb/origin-ui-user-data';
 import { useQueryClient } from 'react-query';
 import {
   getAccountBalanceControllerGetQueryKey,

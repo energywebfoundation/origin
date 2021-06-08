@@ -2,7 +2,7 @@ import { useExchangeDepositAddressLogic } from '@energyweb/origin-ui-user-logic'
 import {
   useApiCreateExchangeBlockchainAddress,
   useExchangeAddress,
-} from '@energyweb/origin-ui-user-data-access';
+} from '@energyweb/origin-ui-user-data';
 import { useState } from 'react';
 
 export const useUserExchangeDepositAddressEffects = () => {

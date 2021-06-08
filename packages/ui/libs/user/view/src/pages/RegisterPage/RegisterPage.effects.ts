@@ -1,5 +1,5 @@
 import { useUserSignInFormConfig } from '@energyweb/origin-ui-user-logic';
-import { useApiRegisterUser } from '@energyweb/origin-ui-user-data-access';
+import { useApiRegisterUser } from '@energyweb/origin-ui-user-data';
 import { UserModalsActionsEnum, useUserModalsDispatch } from '../../context';
 
 export const useRegisterPageEffects = () => {

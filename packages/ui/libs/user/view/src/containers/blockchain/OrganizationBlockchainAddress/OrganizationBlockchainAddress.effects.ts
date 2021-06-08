@@ -1,4 +1,4 @@
-import { useUpdateBlockchainAddress } from '@energyweb/origin-ui-user-data-access';
+import { useUpdateBlockchainAddress } from '@energyweb/origin-ui-user-data';
 import { useOrganizationBlockchainAddressLogic } from '@energyweb/origin-ui-user-logic';
 import { useState } from 'react';
 

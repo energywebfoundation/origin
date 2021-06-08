@@ -1,7 +1,7 @@
 import {
   useAdminGetUser,
   useAdminUpdateUser,
-} from '@energyweb/origin-ui-user-data-access';
+} from '@energyweb/origin-ui-user-data';
 import { useAdminUpdateUserFormLogic } from '@energyweb/origin-ui-user-logic';
 import { useParams } from 'react-router';
 
