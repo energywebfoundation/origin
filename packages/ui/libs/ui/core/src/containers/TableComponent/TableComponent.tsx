@@ -1,5 +1,5 @@
 import { Table, Typography, TypographyProps } from '@material-ui/core';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   TableRowData,
   TableHeaderData,

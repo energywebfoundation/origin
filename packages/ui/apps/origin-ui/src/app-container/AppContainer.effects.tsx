@@ -10,7 +10,7 @@ import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
-import { useActiveMenuTab } from '../components/activeTab';
+import { useActiveMenuTab } from '../components';
 
 export const useAppContainerEffects = () => {
   const { t } = useTranslation();

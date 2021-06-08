@@ -1,8 +1,7 @@
 import { Hidden } from '@material-ui/core';
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { DesktopTopBar, TopBarButtonData } from '../DesktopTopBar';
 import { MobileTopBar } from '../MobileTopBar';
-import { useNavigate } from 'react-router';
 
 export interface TopBarProps {
   isAuthenticated: boolean;

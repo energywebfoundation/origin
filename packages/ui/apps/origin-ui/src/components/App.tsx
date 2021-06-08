@@ -48,5 +48,3 @@ export const App: FC<AppProps> = ({
     </MainLayout>
   );
 };
-
-export default App;

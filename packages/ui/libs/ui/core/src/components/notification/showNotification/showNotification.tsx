@@ -1,5 +1,5 @@
 import React from 'react';
-import { toast, ToastContent, ToastOptions, Slide } from 'react-toastify';
+import { toast, ToastContent, ToastOptions } from 'react-toastify';
 import { NotificationContent } from '../NotificationContent';
 
 export enum NotificationTypeEnum {

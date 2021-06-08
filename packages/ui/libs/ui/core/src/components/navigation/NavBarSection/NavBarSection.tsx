@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { NavSectionTitle } from '../NavSectionTitle';
 import { NavSubMenu } from '../NavSubMenu';
-import { useNavBarSectionEffects } from './NavBarSection.effects';
 import { useStyles } from './NavBarSection.styles';
 
 export type TMenuSection = Omit<NavBarSectionProps, 'titleClickHandler'>;

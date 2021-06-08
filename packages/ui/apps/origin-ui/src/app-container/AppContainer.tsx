@@ -1,8 +1,7 @@
 import React from 'react';
 
-import App from '../components/app/app';
+import { App, OriginGlobalStyles } from '../components';
 import { useAppContainerEffects } from './AppContainer.effects';
-import { OriginGlobalStyles } from '../components/app/OriginGlobalStyles';
 import { NotificationsCenter } from '@energyweb/origin-ui-core';
 import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
 
