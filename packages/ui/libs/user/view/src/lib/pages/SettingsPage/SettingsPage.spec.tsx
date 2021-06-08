@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import UserAccountPage from './UserAccountPage';
+import { SettingsPage } from './SettingsPage';
 
-describe('UserAccountPage', () => {
+describe('SettingsPage', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<UserAccountPage />);
+    const { baseElement } = render(<SettingsPage />);
     expect(baseElement).toBeTruthy();
   });
 });

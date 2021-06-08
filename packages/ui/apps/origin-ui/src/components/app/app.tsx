@@ -7,7 +7,7 @@ import {
 import { Routes, Route } from 'react-router-dom';
 import { initializeI18N } from '@energyweb/origin-ui-utils';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
-import { AuthApp, AdminApp, SettingsApp } from '@energyweb/origin-ui-user-view';
+import { AuthApp, AdminApp, AccountApp } from '@energyweb/origin-ui-user-view';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
 import { useUserAndOrgData } from '@energyweb/origin-ui-user-data-access';
@@ -42,7 +42,7 @@ export const App: FC<AppProps> = ({
         <Route path="device/*" element={<DeviceApp />} />
         <Route path="organization/*" element={<OrganizationApp />} />
         <Route path="auth/*" element={<AuthApp />} />
-        <Route path="account/*" element={<SettingsApp />} />
+        <Route path="account/*" element={<AccountApp />} />
         <Route path="admin/*" element={<AdminApp />} />
       </Routes>
     </MainLayout>

@@ -32,5 +32,3 @@ export const LoginPage: FC = () => {
     </Paper>
   );
 };
-
-export default LoginPage;

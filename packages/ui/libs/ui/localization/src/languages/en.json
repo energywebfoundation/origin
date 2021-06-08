@@ -377,6 +377,14 @@
           "blockchainAccountLinked": "Blockchain address successfully linked to your organization account"
         }
       },
+      "settings": {
+        "notifications": "Notifications",
+        "language": "Language",
+        "languages": {
+          "en": "English",
+          "pl": "Polish"
+        }
+      },
       "modals": {
         "userRegistered": {
           "title": "Thanks for registering as a user on the marketplace",

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useStyles } from '../user-settings-page/UserSettingsPage.styles';
 import { CircularProgress, Grid, Paper } from '@material-ui/core';
 import {
   UpdateUserEmailContainer,
@@ -8,10 +7,10 @@ import {
   UpdateUserPasswordContainer,
   BlockchainAddressesContainer,
 } from '../../containers';
+import { useStyles } from './ProfilePage.styles';
+import { useUserAccountPageEffects } from './ProfilePage.effects';
 
-import { useUserAccountPageEffects } from './UserAccountPage.effects';
-
-export const UserAccountPage = () => {
+export const ProfilePage = () => {
   const classes = useStyles();
   const { userAccountData, isLoading } = useUserAccountPageEffects();
 
@@ -46,5 +45,3 @@ export const UserAccountPage = () => {
     </Grid>
   );
 };
-
-export default UserAccountPage;

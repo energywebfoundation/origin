@@ -13,5 +13,3 @@ export const RegisterPage: FC = () => {
     </Paper>
   );
 };
-
-export default RegisterPage;

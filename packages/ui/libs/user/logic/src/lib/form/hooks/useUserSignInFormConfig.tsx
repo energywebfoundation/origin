@@ -63,12 +63,12 @@ export const useUserSignInFormConfig = (
     submitHandler: formSubmitHandler,
     inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
-      title: Yup.string().label(t('account.register.title')).required(),
-      firstName: Yup.string().label(t('account.register.firstName')).required(),
-      lastName: Yup.string().label(t('account.register.lastName')).required(),
-      telephone: Yup.string().label(t('account.register.telephone')).required(),
-      email: Yup.string().email().label(t('account.register.email')).required(),
-      password: Yup.string().label(t('account.register.password')).required(),
+      title: Yup.string().label(t('user.register.title')).required(),
+      firstName: Yup.string().label(t('user.register.firstName')).required(),
+      lastName: Yup.string().label(t('user.register.lastName')).required(),
+      email: Yup.string().email().label(t('user.register.email')).required(),
+      telephone: Yup.string().label(t('user.register.telephone')).required(),
+      password: Yup.string().label(t('user.register.password')).required(),
     }),
   };
 };
