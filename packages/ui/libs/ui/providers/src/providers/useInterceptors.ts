@@ -1,7 +1,8 @@
+import { getAuthenticationToken } from '@energyweb/origin-ui-shared-state';
 import axios, { AxiosRequestConfig } from 'axios';
 
 export const useAxiosInterceptors = () => {
-  const token = localStorage.getItem('AUTHENTICATION_TOKEN');
+  const token = getAuthenticationToken();
 
   axios.interceptors.request.use(
     (config: AxiosRequestConfig): AxiosRequestConfig => {

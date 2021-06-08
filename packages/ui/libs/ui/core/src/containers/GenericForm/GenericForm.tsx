@@ -22,21 +22,15 @@ export const GenericForm: TGenericForm = memo(
     partOfMultiForm,
     twoColumns,
     processing,
-    editDisabled,
+    hideSubmitButton,
   }) => {
-    const {
-      control,
-      register,
-      onSubmit,
-      errors,
-      buttonDisabled,
-      dirtyFields,
-    } = useGenericFormEffects({
-      validationSchema,
-      submitHandler,
-      initialValues,
-      partOfMultiForm,
-    });
+    const { control, register, onSubmit, errors, buttonDisabled, dirtyFields } =
+      useGenericFormEffects({
+        validationSchema,
+        submitHandler,
+        initialValues,
+        partOfMultiForm,
+      });
 
     return (
       <form onSubmit={onSubmit} className={formClass}>
@@ -75,6 +69,7 @@ export const GenericForm: TGenericForm = memo(
         {children}
 
         <Box
+          hidden={hideSubmitButton}
           my={2}
           display="flex"
           justifyContent="flex-end"

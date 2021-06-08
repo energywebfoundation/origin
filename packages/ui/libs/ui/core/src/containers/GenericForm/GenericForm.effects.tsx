@@ -7,6 +7,7 @@ import {
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GenericFormProps } from './GenericForm.types';
+import { BaseSyntheticEvent } from 'react';
 
 type GenericFormEffectsProps<FormValuesType> = Pick<
   GenericFormProps<FormValuesType>,
@@ -15,7 +16,7 @@ type GenericFormEffectsProps<FormValuesType> = Pick<
 
 type GenericFormEffectsReturnType<FormValuesType> = {
   register: UseFormRegister<FormValuesType>;
-  onSubmit: (e?: React.BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  onSubmit: (e?: BaseSyntheticEvent<object, any, any>) => Promise<void>;
   errors: DeepMap<FormValuesType, FieldError>;
   buttonDisabled: boolean;
   dirtyFields: DeepMap<FormValuesType, true>;
@@ -37,7 +38,7 @@ export const useGenericFormEffects: TGenericFormEffects = ({
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
-  const { isValid, errors, dirtyFields } = formState;
+  const { isValid, errors, dirtyFields, isDirty } = formState;
 
   const onSubmit = handleSubmit(async (values) => {
     await submitHandler(values, reset);
@@ -45,7 +46,9 @@ export const useGenericFormEffects: TGenericFormEffects = ({
 
   const nextForm =
     initialValues && Object.keys(initialValues)[0] in dirtyFields;
-  const buttonDisabled = partOfMultiForm ? !(nextForm && isValid) : !isValid;
+  const buttonDisabled = partOfMultiForm
+    ? !(nextForm && isValid)
+    : !isValid || !isDirty;
 
   return { control, register, onSubmit, errors, buttonDisabled, dirtyFields };
 };

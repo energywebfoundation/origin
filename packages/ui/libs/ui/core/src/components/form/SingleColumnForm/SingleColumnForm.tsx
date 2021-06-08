@@ -37,7 +37,7 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
         (field) =>
           (field.select && (
             <FormSelect
-              disable={editDisabled}
+              disable={editDisabled || field.frozen || processing}
               key={field.label}
               field={field}
               control={control}
@@ -48,6 +48,7 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
           )) ||
           (field.datePicker && (
             <FormDatePicker
+              disabled={editDisabled || field.frozen}
               key={field.label}
               field={field}
               control={control}
@@ -59,6 +60,7 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
           (field.hierarchical && (
             <HierarchicalSelect
               key={field.label}
+              disabled={editDisabled || field.frozen}
               field={field}
               control={control}
               errorExists={!isEmpty(errors[field.name])}
@@ -69,7 +71,7 @@ export const SingleColumnForm: FC<SingleColumnFormProps> = ({
             <FormInput
               key={field.label}
               field={field}
-              disable={editDisabled}
+              disabled={editDisabled || field.frozen}
               register={register}
               errorExists={!isEmpty(errors[field.name])}
               errorText={errors[field.name]?.message ?? ''}
