@@ -10,7 +10,7 @@ import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 import { AuthApp, AdminApp, AccountApp } from '@energyweb/origin-ui-user-view';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
-import { useUserAndOrgData } from '@energyweb/origin-ui-user-data-access';
+import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
 export interface AppProps {

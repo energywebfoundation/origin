@@ -1,4 +1,3 @@
-import { useAccount } from '@energyweb/origin-ui-user-view';
 import {
   UserDTO,
   UserStatus,
@@ -9,7 +8,10 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useEffect, useMemo, useState } from 'react';
 import { ethers, Signer } from 'ethers';
-import { useApiFetchUserAccountData } from '@energyweb/origin-ui-user-data-access';
+import {
+  useApiFetchUserAccountData,
+  useUser,
+} from '@energyweb/origin-ui-user-data-access';
 import { useApiFetchUserAccountBalanceData } from '@energyweb/origin-ui-user-data-access';
 import { useApiFetchUserBlockchainPropertiesData } from '@energyweb/origin-ui-user-data-access';
 import { useQueryClient } from 'react-query';
@@ -58,7 +60,7 @@ export const checkNetworkName = (netId: OriginPrimaryNetworksEnum) => {
 };
 
 export const useBlockchainProviderEffects = () => {
-  const { userAccountData: user } = useAccount();
+  const { user } = useUser();
 
   const queryClient = useQueryClient();
   useEffect(() => {

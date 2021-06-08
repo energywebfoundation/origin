@@ -1,4 +1,3 @@
-export * from './lib/AuthApp';
-export * from './lib/AdminApp';
-export * from './lib/AccountApp';
-export * from './lib/providers';
+export * from './AuthApp';
+export * from './AdminApp';
+export * from './AccountApp';
