@@ -43,12 +43,31 @@ import { User } from '../user';
 import { BindBlockchainAccountDTO } from './dto/bind-blockchain-account.dto';
 import { FullOrganizationInfoDTO } from './dto/full-organization-info.dto';
 import { NewOrganizationDTO } from './dto/new-organization.dto';
+import { NewDidOrganizationDto } from './dto/new-did-organization.dto';
 import { UpdateMemberDTO } from './dto/organization-update-member.dto';
 import { OrganizationUpdateDTO } from './dto/organization-update.dto';
 import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
 import { OrganizationDocumentOwnershipMismatchError } from './errors/organization-document-ownership-mismatch.error';
 import { OrganizationNameAlreadyTakenError } from './errors/organization-name-taken.error';
 import { OrganizationService } from './organization.service';
+import { IAM, setCacheClientOptions, setChainConfig, ENSNamespaceTypes } from 'iam-client-lib';
+
+setCacheClientOptions(73799, {
+    url: 'https://volta-identitycache.energyweb.org/' // TODO: get from .env
+});
+
+setChainConfig(73799, {
+    rpcUrl: 'https://volta-rpc.energyweb.org' // TODO: get from .env
+});
+
+const iam = new IAM({
+    rpcUrl: 'https://volta-rpc.energyweb.org', // TODO: get from .env
+    privateKey:
+        process.env.PLATFORM_OPERATOR_PRIVATE_KEY ||
+        '9945c05be0b1b7b35b7cec937e78c6552ecedca764b53a772547d94a687db929'
+});
+
+const iamConnected = iam.initializeConnection();
 
 @ApiTags('organization')
 @ApiBearerAuth('access-token')
@@ -181,6 +200,52 @@ export class OrganizationController {
                 message: `Unable to register organization due an unknown error`
             });
         }
+    }
+
+    @Post('did')
+    @UseGuards(AuthGuard())
+    @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: NewDidOrganizationDto })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: FullOrganizationInfoDTO,
+        description: 'Register an DID organization'
+    })
+    async registerDid(
+        @Body() organizationToRegister: NewDidOrganizationDto,
+        @UserDecorator() loggedUser: ILoggedInUser
+    ): Promise<any> {
+        const namespace = organizationToRegister.ensNamespace;
+
+        this.logger.debug(
+            `adding DID organization: namespace=${organizationToRegister.ensNamespace}`
+        );
+
+        await iamConnected; // TODO: review if there are any good practices to handle connection states correctly
+
+        const userChainRoles = (await iam.getUserClaims({ did: loggedUser.did }))
+            .filter((claim) => !!claim.claimType) // role claims have claimType property
+            .map((claim) => claim.claimType) // claimType property contains role namespace
+            .filter((claimType) => {
+                const arr = claimType.split('.');
+                return arr.length > 1 && arr[1] === ENSNamespaceTypes.Roles;
+            });
+
+        this.logger.debug(`chain roles: ${JSON.stringify(userChainRoles)}`);
+
+        const requiredRole = `organizationadmin.${ENSNamespaceTypes.Roles}.${organizationToRegister.ensNamespace}`;
+
+        this.logger.debug(`required role: ${requiredRole}`);
+
+        if (userChainRoles.indexOf(requiredRole) < 0) {
+            throw new ForbiddenException(`User does not have ${requiredRole} role`);
+        }
+
+        const organization = await iam.getOrgHierarchy({ namespace });
+
+        this.logger.debug(`org. hierarchy: ${JSON.stringify(organization, null, 4)}`);
+
+        return { status: 'OK' };
     }
 
     @Delete('/:id')
