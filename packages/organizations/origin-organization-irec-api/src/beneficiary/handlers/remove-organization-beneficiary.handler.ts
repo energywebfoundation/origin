@@ -14,10 +14,7 @@ export class RemoveOrganizationBeneficiaryHandler
         private readonly repository: Repository<Beneficiary>
     ) {}
 
-    public async execute({
-        id,
-        ownerOrganizationId
-    }: RemoveOrganizationBeneficiaryCommand): Promise<void> {
-        await this.repository.delete({ id, ownerOrganizationId });
+    public async execute({ id, ownerId }: RemoveOrganizationBeneficiaryCommand): Promise<void> {
+        await this.repository.delete({ id, ownerId });
     }
 }

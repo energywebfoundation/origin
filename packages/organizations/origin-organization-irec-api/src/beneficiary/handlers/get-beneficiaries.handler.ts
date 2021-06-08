@@ -24,7 +24,7 @@ export class GetBeneficiariesHandler implements ICommandHandler<GetBeneficiaries
             orgId = platformAdmin.organization.id;
         }
 
-        const beneficiaries = await this.repository.find({ ownerOrganizationId: orgId });
+        const beneficiaries = await this.repository.find({ ownerId: orgId });
 
         const organizations: IPublicOrganization[] = await this.commandBus.execute(
             new GetOrganizationsCommand({ ids: beneficiaries.map((b) => b.organizationId) })
@@ -41,7 +41,7 @@ export class GetBeneficiariesHandler implements ICommandHandler<GetBeneficiaries
                 id: beneficiary.id,
                 irecBeneficiaryId: beneficiary.irecBeneficiaryId,
                 organization,
-                ownerOrganizationId: beneficiary.ownerOrganizationId
+                ownerId: beneficiary.ownerId
             });
         });
     }

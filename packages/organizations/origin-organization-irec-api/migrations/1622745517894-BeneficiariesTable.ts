@@ -11,10 +11,15 @@ export class BeneficiariesTable1622745517894 implements MigrationInterface {
                 "id" SERIAL NOT NULL, 
                 "irecBeneficiaryId" integer NOT NULL, 
                 "organizationId" integer NOT NULL, 
-                "ownerOrganizationId" integer NOT NULL, 
-                CONSTRAINT "PK_d23471635c3409decbd1995f5eb" PRIMARY KEY ("id")
+                "ownerId" integer NOT NULL, 
+                CONSTRAINT "PK_irec_beneficiary_id" PRIMARY KEY ("id")
             )`
         );
+
+        await queryRunner.query(
+            `SELECT nextval(pg_get_serial_sequence('irec_beneficiary', 'id'));`
+        );
+
         await queryRunner.query(`ALTER TABLE "irec_registration" DROP COLUMN "beneficiaryId"`);
     }
 

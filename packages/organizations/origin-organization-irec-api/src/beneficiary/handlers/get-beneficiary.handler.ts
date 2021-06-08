@@ -23,14 +23,14 @@ export class GetBeneficiaryHandler implements ICommandHandler<GetBeneficiaryComm
         }
 
         const organization: Organization = await this.commandBus.execute(
-            new GetOrganizationCommand(String(beneficiary.ownerOrganizationId))
+            new GetOrganizationCommand(String(beneficiary.ownerId))
         );
 
         return BeneficiaryDTO.wrap({
             id: beneficiary.id,
             irecBeneficiaryId: beneficiary.irecBeneficiaryId,
             organization,
-            ownerOrganizationId: beneficiary.ownerOrganizationId
+            ownerId: beneficiary.ownerId
         });
     }
 }

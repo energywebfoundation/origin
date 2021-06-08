@@ -20,13 +20,13 @@ export class AddOrganizationBeneficiaryHandler
     ) {}
 
     public async execute({
-        ownerOrganizationId,
+        ownerId,
         irecBeneficiaryId
     }: AddOrganizationBeneficiaryCommand): Promise<BeneficiaryDTO> {
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         const beneficiary = await this.repository.findOne({
-            ownerOrganizationId: platformAdmin.organization.id,
+            ownerId: platformAdmin.organization.id,
             irecBeneficiaryId
         });
 
@@ -37,7 +37,7 @@ export class AddOrganizationBeneficiaryHandler
         const newBeneficiary = this.repository.create({
             irecBeneficiaryId: beneficiary.irecBeneficiaryId,
             organizationId: beneficiary.organizationId,
-            ownerOrganizationId: ownerOrganizationId
+            ownerId: ownerId
         });
 
         const storedBeneficiary = await this.repository.save(newBeneficiary);

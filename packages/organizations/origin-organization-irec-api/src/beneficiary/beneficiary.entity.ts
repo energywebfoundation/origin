@@ -13,5 +13,5 @@ export class Beneficiary extends ExtendedBaseEntity {
     organizationId: number;
 
     @Column()
-    ownerOrganizationId: number;
+    ownerId: number;
 }

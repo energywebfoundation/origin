@@ -30,7 +30,7 @@ export class CreateBeneficiaryHandler implements ICommandHandler<CreateBeneficia
         const beneficiary = this.repository.create({
             irecBeneficiaryId: irecBeneficiary.id,
             organizationId: organization.id,
-            ownerOrganizationId: platformAdmin.organization.id
+            ownerId: platformAdmin.organization.id
         });
 
         const storedBeneficiary = await this.repository.save(beneficiary);

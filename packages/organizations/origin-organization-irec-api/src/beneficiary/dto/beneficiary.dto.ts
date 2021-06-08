@@ -13,7 +13,7 @@ export class BeneficiaryDTO {
     organization: PublicOrganizationInfoDTO;
 
     @ApiProperty({ type: Number })
-    ownerOrganizationId: number;
+    ownerId: number;
 
     public static wrap(beneficiary: BeneficiaryDTO): BeneficiaryDTO {
         return plainToClass(BeneficiaryDTO, beneficiary);
