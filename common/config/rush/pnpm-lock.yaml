@@ -169,7 +169,7 @@ dependencies:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
-  iam-client-lib: 3.0.0-alpha.6_@babel+core@7.14.3
+  iam-client-lib: 3.0.0-alpha.17_@babel+core@7.14.3
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4_ts-node@9.1.1
@@ -1973,6 +1973,13 @@ packages:
       swagger-ui-express: '*'
     resolution:
       integrity: sha512-p4F5eu+3w+RdBzfci6jUnBMfBmhoSLoiTUI5JCsq7SLmp6nqEbKwsGL+vCTtfDpSajzokZlR8MfJf1W+i+beow==
+  /@energyweb/iam-contracts/1.11.0:
+    dependencies:
+      '@openzeppelin/contracts': 3.4.1
+      ethers: 4.0.45
+    dev: false
+    resolution:
+      integrity: sha512-EinoPzFmiWkMcl+1wF06kNL0QwNEm8ZgBaVgaBahetWFE+TXWkXP9R1tw386wO8zX2bAcz/D7KB7miM4lTiDpQ==
   /@ensdomains/ens/0.4.5:
     dependencies:
       bluebird: 3.7.2
@@ -1984,11 +1991,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-JSvpj1iNMFjK6K+uVl4unqMoa9rf5jopb8cya5UGBWz23Nw8hSNT7efgUx4BTlAPAgpNlEioUfeTyQ6J9ZvTVw==
-  /@ensdomains/resolver/0.2.4:
-    deprecated: Please use @ensdomains/ens-contracts
-    dev: false
-    resolution:
-      integrity: sha512-bvaTH34PMCbv6anRa9I/0zjLJgY4EuznbEMgbV77JBCQ9KNC46rzi0avuxpOfu+xDjPEtSFGqVEOr5GlUSGudA==
   /@ethersproject/abi/5.0.0-beta.153:
     dependencies:
       '@ethersproject/address': 5.2.0
@@ -2635,67 +2637,67 @@ packages:
     dev: false
     resolution:
       integrity: sha512-JcwumCZcsUxgWpiFU/BRy6b4KlTRdOmYvOKZcAw/3sdF93/pZyPW5Od2hFkHS8oWp4xS06YQ+qHqQhdcxdHafQ==
-  /@ew-did-registry/claims/0.5.2-alpha.1041.0:
+  /@ew-did-registry/claims/0.5.2-alpha.1045.0:
     dependencies:
-      '@ew-did-registry/did': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-document': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-ipfs-store': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1041.0
+      '@ew-did-registry/did': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-document': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-ipfs-store': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1045.0
       '@ew-did-registry/did-store-interface': 0.5.0
-      '@ew-did-registry/jwt': 0.5.2-alpha.1041.0
-      '@ew-did-registry/keys': 0.5.2-alpha.1041.0
+      '@ew-did-registry/jwt': 0.5.2-alpha.1045.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
       '@types/sjcl': 1.0.28
       eciesjs: 0.3.10
       sjcl: /sjcl-complete/1.0.0
     dev: false
     resolution:
-      integrity: sha512-3PmUG6381Np9S1Pf7J4ChNnjYwaWHc8OaUDH4J5lv61MmauSdqdqPzbV3nS/PRrvvH+RqEuLOPgLugxu79zuzA==
-  /@ew-did-registry/did-document/0.5.2-alpha.1041.0:
+      integrity: sha512-duSLMXV58122pgQBbzbOyROiz55Dx/1piYc1sC/jHqZmwPKpp0baSnBCapOb9yG+SB2E82tVfayaEh/nF335hQ==
+  /@ew-did-registry/did-document/0.5.2-alpha.1045.0:
     dependencies:
-      '@ew-did-registry/did': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1041.0
-      '@ew-did-registry/keys': 0.5.2-alpha.1041.0
+      '@ew-did-registry/did': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1045.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
       ethers: 4.0.45
     dev: false
     resolution:
-      integrity: sha512-FZ703GRTskVn1qGMz1d3ftipN41Q3ce16E28WGvfeepPsvDTaq41N8TXF4sxHRAW6ajYvDvuuvfAYiivJclneg==
-  /@ew-did-registry/did-ethr-resolver/0.5.2-alpha.1041.0:
+      integrity: sha512-1tTIUBFmfWmgo5oB7mKTGaYgXoN2clRftIQbkDvG4l3fmkfplm5Sar4ho3mgy1b4ujIAzCEVPjSESWQWidzCAA==
+  /@ew-did-registry/did-ethr-resolver/0.5.2-alpha.1045.0:
     dependencies:
-      '@ew-did-registry/did': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1041.0
-      '@ew-did-registry/keys': 0.5.2-alpha.1041.0
+      '@ew-did-registry/did': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1045.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
       ethers: 4.0.45
     dev: false
     resolution:
-      integrity: sha512-1mJOtGkNuhdCMoGQUOkW7scJls3++t7uwL2rwMBIu/swrBvA2khAN1B/KHuqcqQ1NhHfaqcuCrRrssSTi7iOYA==
-  /@ew-did-registry/did-ipfs-store/0.5.2-alpha.1041.0:
+      integrity: sha512-EBtMw0Pox2JakmO58oJkRQ6kO0mYprZDZzcVSP+CIXI9PkvTf/vyu5S4MUEj/E5+JAIzgu5RANh2nmwOMvCbjw==
+  /@ew-did-registry/did-ipfs-store/0.5.2-alpha.1045.0:
     dependencies:
       '@ew-did-registry/did-store-interface': 0.5.0
       bl: 4.1.0
       ipfs-http-client: 43.0.1
     dev: false
     resolution:
-      integrity: sha512-8LRtEW5obhUQxFxjpknRtrez9aO8BA5qRm0EFEpjh4h7qKtnkd/inNLzT/ykuTKAdzHa6TBatkcJfcKcqtImjg==
-  /@ew-did-registry/did-resolver-interface/0.5.2-alpha.1041.0:
+      integrity: sha512-OP+Nz27x5NMSI9oE5HHdF5rkAu0OMNyLjbvxdOHZ+E14YMSFjPBxkV/B9J84LQUJAFZ6tlQlvIlI56vMiFjZGw==
+  /@ew-did-registry/did-resolver-interface/0.5.2-alpha.1045.0:
     dependencies:
-      '@ew-did-registry/did': 0.5.2-alpha.1041.0
+      '@ew-did-registry/did': 0.5.2-alpha.1045.0
       ethers: 4.0.45
     dev: false
     resolution:
-      integrity: sha512-rhYQdtsqdN2PT0jibV2rMzZobAHj4vwW4mPcs/jYl/S29m9eCHVXW03PMU30usMpeK2A4ulublBuLIVY8VzLkw==
+      integrity: sha512-GkR/4l0uswqL3+Q0LPwLrnZHExTzyUUbyAWLIkNPAEDYDlMZl/CElc9955DXtHmjKk/0idwFQe6nYJ7peXG7QQ==
   /@ew-did-registry/did-store-interface/0.5.0:
     dev: false
     resolution:
       integrity: sha512-IRa5ze44YeJxpKADLWQkc1pGg+PZDEUeB8kOXuUKVvUDa24k7t5ck6D/iYJzFizrwsePu0aXZaMH7m57OBYPng==
-  /@ew-did-registry/did/0.5.2-alpha.1041.0:
+  /@ew-did-registry/did/0.5.2-alpha.1045.0:
     dev: false
     resolution:
-      integrity: sha512-mYaqfwPc98rRc1pc9uTW+FO+SB0XNHomuBZuUsuCRq82ydjhIRZlbtI+VxcktdUQYaXvZCyVRDGHOBjalIHYRQ==
-  /@ew-did-registry/jwt/0.5.2-alpha.1041.0:
+      integrity: sha512-ogo8DODPuRSvBc619XZaUMT7oNcWBXMP7qFMwnJ10zwzNB+mWbu19uMLtG1Kse9tdNtEtJzcAae4ncEwRfu+Dg==
+  /@ew-did-registry/jwt/0.5.2-alpha.1045.0:
     dependencies:
-      '@ew-did-registry/keys': 0.5.2-alpha.1041.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
       '@types/jsonwebtoken': 8.5.0
       '@types/promise.allsettled': 1.0.3
       base64url: 3.0.1
@@ -2706,8 +2708,8 @@ packages:
       promise.allsettled: 1.0.4
     dev: false
     resolution:
-      integrity: sha512-AqEdmyneFc/94ArGY3wuLeIhu4KHzqtDMlgy/KnsXpNxe81S3kJYFyHjtrWh87UAJZfpC+NtsYX8lOGTc49vDg==
-  /@ew-did-registry/keys/0.5.2-alpha.1041.0:
+      integrity: sha512-NGb4Qe0KWZZrmmKdUGY3tWkmsIP+8nTI9ghGu+DwWWIurkSOji2ZZ+pENo7g+uH00YgfQxRzuDJUoy1M1XD4UA==
+  /@ew-did-registry/keys/0.5.2-alpha.1045.0:
     dependencies:
       bn.js: 5.2.0
       eciesjs: 0.3.10
@@ -2715,16 +2717,16 @@ packages:
       ethers: 4.0.45
     dev: false
     resolution:
-      integrity: sha512-eaEjpogxP5po3q1gRIlckIJMJWMeOi1W+3tvAbnTvF88iiNm9b8VZjWMUl4pTAqF7XBi7PaGMrs8snBTDK5OEw==
-  /@ew-did-registry/proxyidentity/0.5.2-alpha.1041.0:
+      integrity: sha512-Lc5+X5cGJFdxF7nljCG3I3MoU4LDskiWQdq8rukC7ly3Bz8U7oVnc+IyldnY93SWOiSV8KwEyjuUSxS7ZKn7Sg==
+  /@ew-did-registry/proxyidentity/0.5.2-alpha.1045.0:
     dependencies:
-      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1041.0
-      '@ew-did-registry/keys': 0.5.2-alpha.1041.0
+      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1045.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
       ethers: 4.0.45
     dev: false
     resolution:
-      integrity: sha512-fhyaTfzmtkKqzSCbOBuYqeA7B49fNM5NgNatEHFWIsoPxsiYFv0J0H185L/Aul2LOoxsEcPtzp3xuaINeF01Pg==
+      integrity: sha512-1jcy9zPuW51oOMW8xNCxsdVt+3NZDR6sPVCw0hCUH2x2jtCUCCWf/cUjxPiRQ9gDsML0P1erRURtqiyX+Xb4HQ==
   /@firebase/analytics-types/0.4.0:
     dev: false
     resolution:
@@ -4711,6 +4713,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-QZSvbYqNpU/x60vARhq/jghh97VWjml3NAlKfu4u1XehvpEBbHVXJyKTBSZtZY7jviG305jOczEisnN8VeOMcw==
+  /@openzeppelin/contracts/3.4.1:
+    dev: false
+    resolution:
+      integrity: sha512-cUriqMauq1ylzP2TxePNdPqkwI7Le3Annh4K9rrpvKfSBB/bdW+Iu1ihBaTIABTAAJ85LmKL5SSPPL9ry8d1gQ==
   /@openzeppelin/contracts/4.1.0:
     dev: false
     resolution:
@@ -6780,7 +6786,7 @@ packages:
       integrity: sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==
   /@types/bn.js/4.11.6:
     dependencies:
-      '@types/node': 14.17.0
+      '@types/node': 14.17.2
     dev: false
     resolution:
       integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
@@ -7254,7 +7260,7 @@ packages:
       integrity: sha512-9oKfrJXuAxvyxdrtMCxKkHgmd6DMO8NDOLvMJ1LvIWd6/xP+i81PAkpTaEca7VhJX9S009RciwZL/j6dsLsHrA==
   /@types/pbkdf2/3.1.0:
     dependencies:
-      '@types/node': 14.17.0
+      '@types/node': 14.17.2
     dev: false
     resolution:
       integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==
@@ -7385,7 +7391,7 @@ packages:
       integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA==
   /@types/secp256k1/4.0.2:
     dependencies:
-      '@types/node': 14.17.0
+      '@types/node': 14.17.2
     dev: false
     resolution:
       integrity: sha512-QMg+9v0bbNJ2peLuHRWxzmy0HRJIG6gFZNhaRSp7S3ggSbCCxiqQB2/ybvhXyhHOCequpNkrx7OavNhrWOsW0A==
@@ -8951,7 +8957,7 @@ packages:
     dependencies:
       call-bind: 1.0.2
       define-properties: 1.1.3
-      es-abstract: 1.18.0
+      es-abstract: 1.18.3
       es-array-method-boxes-properly: 1.0.0
       is-string: 1.0.6
     dev: false
@@ -8991,7 +8997,7 @@ packages:
     dependencies:
       call-bind: 1.0.2
       define-properties: 1.1.3
-      es-abstract: 1.18.0
+      es-abstract: 1.18.3
       es-array-method-boxes-properly: 1.0.0
       is-string: 1.0.6
     dev: false
@@ -17157,24 +17163,25 @@ packages:
     dev: false
     resolution:
       integrity: sha512-WTY07KreR5z2LBSzAIKs05zpR5tgUT98C4fD96e7Risbc/HZePwF6AEnb9VkjdeSeRn9PDqQBay7ZkphuXt0Xw==
-  /iam-client-lib/3.0.0-alpha.6_@babel+core@7.14.3:
+  /iam-client-lib/3.0.0-alpha.17_@babel+core@7.14.3:
     dependencies:
       '@babel/runtime': 7.14.0
+      '@energyweb/iam-contracts': 1.11.0
       '@ensdomains/ens': 0.4.5
-      '@ensdomains/resolver': 0.2.4
-      '@ew-did-registry/claims': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-document': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1041.0
-      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1041.0
-      '@ew-did-registry/jwt': 0.5.2-alpha.1041.0
-      '@ew-did-registry/keys': 0.5.2-alpha.1041.0
-      '@ew-did-registry/proxyidentity': 0.5.2-alpha.1041.0
+      '@ew-did-registry/claims': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-document': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1045.0
+      '@ew-did-registry/jwt': 0.5.2-alpha.1045.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
+      '@ew-did-registry/proxyidentity': 0.5.2-alpha.1045.0
       '@gnosis.pm/safe-apps-sdk': 1.0.3
       '@metamask/detect-provider': 1.2.0
       '@walletconnect/web3-provider': 1.0.0-rc.4_@babel+core@7.14.3
       axios: 0.21.1
       base64url: 3.0.1
+      concurrently: 6.2.0
       eth-ens-namehash: 2.0.8
       ethers: 4.0.45
       js-sha3: 0.8.0
@@ -17190,7 +17197,7 @@ packages:
     peerDependencies:
       '@babel/core': '*'
     resolution:
-      integrity: sha512-3QPluY/ZidZyk4RxF+QILSgAMSAYQJ02JYdyh7bMUJYxkwOpJgOMiA18+W+t0ghM1uDcw699/UU/b3IcPlT7Bw==
+      integrity: sha512-S5PBxv5EB6wkcgEfh45TaF+Bfw87oQygSztz1lIdnm634zmUBiXpfx+uvjiM6pEKc/nxHTtu1WzmSzUrYALFnw==
   /ice-cap/0.0.4:
     dependencies:
       cheerio: 0.20.0
@@ -24415,7 +24422,7 @@ packages:
       array.prototype.map: 1.0.3
       call-bind: 1.0.2
       define-properties: 1.1.3
-      es-abstract: 1.18.0
+      es-abstract: 1.18.3
       get-intrinsic: 1.1.1
       iterate-value: 1.0.2
     dev: false
@@ -30203,7 +30210,7 @@ packages:
       integrity: sha512-szR4fDSBxNHaF1DFqE+j6sFR/afv9Aa36OW93saHZnrh+iXSrYeUUDfugeNcRlugEKeUCkd4CZylfgbK2SKYJA==
   /web3-core-method/1.3.6:
     dependencies:
-      '@ethersproject/transactions': 5.2.0
+      '@ethersproject/transactions': 5.3.0
       underscore: 1.12.1
       web3-core-helpers: 1.3.6
       web3-core-promievent: 1.3.6
@@ -33700,7 +33707,7 @@ packages:
       formik-material-ui-pickers: 0.0.12_08032a4b4e82050abfb7dc276cf451f4
       history: 4.10.1
       i18next: 20.3.1
-      iam-client-lib: 3.0.0-alpha.6_@babel+core@7.14.3
+      iam-client-lib: 3.0.0-alpha.17_@babel+core@7.14.3
       jest: 27.0.4_ts-node@9.1.1
       jest-environment-jsdom-fifteen: 1.0.2
       mocha: 8.4.0
@@ -33732,7 +33739,7 @@ packages:
       webpack-cli: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-Qmq3TCaP4W/IXLj/FXhLpQF6Ip8GspXPSRXvANr6RcpwudWJobdaPV1w2fw8LK67gylSObijxcMySUYF5thtbQ==
+      integrity: sha512-K9UXKSXoQdfO8iTiHnNe0jHfLWcJR+vMKqzkOe3/jtTN10CTfJWmwNRcbIC1HXtE9mpaeJ3CnF8N3c65PLb5hA==
       tarball: file:projects/origin-ui-core.tgz
     version: 0.0.0
   file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1:
@@ -34128,7 +34135,7 @@ specifiers:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
-  iam-client-lib: 3.0.0-alpha.6
+  iam-client-lib: 3.0.0-alpha.17
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4
