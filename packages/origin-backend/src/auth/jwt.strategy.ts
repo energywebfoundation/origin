@@ -11,6 +11,16 @@ const acceptedRoles: string[] = process.env.ACCEPTED_ROLES
     ? process.env.ACCEPTED_ROLES.split(',')
     : [];
 
+const chainToOriginRoleNamesMap: { [index: string]: string } = Object.keys(Role)
+    .map((key: keyof typeof Role) => Role[key])
+    .filter((value) => typeof value === 'string')
+    .reduce((acc: { [index: string]: string }, val) => {
+        const originRoleName = val.toString();
+        const chainRoleName = originRoleName.toLowerCase();
+        acc[chainRoleName] = originRoleName;
+        return acc;
+    }, {});
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
@@ -41,7 +51,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
         const roles: Role[] = payload.verifiedRoles
             .filter((role) => acceptedRoles.indexOf(role.nameSpace) > -1)
-            .map((role) => role.name)
+            .map((role) => chainToOriginRoleNamesMap[role.name])
             .map((roleName: keyof typeof Role) => Role[roleName]);
 
         let rights = roles.reduce((acc, role) => {

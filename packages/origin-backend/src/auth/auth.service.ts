@@ -48,7 +48,7 @@ export class AuthService {
 
         Object.values(Role).forEach((role: Role) => {
             if (loggedInUser.hasRole(role)) {
-                const roleName = Role[role].toString();
+                const roleName = Role[role].toString().toLowerCase();
                 rights.push({ name: roleName, nameSpace: `${roleName}.bogus.iat.ewc` });
             }
         });
