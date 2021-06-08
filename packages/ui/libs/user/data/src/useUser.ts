@@ -1,7 +1,6 @@
 import {
   getUserControllerMeQueryKey,
   useUserControllerMe,
-  userControllerMe,
 } from '@energyweb/origin-backend-react-query-client';
 import {
   getAuthenticationToken,

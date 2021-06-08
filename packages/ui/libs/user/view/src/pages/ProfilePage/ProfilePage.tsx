@@ -8,13 +8,13 @@ import {
   BlockchainAddressesContainer,
 } from '../../containers';
 import { useStyles } from './ProfilePage.styles';
-import { useUserAccountPageEffects } from './ProfilePage.effects';
+import { useProfilePageEffects } from './ProfilePage.effects';
 
 export const ProfilePage = () => {
   const classes = useStyles();
-  const { userAccountData, isLoading } = useUserAccountPageEffects();
+  const { user, userLoading } = useProfilePageEffects();
 
-  if (isLoading) {
+  if (userLoading) {
     return <CircularProgress />;
   }
 
@@ -23,12 +23,12 @@ export const ProfilePage = () => {
       <Grid container spacing={3}>
         <Grid xs={12} item>
           <Paper classes={{ root: classes.paper }}>
-            <UpdateUserData userAccountData={userAccountData} />
+            <UpdateUserData userAccountData={user} />
           </Paper>
         </Grid>
         <Grid xs={12} item>
           <Paper classes={{ root: classes.paper }}>
-            <UpdateUserEmail userAccountData={userAccountData} />
+            <UpdateUserEmail userAccountData={user} />
           </Paper>
         </Grid>
         <Grid xs={12} item>
@@ -38,7 +38,7 @@ export const ProfilePage = () => {
         </Grid>
         <Grid xs={12} item>
           <Paper classes={{ root: classes.paper }}>
-            <BlockchainAddressesContainer userAccountData={userAccountData} />
+            <BlockchainAddressesContainer userAccountData={user} />
           </Paper>
         </Grid>
       </Grid>

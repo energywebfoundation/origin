@@ -35,8 +35,8 @@ export const useApiUpdateUserAccountData = () => {
           showNotification(
             t('user.profile.notifications.userInfoUpdateSuccess'),
             NotificationTypeEnum.Success
-          ),
-            queryClient.invalidateQueries(userQueryKey);
+          );
+          queryClient.resetQueries(userQueryKey);
           resetForm();
         },
         onError: (error: AxiosError) => {
