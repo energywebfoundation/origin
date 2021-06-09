@@ -1,24 +1,7 @@
 import { getRolesFromRights } from '@energyweb/origin-backend-core';
-import { User } from '@energyweb/origin-backend-react-query-client';
-import {
-  TableActionData,
-  TableComponentProps,
-  TableRowData,
-} from '@energyweb/origin-ui-core';
-import { TFunction, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { roleNamesMatcherForMembersPage } from '../utils';
-
-type TCreateMembersTableArgs = {
-  users: User[];
-  actions: TableActionData<User['id']>[];
-  loading: boolean;
-};
-
-type TFormatOrgMembers = (
-  props: Omit<TCreateMembersTableArgs, 'loading'> & {
-    t: TFunction<'translation'>;
-  }
-) => TableRowData<User['id']>[];
+import { TFormatOrgMembers, TUseMembersTableLogic } from './types';
 
 export const formatOrgMembers: TFormatOrgMembers = ({ t, users, actions }) => {
   return users?.map((user) => ({
@@ -37,11 +20,11 @@ export const formatOrgMembers: TFormatOrgMembers = ({ t, users, actions }) => {
   }));
 };
 
-export const useMembersTableLogic = ({
+export const useMembersTableLogic: TUseMembersTableLogic = ({
   users,
   actions,
   loading,
-}: TCreateMembersTableArgs): TableComponentProps<User['id']> => {
+}) => {
   const { t } = useTranslation();
   return {
     header: {
