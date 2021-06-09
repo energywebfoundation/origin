@@ -22,7 +22,7 @@ export const getDeviceMenu: TGetDeviceMenu = ({
   showMyDevices,
   showPendingDevices,
   showRegisterDevice,
-  showDeviceImport,
+  // showDeviceImport,
 }) => {
   const menuList = [
     {
@@ -50,16 +50,11 @@ export const getDeviceMenu: TGetDeviceMenu = ({
       label: t('navigation.device.register'),
       show: showRegisterDevice,
     },
-    {
-      url: 'import',
-      label: t('navigation.device.import'),
-      show: showDeviceImport,
-    },
-    {
-      url: 'detail-view-mock',
-      label: 'Detail View Mock',
-      show: true,
-    },
+    // {
+    //   url: 'import',
+    //   label: t('navigation.device.import'),
+    //   show: showDeviceImport,
+    // },
   ];
 
   return {
