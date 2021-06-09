@@ -1,4 +1,4 @@
-import { TRegisterDeviceForm } from '../types';
+import { TRegisterDeviceForm } from './types';
 import * as yup from 'yup';
 import { deviceTypes } from './deviceTypesMock';
 import { convert2DArrayToLevels } from '@energyweb/origin-ui-utils';

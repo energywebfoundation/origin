@@ -8,6 +8,9 @@ export const useDeviceMainType = (
   deviceType: string,
   allTypes: CodeNameDTO[]
 ) => {
+  if (!deviceType) {
+    return { mainType: '', restType: '' };
+  }
   try {
     const decodedType = allTypes.find((type) => type.code === deviceType).name;
     const splitValue = decodedType.split(':');
@@ -17,7 +20,9 @@ export const useDeviceMainType = (
 
     return { mainType, restType };
   } catch (error) {
-    throw new Error('Provided device type does not match with any known type');
+    throw new Error(
+      `Provided device type does not match with any known type. Received: ${deviceType}`
+    );
   }
 };
 

@@ -1,3 +1,3 @@
 export * from './card';
-export * from './device-data';
+export * from './deviceData';
 export * from './map';

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   TUseSpecsForMyDeviceCard,
   TUseSpecsForMyDeviceCardReturnType,
-} from '../types';
+} from './types';
 import { useDeviceMainType, getEnergyTypeImage } from '../utils';
 
 export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({

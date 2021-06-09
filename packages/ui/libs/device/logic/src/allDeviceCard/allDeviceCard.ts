@@ -6,7 +6,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
-import { TUseSpecsForAllDeviceCard } from '../types';
+import { TUseSpecsForAllDeviceCard } from './types';
 import { useDeviceMainType, getEnergyTypeImage } from '../utils';
 import { getDeviceAgeInYears } from '../utils';
 

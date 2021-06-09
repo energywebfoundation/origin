@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { TUseRequestCertificatesLogic } from '../types';
+import { TUseRequestCertificatesLogic } from './types';
 
 export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = () => {
   const { t } = useTranslation();

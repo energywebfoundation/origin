@@ -136,6 +136,7 @@ dependencies:
   bn.js: 5.2.0
   body-parser: 1.19.0
   chai: 4.3.0
+  chart.js: 3.3.2
   class-sanitizer: 1.0.1
   class-transformer: 0.3.1
   class-validator: 0.13.1
@@ -189,6 +190,7 @@ dependencies:
   precise-proofs-js: 1.2.0
   qs: 6.10.1
   react: 17.0.2
+  react-chartjs-2: 3.0.3_chart.js@3.3.2+react@17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-dropzone: 11.3.2_react@17.0.2
   react-error-boundary: 3.1.1_react@17.0.2
@@ -5933,7 +5935,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 26.6.2
       '@jest/types': 26.6.2
-      '@types/node': 14.14.43
+      '@types/node': 14.17.0
       jest-mock: 26.6.2
     dev: false
     engines:
@@ -5944,7 +5946,7 @@ packages:
     dependencies:
       '@jest/types': 26.6.2
       '@sinonjs/fake-timers': 6.0.1
-      '@types/node': 14.14.43
+      '@types/node': 14.17.0
       jest-message-util: 26.6.2
       jest-mock: 26.6.2
       jest-util: 26.6.2
@@ -15632,6 +15634,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
+  /chart.js/3.3.2:
+    dev: false
+    resolution:
+      integrity: sha512-H0hSO7xqTIrwxoACqnSoNromEMfXvfuVnrbuSt2TuXfBDDofbnto4zuZlRtRvC73/b37q3wGAWZyUU41QPvNbA==
   /check-error/1.0.2:
     dev: false
     resolution:
@@ -23916,7 +23922,7 @@ packages:
   /jest-mock/26.6.2:
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 14.14.43
+      '@types/node': 14.17.0
     dev: false
     engines:
       node: '>= 10.14.2'
@@ -30432,6 +30438,17 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==
+  /react-chartjs-2/3.0.3_chart.js@3.3.2+react@17.0.2:
+    dependencies:
+      chart.js: 3.3.2
+      lodash: 4.17.21
+      react: 17.0.2
+    dev: false
+    peerDependencies:
+      chart.js: ^3.1.0
+      react: ^16.8.0 || ^17.0.0
+    resolution:
+      integrity: sha512-jOFZKwZ8sMLkddewZ/tToxuu4pYimAvvY5I6uK+hCpSFT16Pvo2bdHhUoZ0X87zu9I+dx2I+JCqaLN6XhmrbDg==
   /react-colorful/5.1.0_react-dom@17.0.2+react@17.0.2:
     dependencies:
       react: 17.0.2
@@ -40043,6 +40060,7 @@ packages:
       babel-jest: 26.2.2_@babel+core@7.9.6
       babel-loader: 8.1.0_@babel+core@7.9.6+webpack@4.42.0
       babel-plugin-styled-components: 1.12.0
+      chart.js: 3.3.2
       core-js: 3.6.5
       cypress: 7.3.0
       dayjs: 1.10.4
@@ -40068,6 +40086,7 @@ packages:
       orval: 5.1.2
       prettier: 2.2.1
       react: 17.0.2
+      react-chartjs-2: 3.0.3_chart.js@3.3.2+react@17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-dropzone: 11.3.2_react@17.0.2
       react-error-boundary: 3.1.1_react@17.0.2
@@ -40096,7 +40115,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-PVbSNWxOzHN2hqwU6/XUcxO+cO10+QFIiCjb155aiqVBJsLLsSuHbVXS5VAGRFnOgKBijdiBQKnoIbl8nvlChQ==
+      integrity: sha512-9+KOzBnEOzSg1svBn/nlXMgiC72gmV09OwSF29tS+EeUEurBgaDlb4MaOBzdcOC2u2je1DYJo4LJKuBRZ8E7vg==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -40311,6 +40330,7 @@ specifiers:
   bn.js: 5.2.0
   body-parser: 1.19.0
   chai: 4.3.0
+  chart.js: 3.3.2
   class-sanitizer: 1.0.1
   class-transformer: 0.3.1
   class-validator: 0.13.1
@@ -40364,6 +40384,7 @@ specifiers:
   precise-proofs-js: 1.2.0
   qs: 6.10.1
   react: 17.0.2
+  react-chartjs-2: 3.0.3
   react-dom: 17.0.2
   react-dropzone: ^11.3.2
   react-error-boundary: ^3.1.1
