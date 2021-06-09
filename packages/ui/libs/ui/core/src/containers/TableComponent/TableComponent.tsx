@@ -1,5 +1,5 @@
 import { Table, Typography, TypographyProps } from '@material-ui/core';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   TableRowData,
   TableHeaderData,
@@ -10,6 +10,7 @@ import {
   TableComponentBody,
   TableComponentFooter,
 } from '../../components/table';
+import { usePaginateData } from './usePaginateData';
 
 export const TABLE_COMPONENT__DEFAULT_PAGE_SIZE = 5;
 
@@ -32,7 +33,11 @@ export const TableComponent: TTableComponent = ({
   totalPages,
   loading,
 }) => {
-  const { activePage, setActivePage, paginatedData } = usePaginateData(data);
+  const { activePage, setActivePage, paginatedData } = usePaginateData(
+    data,
+    pageSize
+  );
+
   return (
     <>
       {tableTitle && (
@@ -63,22 +68,4 @@ export const TableComponent: TTableComponent = ({
       </Table>
     </>
   );
-};
-
-const usePaginateData = <T,>(
-  data: T[],
-  pageSize: number = TABLE_COMPONENT__DEFAULT_PAGE_SIZE
-) => {
-  const [activePage, setActivePage] = useState(0);
-  const startIndex = activePage * pageSize;
-  const endIndex = startIndex + pageSize;
-  return {
-    setActivePage,
-    activePage,
-    paginatedData: useMemo(() => data.slice(startIndex, endIndex), [
-      data,
-      startIndex,
-      endIndex,
-    ]),
-  };
 };

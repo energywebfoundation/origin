@@ -3,7 +3,7 @@ import { Meta } from '@storybook/react';
 import { CloseButton, CloseButtonProps } from './CloseButton';
 
 export default {
-  title: 'Icons / CloseButton',
+  title: 'Buttons / CloseButton',
   component: CloseButton,
 } as Meta;
 
