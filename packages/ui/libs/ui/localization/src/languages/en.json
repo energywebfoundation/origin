@@ -281,7 +281,11 @@
       "detailView": {
         "smartMeter": {
           "tableTime": "Time ({timezone})",
-          "tableMeterValue": "Meter value ({unit})"
+          "tableMeterValue": "Meter value ({unit})",
+          "day": "Day",
+          "week": "Week",
+          "month": "Month",
+          "year": "Year"
         }
       },
       "register": {
