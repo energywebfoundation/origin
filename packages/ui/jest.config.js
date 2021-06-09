@@ -16,7 +16,6 @@ module.exports = {
     '<rootDir>/libs/user/data-access',
     '<rootDir>/libs/user/view',
     '<rootDir>/libs/user/logic',
-    '<rootDir>/libs/user/state-management',
     '<rootDir>/libs/device/logic',
     '<rootDir>/libs/device/view',
     '<rootDir>/libs/organization/view',
@@ -25,5 +24,6 @@ module.exports = {
     '<rootDir>/libs/ui/api-clients',
     '<rootDir>/libs/device/data',
     '<rootDir>/libs/ui/providers',
+    '<rootDir>/libs/ui/blockchain',
   ],
 };

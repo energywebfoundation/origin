@@ -37,7 +37,6 @@ export const TableComponent: TTableComponent = ({
     data,
     pageSize
   );
-
   return (
     <>
       {tableTitle && (

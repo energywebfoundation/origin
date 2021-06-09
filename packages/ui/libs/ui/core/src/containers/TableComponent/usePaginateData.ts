@@ -8,7 +8,6 @@ export const usePaginateData = <T>(
   const [activePage, setActivePage] = useState(0);
   const startIndex = activePage * pageSize;
   const endIndex = startIndex + pageSize;
-
   return {
     setActivePage,
     activePage,

@@ -1,25 +1,15 @@
 import React from 'react';
 
-import App from '../components/app/app';
+import { App, OriginGlobalStyles } from '../components';
 import { useAppContainerEffects } from './AppContainer.effects';
-import { OriginGlobalStyles } from '../components/app/OriginGlobalStyles';
 import { NotificationsCenter } from '@energyweb/origin-ui-core';
-
-/* eslint-disable-next-line */
-export interface AppContainerProps {}
+import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
 
 export const AppContainer = () => {
-  const {
-    navigate,
-    menuSections,
-    accountData,
-    isAuthenticated,
-    appLoading,
-  } = useAppContainerEffects();
+  useAxiosInterceptors();
 
-  if (appLoading) {
-    return <></>;
-  }
+  const { topbarButtons, menuSections, user, isAuthenticated } =
+    useAppContainerEffects();
 
   return (
     <>
@@ -27,9 +17,9 @@ export const AppContainer = () => {
       <NotificationsCenter />
       <App
         menuSections={menuSections}
-        accountData={accountData}
+        user={user}
         isAuthenticated={isAuthenticated}
-        handleNavigate={navigate}
+        topbarButtons={topbarButtons}
       />
     </>
   );

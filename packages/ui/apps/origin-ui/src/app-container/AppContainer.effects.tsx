@@ -1,51 +1,56 @@
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
 
 import { getOrganizationMenu } from '@energyweb/origin-ui-organization-logic';
 import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
-import { getAccountMenu } from '@energyweb/origin-ui-user-logic';
+import {
+  getAccountMenu,
+  useTopbarButtonList,
+} from '@energyweb/origin-ui-user-logic';
 import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
-import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
-import { useAccount } from '@energyweb/origin-ui-user-view';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
-import { useInvitationControllerGetInvitations } from '@energyweb/origin-backend-react-query-client';
-import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
+import { useUser } from '@energyweb/origin-ui-user-data';
+import { useActiveMenuTab } from '../components';
 
 export const useAppContainerEffects = () => {
-  useAxiosInterceptors();
-
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useUser();
 
-  const isAuthenticated = useAuthIsAuthenticated();
-
-  const accountData = useAccount();
+  const topbarButtons = useTopbarButtonList(isAuthenticated, logout);
   const {
-    data: invitations,
-    isLoading: invitationsLoading,
-  } = useInvitationControllerGetInvitations({ enabled: isAuthenticated });
-  const user = accountData?.userAccountData;
+    isOrganizationTabActive,
+    isDeviceTabActive,
+    isAccountTabActive,
+    isAdminTabAcive,
+  } = useActiveMenuTab();
+
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsActive = user && user.status === UserStatus.Active;
   const userIsAdminOrSupport = isRole(user, Role.Admin, Role.SupportAgent);
-  const userHasInvitations = invitations && invitations.length > 0;
-  const appLoading = invitationsLoading;
+  const userIsOrgAdminOrAdminOrSupport = isRole(
+    user,
+    Role.OrganizationAdmin,
+    Role.Admin,
+    Role.SupportAgent
+  );
 
   const orgMenu = getOrganizationMenu({
     t,
+    isOpen: isOrganizationTabActive,
+    showSection: userIsOrgAdminOrAdminOrSupport,
     showRegisterOrg: !userHasOrg,
     showMyOrg: userHasOrg,
     showMembers: userHasOrg && userIsOrgAdmin,
-    showInvitations: userHasOrg && userIsOrgAdmin ? true : userHasInvitations,
+    showInvitations: userHasOrg && userIsOrgAdmin ? true : false,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: true,
   });
-
   const deviceMenu = getDeviceMenu({
     t,
+    isOpen: isDeviceTabActive,
+    showSection: true,
     showAllDevices: true,
     showMapView: true,
     showMyDevices: true,
@@ -55,25 +60,25 @@ export const useAppContainerEffects = () => {
   });
   const accountMenu = getAccountMenu({
     t,
+    isOpen: isAccountTabActive,
+    showSection: true,
     showSettings: true,
-    showUserProfile: true,
+    showUserProfile: isAuthenticated,
   });
   const adminMenu = getAdminMenu({
     t,
+    isOpen: isAdminTabAcive,
+    showSection: userIsAdminOrSupport,
     showClaims: true,
     showUsers: true,
   });
 
-  const menuSections = [orgMenu, deviceMenu, accountMenu, adminMenu];
+  const menuSections = [deviceMenu, orgMenu, accountMenu, adminMenu];
 
   return {
-    navigate: (url: string) => {
-      console.log(`navigate => (${url})`);
-      navigate(url);
-    },
+    topbarButtons,
     isAuthenticated,
     menuSections,
-    accountData,
-    appLoading,
+    user,
   };
 };

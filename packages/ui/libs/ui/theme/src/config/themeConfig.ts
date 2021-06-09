@@ -33,13 +33,19 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
             styleConfig.MAIN_BACKGROUND_COLOR,
             -0.5
           ),
+          borderRadius: 5,
+          '&.Mui-disabled': {
+            backgroundColor: LightenColor(
+              styleConfig.MAIN_BACKGROUND_COLOR,
+              -2
+            ),
+          },
           '&.Mui-focused': {
             backgroundColor: LightenColor(
               styleConfig.MAIN_BACKGROUND_COLOR,
               -0.5
             ),
           },
-          borderRadius: 5,
         },
       },
     },
@@ -65,6 +71,9 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     },
     MuiButton: {
       styleOverrides: {
+        root: {
+          textTransform: 'uppercase',
+        },
         contained: {
           '&.Mui-disabled': {
             color: styleConfig.TEXT_COLOR_DEFAULT,

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { ModalsCenter } from './containers/modals';
+import { OrganizationModalsCenter } from './containers';
 import { OrganizationModalsProvider } from './context';
 import {
   RegisterPage,
@@ -25,7 +25,7 @@ export const OrganizationApp: FC = () => {
         <Route path="register-irec" element={<RegisterIRecPage />} />
       </Routes>
 
-      <ModalsCenter />
+      <OrganizationModalsCenter />
     </OrganizationModalsProvider>
   );
 };

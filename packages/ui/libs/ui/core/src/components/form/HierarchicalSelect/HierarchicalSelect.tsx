@@ -20,6 +20,7 @@ export interface HierarchicalSelectProps<FormValuesType> {
   errorExists: boolean;
   errorText: string;
   variant?: 'standard' | 'outlined' | 'filled';
+  disabled: boolean;
 }
 
 export type THierarchicalSelect = <FormValuesType>(
@@ -28,10 +29,8 @@ export type THierarchicalSelect = <FormValuesType>(
 
 export const HierarchicalSelect: THierarchicalSelect = memo(
   ({ field, control, errorExists, errorText, variant }) => {
-    const {
-      inputDisplayer,
-      getRelevantOptions,
-    } = useHierarchicalSelectEffects();
+    const { inputDisplayer, getRelevantOptions } =
+      useHierarchicalSelectEffects();
 
     return (
       <Controller

@@ -23,7 +23,7 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
   const classes = useStyles();
   return (
     <Grid container>
-      <Grid className={classes.item} item sm={12} lg={6}>
+      <Grid item sm={12} lg={6}>
         <SingleColumnForm
           fields={firstColumn}
           control={control}
@@ -34,7 +34,7 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
           formInputsProps={formInputsProps}
         />
       </Grid>
-      <Grid className={classes.item} item sm={12} lg={6}>
+      <Grid className={classes.secondColumn} item sm={12} lg={6}>
         <SingleColumnForm
           fields={secondColumn}
           control={control}

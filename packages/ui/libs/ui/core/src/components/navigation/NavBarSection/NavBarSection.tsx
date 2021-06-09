@@ -3,10 +3,7 @@ import { NavSectionTitle } from '../NavSectionTitle';
 import { NavSubMenu } from '../NavSubMenu';
 import { useStyles } from './NavBarSection.styles';
 
-export type TMenuSection = Omit<
-  NavBarSectionProps,
-  'titleClickHandler' | 'isOpen'
->;
+export type TMenuSection = Omit<NavBarSectionProps, 'titleClickHandler'>;
 
 export type TModuleMenuItem = {
   url: string;
@@ -20,7 +17,6 @@ export interface NavBarSectionProps {
   rootUrl: string;
   isOpen: boolean;
   menuList: TModuleMenuItem[];
-  titleClickHandler?: () => void;
   closeMobileNav?: () => void;
 }
 
@@ -30,20 +26,17 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
   rootUrl,
   isOpen,
   menuList,
-  titleClickHandler,
   closeMobileNav,
 }) => {
   const classes = useStyles();
+  const availableLinks = menuList.filter((item) => item.show);
+  const sectionTitleUrl = `${rootUrl}/${availableLinks[0].url}`;
 
   return (
     <div className={classes.wrapper}>
       {show && (
         <>
-          <NavSectionTitle
-            url={rootUrl}
-            title={sectionTitle}
-            clickHandler={titleClickHandler}
-          />
+          <NavSectionTitle url={sectionTitleUrl} title={sectionTitle} />
           <NavSubMenu
             closeMobileNav={closeMobileNav}
             rootUrl={rootUrl}

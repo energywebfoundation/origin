@@ -1,1 +1,1 @@
-export * from './ModalsCenter';
+export * from './OrganizationModalsCenter';

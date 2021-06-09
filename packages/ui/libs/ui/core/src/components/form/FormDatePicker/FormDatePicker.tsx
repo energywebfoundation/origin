@@ -12,6 +12,7 @@ export interface FormDatePickerProps<FormValuesType> {
   errorExists: boolean;
   errorText: string;
   variant?: 'standard' | 'outlined' | 'filled';
+  disabled: boolean;
 }
 
 export type TFormDatePicker = <FormValuesType>(
@@ -24,6 +25,7 @@ export const FormDatePicker: TFormDatePicker = ({
   errorExists,
   errorText,
   variant,
+  disabled,
 }) => {
   return (
     <Controller
@@ -32,6 +34,7 @@ export const FormDatePicker: TFormDatePicker = ({
       render={({ field: { value, onChange } }) => (
         <LocalizationProvider dateAdapter={AdapterDayJs as any}>
           <DatePicker
+            disabled={disabled}
             onChange={onChange}
             value={value}
             inputFormat={DateFormatEnum.DATE_FORMAT_DMY}
