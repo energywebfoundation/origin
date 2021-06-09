@@ -16,7 +16,7 @@ export class CheckDeviceStateTask {
         private readonly eventBus: EventBus
     ) {}
 
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    @Cron(CronExpression.EVERY_MINUTE)
     async handleCron() {
         if (!this.irecDeviceService.isIrecIntegrationEnabled()) {
             return;

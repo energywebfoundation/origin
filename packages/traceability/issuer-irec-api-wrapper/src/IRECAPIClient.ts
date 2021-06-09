@@ -22,7 +22,7 @@ import { Device, DeviceUpdateParams, DeviceCreateParams } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
 import { AccountItem, CodeName } from './Items';
-import { Fuel, FuelType } from './Fuel';
+import { FuelType, DeviceType } from './FuelType';
 import { Organisation } from './Organisation';
 import { Beneficiary, BeneficiaryCreateParams, BeneficiaryUpdateParams } from './Beneficiary';
 
@@ -181,18 +181,18 @@ export class IRECAPIClient extends EventEmitter {
         };
 
         return {
-            create: async (issue: Issue): Promise<string> => {
+            create: async (issue: Issue): Promise<IssueWithStatus> => {
                 const issueParams = issue instanceof Issue ? issue : plainToClass(Issue, issue);
                 await validateOrReject(issue);
 
                 const url = `${issueManagementUrl}/create`;
-                const response = await this.axiosInstance.post<{ code: string }>(
+                const response = await this.axiosInstance.post<IssueWithStatus>(
                     url,
                     classToPlain(issueParams),
                     this.config
                 );
 
-                return response.data.code;
+                return response.data;
             },
             update: async (code: string, issue: Issue): Promise<void> => {
                 await validateOrReject(issue, { skipMissingProperties: true });
@@ -437,17 +437,17 @@ export class IRECAPIClient extends EventEmitter {
         const fuelUrl = `${this.endPointUrl}/api/irec/v1/fuels`;
 
         return {
-            getAll: async (): Promise<Fuel[]> => {
+            getFuelTypes: async (): Promise<FuelType[]> => {
                 const url = `${fuelUrl}/fuel`;
                 const response = await this.axiosInstance.get<unknown[]>(url, this.config);
 
-                return response.data.map((fuel) => plainToClass(Fuel, fuel));
+                return response.data.map((fuel) => plainToClass(FuelType, fuel));
             },
-            getAllTypes: async (): Promise<FuelType[]> => {
+            getDeviceTypes: async (): Promise<DeviceType[]> => {
                 const url = `${fuelUrl}/type`;
                 const response = await this.axiosInstance.get<unknown[]>(url, this.config);
 
-                return response.data.map((fuelType) => plainToClass(FuelType, fuelType));
+                return response.data.map((fuelType) => plainToClass(DeviceType, fuelType));
             }
         };
     }

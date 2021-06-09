@@ -28,7 +28,7 @@ export class UpdateDeviceDTO {
     @IsString()
     @IsOptional()
     @Expose()
-    fuel: string;
+    fuelType: string;
 
     @ApiProperty({ type: String })
     @IsOptional()

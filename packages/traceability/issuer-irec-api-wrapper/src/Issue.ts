@@ -1,8 +1,8 @@
 import { Expose, Transform } from 'class-transformer';
-import { IsDate, IsPositive, IsOptional, IsString, IsNotEmpty } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 import { FileIds } from './File';
 
-export enum IssueStatus {
+export enum IssuanceStatus {
     Draft = 'Draft',
     InProgress = 'In-progress',
     Rejected = 'Rejected',
@@ -23,7 +23,7 @@ export class Issue extends FileIds {
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
     @IsNotEmpty()
-    fuel: string;
+    fuelType: string;
 
     @Expose({ name: 'recipient_account_code', toPlainOnly: true })
     @IsString()
@@ -65,7 +65,11 @@ export class ApproveIssue {
 }
 
 export class IssueWithStatus extends Issue {
+    @IsString()
+    @IsNotEmpty()
     code: string;
 
-    status: IssueStatus;
+    @IsNotEmpty()
+    @IsEnum(IssuanceStatus)
+    status: IssuanceStatus;
 }

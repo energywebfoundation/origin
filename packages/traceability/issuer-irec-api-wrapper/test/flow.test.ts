@@ -13,7 +13,7 @@ import {
     DeviceState,
     IRECAPIClient,
     Issue,
-    IssueStatus,
+    IssuanceStatus,
     IssueWithStatus,
     Organisation
 } from '../src';
@@ -38,7 +38,7 @@ describe('API flows', () => {
             countryCode: 'GB',
             defaultAccount: tradeAccount,
             deviceType: 'T020001',
-            fuel: 'ES200',
+            fuelType: 'ES200',
             issuer: issuerOrg.code,
             latitude: '53.405088',
             longitude: '-1.744222',
@@ -124,38 +124,39 @@ describe('API flows', () => {
             start: moment().subtract(2, 'day').toDate(),
             end: moment().subtract(1, 'day').toDate(),
             production: 10,
-            fuel: device.fuel,
+            fuelType: device.fuelType,
             notes: 'Some note',
             files: [fileId]
         };
-        const issueCode: string = await registrantClient.issue.create(issueParams);
+        const createdIssue = await registrantClient.issue.create(issueParams);
+        const issueCode = createdIssue.code;
         let issue: IssueWithStatus = await registrantClient.issue.get(issueCode);
         expect(issue.code).to.equal(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Draft);
+        expect(issue.status).to.equal(IssuanceStatus.Draft);
 
         await registrantClient.issue.submit(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.InProgress);
+        expect(issue.status).to.equal(IssuanceStatus.InProgress);
         let issuerIssue = await issuerClient.issue.get(issueCode);
-        expect(issuerIssue.status).to.equal(IssueStatus.Submitted);
+        expect(issuerIssue.status).to.equal(IssuanceStatus.Submitted);
 
         await issuerClient.issue.verify(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.InProgress);
+        expect(issue.status).to.equal(IssuanceStatus.InProgress);
         issuerIssue = await issuerClient.issue.get(issueCode);
-        expect(issuerIssue.status).to.equal(IssueStatus.Verified);
+        expect(issuerIssue.status).to.equal(IssuanceStatus.Verified);
 
         await issuerClient.issue.refer(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.InProgress);
+        expect(issue.status).to.equal(IssuanceStatus.InProgress);
         issuerIssue = await issuerClient.issue.get(issueCode);
-        expect(issuerIssue.status).to.equal(IssueStatus.Referred);
+        expect(issuerIssue.status).to.equal(IssuanceStatus.Referred);
 
         await issuerClient.issue.reject(issueCode);
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Rejected);
+        expect(issue.status).to.equal(IssuanceStatus.Rejected);
         issuerIssue = await issuerClient.issue.get(issueCode);
-        expect(issuerIssue.status).to.equal(IssueStatus.Rejected);
+        expect(issuerIssue.status).to.equal(IssuanceStatus.Rejected);
 
         await registrantClient.issue.submit(issueCode);
         await issuerClient.issue.verify(issueCode);
@@ -164,9 +165,9 @@ describe('API flows', () => {
             notes: 'it is ok'
         });
         issue = await registrantClient.issue.get(issueCode);
-        expect(issue.status).to.equal(IssueStatus.Issued);
+        expect(issue.status).to.equal(IssuanceStatus.Issued);
         issuerIssue = await issuerClient.issue.get(issueCode);
-        expect(issuerIssue.status).to.equal(IssueStatus.Issued);
+        expect(issuerIssue.status).to.equal(IssuanceStatus.Issued);
     }).timeout(10000);
 
     it('should create and update beneficiary', async () => {

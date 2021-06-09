@@ -1,30 +1,30 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Certificate } from '../../certificate/certificate.entity';
+import { Certificate } from '../../certificate';
 import { CertificationRequest } from '../certification-request.entity';
-import { GetCertificationRequestByCertificateQuery } from '../queries/get-certification-request-by-certificate.query';
+import { GetCertificationRequestByCertificateQuery } from '../queries';
+import { CertificationRequestDTO } from '../certification-request.dto';
 
 @QueryHandler(GetCertificationRequestByCertificateQuery)
 export class GetCertificationRequestByCertificateHandler
-    implements IQueryHandler<GetCertificationRequestByCertificateQuery> {
+    implements IQueryHandler<GetCertificationRequestByCertificateQuery>
+{
     constructor(
         @InjectRepository(CertificationRequest)
-        private readonly repository: Repository<CertificationRequest>,
+        readonly repository: Repository<CertificationRequest>,
         @InjectRepository(Certificate)
-        private readonly certificateRepository: Repository<Certificate>
+        readonly certificateRepository: Repository<Certificate>
     ) {}
 
     async execute({
         certificateId
-    }: GetCertificationRequestByCertificateQuery): Promise<CertificationRequest> {
+    }: GetCertificationRequestByCertificateQuery): Promise<CertificationRequestDTO> {
         const certificate = await this.certificateRepository.findOne(certificateId);
-        const certificationRequest = await this.repository.findOne({
+        return await this.repository.findOne({
             where: {
                 issuedCertificateTokenId: certificate.tokenId
             }
         });
-
-        return certificationRequest;
     }
 }

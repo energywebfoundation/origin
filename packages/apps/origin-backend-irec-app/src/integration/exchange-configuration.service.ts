@@ -1,6 +1,6 @@
 import { IExchangeConfigurationService } from '@energyweb/exchange';
 import { ConfigurationService } from '@energyweb/origin-backend';
-import { BlockchainPropertiesService } from '@energyweb/issuer-api';
+import { BlockchainPropertiesService } from '@energyweb/issuer-irec-api';
 import { IDeviceType } from '@energyweb/origin-backend-core';
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
