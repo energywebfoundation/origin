@@ -1,20 +1,28 @@
 import { IconButton, ToggleButtonGroup, ToggleButton } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
-import React, { FC } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import { useStyles } from './ButtonsGroupWithArrows.styles';
 
-export type ButtonGroupItem = {
+export type ButtonGroupItem<T> = {
   label: string;
-  value: string;
+  value: T;
 };
 
-export interface ButtonsGroupWithArrowsProps {
-  buttons: ButtonGroupItem[];
+export interface ButtonsGroupWithArrowsProps<T> {
+  selected: T;
+  setSelected: (value: T) => void;
+  buttons: ButtonGroupItem<T>[];
   onLeftArrowClick: () => void;
   onRightArrowClick: () => void;
 }
 
-export const ButtonsGroupWithArrows: FC<ButtonsGroupWithArrowsProps> = ({
+export type TButtonsGroupWithArrows = <T>(
+  props: PropsWithChildren<ButtonsGroupWithArrowsProps<T>>
+) => ReactElement;
+
+export const ButtonsGroupWithArrows: TButtonsGroupWithArrows = ({
+  selected,
+  setSelected,
   buttons,
   onLeftArrowClick,
   onRightArrowClick,
@@ -32,6 +40,8 @@ export const ButtonsGroupWithArrows: FC<ButtonsGroupWithArrowsProps> = ({
             disableRipple
             key={`button-group-button-${button.label}`}
             className={classes.button}
+            selected={button.value === selected}
+            onClick={() => setSelected(button.value)}
             value={button.value}
           >
             {button.label}
