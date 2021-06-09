@@ -1,12 +1,12 @@
 import {
   useAllDevices,
-  useAllExistingDeviceTypes,
+  useAllExistingFuelTypes,
 } from '@energyweb/origin-ui-device-data';
 
 export const useAllDevicesPageEffects = () => {
   const { allDevices, isLoading: isAllDevicesLoading } = useAllDevices();
   const { allTypes: allDeviceTypes, isLoading: allTypesLoading } =
-    useAllExistingDeviceTypes();
+    useAllExistingFuelTypes();
 
   const isLoading = isAllDevicesLoading || allTypesLoading;
 

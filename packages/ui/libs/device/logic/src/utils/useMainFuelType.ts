@@ -4,15 +4,12 @@ import {
   ComposedDevice,
 } from '@energyweb/origin-ui-device-data';
 
-export const useDeviceMainType = (
-  deviceType: string,
-  allTypes: CodeNameDTO[]
-) => {
-  if (!deviceType) {
+export const useMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
+  if (!fuelType) {
     return { mainType: '', restType: '' };
   }
   try {
-    const decodedType = allTypes.find((type) => type.code === deviceType).name;
+    const decodedType = allTypes.find((type) => type.code === fuelType).name;
     const splitValue = decodedType.split(':');
 
     const mainType = splitValue[0];
@@ -21,12 +18,12 @@ export const useDeviceMainType = (
     return { mainType, restType };
   } catch (error) {
     throw new Error(
-      `Provided device type does not match with any known type. Received: ${deviceType}`
+      `Provided device type does not match with any known type. Received: ${fuelType}`
     );
   }
 };
 
-export const getDeviceDetailedType = (
+export const getDeviceDetailedFuelType = (
   device: ComposedPublicDevice | ComposedDevice
 ) => {
   const arr = device.deviceType.split(';');

@@ -6,7 +6,7 @@ import {
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { TUseDeviceDetailViewLogic } from './types';
-import { getEnergyTypeImage, useDeviceMainType } from '../utils';
+import { getEnergyTypeImage, useMainFuelType } from '../utils';
 
 export const useDeviceDetailViewLogic: TUseDeviceDetailViewLogic = ({
   device,
@@ -22,7 +22,7 @@ export const useDeviceDetailViewLogic: TUseDeviceDetailViewLogic = ({
     coordinates: `${device.latitude}, ${device.longitude}`,
   };
 
-  const { mainType, restType } = useDeviceMainType(device.deviceType, allTypes);
+  const { mainType, restType } = useMainFuelType(device.fuelType, allTypes);
   const deviceIcon = getEnergyTypeImage(
     mainType.toLowerCase() as EnergyTypeEnum
   );

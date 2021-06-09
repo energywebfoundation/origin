@@ -7,7 +7,7 @@ import {
 import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import { TUseSpecsForAllDeviceCard } from './types';
-import { useDeviceMainType, getEnergyTypeImage } from '../utils';
+import { useMainFuelType, getEnergyTypeImage } from '../utils';
 import { getDeviceAgeInYears } from '../utils';
 
 export const useSpecsForAllDeviceCard: TUseSpecsForAllDeviceCard = ({
@@ -27,7 +27,7 @@ export const useSpecsForAllDeviceCard: TUseSpecsForAllDeviceCard = ({
       value: getDeviceAgeInYears(device.commissioningDate),
     },
   ];
-  const { mainType, restType } = useDeviceMainType(device.deviceType, allTypes);
+  const { mainType, restType } = useMainFuelType(device.fuelType, allTypes);
 
   const deviceIcon = getEnergyTypeImage(
     mainType.toLowerCase() as EnergyTypeEnum

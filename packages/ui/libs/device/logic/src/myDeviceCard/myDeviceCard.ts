@@ -5,7 +5,7 @@ import {
   TUseSpecsForMyDeviceCard,
   TUseSpecsForMyDeviceCardReturnType,
 } from './types';
-import { useDeviceMainType, getEnergyTypeImage } from '../utils';
+import { useMainFuelType, getEnergyTypeImage } from '../utils';
 
 export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
   device,
@@ -13,7 +13,7 @@ export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
 }) => {
   const { t } = useTranslation();
 
-  const { mainType, restType } = useDeviceMainType(device.deviceType, allTypes);
+  const { mainType, restType } = useMainFuelType(device.fuelType, allTypes);
   const deviceIconSelected = getEnergyTypeImage(
     mainType.toLowerCase() as EnergyTypeEnum,
     true
