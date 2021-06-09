@@ -37,6 +37,7 @@
     "@energyweb/origin-device-registry-irec-local-api-react-query-client": "0.1.0",
     "@energyweb/origin-device-registry-irec-form-api-react-query-client": "0.1.0",
     "@energyweb/origin-organization-irec-api-react-query-client": "0.1.0",
+    "@energyweb/origin-energy-api-react-query-client": "0.1.0",
     "@energyweb/origin-backend-core": "8.0.1",
     "@energyweb/utils-general": "11.0.2",
     "@hookform/resolvers": "^2.3.0",
@@ -68,6 +69,8 @@
     "react-router-dom": "6.0.0-beta.0",
     "react-toastify": "7.0.4",
     "regenerator-runtime": "0.13.7",
+    "react-chartjs-2": "3.0.3",
+    "chart.js": "3.3.2",
     "tslib": "2.0.0",
     "yup": "^0.32.9"
   },
