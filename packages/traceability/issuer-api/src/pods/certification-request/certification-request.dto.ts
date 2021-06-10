@@ -1,17 +1,16 @@
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
     IsArray,
     IsBoolean,
     IsDate,
     IsInt,
+    IsOptional,
     IsPositive,
     IsString,
     Min,
-    Validate,
-    ValidateIf
+    Validate
 } from 'class-validator';
-import { CertificationRequestStatus } from './certification-request-status.enum';
 
 export class CertificationRequestDTO {
     @ApiProperty({ type: Number })
@@ -59,35 +58,22 @@ export class CertificationRequestDTO {
     @IsBoolean()
     revoked: boolean;
 
-    @ApiProperty({ type: Number })
-    @ValidateIf((dto: CertificationRequestDTO) => !!dto.requestId)
-    @IsInt()
-    @Min(0)
-    requestId?: number;
-
-    @ApiProperty({ type: Date, required: false })
-    @ValidateIf((dto: CertificationRequestDTO) => !!dto.approvedDate)
+    @ApiPropertyOptional({ type: Date })
+    @IsOptional()
     @IsDate()
     approvedDate?: Date;
 
-    @ApiProperty({ type: Date, required: false })
-    @ValidateIf((dto: CertificationRequestDTO) => !!dto.revokedDate)
+    @ApiPropertyOptional({ type: Date })
+    @IsOptional()
     @IsDate()
     revokedDate?: Date;
 
-    @ApiProperty({ type: Number, required: false })
-    @ValidateIf((dto: CertificationRequestDTO) => !!dto.issuedCertificateTokenId)
+    @ApiPropertyOptional({ type: Number })
+    @IsOptional()
     @IsInt()
     @Min(0)
-    issuedCertificateTokenId?: number;
+    issuedCertificateId?: number;
 
-    @ApiProperty({
-        enumName: 'CertificationRequestStatus',
-        enum: CertificationRequestStatus,
-        required: false
-    })
-    status?: CertificationRequestStatus;
-
-    @ApiProperty({ type: Boolean, required: false })
+    @ApiPropertyOptional({ type: Boolean })
     isPrivate?: boolean;
 }

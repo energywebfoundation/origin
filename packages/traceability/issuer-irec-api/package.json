@@ -22,6 +22,8 @@
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet --fix",
+        "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
+        "test:e2e": "yarn typeorm:run && npx concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"npx wait-on tcp:8581 && yarn test:mocha\"",
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8581 -q",
         "clean": "shx rm -rf dist dist-shakeable",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
@@ -68,7 +70,6 @@
         "@types/node": "14.17.2",
         "@types/supertest": "2.0.11",
         "@types/superagent": "4.1.11",
-        "eslint-plugin-jest": "24.3.6",
         "polly-js": "1.8.2",
         "prettier": "2.3.1",
         "supertest": "6.1.3",
@@ -77,20 +78,6 @@
         "@types/chai": "4.2.15",
         "ts-node": "9.1.1",
         "ganache-cli": "6.12.2"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "ts"
-        ],
-        "rootDir": "src",
-        "testRegex": ".spec.ts$",
-        "transform": {
-            "^.+\\.(t|j)s$": "ts-jest"
-        },
-        "coverageDirectory": "../coverage",
-        "testEnvironment": "node"
     },
     "publishConfig": {
         "access": "public",

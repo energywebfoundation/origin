@@ -50,14 +50,10 @@ import { ICertificate, ICertificateViewItem } from './types';
 import { fromGeneralSelectors } from '../general';
 import { fromUsersSelectors } from '../users';
 
-export function* getCertificate(id: number, byTokenId = false): any {
+export function* getCertificate(id: number): any {
     const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
-    const { data: certificate } = yield apply(
-        certificatesClient,
-        byTokenId ? certificatesClient.getByTokenId : certificatesClient.get,
-        [id]
-    );
+    const { data: certificate } = yield apply(certificatesClient, certificatesClient.get, [id]);
 
     return {
         ...certificate,
@@ -269,7 +265,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
 
                 const onChainCertificate: Certificate = yield call(
                     getBlockchainCertificate,
-                    certificate.tokenId
+                    certificate.id
                 );
 
                 const transferResult: ContractTransaction = yield call(
@@ -382,7 +378,7 @@ function* requestDepositSaga(): SagaIterator {
 
             const onChainCertificate: Certificate = yield call(
                 getBlockchainCertificate,
-                certificate.tokenId
+                certificate.id
             );
 
             yield call([onChainCertificate, onChainCertificate.transfer], account.address, amount);
@@ -431,7 +427,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
 
             const onChainCertificate: Certificate = yield call(
                 getBlockchainCertificate,
-                certificate.tokenId
+                certificate.id
             );
 
             const claimResult: ContractTransaction = yield call(
