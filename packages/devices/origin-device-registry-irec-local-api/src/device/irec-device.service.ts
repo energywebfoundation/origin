@@ -106,7 +106,7 @@ export class IrecDeviceService {
                     countryCode: 'GB',
                     defaultAccount: 'someTradeAccount',
                     deviceType: 'TC110',
-                    fuel: 'ES200',
+                    fuelType: 'ES200',
                     issuer: 'someIssuerCode',
                     latitude: '53.405088',
                     longitude: '-1.744222',

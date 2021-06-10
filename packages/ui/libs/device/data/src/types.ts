@@ -9,7 +9,7 @@ export type ComposedDevice = {
   name: string;
   defaultAccount: string;
   deviceType: string;
-  fuel: string;
+  fuelType: string;
   countryCode: string;
   registrantOrganization: string;
   issuer: string;

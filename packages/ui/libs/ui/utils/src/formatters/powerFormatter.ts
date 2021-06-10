@@ -21,12 +21,8 @@ export class PowerFormatter {
   }
 
   static format(powerInWatt: number, includeDisplayUnit?: boolean): string {
-    const powerInWattBN = toBN(powerInWatt);
-    const formattedValue = PowerFormatter.formatter.format(
-      powerInWattBN.div(Unit[PowerFormatter.displayUnit]).toNumber()
-    );
-    return formattedValue.concat(
-      includeDisplayUnit ? ' ' + PowerFormatter.displayUnit : ''
-    );
+    return `${PowerFormatter.formatter.format(
+      powerInWatt / Unit[PowerFormatter.displayUnit]
+    )}${includeDisplayUnit ? ' ' + PowerFormatter.displayUnit : ''}`;
   }
 }

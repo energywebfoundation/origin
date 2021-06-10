@@ -278,6 +278,16 @@
         "vintageCOD": "Vintage / (Commercial Operation Date)",
         "viewDetailsButton": "View Details"
       },
+      "detailView": {
+        "smartMeter": {
+          "tableTime": "Time ({timezone})",
+          "tableMeterValue": "Meter value ({unit})",
+          "day": "Day",
+          "week": "Week",
+          "month": "Month",
+          "year": "Year"
+        }
+      },
       "register": {
         "formTitle": "Register New Device",
         "facilityName": "Facility Name",

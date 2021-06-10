@@ -1,7 +1,7 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
 import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
 import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
-import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-api';
+import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-irec-api';
 import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities,
@@ -23,6 +23,7 @@ import {
     entities as IRECOrganizationEntities,
     RegistrationModule
 } from '@energyweb/origin-organization-irec-api';
+import { ReadsModule } from '@energyweb/origin-energy-api';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -97,7 +98,8 @@ const OriginAppTypeOrmModule = () => {
         CqrsModule,
         RegistrationModule,
         IrecDeviceModule,
-        IrecModule
+        IrecModule,
+        ReadsModule
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },

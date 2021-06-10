@@ -1,13 +1,13 @@
 lockfileVersion: 5.3
 
 specifiers:
-  concurrently: 6.1.0
+  concurrently: 6.2.0
   ganache-cli: 6.12.2
   lerna: 4.0.0
   wait-on: 5.2.1
 
 dependencies:
-  concurrently: 6.1.0
+  concurrently: 6.2.0
   ganache-cli: 6.12.2
   lerna: 4.0.0
   wait-on: 5.2.1
@@ -1374,8 +1374,8 @@ packages:
       typedarray: 0.0.6
     dev: false
 
-  /concurrently/6.1.0:
-    resolution: {integrity: sha512-jy+xj49pvqeKjc2TAVXRIhrgPG51eBKDZti0kZ41kaWk9iLbyWBjH6KMFpW7peOLkEymD+ZM83Lx6UEy3N/M9g==}
+  /concurrently/6.2.0:
+    resolution: {integrity: sha512-v9I4Y3wFoXCSY2L73yYgwA9ESrQMpRn80jMcqMgHx720Hecz2GZAvTI6bREVST6lkddNypDKRN22qhK0X8Y00g==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     dependencies:

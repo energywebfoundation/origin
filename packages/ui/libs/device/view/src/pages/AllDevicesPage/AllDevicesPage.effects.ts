@@ -1,7 +1,14 @@
-import { useAllDevices } from '@energyweb/origin-ui-device-data';
+import {
+  useAllDevices,
+  useAllExistingFuelTypes,
+} from '@energyweb/origin-ui-device-data';
 
 export const useAllDevicesPageEffects = () => {
-  const allDevices = useAllDevices();
+  const { allDevices, isLoading: isAllDevicesLoading } = useAllDevices();
+  const { allTypes: allDeviceTypes, isLoading: allTypesLoading } =
+    useAllExistingFuelTypes();
 
-  return { allDevices };
+  const isLoading = isAllDevicesLoading || allTypesLoading;
+
+  return { allDevices, allDeviceTypes, isLoading };
 };

@@ -17,7 +17,7 @@ export const DeviceApp: FC = () => {
       <Route path="my" element={<MyDevicesPage />} />
       <Route path="pending" element={<PendingPage />} />
       <Route path="register" element={<RegisterPage />} />
-      <Route path="detail-view-mock" element={<DetailViewPage />} />
+      <Route path="detail-view/:id" element={<DetailViewPage />} />
     </Routes>
   );
 };

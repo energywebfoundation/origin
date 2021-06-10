@@ -39,7 +39,7 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
 
     @ApiProperty({ type: String })
     @Column()
-    fuel: string;
+    fuelType: string;
 
     @ApiProperty({ type: String })
     @Column()

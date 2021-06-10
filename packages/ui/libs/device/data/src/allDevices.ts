@@ -3,11 +3,16 @@ import { useDeviceControllerGetAll } from '@energyweb/origin-device-registry-ire
 import { composePublicDevices } from './utils';
 
 export const useAllDevices = () => {
-  const { data: allOriginDevices } = useDeviceRegistryControllerGetAll();
+  const { data: allOriginDevices, isLoading: isOriginDevicesLoading } =
+    useDeviceRegistryControllerGetAll();
+  const { data: allIRecDevices, isLoading: isIRecDevicesLoading } =
+    useDeviceControllerGetAll();
 
-  const { data: allIRecDevices } = useDeviceControllerGetAll();
+  const allDevices =
+    allOriginDevices && allIRecDevices
+      ? composePublicDevices(allOriginDevices, allIRecDevices)
+      : [];
+  const isLoading = isOriginDevicesLoading || isIRecDevicesLoading;
 
-  return allOriginDevices && allIRecDevices
-    ? composePublicDevices(allOriginDevices, allIRecDevices)
-    : [];
+  return { allDevices, isLoading };
 };

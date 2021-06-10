@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Drawer, DrawerProps, Hidden } from '@material-ui/core';
-import { CloseButton } from '../../icons';
+import { CloseButton } from '../../buttons';
 
 export interface ResponsiveSidebarProps {
   open: boolean;

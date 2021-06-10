@@ -1,17 +1,22 @@
 import React, { FC } from 'react';
-import { Grid } from '@material-ui/core';
-import { allDevicesMock } from '../../__mocks__/allDeviceMock';
+import { CircularProgress, Grid } from '@material-ui/core';
 import { PublicDeviceCard } from '../../containers';
 import { useStyles } from './AllDevicesPage.styles';
+import { useAllDevicesPageEffects } from './AllDevicesPage.effects';
 
 export const AllDevicesPage: FC = () => {
+  const { allDevices, allDeviceTypes, isLoading } = useAllDevicesPageEffects();
   const classes = useStyles();
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Grid container spacing={3} className={classes.wrapper}>
-      {allDevicesMock.map((device) => (
+      {allDevices.map((device) => (
         <Grid key={`device-${device.id}`} item>
-          <PublicDeviceCard device={device} />
+          <PublicDeviceCard device={device} allDeviceTypes={allDeviceTypes} />
         </Grid>
       ))}
     </Grid>

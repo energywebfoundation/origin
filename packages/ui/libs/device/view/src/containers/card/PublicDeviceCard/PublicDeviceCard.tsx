@@ -1,37 +1,39 @@
-// import { CardWithImage } from '@energyweb/origin-ui-core';
-// import {
-//   ComposedPublicDevice,
-//   ComposedDevice,
-// } from '@energyweb/origin-ui-device-data';
+import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { CardWithImage } from '@energyweb/origin-ui-core';
+import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
 import React, { FC } from 'react';
-// import { PublicDeviceCardContent } from '../PublicDeviceCardContent';
-// import { usePublicDeviceCardEffects } from './PublicDeviceCard.effects';
-// import { useStyles } from './PublicDeviceCard.styles';
+import { PublicDeviceCardContent } from '../PublicDeviceCardContent';
+import { usePublicDeviceCardEffects } from './PublicDeviceCard.effects';
+import { useStyles } from './PublicDeviceCard.styles';
 
 export interface PublicDeviceCardProps {
-  device: any; //ComposedPublicDevice | ComposedDevice;
+  device: ComposedPublicDevice;
+  allDeviceTypes: CodeNameDTO[];
 }
 
-export const PublicDeviceCard: FC<PublicDeviceCardProps> = ({ device }) => {
-  // const { specsData, iconsData, hoverText } = usePublicDeviceCardEffects({
-  //   device,
-  // });
-  // const classes = useStyles();
+export const PublicDeviceCard: FC<PublicDeviceCardProps> = ({
+  device,
+  allDeviceTypes,
+}) => {
+  const { specsData, iconsData, cardProps } = usePublicDeviceCardEffects({
+    device,
+    allDeviceTypes,
+  });
+
+  const classes = useStyles();
+
   return (
-    <></>
-    // <CardWithImage
-    //   heading={device.facilityName}
-    //   hoverText={hoverText}
-    //   imageUrl={device.images}
-    //   fallbackIcon={iconsData[0].icon}
-    //   fallbackIconProps={{ className: classes.icon }}
-    //   content={
-    //     <PublicDeviceCardContent
-    //       id={device.id}
-    //       specsData={specsData}
-    //       iconsData={iconsData}
-    //     />
-    //   }
-    // />
+    <CardWithImage
+      {...cardProps}
+      fallbackIconProps={{ className: classes.icon }}
+      cardProps={{ className: classes.card }}
+      content={
+        <PublicDeviceCardContent
+          id={device.id}
+          specsData={specsData}
+          iconsData={iconsData}
+        />
+      }
+    />
   );
 };

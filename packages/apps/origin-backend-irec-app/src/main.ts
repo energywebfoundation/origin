@@ -23,7 +23,7 @@ export async function startAPI(logger?: LoggerService) {
             '@energyweb/origin-backend-irec-app': parsed.version,
             '@energyweb/exchange': parsed.dependencies['@energyweb/exchange'],
             '@energyweb/origin-backend': parsed.dependencies['@energyweb/origin-backend'],
-            '@energyweb/issuer-api': parsed.dependencies['@energyweb/issuer-api'],
+            '@energyweb/issuer-irec-api': parsed.dependencies['@energyweb/issuer-irec-api'],
             '@energyweb/origin-organization-irec-api':
                 parsed.dependencies['@energyweb/origin-organization-irec-api']
         };
