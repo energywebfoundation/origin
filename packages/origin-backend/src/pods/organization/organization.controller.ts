@@ -223,6 +223,10 @@ export class OrganizationController {
 
         await iamConnected; // TODO: review if there are any good practices to handle connection states correctly
 
+        if (!loggedUser.did) {
+            throw new Error('logged in user has no DID');
+        }
+
         const userChainRoles = (await iam.getUserClaims({ did: loggedUser.did }))
             .filter((claim) => !!claim.claimType) // role claims have claimType property
             .map((claim) => claim.claimType) // claimType property contains role namespace
