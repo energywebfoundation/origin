@@ -1,1 +1,1 @@
-export * from './lib/exchange-data-access';
+export * from './lib/hooks';

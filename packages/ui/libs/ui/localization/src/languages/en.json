@@ -36,6 +36,19 @@
         "users": "Users",
         "claims": "Claims"
       },
+      "exchange": {
+        "sectionTitle": "Exchange",
+        "view_market": "View market",
+        "bundles": "Bundles",
+        "my_bundles": "My bundles",
+        "create_bundle": "Create bundle",
+        "my_trades": "My trades",
+        "my_orders": "My orders",
+        "supply": "Supply",
+        "import": "Certificate import",
+        "exchangeInbox": "Exchange Inbox",
+        "blockchainInbox": "Blockchain Inbox"
+      },
       "layout": {
         "userPendingTooltip": "Your user account status is pending",
         "orgPendingTooltip": "Your organization status is pending"
@@ -459,6 +472,91 @@
     "file": {
       "upload": {
         "dropOrClick": "Drop files here or click to select files"
+      }
+    },
+    "exchange": {
+      "actions": {
+        "notify": "Notify",
+        "bid": "Bid",
+        "buy": "Buy",
+        "placeBidOrder": "Place Bid Order",
+        "oneTimePurchase": "One-Time Purchase",
+        "repeatedPurchase": "Repeated Purchase"
+      },
+      "feedback": {
+        "total": "Total",
+        "bidPlaced": "Bid successfully placed",
+        "demandPlaced": "Demand successfully placed",
+        "actionUnsuccessful": "Your trade action was unsuccessful",
+        "directBuySuccess": "Direct buy succeed",
+        "directBuyError": "Direct buy failed"
+      },
+      "info": {
+        "regions": "Regions",
+        "selectMultipleRegions": "Select multiple regions",
+        "volume": "Volume ({unit})",
+        "price": "Price",
+        "market": "Market",
+        "bids": "Bids",
+        "asks": "Asks",
+        "type": "Type",
+        "date": "Date",
+        "myTrades": "My trades",
+        "side": "Side",
+        "buy": "Buy",
+        "sell": "Sell",
+        "total": "Total",
+        "matching": "Matching"
+      },
+      "properties": {
+        "price": "Price",
+        "energy": "Energy",
+        "generationDateStart": "Generation date start",
+        "generationDateEnd": "Generation date end",
+        "generationStart": "Generation Start",
+        "generationEnd": "Generation End",
+        "generationFrom": "Generation from",
+        "generationTo": "Generation to",
+        "volume": "Volume",
+        "demandStartDate": "Demand Start Date",
+        "demandEndDate": "Demand End Date",
+        "totalVolume": "Total Volume",
+        "period": "Period",
+        "periodOptions": {
+          "yearly": "Yearly",
+          "monthly": "Monthly",
+          "weekly": "Weekly",
+          "daily": "Daily"
+        }
+      },
+      "supply": {
+        "type": "Type",
+        "facilityName": "Facility name",
+        "price": "Price",
+        "status": "Status",
+        "meterReadToBeCertified": "To be certified",
+        "update": "Update",
+        "remove": "Remove",
+        "facility": "Facility",
+        "updateSupply": "Update Supply",
+        "active": "Active",
+        "paused": "Paused",
+        "cancel": "Cancel",
+        "removeSupplyConfirmation": "Are you sure you want remove?",
+        "fetchSupplyError": "Error while receiving supply settings",
+        "supplySettingsMissing": "This device is missing supply settings",
+        "supplyCreatedSuccess": "Supply created successfully",
+        "supplyCreateError": "Supply creation failed",
+        "supplyUpdatedSuccess": "Supply updated successfully",
+        "supplyUpdateError": "Supply updating failed",
+        "supplyRemovedSuccess": "Supply removed successfully",
+        "supplyRemoveError": "Supply removal failed"
+      },
+      "popover": {
+        "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",
+        "asksFurtherInstructions": "To see all available asks, remove the set market filters. To see a list of your active asks go to \"My Orders\".",
+        "bidsDescription": "Below you see all the buy offers that are matching the certificate criteria you defined in the market filter.",
+        "bidsFurtherInstructions": "To see more specific bids, set the appropriate market filters. To see a list of your active bids go to \"My Orders\"."
       }
     }
   }

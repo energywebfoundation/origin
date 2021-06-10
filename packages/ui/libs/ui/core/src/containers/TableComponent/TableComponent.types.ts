@@ -1,7 +1,33 @@
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { TableComponentProps } from './TableComponent';
 
-export type TableHeaderData = Record<string, string>;
+export type TableColumnConfig<RowDataConfigType> = {
+  [k in keyof Omit<RowDataConfigType, 'id'>]:
+    | TableTranslateKeyWithContextObjectAndFormatter
+    | TableTranslateKey;
+};
+export type TableFormatterFunction = (string) => string;
+export type TableFormatterFunctionWithArguments<
+  TableFormatterFunctionArgsTypes = unknown
+> = {
+  fn: TableFormatterFunction;
+  args: Array<TableFormatterFunctionArgsTypes>;
+};
+
+export type TableTranslateKey = string;
+export type TableTranslateKeyWithContextObjectAndFormatter = [
+  string,
+  (
+    | { translateContext: object; formatter: TableFormatterFunction }
+    | { formatter: TableFormatterFunction }
+    | { translateContext: object }
+  )
+];
+
+export type TableHeaderData = Record<
+  string,
+  TableTranslateKey | TableTranslateKeyWithContextObjectAndFormatter
+>;
 
 export type TableActionData<Id> = {
   name: string;

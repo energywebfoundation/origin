@@ -1,5 +1,4 @@
-export * from './allDevices';
-export * from './myDevices';
+export * from './api';
 export * from './fuelTypes';
 export * from './requestCertificates';
 export * from './types';

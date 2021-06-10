@@ -73,7 +73,8 @@
     "react-chartjs-2": "3.0.3",
     "chart.js": "3.3.2",
     "tslib": "2.0.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "use-immer": "^0.5.2"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",

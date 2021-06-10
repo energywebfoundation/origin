@@ -1,5 +1,5 @@
 import { Table, Typography, TypographyProps } from '@material-ui/core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   TableRowData,
   TableHeaderData,
@@ -10,11 +10,22 @@ import {
   TableComponentBody,
   TableComponentFooter,
 } from '../../components/table';
-import { usePaginateData } from './usePaginateData';
+import { useImmer } from 'use-immer';
+import {
+  TABLE_COMPONENT__DEFAULT_PAGE_SIZE,
+  usePaginateData,
+} from './hooks/usePaginateData';
 
-export const TABLE_COMPONENT__DEFAULT_PAGE_SIZE = 5;
+export interface ITableSortConfig<TColumnConfig> {
+  sortableColumns: {
+    [columnName in keyof TColumnConfig]?: {
+      sortFunction?: <T = TColumnConfig[columnName]>(a: T, b: T) => boolean;
+      sortOrder?: 'ASC' | 'DESC';
+    };
+  };
+}
 
-export interface TableComponentProps<Id> {
+export interface TableComponentProps<Id, TColumnsColumnConfig = {}> {
   loading: boolean;
   data: TableRowData<Id>[];
   header: TableHeaderData;
@@ -22,6 +33,7 @@ export interface TableComponentProps<Id> {
   tableTitle?: string;
   tableTitleProps?: TypographyProps;
   pageSize?: number;
+  sortConfig?: ITableSortConfig<TColumnsColumnConfig>;
 }
 
 export const TableComponent: TTableComponent = ({
@@ -32,11 +44,12 @@ export const TableComponent: TTableComponent = ({
   pageSize = TABLE_COMPONENT__DEFAULT_PAGE_SIZE,
   totalPages,
   loading,
+  sortConfig,
 }) => {
-  const { activePage, setActivePage, paginatedData } = usePaginateData(
-    data,
-    pageSize
-  );
+  const [sortConfigState, setSortConfigState] = useImmer(sortConfig);
+  const dataSorted = useSortData<typeof sortConfigState>(data, sortConfigState);
+  const { activePage, setActivePage, paginatedData } =
+    usePaginateData(dataSorted);
   return (
     <>
       {tableTitle && (
@@ -45,7 +58,15 @@ export const TableComponent: TTableComponent = ({
         </Typography>
       )}
       <Table size="small" aria-label="a dense table">
-        <TableComponentHeader headerData={header} />
+        <TableComponentHeader
+          sortConfig={sortConfig}
+          headerData={header}
+          handleSortOrderChange={useCallback((columnName, sortOrder) => {
+            setSortConfigState(
+              (draft) => (draft.sortableColumns[columnName] = sortOrder)
+            );
+          }, [])}
+        />
         <TableComponentBody
           rowData={paginatedData}
           headerData={header}
@@ -67,4 +88,9 @@ export const TableComponent: TTableComponent = ({
       </Table>
     </>
   );
+};
+
+const useSortData = <T,>(data, sortConfig: T) => {
+  const [activeSortColumn, setActiveSortColumn] = useState(null);
+  return [];
 };

@@ -11,6 +11,7 @@ import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
 import { useActiveMenuTab } from '../components';
+import { getExchangeMenu } from '../../../../libs/exchange/logic/src/lib/menu/getExchangeMenu';
 
 export const useAppContainerEffects = () => {
   const { t } = useTranslation();
@@ -42,7 +43,7 @@ export const useAppContainerEffects = () => {
     showRegisterOrg: !userHasOrg,
     showMyOrg: userHasOrg,
     showMembers: userHasOrg && userIsOrgAdmin,
-    showInvitations: userHasOrg && userIsOrgAdmin ? true : false,
+    showInvitations: userHasOrg && userIsOrgAdmin,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: true,
@@ -73,7 +74,15 @@ export const useAppContainerEffects = () => {
     showUsers: true,
   });
 
-  const menuSections = [deviceMenu, orgMenu, accountMenu, adminMenu];
+  const exchangeMenu = getExchangeMenu({ t });
+
+  const menuSections = [
+    deviceMenu,
+    orgMenu,
+    accountMenu,
+    exchangeMenu,
+    adminMenu,
+  ];
 
   return {
     topbarButtons,

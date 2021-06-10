@@ -12,6 +12,7 @@ import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
 import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
+import { ExchangeApp } from '@energyweb/origin-ui-exchange-view';
 
 export interface AppProps {
   isAuthenticated: boolean;
@@ -44,6 +45,7 @@ export const App: FC<AppProps> = ({
         <Route path="auth/*" element={<AuthApp />} />
         <Route path="account/*" element={<AccountApp />} />
         <Route path="admin/*" element={<AdminApp />} />
+        <Route path="exchange/*" element={<ExchangeApp />} />
       </Routes>
     </MainLayout>
   );

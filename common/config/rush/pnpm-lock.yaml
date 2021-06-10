@@ -6,7 +6,6 @@ dependencies:
   '@emotion/babel-preset-css-prop': 11.0.0_@babel+core@7.9.6
   '@emotion/react': 11.0.0_a358369399a29ca6c22d461cd854bd75
   '@emotion/styled': 11.0.0_44be8c82ff0878abed0bc536b3cc94df
-  '@energyweb/energy-api': 0.2.0_express@4.17.1
   '@energyweb/energy-api-influxdb': 0.7.0_dc7550b32b1014ff62ea7cebd522ef42
   '@ethersproject/abi': 5.3.0
   '@ethersproject/abstract-provider': 5.3.0
@@ -225,6 +224,7 @@ dependencies:
   typedoc: 0.20.36
   typedoc-plugin-markdown: 3.9.0_typedoc@0.20.36
   url-loader: 3.0.0_webpack@4.42.0
+  use-immer: 0.5.2_react@17.0.2
   uuid: 8.3.2
   wait-on: 5.2.1
   webpack: 4.42.0
@@ -6230,7 +6230,7 @@ packages:
       jest-haste-map: 26.6.2
       jest-regex-util: 26.0.0
       jest-util: 26.6.2
-      micromatch: 4.0.2
+      micromatch: 4.0.4
       pirates: 4.0.1
       slash: 3.0.0
       source-map: 0.6.1
@@ -6277,9 +6277,9 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.3
       '@types/istanbul-reports': 3.0.0
-      '@types/node': 14.14.37
+      '@types/node': 14.17.2
       '@types/yargs': 15.0.13
-      chalk: 4.1.0
+      chalk: 4.1.1
     dev: false
     engines:
       node: '>= 10.14.2'
@@ -20377,8 +20377,8 @@ packages:
       '@nodelib/fs.walk': 1.2.6
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.2
-      picomatch: 2.2.2
+      micromatch: 4.0.4
+      picomatch: 2.3.0
     dev: false
     engines:
       node: '>=8'
@@ -25030,11 +25030,11 @@ packages:
   /jest-util/26.6.2:
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 14.14.43
+      '@types/node': 14.17.2
       chalk: 4.1.1
       graceful-fs: 4.2.6
       is-ci: 2.0.0
-      micromatch: 4.0.2
+      micromatch: 4.0.4
     dev: false
     engines:
       node: '>= 10.14.2'
@@ -36825,6 +36825,15 @@ packages:
       react: ^16.8.0 || ^17.0.0
     resolution:
       integrity: sha512-my1lNHGWsSDAhhVAT4MKs6IjBUtG6ZG11uUqexPH9PptiIZDQOzaF4f5tEbJ2+7qvNbtXNBbU3SfmN+fXlWDhg==
+  /use-immer/0.5.2_react@17.0.2:
+    dependencies:
+      react: 17.0.2
+    dev: false
+    peerDependencies:
+      immer: '>=2.0.0'
+      react: ^16.8.0 || ^17.0.1
+    resolution:
+      integrity: sha512-aHnLa85kftWo05lqJVOy3GLXrydqu6kl0MXvo5k5OW8IoLJixa9NY/48Xdy0LlcqdakBTFLbSDZaYVPMVhYy8Q==
   /use-isomorphic-layout-effect/1.1.1_@types+react@17.0.1+react@17.0.2:
     dependencies:
       '@types/react': 17.0.1
@@ -40583,7 +40592,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-mQ+nxRNUisQw+kCm57w5fKzxpDiAnPq41M6r2yvWuAchTKnurkQpYF1GjpDQbFlj46SZGaBomWnUNKGDHe1thA==
+      integrity: sha512-+SgFLQObT2DOndbmGZpnYKlAApSB3yqG8xWjIrxolDNTwi8S4CRB7E9Gm6ekT+qDz285fUufRGqfZE2fVow9Ug==
       tarball: file:projects/origin-backend-irec-app.tgz
     version: 0.0.0
   file:projects/origin-backend-react-query-client.tgz_9c382b770317fc973cc979f52ed1e7a0:
@@ -41381,6 +41390,7 @@ packages:
       tslib: 2.0.0
       typescript: 4.0.7
       url-loader: 3.0.0_webpack@4.42.0
+      use-immer: 0.5.2_react@17.0.2
       webpack: 4.42.0
       webpack-bundle-analyzer: 4.4.1
       yup: 0.32.9
@@ -41390,7 +41400,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-syr16JNRnMJddt+Wpw7tKDZ8fFpNjvAcF+Z55wmgdQZm8MKiLAo6PsS72iv63BkyRCNOmJt/xiVPGw6I7GYKeA==
+      integrity: sha512-d/FeWRNxnSsE6KpaRfZwnCsRon0mdUJx1oRCltA1oew72SKP7r3T9HNcClttrFkOL8LRISkFNKGLjLq7vFxCIw==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -41475,7 +41485,6 @@ specifiers:
   '@emotion/babel-preset-css-prop': 11.0.0
   '@emotion/react': 11.0.0
   '@emotion/styled': 11.0.0
-  '@energyweb/energy-api': 0.2.0
   '@energyweb/energy-api-influxdb': 0.7.0
   '@ethersproject/abi': 5.3.0
   '@ethersproject/abstract-provider': 5.3.0
@@ -41694,6 +41703,7 @@ specifiers:
   typedoc: 0.20.36
   typedoc-plugin-markdown: 3.9.0
   url-loader: ^3.0.0
+  use-immer: ^0.5.2
   uuid: 8.3.2
   wait-on: 5.2.1
   webpack: 4.42.0
