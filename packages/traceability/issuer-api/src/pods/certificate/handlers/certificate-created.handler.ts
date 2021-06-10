@@ -25,24 +25,24 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
         private readonly eventBus: EventBus
     ) {}
 
-    async handle({ tokenId, privateInfo }: CertificateCreatedEvent): Promise<ISuccessResponse> {
-        this.logger.log(`Detected a new certificate with ID ${tokenId}`);
+    async handle({ id, privateInfo }: CertificateCreatedEvent): Promise<ISuccessResponse> {
+        this.logger.log(`Detected a new certificate with ID ${id}`);
 
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
         const existingCertificate = await this.repository.findOne(
-            { tokenId },
+            { id },
             { relations: ['blockchain'] }
         );
 
         if (existingCertificate) {
             return ResponseFailure(
-                `Certificate with tokenId ${tokenId} already exists in the DB.`,
+                `Certificate with id ${id} already exists in the DB.`,
                 HttpStatus.CONFLICT
             );
         }
 
-        const cert = await new CertificateFacade(tokenId, blockchainProperties.wrap()).sync();
+        const cert = await new CertificateFacade(id, blockchainProperties.wrap()).sync();
 
         let latestCommitment: IOwnershipCommitmentProof;
 
@@ -53,8 +53,8 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
         }
 
         const certificate = await this.repository.save({
+            id: cert.id,
             blockchain: blockchainProperties,
-            tokenId: cert.id,
             deviceId: cert.deviceId,
             generationStartTime: cert.generationStartTime,
             generationEndTime: cert.generationEndTime,

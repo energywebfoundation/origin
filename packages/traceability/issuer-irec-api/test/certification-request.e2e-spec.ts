@@ -6,10 +6,13 @@ import { getAddress } from 'ethers/lib/utils';
 
 import moment from 'moment';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { TestUser, bootstrapTestInstance, deviceManager } from './issuer-api';
-import { CERTIFICATION_REQUESTS_TABLE_NAME } from '../src/pods/certification-request/certification-request.entity';
-import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
-import { CertificationRequestDTO } from '../src/pods/certification-request';
+import { TestUser, bootstrapTestInstance, deviceManager } from './issuer-irec-api';
+import {
+    CERTIFICATION_REQUESTS_TABLE_NAME,
+    CERTIFICATES_TABLE_NAME,
+    FullCertificationRequestDTO,
+    IREC_CERTIFICATION_REQUESTS_TABLE_NAME
+} from '../src';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -31,11 +34,13 @@ describe('Certification Request tests', () => {
 
         await app.init();
 
+        await databaseService.truncate(IREC_CERTIFICATION_REQUESTS_TABLE_NAME);
         await databaseService.truncate(CERTIFICATION_REQUESTS_TABLE_NAME);
         await databaseService.truncate(CERTIFICATES_TABLE_NAME);
     });
 
     afterEach(async () => {
+        await databaseService.truncate(IREC_CERTIFICATION_REQUESTS_TABLE_NAME);
         await databaseService.truncate(CERTIFICATION_REQUESTS_TABLE_NAME);
         await databaseService.truncate(CERTIFICATES_TABLE_NAME);
     });
@@ -47,7 +52,7 @@ describe('Certification Request tests', () => {
 
     it('should return 400 BadRequest if "to" address is invalid', async () => {
         await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({ ...certificationRequestTestData, to: 'invalid one' })
             .expect(HttpStatus.BAD_REQUEST);
@@ -72,7 +77,7 @@ describe('Certification Request tests', () => {
                     energy
                 }
             } = await request(app.getHttpServer())
-                .post('/certification-request')
+                .post('/irec/certification-request')
                 .set({ 'test-user': TestUser.OrganizationDeviceManager })
                 .send(certReqData)
                 .expect(HttpStatus.CREATED);
@@ -88,12 +93,12 @@ describe('Certification Request tests', () => {
             expect(energy).to.equal(certReqData.energy);
 
             const { body: requests } = await request(app.getHttpServer())
-                .get(`/certification-request`)
+                .get(`/irec/certification-request`)
                 .set({ 'test-user': TestUser.OrganizationDeviceManager })
                 .expect(HttpStatus.OK);
 
             const cr = requests.find(
-                (req: CertificationRequestDTO) => req.owner === getAddress(certReqData.to)
+                (req: FullCertificationRequestDTO) => req.owner === getAddress(certReqData.to)
             );
             expect(cr).to.be.not.empty;
         });
@@ -101,13 +106,13 @@ describe('Certification Request tests', () => {
 
     it('should not be able to request certification request twice for the same time period', async () => {
         await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect(HttpStatus.CREATED);
 
         await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect(HttpStatus.CONFLICT);
@@ -117,7 +122,7 @@ describe('Certification Request tests', () => {
         const {
             body: { id: certificationRequestId }
         } = await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData);
 
@@ -127,7 +132,7 @@ describe('Certification Request tests', () => {
         const {
             body: { success }
         } = await request(app.getHttpServer())
-            .put(`/certification-request/${certificationRequestId}/approve`)
+            .put(`/irec/certification-request/${certificationRequestId}/approve`)
             .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK);
 
@@ -136,7 +141,7 @@ describe('Certification Request tests', () => {
         const {
             body: { issuedCertificateId: newCertificateId }
         } = await request(app.getHttpServer())
-            .get(`/certification-request/${certificationRequestId}`)
+            .get(`/irec/certification-request/${certificationRequestId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
@@ -163,7 +168,7 @@ describe('Certification Request tests', () => {
         const {
             body: { id: certificationRequestId }
         } = await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect(HttpStatus.CREATED);
@@ -172,7 +177,7 @@ describe('Certification Request tests', () => {
         await sleep(3000);
 
         await request(app.getHttpServer())
-            .put(`/certification-request/${certificationRequestId}/revoke`)
+            .put(`/irec/certification-request/${certificationRequestId}/revoke`)
             .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK)
             .expect((res) => {
@@ -184,7 +189,7 @@ describe('Certification Request tests', () => {
         let certificationRequestId;
 
         await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
             .expect((res) => {
@@ -195,7 +200,7 @@ describe('Certification Request tests', () => {
         await sleep(3000);
 
         await request(app.getHttpServer())
-            .put(`/certification-request/${certificationRequestId}/revoke`)
+            .put(`/irec/certification-request/${certificationRequestId}/revoke`)
             .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK)
             .expect((res) => {
@@ -203,14 +208,14 @@ describe('Certification Request tests', () => {
             });
 
         await request(app.getHttpServer())
-            .put(`/certification-request/${certificationRequestId}/revoke`)
+            .put(`/irec/certification-request/${certificationRequestId}/revoke`)
             .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should create a private certification request', async () => {
         await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 ...certificationRequestTestData,
@@ -226,7 +231,7 @@ describe('Certification Request tests', () => {
         const {
             body: { id: certificationRequestId, isPrivate }
         } = await request(app.getHttpServer())
-            .post('/certification-request')
+            .post('/irec/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 ...certificationRequestTestData,
@@ -242,7 +247,7 @@ describe('Certification Request tests', () => {
         const {
             body: { success }
         } = await request(app.getHttpServer())
-            .put(`/certification-request/${certificationRequestId}/approve`)
+            .put(`/irec/certification-request/${certificationRequestId}/approve`)
             .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK);
 
@@ -253,7 +258,7 @@ describe('Certification Request tests', () => {
         const {
             body: { issuedCertificateId: newCertificateId }
         } = await request(app.getHttpServer())
-            .get(`/certification-request/${certificationRequestId}`)
+            .get(`/irec/certification-request/${certificationRequestId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 

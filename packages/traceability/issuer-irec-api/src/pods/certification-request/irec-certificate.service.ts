@@ -10,7 +10,8 @@ import {
     IRECAPIClient,
     Issue,
     IssuanceStatus,
-    IssueWithStatus
+    IssueWithStatus,
+    DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
 import {
     GetConnectionCommand,
@@ -56,7 +57,7 @@ export class IrecCertificateService {
             return {
                 ...issue,
                 status: IssuanceStatus.InProgress,
-                code: ''
+                code: 'somecode'
             };
         }
         const irecClient = await this.getIrecClient(user);
@@ -89,21 +90,86 @@ export class IrecCertificateService {
     }
 
     async getIssue(user: UserIdentifier, code: string): Promise<IssueWithStatus> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                device: 'TESTDEVICE1',
+                fuelType: 'ES200',
+                recipient: 'SOMEORG',
+                start: new Date(),
+                end: new Date(),
+                production: 1000000,
+                notes: '',
+                code: '100500',
+                status: IssuanceStatus.Approved
+            };
+        }
         const irecClient = await this.getIrecClient(user);
         return irecClient.issue.get(code);
     }
 
     async getDevice(user: UserIdentifier, code: string): Promise<Device> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                address: '1 Wind Farm Avenue, London',
+                capacity: 500,
+                commissioningDate: new Date('2001-08-10'),
+                countryCode: 'GB',
+                defaultAccount: 'someTradeAccount',
+                deviceType: 'TC110',
+                fuelType: 'ES200',
+                issuer: 'someIssuerCode',
+                latitude: '53.405088',
+                longitude: '-1.744222',
+                name: 'DeviceXYZ',
+                notes: 'Lorem ipsum dolor sit amet',
+                registrantOrganization: 'someRegistrantCode',
+                registrationDate: new Date('2001-09-20'),
+                status: DeviceState.Approved,
+                code: 'mockDeviceCode',
+                active: true
+            };
+        }
+
         const irecClient = await this.getIrecClient(user);
         return irecClient.device.get(code);
     }
 
-    async uploadFiles(user: UserIdentifier, files: Blob[] | ReadStream[]) {
+    async uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]) {
+        if (!this.isIrecIntegrationEnabled()) {
+            return files.map(() => ((Math.random() * 1e9) | 0).toString(16));
+        }
         const irecClient = await this.getIrecClient(user);
         return irecClient.file.upload(files);
     }
 
     async getAccountInfo(user: UserIdentifier): Promise<Account[]> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return [
+                {
+                    code: 'TEST001',
+                    details: {
+                        name: 'Some new revision',
+                        private: false,
+                        restricted: false,
+                        active: true,
+                        notes: 'Some test'
+                    },
+                    type: AccountType.Trade
+                },
+                {
+                    code: 'TESTREDEMPTIONACCOUNT',
+                    details: {
+                        name: 'Test Account Details 001',
+                        private: false,
+                        restricted: false,
+                        active: true,
+                        notes: 'Some test notes'
+                    },
+                    type: AccountType.Redemption
+                }
+            ];
+        }
+
         const irecClient = await this.getIrecClient(user);
         return irecClient.account.getAll();
     }

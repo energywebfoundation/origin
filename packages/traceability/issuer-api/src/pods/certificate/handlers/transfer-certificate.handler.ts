@@ -27,7 +27,7 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
         );
 
         const onChainCert = await new CertificateFacade(
-            certificate.tokenId,
+            certificate.id,
             certificate.blockchain.wrap()
         ).sync();
 
@@ -74,7 +74,7 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
 
             if (receipt.status === 0) {
                 throw new Error(
-                    `Transfer tx ${receipt.transactionHash} on certificate with tokenId ${onChainCert.id} failed.`
+                    `Transfer tx ${receipt.transactionHash} on certificate with id ${onChainCert.id} failed.`
                 );
             }
         } catch (error) {
