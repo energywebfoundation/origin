@@ -298,11 +298,11 @@ export class IRECAPIClient extends EventEmitter {
         const fileManagementUrl = `${this.endPointUrl}/api/irec/v1/file-management`;
 
         return {
-            upload: async (files: Blob[] | ReadStream[]): Promise<string[]> => {
+            upload: async (files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]> => {
                 const url = `${fileManagementUrl}/upload`;
 
                 const data = new FormData();
-                files.forEach((file: Blob | ReadStream) => data.append('files', file));
+                files.forEach((file: Buffer | Blob | ReadStream) => data.append('files', file));
 
                 const headers = data.getHeaders();
                 const response = await this.axiosInstance.post<{ file_uids: string[] }>(url, data, {

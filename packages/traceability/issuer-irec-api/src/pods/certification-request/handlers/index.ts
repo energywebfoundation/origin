@@ -1,6 +1,7 @@
 import {
     ApproveCertificationRequestHandler,
     CertificateBoundToCertificationRequestCommand,
+    CreateCertificationRequestHandler,
     RevokeCertificationRequestHandler,
     ValidateCertificationRequestHandler
 } from '@energyweb/issuer-api';
@@ -13,6 +14,7 @@ import { GetCertificationRequestByCertificateHandler } from './get-certification
 export {
     ApproveCertificationRequestHandler,
     CertificateBoundToCertificationRequestCommand,
+    CreateCertificationRequestHandler,
     CreateIrecCertificationRequestHandler,
     GetAllCertificationRequestsHandler,
     GetCertificationRequestHandler,
@@ -24,6 +26,7 @@ export {
 export const Handlers = [
     ApproveCertificationRequestHandler,
     CertificateBoundToCertificationRequestCommand,
+    CreateCertificationRequestHandler,
     CreateIrecCertificationRequestHandler,
     GetAllCertificationRequestsHandler,
     GetCertificationRequestHandler,

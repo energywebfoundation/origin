@@ -1,7 +1,6 @@
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { createReadStream } from 'fs';
 import {
     BlockchainPropertiesService,
     CertificationRequest,
@@ -73,9 +72,10 @@ export class CreateIrecCertificationRequestHandler
             );
             fileIds = await this.irecCertificateService.uploadFiles(
                 userId,
-                files.map((file) => createReadStream(file.data))
+                files.map((file) => file.data)
             );
         }
+
         const irecDevice = await this.irecCertificateService.getDevice(userId, request.deviceId);
         const platformTradeAccount = await this.irecCertificateService.getTradeAccountCode(
             platformAdmin.id
