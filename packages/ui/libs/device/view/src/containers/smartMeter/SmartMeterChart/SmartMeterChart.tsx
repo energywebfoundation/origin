@@ -13,8 +13,16 @@ interface SmartMeterChartProps {
 
 export const SmartMeterChart: FC<SmartMeterChartProps> = ({ meterId }) => {
   const classes = useStyles();
-  const { windowButtons, displayDate, window, setWindow, isLoading } =
-    useSmartMeterChartsEffects(meterId);
+  const {
+    windowButtons,
+    displayDate,
+    window,
+    setWindow,
+    isLoading,
+    decrementDate,
+    incrementDate,
+    chartData,
+  } = useSmartMeterChartsEffects(meterId);
 
   if (isLoading) {
     return <CircularProgress />;
@@ -27,8 +35,8 @@ export const SmartMeterChart: FC<SmartMeterChartProps> = ({ meterId }) => {
           selected={window}
           setSelected={setWindow}
           buttons={windowButtons}
-          onLeftArrowClick={() => console.log('left click')}
-          onRightArrowClick={() => console.log('right click')}
+          onLeftArrowClick={decrementDate}
+          onRightArrowClick={incrementDate}
         />
       </div>
       {displayDate && (
@@ -37,7 +45,7 @@ export const SmartMeterChart: FC<SmartMeterChartProps> = ({ meterId }) => {
         </div>
       )}
       <div className={classes.chartWrapper}>
-        <Bar type="bar" data={[]} options={smartMeterChartOptions} />
+        <Bar type="bar" data={chartData} options={smartMeterChartOptions} />
       </div>
     </>
   );

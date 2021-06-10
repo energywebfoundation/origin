@@ -2,14 +2,31 @@ import {
   ReadingsWindowEnum,
   useSmartMeterReads,
 } from '@energyweb/origin-ui-device-data';
-import { useSmartMeterChartSelectors } from '@energyweb/origin-ui-device-logic';
+import {
+  setDateBasedOnWindow,
+  useChartDataLogic,
+  useDateArrowHandlers,
+  useSmartMeterChartSelectors,
+} from '@energyweb/origin-ui-device-logic';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useSmartMeterChartsEffects = (meterId: string) => {
   const [window, setWindow] = useState(ReadingsWindowEnum.Day);
   const [startDate, setStartDate] = useState(dayjs().startOf('day').toDate());
   const [endDate, setEndDate] = useState(dayjs().endOf('day').toDate());
+
+  useEffect(() => {
+    setDateBasedOnWindow({ window, setStartDate, setEndDate });
+  }, [window]);
+
+  const { incrementDate, decrementDate } = useDateArrowHandlers({
+    window,
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
+  });
 
   const { reads, isLoading } = useSmartMeterReads({
     meterId,
@@ -18,11 +35,23 @@ export const useSmartMeterChartsEffects = (meterId: string) => {
     window,
   });
 
+  const chartData = useChartDataLogic({ reads, startDate, endDate, window });
+
   const { windowButtons, displayDate } = useSmartMeterChartSelectors({
     startDate,
     endDate,
     selectedWindow: window,
   });
 
-  return { reads, windowButtons, displayDate, isLoading, window, setWindow };
+  return {
+    reads,
+    windowButtons,
+    displayDate,
+    isLoading,
+    window,
+    setWindow,
+    incrementDate,
+    decrementDate,
+    chartData,
+  };
 };

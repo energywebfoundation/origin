@@ -7,3 +7,5 @@ export * from './getEnergyTypeImage';
 export * from './isDeviceGridOperatorEnabled';
 export * from './isDeviceLocationEnabled';
 export * from './useMainFuelType';
+export * from './getTimeUnitOnWindow';
+export * from './TimeUnitPluralEnum';

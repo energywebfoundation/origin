@@ -2,9 +2,7 @@ import { ReadDTO } from '@energyweb/origin-energy-api-react-query-client';
 import dayjs from 'dayjs';
 
 const generateRandomEnergyNumber = (randomizer: number) => {
-  return Math.floor(
-    Math.random() * (20000000 - 1000000 + randomizer) + 1000000
-  );
+  return Math.floor(Math.random() * (2000 - 100 + randomizer) + 100);
 };
 
 const generateRandomMockReadings = (howMany: number, randomizer: number) => {

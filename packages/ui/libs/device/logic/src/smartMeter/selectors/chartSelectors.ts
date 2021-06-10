@@ -2,12 +2,7 @@ import { ReadingsWindowEnum } from '@energyweb/origin-ui-device-data';
 import { DateFormatEnum } from '@energyweb/origin-ui-utils';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-
-type TUseSmartMeterChartSelectorsArgs = {
-  startDate: Date;
-  endDate: Date;
-  selectedWindow: ReadingsWindowEnum;
-};
+import { TUseSmartMeterChartSelectorsArgs } from '../types';
 
 export const useSmartMeterChartSelectors = ({
   startDate,

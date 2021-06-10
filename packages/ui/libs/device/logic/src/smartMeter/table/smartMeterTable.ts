@@ -2,7 +2,7 @@ import { EnergyFormatter } from '@energyweb/origin-ui-utils';
 import dayjs from 'dayjs';
 import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
-import { TUseSmartMeterTableArgs, TUseSmartMeterTableLogic } from './types';
+import { TUseSmartMeterTableArgs, TUseSmartMeterTableLogic } from '../types';
 
 const formatReadsData = (reads: TUseSmartMeterTableArgs['reads']) => {
   return reads.map((reading) => ({
