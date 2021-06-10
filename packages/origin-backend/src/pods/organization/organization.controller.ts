@@ -241,11 +241,77 @@ export class OrganizationController {
             throw new ForbiddenException(`User does not have ${requiredRole} role`);
         }
 
-        const organization = await iam.getOrgHierarchy({ namespace });
+        interface onChainOrganizationDefinition {
+            name: string;
+            address: string;
+            businessType: string;
+            city: string;
+            zipCode: string;
+            country: string;
+            tradeRegistryCompanyNumber: string;
+            vatNumber: string;
+            signatoryAddress: string;
+            signatoryCity: string;
+            signatoryCountry: string;
+            signatoryEmail: string;
+            signatoryFullName: string;
+            signatoryPhoneNumber: string;
+            signatoryZipCode: string;
+        }
+
+        const organization: onChainOrganizationDefinition = (
+            await iam.getOrgHierarchy({ namespace })
+        ).definition.others as unknown as onChainOrganizationDefinition;
 
         this.logger.debug(`org. hierarchy: ${JSON.stringify(organization, null, 4)}`);
 
-        return { status: 'OK' };
+        // TODO: decide what additional validations need to be done here
+        //  (if assuming data is correct on chain - no validations needed)
+        //  validations can also be performed at UI by getting data from chain
+
+        // TODO: not all fields are to be stored on chain, some of them will need to be
+        //  entered by a user on frontend
+
+        // TODO: save also ensNamespace field
+
+        // TODO: split this data to the public part and part provided by the user on frontend
+        const newOrganization: NewOrganizationDTO = {
+            name: organization.name,
+            address: organization.address,
+            businessType: organization.businessType,
+            city: organization.city,
+            zipCode: organization.zipCode,
+            country: organization.country,
+            tradeRegistryCompanyNumber: organization.tradeRegistryCompanyNumber,
+            vatNumber: organization.vatNumber,
+            signatoryAddress: organization.signatoryAddress,
+            signatoryCity: organization.signatoryCity,
+            signatoryCountry: organization.signatoryCountry,
+            signatoryEmail: organization.signatoryEmail,
+            signatoryFullName: organization.signatoryFullName,
+            signatoryPhoneNumber: organization.signatoryPhoneNumber,
+            signatoryZipCode: organization.signatoryZipCode
+        };
+
+        try {
+            const organization = await this.organizationService.create(loggedUser, newOrganization);
+
+            return organization;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            if (error instanceof OrganizationNameAlreadyTakenError) {
+                throw new BadRequestException({ message: error.message });
+            }
+
+            if (error instanceof OrganizationDocumentOwnershipMismatchError) {
+                throw new ForbiddenException({ message: error.message });
+            }
+
+            throw new InternalServerErrorException({
+                message: `Unable to register organization due an unknown error`
+            });
+        }
     }
 
     @Delete('/:id')
