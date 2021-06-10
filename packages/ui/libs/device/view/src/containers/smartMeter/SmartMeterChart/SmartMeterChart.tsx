@@ -1,4 +1,3 @@
-import { ReadingsWindowEnum } from '@energyweb/origin-ui-device-data';
 import { CircularProgress, Typography } from '@material-ui/core';
 import { ButtonsGroupWithArrows } from 'libs/ui/core/src/components/buttons';
 import React, { FC } from 'react';
