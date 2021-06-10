@@ -8,7 +8,7 @@ import { UserService } from '../pods/user/user.service';
 import { IJWTPayload } from './auth.service';
 
 const acceptedRoles: string[] = process.env.ACCEPTED_ROLES
-    ? process.env.ACCEPTED_ROLES.split(',')
+    ? process.env.ACCEPTED_ROLES.split(',').map((r) => r.toLowerCase())
     : [];
 
 const chainToOriginRoleNamesMap: { [index: string]: string } = Object.keys(Role)
