@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { providers } from 'ethers';
+import { constants, providers } from 'ethers';
 import { CertificateUtils, IBlockchainProperties } from '@energyweb/issuer';
 import { EventBus } from '@nestjs/cqrs';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -102,6 +102,13 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
             case EventType.TransferSingle:
                 logEvent(EventType.TransferSingle, [event.id.toNumber()]);
+
+                if (event.from === constants.AddressZero) {
+                    this.logger.debug(
+                        `Skipping TransferSingle handler for certificate ${event.id.toNumber()} because it's an issuance.`
+                    );
+                    break;
+                }
 
                 this.eventBus.publish(new SyncCertificateEvent(event.id.toNumber()));
                 break;

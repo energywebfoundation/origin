@@ -34,8 +34,8 @@
         "axios": "0.21.1",
         "connected-react-router": "6.9.1",
         "dayjs": "^1.10.4",
-        "ethers": "5.2.0",
-        "formik": "2.2.8",
+        "ethers": "5.3.0",
+        "formik": "2.2.9",
         "formik-material-ui": "3.0.1",
         "formik-material-ui-pickers": "0.0.12",
         "history": "4.10.1",
@@ -58,13 +58,13 @@
     "devDependencies": {
         "@types/lodash": "4.14.170",
         "typescript": "4.3.2",
-        "@types/react": "17.0.8",
+        "@types/react": "17.0.9",
         "@types/react-redux": "7.1.16",
         "@types/react-router-dom": "5.1.7",
         "@types/yup": "0.29.11",
         "eslint-plugin-react": "7.24.0",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.17.1",
+        "@types/node": "14.17.2",
         "mocha": "8.4.0"
     },
     "repository": {
