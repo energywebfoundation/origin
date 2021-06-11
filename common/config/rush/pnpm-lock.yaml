@@ -169,7 +169,7 @@ dependencies:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
-  iam-client-lib: 3.0.0-alpha.17_@babel+core@7.14.3
+  iam-client-lib: 3.0.0-alpha.20_@babel+core@7.14.3
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4_ts-node@9.1.1
@@ -14166,8 +14166,8 @@ packages:
       integrity: sha512-B+sSdtqm78fmKkBq78/QLKJbu/4Ts4P2KFISdgcuZUPDm9x+N7qgBPIIFUGbaakQh8bzuquiRVbdmvPKqbILRg==
   /ethereumjs-block/2.2.2:
     dependencies:
-      async: 2.6.2
-      ethereumjs-common: 1.5.0
+      async: 2.6.3
+      ethereumjs-common: 1.5.2
       ethereumjs-tx: 2.1.2
       ethereumjs-util: 5.2.1
       merkle-patricia-tree: 2.3.2
@@ -14211,7 +14211,7 @@ packages:
       integrity: sha512-wvLMxzt1RPhAQ9Yi3/HKZTn0FZYpnsmQdbKYfUUpi4j1SEIcbkd9tndVjcPrufY3V7j2IebOpC00Zp2P/Ay2kA==
   /ethereumjs-tx/2.1.2:
     dependencies:
-      ethereumjs-common: 1.5.0
+      ethereumjs-common: 1.5.2
       ethereumjs-util: 6.2.1
     deprecated: 'New package name format for new versions: @ethereumjs/tx. Please update.'
     dev: false
@@ -16994,7 +16994,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-WTY07KreR5z2LBSzAIKs05zpR5tgUT98C4fD96e7Risbc/HZePwF6AEnb9VkjdeSeRn9PDqQBay7ZkphuXt0Xw==
-  /iam-client-lib/3.0.0-alpha.17_@babel+core@7.14.3:
+  /iam-client-lib/3.0.0-alpha.20_@babel+core@7.14.3:
     dependencies:
       '@babel/runtime': 7.14.5
       '@energyweb/iam-contracts': 1.11.0
@@ -17028,7 +17028,7 @@ packages:
     peerDependencies:
       '@babel/core': '*'
     resolution:
-      integrity: sha512-S5PBxv5EB6wkcgEfh45TaF+Bfw87oQygSztz1lIdnm634zmUBiXpfx+uvjiM6pEKc/nxHTtu1WzmSzUrYALFnw==
+      integrity: sha512-RCEroc89lL4A5nktgQjZk+UlKGguGPUI5YbTNd4yoLJS33eZUuPRMM/F05qBDuUHMDk5g3GUKTw2Jg/T116zBg==
   /ice-cap/0.0.4:
     dependencies:
       cheerio: 0.20.0
@@ -33492,7 +33492,7 @@ packages:
       formik-material-ui-pickers: 0.0.12_08032a4b4e82050abfb7dc276cf451f4
       history: 4.10.1
       i18next: 20.3.1
-      iam-client-lib: 3.0.0-alpha.17_@babel+core@7.14.3
+      iam-client-lib: 3.0.0-alpha.20_@babel+core@7.14.3
       jest: 27.0.4_ts-node@9.1.1
       jest-environment-jsdom-fifteen: 1.0.2
       mocha: 8.4.0
@@ -33524,7 +33524,7 @@ packages:
       webpack-cli: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-K9UXKSXoQdfO8iTiHnNe0jHfLWcJR+vMKqzkOe3/jtTN10CTfJWmwNRcbIC1HXtE9mpaeJ3CnF8N3c65PLb5hA==
+      integrity: sha512-hDob4cnz0Q15jbWDtNqOHc7H0/8GPhUig70q/amyA9g+cTYNtPSn5K98IAxOh7MuAeU+t67OZnb0vMEu7qbgwQ==
       tarball: file:projects/origin-ui-core.tgz
     version: 0.0.0
   file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1:
@@ -33920,7 +33920,7 @@ specifiers:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
-  iam-client-lib: 3.0.0-alpha.17
+  iam-client-lib: 3.0.0-alpha.20
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4
