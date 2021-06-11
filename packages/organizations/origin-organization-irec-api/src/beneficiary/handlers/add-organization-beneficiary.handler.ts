@@ -1,7 +1,6 @@
 import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserService } from '@energyweb/origin-backend';
 
 import { AddOrganizationBeneficiaryCommand, GetBeneficiaryCommand } from '../commands';
 import { Beneficiary } from '../beneficiary.entity';
@@ -15,7 +14,6 @@ export class AddOrganizationBeneficiaryHandler
     constructor(
         @InjectRepository(Beneficiary)
         private readonly repository: Repository<Beneficiary>,
-        private readonly userService: UserService,
         private readonly commandBus: CommandBus
     ) {}
 
@@ -23,10 +21,8 @@ export class AddOrganizationBeneficiaryHandler
         ownerId,
         irecBeneficiaryId
     }: AddOrganizationBeneficiaryCommand): Promise<BeneficiaryDTO> {
-        const platformAdmin = await this.userService.getPlatformAdmin();
-
         const beneficiary = await this.repository.findOne({
-            ownerId: platformAdmin.organization.id,
+            ownerId: null,
             irecBeneficiaryId
         });
 

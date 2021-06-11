@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import { IsOptional } from 'class-validator';
 
 @Entity({ name: 'irec_beneficiary' })
 export class Beneficiary extends ExtendedBaseEntity {
@@ -13,5 +14,6 @@ export class Beneficiary extends ExtendedBaseEntity {
     organizationId: number;
 
     @Column()
-    ownerId: number;
+    @IsOptional()
+    ownerId?: number;
 }

@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPublicOrganization } from '@energyweb/origin-backend-core';
-import { GetOrganizationsCommand, UserService } from '@energyweb/origin-backend';
+import { GetOrganizationsCommand } from '@energyweb/origin-backend';
 
 import { Beneficiary } from '../beneficiary.entity';
 import { BeneficiaryDTO } from '../dto/beneficiary.dto';
@@ -13,18 +13,11 @@ export class GetBeneficiariesHandler implements ICommandHandler<GetBeneficiaries
     constructor(
         @InjectRepository(Beneficiary)
         private readonly repository: Repository<Beneficiary>,
-        private readonly userService: UserService,
         private readonly commandBus: CommandBus
     ) {}
 
     public async execute({ organizationId }: GetBeneficiariesCommand): Promise<BeneficiaryDTO[]> {
-        let orgId = organizationId;
-        if (!organizationId) {
-            const platformAdmin = await this.userService.getPlatformAdmin();
-            orgId = platformAdmin.organization.id;
-        }
-
-        const beneficiaries = await this.repository.find({ ownerId: orgId });
+        const beneficiaries = await this.repository.find({ ownerId: organizationId || null });
 
         const organizations: IPublicOrganization[] = await this.commandBus.execute(
             new GetOrganizationsCommand({ ids: beneficiaries.map((b) => b.organizationId) })

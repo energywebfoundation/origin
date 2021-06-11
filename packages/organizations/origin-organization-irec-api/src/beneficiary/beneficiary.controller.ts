@@ -51,7 +51,7 @@ export class BeneficiaryController {
         type: [BeneficiaryDTO],
         description: 'Get company beneficiaries'
     })
-    public async removeOrganizationBeneficiary(
+    public async getCompanyBeneficiaries(
         @UserDecorator() user: ILoggedInUser
     ): Promise<BeneficiaryDTO[]> {
         return this.commandBus.execute(new GetBeneficiariesCommand(user.organizationId));
@@ -64,7 +64,7 @@ export class BeneficiaryController {
         status: HttpStatus.OK,
         description: 'Remove beneficiary from organizations beneficiary list'
     })
-    public async getCompanyBeneficiaries(
+    public async removeOrganizationBeneficiary(
         @UserDecorator() user: ILoggedInUser,
         @Param('id') id: string
     ): Promise<void> {

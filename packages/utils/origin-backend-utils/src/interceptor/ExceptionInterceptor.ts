@@ -16,7 +16,7 @@ export class ExceptionInterceptor implements NestInterceptor {
             map((data) => {
                 if (data.success !== undefined && !data.success && data.statusCode) {
                     throw new HttpException(
-                        data?.message ?? 'Something went wrong',
+                        data.message ?? 'Something went wrong',
                         data.statusCode
                     );
                 }

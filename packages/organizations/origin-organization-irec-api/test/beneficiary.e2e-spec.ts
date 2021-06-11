@@ -24,7 +24,7 @@ describe('I-REC Beneficiary tests', () => {
             INSERT INTO public."irec_beneficiary"
                 ("id", "irecBeneficiaryId", "organizationId", "ownerId")
             VALUES 
-                (1, 555, 1000,  1002);
+                (1, 555, 1000,  null);
         `);
     });
 
@@ -45,7 +45,7 @@ describe('I-REC Beneficiary tests', () => {
 
         expect(platformBeneficiaries).to.have.length(1);
         expect(platformBeneficiaries[0].organization.id).to.equal(1000);
-        expect(platformBeneficiaries[0].ownerId).to.equal(1002);
+        expect(platformBeneficiaries[0].ownerId).to.equal(null);
 
         const { body: companyBeneficiaries } = await test
             .get('/irec/beneficiary/company')
