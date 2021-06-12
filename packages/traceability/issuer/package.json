@@ -63,7 +63,7 @@
         "truffle-typings": "1.0.8",
         "typechain": "5.0.0",
         "@types/mocha": "8.2.2",
-        "@types/node": "14.17.2",
+        "@types/node": "14.17.3",
         "mocha": "8.4.0",
         "truffle": "5.3.9",
         "solc": "0.8.4",
