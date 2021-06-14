@@ -126,6 +126,10 @@ export class UserService {
         return this.findOne({ email: lowerCaseEmail });
     }
 
+    async findByDid(did: string) {
+        return this.findOne({ did });
+    }
+
     async getUserAndPasswordByEmail(
         email: string
     ): Promise<Pick<IUser, 'id' | 'email'> & { password: string }> {
