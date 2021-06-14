@@ -23,4 +23,8 @@ export class DatabaseService {
             await this.connection.query(`TRUNCATE "${table}" CASCADE;`);
         }
     }
+
+    public async query(query: string): Promise<void> {
+        await this.connection.query(query);
+    }
 }
