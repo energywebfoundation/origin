@@ -1,6 +1,5 @@
 export * from '@energyweb/issuer-api/dist/js/src/pods/certification-request/events';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certification-request/queries';
-export * from '@energyweb/issuer-api/dist/js/src/pods/certification-request/certification-request-status.enum';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certification-request/sync-certification-request.task';
 
 export * from './handlers';

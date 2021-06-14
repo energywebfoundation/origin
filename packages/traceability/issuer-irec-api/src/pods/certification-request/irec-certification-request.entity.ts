@@ -1,10 +1,11 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { IrecCertificationRequestDTO } from './full-certification-request.dto';
+import { IsOptional } from 'class-validator';
 
-export const CERTIFICATION_REQUESTS_TABLE_NAME = 'irec_issuer_certification_request';
+export const IREC_CERTIFICATION_REQUESTS_TABLE_NAME = 'irec_issuer_certification_request';
 
-@Entity({ name: CERTIFICATION_REQUESTS_TABLE_NAME })
+@Entity({ name: IREC_CERTIFICATION_REQUESTS_TABLE_NAME })
 export class IrecCertificationRequest
     extends ExtendedBaseEntity
     implements IrecCertificationRequestDTO
@@ -15,6 +16,7 @@ export class IrecCertificationRequest
     @Column()
     userId: string;
 
-    @Column()
-    irecIssueId: string;
+    @Column({ default: '' })
+    @IsOptional()
+    irecIssueId?: string;
 }

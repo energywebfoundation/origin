@@ -44,7 +44,7 @@ import { FullCertificationRequestDTO } from './full-certification-request.dto';
 
 @ApiTags('certification-requests')
 @ApiBearerAuth('access-token')
-@Controller('certification-request')
+@Controller('irec/certification-request')
 @UseInterceptors(ExceptionInterceptor)
 export class CertificationRequestController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}

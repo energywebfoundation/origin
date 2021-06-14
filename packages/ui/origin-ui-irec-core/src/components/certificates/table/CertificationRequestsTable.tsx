@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@material-ui/lab';
 import { Check } from '@material-ui/icons';
 import { Role, isRole } from '@energyweb/origin-backend-core';
-import { CertificationRequestStatus } from '@energyweb/issuer-api-client';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
@@ -22,6 +21,7 @@ import {
     fromUsersSelectors,
     fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
+
 import { getEnvironment, getDeviceClient } from '../../../features/general';
 import { getAllDevices, fetchPublicDevices } from '../../../features/devices';
 import {
@@ -88,7 +88,6 @@ export const CertificationRequestsTable = (props: IProps) => {
 
                 if (
                     request.approved !== props.approved ||
-                    request.status !== CertificationRequestStatus.Executed ||
                     (!isIssuer && user.organization?.id !== Number(requestDevice?.ownerId))
                 ) {
                     continue;

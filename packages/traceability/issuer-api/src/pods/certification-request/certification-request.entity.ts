@@ -1,19 +1,14 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import { IsInt, Min, IsBoolean, IsDate, IsPositive } from 'class-validator';
 import { CertificationRequestDTO } from './certification-request.dto';
-import { CertificationRequestStatus } from './certification-request-status.enum';
 
 export const CERTIFICATION_REQUESTS_TABLE_NAME = 'issuer_certification_request';
 
 @Entity({ name: CERTIFICATION_REQUESTS_TABLE_NAME })
-@Unique(['requestId'])
 export class CertificationRequest extends ExtendedBaseEntity implements CertificationRequestDTO {
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     id: number;
-
-    @Column({ nullable: true })
-    requestId: number;
 
     @Column('varchar')
     owner: string;
@@ -61,12 +56,9 @@ export class CertificationRequest extends ExtendedBaseEntity implements Certific
     @Column({ nullable: true })
     @IsInt()
     @Min(0)
-    issuedCertificateTokenId: number;
+    issuedCertificateId: number;
 
     @Column()
     @IsBoolean()
     isPrivate: boolean;
-
-    @Column('varchar')
-    status: CertificationRequestStatus;
 }

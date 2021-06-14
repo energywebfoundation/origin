@@ -23,7 +23,7 @@ export class GetCertificationRequestByCertificateHandler
         const certificate = await this.certificateRepository.findOne(certificateId);
         return await this.repository.findOne({
             where: {
-                issuedCertificateTokenId: certificate.tokenId
+                issuedCertificateId: certificate.id
             }
         });
     }
