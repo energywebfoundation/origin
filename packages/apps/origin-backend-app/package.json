@@ -72,7 +72,7 @@
         "@types/supertest": "2.0.11",
         "ethers": "5.3.1",
         "moment": "2.29.1",
-        "ts-node": "9.1.1",
+        "ts-node": "10.0.0",
         "ganache-core": "2.13.2",
         "superagent-use": "0.1.0",
         "supertest": "6.1.3",
