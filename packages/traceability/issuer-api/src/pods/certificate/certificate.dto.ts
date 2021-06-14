@@ -15,13 +15,8 @@ import { EnergyDTO } from './energy.dto';
 export class CertificateDTO {
     @ApiProperty({ type: Number })
     @IsInt()
-    @Min(0)
+    @Min(1)
     id: number;
-
-    @ApiProperty({ type: Number })
-    @IsInt()
-    @Min(0)
-    tokenId: number;
 
     @ApiProperty({ type: String })
     @IsString()

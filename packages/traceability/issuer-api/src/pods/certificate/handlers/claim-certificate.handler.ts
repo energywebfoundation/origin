@@ -30,7 +30,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
         );
 
         const cert = await new CertificateFacade(
-            certificate.tokenId,
+            certificate.id,
             certificate.blockchain.wrap()
         ).sync();
 
@@ -59,7 +59,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
             ).hash;
 
             const requestTx = await privateIssuerWithSigner.requestMigrateToPublicFor(
-                certificate.tokenId,
+                certificate.id,
                 ownerAddressLeafHash,
                 checksummedForAddress
             );
@@ -103,7 +103,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
             if (receipt.status === 0) {
                 throw new Error(
-                    `Transfer tx ${receipt.transactionHash} on certificate with tokenId ${cert.id} failed.`
+                    `Transfer tx ${receipt.transactionHash} on certificate with id ${cert.id} failed.`
                 );
             }
         } catch (error) {

@@ -6,10 +6,12 @@ import {
     CertificationRequest
 } from '@energyweb/issuer-api';
 import { entities as OriginBackendEntities } from '@energyweb/origin-backend';
+import { entities as OrganizationEntities } from '@energyweb/origin-organization-irec-api';
 import { CertificationRequestModule, IrecCertificationRequest } from './';
 
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate';
 export * from '@energyweb/issuer-api/dist/js/src/pods/blockchain';
+export * from '@energyweb/issuer-api/dist/js/src/pods/certification-request/certification-request.entity';
 
 export * from '@energyweb/issuer-api/dist/js/src/utils';
 export * from '@energyweb/issuer-api/dist/js/src/types';
@@ -24,6 +26,6 @@ export const entities = [
     IrecCertificationRequest,
     BlockchainProperties
 ];
-export const usedEntities = OriginBackendEntities;
+export const usedEntities = [...OriginBackendEntities, ...OrganizationEntities];
 
 export const modules = [CertificateModule, CertificationRequestModule, BlockchainPropertiesModule];

@@ -25,7 +25,7 @@ export class GetAllCertificateEventsHandler implements IQueryHandler<GetAllCerti
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
         const allCertificateEvents = await CertificateUtils.getAllCertificateEvents(
-            certificate.tokenId,
+            certificate.id,
             blockchainProperties.wrap()
         );
 
