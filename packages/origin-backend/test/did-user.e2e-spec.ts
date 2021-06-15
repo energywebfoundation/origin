@@ -86,6 +86,15 @@ describe('DID user e2e tests', function () {
                 const accessToken = await loginDidUser(app, identityToken);
 
                 expect(accessToken).to.exist;
+
+                const tokenDecoded = jwt.verify(accessToken, process.env.JWT_SECRET) as {
+                    did: string;
+                    iat: string;
+                    verifiedRoles: object[];
+                };
+
+                expect(tokenDecoded).to.contain.keys(['did', 'iat', 'verifiedRoles']);
+                expect(tokenDecoded.did).equal(did);
             });
 
             describe('when logged in as DID user', function () {
