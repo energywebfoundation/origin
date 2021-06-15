@@ -54,7 +54,7 @@ dependencies:
   '@rush-temp/localization': file:projects/localization.tgz
   '@rush-temp/migrations': file:projects/migrations.tgz
   '@rush-temp/migrations-irec': file:projects/migrations-irec.tgz
-  '@rush-temp/origin-backend': file:projects/origin-backend.tgz_f99ba94bd09e1cfcbb3172ba144891d4
+  '@rush-temp/origin-backend': file:projects/origin-backend.tgz_f35a2939fbc1d875dcf7d258185fa6ef
   '@rush-temp/origin-backend-app': file:projects/origin-backend-app.tgz_d66b9abd33775cf532aefb2a7d4fbc15
   '@rush-temp/origin-backend-client': file:projects/origin-backend-client.tgz_a8ce0c06fd32d99f157bb2132dd16aac
   '@rush-temp/origin-backend-core': file:projects/origin-backend-core.tgz
@@ -176,6 +176,7 @@ dependencies:
   jest-environment-jsdom-fifteen: 1.0.2
   json-to-pretty-yaml: 1.2.2
   jsonschema: 1.4.0
+  jsonwebtoken: 8.5.1
   lodash: 4.17.21
   mandrill-nodemailer-transport: 1.2.1_nodemailer@6.6.1
   mini-css-extract-plugin: 1.6.0_webpack@5.38.1
@@ -32996,7 +32997,7 @@ packages:
       integrity: sha512-BVby5bN7ye2UcZU+/2e585Th1qYAp1RCdZtuKtbI30RjTgjHNFbMLGyeatuXXVH7ZewaHPOb4TIelfg+iVcMiQ==
       tarball: file:projects/origin-backend-utils.tgz
     version: 0.0.0
-  file:projects/origin-backend.tgz_f99ba94bd09e1cfcbb3172ba144891d4:
+  file:projects/origin-backend.tgz_f35a2939fbc1d875dcf7d258185fa6ef:
     dependencies:
       '@nestjs/cli': 7.6.0_webpack-cli@4.7.0
       '@nestjs/common': 7.6.17_fbc9982997ba253269f25bdc348cb93c
@@ -33037,7 +33038,9 @@ packages:
       dotenv: 10.0.0
       ethers: 5.3.0
       express: 4.17.1
+      iam-client-lib: 3.0.0-alpha.20_@babel+core@7.14.3
       jest: 27.0.4_ts-node@9.1.1
+      jsonwebtoken: 8.5.1
       mocha: 8.4.0
       moment: 2.29.1
       multer: 1.4.2
@@ -33058,10 +33061,11 @@ packages:
     id: file:projects/origin-backend.tgz
     name: '@rush-temp/origin-backend'
     peerDependencies:
+      '@babel/core': '*'
       swagger-ui-express: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-RKfai7nEgY/Lsl53wsShvedtFd/sja4upLTk+axxlCptAjCXDoW79P59fhiqi0532IScC0WJjE/sTl/7kaaKqQ==
+      integrity: sha512-7vnzxVdw8yffvt9ZYcypGwucmEqbwDVhnU4WX8NNr9nai5F+vbJi8swPoW1QoD0sHA2z6L42ZMduOtLb3GmZzg==
       tarball: file:projects/origin-backend.tgz
     version: 0.0.0
   file:projects/origin-device-registry-api-client.tgz_21da09de4c3ed72abc361ba15e3e6617:
@@ -33927,6 +33931,7 @@ specifiers:
   jest-environment-jsdom-fifteen: 1.0.2
   json-to-pretty-yaml: 1.2.2
   jsonschema: 1.4.0
+  jsonwebtoken: ~8.5.1
   lodash: ^4.17.21
   mandrill-nodemailer-transport: 1.2.1
   mini-css-extract-plugin: 1.6.0
