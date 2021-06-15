@@ -65,10 +65,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function approveCertificationRequestPrivate(
         uint256 _requestId,
-        bytes32 _commitment,
-        bytes memory _validityData
+        bytes32 _commitment
     ) public onlyOwner returns (uint256) {
-		uint256 certificateId = issuer.approveCertificationRequest(_requestId, 0, _validityData);
+		uint256 certificateId = issuer.approveCertificationRequest(_requestId, 0);
         _updateCommitment(certificateId, 0x0, _commitment);
 
 		Issuer.CertificationRequest memory request = issuer.getCertificationRequest(_requestId); // TO-DO: get storage instead of memory
@@ -83,8 +82,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
         return approveCertificationRequestPrivate(
             requestId,
-            _commitment,
-            abi.encodeWithSignature("isRequestValid(uint256)",requestId)
+            _commitment
         );
     }
 

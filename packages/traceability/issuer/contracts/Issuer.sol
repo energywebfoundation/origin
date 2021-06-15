@@ -9,12 +9,14 @@ import "./Registry.sol";
 
 contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     event CertificationRequested(address indexed _owner, uint256 indexed _id);
+    event CertificationRequestedBatch(address[] indexed _owners, uint256[] indexed _id);
     event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
+    event CertificationRequestBatchApproved(address[] indexed _owners, uint256[] indexed _ids, uint256[] indexed _certificateIds);
     event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
 
     event CertificateRevoked(uint256 indexed _certificateId);
 
-    int public certificateTopic;
+    uint256 public certificateTopic;
     Registry public registry;
     address public privateIssuer;
 
@@ -33,7 +35,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         address sender;
     }
 
-    function initialize(int _certificateTopic, address _registry) public initializer {
+    function initialize(uint256 _certificateTopic, address _registry) public initializer {
         require(_registry != address(0), "Issuer::initialize: Cannot use address 0x0 as registry address.");
 
         certificateTopic = _certificateTopic;
@@ -74,6 +76,28 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return id;
     }
 
+    function requestCertificationForBatch(bytes[] memory _data, address[] memory _owners) public returns (uint256[] memory) {
+        uint256[] memory requestIds = new uint256[](_data.length);
+
+        for (uint i = 1; i <= _data.length; i++) {
+            uint256 id = i + _latestCertificationRequestId;
+
+            _certificationRequests[id] = CertificationRequest({
+                owner: _owners[i],
+                data: _data[i],
+                approved: false,
+                revoked: false,
+                sender: _msgSender()
+            });
+
+            requestIds[i] = id;
+        }
+
+        emit CertificationRequestedBatch(_owners, requestIds);
+
+        return requestIds;
+    }
+
     function requestCertification(bytes calldata _data) external returns (uint256) {
         return requestCertificationFor(_data, _msgSender());
     }
@@ -109,8 +133,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function approveCertificationRequest(
         uint256 _requestId,
-        uint256 _value,
-        bytes memory _validityData
+        uint256 _value
     ) public returns (uint256) {
         require(_msgSender() == owner() || _msgSender() == privateIssuer, "Issuer::approveCertificationRequest: caller is not the owner or private issuer contract");
         require(_requestNotApprovedOrRevoked(_requestId), "Issuer::approveCertificationRequest: request already approved or revoked");
@@ -118,7 +141,14 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         CertificationRequest storage request = _certificationRequests[_requestId];
         request.approved = true;
 
-        uint256 certificateId = registry.issue(request.owner, _validityData, certificateTopic, _value, request.data);
+        uint256 certificateId = registry.issue(
+            request.owner,
+            abi.encodeWithSignature("isRequestValid(uint256)",_requestId),
+            certificateTopic,
+            _value,
+            request.data
+        );
+
         requestToCertificate[_requestId] = certificateId;
 
         emit CertificationRequestApproved(request.owner, _requestId, certificateId);
@@ -126,13 +156,61 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return certificateId;
     }
 
+    function approveCertificationRequestBatch(
+        uint256[] memory _requestIds,
+        uint256[] memory _values
+    ) public returns (uint256[] memory) {
+        require(_msgSender() == owner() || _msgSender() == privateIssuer, "Issuer::approveCertificationRequestBatch: caller is not the owner or private issuer contract");
+
+		for (uint i = 0; i < _requestIds.length; i++) {
+            require(_requestNotApprovedOrRevoked(_requestIds[i]), "Issuer::approveCertificationRequestBatch: request already approved or revoked");
+		}
+
+        address[] memory owners = new address[](_requestIds.length);
+        bytes[] memory data = new bytes[](_requestIds.length);
+        bytes[] memory validityData = new bytes[](_requestIds.length);
+
+        for (uint i = 0; i < _requestIds.length; i++) {
+            CertificationRequest storage request = _certificationRequests[_requestIds[i]];
+            request.approved = true;
+
+            owners[i] = request.owner;
+            data[i] = request.data;
+            validityData[i] = abi.encodeWithSignature("isRequestValid(uint256)",_requestIds[i]);
+        }
+
+        uint256[] memory certificateIds = registry.batchIssueMultiple(
+            owners,
+            data,
+            certificateTopic,
+            _values,
+            validityData
+        );
+
+        for (uint i = 0; i < _requestIds.length; i++) {
+            requestToCertificate[_requestIds[i]] = certificateIds[i];
+        }
+
+        emit CertificationRequestBatchApproved(owners, _requestIds, certificateIds);
+
+        return certificateIds;
+    }
+
     function issue(address _to, uint256 _value, bytes memory _data) public onlyOwner returns (uint256) {
         uint256 requestId = requestCertificationFor(_data, _to);
 
         return approveCertificationRequest(
             requestId,
-            _value,
-            abi.encodeWithSignature("isRequestValid(uint256)",requestId)
+            _value
+        );
+    }
+
+    function issueBatch(address[] memory _to, uint256[] memory _values, bytes[] memory _data) public onlyOwner returns (uint256[] memory) {
+        uint256[] memory requestIds = requestCertificationForBatch(_data, _to);
+
+        return approveCertificationRequestBatch(
+            requestIds,
+            _values
         );
     }
 

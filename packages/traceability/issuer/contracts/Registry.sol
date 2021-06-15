@@ -13,20 +13,74 @@ contract Registry is ERC1155, ERC1888 {
 
 	constructor(string memory _uri) public ERC1155(_uri) {}
 
-	function issue(address _to, bytes calldata _validityData, int256 _topic, uint256 _value, bytes calldata _data) external override returns (uint256 _id) {
+	function issue(address _to, bytes calldata _validityData, uint256 _topic, uint256 _value, bytes calldata _issuanceData) external override returns (uint256) {
 		_validate(_msgSender(), _validityData);
 
-		_id = ++_latestCertificateId;
-		ERC1155._mint(_to, _id, _value, _data);
+		uint256 _id = ++_latestCertificateId;
+		ERC1155._mint(_to, _id, _value, _issuanceData);
 
 		certificateStorage[_id] = Certificate({
 			topic: _topic,
 			issuer: _msgSender(),
 			validityData: _validityData,
-			data: _data
+			data: _issuanceData
 		});
 
-		emit IssuanceSingle(_msgSender(), _topic, _id);
+		emit IssuanceSingle(_msgSender(), _topic, _id, _value);
+
+		return _id;
+	}
+
+	function batchIssue(address _to, bytes memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external override returns (uint256[] memory) {
+		uint256[] memory _ids = new uint256[](_values.length);
+
+		address operator = _msgSender();
+
+		for (uint256 i = 1; i <= _values.length; ++i) {
+			_ids[i] = i + _latestCertificateId;
+			_validate(operator, _validityCalls[_ids[i]]);
+		}
+			
+		ERC1155._mintBatch(_to, _ids, _values, _issuanceData);
+
+		for (uint256 i = 0; i <= _ids.length; ++i) {
+			certificateStorage[_ids[i]] = Certificate({
+				topic: _topic,
+				issuer: operator,
+				validityData: _validityCalls[i],
+				data: _issuanceData
+			});
+		}
+
+		emit IssuanceBatch(operator, _topic, _ids, _values);
+
+		return _ids;
+	}
+
+	function batchIssueMultiple(address[] memory _to, bytes[] memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external returns (uint256[] memory) {
+		uint256[] memory _ids = new uint256[](_values.length);
+
+		address operator = _msgSender();
+
+		for (uint256 i = 0; i < _values.length; ++i) {
+			_ids[i] = i + _latestCertificateId;
+			_validate(operator, _validityCalls[_ids[i]]);
+		}
+			
+		for (uint256 i = 0; i <= _ids.length; ++i) {
+			ERC1155._mint(_to[i], _ids[i], _values[i], _issuanceData[i]);
+
+			certificateStorage[_ids[i]] = Certificate({
+				topic: _topic,
+				issuer: operator,
+				validityData: _validityCalls[i],
+				data: _issuanceData[i]
+			});
+		}
+
+		emit IssuanceBatch(operator, _topic, _ids, _values);
+
+		return _ids;
 	}
 
 	function mint(uint256 _id, address _to, uint256 _quantity) external {
@@ -83,7 +137,7 @@ contract Registry is ERC1155, ERC1888 {
 			"Registry::safeBatchTransferAndClaimFrom: not all arrays are of the same length."
 		);
 
-		int256[] memory topics = new int256[](numberOfClaims);
+		uint256[] memory topics = new uint256[](numberOfClaims);
 
 		for (uint256 i = 0; i < numberOfClaims; ++i) {
 			Certificate memory cert = certificateStorage[_ids[i]];
@@ -102,7 +156,7 @@ contract Registry is ERC1155, ERC1888 {
 		emit ClaimBatch(_from, _to, topics, _ids, _values, _claimData);
 	}
 
-	function getCertificate(uint256 _id) external override view returns (address issuer, int256 topic, bytes memory validityData, bytes memory data) {
+	function getCertificate(uint256 _id) public view override returns (address issuer, uint256 topic, bytes memory validityCall, bytes memory data) {
 		require(_id <= _latestCertificateId, "Registry::getCertificate: _id out of bounds");
 
 		Certificate memory certificate = certificateStorage[_id];
@@ -124,6 +178,28 @@ contract Registry is ERC1155, ERC1888 {
 
         return batchClaimBalances;
 	}
+
+    /**
+     * 	Modification to the OpenZeppelin ERC-1155 to support to[] addresses
+     */
+    // function _mintBatch(address[] to, uint256[] memory ids, uint256[] memory amounts, bytes[] memory data, bytes[] memory validityData) internal override {
+	// 	require(to.length == ids.length, "ERC1155: to and ids length mismatch");
+    //     require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
+
+    //     address operator = _msgSender();
+
+    //     for (uint i = 0; i < ids.length; i++) {
+    //     	require(_to != address(0), "ERC1155: mint to the zero address");
+	// 		_validate(operator, _validityData[i]);
+    //     }
+
+    //     for (uint i = 0; i < ids.length; i++) {
+    //         _balances[ids[i]][to[i]] += amounts[i];
+
+	//         emit TransferSingle(operator, address(0), to[i], ids[i], amounts[i]);
+	// 		_doSafeTransferAcceptanceCheck(operator, address(0), to[i], ids[i], amounts[i], data);
+    //     }
+    // }
 
 	function _burn(address _from, uint256 _id, uint256 _value) internal override {
 		ERC1155._burn(_from, _id, _value);
