@@ -21,6 +21,7 @@ import {
     ParseIntPipe,
     Post,
     Put,
+    Request,
     UnauthorizedException,
     UseGuards,
     UseInterceptors,
@@ -45,6 +46,7 @@ import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 import { RegisterDidUserDTO } from './dto/register-did-user.dto';
+import { Request as ExpressRequest } from 'express';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
@@ -71,8 +73,22 @@ export class UserController {
     // TODO: should be allowed only when one of conditions met:
     //  1) user has a DID role within already onboarded organization
     //  2) user has a DID organizationadmin role within an organization
-    public async registerDid(@Body() userRegistrationData: RegisterDidUserDTO): Promise<UserDTO> {
-        return this.userService.createDid(userRegistrationData);
+    public async registerDid(
+        @Request() req: ExpressRequest,
+        @Body() userRegistrationData: RegisterDidUserDTO
+    ): Promise<UserDTO> {
+        const user = req.user as { did: string; iat: number; verifiedRoles: object[] };
+
+        const { title, firstName, lastName, email, telephone } = userRegistrationData;
+
+        return this.userService.createDid({
+            title,
+            firstName,
+            lastName,
+            email,
+            telephone,
+            did: user.did
+        });
     }
 
     @Get('me')
