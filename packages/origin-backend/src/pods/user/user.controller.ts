@@ -68,6 +68,9 @@ export class UserController {
     @ApiBody({ type: RegisterDidUserDTO })
     @UseGuards(AuthGuard('jwt-basic'))
     @ApiResponse({ status: HttpStatus.CREATED, type: UserDTO, description: 'Register a user' })
+    // TODO: should be allowed only when one of conditions met:
+    //  1) user has a DID role within already onboarded organization
+    //  2) user has a DID organizationadmin role within an organization
     public async registerDid(@Body() userRegistrationData: RegisterDidUserDTO): Promise<UserDTO> {
         return this.userService.createDid(userRegistrationData);
     }
