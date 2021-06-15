@@ -78,10 +78,10 @@ export class UserService {
     public async createDid(data: DidUserRegistrationData): Promise<User> {
         // TODO: refactor after final Switchboard integration to reduce repeated code
 
-        const isExistingUser = await this.hasUser({ email: data.email });
+        const isExistingUser = await this.hasUser({ did: data.did });
 
         if (isExistingUser) {
-            const message = `User with email ${data.email} already exists`;
+            const message = `${data.did} user already exists`;
 
             this.logger.error(message);
             throw new ConflictException({
@@ -89,8 +89,6 @@ export class UserService {
                 message
             });
         }
-
-        // TODO: check if user exists for a provided did
 
         const user = await this.repository.save({
             did: data.did,
