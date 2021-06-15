@@ -38,8 +38,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         let user;
 
         if (payload.verifiedRoles) {
-            // TODO: find user record by another criteria in case of DID
-            user = await this.userService.findByEmail(payload.email);
+            user = await this.userService.findByDid(payload.did);
         } else {
             user = await this.userService.findByEmail(payload.email);
             return user;
