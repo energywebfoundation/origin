@@ -243,7 +243,10 @@ describe('DID user e2e tests', function () {
                             email: 'invited@a.aa',
                             role: 4
                         })
-                        .expect(HttpStatus.OK);
+                        .expect(HttpStatus.BAD_REQUEST, {
+                            success: false,
+                            message: "User doesn't belong to any organization."
+                        });
                 });
             });
         });
