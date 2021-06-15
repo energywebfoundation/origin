@@ -7,10 +7,6 @@ import { IUser, Role } from '@energyweb/origin-backend-core';
 import { UserService } from '../pods/user/user.service';
 import { IJWTPayload } from './auth.service';
 
-const acceptedRoles: string[] = process.env.ACCEPTED_ROLES
-    ? process.env.ACCEPTED_ROLES.split(',').map((r) => r.toLowerCase())
-    : [];
-
 const chainToOriginRoleNamesMap: { [index: string]: string } = Object.keys(Role)
     .map((key: keyof typeof Role) => Role[key])
     .filter((value) => typeof value === 'string')
@@ -49,9 +45,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         }
 
         const roles: Role[] = payload.verifiedRoles
-            .filter((role) => acceptedRoles.indexOf(role.nameSpace) > -1)
+            .filter((role) => Role[chainToOriginRoleNamesMap[role.name] as keyof typeof Role]) // only roles that are recognized by the Origin
             .map((role) => chainToOriginRoleNamesMap[role.name])
             .map((roleName: keyof typeof Role) => Role[roleName]);
+
+        // TODO: design and implement functionality onboarding users and organizaitons
+        //  then, based on it implement filtering roles used to build user.rights value
 
         let rights = roles.reduce((acc, role) => {
             return acc | role;
