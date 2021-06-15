@@ -22,7 +22,7 @@ import { ReadStream } from 'fs';
 export type UserIdentifier = ILoggedInUser | string | number;
 
 @Injectable()
-export class IrecCertificateService {
+export class IrecService {
     constructor(
         private readonly commandBus: CommandBus,
         private readonly configService: ConfigService
@@ -177,5 +177,11 @@ export class IrecCertificateService {
     async getTradeAccountCode(user: UserIdentifier): Promise<string> {
         const accounts = await this.getAccountInfo(user);
         return accounts.find((account: Account) => account.type === AccountType.Trade)?.code || '';
+    }
+
+    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
+        // const irecClient = await this.getIrecClient(user);
+        // TODO: get certificates somehow
+        return [];
     }
 }

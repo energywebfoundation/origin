@@ -53,7 +53,7 @@ import { Certificate } from './certificate.entity';
 @UseInterceptors(ExceptionInterceptor)
 @UsePipes(ValidationPipe)
 export class CertificateController {
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
+    constructor(public readonly commandBus: CommandBus, public readonly queryBus: QueryBus) {}
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)

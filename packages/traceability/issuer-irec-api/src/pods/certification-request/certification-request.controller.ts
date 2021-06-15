@@ -1,11 +1,4 @@
 import {
-    ActiveUserGuard,
-    ExceptionInterceptor,
-    Roles,
-    RolesGuard,
-    UserDecorator
-} from '@energyweb/origin-backend-utils';
-import {
     Body,
     Controller,
     Get,
@@ -19,6 +12,15 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import {
+    ActiveUserGuard,
+    ExceptionInterceptor,
+    Roles,
+    RolesGuard,
+    UserDecorator
+} from '@energyweb/origin-backend-utils';
 import {
     ILoggedInUser,
     ISuccessResponse,
@@ -26,8 +28,6 @@ import {
     Role,
     ValidateDeviceOwnershipQuery
 } from '@energyweb/origin-backend-core';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-
 import {
     ApproveCertificationRequestCommand,
     CertificateBoundToCertificationRequestCommand,
