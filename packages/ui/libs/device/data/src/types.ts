@@ -4,6 +4,7 @@ import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-re
 export type ComposedDevice = {
   id: string;
   ownerId: string;
+  owner: string;
   externalRegistryId: string;
   code: string;
   name: string;

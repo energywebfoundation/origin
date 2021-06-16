@@ -7,3 +7,4 @@ export * from './deviceDetail';
 export * from './meterReads';
 export * from './deviceTypes';
 export * from './registerDevice';
+export * from './pendingDevices';

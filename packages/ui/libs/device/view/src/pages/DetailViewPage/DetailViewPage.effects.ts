@@ -1,5 +1,5 @@
 import {
-  useAllExistingFuelTypes,
+  useAllDeviceFuelTypes,
   useDeviceDetailData,
 } from '@energyweb/origin-ui-device-data';
 import { useDeviceDetailViewLogic } from '@energyweb/origin-ui-device-logic';
@@ -15,8 +15,7 @@ export const useDetailViewPageEffects = () => {
     certifiedAmount,
   } = useDeviceDetailData(id);
 
-  const { allTypes, isLoading: isDeviceTypesLoading } =
-    useAllExistingFuelTypes();
+  const { allTypes, isLoading: isDeviceTypesLoading } = useAllDeviceFuelTypes();
   const { locationProps, cardProps } = useDeviceDetailViewLogic({
     device,
     owner: ownerName,
