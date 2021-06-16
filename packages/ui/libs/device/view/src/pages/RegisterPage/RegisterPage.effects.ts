@@ -1,13 +1,13 @@
 import { useRegisterDeviceFormLogic } from '@energyweb/origin-ui-device-logic';
 import {
   useAllDeviceTypes,
-  useAllExistingFuelTypes,
+  useAllDeviceFuelTypes,
   useApiRegisterDevice,
 } from '@energyweb/origin-ui-device-data';
 
 export const useRegisterPageEffects = () => {
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
-    useAllExistingFuelTypes();
+    useAllDeviceFuelTypes();
   const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
     useAllDeviceTypes();
 

@@ -26,7 +26,13 @@ export const useAppContainerEffects = () => {
 
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
+  const userIsDeviceManagerOrAdmin = isRole(
+    user,
+    Role.OrganizationDeviceManager,
+    Role.OrganizationAdmin
+  );
   const userIsActive = user && user.status === UserStatus.Active;
+  const userIsIssuer = isRole(user, Role.Issuer);
   const userIsAdminOrSupport = isRole(user, Role.Admin, Role.SupportAgent);
   const userIsOrgAdminOrAdminOrSupport = isRole(
     user,
@@ -53,10 +59,10 @@ export const useAppContainerEffects = () => {
     showSection: true,
     showAllDevices: true,
     showMapView: true,
-    showMyDevices: true,
-    showPendingDevices: true,
-    showRegisterDevice: true,
-    showDeviceImport: true,
+    showMyDevices: userIsDeviceManagerOrAdmin,
+    showPendingDevices: userIsIssuer,
+    showRegisterDevice: userIsDeviceManagerOrAdmin,
+    showDeviceImport: userIsDeviceManagerOrAdmin,
   });
   const accountMenu = getAccountMenu({
     t,

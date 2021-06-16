@@ -6,3 +6,4 @@ export * from './requestCertificates';
 export * from './detailView';
 export * from './types';
 export * from './smartMeter';
+export * from './pending';
