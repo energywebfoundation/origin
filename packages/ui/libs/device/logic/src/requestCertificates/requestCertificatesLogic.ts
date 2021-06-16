@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { TUseRequestCertificatesLogic } from './types';
@@ -8,8 +9,8 @@ export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = () => {
   return {
     initialValues: {
       energy: '',
-      fromTime: '',
-      toTime: '',
+      fromTime: dayjs().toISOString(),
+      toTime: dayjs().toISOString(),
     },
     validationSchema: yup.object({
       fromTime: yup
