@@ -9,7 +9,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    marginTop: 64,
     border: 'none',
     [theme.breakpoints.down('md')]: {
       marginTop: 0,

@@ -1,11 +1,28 @@
-import { useTranslation } from 'react-i18next';
-import { createRegisterDeviceForm } from '@energyweb/origin-ui-device-logic';
+import { useRegisterDeviceFormLogic } from '@energyweb/origin-ui-device-logic';
+import {
+  useAllDeviceTypes,
+  useAllExistingFuelTypes,
+  useApiRegisterDevice,
+} from '@energyweb/origin-ui-device-data';
 
 export const useRegisterPageEffects = () => {
-  const { t } = useTranslation();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllExistingFuelTypes();
+  const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
+    useAllDeviceTypes();
 
-  // Mock
-  const externalDeviceId = 'Smart Meter Readings API ID';
+  const formLogic = useRegisterDeviceFormLogic(
+    allFuelTypes,
+    allDeviceTypes,
+    process.env.NX_SMART_METER_ID
+  );
+  const submitHandler = useApiRegisterDevice();
 
-  return createRegisterDeviceForm(t, externalDeviceId);
+  const formProps = {
+    ...formLogic,
+    submitHandler,
+  };
+  const isLoading = areFuelTypesLoading || areDeviceTypesLoading;
+
+  return { isLoading, formProps };
 };

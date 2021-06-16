@@ -33,6 +33,8 @@ export type GenericFormField = {
     isValidCheck?: boolean;
   };
   textFieldProps?: BaseTextFieldProps;
+  dependentOn?: string;
+  dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
 };
 
 export interface GenericFormProps<FormValuesType> {
@@ -50,7 +52,7 @@ export interface GenericFormProps<FormValuesType> {
   formTitle?: string;
   formTitleVariant?: TypographyVariant;
   formClass?: string;
-  inputsVariant?: FormInputProps['variant'];
+  inputsVariant?: FormInputProps<FormValuesType>['variant'];
   formInputsProps?: BaseTextFieldProps;
   partOfMultiForm?: boolean;
   twoColumns?: boolean;

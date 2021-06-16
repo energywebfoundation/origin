@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { TUseSmartMeterTableArgs, TUseSmartMeterTableLogic } from '../types';
 
 const formatReadsData = (reads: TUseSmartMeterTableArgs['reads']) => {
-  return reads.map((reading) => ({
+  return reads?.map((reading) => ({
     id: reading.timestamp,
     time: dayjs(Number(reading.timestamp)).format('DD-MM-YYYY HH:mm'),
     meterValue: EnergyFormatter.format(BigNumber.from(reading.value)),

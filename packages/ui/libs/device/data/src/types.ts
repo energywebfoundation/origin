@@ -34,3 +34,47 @@ export type ComposedDevice = {
 };
 
 export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;
+
+export type TRegisterDeviceFormValues = {
+  facilityName: string;
+  deviceType: string;
+  fuelType: string;
+  commissioningDate: string;
+  registrationDate: string;
+  capacity: string;
+  region: string;
+  subregion: string;
+  province: string;
+  gridOperator: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  projectStory: string;
+  smartMeterId: string;
+};
+
+export type TCreateDeviceData = {
+  name: string;
+  code: string;
+  defaultAccount: string;
+  deviceType: string;
+  fuelType: string;
+  countryCode: string;
+  capacity: string;
+  commissioningDate: string;
+  registrationDate: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  timezone: string;
+  gridOperator: string;
+  notes: string;
+  smartMeterId: string;
+  description: string;
+  externalDeviceIds?: IExternalDeviceId[];
+  imageIds: string[];
+  country: string;
+  postalCode: string;
+  region: string;
+  subregion: string;
+};

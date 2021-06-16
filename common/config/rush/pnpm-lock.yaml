@@ -6,7 +6,6 @@ dependencies:
   '@emotion/babel-preset-css-prop': 11.0.0_@babel+core@7.9.6
   '@emotion/react': 11.0.0_a358369399a29ca6c22d461cd854bd75
   '@emotion/styled': 11.0.0_44be8c82ff0878abed0bc536b3cc94df
-  '@energyweb/energy-api': 0.2.0_express@4.17.1
   '@energyweb/energy-api-influxdb': 0.7.0_dc7550b32b1014ff62ea7cebd522ef42
   '@ethersproject/abi': 5.3.0
   '@ethersproject/abstract-provider': 5.3.0
@@ -20377,8 +20376,8 @@ packages:
       '@nodelib/fs.walk': 1.2.6
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.2
-      picomatch: 2.2.2
+      micromatch: 4.0.4
+      picomatch: 2.3.0
     dev: false
     engines:
       node: '>=8'
@@ -40583,7 +40582,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-mQ+nxRNUisQw+kCm57w5fKzxpDiAnPq41M6r2yvWuAchTKnurkQpYF1GjpDQbFlj46SZGaBomWnUNKGDHe1thA==
+      integrity: sha512-+SgFLQObT2DOndbmGZpnYKlAApSB3yqG8xWjIrxolDNTwi8S4CRB7E9Gm6ekT+qDz285fUufRGqfZE2fVow9Ug==
       tarball: file:projects/origin-backend-irec-app.tgz
     version: 0.0.0
   file:projects/origin-backend-react-query-client.tgz_9c382b770317fc973cc979f52ed1e7a0:
@@ -41475,7 +41474,6 @@ specifiers:
   '@emotion/babel-preset-css-prop': 11.0.0
   '@emotion/react': 11.0.0
   '@emotion/styled': 11.0.0
-  '@energyweb/energy-api': 0.2.0
   '@energyweb/energy-api-influxdb': 0.7.0
   '@ethersproject/abi': 5.3.0
   '@ethersproject/abstract-provider': 5.3.0

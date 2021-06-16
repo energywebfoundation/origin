@@ -1,14 +1,14 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import en from 'dayjs/locale/en';
+// import en from 'dayjs/locale/en';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-dayjs.locale({
-  ...en,
-  weekStart: 1,
-});
+// dayjs.locale({
+//   ...en,
+//   weekStart: 1,
+// });
 
 export enum DateFormatEnum {
   DATE_FORMAT_MDY = 'MMM D, YYYY',

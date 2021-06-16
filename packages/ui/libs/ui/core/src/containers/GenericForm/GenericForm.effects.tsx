@@ -50,5 +50,12 @@ export const useGenericFormEffects: TGenericFormEffects = ({
     ? !(nextForm && isValid)
     : !isValid || !isDirty;
 
-  return { control, register, onSubmit, errors, buttonDisabled, dirtyFields };
+  return {
+    control,
+    register,
+    onSubmit,
+    errors,
+    buttonDisabled,
+    dirtyFields,
+  };
 };
