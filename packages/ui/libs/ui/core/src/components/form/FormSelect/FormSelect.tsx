@@ -1,10 +1,5 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import {
-  Control,
-  Controller,
-  UseFormSetValue,
-  useWatch,
-} from 'react-hook-form';
+import { Control, Controller, useWatch } from 'react-hook-form';
 import { GenericFormField } from '../../../containers';
 import { SelectAutocomplete } from '../SelectAutocomplete';
 import { SelectRegular } from '../SelectRegular';

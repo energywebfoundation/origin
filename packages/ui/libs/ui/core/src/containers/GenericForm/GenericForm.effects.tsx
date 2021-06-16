@@ -4,7 +4,6 @@ import {
   useForm,
   UseFormRegister,
   Control,
-  UseFormSetValue,
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GenericFormProps } from './GenericForm.types';
