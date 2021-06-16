@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Drawer, DrawerProps, Hidden } from '@material-ui/core';
+import { Drawer, DrawerProps, Box } from '@material-ui/core';
 import { CloseButton } from '../../buttons';
 
 export interface ResponsiveSidebarProps {
@@ -16,18 +16,18 @@ export const ResponsiveSidebar: FC<ResponsiveSidebarProps> = ({
 }) => {
   return (
     <>
-      <Hidden mdDown>
+      <Box sx={{ display: { lg: 'block', xs: 'none' } }}>
         <Drawer open={open} variant="persistent" {...sidebarProps}>
           {handleClose && <CloseButton onClose={handleClose} />}
           {children}
         </Drawer>
-      </Hidden>
-      <Hidden mdUp>
+      </Box>
+      <Box sx={{ display: { lg: 'none', xs: 'block' } }}>
         <Drawer open={open} variant="temporary" {...sidebarProps}>
           {handleClose && <CloseButton onClose={handleClose} />}
           {children}
         </Drawer>
-      </Hidden>
+      </Box>
     </>
   );
 };

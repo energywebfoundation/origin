@@ -47,16 +47,16 @@ export const HierarchicalSelect: THierarchicalSelect = memo(
               return (
                 showInput && (
                   <SelectAutocomplete
+                    value={value}
+                    field={{
+                      ...field,
+                      options: convertLevelToSelectOptions(relevantOptions),
+                    }}
                     key={field.label + field.hierarchicalOptions[level].length}
-                    label={field.label}
-                    options={convertLevelToSelectOptions(relevantOptions)}
                     onChange={onChange}
                     errorExists={errorExists}
                     errorText={errorText}
-                    multiple={field.multiple}
-                    maxValues={field.maxValues}
                     variant={variant}
-                    textFieldProps={field.textFieldProps}
                   />
                 )
               );

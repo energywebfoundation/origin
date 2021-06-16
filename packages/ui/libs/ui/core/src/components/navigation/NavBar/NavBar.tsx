@@ -1,4 +1,4 @@
-import { Hidden } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
 import { UsernameAndOrgProps } from '../../layout';
 import { DesktopNav } from '../DesktopNav';
@@ -33,20 +33,20 @@ export const NavBar: FC<NavBarProps> = ({
 }) => {
   return (
     <>
-      <Hidden lgUp>
+      <Box sx={{ display: { lg: 'none', xs: 'block' } }}>
         <MobileNav
           open={openMobile}
           onClose={onMobileClose}
           menuSections={menuSections}
         />
-      </Hidden>
-      <Hidden lgDown>
+      </Box>
+      <Box sx={{ display: { lg: 'block', xs: 'none' } }}>
         <DesktopNav
           isAuthenticated={isAuthenticated}
           userAndOrgData={{ ...userData, ...orgData }}
           menuSections={menuSections}
         />
-      </Hidden>
+      </Box>
     </>
   );
 };

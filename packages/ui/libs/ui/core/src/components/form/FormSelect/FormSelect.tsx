@@ -1,5 +1,10 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  UseFormSetValue,
+  useWatch,
+} from 'react-hook-form';
 import { GenericFormField } from '../../../containers';
 import { SelectAutocomplete } from '../SelectAutocomplete';
 import { SelectRegular } from '../SelectRegular';
@@ -14,8 +19,8 @@ export interface FormSelectProps<FormValuesType> {
   control: Control<FormValuesType>;
   errorExists: boolean;
   errorText: string;
-  variant?: 'standard' | 'outlined' | 'filled';
   disable: boolean;
+  variant?: 'standard' | 'outlined' | 'filled';
 }
 
 export type TFormSelect = <FormValuesType>(
@@ -29,22 +34,26 @@ export const FormSelect: TFormSelect = ({
   errorText,
   variant,
 }) => {
+  const watchedValue = useWatch({
+    name: field.dependentOn as any,
+    control,
+  });
+  const dependentValue = !!field.dependentOn ? watchedValue : undefined;
+
   return (
     <Controller
       name={field.name as any}
       control={control}
-      render={({ field: { value, onChange } }) =>
-        field.autocomplete ? (
+      render={({ field: { value, onChange } }) => {
+        return field.autocomplete ? (
           <SelectAutocomplete
-            label={field.label}
-            options={field.options}
+            value={value}
+            field={field}
             onChange={onChange}
             errorExists={errorExists}
             errorText={errorText}
-            multiple={field.multiple}
-            maxValues={field.maxValues}
             variant={variant}
-            textFieldProps={field.textFieldProps}
+            dependentValue={dependentValue}
           />
         ) : (
           <SelectRegular
@@ -56,8 +65,8 @@ export const FormSelect: TFormSelect = ({
             variant={variant}
             textFieldProps={field.textFieldProps}
           />
-        )
-      }
+        );
+      }}
     />
   );
 };

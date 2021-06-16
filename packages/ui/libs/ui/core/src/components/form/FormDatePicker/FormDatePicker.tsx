@@ -32,7 +32,7 @@ export const FormDatePicker: TFormDatePicker = ({
       name={field.name as any}
       control={control}
       render={({ field: { value, onChange } }) => (
-        <LocalizationProvider dateAdapter={AdapterDayJs as any}>
+        <LocalizationProvider dateAdapter={AdapterDayJs}>
           <DatePicker
             disabled={disabled}
             onChange={onChange}

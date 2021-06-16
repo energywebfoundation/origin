@@ -4,6 +4,7 @@ import {
   useForm,
   UseFormRegister,
   Control,
+  UseFormSetValue,
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GenericFormProps } from './GenericForm.types';
@@ -50,5 +51,12 @@ export const useGenericFormEffects: TGenericFormEffects = ({
     ? !(nextForm && isValid)
     : !isValid || !isDirty;
 
-  return { control, register, onSubmit, errors, buttonDisabled, dirtyFields };
+  return {
+    control,
+    register,
+    onSubmit,
+    errors,
+    buttonDisabled,
+    dirtyFields,
+  };
 };

@@ -1,11 +1,11 @@
-import React, { FC, memo } from 'react';
+import React, { memo, PropsWithChildren, ReactElement } from 'react';
 import {
   InputAdornment,
   BaseTextFieldProps,
   TextField,
 } from '@material-ui/core';
 import { GenericFormField } from '../../../containers';
-import { UseFormRegister, FieldValues } from 'react-hook-form';
+import { UseFormRegister } from 'react-hook-form';
 
 export type FormInputField = Omit<
   GenericFormField,
@@ -13,17 +13,21 @@ export type FormInputField = Omit<
 > &
   BaseTextFieldProps;
 
-export interface FormInputProps extends BaseTextFieldProps {
+export interface FormInputProps<FormValues> extends BaseTextFieldProps {
   field: FormInputField;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<FormValues>;
   errorExists: boolean;
   errorText: string;
   isDirty: boolean;
-  variant?: 'standard' | 'outlined' | 'filled';
   disabled: boolean;
+  variant?: 'standard' | 'outlined' | 'filled';
 }
 
-export const FormInput: FC<FormInputProps> = memo(
+export type TFormInput = <FormValuesType>(
+  props: PropsWithChildren<FormInputProps<FormValuesType>>
+) => ReactElement;
+
+export const FormInput: TFormInput = memo(
   ({
     field,
     register,
@@ -34,7 +38,7 @@ export const FormInput: FC<FormInputProps> = memo(
     disabled,
     ...rest
   }) => {
-    const { ref, name, onBlur, onChange } = register(field.name);
+    const { ref, name, onBlur, onChange } = register(field.name as any);
     const showEndAdornment = field.endAdornment?.isValidCheck
       ? !errorExists && isDirty
       : true;
