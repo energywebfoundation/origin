@@ -81,6 +81,10 @@ export class UserController {
 
         const { title, firstName, lastName, email, telephone } = userRegistrationData;
 
+        // TODO:
+        //  - if not an OrganizationAdmin user, set user.rights accordingly, if not ambiguous
+        //  - if OrganizationAdmin in any org. set user.rights = OrganizationAdmin
+
         return this.userService.createDid({
             title,
             firstName,
