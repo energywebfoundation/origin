@@ -304,6 +304,20 @@
         "longitude": "Longitude",
         "projectStory": "Project story"
       },
+      "pending": {
+        "owner": "Owner",
+        "facilityName": "Facility Name",
+        "location": "Location",
+        "gridOperator": "Grid Operator",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "nameplateCapacity": "Nameplate capacity (MW)",
+        "status": "Status",
+        "certifiedFor": "Certified for {yearToDisplay} (MWh)",
+        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "approve": "Approve",
+        "reject": "Reject"
+      },
       "my": {
         "requestCertificates": {
           "formTitle": "Request Certificates for",
