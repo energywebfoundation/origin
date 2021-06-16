@@ -7,10 +7,11 @@ import request from 'supertest';
 import { IAM, setCacheClientOptions, setChainConfig, ENSNamespaceTypes } from 'iam-client-lib';
 
 import { OrganizationService } from '../src/pods/organization/organization.service';
-import { TUserBaseEntity, UserService } from '../src/pods/user';
+import { TUserBaseEntity, UserService, User } from '../src/pods/user';
 import { bootstrapTestInstance } from './origin-backend';
 import jwt from 'jsonwebtoken';
 import { UserStatus } from '@energyweb/origin-backend-core';
+import { Repository } from 'typeorm';
 
 describe('DID user e2e tests', function () {
     this.timeout(5000);
@@ -19,6 +20,7 @@ describe('DID user e2e tests', function () {
     let databaseService: DatabaseService;
     let organizationService: OrganizationService;
     let userService: UserService;
+    let userRepository: Repository<User>;
     let iam: IAM;
     let identityToken: string, did: string, didDocument: {};
 
@@ -27,7 +29,8 @@ describe('DID user e2e tests', function () {
             app,
             databaseService,
             organizationService,
-            userService
+            userService,
+            userRepository
             // invitationService
         } = await bootstrapTestInstance());
 
@@ -217,8 +220,12 @@ describe('DID user e2e tests', function () {
                     expect(userRecord.did).eq(did);
                 });
 
-                it('should have password field set to null', function () {
-                    this.skip(); // TODO: implement test
+                it('should have password field set to null', async function () {
+                    const rawDidUserRecord = (
+                        await userRepository.query(`Select * from public.user where did='${did}'`)
+                    )[0];
+                    expect(rawDidUserRecord).to.exist;
+                    expect(rawDidUserRecord.password).to.be.null;
                 });
 
                 it('should have rights record set according to on-chain roles', function () {
