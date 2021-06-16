@@ -59,7 +59,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		Certification requests
 	*/
 
-    function getCertificateCommitment(uint certificateId) public view returns (bytes32) {
+    function getCertificateCommitment(uint256 certificateId) public view returns (bytes32) {
         return _commitments[certificateId];
     }
 
@@ -135,18 +135,18 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, _msgSender());
 	}
 
-    function getPrivateTransferRequest(uint _certificateId) external view onlyOwner returns (PrivateTransferRequest memory) {
+    function getPrivateTransferRequest(uint256 _certificateId) external view onlyOwner returns (PrivateTransferRequest memory) {
         return _requestPrivateTransferStorage[_certificateId];
     }
 
-    function getMigrationRequest(uint _requestId) external view onlyOwner returns (RequestStateChange memory) {
+    function getMigrationRequest(uint256 _requestId) external view onlyOwner returns (RequestStateChange memory) {
         return _requestMigrateToPublicStorage[_requestId];
     }
 
-    function getMigrationRequestId(uint _certificateId) external view onlyOwner returns (uint256 _migrationRequestId) {
+    function getMigrationRequestId(uint256 _certificateId) external view onlyOwner returns (uint256 _migrationRequestId) {
         bool found = false;
 
-		for (uint i = 1; i <= _requestMigrateToPublicNonce; i++) {
+		for (uint256 i = 1; i <= _requestMigrateToPublicNonce; i++) {
             if (_requestMigrateToPublicStorage[i].certificateId == _certificateId) {
                 found = true;
 			    return i;
@@ -185,7 +185,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
 	function validateOwnershipProof(
         address _ownerAddress,
-        uint _volume,
+        uint256 _volume,
         string memory _salt,
         bytes32 _rootHash,
         Proof[] memory _proof
@@ -222,10 +222,10 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		emit CommitmentUpdated(_msgSender(), _id, _commitment);
 	}
 
-    function _migrationRequestExists(uint _certificateId) private view returns (bool) {
+    function _migrationRequestExists(uint256 _certificateId) private view returns (bool) {
         bool exists = false;
 
-		for (uint i = 1; i <= _requestMigrateToPublicNonce; i++) {
+		for (uint256 i = 1; i <= _requestMigrateToPublicNonce; i++) {
             if (_requestMigrateToPublicStorage[i].certificateId == _certificateId) {
                 exists = true;
                 return exists;

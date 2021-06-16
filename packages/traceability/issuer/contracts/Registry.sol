@@ -32,18 +32,21 @@ contract Registry is ERC1155, ERC1888 {
 	}
 
 	function batchIssue(address _to, bytes memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external override returns (uint256[] memory) {
+		require(_issuanceData.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
+		require(_values.length == _validityCalls.length, "Registry::batchIssueMultiple: _values and _validityCalls arrays have to be the same length");
+
 		uint256[] memory _ids = new uint256[](_values.length);
 
 		address operator = _msgSender();
 
-		for (uint256 i = 1; i <= _values.length; ++i) {
-			_ids[i] = i + _latestCertificateId;
-			_validate(operator, _validityCalls[_ids[i]]);
+		for (uint256 i = 0; i <= _values.length; i++) {
+			_ids[i] = i + _latestCertificateId + 1;
+			_validate(operator, _validityCalls[i]);
 		}
 			
 		ERC1155._mintBatch(_to, _ids, _values, _issuanceData);
 
-		for (uint256 i = 0; i <= _ids.length; ++i) {
+		for (uint256 i = 0; i < _ids.length; i++) {
 			certificateStorage[_ids[i]] = Certificate({
 				topic: _topic,
 				issuer: operator,
@@ -58,16 +61,20 @@ contract Registry is ERC1155, ERC1888 {
 	}
 
 	function batchIssueMultiple(address[] memory _to, bytes[] memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external returns (uint256[] memory) {
+		require(_to.length == _issuanceData.length, "Registry::batchIssueMultiple: _to and _issuanceData arrays have to be the same length");
+		require(_issuanceData.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
+		require(_values.length == _validityCalls.length, "Registry::batchIssueMultiple: _values and _validityCalls arrays have to be the same length");
+
 		uint256[] memory _ids = new uint256[](_values.length);
 
 		address operator = _msgSender();
 
-		for (uint256 i = 0; i < _values.length; ++i) {
-			_ids[i] = i + _latestCertificateId;
-			_validate(operator, _validityCalls[_ids[i]]);
+		for (uint256 i = 0; i < _values.length; i++) {
+			_ids[i] = i + _latestCertificateId + 1;
+			_validate(operator, _validityCalls[i]);
 		}
 			
-		for (uint256 i = 0; i <= _ids.length; ++i) {
+		for (uint256 i = 0; i < _ids.length; i++) {
 			ERC1155._mint(_to[i], _ids[i], _values[i], _issuanceData[i]);
 
 			certificateStorage[_ids[i]] = Certificate({
@@ -77,6 +84,8 @@ contract Registry is ERC1155, ERC1888 {
 				data: _issuanceData[i]
 			});
 		}
+
+		_latestCertificateId = _ids[_ids.length - 1];
 
 		emit IssuanceBatch(operator, _topic, _ids, _values);
 
@@ -125,7 +134,7 @@ contract Registry is ERC1155, ERC1888 {
 		bytes calldata _data,
 		bytes[] calldata _claimData
 	) external override {
-		uint numberOfClaims = _ids.length;
+		uint256 numberOfClaims = _ids.length;
 
         require(_to != address(0x0), "Registry::safeBatchTransferAndClaimFrom: _to address must be non-zero.");
         require(_ids.length == _values.length, "Registry::safeBatchTransferAndClaimFrom: _ids and _values array length must match.");
@@ -139,7 +148,7 @@ contract Registry is ERC1155, ERC1888 {
 
 		uint256[] memory topics = new uint256[](numberOfClaims);
 
-		for (uint256 i = 0; i < numberOfClaims; ++i) {
+		for (uint256 i = 0; i < numberOfClaims; i++) {
 			Certificate memory cert = certificateStorage[_ids[i]];
 			_validate(cert.issuer,  cert.validityData);
 			topics[i] = cert.topic;
@@ -149,7 +158,7 @@ contract Registry is ERC1155, ERC1888 {
 			safeBatchTransferFrom(_from, _to, _ids, _values, _data);
 		}
 
-		for (uint256 i = 0; i < numberOfClaims; ++i) {
+		for (uint256 i = 0; i < numberOfClaims; i++) {
 			_burn(_to, _ids[i], _values[i]);
 		}
 
@@ -172,34 +181,12 @@ contract Registry is ERC1155, ERC1888 {
 
         uint256[] memory batchClaimBalances = new uint256[](_owners.length);
 
-        for (uint256 i = 0; i < _owners.length; ++i) {
+        for (uint256 i = 0; i < _owners.length; i++) {
             batchClaimBalances[i] = this.claimedBalanceOf(_owners[i], _ids[i]);
         }
 
         return batchClaimBalances;
 	}
-
-    /**
-     * 	Modification to the OpenZeppelin ERC-1155 to support to[] addresses
-     */
-    // function _mintBatch(address[] to, uint256[] memory ids, uint256[] memory amounts, bytes[] memory data, bytes[] memory validityData) internal override {
-	// 	require(to.length == ids.length, "ERC1155: to and ids length mismatch");
-    //     require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
-
-    //     address operator = _msgSender();
-
-    //     for (uint i = 0; i < ids.length; i++) {
-    //     	require(_to != address(0), "ERC1155: mint to the zero address");
-	// 		_validate(operator, _validityData[i]);
-    //     }
-
-    //     for (uint i = 0; i < ids.length; i++) {
-    //         _balances[ids[i]][to[i]] += amounts[i];
-
-	//         emit TransferSingle(operator, address(0), to[i], ids[i], amounts[i]);
-	// 		_doSafeTransferAcceptanceCheck(operator, address(0), to[i], ids[i], amounts[i], data);
-    //     }
-    // }
 
 	function _burn(address _from, uint256 _id, uint256 _value) internal override {
 		ERC1155._burn(_from, _id, _value);

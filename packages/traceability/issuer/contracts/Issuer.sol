@@ -79,8 +79,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     function requestCertificationForBatch(bytes[] memory _data, address[] memory _owners) public returns (uint256[] memory) {
         uint256[] memory requestIds = new uint256[](_data.length);
 
-        for (uint i = 1; i <= _data.length; i++) {
-            uint256 id = i + _latestCertificationRequestId;
+        for (uint256 i = 0; i < _data.length; i++) {
+            uint256 id = i + _latestCertificationRequestId + 1;
 
             _certificationRequests[id] = CertificationRequest({
                 owner: _owners[i],
@@ -95,6 +95,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
         emit CertificationRequestedBatch(_owners, requestIds);
 
+        _latestCertificationRequestId = requestIds[requestIds.length - 1];
+
         return requestIds;
     }
 
@@ -104,7 +106,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function isRequestValid(uint256 _requestId) external view returns (bool) {
         CertificationRequest memory request = _certificationRequests[_requestId];
-        uint certificateId = requestToCertificate[_requestId];
+        uint256 certificateId = requestToCertificate[_requestId];
 
         return _requestId <= _latestCertificationRequestId
             && request.approved
@@ -162,7 +164,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     ) public returns (uint256[] memory) {
         require(_msgSender() == owner() || _msgSender() == privateIssuer, "Issuer::approveCertificationRequestBatch: caller is not the owner or private issuer contract");
 
-		for (uint i = 0; i < _requestIds.length; i++) {
+		for (uint256 i = 0; i < _requestIds.length; i++) {
             require(_requestNotApprovedOrRevoked(_requestIds[i]), "Issuer::approveCertificationRequestBatch: request already approved or revoked");
 		}
 
@@ -170,7 +172,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         bytes[] memory data = new bytes[](_requestIds.length);
         bytes[] memory validityData = new bytes[](_requestIds.length);
 
-        for (uint i = 0; i < _requestIds.length; i++) {
+        for (uint256 i = 0; i < _requestIds.length; i++) {
             CertificationRequest storage request = _certificationRequests[_requestIds[i]];
             request.approved = true;
 
@@ -187,7 +189,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             validityData
         );
 
-        for (uint i = 0; i < _requestIds.length; i++) {
+        for (uint256 i = 0; i < _requestIds.length; i++) {
             requestToCertificate[_requestIds[i]] = certificateIds[i];
         }
 
