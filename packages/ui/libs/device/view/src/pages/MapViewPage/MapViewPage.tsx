@@ -1,13 +1,20 @@
 import { GenericMap } from '@energyweb/origin-ui-core';
+import { CircularProgress } from '@material-ui/core';
 import React, { FC } from 'react';
 import { ItemHighlightedContent } from '../../containers';
-import { allDevicesMock } from '../../__mocks__/allDeviceMock';
+import { useMapViewPageEffects } from './MapViewPage.effects';
 
 export const MapViewPage: FC = () => {
+  const { allDevices, isLoading } = useMapViewPageEffects();
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
   return (
     <GenericMap
       apiKey=""
-      allItems={allDevicesMock}
+      allItems={allDevices}
       infoWindowContent={ItemHighlightedContent}
     />
   );
