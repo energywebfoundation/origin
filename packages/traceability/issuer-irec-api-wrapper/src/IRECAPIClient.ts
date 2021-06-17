@@ -264,7 +264,10 @@ export class IRECAPIClient extends EventEmitter {
 
                 return plainToClass(Beneficiary, response.data);
             },
-            update: async (id: string | number, params: BeneficiaryUpdateParams): Promise<void> => {
+            update: async (
+                id: string | number,
+                params: BeneficiaryUpdateParams
+            ): Promise<Beneficiary> => {
                 const beneficiaryParams =
                     params instanceof BeneficiaryUpdateParams
                         ? params
@@ -274,7 +277,13 @@ export class IRECAPIClient extends EventEmitter {
 
                 const url = `${beneficiaryManagementUrl}/${id}/edit`;
 
-                await this.axiosInstance.put(url, classToPlain(beneficiaryParams), this.config);
+                const response = await this.axiosInstance.put<unknown>(
+                    url,
+                    classToPlain(beneficiaryParams),
+                    this.config
+                );
+
+                return plainToClass(Beneficiary, response.data);
             },
             get: async (id: string | number): Promise<Beneficiary> => {
                 const url = `${beneficiaryManagementUrl}/${id}`;
