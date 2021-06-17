@@ -1,20 +1,10 @@
 import { useCertificateControllerGetAggregateCertifiedEnergyByDeviceId } from '@energyweb/issuer-api-react-query-client';
-import { useOrganizationControllerGet } from '@energyweb/origin-backend-react-query-client';
 import {
   OriginDeviceDTO,
   useDeviceRegistryControllerGet,
 } from '@energyweb/origin-device-registry-api-react-query-client';
 import { useDeviceControllerGet } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { composePublicDevices } from './utils';
-
-const useDeviceOwnerName = (id: OriginDeviceDTO['owner']) => {
-  const { data: organization, isLoading: isOrgLoading } =
-    useOrganizationControllerGet(Number(id), {
-      enabled: !!id,
-    });
-  const ownerName = organization?.name;
-  return { isOrgLoading, ownerName };
-};
 
 const useCertifiedAmountForDevice = (
   id: OriginDeviceDTO['externalRegistryId']
@@ -42,19 +32,14 @@ export const useDeviceDetailData = (id: OriginDeviceDTO['id']) => {
       enabled: !!originDevice?.externalRegistryId,
     });
 
-  const { ownerName, isOrgLoading } = useDeviceOwnerName(originDevice?.owner);
-
   const { certifiedAmount, isCertifiedLoading } = useCertifiedAmountForDevice(
     originDevice?.externalRegistryId
   );
 
   const isLoading =
-    isOriginDeviceLoading ||
-    isIRecDeviceLoading ||
-    isOrgLoading ||
-    isCertifiedLoading;
+    isOriginDeviceLoading || isIRecDeviceLoading || isCertifiedLoading;
   const device =
     !isLoading && composePublicDevices([originDevice], [iRecDevice])[0];
 
-  return { device, ownerName, certifiedAmount, isLoading };
+  return { device, certifiedAmount, isLoading };
 };

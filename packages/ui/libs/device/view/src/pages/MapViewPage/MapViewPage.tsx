@@ -13,7 +13,7 @@ export const MapViewPage: FC = () => {
 
   return (
     <GenericMap
-      apiKey=""
+      apiKey={process.env.NX_GOOGLE_MAPS_API_KEY}
       allItems={allDevices}
       infoWindowContent={ItemHighlightedContent}
     />
