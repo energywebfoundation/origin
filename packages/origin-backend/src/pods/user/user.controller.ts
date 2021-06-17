@@ -95,6 +95,23 @@ export class UserController {
         });
     }
 
+    @Get('did-roles')
+    @UseGuards(AuthGuard('jwt-basic'))
+    @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'get did user roles' })
+    public async getRoles(
+        @Request() req: ExpressRequest
+    ): Promise<{ did: string; roles: string[] }> {
+        const user = req.user as {
+            did: string;
+            iat: number;
+            verifiedRoles: { name: string; namespace: string }[];
+        };
+        return {
+            did: user.did,
+            roles: user.verifiedRoles.map((role) => role.namespace)
+        };
+    }
+
     @Get('me')
     @UseGuards(AuthGuard('jwt'))
     @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'Get my user profile' })

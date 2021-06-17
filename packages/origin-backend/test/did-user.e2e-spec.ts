@@ -162,6 +162,23 @@ describe('DID user e2e tests', function () {
 
                     // TODO: implement check if all expected on-chain roles are included in the access token
                 });
+
+                it('should be able to get DID roles', async function () {
+                    const accessTokenDecoded = jwt.verify(accessToken, process.env.JWT_SECRET) as {
+                        did: string;
+                        verifiedRoles: { name: string; namespace: string }[];
+                    };
+
+                    const { body: responseBody } = await request(app.getHttpServer())
+                        .get('/user/did-roles')
+                        .set('Authorization', `Bearer ${accessToken}`)
+                        .expect(HttpStatus.OK);
+
+                    expect(responseBody).to.exist;
+                    expect(responseBody.roles.sort()).to.deep.equal(
+                        accessTokenDecoded.verifiedRoles.map((r) => r.namespace).sort()
+                    );
+                });
             });
         });
 
