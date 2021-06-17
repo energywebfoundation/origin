@@ -279,6 +279,8 @@
         "viewDetailsButton": "View Details"
       },
       "detailView": {
+        "photo": "Photo",
+        "map": "Map",
         "smartMeter": {
           "tableTime": "Time ({timezone})",
           "tableMeterValue": "Meter value ({unit})",
