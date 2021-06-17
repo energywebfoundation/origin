@@ -7,6 +7,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./Registry.sol";
 
+/**
+ * @dev Issuer contract.
+ * Used to manage the request/approve workflow for issuing ERC-1888 certificates.
+ */
 contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     event CertificationRequested(address indexed _owner, uint256 indexed _id);
     event CertificationRequestedBatch(address[] indexed _owners, uint256[] indexed _id);
@@ -16,25 +20,42 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     event CertificateRevoked(uint256 indexed _certificateId);
 
+    // Certificate topic - check ERC-1888 topic description
     uint256 public certificateTopic;
+
+    // ERC-1888 contract to issue certificates to
     Registry public registry;
+
+    // Optional: Private Issuance contract
     address public privateIssuer;
 
+    // Storage for CertificationRequest structs
     mapping(uint256 => CertificationRequest) private _certificationRequests;
+
+    // Mapping from request ID to certificate ID
     mapping(uint256 => uint256) private requestToCertificate;
 
+    // Incrementing nonce, used for generating certification request IDs
     uint256 private _latestCertificationRequestId;
 
+    // Mapping to whether a certificate with a specific ID has been revoked by the Issuer
     mapping(uint256 => bool) private _revokedCertificates;
 
     struct CertificationRequest {
-        address owner;
+        address owner; // Owner of the request
         bytes data;
         bool approved;
         bool revoked;
-        address sender;
+        address sender;  // User that triggered the request creation
     }
 
+	/**
+     * @dev Contructor.
+     * Uses the OpenZeppelin `initializer` for upgradeability.
+     *
+     * Requirements:
+     * - `_registry` cannot be the zero address.
+     */
     function initialize(uint256 _certificateTopic, address _registry) public initializer {
         require(_registry != address(0), "Issuer::initialize: Cannot use address 0x0 as registry address.");
 
@@ -45,6 +66,12 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         UUPSUpgradeable.__UUPSUpgradeable_init();
     }
 
+	/**
+     * @dev Attaches a private issuance contract to this issuance contract.
+     *
+     * Requirements:
+     * - `_privateIssuer` cannot be the zero address.
+     */
     function setPrivateIssuer(address _privateIssuer) public onlyOwner {
         require(_privateIssuer != address(0), "Issuer::setPrivateIssuer: Cannot use address 0x0 as the private issuer address.");
         require(privateIssuer == address(0), "Issuer::setPrivateIssuer: private issuance contract already set.");
@@ -102,16 +129,6 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function requestCertification(bytes calldata _data) external returns (uint256) {
         return requestCertificationFor(_data, _msgSender());
-    }
-
-    function isRequestValid(uint256 _requestId) external view returns (bool) {
-        CertificationRequest memory request = _certificationRequests[_requestId];
-        uint256 certificateId = requestToCertificate[_requestId];
-
-        return _requestId <= _latestCertificationRequestId
-            && request.approved
-            && !request.revoked
-            && !_revokedCertificates[certificateId];
     }
 
     function revokeRequest(uint256 _requestId) external {
@@ -198,6 +215,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return certificateIds;
     }
 
+	/**
+     * @dev Directly issue a certificate without going through the request/approve procedure manually.
+     */
     function issue(address _to, uint256 _value, bytes memory _data) public onlyOwner returns (uint256) {
         uint256 requestId = requestCertificationFor(_data, _to);
 
@@ -207,6 +227,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         );
     }
 
+	/**
+     * @dev Directly issue a batch of certificates without going through the request/approve procedure manually.
+     */
     function issueBatch(address[] memory _to, uint256[] memory _values, bytes[] memory _data) public onlyOwner returns (uint256[] memory) {
         uint256[] memory requestIds = requestCertificationForBatch(_data, _to);
 
@@ -214,6 +237,24 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             requestIds,
             _values
         );
+    }
+
+	/**
+     * @dev Validation for certification requests.
+     * Used by other contracts to validate the token.
+     *
+     * Requirements:
+     * - `_requestId` has to be an existing ID.
+     */
+    function isRequestValid(uint256 _requestId) external view returns (bool) {
+        require(_requestId <= _latestCertificationRequestId, "Issuer::isRequestValid: certification request ID out of bounds");
+
+        CertificationRequest memory request = _certificationRequests[_requestId];
+        uint256 certificateId = requestToCertificate[_requestId];
+
+        return request.approved
+            && !request.revoked
+            && !_revokedCertificates[certificateId];
     }
 
 	/*
@@ -242,5 +283,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return !request.approved && !request.revoked;
     }
     
+	/**
+     * @dev Needed for OpenZeppelin contract upgradeability.
+     * Allow only to the owner of the contract.
+     */
 	function _authorizeUpgrade(address) internal override onlyOwner {}
 }
