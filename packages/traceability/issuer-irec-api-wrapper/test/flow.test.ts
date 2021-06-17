@@ -27,6 +27,7 @@ describe('API flows', () => {
     let registrantOrg: Organisation;
     let participantOrg: Organisation;
 
+    // const redemptionAccount = 'ACCOUNTREDEMPTION001';
     const tradeAccount = 'ACCOUNTTRADE001';
     const issueAccount = 'ACCOUNTISSUE001';
 
@@ -160,10 +161,16 @@ describe('API flows', () => {
 
         await registrantClient.issue.submit(issueCode);
         await issuerClient.issue.verify(issueCode);
-        await issuerClient.issue.approve(issueCode, {
+        const transaction = await issuerClient.issue.approve(issueCode, {
             issuer: issueAccount,
             notes: 'it is ok'
         });
+
+        expect(transaction.code).to.be.a('string');
+        expect(transaction.volume).to.equal(10);
+        expect(transaction.sender).to.equal(issueAccount);
+        expect(transaction.recipient).to.equal(tradeAccount);
+
         issue = await registrantClient.issue.get(issueCode);
         expect(issue.status).to.equal(IssuanceStatus.Issued);
         issuerIssue = await issuerClient.issue.get(issueCode);
