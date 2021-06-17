@@ -99,7 +99,7 @@
         "chai": "4.3.0",
         "@types/chai": "4.2.15",
         "ts-node": "9.1.1",
-        "iam-client-lib": "3.0.0-alpha.20",
+        "iam-client-lib": "3.0.0-alpha.21",
         "jsonwebtoken": "8.5.1"
     },
     "files": [

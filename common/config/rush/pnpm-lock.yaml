@@ -169,7 +169,6 @@ dependencies:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
-  iam-client-lib: 3.0.0-alpha.20_@babel+core@7.14.5
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4_ts-node@9.1.1
@@ -2595,6 +2594,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-EinoPzFmiWkMcl+1wF06kNL0QwNEm8ZgBaVgaBahetWFE+TXWkXP9R1tw386wO8zX2bAcz/D7KB7miM4lTiDpQ==
+  /@energyweb/iam-contracts/1.11.2:
+    dependencies:
+      '@openzeppelin/contracts': 3.4.1
+      ethers: 4.0.45
+    dev: false
+    resolution:
+      integrity: sha512-T/tAwW7I4HP4eq+YIAwvt55qd474iapn+BnYHgd5g1AoVB38nLIVE2ld8oexikGrb1rdbgSkjcaqrBh1rFAmJA==
   /@ensdomains/ens/0.4.5:
     dependencies:
       bluebird: 3.7.2
@@ -7601,7 +7607,7 @@ packages:
       integrity: sha512-9oKfrJXuAxvyxdrtMCxKkHgmd6DMO8NDOLvMJ1LvIWd6/xP+i81PAkpTaEca7VhJX9S009RciwZL/j6dsLsHrA==
   /@types/pbkdf2/3.1.0:
     dependencies:
-      '@types/node': 14.17.2
+      '@types/node': 14.17.3
     dev: false
     resolution:
       integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==
@@ -7732,7 +7738,7 @@ packages:
       integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA==
   /@types/secp256k1/4.0.2:
     dependencies:
-      '@types/node': 14.17.2
+      '@types/node': 14.17.3
     dev: false
     resolution:
       integrity: sha512-QMg+9v0bbNJ2peLuHRWxzmy0HRJIG6gFZNhaRSp7S3ggSbCCxiqQB2/ybvhXyhHOCequpNkrx7OavNhrWOsW0A==
@@ -17529,6 +17535,41 @@ packages:
       '@babel/core': '*'
     resolution:
       integrity: sha512-RCEroc89lL4A5nktgQjZk+UlKGguGPUI5YbTNd4yoLJS33eZUuPRMM/F05qBDuUHMDk5g3GUKTw2Jg/T116zBg==
+  /iam-client-lib/3.0.0-alpha.21_@babel+core@7.14.5:
+    dependencies:
+      '@babel/runtime': 7.14.5
+      '@energyweb/iam-contracts': 1.11.2
+      '@ensdomains/ens': 0.4.5
+      '@ew-did-registry/claims': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-document': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1045.0
+      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1045.0
+      '@ew-did-registry/jwt': 0.5.2-alpha.1045.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
+      '@ew-did-registry/proxyidentity': 0.5.2-alpha.1045.0
+      '@gnosis.pm/safe-apps-sdk': 1.0.3
+      '@metamask/detect-provider': 1.2.0
+      '@walletconnect/web3-provider': 1.0.0-rc.4_@babel+core@7.14.5
+      axios: 0.21.1
+      base64url: 3.0.1
+      concurrently: 6.2.0
+      eth-ens-namehash: 2.0.8
+      ethers: 4.0.45
+      js-sha3: 0.8.0
+      lodash.difference: 4.5.0
+      nats.ws: 1.0.0-111
+      qs: 6.10.1
+      tslib: 2.2.0
+      uuid: 7.0.3
+    dev: false
+    engines:
+      node: '>= 10.0.0'
+      npm: '>= 6.0.0'
+    peerDependencies:
+      '@babel/core': '*'
+    resolution:
+      integrity: sha512-lnBT5Nflq0siZMmGsTnIyMgqbP6NUMcD+2eVyld7x/tXQjx8xhjUeXsprZ6JUDZV5oDsEADgNf8M3/P/+D48wQ==
   /ice-cap/0.0.4:
     dependencies:
       cheerio: 0.20.0
@@ -33471,7 +33512,7 @@ packages:
       dotenv: 10.0.0
       ethers: 5.3.1
       express: 4.17.1
-      iam-client-lib: 3.0.0-alpha.20_@babel+core@7.14.5
+      iam-client-lib: 3.0.0-alpha.21_@babel+core@7.14.5
       jest: 27.0.4_ts-node@9.1.1
       jsonwebtoken: 8.5.1
       mocha: 9.0.0
@@ -33498,7 +33539,7 @@ packages:
       swagger-ui-express: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-JGUJcwuVwY1MrAcI2D71cbBEKkKjP1o4KE+LjWgkALESLhdenCMNUYSSD83i78/9lrnaBC9/vh4tOw7TwF1Jow==
+      integrity: sha512-v4G/amyj9uBiVURvy1ZUvMe4EZCerWK6iukEHVhzcT22tOJDwdPbx7KNDxio5ernHUukNzAsi1qWKRbwDQopmg==
       tarball: file:projects/origin-backend.tgz
     version: 0.0.0
   file:projects/origin-device-registry-api-client.tgz_21da09de4c3ed72abc361ba15e3e6617:
@@ -34357,7 +34398,6 @@ specifiers:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
-  iam-client-lib: 3.0.0-alpha.20
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4
