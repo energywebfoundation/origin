@@ -22,14 +22,6 @@ import {
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
-    ILoggedInUser,
-    ISuccessResponse,
-    ResponseFailure,
-    Role,
-    ValidateDeviceOwnershipQuery
-} from '@energyweb/origin-backend-core';
-import {
-    ApproveCertificationRequestCommand,
     CertificateBoundToCertificationRequestCommand,
     CreateCertificationRequestDTO,
     GetAllCertificationRequestsQuery,
@@ -39,8 +31,18 @@ import {
     SuccessResponseDTO,
     ValidateCertificationRequestCommand
 } from '@energyweb/issuer-api';
-import { CreateIrecCertificationRequestCommand } from './commands';
+import {
+    ApproveIrecCertificationRequestCommand,
+    CreateIrecCertificationRequestCommand
+} from './commands';
 import { FullCertificationRequestDTO } from './full-certification-request.dto';
+import {
+    ILoggedInUser,
+    ISuccessResponse,
+    ResponseFailure,
+    Role,
+    ValidateDeviceOwnershipQuery
+} from '@energyweb/origin-backend-core';
 
 @ApiTags('certification-requests')
 @ApiBearerAuth('access-token')
@@ -147,7 +149,7 @@ export class CertificationRequestController {
         description: 'Approves a Certification Request'
     })
     public async approve(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(new ApproveCertificationRequestCommand(id));
+        return this.commandBus.execute(new ApproveIrecCertificationRequestCommand(id));
     }
 
     @Put('/:id/revoke')

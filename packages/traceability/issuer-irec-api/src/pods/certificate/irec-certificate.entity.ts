@@ -13,6 +13,5 @@ export class IrecCertificate extends ExtendedBaseEntity {
     certificateId: number;
 
     @Column()
-    @IsInt()
-    irecIssueId: string;
+    irecCertificateId: string;
 }

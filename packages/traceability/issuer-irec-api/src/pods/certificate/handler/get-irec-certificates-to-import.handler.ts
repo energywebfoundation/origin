@@ -30,7 +30,7 @@ export class GetIrecCertificatesToImportHandler
 
         return issues.filter((issue) => {
             const certificationRequest = certificationRequests.find(
-                (cr) => cr.irecIssueId === issue.code
+                (cr) => cr.irecIssueRequestId === issue.code
             );
             return !certificationRequest;
         });

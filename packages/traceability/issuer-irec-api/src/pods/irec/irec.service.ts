@@ -11,7 +11,8 @@ import {
     Issue,
     IssuanceStatus,
     IssueWithStatus,
-    DeviceState
+    DeviceState,
+    Transaction
 } from '@energyweb/issuer-irec-api-wrapper';
 import {
     GetConnectionCommand,
@@ -166,6 +167,17 @@ export class IrecService {
                         notes: 'Some test notes'
                     },
                     type: AccountType.Redemption
+                },
+                {
+                    code: 'TESTISSUEACCOUNT',
+                    details: {
+                        name: 'Issue Account',
+                        private: false,
+                        restricted: false,
+                        active: true,
+                        notes: 'Some test notes'
+                    },
+                    type: AccountType.Issue
                 }
             ];
         }
@@ -179,9 +191,25 @@ export class IrecService {
         return accounts.find((account: Account) => account.type === AccountType.Trade)?.code || '';
     }
 
+    async getIssueAccountCode(user: UserIdentifier): Promise<string> {
+        const accounts = await this.getAccountInfo(user);
+        return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
+    }
+
     async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
-        // const irecClient = await this.getIrecClient(user);
-        // TODO: get certificates somehow
         return [];
+        // TODO: get certificates somehow
+        // NOTE: wait for IREC guys to implement cross ids between issue request and items
+        // const irecClient = await this.getIrecClient(user);
+        // return irecClient.account.getItems();
+    }
+
+    async approveIssueRequest(
+        user: UserIdentifier,
+        issueRequestCode: string,
+        issuerAccountCode: string
+    ): Promise<Transaction> {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
     }
 }

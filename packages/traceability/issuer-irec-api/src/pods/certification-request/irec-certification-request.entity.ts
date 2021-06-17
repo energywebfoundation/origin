@@ -18,5 +18,9 @@ export class IrecCertificationRequest
 
     @Column({ default: '' })
     @IsOptional()
-    irecIssueId?: string;
+    irecIssueRequestId?: string;
+
+    @Column({ default: '' })
+    @IsOptional()
+    irecCertificateId?: string; // It is called an "Item" in IREC API
 }

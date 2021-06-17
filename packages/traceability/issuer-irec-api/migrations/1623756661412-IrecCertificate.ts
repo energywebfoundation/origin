@@ -9,7 +9,7 @@ export class IrecCertificate1623756661412 implements MigrationInterface {
                 "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), 
                 "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), 
                 "certificateId" integer NOT NULL,
-                "irecIssueId" character varying NOT NULL, 
+                "irecCertificateId" character varying NOT NULL, 
                 CONSTRAINT "PK_bdc74ba2885c16d4fe7959060f9" PRIMARY KEY ("certificateId"))
             `
         );
