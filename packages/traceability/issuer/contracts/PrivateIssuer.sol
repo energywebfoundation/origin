@@ -7,9 +7,19 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./Issuer.sol";
 
+/**
+ * @dev Contract for private issuances.
+ * Private certificate issuance differ from the public ones in a way
+ * that the fungible volumes that are being transferred/claimed are stored off-chain.
+ *
+ * A privately issued certificate can later be migrated to be public.
+ */
 contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
+	// Public issuance contract
 	Issuer public issuer;
+
+    // ERC-1888 contract to issue certificates to
 	Registry public registry;
 
 	event PrivateCertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
@@ -18,25 +28,33 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	event PrivateTransferRequested(address indexed _owner, uint256 indexed _certificateId);
 	event CertificateMigratedToPublic(uint256 indexed _certificateId, address indexed _owner, uint256 indexed _amount);
 
-	uint256 private _requestMigrateToPublicNonce;
-	uint256 private _requestPrivateTransferNonce;
-
+	// Storage for RequestStateChange
 	mapping(uint256 => RequestStateChange) private _requestMigrateToPublicStorage;
-	mapping(uint256 => PrivateTransferRequest) private _requestPrivateTransferStorage;
-	mapping(uint256 => uint256) private _requestToCertificate;
 
+	// Storage for PrivateTransferRequest
+	mapping(uint256 => PrivateTransferRequest) private _requestPrivateTransferStorage;
+
+	// Mapping to keep track if a certification request has been migrated to public
 	mapping(uint256 => bool) private _migrations;
+
+	// Storing a commitment (proof) per certification request ID
 	mapping(uint256 => bytes32) private _commitments;
 
+	// Nonce for generating RequestStateChange IDs
+	uint256 private _requestMigrateToPublicNonce;
+
+	// Nonce for generating PrivateTransferRequest IDs
+	uint256 private _requestPrivateTransferNonce;
+
     struct PrivateTransferRequest {
-		address owner;
-		bytes32 hash;
+		address owner; // Address that requested a migration to public certificate
+		bytes32 hash; // Commitment proof that
 	}
 
 	struct RequestStateChange {
-		address owner;
-		uint256 certificateId;
-		bytes32 hash;
+		address owner; // Owner of the certificate
+		uint256 certificateId; // ID of the issued certificate
+		bytes32 hash; // Commitment (proof)
 		bool approved;
 	}
 
@@ -44,7 +62,14 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		bool left;
 		bytes32 hash;
 	}
-
+	
+	/**
+     * @dev Contructor.
+     * Uses the OpenZeppelin `initializer` for upgradeability.
+     *
+     * Requirements:
+     * - `_issuer` cannot be the zero address.
+     */
     function initialize(address _issuer) public initializer {
         require(_issuer != address(0), "PrivateIssuer::initialize: Cannot use address 0x0 as Issuer address.");
 
@@ -59,6 +84,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		Certification requests
 	*/
 
+	/**
+     * @dev Get the commitment (proof) for a specific certificate.
+     */
     function getCertificateCommitment(uint256 certificateId) public view returns (bytes32) {
         return _commitments[certificateId];
     }
@@ -70,14 +98,19 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		uint256 certificateId = issuer.approveCertificationRequest(_requestId, 0);
         _updateCommitment(certificateId, 0x0, _commitment);
 
-		Issuer.CertificationRequest memory request = issuer.getCertificationRequest(_requestId); // TO-DO: get storage instead of memory
+		Issuer.CertificationRequest memory request = issuer.getCertificationRequest(_requestId);
 
         emit PrivateCertificationRequestApproved(request.owner, _requestId, certificateId);
 
         return certificateId;
     }
 
+	/**
+     * @dev Directly issue a private certificate.
+     */
     function issuePrivate(address _to, bytes32 _commitment, bytes memory _data) public onlyOwner returns (uint256) {
+        require(_to != address(0x0), "PrivateIssuer::issuePrivate: Cannot use address 0x0 as _to address.");
+
         uint256 requestId = issuer.requestCertificationFor(_data, _to);
 
         return approveCertificationRequestPrivate(
@@ -86,12 +119,18 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         );
     }
 
-	/*
-		Private transfer
-	*/
+	/**
+     * @dev Request transferring a certain amount of tokens
+	 *
+	 * @param `_certificateId` - Certificate that you want to change the balances of
+	 * @param `_ownerAddressLeafHash` - New updated proof (balances per address)
+     */
 	function requestPrivateTransfer(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external {
 		PrivateTransferRequest storage currentRequest = _requestPrivateTransferStorage[_certificateId];
 
+		/*
+		 * RESTRICTION: There can only be one private transfer request at a time per certificate.
+		 */
         require(currentRequest.owner == address(0x0), "PrivateIssuer::requestPrivateTransfer:Only one private transfer can be requested at a time.");
 
 		_requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
@@ -102,6 +141,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		emit PrivateTransferRequested(_msgSender(), _certificateId);
 	}
 
+	/**
+     * @dev Approve a private transfer of certificates.
+     */
 	function approvePrivateTransfer(
         uint256 _certificateId,
         Proof[] calldata _proof,
@@ -123,26 +165,44 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return true;
 	}
 
-	/*
-		Migrate to public certificate (public issue)
-	*/
-
-	function requestMigrateToPublicFor(uint256 _certificateId, bytes32 _ownerAddressLeafHash, address _forAddress) external onlyOwner returns (uint256 _migrationRequestId) {
-        return _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, _forAddress);
-	}
-
+	/**
+     * @dev Request the certificate volumes to be migrated from private to public.
+	 *
+	 * @param `_certificateId` - Certificate that you want to migrate to public
+	 * @param `_ownerAddressLeafHash` - Final balance proof
+     */
 	function requestMigrateToPublic(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external returns (uint256 _migrationRequestId) {
         return _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, _msgSender());
 	}
 
+	/**
+     * @dev Request the certificate volumes to be migrated from private to public for someone else.
+	 *
+	 * @param `_certificateId` - Certificate that you want to migrate to public
+	 * @param `_ownerAddressLeafHash` - Final balance proof
+	 * @param `_forAddress` - Owner
+     */
+	function requestMigrateToPublicFor(uint256 _certificateId, bytes32 _ownerAddressLeafHash, address _forAddress) external onlyOwner returns (uint256 _migrationRequestId) {
+        return _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, _forAddress);
+	}
+
+	/**
+     * @dev Get the private transfer request that is currently active for a specific certificate
+     */
     function getPrivateTransferRequest(uint256 _certificateId) external view onlyOwner returns (PrivateTransferRequest memory) {
         return _requestPrivateTransferStorage[_certificateId];
     }
 
+	/**
+     * @dev Get the migration request.
+     */
     function getMigrationRequest(uint256 _requestId) external view onlyOwner returns (RequestStateChange memory) {
         return _requestMigrateToPublicStorage[_requestId];
     }
 
+	/**
+     * @dev Get the migration request ID for a specific certificate.
+     */
     function getMigrationRequestId(uint256 _certificateId) external view onlyOwner returns (uint256 _migrationRequestId) {
         bool found = false;
 
@@ -156,6 +216,14 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         require(found, "unable to find the migration request");
     }
 
+	/**
+     * @dev Migrate a private certificate to be public
+	 *
+	 * @param `_requestId` - Migration Request ID
+	 * @param `_volume` - Volume that should be minted
+	 * @param `_salt` - Precise Proof salt
+	 * @param `_proof` - Precise Proof
+     */
 	function migrateToPublic(
         uint256 _requestId,
         uint256 _volume,
@@ -183,6 +251,15 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		Utils
 	*/
 
+	/**
+     * @dev Validates that a `_ownerAddress` actually owns `_volume` in a precise proof.
+	 *
+	 * @param `_ownerAddress` - Owner blockchain address
+	 * @param `_volume` - Volume that the owner should have
+	 * @param `_salt` - Precise Proof salt
+	 * @param `_rootHash` - Hash of the merkle tree root
+	 * @param `_proof` - Full Precise Proof
+     */
 	function validateOwnershipProof(
         address _ownerAddress,
         uint256 _volume,
@@ -195,6 +272,13 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		return validateMerkle(leafHash, _rootHash, _proof);
 	}
 
+	/**
+     * @dev Validates that a `_leafHash` is a leaf in the `_proof` with a merkle root hash `_rootHash`.
+	 *
+	 * @param `_leafHash` - Hash of the leaf in the merkle tree
+	 * @param `_rootHash` - Hash of the merkle tree root
+	 * @param `_proof` - Full Precise Proof
+     */
 	function validateMerkle(bytes32 _leafHash, bytes32 _rootHash, Proof[] memory _proof) private pure returns (bool) {
 		bytes32 hash = _leafHash;
 
