@@ -60,6 +60,9 @@ contract Registry is ERC1155, ERC1888 {
 		return _ids;
 	}
 
+	/*
+	 *	Not a part of the ERC-1888 standard - allows batch issuing to an array of _to addresses
+	 */
 	function batchIssueMultiple(address[] memory _to, bytes[] memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external returns (uint256[] memory) {
 		require(_to.length == _issuanceData.length, "Registry::batchIssueMultiple: _to and _issuanceData arrays have to be the same length");
 		require(_issuanceData.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
