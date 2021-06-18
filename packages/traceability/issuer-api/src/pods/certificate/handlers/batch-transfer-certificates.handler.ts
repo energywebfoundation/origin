@@ -5,12 +5,14 @@ import { CertificateBatchOperations } from '@energyweb/issuer';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
 import { HttpStatus } from '@nestjs/common';
-import { BulkClaimCertificatesCommand } from '../commands/bulk-claim-certificates.command';
+import { BatchTransferCertificatesCommand } from '../commands/batch-transfer-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 
-@CommandHandler(BulkClaimCertificatesCommand)
-export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCertificatesCommand> {
+@CommandHandler(BatchTransferCertificatesCommand)
+export class BatchTransferCertificatesHandler
+    implements ICommandHandler<BatchTransferCertificatesCommand>
+{
     constructor(
         @InjectRepository(Certificate)
         private readonly repository: Repository<Certificate>,
@@ -19,18 +21,18 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
 
     async execute({
         certificateIds,
-        claimData,
+        to,
+        values,
         forAddress
-    }: BulkClaimCertificatesCommand): Promise<ISuccessResponse> {
+    }: BatchTransferCertificatesCommand): Promise<ISuccessResponse> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
-        const allCertificates = await this.repository.find({ relations: ['blockchain'] });
-        const certificatesToClaim = allCertificates.filter((cert) =>
-            certificateIds.includes(cert.id)
-        );
+        const certificatesToTransfer = await this.repository.findByIds(certificateIds, {
+            relations: ['blockchain']
+        });
 
         if (
-            !certificatesToClaim.every(
+            !certificatesToTransfer.every(
                 (cert) => cert.owners[forAddress] && BigNumber.from(cert.owners[forAddress]).gt(0)
             )
         ) {
@@ -38,20 +40,23 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
         }
 
         try {
-            const bulkClaimTx = await CertificateBatchOperations.claimCertificates(
-                certificatesToClaim.map((cert) => cert.id),
-                claimData,
+            const batchTransferTx = await CertificateBatchOperations.transferCertificates(
+                certificateIds,
+                to,
                 blockchainProperties.wrap(),
-                forAddress
+                forAddress,
+                values
             );
 
-            const receipt = await bulkClaimTx.wait();
+            const receipt = await batchTransferTx.wait();
 
             if (receipt.status === 0) {
                 throw new Error(
                     `ClaimBatch tx ${
                         receipt.transactionHash
-                    } on certificate with id ${certificatesToClaim.map((cert) => cert.id)} failed.`
+                    } on certificate with id ${certificatesToTransfer.map(
+                        (cert) => cert.id
+                    )} failed.`
                 );
             }
         } catch (error) {
