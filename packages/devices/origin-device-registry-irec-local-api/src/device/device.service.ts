@@ -159,6 +159,6 @@ export class DeviceService {
     }
 
     getAddressLine(device: CreateDeviceDTO): string {
-        return `${device.country}, ${device.postalCode}, ${device.region}, ${device.subregion}`;
+        return `${device.countryCode}, ${device.postalCode}, ${device.region}, ${device.subregion}`;
     }
 }
