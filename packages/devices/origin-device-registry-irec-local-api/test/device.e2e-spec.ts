@@ -34,7 +34,6 @@ describe('Device e2e tests', () => {
         gridOperator: 'OP',
         timezone: 'Asia/Bangkok',
         postalCode: '12345',
-        country: 'TH',
         region: 'Some place',
         subregion: 'Another place'
     };

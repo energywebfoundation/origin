@@ -189,7 +189,6 @@ export const RegisterDevice = () => {
                 description: values.projectStory,
                 externalDeviceIds,
                 imageIds: [''],
-                country: values.country,
                 postalCode: values.postalCode,
                 region: values.region,
                 subregion: values.subregion

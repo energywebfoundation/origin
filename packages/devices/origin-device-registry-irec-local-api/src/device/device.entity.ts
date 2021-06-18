@@ -78,10 +78,6 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
 
     @Column()
     @IsString()
-    country: string;
-
-    @Column()
-    @IsString()
     region: string;
 
     @Column({ default: '' })
