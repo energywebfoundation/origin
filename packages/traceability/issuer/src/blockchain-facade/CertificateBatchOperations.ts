@@ -4,7 +4,7 @@ import { IBlockchainProperties } from './BlockchainProperties';
 import { Certificate, IClaimData, IData } from './Certificate';
 import { encodeClaimData, encodeData } from './CertificateUtils';
 
-interface CertificateInfoInBatch extends IData {
+export interface CertificateInfoInBatch extends IData {
     to: string;
     amount: BigNumber;
 }
@@ -54,7 +54,8 @@ export async function transferCertificates(
     certificateIds: number[],
     to: string,
     blockchainProperties: IBlockchainProperties,
-    from?: string
+    from?: string,
+    values?: BigNumber[]
 ): Promise<ContractTransaction> {
     const certificatesPromises = certificateIds.map((certId) =>
         new Certificate(certId, blockchainProperties).sync()
@@ -68,13 +69,11 @@ export async function transferCertificates(
 
     const certificates = await Promise.all(certificatesPromises);
 
-    const values = certificates.map((cert) => BigNumber.from(cert.owners[fromAddress] ?? 0));
-
     const transferTx = await registryWithSigner.safeBatchTransferFrom(
         fromAddress,
         to,
         certificateIds,
-        values,
+        values ?? certificates.map((cert) => BigNumber.from(cert.owners[fromAddress] ?? 0)),
         utils.randomBytes(32) // TO-DO: replace with proper data
     );
 
@@ -87,7 +86,8 @@ export async function claimCertificates(
     certificateIds: number[],
     claimData: IClaimData,
     blockchainProperties: IBlockchainProperties,
-    forAddress?: string
+    forAddress?: string,
+    values?: BigNumber[]
 ): Promise<ContractTransaction> {
     const certificatesPromises = certificateIds.map((certId) =>
         new Certificate(certId, blockchainProperties).sync()
@@ -96,8 +96,6 @@ export async function claimCertificates(
 
     const { activeUser, registry } = blockchainProperties;
     const claimer = forAddress ?? (await activeUser.getAddress());
-
-    const values = certificates.map((cert) => BigNumber.from(cert.owners[claimer] ?? 0));
 
     const encodedClaimData = encodeClaimData(claimData);
     const data = utils.randomBytes(32);
@@ -108,7 +106,7 @@ export async function claimCertificates(
         claimer,
         claimer,
         certificateIds,
-        values,
+        values ?? certificates.map((cert) => BigNumber.from(cert.owners[claimer] ?? 0)),
         data,
         certificates.map(() => encodedClaimData)
     );
