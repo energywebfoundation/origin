@@ -122,8 +122,8 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	/**
      * @dev Request transferring a certain amount of tokens
 	 *
-	 * @param _certificateId - Certificate that you want to change the balances of
-	 * @param _ownerAddressLeafHash - New updated proof (balances per address)
+	 * @param _certificateId Certificate that you want to change the balances of
+	 * @param _ownerAddressLeafHash New updated proof (balances per address)
      */
 	function requestPrivateTransfer(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external {
 		PrivateTransferRequest storage currentRequest = _requestPrivateTransferStorage[_certificateId];
@@ -168,8 +168,8 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	/**
      * @dev Request the certificate volumes to be migrated from private to public.
 	 *
-	 * @param _certificateId - Certificate that you want to migrate to public
-	 * @param _ownerAddressLeafHash - Final balance proof
+	 * @param _certificateId Certificate that you want to migrate to public
+	 * @param _ownerAddressLeafHash Final balance proof
      */
 	function requestMigrateToPublic(uint256 _certificateId, bytes32 _ownerAddressLeafHash) external returns (uint256 _migrationRequestId) {
         return _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, _msgSender());
@@ -178,9 +178,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	/**
      * @dev Request the certificate volumes to be migrated from private to public for someone else.
 	 *
-	 * @param _certificateId - Certificate that you want to migrate to public
-	 * @param _ownerAddressLeafHash - Final balance proof
-	 * @param _forAddress - Owner
+	 * @param _certificateId Certificate that you want to migrate to public
+	 * @param _ownerAddressLeafHash Final balance proof
+	 * @param _forAddress Owner
      */
 	function requestMigrateToPublicFor(uint256 _certificateId, bytes32 _ownerAddressLeafHash, address _forAddress) external onlyOwner returns (uint256 _migrationRequestId) {
         return _requestMigrateToPublicFor(_certificateId, _ownerAddressLeafHash, _forAddress);
@@ -219,12 +219,11 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	/**
      * @dev Migrate a private certificate to be public
 	 *
-	 * @param _requestId - Migration Request ID
-	 * @param _volume - Volume that should be minted
-	 * @param _salt - Precise Proof salt
-	 * @param _proof - Precise Proof
-     */
-	function migrateToPublic(
+	 * @param _requestId Migration Request ID
+	 * @param _volume Volume that should be minted
+	 * @param _salt Precise Proof salt
+	 * @param _proof Precise Proof
+     */function migrateToPublic(
         uint256 _requestId,
         uint256 _volume,
         string calldata _salt,
@@ -254,11 +253,11 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	/**
      * @dev Validates that a `_ownerAddress` actually owns `_volume` in a precise proof.
 	 *
-	 * @param _ownerAddress - Owner blockchain address
-	 * @param _volume - Volume that the owner should have
-	 * @param _salt - Precise Proof salt
-	 * @param _rootHash - Hash of the merkle tree root
-	 * @param _proof - Full Precise Proof
+	 * @param _ownerAddress Owner blockchain address
+	 * @param _volume Volume that the owner should have
+	 * @param _salt Precise Proof salt
+	 * @param _rootHash Hash of the merkle tree root
+	 * @param _proof Full Precise Proof
      */
 	function validateOwnershipProof(
         address _ownerAddress,
@@ -275,9 +274,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	/**
      * @dev Validates that a `_leafHash` is a leaf in the `_proof` with a merkle root hash `_rootHash`.
 	 *
-	 * @param _leafHash - Hash of the leaf in the merkle tree
-	 * @param _rootHash - Hash of the merkle tree root
-	 * @param _proof - Full Precise Proof
+	 * @param _leafHash Hash of the leaf in the merkle tree
+	 * @param _rootHash Hash of the merkle tree root
+	 * @param _proof Full Precise Proof
      */
 	function validateMerkle(bytes32 _leafHash, bytes32 _rootHash, Proof[] memory _proof) private pure returns (bool) {
 		bytes32 hash = _leafHash;
