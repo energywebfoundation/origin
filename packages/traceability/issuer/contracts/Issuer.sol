@@ -7,10 +7,8 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./Registry.sol";
 
-/**
- * @dev Issuer contract.
- * Used to manage the request/approve workflow for issuing ERC-1888 certificates.
- */
+/// @title Issuer contract
+/// @notice Used to manage the request/approve workflow for issuing ERC-1888 certificates.
 contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     event CertificationRequested(address indexed _owner, uint256 indexed _id);
     event CertificationRequestedBatch(address[] indexed _owners, uint256[] indexed _id);
@@ -49,13 +47,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         address sender;  // User that triggered the request creation
     }
 
-	/**
-     * @dev Contructor.
-     * Uses the OpenZeppelin `initializer` for upgradeability.
-     *
-     * Requirements:
-     * - `_registry` cannot be the zero address.
-     */
+	/// @notice Contructor.
+    /// @dev Uses the OpenZeppelin `initializer` for upgradeability.
+    /// @dev `_registry` cannot be the zero address.
     function initialize(uint256 _certificateTopic, address _registry) public initializer {
         require(_registry != address(0), "Issuer::initialize: Cannot use address 0x0 as registry address.");
 
@@ -66,12 +60,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         UUPSUpgradeable.__UUPSUpgradeable_init();
     }
 
-	/**
-     * @dev Attaches a private issuance contract to this issuance contract.
-     *
-     * Requirements:
-     * - `_privateIssuer` cannot be the zero address.
-     */
+	/// @notice Attaches a private issuance contract to this issuance contract.
+    /// @dev `_privateIssuer` cannot be the zero address.
     function setPrivateIssuer(address _privateIssuer) public onlyOwner {
         require(_privateIssuer != address(0), "Issuer::setPrivateIssuer: Cannot use address 0x0 as the private issuer address.");
         require(privateIssuer == address(0), "Issuer::setPrivateIssuer: private issuance contract already set.");
@@ -215,9 +205,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return certificateIds;
     }
 
-	/**
-     * @dev Directly issue a certificate without going through the request/approve procedure manually.
-     */
+    /// @notice Directly issue a certificate without going through the request/approve procedure manually.
     function issue(address _to, uint256 _value, bytes memory _data) public onlyOwner returns (uint256) {
         uint256 requestId = requestCertificationFor(_data, _to);
 
@@ -227,9 +215,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         );
     }
 
-	/**
-     * @dev Directly issue a batch of certificates without going through the request/approve procedure manually.
-     */
+    /// @notice Directly issue a batch of certificates without going through the request/approve procedure manually.
     function issueBatch(address[] memory _to, uint256[] memory _values, bytes[] memory _data) public onlyOwner returns (uint256[] memory) {
         uint256[] memory requestIds = requestCertificationForBatch(_data, _to);
 
@@ -239,13 +225,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         );
     }
 
-	/**
-     * @dev Validation for certification requests.
-     * Used by other contracts to validate the token.
-     *
-     * Requirements:
-     * - `_requestId` has to be an existing ID.
-     */
+    /// @notice Validation for certification requests.
+    /// @dev Used by other contracts to validate the token.
+    /// @dev `_requestId` has to be an existing ID.
     function isRequestValid(uint256 _requestId) external view returns (bool) {
         require(_requestId <= _latestCertificationRequestId, "Issuer::isRequestValid: certification request ID out of bounds");
 
@@ -283,9 +265,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return !request.approved && !request.revoked;
     }
     
-	/**
-     * @dev Needed for OpenZeppelin contract upgradeability.
-     * Allow only to the owner of the contract.
-     */
+    /// @notice Needed for OpenZeppelin contract upgradeability.
+    /// @dev Allow only to the owner of the contract.
 	function _authorizeUpgrade(address) internal override onlyOwner {}
 }

@@ -4,12 +4,9 @@ pragma solidity 0.8.4;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "./ERC1888/IERC1888.sol";
 
-/**
- * @dev Implementation of the Transferable Certificate standard ERC-1888.
- * See https://github.com/ethereum/EIPs/issues/1888
- *
- * Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
- */
+
+/// @title Implementation of the Transferable Certificate standard ERC-1888.
+/// @dev Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
 contract Registry is ERC1155, ERC1888 {
 
 	// Storage for the Certificate structs
@@ -23,12 +20,8 @@ contract Registry is ERC1155, ERC1888 {
 
 	constructor(string memory _uri) public ERC1155(_uri) {}
 
-    /**
-     * @dev See {IERC1888-issue}.
-     *
-     * Requirements:
-     * - `_to` cannot be the zero address.
-     */
+	/// @notice See {IERC1888-issue}.
+    /// @dev `_to` cannot be the zero address.
 	function issue(address _to, bytes calldata _validityData, uint256 _topic, uint256 _value, bytes calldata _issuanceData) external override returns (uint256) {
 		require(_to != address(0x0), "Registry::issue: to must be non-zero.");
 		
@@ -49,13 +42,9 @@ contract Registry is ERC1155, ERC1888 {
 		return id;
 	}
 
-	/**
-     * @dev See {IERC1888-batchIssue}.
-     *
-     * Requirements:
-     * - `_to` cannot be the zero address.
-     * - `_issuanceData`, `_values` and `_validityCalls` must have the same length.
-     */
+	/// @notice See {IERC1888-batchIssue}.
+    /// @dev `_to` cannot be the zero address.
+    /// @dev `_issuanceData`, `_values` and `_validityCalls` must have the same length.
 	function batchIssue(address _to, bytes memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external override returns (uint256[] memory) {
 		require(_to != address(0x0), "Registry::issue: to must be non-zero.");
 		require(_issuanceData.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
@@ -86,14 +75,10 @@ contract Registry is ERC1155, ERC1888 {
 		return ids;
 	}
 
-	/**
-     * @dev Similar to {IERC1888-batchIssue}, but not a part of the ERC-1888 standard.
-	 * Allows batch issuing to an array of _to addresses.
-     *
-     * Requirements:
-     * - `_to` cannot be the zero addresses.
-     * - `_to`, `_issuanceData`, `_values` and `_validityCalls` must have the same length.
-     */
+	/// @notice Similar to {IERC1888-batchIssue}, but not a part of the ERC-1888 standard.
+    /// @dev Allows batch issuing to an array of _to addresses.
+    /// @dev `_to` cannot be the zero addresses.
+    /// @dev `_to`, `_issuanceData`, `_values` and `_validityCalls` must have the same length.
 	function batchIssueMultiple(address[] memory _to, bytes[] memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external returns (uint256[] memory) {
 		require(_to.length == _issuanceData.length, "Registry::batchIssueMultiple: _to and _issuanceData arrays have to be the same length");
 		require(_issuanceData.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
@@ -127,12 +112,9 @@ contract Registry is ERC1155, ERC1888 {
 		return ids;
 	}
 
-	/**
-     * @dev Allows the issuer to mint more fungible tokens for existing ERC-188 certificates.
-     *
-     * Requirements:
-     * - `_to` cannot be the zero addresses.
-     */
+	/// @notice Allows the issuer to mint more fungible tokens for existing ERC-188 certificates.
+    /// @dev Allows batch issuing to an array of _to addresses.
+    /// @dev `_to` cannot be the zero address.
 	function mint(uint256 _id, address _to, uint256 _quantity) external {
 		require(_to != address(0x0), "Registry::issue: to must be non-zero.");
 		require(_quantity > 0, "Registry::mint: _quantity must be higher than 0.");
@@ -143,13 +125,9 @@ contract Registry is ERC1155, ERC1888 {
 		ERC1155._mint(_to, _id, _quantity, new bytes(0));
 	}
 
-	/**
-     * @dev See {IERC1888-safeTransferAndClaimFrom}.
-     *
-     * Requirements:
-     * - `_to` cannot be the zero address.
-     * - `_from` has to have a balance above or equal `_value`.
-     */
+	/// @notice See {IERC1888-safeTransferAndClaimFrom}.
+    /// @dev `_to` cannot be the zero address.
+    /// @dev `_from` has to have a balance above or equal `_value`.
 	function safeTransferAndClaimFrom(
 		address _from,
 		address _to,
@@ -177,13 +155,9 @@ contract Registry is ERC1155, ERC1888 {
 		emit ClaimSingle(_from, _to, cert.topic, _id, _value, _claimData); //_claimSubject address ??
 	}
 
-	/**
-     * @dev See {IERC1888-safeBatchTransferAndClaimFrom}.
-     *
-     * Requirements:
-     * - `_to` and `_from` cannot be the zero addresses.
-     * - `_from` has to have a balance above 0.
-     */
+	/// @notice See {IERC1888-safeBatchTransferAndClaimFrom}.
+    /// @dev `_to` and `_from` cannot be the zero addresses.
+    /// @dev `_from` has to have a balance above 0.
 	function safeBatchTransferAndClaimFrom(
 		address _from,
 		address _to,
@@ -225,9 +199,7 @@ contract Registry is ERC1155, ERC1888 {
 		emit ClaimBatch(_from, _to, topics, _ids, _values, _claimData);
 	}
 
-	/**
-     * @dev See {IERC1888-getCertificate}.
-     */
+	/// @notice See {IERC1888-getCertificate}.
 	function getCertificate(uint256 _id) public view override returns (address issuer, uint256 topic, bytes memory validityCall, bytes memory data) {
 		require(_id <= _latestCertificateId, "Registry::getCertificate: _id out of bounds");
 
@@ -235,16 +207,12 @@ contract Registry is ERC1155, ERC1888 {
 		return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
 	}
 
-	/**
-     * @dev See {IERC1888-claimedBalanceOf}.
-     */
+	/// @notice See {IERC1888-claimedBalanceOf}.
 	function claimedBalanceOf(address _owner, uint256 _id) external override view returns (uint256) {
 		return claimedBalances[_id][_owner];
 	}
 
-	/**
-     * @dev See {IERC1888-claimedBalanceOfBatch}.
-     */
+	/// @notice See {IERC1888-claimedBalanceOfBatch}.
 	function claimedBalanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external override view returns (uint256[] memory) {
         require(_owners.length == _ids.length, "Registry::ERC1155: _owners and ids length mismatch");
 
@@ -257,18 +225,14 @@ contract Registry is ERC1155, ERC1888 {
         return batchClaimBalances;
 	}
 
-	/**
-     * @dev Burn certificates after they've been claimed, and increase the claimed balance.
-     */
+	/// @notice Burn certificates after they've been claimed, and increase the claimed balance.
 	function _burn(address _from, uint256 _id, uint256 _value) internal override {
 		ERC1155._burn(_from, _id, _value);
 
 		claimedBalances[_id][_from] = claimedBalances[_id][_from] + _value;
 	}
 
-	/**
-     * @dev Validate if the certificate is valid against an external `_verifier` contract.
-     */
+	/// @notice Validate if the certificate is valid against an external `_verifier` contract.
 	function _validate(address _verifier, bytes memory _validityData) internal view {
 		(bool success, bytes memory result) = _verifier.staticcall(_validityData);
 

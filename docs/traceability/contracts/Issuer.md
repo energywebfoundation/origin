@@ -1,24 +1,19 @@
 ## `Issuer`
 
-Issuer contract.
 Used to manage the request/approve workflow for issuing ERC-1888 certificates.
 
 ### `initialize(uint256 _certificateTopic, address _registry)` (public)
 
 Contructor.
+
 Uses the OpenZeppelin `initializer` for upgradeability.
-
-Requirements:
-
--   `_registry` cannot be the zero address.
+`_registry` cannot be the zero address.
 
 ### `setPrivateIssuer(address _privateIssuer)` (public)
 
 Attaches a private issuance contract to this issuance contract.
 
-Requirements:
-
--   `_privateIssuer` cannot be the zero address.
+`_privateIssuer` cannot be the zero address.
 
 ### `getCertificationRequest(uint256 _requestId) → struct Issuer.CertificationRequest` (public)
 
@@ -47,11 +42,9 @@ Directly issue a batch of certificates without going through the request/approve
 ### `isRequestValid(uint256 _requestId) → bool` (external)
 
 Validation for certification requests.
+
 Used by other contracts to validate the token.
-
-Requirements:
-
--   `_requestId` has to be an existing ID.
+`_requestId` has to be an existing ID.
 
 ### `getRegistryAddress() → address` (external)
 
@@ -64,6 +57,7 @@ Requirements:
 ### `_authorizeUpgrade(address)` (internal)
 
 Needed for OpenZeppelin contract upgradeability.
+
 Allow only to the owner of the contract.
 
 ### `CertificationRequested(address _owner, uint256 _id)`
