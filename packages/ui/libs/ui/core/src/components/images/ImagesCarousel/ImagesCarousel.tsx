@@ -1,9 +1,4 @@
-import React, {
-  DetailedHTMLProps,
-  FC,
-  ImgHTMLAttributes,
-  ReactNode,
-} from 'react';
+import React, { DetailedHTMLProps, FC, ImgHTMLAttributes } from 'react';
 import Carousel, { CarouselProps } from 'react-material-ui-carousel';
 
 export interface ImagesCarouselProps {
