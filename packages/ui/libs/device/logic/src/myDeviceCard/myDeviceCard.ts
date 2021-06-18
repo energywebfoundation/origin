@@ -1,5 +1,5 @@
 import { ThailandFlag } from '@energyweb/origin-ui-assets';
-import { EnergyTypeEnum } from '@energyweb/origin-ui-utils';
+import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import {
   TUseSpecsForMyDeviceCard,
@@ -29,7 +29,7 @@ export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
       buttonLink: `/device/detail-view/${device.id}`,
       specFieldProps: {
         label: t('device.card.capacity'),
-        value: device.capacity,
+        value: PowerFormatter.format(device.capacity),
       },
     };
 

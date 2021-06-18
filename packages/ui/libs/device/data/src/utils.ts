@@ -8,6 +8,7 @@ import {
   DeviceDTO as IRecMyDeviceDTO,
   CreateDeviceDTO as IRecCreateDeviceDTO,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import {
   ComposedDevice,
   ComposedPublicDevice,
@@ -65,7 +66,9 @@ export function decomposeForIRec(
     fuelType: newDevice.fuelType,
     // should it the organization country or user should add this in device form registration?
     countryCode: organization.country,
-    capacity: Number(newDevice.capacity),
+    capacity: PowerFormatter.getBaseValueFromValueInDisplayUnit(
+      parseFloat(newDevice.capacity)
+    ),
     commissioningDate: newDevice.commissioningDate,
     registrationDate: newDevice.registrationDate,
     address: newDevice.address,
@@ -96,10 +99,7 @@ export function decomposeForOrigin(
     // should it be the same as notes in i-rec device?
     description: newDevice.projectStory,
     // isn't it similar to smartMeterId? This is mocked for now
-    externalDeviceIds: [
-      { id: '123', type: 'Smart Meter Readings API ID' },
-      { id: 'ABQ123-1', type: 'Issuer ID' },
-    ],
+    externalDeviceIds: [],
     imageIds: [''],
   };
 }

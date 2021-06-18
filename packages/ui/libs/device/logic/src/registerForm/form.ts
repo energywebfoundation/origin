@@ -5,6 +5,7 @@ import {
   prepareDeviceTypesOptions,
   prepareFuelTypesOptions,
 } from './prepareOptions';
+import { gridOperatorOptions } from '../utils';
 
 export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = (
   allFuelTypes,
@@ -155,6 +156,8 @@ export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = (
       {
         name: 'gridOperator',
         label: t('device.register.gridOperator'),
+        select: true,
+        options: gridOperatorOptions,
       },
       {
         name: 'address',
