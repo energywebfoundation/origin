@@ -211,7 +211,7 @@
         "leadUserFax": "Fax",
         "notifications": {
           "unauthorized": "Unauthorized",
-          "registerErorr": "Organization could not be created",
+          "registerError": "Organization could not be created",
           "registerSuccess": "Organization registered"
         }
       },
@@ -304,7 +304,11 @@
         "address": "Address",
         "latitude": "Latitude",
         "longitude": "Longitude",
-        "projectStory": "Project story"
+        "projectStory": "Project story",
+        "notifications": {
+          "registerSuccess": "New device created successfully",
+          "registerError": "Error while creating device"
+        }
       },
       "pending": {
         "owner": "Owner",
