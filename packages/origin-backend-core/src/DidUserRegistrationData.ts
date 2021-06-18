@@ -1,5 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { Role } from './User';
 
 export class DidUserRegistrationData {
     @IsNotEmpty()
@@ -25,4 +26,6 @@ export class DidUserRegistrationData {
     @IsNotEmpty()
     @IsString()
     telephone: string;
+
+    role: Role;
 }

@@ -1,7 +1,8 @@
 import {
     EmailConfirmationResponse,
     IEmailConfirmationToken,
-    ILoggedInUser
+    ILoggedInUser,
+    Role
 } from '@energyweb/origin-backend-core';
 import {
     ActiveUserGuard,
@@ -91,7 +92,8 @@ export class UserController {
             lastName,
             email,
             telephone,
-            did: user.did
+            did: user.did,
+            role: Role.OrganizationAdmin // setting role explicitly, will be needed in next steps
         });
     }
 

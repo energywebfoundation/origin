@@ -98,7 +98,7 @@ export class UserService {
             email: data.email,
             telephone: data.telephone,
             notifications: true,
-            rights: Role.OrganizationAdmin,
+            rights: data.role,
             status: UserStatus.Pending,
             kycStatus: KYCStatus.Pending
         });
