@@ -73,7 +73,7 @@
         "yup": "0.32.9",
         "@reduxjs/toolkit": "1.6.0",
         "@vmw/queue-for-redux-saga": "0.3.0",
-        "iam-client-lib": "3.0.0-alpha.20"
+        "iam-client-lib": "3.0.0-alpha.21"
     },
     "devDependencies": {
         "@babel/core": "7.14.5",

@@ -169,6 +169,7 @@ dependencies:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
+  iam-client-lib: 3.0.0-alpha.21_@babel+core@7.14.5
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4_ts-node@9.1.1
@@ -2587,13 +2588,6 @@ packages:
       swagger-ui-express: '*'
     resolution:
       integrity: sha512-p4F5eu+3w+RdBzfci6jUnBMfBmhoSLoiTUI5JCsq7SLmp6nqEbKwsGL+vCTtfDpSajzokZlR8MfJf1W+i+beow==
-  /@energyweb/iam-contracts/1.11.0:
-    dependencies:
-      '@openzeppelin/contracts': 3.4.1
-      ethers: 4.0.45
-    dev: false
-    resolution:
-      integrity: sha512-EinoPzFmiWkMcl+1wF06kNL0QwNEm8ZgBaVgaBahetWFE+TXWkXP9R1tw386wO8zX2bAcz/D7KB7miM4lTiDpQ==
   /@energyweb/iam-contracts/1.11.2:
     dependencies:
       '@openzeppelin/contracts': 3.4.1
@@ -17500,41 +17494,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-WTY07KreR5z2LBSzAIKs05zpR5tgUT98C4fD96e7Risbc/HZePwF6AEnb9VkjdeSeRn9PDqQBay7ZkphuXt0Xw==
-  /iam-client-lib/3.0.0-alpha.20_@babel+core@7.14.5:
-    dependencies:
-      '@babel/runtime': 7.14.5
-      '@energyweb/iam-contracts': 1.11.0
-      '@ensdomains/ens': 0.4.5
-      '@ew-did-registry/claims': 0.5.2-alpha.1045.0
-      '@ew-did-registry/did': 0.5.2-alpha.1045.0
-      '@ew-did-registry/did-document': 0.5.2-alpha.1045.0
-      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1045.0
-      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1045.0
-      '@ew-did-registry/jwt': 0.5.2-alpha.1045.0
-      '@ew-did-registry/keys': 0.5.2-alpha.1045.0
-      '@ew-did-registry/proxyidentity': 0.5.2-alpha.1045.0
-      '@gnosis.pm/safe-apps-sdk': 1.0.3
-      '@metamask/detect-provider': 1.2.0
-      '@walletconnect/web3-provider': 1.0.0-rc.4_@babel+core@7.14.5
-      axios: 0.21.1
-      base64url: 3.0.1
-      concurrently: 6.2.0
-      eth-ens-namehash: 2.0.8
-      ethers: 4.0.45
-      js-sha3: 0.8.0
-      lodash.difference: 4.5.0
-      nats.ws: 1.0.0-111
-      qs: 6.10.1
-      tslib: 2.2.0
-      uuid: 7.0.3
-    dev: false
-    engines:
-      node: '>= 10.0.0'
-      npm: '>= 6.0.0'
-    peerDependencies:
-      '@babel/core': '*'
-    resolution:
-      integrity: sha512-RCEroc89lL4A5nktgQjZk+UlKGguGPUI5YbTNd4yoLJS33eZUuPRMM/F05qBDuUHMDk5g3GUKTw2Jg/T116zBg==
   /iam-client-lib/3.0.0-alpha.21_@babel+core@7.14.5:
     dependencies:
       '@babel/runtime': 7.14.5
@@ -33970,7 +33929,7 @@ packages:
       formik-material-ui-pickers: 0.0.12_08032a4b4e82050abfb7dc276cf451f4
       history: 4.10.1
       i18next: 20.3.1
-      iam-client-lib: 3.0.0-alpha.20_@babel+core@7.14.5
+      iam-client-lib: 3.0.0-alpha.21_@babel+core@7.14.5
       jest: 27.0.4_ts-node@9.1.1
       jest-environment-jsdom-fifteen: 1.0.2
       mocha: 9.0.0
@@ -34002,7 +33961,7 @@ packages:
       webpack-cli: '*'
       webpack-dev-server: '*'
     resolution:
-      integrity: sha512-Am14rG0GPUW46/K6glNp0eWimr6DgedebZuswIIzHSZLZLd0I6D45pS1+P0mie5OMGtzgB/lj1ceK3/9+b7Kig==
+      integrity: sha512-tmprHq/RlF8+gNQp0SFTX69hfU8f+3PzN6xwFQd50JAV8/O48fT+2MOGFWaWmpmbuF7ZN2iq7eGfPk9Ybfde1A==
       tarball: file:projects/origin-ui-core.tgz
     version: 0.0.0
   file:projects/origin-ui-irec-core.tgz_ts-node@9.1.1:
@@ -34398,6 +34357,7 @@ specifiers:
   https-browserify: 1.0.0
   i18next: 20.3.1
   i18next-icu: 1.4.2
+  iam-client-lib: 3.0.0-alpha.21
   immutable: 4.0.0-rc.12
   influx: 5.9.2
   jest: 27.0.4
