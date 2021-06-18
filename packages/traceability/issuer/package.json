@@ -22,7 +22,7 @@
         "test": "test"
     },
     "scripts": {
-        "build": "yarn build:static && yarn build:ts",
+        "build": "yarn build:static && yarn build:ts && yarn generate:docs",
         "build:static": "yarn compile && yarn typechain:registry && yarn typechain:issuer && yarn typechain:issuer:private",
         "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
@@ -41,7 +41,8 @@
         "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "precommit": "lint-staged",
-        "audit": "mythx -c .mythx.yml analyze --remap-import \"@openzeppelin/=$(pwd)/node_modules/@openzeppelin/\""
+        "audit": "mythx -c .mythx.yml analyze --remap-import \"@openzeppelin/=$(pwd)/node_modules/@openzeppelin/\"",
+        "generate:docs": "solidity-docgen -i contracts -o ../../../docs/traceability/contracts --solc-module solc-0.8"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
@@ -67,6 +68,7 @@
         "mocha": "9.0.0",
         "truffle": "5.3.10",
         "solc": "0.8.4",
+        "solc-0.8": "npm:solc@0.8.4",
         "winston-transport": "4.4.0",
         "@types/dotenv": "6.1.1",
         "@types/chai": "4.2.15",
@@ -76,7 +78,8 @@
         "@openzeppelin/truffle-upgrades": "1.7.0",
         "shx": "0.3.3",
         "@types/supertest": "2.0.11",
-        "ts-node": "9.1.1"
+        "ts-node": "9.1.1",
+        "solidity-docgen": "0.5.13"
     },
     "publishConfig": {
         "access": "public",
