@@ -88,7 +88,7 @@
         "@types/superagent": "4.1.11",
         "@types/uuid": "8.3.0",
         "@types/websocket": "1.0.2",
-        "@types/ws": "7.4.4",
+        "@types/ws": "7.4.5",
         "jest": "27.0.4",
         "nodemailer": "6.6.1",
         "polly-js": "1.8.2",
