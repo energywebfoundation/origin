@@ -30,7 +30,7 @@
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.18",
         "@nestjs/passport": "7.1.5",
-        "@nestjs/swagger": "4.8.0"
+        "@nestjs/swagger": "4.8.1"
     },
     "devDependencies": {
         "typescript": "4.3.4",

@@ -28,7 +28,7 @@
     "devDependencies": {
         "typescript": "4.3.4",
         "@energyweb/origin-device-registry-api": "0.1.0",
-        "@nestjs/swagger": "4.8.0",
+        "@nestjs/swagger": "4.8.1",
         "@nestjs/testing": "7.6.18",
         "@nestjs/typeorm": "7.1.5",
         "@openapitools/openapi-generator-cli": "2.3.5",
