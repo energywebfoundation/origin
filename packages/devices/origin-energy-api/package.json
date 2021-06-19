@@ -24,7 +24,7 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/energy-api-influxdb": "0.7.0",
+        "@energyweb/energy-api-influxdb": "0.7.1",
         "@energyweb/origin-backend-core": "8.0.1",
         "@nestjs/common": "7.6.17",
         "@nestjs/config": "0.6.3",
