@@ -2,11 +2,11 @@ lockfileVersion: 5.3
 
 specifiers:
   prettier: 2.3.1
-  pretty-quick: 3.1.0
+  pretty-quick: 3.1.1
 
 dependencies:
   prettier: 2.3.1
-  pretty-quick: 3.1.0_prettier@2.3.1
+  pretty-quick: 3.1.1_prettier@2.3.1
 
 packages:
 
@@ -232,8 +232,8 @@ packages:
     hasBin: true
     dev: false
 
-  /pretty-quick/3.1.0_prettier@2.3.1:
-    resolution: {integrity: sha512-DtxIxksaUWCgPFN7E1ZZk4+Aav3CCuRdhrDSFZENb404sYMtuo9Zka823F+Mgeyt8Zt3bUiCjFzzWYE9LYqkmQ==}
+  /pretty-quick/3.1.1_prettier@2.3.1:
+    resolution: {integrity: sha512-ZYLGiMoV2jcaas3vTJrLvKAYsxDoXQBUn8OSTxkl67Fyov9lyXivJTl0+2WVh+y6EovGcw7Lm5ThYpH+Sh3XxQ==}
     engines: {node: '>=10.13'}
     hasBin: true
     peerDependencies:
