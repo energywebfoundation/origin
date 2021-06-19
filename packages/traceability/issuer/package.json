@@ -75,7 +75,7 @@
         "chai": "4.3.0",
         "@openzeppelin/contracts": "4.1.0",
         "@openzeppelin/contracts-upgradeable": "4.1.0",
-        "@openzeppelin/truffle-upgrades": "1.7.0",
+        "@openzeppelin/truffle-upgrades": "1.7.1",
         "shx": "0.3.3",
         "@types/supertest": "2.0.11",
         "ts-node": "9.1.1",
