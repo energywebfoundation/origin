@@ -9,7 +9,12 @@ import {
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { Connection, Registration } from '@energyweb/origin-organization-irec-api';
+import {
+    Connection,
+    IrecService,
+    Registration,
+    UserIdentifier
+} from '@energyweb/origin-organization-irec-api';
 
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
@@ -21,14 +26,7 @@ import {
     DeviceCreateParams,
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
-import {
-    Device,
-    DeviceModule,
-    DeviceService,
-    ImportIrecDeviceDTO,
-    IrecDeviceService,
-    UserIdentifier
-} from '../src/device';
+import { Device, DeviceModule, DeviceService, ImportIrecDeviceDTO } from '../src/device';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -122,7 +120,7 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
-        .overrideProvider(IrecDeviceService)
+        .overrideProvider(IrecService)
         .useValue({
             async importIrecDevice(user: ILoggedInUser, deviceToImport: ImportIrecDeviceDTO) {
                 return {

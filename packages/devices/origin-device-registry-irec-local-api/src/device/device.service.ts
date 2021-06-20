@@ -1,9 +1,5 @@
-import {
-    Device as IrecDevice,
-    DeviceCreateParams,
-    DeviceState
-} from '@energyweb/issuer-irec-api-wrapper';
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { FindManyOptions, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
     BadRequestException,
     ConflictException,
@@ -12,14 +8,20 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventBus } from '@nestjs/cqrs';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+
+import {
+    Device as IrecDevice,
+    DeviceCreateParams,
+    DeviceState
+} from '@energyweb/issuer-irec-api-wrapper';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { UserService } from '@energyweb/origin-backend';
+import { IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
 import { DeviceCreatedEvent } from './events';
 import { IREC_DEVICE_TYPES, IREC_FUEL_TYPES } from './Fuels';
-import { IrecDeviceService } from './irec-device.service';
 
 @Injectable()
 export class DeviceService {
@@ -28,7 +30,8 @@ export class DeviceService {
         private readonly repository: Repository<Device>,
         private readonly eventBus: EventBus,
         private readonly configService: ConfigService,
-        private readonly irecDeviceService: IrecDeviceService
+        private readonly irecService: IrecService,
+        private readonly userService: UserService
     ) {}
 
     async findOne(id: string): Promise<Device> {
@@ -44,8 +47,11 @@ export class DeviceService {
             throw new BadRequestException('Invalid fuel type');
         }
 
+        const platformAdmin = await this.userService.getPlatformAdmin();
+        const tradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
+            defaultAccount: tradeAccount,
             registrantOrganization: this.configService.get<string>(
                 'IREC_PARTICIPANT_TRADE_ACCOUNT'
             ),
@@ -53,7 +59,7 @@ export class DeviceService {
             active: true
         };
 
-        const irecDevice = await this.irecDeviceService.createIrecDevice(user, {
+        const irecDevice = await this.irecService.createDevice(user, {
             ...deviceData,
             address: this.getAddressLine(newDevice)
         });
@@ -83,7 +89,7 @@ export class DeviceService {
         }
 
         const updatedDevice = { ...device, ...deviceData };
-        const irecDevice = await this.irecDeviceService.update(user, device.code, {
+        const irecDevice = await this.irecService.updateDevice(user, device.code, {
             ...deviceData,
             address: this.getAddressLine(updatedDevice)
         });
@@ -118,7 +124,7 @@ export class DeviceService {
     }
 
     async getDevicesToImport(user: ILoggedInUser): Promise<IrecDevice[]> {
-        const irecDevices = await this.irecDeviceService.getDevices(user);
+        const irecDevices = await this.irecService.getDevices(user);
         const devices = await this.repository.find({ where: { ownerId: user.ownerId } });
         const deviceCodes: string[] = devices.map((d) => d.code);
 
@@ -130,10 +136,10 @@ export class DeviceService {
         deviceToImport: ImportIrecDeviceDTO
     ): Promise<Device> {
         let irecDevice;
-        if (this.irecDeviceService.isIrecIntegrationEnabled()) {
-            irecDevice = await this.irecDeviceService.getDevice(user, deviceToImport.code);
+        if (this.irecService.isIrecIntegrationEnabled()) {
+            irecDevice = await this.irecService.getDevice(user, deviceToImport.code);
         } else {
-            [irecDevice] = await this.irecDeviceService.getDevices(user);
+            [irecDevice] = await this.irecService.getDevices(user);
         }
 
         if (!irecDevice) {
