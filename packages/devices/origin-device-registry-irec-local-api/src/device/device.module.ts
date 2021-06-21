@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import {
     ConnectionModule,
@@ -10,13 +11,16 @@ import {
     RegistrationModule
 } from '@energyweb/origin-organization-irec-api';
 import { UserModule } from '@energyweb/origin-backend';
+
 import { DeviceController } from './device.controller';
 import { Device } from './device.entity';
 import { DeviceService } from './device.service';
 import { ValidateDeviceOwnershipCommandHandler } from './handlers/validate-device-ownership.handler';
+import { CheckDeviceStateTask } from './cron';
 
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         TypeOrmModule.forFeature([Device]),
         CqrsModule,
         ConfigModule,
@@ -26,7 +30,7 @@ import { ValidateDeviceOwnershipCommandHandler } from './handlers/validate-devic
         RegistrationModule,
         IrecModule
     ],
-    providers: [DeviceService, ValidateDeviceOwnershipCommandHandler],
+    providers: [DeviceService, ValidateDeviceOwnershipCommandHandler, CheckDeviceStateTask],
     exports: [DeviceService],
     controllers: [DeviceController]
 })
