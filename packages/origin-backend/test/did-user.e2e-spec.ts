@@ -131,7 +131,7 @@ describe('DID user e2e tests', function () {
 
                 expect(accessToken).to.exist;
 
-                const tokenDecoded = jwt.verify(accessToken, process.env.JWT_SECRET) as {
+                const tokenDecoded = jwt.verify(accessToken, process.env.JWT_SECRET) as unknown as {
                     did: string;
                     iat: string;
                     verifiedRoles: object[];
