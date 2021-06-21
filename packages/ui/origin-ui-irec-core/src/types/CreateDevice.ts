@@ -20,7 +20,6 @@ export type CreateDeviceData = {
     description: string;
     externalDeviceIds?: IExternalDeviceId[];
     imageIds: string[];
-    country: string;
     postalCode: string;
     region: string;
     subregion: string;

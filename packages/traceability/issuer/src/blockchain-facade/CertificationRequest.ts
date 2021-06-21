@@ -139,17 +139,9 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
     async approve(energy: BigNumber): Promise<CertificationRequest['issuedCertificateTokenId']> {
         const { issuer, activeUser } = this.blockchainProperties;
 
-        const validityData = issuer.interface.encodeFunctionData('isRequestValid', [
-            this.id.toString()
-        ]);
-
         const issuerWithSigner = issuer.connect(activeUser);
 
-        const approveTx = await issuerWithSigner.approveCertificationRequest(
-            this.id,
-            energy,
-            validityData
-        );
+        const approveTx = await issuerWithSigner.approveCertificationRequest(this.id, energy);
 
         const { events } = await approveTx.wait();
 

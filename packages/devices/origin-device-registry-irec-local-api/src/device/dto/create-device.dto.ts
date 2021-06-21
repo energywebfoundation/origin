@@ -100,12 +100,6 @@ export class CreateDeviceDTO {
 
     @ApiProperty({ type: String })
     @IsString()
-    @IsISO31661Alpha2()
-    @Expose()
-    country: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
     @Expose()
     region: string;
 
