@@ -8,16 +8,21 @@ import {
     AccountType,
     Beneficiary,
     BeneficiaryUpdateParams,
+    Device,
     Device as IrecDevice,
     DeviceCreateParams,
     DeviceState,
     DeviceUpdateParams,
-    IRECAPIClient
+    IRECAPIClient,
+    IssuanceStatus,
+    Issue,
+    IssueWithStatus
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 
 import { CreateConnectionDTO } from './dto';
 import { GetConnectionCommand, RefreshTokensCommand } from '../connection';
+import { ReadStream } from 'fs';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
@@ -151,7 +156,29 @@ export class IrecService {
         return updatedIredDevice;
     }
 
-    async getDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
+    async getDevice(user: UserIdentifier, code: string): Promise<Device> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                address: '1 Wind Farm Avenue, London',
+                capacity: 500,
+                commissioningDate: new Date('2001-08-10'),
+                countryCode: 'GB',
+                defaultAccount: 'someTradeAccount',
+                deviceType: 'TC110',
+                fuelType: 'ES200',
+                issuer: 'someIssuerCode',
+                latitude: '53.405088',
+                longitude: '-1.744222',
+                name: 'DeviceXYZ',
+                notes: 'Lorem ipsum dolor sit amet',
+                registrantOrganization: 'someRegistrantCode',
+                registrationDate: new Date('2001-09-20'),
+                status: DeviceState.Approved,
+                code: 'mockDeviceCode',
+                active: true
+            };
+        }
+
         const irecClient = await this.getIrecClient(user);
         return irecClient.device.get(code);
     }
@@ -219,5 +246,72 @@ export class IrecService {
     async getTradeAccountCode(user: UserIdentifier): Promise<string> {
         const accounts = await this.getAccountInfo(user);
         return accounts.find((account: Account) => account.type === AccountType.Trade)?.code || '';
+    }
+
+    async createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                ...issue,
+                status: IssuanceStatus.InProgress,
+                code: 'somecode'
+            };
+        }
+        const irecClient = await this.getIrecClient(user);
+        const irecIssue: IssueWithStatus = await irecClient.issue.create(issue);
+        await irecClient.issue.submit(irecIssue.code);
+        irecIssue.status = IssuanceStatus.InProgress;
+        return irecIssue;
+    }
+
+    async updateIssueRequest(
+        user: UserIdentifier,
+        code: string,
+        issue: Issue
+    ): Promise<IssueWithStatus> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                ...issue,
+                status: IssuanceStatus.InProgress,
+                code
+            } as IssueWithStatus;
+        }
+
+        const irecClient = await this.getIrecClient(user);
+        const irecIssue = await irecClient.issue.get(code);
+        if (irecIssue.status === IssuanceStatus.InProgress) {
+            throw new BadRequestException('Issue in "In Progress" state is not available to edit');
+        }
+
+        await irecClient.issue.update(code, issue);
+        const updatedIredIssue = await irecClient.issue.get(code);
+        await irecClient.device.submit(code);
+        updatedIredIssue.status = IssuanceStatus.InProgress;
+        return updatedIredIssue;
+    }
+
+    async getIssueRequest(user: UserIdentifier, code: string): Promise<IssueWithStatus> {
+        if (!this.isIrecIntegrationEnabled()) {
+            return {
+                device: 'TESTDEVICE1',
+                fuelType: 'ES200',
+                recipient: 'SOMEORG',
+                start: new Date(),
+                end: new Date(),
+                production: 1000000,
+                notes: '',
+                code: '100500',
+                status: IssuanceStatus.Approved
+            };
+        }
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.issue.get(code);
+    }
+
+    async uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]) {
+        if (!this.isIrecIntegrationEnabled()) {
+            return files.map(() => ((Math.random() * 1e9) | 0).toString(16));
+        }
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.file.upload(files);
     }
 }

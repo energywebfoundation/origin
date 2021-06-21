@@ -13,7 +13,8 @@ import {
     Connection,
     IrecService,
     Registration,
-    UserIdentifier
+    UserIdentifier,
+    usedEntities
 } from '@energyweb/origin-organization-irec-api';
 
 import { AuthGuard } from '@nestjs/passport';
@@ -27,6 +28,7 @@ import {
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
 import { Device, DeviceModule, DeviceService, ImportIrecDeviceDTO } from '../src/device';
+import { UserService } from '@energyweb/origin-backend';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -111,7 +113,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Device, Connection, Registration],
+                entities: [Device, Connection, Registration, ...usedEntities],
                 logging: ['info']
             }),
             DeviceModule
@@ -120,6 +122,12 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
+        .overrideProvider(UserService)
+        .useValue({
+            getPlatformAdmin() {
+                return testUsers.get(TestUser.PlatformAdmin);
+            }
+        })
         .overrideProvider(IrecService)
         .useValue({
             async importIrecDevice(user: ILoggedInUser, deviceToImport: ImportIrecDeviceDTO) {
@@ -136,7 +144,7 @@ export const bootstrapTestInstance = async () => {
             async getDevices(): Promise<IrecDevice[]> {
                 return [irecDevice];
             },
-            async createIrecDevice(
+            async createDevice(
                 user: ILoggedInUser,
                 deviceData: DeviceCreateParams
             ): Promise<IrecDevice> {
@@ -146,7 +154,7 @@ export const bootstrapTestInstance = async () => {
                     status: DeviceState.InProgress
                 };
             },
-            async update(
+            async updateDevice(
                 user: UserIdentifier,
                 code: string,
                 device: Partial<IrecDevice>
@@ -155,6 +163,9 @@ export const bootstrapTestInstance = async () => {
             },
             isIrecIntegrationEnabled() {
                 return false;
+            },
+            async getTradeAccountCode() {
+                return 'somecode';
             }
         })
         .compile();

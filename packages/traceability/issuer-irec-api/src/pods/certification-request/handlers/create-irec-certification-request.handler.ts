@@ -9,9 +9,9 @@ import {
 import { FileService, UserService } from '@energyweb/origin-backend';
 
 import { CreateIrecCertificationRequestCommand } from '../commands';
-import { IrecCertificateService } from '../irec-certificate.service';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
+import { IrecService } from '@energyweb/origin-organization-irec-api';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateIrecCertificationRequestHandler
@@ -26,7 +26,7 @@ export class CreateIrecCertificationRequestHandler
         readonly irecRepository: Repository<IrecCertificationRequest>,
         readonly eventBus: EventBus,
         readonly commandBus: CommandBus,
-        readonly irecCertificateService: IrecCertificateService,
+        readonly irecService: IrecService,
         readonly userService: UserService,
         readonly fileService: FileService
     ) {}
@@ -70,17 +70,15 @@ export class CreateIrecCertificationRequestHandler
             const files = await Promise.all(
                 request.files.map((fileId) => this.fileService.get(fileId))
             );
-            fileIds = await this.irecCertificateService.uploadFiles(
+            fileIds = await this.irecService.uploadFiles(
                 userId,
                 files.map((file) => file.data)
             );
         }
 
-        const irecDevice = await this.irecCertificateService.getDevice(userId, request.deviceId);
-        const platformTradeAccount = await this.irecCertificateService.getTradeAccountCode(
-            platformAdmin.id
-        );
-        const irecIssue = await this.irecCertificateService.createIrecIssue(platformAdmin.id, {
+        const irecDevice = await this.irecService.getDevice(userId, request.deviceId);
+        const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
+        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
             device: request.deviceId,
             fuelType: irecDevice.fuelType,
             recipient: platformTradeAccount,
