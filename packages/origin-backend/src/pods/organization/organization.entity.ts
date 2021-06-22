@@ -20,6 +20,10 @@ export class Organization extends ExtendedBaseEntity implements IPublicOrganizat
     @IsString()
     name: string;
 
+    @Column({ nullable: true, unique: true })
+    @IsString()
+    ensNamespace: string;
+
     @Column()
     @IsString()
     address: string;
