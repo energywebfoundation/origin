@@ -1,7 +1,8 @@
 import {
     EmailConfirmationResponse,
     IEmailConfirmationToken,
-    ILoggedInUser
+    ILoggedInUser,
+    Role
 } from '@energyweb/origin-backend-core';
 import {
     ActiveUserGuard,
@@ -21,6 +22,7 @@ import {
     ParseIntPipe,
     Post,
     Put,
+    Request,
     UnauthorizedException,
     UseGuards,
     UseInterceptors,
@@ -44,6 +46,8 @@ import { UpdatePasswordDTO } from './dto/update-password.dto';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
+import { RegisterDidUserDTO } from './dto/register-did-user.dto';
+import { Request as ExpressRequest } from 'express';
 
 @ApiTags('user')
 @ApiBearerAuth('access-token')
@@ -61,6 +65,53 @@ export class UserController {
     @ApiResponse({ status: HttpStatus.CREATED, type: UserDTO, description: 'Register a user' })
     public async register(@Body() userRegistrationData: RegisterUserDTO): Promise<UserDTO> {
         return this.userService.create(userRegistrationData);
+    }
+
+    @Post('register-did')
+    @ApiBody({ type: RegisterDidUserDTO })
+    @UseGuards(AuthGuard('jwt-basic'))
+    @ApiResponse({ status: HttpStatus.CREATED, type: UserDTO, description: 'Register a user' })
+    // TODO: should be allowed only when one of conditions met:
+    //  1) user has a DID role within already onboarded organization
+    //  2) user has a DID organizationadmin role within an organization
+    public async registerDid(
+        @Request() req: ExpressRequest,
+        @Body() userRegistrationData: RegisterDidUserDTO
+    ): Promise<UserDTO> {
+        const user = req.user as { did: string; iat: number; verifiedRoles: object[] };
+
+        const { title, firstName, lastName, email, telephone } = userRegistrationData;
+
+        // TODO:
+        //  - if not an OrganizationAdmin user, set user.rights accordingly, if not ambiguous
+        //  - if OrganizationAdmin in any org. set user.rights = OrganizationAdmin
+
+        return this.userService.createDid({
+            title,
+            firstName,
+            lastName,
+            email,
+            telephone,
+            did: user.did,
+            role: Role.OrganizationAdmin // setting role explicitly, will be needed in next steps
+        });
+    }
+
+    @Get('did-roles')
+    @UseGuards(AuthGuard('jwt-basic'))
+    @ApiResponse({ status: HttpStatus.OK, type: UserDTO, description: 'get did user roles' })
+    public async getRoles(
+        @Request() req: ExpressRequest
+    ): Promise<{ did: string; roles: string[] }> {
+        const user = req.user as {
+            did: string;
+            iat: number;
+            verifiedRoles: { name: string; namespace: string }[];
+        };
+        return {
+            did: user.did,
+            roles: user.verifiedRoles.map((role) => role.namespace)
+        };
     }
 
     @Get('me')

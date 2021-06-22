@@ -6,6 +6,7 @@ import {
     UserStatus,
     UserPasswordUpdate,
     UserRegistrationData,
+    DidUserRegistrationData,
     IUserFilter,
     ILoggedInUser
 } from '@energyweb/origin-backend-core';
@@ -74,6 +75,39 @@ export class UserService {
         return new User(user);
     }
 
+    public async createDid(data: DidUserRegistrationData): Promise<User> {
+        // TODO: refactor after final Switchboard integration to reduce repeated code
+
+        const isExistingUser = await this.hasUser({ did: data.did });
+
+        if (isExistingUser) {
+            const message = `${data.did} user already exists`;
+
+            this.logger.error(message);
+            throw new ConflictException({
+                success: false,
+                message
+            });
+        }
+
+        const user = await this.repository.save({
+            did: data.did,
+            title: data.title,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            telephone: data.telephone,
+            notifications: true,
+            rights: data.role,
+            status: UserStatus.Pending,
+            kycStatus: KYCStatus.Pending
+        });
+
+        await this.emailConfirmationService.create(user);
+
+        return new User(user);
+    }
+
     public async changeRole(userId: number, ...roles: Role[]) {
         this.logger.log(`Changing user role for userId=${userId} to ${buildRights(roles)}`);
 
@@ -88,6 +122,10 @@ export class UserService {
         const lowerCaseEmail = email.toLowerCase();
 
         return this.findOne({ email: lowerCaseEmail });
+    }
+
+    async findByDid(did: string) {
+        return this.findOne({ did });
     }
 
     async getUserAndPasswordByEmail(

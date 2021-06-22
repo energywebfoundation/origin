@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, FormikHelpers, Form, Field } from 'formik';
 import { Paper, Button, Theme, makeStyles, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { IAM, WalletProvider, setCacheClientOptions, setChainConfig } from 'iam-client-lib';
 import { showNotification, NotificationTypeEnum, useValidation } from '../../utils';
 
 import { InputFixedHeight } from '../Form/InputFixedHeight';
@@ -20,6 +21,16 @@ const INITIAL_VALUES: IFormValues = {
     email: '',
     password: ''
 };
+
+setCacheClientOptions(73799, {
+    url: 'https://volta-identitycache.energyweb.org/' // TODO: get from config
+});
+
+setChainConfig(73799, {
+    rpcUrl: 'https://volta-rpc.energyweb.org' // TODO: get from config
+});
+
+const iam = new IAM();
 
 export const LoginForm = () => {
     const dispatch = useDispatch();
@@ -70,6 +81,16 @@ export const LoginForm = () => {
 
         dispatch(fromGeneralActions.setLoading(false));
         formikActions.setSubmitting(false);
+    }
+
+    async function loginWithMetamask() {
+        const { identityToken, did } = await iam.initializeConnection({
+            walletProvider: WalletProvider.MetaMask
+        });
+
+        console.log({ identityToken, did });
+
+        // TODO: handle all possible corner cases here
     }
 
     const VALIDATION_SCHEMA = Yup.object().shape({
@@ -143,6 +164,11 @@ export const LoginForm = () => {
                                     onClick={() => history.push(`${accountPageUrl}/user-register`)}
                                 >
                                     {t('user.actions.registerNow')}
+                                </Button>
+                            </Box>
+                            <Box pt={1} textAlign="left">
+                                <Button onClick={() => loginWithMetamask()}>
+                                    Login with DID and Metamask
                                 </Button>
                             </Box>
                         </Form>

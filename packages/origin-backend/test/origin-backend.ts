@@ -10,11 +10,11 @@ import {
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { Test } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import dotenv from 'dotenv';
 import request from 'supertest';
 
-import { entities } from '../src';
+import { entities, User } from '../src';
 import { AppModule } from '../src/app.module';
 import { ConfigurationService } from '../src/pods/configuration';
 import { EmailConfirmationService } from '../src/pods/email-confirmation/email-confirmation.service';
@@ -23,6 +23,7 @@ import { InvitationService } from '../src/pods/invitation/invitation.service';
 import { NewOrganizationDTO } from '../src/pods/organization/dto/new-organization.dto';
 import { OrganizationService } from '../src/pods/organization/organization.service';
 import { UserService } from '../src/pods/user';
+import { getRepository, Repository } from 'typeorm';
 
 export const getExampleOrganization = (
     email = 'test@example.com',
@@ -60,7 +61,7 @@ export const bootstrapTestInstance = async () => {
             }),
             AppModule
         ],
-        providers: [DatabaseService]
+        providers: [DatabaseService, { provide: getRepositoryToken(User), useClass: Repository }]
     }).compile();
 
     dotenv.config({
@@ -79,6 +80,8 @@ export const bootstrapTestInstance = async () => {
     const fileService = await app.resolve<FileService>(FileService);
     const invitationService = await app.resolve<InvitationService>(InvitationService);
 
+    const userRepository = getRepository(User);
+
     app.useLogger(['log', 'error']);
     app.enableCors();
 
@@ -94,7 +97,8 @@ export const bootstrapTestInstance = async () => {
         configurationService,
         emailConfirmationService,
         fileService,
-        invitationService
+        invitationService,
+        userRepository
     };
 };
 

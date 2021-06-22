@@ -8,4 +8,5 @@ export * from './OrganizationInvitation';
 export * from './OriginConfiguration';
 export * from './User';
 export * from './UserRegistrationData';
+export * from './DidUserRegistrationData';
 export * from './queries';
