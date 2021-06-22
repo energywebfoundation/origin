@@ -175,16 +175,14 @@ describe('DID user e2e tests', function () {
                     expect(accessTokenDecoded).to.contain.keys(['did', 'verifiedRoles']);
                     expect(accessTokenDecoded.verifiedRoles).to.be.an('array');
 
-                    const onChainRoles = (await getDidRoles(iam, did)).sort(),
-                        accessTokenRoles = accessTokenDecoded.verifiedRoles
-                            .map((r) => r.namespace)
-                            .sort();
+                    // TODO: find more reliable way of getting did roles
+                    const didRoles = (await getDidRoles(iam, did)).sort();
 
-                    accessTokenRoles.forEach((accTokenRole) =>
-                        expect(onChainRoles).to.include(accTokenRole)
-                    );
+                    const accessTokenRoles = accessTokenDecoded.verifiedRoles
+                        .map((r) => r.namespace)
+                        .sort();
 
-                    // TODO: implement check if all expected on-chain roles are included in the access token
+                    expect(accessTokenRoles).to.deep.equal(didRoles);
                 });
 
                 it('should be able to get DID roles', async function () {
