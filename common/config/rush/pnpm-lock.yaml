@@ -189,6 +189,7 @@ dependencies:
   nodemailer: 6.6.2
   os-browserify: 0.3.0
   passport: 0.4.1
+  passport-did-auth: 1.0.0-alpha.13
   passport-jwt: 4.0.0
   passport-local: 1.0.0
   path-browserify: 1.0.1
@@ -3024,6 +3025,15 @@ packages:
     dev: false
     resolution:
       integrity: sha512-EBtMw0Pox2JakmO58oJkRQ6kO0mYprZDZzcVSP+CIXI9PkvTf/vyu5S4MUEj/E5+JAIzgu5RANh2nmwOMvCbjw==
+  /@ew-did-registry/did-ethr-resolver/0.5.2-alpha.1057.0:
+    dependencies:
+      '@ew-did-registry/did': 0.5.2-alpha.1057.0
+      '@ew-did-registry/did-resolver-interface': 0.5.2-alpha.1057.0
+      '@ew-did-registry/keys': 0.5.2-alpha.1057.0
+      ethers: 4.0.45
+    dev: false
+    resolution:
+      integrity: sha512-oGfAmyv+2p3bo29S14E8NGuTpGOMA6EsTq6EPD2P0YRRduRJ7qoRcG99YCrFB/0pjX6LHjSkJAsirfpGNTMztg==
   /@ew-did-registry/did-ipfs-store/0.5.2-alpha.1045.0:
     dependencies:
       '@ew-did-registry/did-store-interface': 0.5.0
@@ -3032,6 +3042,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-OP+Nz27x5NMSI9oE5HHdF5rkAu0OMNyLjbvxdOHZ+E14YMSFjPBxkV/B9J84LQUJAFZ6tlQlvIlI56vMiFjZGw==
+  /@ew-did-registry/did-ipfs-store/0.5.2-alpha.1057.0:
+    dependencies:
+      '@ew-did-registry/did-store-interface': 0.5.0
+      bl: 4.1.0
+      ipfs-http-client: 43.0.1
+    dev: false
+    resolution:
+      integrity: sha512-pNj6D4dNU9411uZGwMAOxqrmChApvm1PQT4iZoTULGDltIlPrxY6Sq1h+otEaYKi2F4GOr1/CJdRUcID3j0oZA==
   /@ew-did-registry/did-resolver-interface/0.5.2-alpha.1045.0:
     dependencies:
       '@ew-did-registry/did': 0.5.2-alpha.1045.0
@@ -3039,6 +3057,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-GkR/4l0uswqL3+Q0LPwLrnZHExTzyUUbyAWLIkNPAEDYDlMZl/CElc9955DXtHmjKk/0idwFQe6nYJ7peXG7QQ==
+  /@ew-did-registry/did-resolver-interface/0.5.2-alpha.1057.0:
+    dependencies:
+      '@ew-did-registry/did': 0.5.2-alpha.1057.0
+      ethers: 4.0.45
+    dev: false
+    resolution:
+      integrity: sha512-oAyQLhLNHIc21OedWf0TmntpCL014x7egCRtClwJYaP1gZ2BZ2HkQMarcdNYg1H3W9Ticryi2QwaSlFMnroTzw==
   /@ew-did-registry/did-store-interface/0.5.0:
     dev: false
     resolution:
@@ -3047,6 +3072,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ogo8DODPuRSvBc619XZaUMT7oNcWBXMP7qFMwnJ10zwzNB+mWbu19uMLtG1Kse9tdNtEtJzcAae4ncEwRfu+Dg==
+  /@ew-did-registry/did/0.5.2-alpha.1057.0:
+    dev: false
+    resolution:
+      integrity: sha512-qnFqoiqx7p7Dc35K9lCrkufhrBEWrKb822aG5NX5qtZMKX0GXelUkJ3DrPwi1zVw0bVgixuUt69cs9HFCCDlvg==
   /@ew-did-registry/jwt/0.5.2-alpha.1045.0:
     dependencies:
       '@ew-did-registry/keys': 0.5.2-alpha.1045.0
@@ -3070,6 +3099,15 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Lc5+X5cGJFdxF7nljCG3I3MoU4LDskiWQdq8rukC7ly3Bz8U7oVnc+IyldnY93SWOiSV8KwEyjuUSxS7ZKn7Sg==
+  /@ew-did-registry/keys/0.5.2-alpha.1057.0:
+    dependencies:
+      bn.js: 5.2.0
+      eciesjs: 0.3.10
+      elliptic: 6.5.4
+      ethers: 4.0.45
+    dev: false
+    resolution:
+      integrity: sha512-Kv3Oq47rOdfjYJYHfNPmiHSd9fY+6mD0fNguUm5EPdYd81hYKKDgTsWbS/4XVVSkG6AzxoMjrBU0ULdkpIGWmQ==
   /@ew-did-registry/proxyidentity/0.5.2-alpha.1045.0:
     dependencies:
       '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1045.0
@@ -12003,6 +12041,12 @@ packages:
       node: '>= 4.0'
     resolution:
       integrity: sha512-q5/jG+YQnSy4nRTV4F7lPepBJZ8qBNJJDBuJdoejDyLXgmL7IEo+Le2JDZudFTFt7mrCqIRaSjws4ygRCTCAXA==
+  /cockatiel/2.0.2:
+    dev: false
+    engines:
+      node: '>=10 <11 || >=12'
+    resolution:
+      integrity: sha512-ehw7t3twohGiMTxARX0AcFiUxndXLhnIBWbnRnHtfde2jRywlPpPB/o3s9YSptXPj6tkOG0fzET4CUUx4GIpEg==
   /code-point-at/1.1.0:
     dev: false
     engines:
@@ -23856,6 +23900,24 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
+  /passport-did-auth/1.0.0-alpha.13:
+    dependencies:
+      '@ensdomains/resolver': 0.2.4
+      '@ew-did-registry/did': 0.5.2-alpha.1057.0
+      '@ew-did-registry/did-ethr-resolver': 0.5.2-alpha.1057.0
+      '@ew-did-registry/did-ipfs-store': 0.5.2-alpha.1057.0
+      axios: 0.21.1
+      base64url: 3.0.1
+      cockatiel: 2.0.2
+      eth-ens-namehash: 2.0.8
+      ethers: 4.0.45
+      jsonwebtoken: 8.5.1
+      passport: 0.4.1
+      passport-strategy: 1.0.0
+      typescript: 4.3.4
+    dev: false
+    resolution:
+      integrity: sha512-pxflAznPi18tPTh1cVYpcs06im4LONtDGFg1sDxwFWSS1OYpmUVDz/p8DsrRvuiuwHtN1y3Z9o0GVvL+ypCokA==
   /passport-jwt/4.0.0:
     dependencies:
       jsonwebtoken: 8.5.1
@@ -33936,6 +33998,7 @@ packages:
       multer: 1.4.2
       nodemailer: 6.6.2
       passport: 0.4.1
+      passport-did-auth: 1.0.0-alpha.13
       passport-jwt: 4.0.0
       passport-local: 1.0.0
       polly-js: 1.8.2
@@ -33955,7 +34018,7 @@ packages:
       swagger-ui-express: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-81a77L45H/IRVLJIfDdiubc0F591fRtIGAKOjcmqiZS6VLSm0Iz3LHSfdwHI84eqzlp7cI/2LszGvio3S7pwgw==
+      integrity: sha512-rzJhIukTKJxUuLBOnMcJ4bdVgknxx6rOcPDMw8zPwmCEeV/8bPIPwhNyb+o/ALmcOTbo+wnv2Wu3e80FqQzn0Q==
       tarball: file:projects/origin-backend.tgz
     version: 0.0.0
   file:projects/origin-device-registry-api-client.tgz_6d82c70597cba5ebb4cc33a41b4183a3:
@@ -34834,6 +34897,7 @@ specifiers:
   nodemailer: 6.6.2
   os-browserify: 0.3.0
   passport: 0.4.1
+  passport-did-auth: 1.0.0-alpha.13
   passport-jwt: 4.0.0
   passport-local: 1.0.0
   path-browserify: 1.0.1
