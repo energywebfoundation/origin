@@ -161,9 +161,6 @@ export const bootstrapTestInstance = async () => {
             ): Promise<Partial<IrecDevice>> {
                 return { ...device, status: DeviceState.InProgress };
             },
-            isIrecIntegrationEnabled() {
-                return false;
-            },
             async getTradeAccountCode() {
                 return 'somecode';
             }

@@ -21,10 +21,6 @@ export class CheckCertificateStateTask {
 
     @Cron(CronExpression.EVERY_MINUTE)
     async handleCron() {
-        if (!this.irecService.isIrecIntegrationEnabled()) {
-            return;
-        }
-
         const certificateRequests = await this.queryBus.execute(
             new GetAllCertificationRequestsQuery({ approved: false })
         );

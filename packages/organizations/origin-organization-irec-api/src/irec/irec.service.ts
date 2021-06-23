@@ -97,10 +97,6 @@ export class IrecService implements IIrecService {
         return client;
     }
 
-    isIrecIntegrationEnabled(): boolean {
-        return true;
-    }
-
     async login({
         userName,
         password,

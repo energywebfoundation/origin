@@ -25,10 +25,6 @@ export type UserIdentifier = ILoggedInUser | string | number;
 
 @Injectable()
 export class IrecMockService implements IIrecService {
-    isIrecIntegrationEnabled(): boolean {
-        return false;
-    }
-
     async login({
         userName,
         password,

@@ -17,10 +17,6 @@ export class CheckDeviceStateTask {
 
     @Cron(CronExpression.EVERY_MINUTE)
     async handleCron() {
-        if (!this.irecService.isIrecIntegrationEnabled()) {
-            return;
-        }
-
         const devices = await this.deviceService.findAll();
         for (const device of devices) {
             const irecDevice = await this.irecService.getDevice(device.ownerId, device.code);
