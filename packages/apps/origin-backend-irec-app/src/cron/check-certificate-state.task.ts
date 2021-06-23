@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 import {
@@ -7,12 +7,13 @@ import {
     ApproveCertificationRequestCommand
 } from '@energyweb/issuer-irec-api';
 import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
-import { IrecService } from '@energyweb/origin-organization-irec-api';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 @Injectable()
 export class CheckCertificateStateTask {
     constructor(
         private readonly commandBus: CommandBus,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly eventBus: EventBus,
         private readonly queryBus: QueryBus

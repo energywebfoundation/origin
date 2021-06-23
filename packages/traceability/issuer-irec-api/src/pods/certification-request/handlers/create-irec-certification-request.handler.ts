@@ -1,17 +1,18 @@
+import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Inject } from '@nestjs/common';
 import {
     BlockchainPropertiesService,
     CertificationRequest,
     CreateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import { FileService, UserService } from '@energyweb/origin-backend';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
-import { IrecService } from '@energyweb/origin-organization-irec-api';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateIrecCertificationRequestHandler
@@ -26,6 +27,7 @@ export class CreateIrecCertificationRequestHandler
         readonly irecRepository: Repository<IrecCertificationRequest>,
         readonly eventBus: EventBus,
         readonly commandBus: CommandBus,
+        @Inject(IREC_SERVICE)
         readonly irecService: IrecService,
         readonly userService: UserService,
         readonly fileService: FileService

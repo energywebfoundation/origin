@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommandBus, EventBus } from '@nestjs/cqrs';
-import { IrecService } from '@energyweb/origin-organization-irec-api';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 import { DeviceService } from '../device.service';
 import { DeviceStatusChangedEvent } from '../events';
 
@@ -10,6 +10,7 @@ export class CheckDeviceStateTask {
     constructor(
         private readonly commandBus: CommandBus,
         private readonly deviceService: DeviceService,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly eventBus: EventBus
     ) {}

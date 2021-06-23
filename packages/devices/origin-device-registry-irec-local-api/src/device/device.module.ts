@@ -3,7 +3,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { ScheduleModule } from '@nestjs/schedule';
 
 import {
     ConnectionModule,
@@ -20,7 +19,6 @@ import { CheckDeviceStateTask } from './cron';
 
 @Module({
     imports: [
-        ScheduleModule.forRoot(),
         TypeOrmModule.forFeature([Device]),
         CqrsModule,
         ConfigModule,

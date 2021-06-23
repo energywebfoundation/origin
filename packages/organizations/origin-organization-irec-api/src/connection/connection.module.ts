@@ -3,7 +3,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { ScheduleModule } from '@nestjs/schedule';
 
 import { RegistrationModule } from '../registration';
 import { IrecModule, IrecService } from '../irec';
@@ -14,7 +13,6 @@ import { RefreshAllTokensTask } from './cron';
 
 @Module({
     imports: [
-        ScheduleModule.forRoot(),
         TypeOrmModule.forFeature([Connection]),
         ConfigModule,
         CqrsModule,

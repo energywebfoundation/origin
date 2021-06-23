@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
     BadRequestException,
     ConflictException,
+    Inject,
     Injectable,
     NotFoundException
 } from '@nestjs/common';
@@ -16,7 +17,7 @@ import {
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { UserService } from '@energyweb/origin-backend';
-import { IrecService } from '@energyweb/origin-organization-irec-api';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
@@ -30,6 +31,7 @@ export class DeviceService {
         private readonly repository: Repository<Device>,
         private readonly eventBus: EventBus,
         private readonly configService: ConfigService,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly userService: UserService
     ) {}
