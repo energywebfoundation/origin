@@ -22,12 +22,6 @@ export class CreateDeviceDTO {
     @IsString()
     @IsNotEmpty()
     @Expose()
-    defaultAccount: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @IsNotEmpty()
-    @Expose()
     deviceType: string;
 
     @ApiProperty({ type: String })

@@ -31,10 +31,12 @@
     },
     "dependencies": {
         "@energyweb/issuer-irec-api-wrapper": "0.4.0",
+        "@energyweb/origin-backend": "10.0.1",
         "@energyweb/origin-backend-core": "8.0.1",
         "@energyweb/origin-backend-utils": "1.5.1",
         "@energyweb/origin-device-registry-api": "0.1.0",
         "@energyweb/origin-organization-irec-api": "1.4.0",
+        "@nestjs/schedule": "0.4.3",
         "@nestjs/common": "7.6.18",
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.18",
