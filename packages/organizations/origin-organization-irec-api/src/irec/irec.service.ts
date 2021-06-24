@@ -16,7 +16,8 @@ import {
     IRECAPIClient,
     IssuanceStatus,
     Issue,
-    IssueWithStatus
+    IssueWithStatus,
+    Transaction
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 
@@ -68,6 +69,14 @@ export interface IIrecService {
     getIssueRequest(user: UserIdentifier, code: string): Promise<IssueWithStatus>;
 
     uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]>;
+
+    getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]>;
+
+    approveIssueRequest(
+        user: UserIdentifier,
+        issueRequestCode: string,
+        issuerAccountCode: string
+    ): Promise<Transaction>;
 }
 
 @Injectable()
@@ -175,6 +184,11 @@ export class IrecService implements IIrecService {
         return accounts.find((account: Account) => account.type === AccountType.Trade)?.code || '';
     }
 
+    async getIssueAccountCode(user: UserIdentifier): Promise<string> {
+        const accounts = await this.getAccountInfo(user);
+        return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
+    }
+
     async createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {
         const irecClient = await this.getIrecClient(user);
         const irecIssue: IssueWithStatus = await irecClient.issue.create(issue);
@@ -212,5 +226,22 @@ export class IrecService implements IIrecService {
     ): Promise<string[]> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.file.upload(files);
+    }
+
+    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
+        return [];
+        // TODO: get certificates somehow
+        // NOTE: wait for IREC guys to implement cross ids between issue request and items
+        // const irecClient = await this.getIrecClient(user);
+        // return irecClient.account.getItems();
+    }
+
+    async approveIssueRequest(
+        user: UserIdentifier,
+        issueRequestCode: string,
+        issuerAccountCode: string
+    ): Promise<Transaction> {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
     }
 }

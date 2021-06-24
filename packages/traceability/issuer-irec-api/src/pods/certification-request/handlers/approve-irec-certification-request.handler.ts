@@ -1,15 +1,16 @@
+import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ISuccessResponse } from '@energyweb/origin-backend-core';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 
+import { ISuccessResponse } from '@energyweb/origin-backend-core';
 import { UserService } from '@energyweb/origin-backend';
-import { IrecService } from '../../irec';
-import { ApproveIrecCertificationRequestCommand } from '../commands';
-import { IrecCertificationRequest } from '../irec-certification-request.entity';
 import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
 import { ApproveCertificationRequestCommand } from '@energyweb/issuer-api';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
+
+import { ApproveIrecCertificationRequestCommand } from '../commands';
+import { IrecCertificationRequest } from '../irec-certification-request.entity';
 
 @CommandHandler(ApproveIrecCertificationRequestCommand)
 export class ApproveIrecCertificationRequestHandler
@@ -20,6 +21,7 @@ export class ApproveIrecCertificationRequestHandler
         private readonly irecRepository: Repository<IrecCertificationRequest>,
         private readonly commandBus: CommandBus,
         private readonly userService: UserService,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService
     ) {}
 
@@ -29,7 +31,10 @@ export class ApproveIrecCertificationRequestHandler
             certificationRequestId: id
         });
 
-        const issueRequest = await this.irecService.getIssue(platformAdmin.id, irecIssueRequestId);
+        const issueRequest = await this.irecService.getIssueRequest(
+            platformAdmin.id,
+            irecIssueRequestId
+        );
 
         if (issueRequest.status === IssuanceStatus.Approved) {
             return this.commandBus.execute(new ApproveCertificationRequestCommand(id));

@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
+
 import {
     Certificate,
     OnChainCertificateWatcher,
     BlockchainPropertiesModule
 } from '@energyweb/issuer-api';
+import { IrecModule } from '@energyweb/origin-organization-irec-api';
 
-import { IrecModule } from '../irec';
 import { IrecCertificateController } from './certificate.controller';
 import { IrecCertificate } from './irec-certificate.entity';
 import { CertificateHandlers } from './handler';

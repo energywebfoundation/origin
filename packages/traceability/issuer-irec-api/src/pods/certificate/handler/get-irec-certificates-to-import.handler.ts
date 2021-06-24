@@ -1,12 +1,15 @@
+import { Repository } from 'typeorm';
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { GetIrecCertificatesToImportCommand } from '../command/get-irec-certificates-to-import.command';
-import { IrecCertificate } from '../irec-certificate.entity';
+
 import { IssueWithStatus } from '@energyweb/issuer-irec-api-wrapper';
-import { IrecService } from '../../irec';
 import { GetAllCertificationRequestsQuery } from '@energyweb/issuer-api';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
+
+import { GetIrecCertificatesToImportCommand } from '../command';
+import { IrecCertificate } from '../irec-certificate.entity';
 import { FullCertificationRequestDTO } from '../../certification-request';
+import { Inject } from '@nestjs/common';
 
 @CommandHandler(GetIrecCertificatesToImportCommand)
 export class GetIrecCertificatesToImportHandler
@@ -16,6 +19,7 @@ export class GetIrecCertificatesToImportHandler
         private readonly queryBus: QueryBus,
         @InjectRepository(IrecCertificate)
         private readonly repository: Repository<IrecCertificate>,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService
     ) {}
 

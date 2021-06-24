@@ -13,7 +13,9 @@ import {
     DeviceUpdateParams,
     IssuanceStatus,
     Issue,
-    IssueWithStatus
+    IssueWithStatus,
+    Transaction,
+    TransactionType
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 
@@ -199,5 +201,25 @@ export class IrecMockService implements IIrecService {
 
     async uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]) {
         return files.map(() => ((Math.random() * 1e9) | 0).toString(16));
+    }
+
+    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
+        return [];
+    }
+
+    async approveIssueRequest(
+        user: UserIdentifier,
+        issueRequestCode: string,
+        issuerAccountCode: string
+    ): Promise<Transaction> {
+        return {
+            code: 'TRANSACTION1000',
+            volume: 1000,
+            notes: '',
+            sender: 'some',
+            recipient: 'another',
+            time: new Date(),
+            transactionType: TransactionType.Issue
+        };
     }
 }

@@ -1,13 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
+
 import {
-    CertificationRequestStatusChangedEvent,
-    GetAllCertificationRequestsQuery,
-    ApproveCertificationRequestCommand
-} from '@energyweb/issuer-irec-api';
+    ApproveCertificationRequestCommand,
+    GetAllCertificationRequestsQuery
+} from '@energyweb/issuer-api';
 import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
+
+import { CertificationRequestStatusChangedEvent } from '../events';
 
 @Injectable()
 export class CheckCertificationRequestStateTask {
