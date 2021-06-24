@@ -9,6 +9,7 @@ import { IrecModule, IrecService } from '../irec';
 import { ConnectionController } from './connection.controller';
 import { Connection } from './connection.entity';
 import { ConnectionHandlers } from './handlers';
+import { RefreshAllTokensTask } from './cron';
 
 @Module({
     imports: [
@@ -19,7 +20,7 @@ import { ConnectionHandlers } from './handlers';
         RegistrationModule,
         IrecModule
     ],
-    providers: [...ConnectionHandlers, IrecService],
+    providers: [...ConnectionHandlers, IrecService, RefreshAllTokensTask],
     exports: [...ConnectionHandlers],
     controllers: [ConnectionController]
 })

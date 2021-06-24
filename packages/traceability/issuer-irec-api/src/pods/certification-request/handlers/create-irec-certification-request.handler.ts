@@ -1,14 +1,15 @@
+import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Inject } from '@nestjs/common';
 import {
     BlockchainPropertiesService,
     CertificationRequest,
     CreateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import { FileService, UserService } from '@energyweb/origin-backend';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
-import { IrecService } from '../../irec';
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
@@ -26,6 +27,7 @@ export class CreateIrecCertificationRequestHandler
         readonly irecRepository: Repository<IrecCertificationRequest>,
         readonly eventBus: EventBus,
         readonly commandBus: CommandBus,
+        @Inject(IREC_SERVICE)
         readonly irecService: IrecService,
         readonly userService: UserService,
         readonly fileService: FileService
@@ -78,7 +80,7 @@ export class CreateIrecCertificationRequestHandler
 
         const irecDevice = await this.irecService.getDevice(userId, request.deviceId);
         const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
-        const irecIssue = await this.irecService.createIrecIssue(platformAdmin.id, {
+        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
             device: request.deviceId,
             fuelType: irecDevice.fuelType,
             recipient: platformTradeAccount,

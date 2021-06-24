@@ -1,13 +1,13 @@
 import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Inject } from '@nestjs/common';
 import { UserService } from '@energyweb/origin-backend';
 
-import { IrecService } from '../../irec';
-import { CreateBeneficiaryCommand } from '../commands/create-beneficiary.command';
+import { IREC_SERVICE, IrecService } from '../../irec';
 import { Beneficiary } from '../beneficiary.entity';
 import { BeneficiaryDTO } from '../dto/beneficiary.dto';
-import { GetBeneficiaryCommand } from '../commands';
+import { CreateBeneficiaryCommand, GetBeneficiaryCommand } from '../commands';
 
 @CommandHandler(CreateBeneficiaryCommand)
 export class CreateBeneficiaryHandler implements ICommandHandler<CreateBeneficiaryCommand> {
@@ -15,6 +15,7 @@ export class CreateBeneficiaryHandler implements ICommandHandler<CreateBeneficia
         @InjectRepository(Beneficiary)
         private readonly repository: Repository<Beneficiary>,
         private readonly userService: UserService,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly commandBus: CommandBus
     ) {}

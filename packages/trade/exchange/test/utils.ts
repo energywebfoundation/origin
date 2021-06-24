@@ -29,16 +29,8 @@ export const issueToken = async (
     const { name } = registryInterface.parseLog(log);
     const { _id: requestId } = registryInterface.decodeEventLog(name, log.data, log.topics);
 
-    const validityData = registryInterface.encodeFunctionData('isRequestValid', [
-        requestId.toString()
-    ]);
-
     const approvalReceipt = await (
-        (await issuer.approveCertificationRequest(
-            requestId,
-            amount,
-            validityData
-        )) as ContractTransaction
+        (await issuer.approveCertificationRequest(requestId, amount)) as ContractTransaction
     ).wait();
 
     const { args } = approvalReceipt.events.find(

@@ -27,18 +27,18 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "typescript": "4.3.2",
+        "typescript": "4.3.4",
         "@energyweb/origin-backend": "10.0.1",
-        "@nestjs/swagger": "4.8.0",
-        "@nestjs/testing": "7.6.17",
+        "@nestjs/swagger": "4.8.1",
+        "@nestjs/testing": "7.6.18",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.3.3",
+        "@openapitools/openapi-generator-cli": "2.3.5",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.3.1",
         "ts-node": "9.1.1",
         "@types/mocha": "8.2.2",
         "@types/node": "14.17.3",
-        "mocha": "9.0.0",
+        "mocha": "9.0.1",
         "typeorm": "0.2.34"
     },
     "files": [
