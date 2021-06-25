@@ -21,7 +21,7 @@ import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-a
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
-import { DeviceCreatedEvent } from './events';
+import { DeviceCreatedEvent, DeviceStatusChangedEvent } from './events';
 import { IREC_DEVICE_TYPES, IREC_FUEL_TYPES } from './Fuels';
 
 @Injectable()
@@ -107,6 +107,40 @@ export class DeviceService {
 
     async updateStatus(id: string, status: DeviceState): Promise<void> {
         await this.repository.update(id, { status });
+    }
+
+    async approveDevice(id: string): Promise<Device> {
+        const device = await this.findOne(id);
+
+        if (device.status !== DeviceState.InProgress) {
+            throw new BadRequestException('Device state have to be in "In-Progress" state');
+        }
+
+        const platformAdmin = await this.userService.getPlatformAdmin();
+        await this.irecService.approveDevice(platformAdmin.id, id);
+        await this.repository.update(id, { status: DeviceState.Approved });
+        device.status = DeviceState.Approved;
+
+        this.eventBus.publish(new DeviceStatusChangedEvent(device, device.status));
+
+        return device;
+    }
+
+    async rejectDevice(id: string): Promise<Device> {
+        const device = await this.findOne(id);
+
+        if (device.status !== DeviceState.Draft) {
+            throw new BadRequestException('Device state have to be not in "Draft" state');
+        }
+
+        const platformAdmin = await this.userService.getPlatformAdmin();
+        await this.irecService.rejectDevice(platformAdmin.id, id);
+        await this.repository.update(id, { status: DeviceState.Rejected });
+        device.status = DeviceState.Rejected;
+
+        this.eventBus.publish(new DeviceStatusChangedEvent(device, device.status));
+
+        return device;
     }
 
     getDeviceTypes(): CodeNameDTO[] {

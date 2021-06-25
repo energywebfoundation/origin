@@ -62,6 +62,8 @@ export interface IIrecService {
 
     getTradeAccountCode(user: UserIdentifier): Promise<string>;
 
+    getIssueAccountCode(user: UserIdentifier): Promise<string>;
+
     createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus>;
 
     updateIssueRequest(user: UserIdentifier, code: string, issue: Issue): Promise<IssueWithStatus>;
@@ -77,6 +79,10 @@ export interface IIrecService {
         issueRequestCode: string,
         issuerAccountCode: string
     ): Promise<Transaction>;
+
+    approveDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
+
+    rejectDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 }
 
 @Injectable()
@@ -243,5 +249,33 @@ export class IrecService implements IIrecService {
     ): Promise<Transaction> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
+    }
+
+    async approveDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
+        const irecClient = await this.getIrecClient(user);
+        const device = await irecClient.device.get(code);
+
+        if (device.status !== DeviceState.InProgress) {
+            throw new Error('To approve IREC device its state have to be In-Progress');
+        }
+
+        await irecClient.device.verify(code);
+        await irecClient.device.approve(code);
+
+        device.status = DeviceState.Approved;
+        return device;
+    }
+
+    async rejectDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
+        const irecClient = await this.getIrecClient(user);
+        const device = await irecClient.device.get(code);
+
+        if (device.status !== DeviceState.InProgress) {
+            throw new Error('To reject IREC device its state have to be In-Progress');
+        }
+
+        await irecClient.device.reject(code);
+        device.status = DeviceState.Rejected;
+        return device;
     }
 }
