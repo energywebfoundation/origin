@@ -78,7 +78,7 @@
         "fork-ts-checker-webpack-plugin": "6.2.12",
         "html-webpack-plugin": "5.3.1",
         "mini-css-extract-plugin": "1.6.1",
-        "node-sass": "6.0.0",
+        "node-sass": "6.0.1",
         "resolve-url-loader": "4.0.0",
         "sass-loader": "12.1.0",
         "source-map-loader": "3.0.0",
