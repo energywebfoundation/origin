@@ -71,7 +71,7 @@
         "copy-webpack-plugin": "9.0.0",
         "css-loader": "5.2.6",
         "cypress": "7.5.0",
-        "cypress-file-upload": "5.0.7",
+        "cypress-file-upload": "5.0.8",
         "eslint-plugin-react": "7.24.0",
         "extract-text-webpack-plugin": "4.0.0-beta.0",
         "file-loader": "6.2.0",
