@@ -32,7 +32,7 @@
         "@react-google-maps/api": "2.2.0",
         "axios": "0.21.1",
         "connected-react-router": "6.9.1",
-        "ethers": "5.3.1",
+        "ethers": "5.4.0",
         "formik": "2.2.9",
         "formik-material-ui": "3.0.1",
         "history": "4.10.1",
