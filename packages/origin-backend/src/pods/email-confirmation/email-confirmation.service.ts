@@ -13,7 +13,7 @@ import { Repository } from 'typeorm';
 
 import { User } from '../user/user.entity';
 import { EmailConfirmation } from './email-confirmation.entity';
-import { EmailConfirmationRequestedEvent } from './events';
+import { EmailConfirmationRequestedEvent } from './events/email-confirmation-requested.event';
 
 @Injectable()
 export class EmailConfirmationService {

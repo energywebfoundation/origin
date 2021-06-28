@@ -3,7 +3,7 @@ import { GetConnectionHandler } from './get-connection.handler';
 import { RefreshAllTokensHandler } from './refresh-all-tokens.handler';
 import { RefreshTokensHandler } from './refresh-tokens.handler';
 
-export const Handlers = [
+export const ConnectionHandlers = [
     CreateConnectionHandler,
     GetConnectionHandler,
     RefreshAllTokensHandler,

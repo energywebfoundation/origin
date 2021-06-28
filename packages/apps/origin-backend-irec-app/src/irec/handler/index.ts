@@ -1,3 +1,3 @@
-import { CreateBeneficiaryHandler } from './create-beneficiary.handler';
+import { CreateIrecBeneficiaryHandler } from './create-irec-beneficiary.handler';
 
-export const Handlers = [CreateBeneficiaryHandler];
+export const Handlers = [CreateIrecBeneficiaryHandler];

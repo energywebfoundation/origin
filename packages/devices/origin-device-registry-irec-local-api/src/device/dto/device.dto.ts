@@ -25,10 +25,6 @@ export class DeviceDTO extends IrecDeviceDTO {
 
     @ApiProperty({ type: String })
     @Expose()
-    country: string;
-
-    @ApiProperty({ type: String })
-    @Expose()
     region: string;
 
     @ApiProperty({ type: String })

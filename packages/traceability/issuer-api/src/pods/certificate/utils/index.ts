@@ -26,7 +26,6 @@ export const certificateToDto = async (
 
     return {
         id: certificate.id,
-        tokenId: certificate.tokenId,
         deviceId: certificate.deviceId,
         generationStartTime: certificate.generationStartTime,
         generationEndTime: certificate.generationEndTime,

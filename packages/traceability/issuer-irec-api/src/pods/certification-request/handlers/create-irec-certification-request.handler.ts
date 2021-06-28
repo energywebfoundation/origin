@@ -1,21 +1,21 @@
+import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { createReadStream } from 'fs';
+import { Inject } from '@nestjs/common';
 import {
     BlockchainPropertiesService,
     CertificationRequest,
-    CreateCertificationRequestHandler as OriginalHandler
+    CreateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import { FileService, UserService } from '@energyweb/origin-backend';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
+
 import { CreateIrecCertificationRequestCommand } from '../commands';
-import { IrecCertificateService } from '../irec-certificate.service';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
-export class CreateCertificationRequestHandler
-    extends OriginalHandler
+export class CreateIrecCertificationRequestHandler
     implements ICommandHandler<CreateIrecCertificationRequestCommand>
 {
     constructor(
@@ -27,43 +27,36 @@ export class CreateCertificationRequestHandler
         readonly irecRepository: Repository<IrecCertificationRequest>,
         readonly eventBus: EventBus,
         readonly commandBus: CommandBus,
-        readonly irecCertificateService: IrecCertificateService,
+        @Inject(IREC_SERVICE)
+        readonly irecService: IrecService,
         readonly userService: UserService,
         readonly fileService: FileService
-    ) {
-        super(repository, blockchainPropertiesService);
-    }
+    ) {}
 
     async execute(
         params: CreateIrecCertificationRequestCommand
     ): Promise<FullCertificationRequestDTO> {
-        const stored = await this.createCertificationRequest(params);
+        const certificationRequest = await this.commandBus.execute(
+            new CreateCertificationRequestCommand(
+                params.to,
+                params.energy,
+                params.fromTime,
+                params.toTime,
+                params.deviceId,
+                params.files,
+                params.isPrivate
+            )
+        );
 
-        this.addToQueue(stored.id);
-
-        return stored;
-    }
-
-    async createCertificationRequest(
-        params: CreateIrecCertificationRequestCommand
-    ): Promise<FullCertificationRequestDTO> {
-        const certificationRequest = await super.createCertificationRequest(params);
         const irecCertificationRequest = this.irecRepository.create({
             certificationRequestId: certificationRequest.id,
             userId: String(params.user.id)
         });
         await this.irecRepository.save(irecCertificationRequest);
 
+        await this.createIrecIssuanceRequest(certificationRequest);
+
         return { ...certificationRequest, userId: irecCertificationRequest.userId };
-    }
-
-    async process(requestId: number) {
-        const request: CertificationRequest = await this.getCertificationRequest(requestId);
-
-        if (request) {
-            await this.createIrecIssuanceRequest(request);
-            await this.mintCertificationRequest(request);
-        }
     }
 
     async createIrecIssuanceRequest(request: CertificationRequest): Promise<void> {
@@ -79,16 +72,15 @@ export class CreateCertificationRequestHandler
             const files = await Promise.all(
                 request.files.map((fileId) => this.fileService.get(fileId))
             );
-            fileIds = await this.irecCertificateService.uploadFiles(
+            fileIds = await this.irecService.uploadFiles(
                 userId,
-                files.map((file) => createReadStream(file.data))
+                files.map((file) => file.data)
             );
         }
-        const irecDevice = await this.irecCertificateService.getDevice(userId, request.deviceId);
-        const platformTradeAccount = await this.irecCertificateService.getTradeAccountCode(
-            platformAdmin.id
-        );
-        const irecIssue = await this.irecCertificateService.createIrecIssue(platformAdmin.id, {
+
+        const irecDevice = await this.irecService.getDevice(userId, request.deviceId);
+        const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
+        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
             device: request.deviceId,
             fuelType: irecDevice.fuelType,
             recipient: platformTradeAccount,

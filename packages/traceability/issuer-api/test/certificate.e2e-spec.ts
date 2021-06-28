@@ -96,22 +96,22 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.CREATED)
             .expect((res) => {
                 const {
+                    id,
                     deviceId,
                     generationStartTime,
                     generationEndTime,
                     creationTime,
                     creationBlockHash,
-                    tokenId,
                     isOwned,
                     isClaimed
                 } = res.body;
 
+                expect(id).to.be.above(0);
                 expect(deviceId).to.equal(certificateTestData.deviceId);
                 expect(certificateTestData.fromTime).to.equal(generationStartTime);
                 expect(certificateTestData.toTime).to.equal(generationEndTime);
                 expect(creationTime).to.be.above(1);
                 expect(creationBlockHash);
-                expect(tokenId).to.be.above(-1);
                 expect(isOwned).to.be.false;
                 expect(isClaimed).to.be.false;
             });
@@ -206,8 +206,6 @@ describe('Certificate tests', () => {
     });
 
     it('should partially claim a certificate', async () => {
-        const claimAmount = BigNumber.from(certificateTestData.energy).div(2).toString();
-
         const {
             body: { id: certificateId }
         } = await request(app.getHttpServer())
@@ -228,7 +226,7 @@ describe('Certificate tests', () => {
         await sleep(10000);
 
         const {
-            body: { isOwned, energy, isClaimed, myClaims, claims }
+            body: { isOwned, energy, isClaimed, myClaims }
         } = await request(app.getHttpServer())
             .get(`/certificate/${certificateId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })

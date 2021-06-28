@@ -37,7 +37,6 @@ import { TransferCertificateCommand } from './commands/transfer-certificate.comm
 import { TransferCertificateDTO } from './commands/transfer-certificate.dto';
 import { ClaimCertificateDTO } from './commands/claim-certificate.dto';
 import { ClaimCertificateCommand } from './commands/claim-certificate.command';
-import { GetCertificateByTokenIdQuery } from './queries/get-certificate-by-token.query';
 import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
 import { BulkClaimCertificatesCommand } from './commands/bulk-claim-certificates.command';
 import { BulkClaimCertificatesDTO } from './commands/bulk-claim-certificates.dto';
@@ -73,28 +72,6 @@ export class CertificateController {
 
         if (!certificate) {
             throw new NotFoundException(`Certificate with ID ${id} does not exist.`);
-        }
-
-        return certificateToDto(certificate, blockchainAddress);
-    }
-
-    @Get('/token-id/:tokenId')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: CertificateDTO,
-        description: 'Returns a Certificate by token ID'
-    })
-    public async getByTokenId(
-        @Param('tokenId', new ParseIntPipe()) tokenId: number,
-        @BlockchainAccountDecorator() blockchainAddress: string
-    ): Promise<CertificateDTO> {
-        const certificate = await this.queryBus.execute<GetCertificateByTokenIdQuery, Certificate>(
-            new GetCertificateByTokenIdQuery(tokenId)
-        );
-
-        if (!certificate) {
-            throw new NotFoundException(`Certificate with token ID ${tokenId} does not exist.`);
         }
 
         return certificateToDto(certificate, blockchainAddress);

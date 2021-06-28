@@ -7,7 +7,13 @@ import { Wallet, BigNumber } from 'ethers';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { migrateIssuer, migrateRegistry } from '../src/migrate';
-import { Certificate, CertificateUtils, IClaimData, IBlockchainProperties } from '../src';
+import {
+    Certificate,
+    CertificateUtils,
+    IClaimData,
+    IBlockchainProperties,
+    CertificateBatchOperations
+} from '../src';
 
 describe('Certificate tests', () => {
     let blockchainProperties: IBlockchainProperties;
@@ -76,7 +82,7 @@ describe('Certificate tests', () => {
         );
     };
 
-    it('migrates Registry', async () => {
+    it('migrates Registry and Issuer', async () => {
         const registry = await migrateRegistry(provider, issuerPK);
         const issuer = await migrateIssuer(provider, issuerPK, registry.address);
 
@@ -245,6 +251,37 @@ describe('Certificate tests', () => {
         );
     });
 
+    it('batch issues certificates', async () => {
+        setActiveUser(issuerWallet);
+
+        const certInfo1 = {
+            to: deviceOwnerWallet.address,
+            amount: BigNumber.from(100),
+            generationStartTime: timestamp,
+            generationEndTime: (timestamp += 30 * 24 * 3600),
+            deviceId: '1',
+            metadata: ''
+        };
+
+        const certInfo2 = {
+            to: traderWallet.address,
+            amount: BigNumber.from(200),
+            generationStartTime: timestamp,
+            generationEndTime: (timestamp += 30 * 24 * 3600),
+            deviceId: '2',
+            metadata: ''
+        };
+
+        const certificateIds = await CertificateBatchOperations.issueCertificates(
+            [certInfo1, certInfo2],
+            blockchainProperties
+        );
+
+        assert.lengthOf(certificateIds, 2);
+
+        certificateIds.forEach((id) => assert.typeOf(id, 'number'));
+    });
+
     it('batch transfers certificates', async () => {
         let certificate = await issueCertificate(totalVolume, deviceOwnerWallet.address);
         let certificate2 = await issueCertificate(totalVolume, deviceOwnerWallet.address);
@@ -256,7 +293,7 @@ describe('Certificate tests', () => {
         assert.equal(certificate.owners[deviceOwnerWallet.address], totalVolume.toString());
         assert.equal(certificate2.owners[deviceOwnerWallet.address], totalVolume.toString());
 
-        await CertificateUtils.transferCertificates(
+        await CertificateBatchOperations.transferCertificates(
             [certificate.id, certificate2.id],
             traderWallet.address,
             blockchainProperties
@@ -284,7 +321,7 @@ describe('Certificate tests', () => {
         assert.equal(certificate.claimers[deviceOwnerWallet.address], undefined);
         assert.equal(certificate2.claimers[deviceOwnerWallet.address], undefined);
 
-        await CertificateUtils.claimCertificates(
+        await CertificateBatchOperations.claimCertificates(
             [certificate.id, certificate2.id],
             claimData,
             blockchainProperties
@@ -350,7 +387,7 @@ describe('Certificate tests', () => {
         let failed = false;
 
         try {
-            await CertificateUtils.claimCertificates(
+            await CertificateBatchOperations.claimCertificates(
                 [certificate.id, certificate2.id],
                 claimData,
                 blockchainProperties,

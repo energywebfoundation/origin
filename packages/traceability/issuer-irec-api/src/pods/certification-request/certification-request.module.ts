@@ -4,18 +4,18 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 
 import { FileModule, UserModule } from '@energyweb/origin-backend';
+import { ConnectionModule, IrecModule } from '@energyweb/origin-organization-irec-api';
 import {
     BlockchainPropertiesModule,
-    CertificateModule,
     Certificate,
-    SyncCertificationRequestsTask,
-    CertificationRequest
+    CertificateModule,
+    CertificationRequest,
+    SyncCertificationRequestsTask
 } from '@energyweb/issuer-api';
 
 import { Handlers } from './handlers';
 import { IrecCertificationRequest } from './irec-certification-request.entity';
 import { CertificationRequestController } from './certification-request.controller';
-import { IrecCertificateService } from './irec-certificate.service';
 
 @Module({
     imports: [
@@ -25,10 +25,12 @@ import { IrecCertificateService } from './irec-certificate.service';
         CertificateModule,
         ConfigModule,
         UserModule,
-        FileModule
+        FileModule,
+        ConnectionModule,
+        IrecModule
     ],
     controllers: [CertificationRequestController],
-    providers: [...Handlers, SyncCertificationRequestsTask, IrecCertificateService],
+    providers: [...Handlers, SyncCertificationRequestsTask],
     exports: [...Handlers]
 })
 export class CertificationRequestModule {}
