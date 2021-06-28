@@ -68,7 +68,7 @@
         "mocha": "9.0.1",
         "truffle": "5.3.12",
         "solc": "0.8.4",
-        "solc-0.8": "npm:solc@0.8.4",
+        "solc-0.8": "npm:solc@0.8.6",
         "winston-transport": "4.4.0",
         "@types/dotenv": "6.1.1",
         "@types/chai": "4.2.15",
