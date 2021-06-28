@@ -1,16 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
+
 import {
-    CertificationRequestStatusChangedEvent,
-    GetAllCertificationRequestsQuery,
-    ApproveCertificationRequestCommand
-} from '@energyweb/issuer-irec-api';
+    ApproveCertificationRequestCommand,
+    GetAllCertificationRequestsQuery
+} from '@energyweb/issuer-api';
 import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
+import { CertificationRequestStatusChangedEvent } from '../events';
+
 @Injectable()
-export class CheckCertificateStateTask {
+export class CheckCertificationRequestStateTask {
     constructor(
         private readonly commandBus: CommandBus,
         @Inject(IREC_SERVICE)
@@ -21,11 +23,11 @@ export class CheckCertificateStateTask {
 
     @Cron(CronExpression.EVERY_MINUTE)
     async handleCron() {
-        const certificateRequests = await this.queryBus.execute(
+        const certificationRequests = await this.queryBus.execute(
             new GetAllCertificationRequestsQuery({ approved: false })
         );
 
-        for (const certificateRequest of certificateRequests) {
+        for (const certificateRequest of certificationRequests) {
             const irecIssue = await this.irecService.getIssueRequest(
                 certificateRequest.userId,
                 certificateRequest.irecIssueId

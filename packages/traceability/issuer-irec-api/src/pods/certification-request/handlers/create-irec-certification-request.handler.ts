@@ -90,7 +90,7 @@ export class CreateIrecCertificationRequestHandler
         });
         await this.repository.update(request.id, { files: fileIds });
         await this.irecRepository.update(irecCertificationRequest.certificationRequestId, {
-            irecIssueId: irecIssue.code
+            irecIssueRequestId: irecIssue.code
         });
     }
 }

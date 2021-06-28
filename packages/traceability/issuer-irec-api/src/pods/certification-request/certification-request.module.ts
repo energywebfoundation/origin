@@ -8,14 +8,15 @@ import { ConnectionModule, IrecModule } from '@energyweb/origin-organization-ire
 import {
     BlockchainPropertiesModule,
     Certificate,
-    CertificateModule,
     CertificationRequest,
     SyncCertificationRequestsTask
 } from '@energyweb/issuer-api';
 
+import { CertificateModule } from '../certificate';
 import { Handlers } from './handlers';
 import { IrecCertificationRequest } from './irec-certification-request.entity';
 import { CertificationRequestController } from './certification-request.controller';
+import { CheckCertificationRequestStateTask } from './cron';
 
 @Module({
     imports: [
@@ -30,7 +31,7 @@ import { CertificationRequestController } from './certification-request.controll
         IrecModule
     ],
     controllers: [CertificationRequestController],
-    providers: [...Handlers, SyncCertificationRequestsTask],
+    providers: [...Handlers, SyncCertificationRequestsTask, CheckCertificationRequestStateTask],
     exports: [...Handlers]
 })
 export class CertificationRequestModule {}

@@ -65,19 +65,16 @@ export class Transaction {
 
     notes: string;
 
-    @Transform((value) => value.code, { toClassOnly: true })
     @Expose({ name: 'source_account', toClassOnly: true })
     sender: string;
 
-    @Transform((value) => value.code, { toClassOnly: true })
     @Expose({ name: 'destination_account', toClassOnly: true })
     recipient: string;
 
     @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     time: Date;
 
-    @Transform((value) => value.code, { toClassOnly: true })
-    @Expose({ name: 'transaction_type', toClassOnly: true })
+    @Expose({ name: 'type', toClassOnly: true })
     transactionType: TransactionType;
 }
 

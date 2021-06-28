@@ -223,7 +223,7 @@ export class IRECAPIClient extends EventEmitter {
             withdraw: async (code: string, notes?: string): Promise<void> => {
                 await setState(code, 'withdraw', notes);
             },
-            approve: async (code: string, approve: ApproveIssue): Promise<void> => {
+            approve: async (code: string, approve: ApproveIssue): Promise<Transaction> => {
                 const appr =
                     approve instanceof ApproveIssue ? approve : plainToClass(ApproveIssue, approve);
 
@@ -231,7 +231,13 @@ export class IRECAPIClient extends EventEmitter {
 
                 const url = `${issueManagementUrl}/${code}/approve`;
 
-                await this.axiosInstance.put(url, classToPlain(appr), this.config);
+                const response = await this.axiosInstance.put<any>(
+                    url,
+                    classToPlain(appr),
+                    this.config
+                );
+
+                return plainToClass(Transaction, response.data?.transaction);
             },
             getStatus: async (code: string): Promise<IssueWithStatus> => {
                 const url = `${issueManagementUrl}/${code}`;
