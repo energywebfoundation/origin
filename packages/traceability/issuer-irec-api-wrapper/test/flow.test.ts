@@ -180,20 +180,23 @@ describe('API flows', () => {
         const b = await participantClient.beneficiary.create(beneficiaryParams);
         expect(b.id).to.be.a('number');
         expect(b.name).to.be.a('string');
-        const beneficiaries: Beneficiary[] = await participantClient.beneficiary.getAll();
-        const newBeneficiary = beneficiaries.find((b) => b.name === beneficiaryParams.name);
 
+        const beneficiaries: Beneficiary[] = await participantClient.beneficiary.getAll();
+
+        const newBeneficiary = beneficiaries.find((b) => b.name === beneficiaryParams.name);
         expect(newBeneficiary).to.be.not.equal(undefined);
         expect(newBeneficiary.id).to.be.a('number');
         expect(newBeneficiary.active).to.equal(false);
-
         let beneficiary = await participantClient.beneficiary.get(newBeneficiary.id);
         expect(beneficiary.name).to.equal(newBeneficiary.name);
         expect(beneficiary.location).to.equal(newBeneficiary.location);
         expect(beneficiary.active).to.equal(false);
 
-        await participantClient.beneficiary.update(newBeneficiary.id, { active: true });
-        beneficiary = await participantClient.beneficiary.get(newBeneficiary.id);
+        beneficiary = await participantClient.beneficiary.update(newBeneficiary.id, {
+            active: true
+        });
+        const beneficiary2 = await participantClient.beneficiary.get(newBeneficiary.id);
         expect(beneficiary.active).to.equal(true);
+        expect(beneficiary).to.deep.equal(beneficiary2);
     }).timeout(10000);
 });

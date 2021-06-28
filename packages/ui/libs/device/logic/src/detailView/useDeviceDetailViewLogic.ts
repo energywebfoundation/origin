@@ -17,7 +17,8 @@ export const useDeviceDetailViewLogic: TUseDeviceDetailViewLogic = ({
   const { t } = useTranslation();
 
   const locationProps = {
-    owner,
+    // @should be changed to actual owner name
+    owner: `Device owner organization id ${owner}`,
     location: `${device.region}, ${device.subregion}`,
     coordinates: `${device.latitude}, ${device.longitude}`,
   };

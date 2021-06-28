@@ -10,7 +10,7 @@ export const pendingDevicesMock: TableComponentProps<number> = {
     capacity: 'Nameplate Capacity',
     status: 'Status',
     certified: 'Certified for 2020/2021(MWh)',
-    toBeCertified: 'To be certified for 2020/20219(MWh)',
+    toBeCertified: 'To be certified for 2020/2019(MWh)',
   },
   totalPages: 1,
   // @should be received from query

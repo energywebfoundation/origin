@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CertificateUtils } from '@energyweb/issuer';
+import { CertificateBatchOperations } from '@energyweb/issuer';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
 import { HttpStatus } from '@nestjs/common';
@@ -38,8 +38,8 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
         }
 
         try {
-            const bulkClaimTx = await CertificateUtils.claimCertificates(
-                certificatesToClaim.map((cert) => cert.tokenId),
+            const bulkClaimTx = await CertificateBatchOperations.claimCertificates(
+                certificatesToClaim.map((cert) => cert.id),
                 claimData,
                 blockchainProperties.wrap(),
                 forAddress
@@ -51,9 +51,7 @@ export class BulkClaimCertificatesHandler implements ICommandHandler<BulkClaimCe
                 throw new Error(
                     `ClaimBatch tx ${
                         receipt.transactionHash
-                    } on certificate with tokenId ${certificatesToClaim.map(
-                        (cert) => cert.tokenId
-                    )} failed.`
+                    } on certificate with id ${certificatesToClaim.map((cert) => cert.id)} failed.`
                 );
             }
         } catch (error) {

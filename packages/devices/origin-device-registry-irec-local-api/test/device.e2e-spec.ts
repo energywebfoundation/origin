@@ -21,7 +21,6 @@ describe('Device e2e tests', () => {
 
     const exampleDevice: CreateDeviceDTO = {
         name: 'Test solar device',
-        defaultAccount: 'MYTRADEACCOUNT001',
         deviceType: 'TC110',
         fuelType: 'ES100',
         countryCode: 'TH',
@@ -34,7 +33,6 @@ describe('Device e2e tests', () => {
         gridOperator: 'OP',
         timezone: 'Asia/Bangkok',
         postalCode: '12345',
-        country: 'TH',
         region: 'Some place',
         subregion: 'Another place'
     };

@@ -1,7 +1,8 @@
 import { TableComponent } from '@energyweb/origin-ui-core';
-import { pendingDevicesMock } from '../../__mocks__/pendingDevices';
 import React, { FC } from 'react';
+import { usePendingPageEffects } from './PendingPage.effects';
 
 export const PendingPage: FC = () => {
-  return <TableComponent {...pendingDevicesMock} />;
+  const tableProps = usePendingPageEffects();
+  return <TableComponent {...tableProps} />;
 };

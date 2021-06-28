@@ -8,7 +8,6 @@ import {
   showNotification,
   UploadedFile,
 } from '@energyweb/origin-ui-core';
-import { fileControllerUpload } from '@energyweb/origin-backend-react-query-client';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
@@ -64,8 +63,4 @@ export const useRequestCertificatesHandler = ({
   };
 
   return { isLoading, requestHandler };
-};
-
-export const fileUploadHandler = async (file: Blob[]) => {
-  return await fileControllerUpload({ files: file });
 };

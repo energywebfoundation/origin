@@ -1,9 +1,9 @@
 import * as yup from 'yup';
 import {
-  COUNTRY_OPTIONS_ISO,
   NUMBER_OF_EMPLOYEES_OPTIONS,
   createIRecAccountTypeOptions,
 } from '../select-options';
+import { COUNTRY_OPTIONS_ISO } from '@energyweb/origin-ui-utils';
 import { TCreateIRecRegistrationInfoForm } from './types';
 
 export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (

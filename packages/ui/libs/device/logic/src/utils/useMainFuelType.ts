@@ -5,7 +5,7 @@ import {
 } from '@energyweb/origin-ui-device-data';
 
 export const useMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
-  if (!fuelType) {
+  if (!fuelType || !allTypes) {
     return { mainType: '', restType: '' };
   }
   try {
@@ -17,8 +17,9 @@ export const useMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
 
     return { mainType, restType };
   } catch (error) {
+    console.log(error);
     throw new Error(
-      `Provided device type does not match with any known type. Received: ${fuelType}`
+      `Provided device fuel type does not match with any known type. Received: ${fuelType}`
     );
   }
 };

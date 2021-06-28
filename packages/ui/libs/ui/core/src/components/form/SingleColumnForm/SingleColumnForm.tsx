@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import { GenericFormField } from '../../../containers';
 import { FormInput, FormInputProps } from '../FormInput';
 import { Control, DeepMap, FieldError, UseFormRegister } from 'react-hook-form';
@@ -8,19 +8,23 @@ import { BaseTextFieldProps } from '@material-ui/core';
 import { FormDatePicker } from '../FormDatePicker';
 import { HierarchicalSelect } from '../HierarchicalSelect';
 
-export interface SingleColumnFormProps {
+export interface SingleColumnFormProps<FormValuesType> {
   fields: GenericFormField[];
-  control: Control<any>;
-  register: UseFormRegister<any>;
-  errors: DeepMap<any, FieldError>;
-  dirtyFields: DeepMap<any, true>;
-  inputsVariant?: FormInputProps['variant'];
+  control: Control<FormValuesType>;
+  register: UseFormRegister<FormValuesType>;
+  errors: DeepMap<FormValuesType, FieldError>;
+  dirtyFields: DeepMap<FormValuesType, true>;
+  inputsVariant?: FormInputProps<FormValuesType>['variant'];
   formInputsProps?: BaseTextFieldProps;
   processing?: boolean;
   editDisabled?: boolean;
 }
 
-export const SingleColumnForm: FC<SingleColumnFormProps> = ({
+export type TSingleColumnForm = <FormValuesType>(
+  props: PropsWithChildren<SingleColumnFormProps<FormValuesType>>
+) => ReactElement;
+
+export const SingleColumnForm: TSingleColumnForm = ({
   fields,
   control,
   register,

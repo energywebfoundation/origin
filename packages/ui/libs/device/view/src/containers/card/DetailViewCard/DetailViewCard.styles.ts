@@ -7,7 +7,7 @@ export const useStyles = makeStyles((theme) => ({
       position: 'absolute',
       zIndex: 10,
       right: 20,
-      top: 50,
+      top: 55,
       width: 360,
     },
     [theme.breakpoints.down('lg')]: {

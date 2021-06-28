@@ -43,6 +43,15 @@ export const useStyles = makeStyles((theme) => ({
       left: 180,
     },
   },
+  toggleButton: {
+    textTransform: 'none',
+  },
+  toggleGroup: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    zIndex: 2,
+  },
   deviceName: {
     position: 'absolute',
     bottom: 20,

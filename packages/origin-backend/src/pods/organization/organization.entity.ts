@@ -122,7 +122,4 @@ export class Organization extends ExtendedBaseEntity implements IFullOrganizatio
     @Optional()
     @IsArray()
     documentIds: string[];
-
-    @Column({ default: '' })
-    beneficiaryId: string;
 }

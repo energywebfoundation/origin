@@ -473,7 +473,6 @@ INSERT INTO public."irec_device_registry_device" (
         "timezone",
         "gridOperator",
         "postalCode",
-        "country",
         "region",
         "subregion"
     )
@@ -501,7 +500,6 @@ VALUES (
         'Asia/Bangkok',
         'TH-PEA',
         '12345',
-        'TH',
         'Some place',
         'Another place'
     );
@@ -547,7 +545,6 @@ INSERT INTO public."irec_device_registry_device" (
         "timezone",
         "gridOperator",
         "postalCode",
-        "country",
         "region",
         "subregion"
     )
@@ -575,7 +572,6 @@ VALUES (
         'Asia/Bangkok',
         'TH-MEA',
         '12345',
-        'TH',
         'Some place',
         'Another place'
     );
@@ -621,7 +617,6 @@ INSERT INTO public."irec_device_registry_device" (
         "timezone",
         "gridOperator",
         "postalCode",
-        "country",
         "region",
         "subregion"
     )
@@ -649,7 +644,6 @@ VALUES (
         'Asia/Bangkok',
         'TH-PEA',
         '12345',
-        'TH',
         'Some place',
         'Another place'
     );

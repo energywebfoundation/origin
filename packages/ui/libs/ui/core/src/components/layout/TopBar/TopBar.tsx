@@ -1,4 +1,4 @@
-import { Hidden } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
 import { DesktopTopBar, TopBarButtonData } from '../DesktopTopBar';
 import { MobileTopBar } from '../MobileTopBar';
@@ -12,12 +12,12 @@ export interface TopBarProps {
 export const TopBar: FC<TopBarProps> = ({ buttons, onMobileNavOpen }) => {
   return (
     <>
-      <Hidden lgDown>
+      <Box sx={{ display: { lg: 'block', xs: 'none' } }}>
         <DesktopTopBar buttons={buttons} />
-      </Hidden>
-      <Hidden lgUp>
+      </Box>
+      <Box sx={{ display: { lg: 'none', xs: 'block' } }}>
         <MobileTopBar onMobileNavOpen={onMobileNavOpen} />
-      </Hidden>
+      </Box>
     </>
   );
 };

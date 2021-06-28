@@ -1,11 +1,40 @@
-import { useTranslation } from 'react-i18next';
-import { createRegisterDeviceForm } from '@energyweb/origin-ui-device-logic';
+import { useRegisterDeviceFormLogic } from '@energyweb/origin-ui-device-logic';
+import {
+  useAllDeviceTypes,
+  useAllDeviceFuelTypes,
+  useApiRegisterDevice,
+} from '@energyweb/origin-ui-device-data';
+import { DeviceImagesUpload } from '../../containers';
 
 export const useRegisterPageEffects = () => {
-  const { t } = useTranslation();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
+  const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
+    useAllDeviceTypes();
 
-  // Mock
-  const externalDeviceId = 'Smart Meter Readings API ID';
+  const formsLogic = useRegisterDeviceFormLogic({
+    allFuelTypes,
+    allDeviceTypes,
+    externalDeviceId: process.env.NX_SMART_METER_ID,
+  });
 
-  return createRegisterDeviceForm(t, externalDeviceId);
+  const submitHandler = useApiRegisterDevice();
+
+  const formsWithImagesUpload = formsLogic.forms.map((form) =>
+    form.customStep
+      ? {
+          ...form,
+          component: DeviceImagesUpload,
+        }
+      : form
+  );
+
+  const formProps = {
+    ...formsLogic,
+    forms: formsWithImagesUpload,
+    submitHandler,
+  };
+  const isLoading = areFuelTypesLoading || areDeviceTypesLoading;
+
+  return { isLoading, formProps };
 };

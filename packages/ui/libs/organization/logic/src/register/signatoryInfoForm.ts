@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { COUNTRY_OPTIONS_ISO } from '../select-options';
+import { COUNTRY_OPTIONS_ISO } from '@energyweb/origin-ui-utils';
 import { TCreateSignatoryInfoForm } from './types';
 
 export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({

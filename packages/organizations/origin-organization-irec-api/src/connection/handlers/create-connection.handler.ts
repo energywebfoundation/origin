@@ -1,13 +1,14 @@
+import { Repository } from 'typeorm';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
+
+import { RegistrationService } from '../../registration';
+import { IREC_SERVICE, IrecService } from '../../irec';
 import { CreateConnectionCommand } from '../commands';
 import { ConnectionDTO } from '../dto';
 import { ConnectionCreatedEvent } from '../events';
 import { Connection } from '../connection.entity';
-import { RegistrationService } from '../../registration';
-import { IrecConnectionService } from '../irec-connection.service';
 
 @CommandHandler(CreateConnectionCommand)
 export class CreateConnectionHandler implements ICommandHandler<CreateConnectionCommand> {
@@ -16,14 +17,15 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
         private readonly repository: Repository<Connection>,
         private readonly registrationService: RegistrationService,
         private readonly eventBus: EventBus,
-        private readonly irecConnectionService: IrecConnectionService
+        @Inject(IREC_SERVICE)
+        private readonly irecService: IrecService
     ) {}
 
     async execute({
         user: { organizationId },
         credentials: { userName, password, clientId, clientSecret }
     }: CreateConnectionCommand): Promise<ConnectionDTO> {
-        const loginResult = await this.irecConnectionService.login({
+        const loginResult = await this.irecService.login({
             userName,
             password,
             clientId,

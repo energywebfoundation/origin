@@ -264,7 +264,10 @@ export class IRECAPIClient extends EventEmitter {
 
                 return plainToClass(Beneficiary, response.data);
             },
-            update: async (id: string | number, params: BeneficiaryUpdateParams): Promise<void> => {
+            update: async (
+                id: string | number,
+                params: BeneficiaryUpdateParams
+            ): Promise<Beneficiary> => {
                 const beneficiaryParams =
                     params instanceof BeneficiaryUpdateParams
                         ? params
@@ -274,7 +277,13 @@ export class IRECAPIClient extends EventEmitter {
 
                 const url = `${beneficiaryManagementUrl}/${id}/edit`;
 
-                await this.axiosInstance.put(url, classToPlain(beneficiaryParams), this.config);
+                const response = await this.axiosInstance.put<unknown>(
+                    url,
+                    classToPlain(beneficiaryParams),
+                    this.config
+                );
+
+                return plainToClass(Beneficiary, response.data);
             },
             get: async (id: string | number): Promise<Beneficiary> => {
                 const url = `${beneficiaryManagementUrl}/${id}`;
@@ -298,11 +307,11 @@ export class IRECAPIClient extends EventEmitter {
         const fileManagementUrl = `${this.endPointUrl}/api/irec/v1/file-management`;
 
         return {
-            upload: async (files: Blob[] | ReadStream[]): Promise<string[]> => {
+            upload: async (files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]> => {
                 const url = `${fileManagementUrl}/upload`;
 
                 const data = new FormData();
-                files.forEach((file: Blob | ReadStream) => data.append('files', file));
+                files.forEach((file: Buffer | Blob | ReadStream) => data.append('files', file));
 
                 const headers = data.getHeaders();
                 const response = await this.axiosInstance.post<{ file_uids: string[] }>(url, data, {

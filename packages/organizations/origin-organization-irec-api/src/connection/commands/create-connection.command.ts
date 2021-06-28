@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { CreateConnectionDTO } from '../dto/create-connection.dto';
+import { CreateConnectionDTO } from '../../irec';
 
 export class CreateConnectionCommand {
     constructor(

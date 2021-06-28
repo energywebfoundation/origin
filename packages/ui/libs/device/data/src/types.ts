@@ -4,6 +4,7 @@ import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-re
 export type ComposedDevice = {
   id: string;
   ownerId: string;
+  owner: string;
   externalRegistryId: string;
   code: string;
   name: string;
@@ -25,7 +26,6 @@ export type ComposedDevice = {
   gridOperator: string;
   smartMeterId: string;
   description: string;
-  country: string;
   postalCode: string;
   region: string;
   subregion: string;
@@ -34,3 +34,49 @@ export type ComposedDevice = {
 };
 
 export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;
+
+export type TRegisterDeviceFormValues = {
+  facilityName: string;
+  deviceType: string;
+  fuelType: string;
+  commissioningDate: string;
+  registrationDate: string;
+  capacity: string;
+  gridOperator: string;
+  description: string;
+  smartMeterId: string;
+  countryCode: string;
+  region: string;
+  subregion: string;
+  postalCode: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  imageIds: string[];
+};
+
+export type TCreateDeviceData = {
+  name: string;
+  code: string;
+  defaultAccount: string;
+  deviceType: string;
+  fuelType: string;
+  countryCode: string;
+  capacity: string;
+  commissioningDate: string;
+  registrationDate: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+  timezone: string;
+  gridOperator: string;
+  notes: string;
+  smartMeterId: string;
+  description: string;
+  externalDeviceIds?: IExternalDeviceId[];
+  imageIds: string[];
+  country: string;
+  postalCode: string;
+  region: string;
+  subregion: string;
+};
