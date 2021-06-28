@@ -71,7 +71,7 @@ export function decomposeForIRec(
     address: newDevice.address,
     latitude: newDevice.latitude,
     longitude: newDevice.longitude,
-    notes: newDevice.projectStory,
+    notes: newDevice.description,
     timezone: 'Asia/Bangkok',
     gridOperator: newDevice.gridOperator,
     postalCode: organization.zipCode,
@@ -88,10 +88,8 @@ export function decomposeForOrigin(
   return {
     externalRegistryId: null,
     smartMeterId: newDevice.smartMeterId,
-    // should it be the same as notes in i-rec device?
-    description: newDevice.projectStory,
-    // isn't it similar to smartMeterId? This is mocked for now
+    description: newDevice.description,
     externalDeviceIds: [],
-    imageIds: [''],
+    imageIds: newDevice.imageIds,
   };
 }

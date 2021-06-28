@@ -42,15 +42,17 @@ export type TRegisterDeviceFormValues = {
   commissioningDate: string;
   registrationDate: string;
   capacity: string;
+  gridOperator: string;
+  description: string;
+  smartMeterId: string;
+  countryCode: string;
   region: string;
   subregion: string;
-  province: string;
-  gridOperator: string;
+  postalCode: string;
   address: string;
   latitude: string;
   longitude: string;
-  projectStory: string;
-  smartMeterId: string;
+  imageIds: string[];
 };
 
 export type TCreateDeviceData = {

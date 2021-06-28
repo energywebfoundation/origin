@@ -30,7 +30,7 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
 
   return (
     <>
-      {images ? (
+      {false ? (
         <img src={images[0]} {...itemProps} />
       ) : (
         <FallbackIcon {...itemProps} />
