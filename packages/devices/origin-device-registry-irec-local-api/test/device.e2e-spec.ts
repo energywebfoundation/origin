@@ -178,7 +178,7 @@ describe('Device e2e tests', () => {
         expect(createdDevice.id).to.be.a('string');
     });
 
-    it.only('should pass reject/approve device flow', async () => {
+    it('should pass reject/approve device flow', async () => {
         const { body: newDevice } = await test
             .post('/irec/device-registry')
             .send(exampleDevice)

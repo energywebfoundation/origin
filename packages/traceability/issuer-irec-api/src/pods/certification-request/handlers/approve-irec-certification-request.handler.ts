@@ -36,12 +36,24 @@ export class ApproveIrecCertificationRequestHandler
             irecIssueRequestId
         );
 
+        const allowedStatuses = [
+            IssuanceStatus.Approved,
+            IssuanceStatus.InProgress,
+            IssuanceStatus.Verified
+        ];
+
+        if (!allowedStatuses.includes(issueRequest.status)) {
+            throw new BadRequestException(
+                `IREC issuance request have to be in IN-PROGRESS, VERIFIED, or APPROVED state, got ${issueRequest.status}`
+            );
+        }
+
         if (issueRequest.status === IssuanceStatus.Approved) {
             return this.commandBus.execute(new ApproveCertificationRequestCommand(id));
         }
 
-        if (issueRequest.status !== IssuanceStatus.Verified) {
-            throw new BadRequestException('IREC issuance request have to be in VERIFIED state');
+        if (issueRequest.status === IssuanceStatus.InProgress) {
+            await this.irecService.verifyIssueRequest(platformAdmin.id, irecIssueRequestId);
         }
 
         const issueAccountCode = await this.irecService.getIssueAccountCode(platformAdmin.id);

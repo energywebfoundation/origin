@@ -72,13 +72,15 @@ export interface IIrecService {
 
     uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]>;
 
-    getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]>;
+    verifyIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void>;
 
     approveIssueRequest(
         user: UserIdentifier,
         issueRequestCode: string,
         issuerAccountCode: string
     ): Promise<Transaction>;
+
+    getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]>;
 
     approveDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 
@@ -234,12 +236,9 @@ export class IrecService implements IIrecService {
         return irecClient.file.upload(files);
     }
 
-    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
-        return [];
-        // TODO: get certificates somehow
-        // NOTE: wait for IREC guys to implement cross ids between issue request and items
-        // const irecClient = await this.getIrecClient(user);
-        // return irecClient.account.getItems();
+    async verifyIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void> {
+        const irecClient = await this.getIrecClient(user);
+        await irecClient.issue.verify(issueRequestCode);
     }
 
     async approveIssueRequest(
@@ -249,6 +248,14 @@ export class IrecService implements IIrecService {
     ): Promise<Transaction> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
+    }
+
+    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
+        return [];
+        // TODO: get certificates somehow
+        // NOTE: wait for IREC guys to implement cross ids between issue request and items
+        // const irecClient = await this.getIrecClient(user);
+        // return irecClient.account.getItems();
     }
 
     async approveDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {

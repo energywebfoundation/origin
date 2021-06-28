@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import {
     AccessTokens,
@@ -210,8 +210,12 @@ export class IrecMockService implements IIrecService {
         return files.map(() => randomString());
     }
 
-    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
-        return [];
+    async verifyIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void> {
+        const issueRequest = await this.getIssueRequest(user, issueRequestCode);
+        if (!issueRequest) {
+            throw new NotFoundException(`Issue request (id=${issueRequestCode}) not found`);
+        }
+        issueRequest.status = IssuanceStatus.Verified;
     }
 
     async approveIssueRequest(
@@ -228,6 +232,10 @@ export class IrecMockService implements IIrecService {
             time: new Date(),
             transactionType: TransactionType.Issue
         };
+    }
+
+    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
+        return [];
     }
 
     async approveDevice(user: UserIdentifier, code: string): Promise<Device> {

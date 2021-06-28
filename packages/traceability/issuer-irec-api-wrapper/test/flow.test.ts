@@ -27,7 +27,6 @@ describe('API flows', () => {
     let registrantOrg: Organisation;
     let participantOrg: Organisation;
 
-    // const redemptionAccount = 'ACCOUNTREDEMPTION001';
     const tradeAccount = 'ACCOUNTTRADE001';
     const issueAccount = 'ACCOUNTISSUE001';
 
