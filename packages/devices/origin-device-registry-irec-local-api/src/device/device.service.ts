@@ -117,7 +117,7 @@ export class DeviceService {
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.approveDevice(platformAdmin.id, id);
+        await this.irecService.approveDevice(platformAdmin.id, device.code);
         await this.repository.update(id, { status: DeviceState.Approved });
         device.status = DeviceState.Approved;
 
@@ -129,12 +129,12 @@ export class DeviceService {
     async rejectDevice(id: string): Promise<Device> {
         const device = await this.findOne(id);
 
-        if (device.status !== DeviceState.Draft) {
+        if (device.status === DeviceState.Draft) {
             throw new BadRequestException('Device state have to be not in "Draft" state');
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.rejectDevice(platformAdmin.id, id);
+        await this.irecService.rejectDevice(platformAdmin.id, device.code);
         await this.repository.update(id, { status: DeviceState.Rejected });
         device.status = DeviceState.Rejected;
 

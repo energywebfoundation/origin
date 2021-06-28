@@ -210,7 +210,7 @@ export class DeviceController {
         return plainToClass(DeviceDTO, device);
     }
 
-    @Put('/:id')
+    @Put('/:id/status')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.Issuer, Role.Admin)
     @ApiBody({ type: UpdateDeviceStateDTO })

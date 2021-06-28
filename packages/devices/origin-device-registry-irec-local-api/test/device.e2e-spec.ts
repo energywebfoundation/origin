@@ -177,4 +177,34 @@ describe('Device e2e tests', () => {
 
         expect(createdDevice.id).to.be.a('string');
     });
+
+    it.only('should pass reject/approve device flow', async () => {
+        const { body: newDevice } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.CREATED);
+        expect(newDevice.status).to.equal(DeviceState.InProgress);
+
+        const { body: rejectedDevice } = await test
+            .put(`/irec/device-registry/${newDevice.id}/status`)
+            .send({ status: DeviceState.Rejected })
+            .set({ 'test-user': TestUser.PlatformAdmin })
+            .expect(HttpStatus.OK);
+        expect(rejectedDevice.status).to.equal(DeviceState.Rejected);
+
+        const { body: updatedDevice } = await test
+            .put(`/irec/device-registry/device/${newDevice.id}`)
+            .send({ name: 'Changed Name' })
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+        expect(updatedDevice.status).to.equal(DeviceState.InProgress);
+
+        const { body: approvedDevice } = await test
+            .put(`/irec/device-registry/${newDevice.id}/status`)
+            .send({ status: DeviceState.Approved })
+            .set({ 'test-user': TestUser.PlatformAdmin })
+            .expect(HttpStatus.OK);
+        expect(approvedDevice.status).to.equal(DeviceState.Approved);
+    });
 });
