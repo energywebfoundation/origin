@@ -170,6 +170,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         uint256[] memory _values
     ) public returns (uint256[] memory) {
         require(_msgSender() == owner() || _msgSender() == privateIssuer, "Issuer::approveCertificationRequestBatch: caller is not the owner or private issuer contract");
+        require(_requestIds.length == _values.length, "Issuer::approveCertificationRequestBatch: _requestIds and _values arrays have to be the same length");
 
 		for (uint256 i = 0; i < _requestIds.length; i++) {
             require(_requestNotApprovedOrRevoked(_requestIds[i]), "Issuer::approveCertificationRequestBatch: request already approved or revoked");
@@ -178,6 +179,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         address[] memory owners = new address[](_requestIds.length);
         bytes[] memory data = new bytes[](_requestIds.length);
         bytes[] memory validityData = new bytes[](_requestIds.length);
+        uint256[] memory topics = new uint256[](_requestIds.length);
 
         for (uint256 i = 0; i < _requestIds.length; i++) {
             CertificationRequest storage request = _certificationRequests[_requestIds[i]];
@@ -186,14 +188,15 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             owners[i] = request.owner;
             data[i] = request.data;
             validityData[i] = abi.encodeWithSignature("isRequestValid(uint256)",_requestIds[i]);
+            topics[i] = certificateTopic;
         }
 
         uint256[] memory certificateIds = registry.batchIssueMultiple(
             owners,
-            data,
-            certificateTopic,
+            validityData,
+            topics,
             _values,
-            validityData
+            data
         );
 
         for (uint256 i = 0; i < _requestIds.length; i++) {
@@ -217,6 +220,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     /// @notice Directly issue a batch of certificates without going through the request/approve procedure manually.
     function issueBatch(address[] memory _to, uint256[] memory _values, bytes[] memory _data) public onlyOwner returns (uint256[] memory) {
+        require(_to.length == _values.length, "Issuer::issueBatch: _to and _values arrays have to be the same length");
+        require(_values.length == _data.length, "Issuer::issueBatch: _values and _data arrays have to be the same length");
+    
         uint256[] memory requestIds = requestCertificationForBatch(_data, _to);
 
         return approveCertificationRequestBatch(
