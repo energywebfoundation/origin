@@ -3,6 +3,8 @@
 
 
 Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
+** Data set to 0 because there is no meaningful check yet to be done on the data
+
 
 
 ### `constructor(string _uri)` (public)
@@ -11,29 +13,29 @@ Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
 
 
 
-### `issue(address _to, bytes _validityData, uint256 _topic, uint256 _value, bytes _issuanceData) → uint256` (external)
+### `issue(address _to, bytes _validityData, uint256 _topic, uint256 _value, bytes _data) → uint256 id` (external)
 
 See {IERC1888-issue}.
 
 
 `_to` cannot be the zero address.
 
-### `batchIssue(address _to, bytes _issuanceData, uint256 _topic, uint256[] _values, bytes[] _validityCalls) → uint256[]` (external)
+### `batchIssue(address _to, bytes[] _validityData, uint256[] _topics, uint256[] _values, bytes[] _data) → uint256[] ids` (external)
 
 See {IERC1888-batchIssue}.
 
 
 `_to` cannot be the zero address.
-`_issuanceData`, `_values` and `_validityCalls` must have the same length.
+`_data`, `_values` and `_validityData` must have the same length.
 
-### `batchIssueMultiple(address[] _to, bytes[] _issuanceData, uint256 _topic, uint256[] _values, bytes[] _validityCalls) → uint256[]` (external)
+### `batchIssueMultiple(address[] _to, bytes[] _validityData, uint256[] _topics, uint256[] _values, bytes[] _data) → uint256[] ids` (external)
 
 Similar to {IERC1888-batchIssue}, but not a part of the ERC-1888 standard.
 
 
 Allows batch issuing to an array of _to addresses.
 `_to` cannot be the zero addresses.
-`_to`, `_issuanceData`, `_values` and `_validityCalls` must have the same length.
+`_to`, `_data`, `_values`, `_topics` and `_validityData` must have the same length.
 
 ### `mint(uint256 _id, address _to, uint256 _quantity)` (external)
 

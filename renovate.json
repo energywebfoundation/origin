@@ -17,6 +17,10 @@
             "groupName": "ethers"
         },
         {
+            "packagePatterns": ["solc"],
+            "groupName": "solc"
+        },
+        {
             "packagePatterns": ["jest"],
             "groupName": "jest"
         },

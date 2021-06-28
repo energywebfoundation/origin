@@ -21,7 +21,6 @@ describe('Device e2e tests', () => {
 
     const exampleDevice: CreateDeviceDTO = {
         name: 'Test solar device',
-        defaultAccount: 'MYTRADEACCOUNT001',
         deviceType: 'TC110',
         fuelType: 'ES100',
         countryCode: 'TH',
@@ -34,7 +33,6 @@ describe('Device e2e tests', () => {
         gridOperator: 'OP',
         timezone: 'Asia/Bangkok',
         postalCode: '12345',
-        country: 'TH',
         region: 'Some place',
         subregion: 'Another place'
     };
@@ -178,5 +176,35 @@ describe('Device e2e tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
         expect(createdDevice.id).to.be.a('string');
+    });
+
+    it('should pass reject/approve device flow', async () => {
+        const { body: newDevice } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.CREATED);
+        expect(newDevice.status).to.equal(DeviceState.InProgress);
+
+        const { body: rejectedDevice } = await test
+            .put(`/irec/device-registry/${newDevice.id}/status`)
+            .send({ status: DeviceState.Rejected })
+            .set({ 'test-user': TestUser.PlatformAdmin })
+            .expect(HttpStatus.OK);
+        expect(rejectedDevice.status).to.equal(DeviceState.Rejected);
+
+        const { body: updatedDevice } = await test
+            .put(`/irec/device-registry/device/${newDevice.id}`)
+            .send({ name: 'Changed Name' })
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+        expect(updatedDevice.status).to.equal(DeviceState.InProgress);
+
+        const { body: approvedDevice } = await test
+            .put(`/irec/device-registry/${newDevice.id}/status`)
+            .send({ status: DeviceState.Approved })
+            .set({ 'test-user': TestUser.PlatformAdmin })
+            .expect(HttpStatus.OK);
+        expect(approvedDevice.status).to.equal(DeviceState.Approved);
     });
 });

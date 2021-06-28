@@ -13,13 +13,13 @@ interface ERC1888 is IERC1155 {
     }
 
    event IssuanceSingle(address indexed _issuer, uint256 indexed _topic, uint256 _id, uint256 _value);
-   event IssuanceBatch(address indexed _issuer, uint256 indexed _topic, uint256[] _ids, uint256[] _values);
+   event IssuanceBatch(address indexed _issuer, uint256[] indexed _topics, uint256[] _ids, uint256[] _values);
    
    event ClaimSingle(address indexed _claimIssuer, address indexed _claimSubject, uint256 indexed _topic, uint256 _id, uint256 _value, bytes _claimData);
    event ClaimBatch(address indexed _claimIssuer, address indexed _claimSubject, uint256[] indexed _topics, uint256[] _ids, uint256[] _values, bytes[] _claimData);
    
-   function issue(address _to, bytes calldata _validityData, uint256 _topic, uint256 _value, bytes calldata _issuanceData) external returns (uint256);
-   function batchIssue(address _to, bytes memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external returns(uint256[] memory);
+   function issue(address _to, bytes calldata _validityData, uint256 _topic, uint256 _value, bytes calldata _data) external returns (uint256 id);
+   function batchIssue(address _to, bytes[] calldata _validityData, uint256[] calldata _topics, uint256[] calldata _values, bytes[] calldata _data) external returns (uint256[] memory ids);
    
    function safeTransferAndClaimFrom(address _from, address _to, uint256 _id, uint256 _value, bytes calldata _data, bytes calldata _claimData) external;
    function safeBatchTransferAndClaimFrom(address _from, address _to, uint256[] calldata _ids, uint256[] calldata _values, bytes calldata _data, bytes[] calldata _claimData) external;

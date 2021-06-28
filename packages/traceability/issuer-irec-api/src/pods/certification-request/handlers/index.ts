@@ -10,9 +10,11 @@ import { CreateIrecCertificationRequestHandler } from './create-irec-certificati
 import { GetCertificationRequestHandler } from './get-certification-request.handler';
 import { GetAllCertificationRequestsHandler } from './get-all-certification-requests.handler';
 import { GetCertificationRequestByCertificateHandler } from './get-certification-request-by-certificate.handler';
+import { ApproveIrecCertificationRequestHandler } from './approve-irec-certification-request.handler';
 
 export {
     ApproveCertificationRequestHandler,
+    ApproveIrecCertificationRequestHandler,
     CertificateBoundToCertificationRequestCommand,
     CreateCertificationRequestHandler,
     CreateIrecCertificationRequestHandler,
@@ -25,6 +27,7 @@ export {
 
 export const Handlers = [
     ApproveCertificationRequestHandler,
+    ApproveIrecCertificationRequestHandler,
     CertificateBoundToCertificationRequestCommand,
     CreateCertificationRequestHandler,
     CreateIrecCertificationRequestHandler,

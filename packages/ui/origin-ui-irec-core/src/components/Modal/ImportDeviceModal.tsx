@@ -22,7 +22,6 @@ const INITIAL_VALUES = {
     gridOperator: '',
     smartMeterId: '',
     description: '',
-    country: '',
     postalCode: '',
     region: '',
     subregion: ''
@@ -90,7 +89,6 @@ export function ImportDeviceModal(props: {
         smartMeterId: device?.smartMeterId ?? '',
         gridOperator: device?.gridOperator ?? '',
         timezone: device?.timezone ?? '',
-        country: device?.country ?? '',
         postalCode: device?.postalCode ?? '',
         region: device?.region ?? '',
         subregion: device?.subregion ?? ''
@@ -109,7 +107,6 @@ export function ImportDeviceModal(props: {
                     code: device.code,
                     timezone: values.timezone,
                     gridOperator: values.gridOperator,
-                    country: values.country,
                     postalCode: values.postalCode,
                     region: values.region,
                     subregion: values.subregion

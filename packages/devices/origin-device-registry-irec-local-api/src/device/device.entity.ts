@@ -1,7 +1,7 @@
 import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
 import { DeviceDTO } from './dto';
 
@@ -78,13 +78,13 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
 
     @Column()
     @IsString()
-    country: string;
-
-    @Column()
-    @IsString()
     region: string;
 
     @Column({ default: '' })
     @IsString()
     subregion: string;
+
+    @Column({ default: true })
+    @IsBoolean()
+    active: boolean;
 }

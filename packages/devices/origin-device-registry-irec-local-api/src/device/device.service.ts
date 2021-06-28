@@ -1,25 +1,28 @@
+import { FindManyOptions, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+    BadRequestException,
+    ConflictException,
+    Inject,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { EventBus } from '@nestjs/cqrs';
+
 import {
     Device as IrecDevice,
     DeviceCreateParams,
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import {
-    BadRequestException,
-    ConflictException,
-    Injectable,
-    NotFoundException
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { EventBus } from '@nestjs/cqrs';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { UserService } from '@energyweb/origin-backend';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
-import { DeviceCreatedEvent } from './events';
+import { DeviceCreatedEvent, DeviceStatusChangedEvent } from './events';
 import { IREC_DEVICE_TYPES, IREC_FUEL_TYPES } from './Fuels';
-import { IrecDeviceService } from './irec-device.service';
 
 @Injectable()
 export class DeviceService {
@@ -28,7 +31,9 @@ export class DeviceService {
         private readonly repository: Repository<Device>,
         private readonly eventBus: EventBus,
         private readonly configService: ConfigService,
-        private readonly irecDeviceService: IrecDeviceService
+        @Inject(IREC_SERVICE)
+        private readonly irecService: IrecService,
+        private readonly userService: UserService
     ) {}
 
     async findOne(id: string): Promise<Device> {
@@ -44,8 +49,11 @@ export class DeviceService {
             throw new BadRequestException('Invalid fuel type');
         }
 
+        const platformAdmin = await this.userService.getPlatformAdmin();
+        const tradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
+            defaultAccount: tradeAccount,
             registrantOrganization: this.configService.get<string>(
                 'IREC_PARTICIPANT_TRADE_ACCOUNT'
             ),
@@ -53,7 +61,7 @@ export class DeviceService {
             active: true
         };
 
-        const irecDevice = await this.irecDeviceService.createIrecDevice(user, {
+        const irecDevice = await this.irecService.createDevice(user, {
             ...deviceData,
             address: this.getAddressLine(newDevice)
         });
@@ -83,7 +91,7 @@ export class DeviceService {
         }
 
         const updatedDevice = { ...device, ...deviceData };
-        const irecDevice = await this.irecDeviceService.update(user, device.code, {
+        const irecDevice = await this.irecService.updateDevice(user, device.code, {
             ...deviceData,
             address: this.getAddressLine(updatedDevice)
         });
@@ -99,6 +107,40 @@ export class DeviceService {
 
     async updateStatus(id: string, status: DeviceState): Promise<void> {
         await this.repository.update(id, { status });
+    }
+
+    async approveDevice(id: string): Promise<Device> {
+        const device = await this.findOne(id);
+
+        if (device.status !== DeviceState.InProgress) {
+            throw new BadRequestException('Device state have to be in "In-Progress" state');
+        }
+
+        const platformAdmin = await this.userService.getPlatformAdmin();
+        await this.irecService.approveDevice(platformAdmin.id, device.code);
+        await this.repository.update(id, { status: DeviceState.Approved });
+        device.status = DeviceState.Approved;
+
+        this.eventBus.publish(new DeviceStatusChangedEvent(device, device.status));
+
+        return device;
+    }
+
+    async rejectDevice(id: string): Promise<Device> {
+        const device = await this.findOne(id);
+
+        if (device.status === DeviceState.Draft) {
+            throw new BadRequestException('Device state have to be not in "Draft" state');
+        }
+
+        const platformAdmin = await this.userService.getPlatformAdmin();
+        await this.irecService.rejectDevice(platformAdmin.id, device.code);
+        await this.repository.update(id, { status: DeviceState.Rejected });
+        device.status = DeviceState.Rejected;
+
+        this.eventBus.publish(new DeviceStatusChangedEvent(device, device.status));
+
+        return device;
     }
 
     getDeviceTypes(): CodeNameDTO[] {
@@ -118,7 +160,7 @@ export class DeviceService {
     }
 
     async getDevicesToImport(user: ILoggedInUser): Promise<IrecDevice[]> {
-        const irecDevices = await this.irecDeviceService.getDevices(user);
+        const irecDevices = await this.irecService.getDevices(user);
         const devices = await this.repository.find({ where: { ownerId: user.ownerId } });
         const deviceCodes: string[] = devices.map((d) => d.code);
 
@@ -129,12 +171,7 @@ export class DeviceService {
         user: ILoggedInUser,
         deviceToImport: ImportIrecDeviceDTO
     ): Promise<Device> {
-        let irecDevice;
-        if (this.irecDeviceService.isIrecIntegrationEnabled()) {
-            irecDevice = await this.irecDeviceService.getDevice(user, deviceToImport.code);
-        } else {
-            [irecDevice] = await this.irecDeviceService.getDevices(user);
-        }
+        let [irecDevice] = await this.irecService.getDevices(user);
 
         if (!irecDevice) {
             throw new NotFoundException(`Device with code ${deviceToImport.code} not found`);
@@ -159,6 +196,6 @@ export class DeviceService {
     }
 
     getAddressLine(device: CreateDeviceDTO): string {
-        return `${device.country}, ${device.postalCode}, ${device.region}, ${device.subregion}`;
+        return `${device.countryCode}, ${device.postalCode}, ${device.region}, ${device.subregion}`;
     }
 }

@@ -12,3 +12,4 @@ package-lock.json
 shrinkwrap.json
 
 .github/workflows/*.yml
+docs/

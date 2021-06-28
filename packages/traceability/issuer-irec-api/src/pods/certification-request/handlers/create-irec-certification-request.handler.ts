@@ -1,15 +1,16 @@
+import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Inject } from '@nestjs/common';
 import {
     BlockchainPropertiesService,
     CertificationRequest,
     CreateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import { FileService, UserService } from '@energyweb/origin-backend';
+import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { CreateIrecCertificationRequestCommand } from '../commands';
-import { IrecCertificateService } from '../irec-certificate.service';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
 
@@ -26,7 +27,8 @@ export class CreateIrecCertificationRequestHandler
         readonly irecRepository: Repository<IrecCertificationRequest>,
         readonly eventBus: EventBus,
         readonly commandBus: CommandBus,
-        readonly irecCertificateService: IrecCertificateService,
+        @Inject(IREC_SERVICE)
+        readonly irecService: IrecService,
         readonly userService: UserService,
         readonly fileService: FileService
     ) {}
@@ -70,17 +72,15 @@ export class CreateIrecCertificationRequestHandler
             const files = await Promise.all(
                 request.files.map((fileId) => this.fileService.get(fileId))
             );
-            fileIds = await this.irecCertificateService.uploadFiles(
+            fileIds = await this.irecService.uploadFiles(
                 userId,
                 files.map((file) => file.data)
             );
         }
 
-        const irecDevice = await this.irecCertificateService.getDevice(userId, request.deviceId);
-        const platformTradeAccount = await this.irecCertificateService.getTradeAccountCode(
-            platformAdmin.id
-        );
-        const irecIssue = await this.irecCertificateService.createIrecIssue(platformAdmin.id, {
+        const irecDevice = await this.irecService.getDevice(userId, request.deviceId);
+        const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
+        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
             device: request.deviceId,
             fuelType: irecDevice.fuelType,
             recipient: platformTradeAccount,
@@ -90,7 +90,7 @@ export class CreateIrecCertificationRequestHandler
         });
         await this.repository.update(request.id, { files: fileIds });
         await this.irecRepository.update(irecCertificationRequest.certificationRequestId, {
-            irecIssueId: irecIssue.code
+            irecIssueRequestId: irecIssue.code
         });
     }
 }

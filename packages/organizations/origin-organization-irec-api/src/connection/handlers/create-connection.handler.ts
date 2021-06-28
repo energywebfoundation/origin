@@ -1,10 +1,10 @@
 import { Repository } from 'typeorm';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 
 import { RegistrationService } from '../../registration';
-import { IrecService } from '../../irec';
+import { IREC_SERVICE, IrecService } from '../../irec';
 import { CreateConnectionCommand } from '../commands';
 import { ConnectionDTO } from '../dto';
 import { ConnectionCreatedEvent } from '../events';
@@ -17,6 +17,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
         private readonly repository: Repository<Connection>,
         private readonly registrationService: RegistrationService,
         private readonly eventBus: EventBus,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService
     ) {}
 

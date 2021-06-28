@@ -4,4 +4,3 @@ export * from './device.module';
 export * from './device.service';
 export * from './dto';
 export * from './events';
-export * from './irec-device.service';

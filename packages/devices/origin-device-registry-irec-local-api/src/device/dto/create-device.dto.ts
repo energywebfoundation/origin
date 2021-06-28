@@ -22,12 +22,6 @@ export class CreateDeviceDTO {
     @IsString()
     @IsNotEmpty()
     @Expose()
-    defaultAccount: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @IsNotEmpty()
-    @Expose()
     deviceType: string;
 
     @ApiProperty({ type: String })
@@ -97,12 +91,6 @@ export class CreateDeviceDTO {
     @IsString()
     @Expose()
     postalCode: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @IsISO31661Alpha2()
-    @Expose()
-    country: string;
 
     @ApiProperty({ type: String })
     @IsString()
