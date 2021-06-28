@@ -10,5 +10,5 @@ export * from './connection';
 export * from './irec';
 export * from './registration';
 
-export const entities = [Registration, Connection, Beneficiary];
 export const usedEntities = OriginBackendEntities;
+export const entities = [Registration, Connection, Beneficiary, ...usedEntities];
