@@ -242,7 +242,7 @@ dependencies:
   url-loader: 4.1.1_file-loader@6.2.0+webpack@5.40.0
   uuid: 8.3.2
   vm-browserify: 1.1.2
-  wait-on: 5.2.1
+  wait-on: 6.0.0
   webpack: 5.40.0_webpack-cli@4.7.2
   webpack-cli: 4.7.2_9ea8c6fb2d6dba249f7224b7196a0699
   webpack-dev-server: 3.11.2_webpack-cli@4.7.2+webpack@5.40.0
@@ -30880,19 +30880,19 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-4tzD0mF8iSiMiNs30BiLO3EpfGLZUT2MSX/G+o7ZywDzliWQ3OPtTZ0PTC3B3ca1UAf4cJMHB+2Bf56EriJuRA==
-  /wait-on/5.2.1:
+  /wait-on/6.0.0:
     dependencies:
       axios: 0.21.1
       joi: 17.4.0
       lodash: 4.17.21
       minimist: 1.2.5
-      rxjs: 6.6.7
+      rxjs: 7.1.0
     dev: false
     engines:
-      node: '>=8.9.0'
+      node: '>=10.0.0'
     hasBin: true
     resolution:
-      integrity: sha512-H2F986kNWMU9hKlI9l/ppO6tN8ZSJd35yBljMLa1/vjzWP++Qh6aXyt77/u7ySJFZQqBtQxnvm/xgG48AObXcw==
+      integrity: sha512-tnUJr9p5r+bEYXPUdRseolmz5XqJTTj98JgOsfBn7Oz2dxfE2g3zw1jE+Mo8lopM3j3et/Mq1yW7kKX6qw7RVw==
   /walker/1.0.7:
     dependencies:
       makeerror: 1.0.11
@@ -33613,7 +33613,7 @@ packages:
       ts-node: 9.1.1_typescript@4.3.4
       typeorm: 0.2.34
       typescript: 4.3.4
-      wait-on: 5.2.1
+      wait-on: 6.0.0
     dev: false
     id: file:projects/exchange.tgz
     name: '@rush-temp/exchange'
@@ -33622,7 +33622,7 @@ packages:
       passport: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-1ZrW3c1OqUeng8sWSuDLqHrZCDrRe7qf5XJ+mDGDNICrMzn7PAZKEErv3ZZoW/SC+jUhEyAar0y6laCl6XhqEw==
+      integrity: sha512-k/io7WCrfCK3pbMbGMamu9jH82Q/x87KKGCxyAC8Bt1/g+m7IE92D3WgyNCUVashWBxFaEC8QbXUfyVeWmAziw==
       tarball: file:projects/exchange.tgz
     version: 0.0.0
   file:projects/issuer-api-client.tgz_22c1a38c599279d324ff82b55ef0a6c8:
@@ -35075,7 +35075,7 @@ specifiers:
   url-loader: 4.1.1
   uuid: 8.3.2
   vm-browserify: 1.1.2
-  wait-on: 5.2.1
+  wait-on: 6.0.0
   webpack: 5.40.0
   webpack-cli: 4.7.2
   webpack-dev-server: 3.11.2
