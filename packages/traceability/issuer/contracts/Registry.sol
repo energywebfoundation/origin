@@ -7,6 +7,7 @@ import "./ERC1888/IERC1888.sol";
 
 /// @title Implementation of the Transferable Certificate standard ERC-1888.
 /// @dev Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
+/// @dev ** Data set to 0 because there is no meaningful check yet to be done on the data
 contract Registry is ERC1155, ERC1888 {
 
 	// Storage for the Certificate structs
@@ -18,98 +19,93 @@ contract Registry is ERC1155, ERC1888 {
 	// Incrementing nonce, used for generating certificate IDs
     uint256 private _latestCertificateId;
 
-	constructor(string memory _uri) public ERC1155(_uri) {}
+	constructor(string memory _uri) ERC1155(_uri) {}
 
 	/// @notice See {IERC1888-issue}.
     /// @dev `_to` cannot be the zero address.
-	function issue(address _to, bytes calldata _validityData, uint256 _topic, uint256 _value, bytes calldata _issuanceData) external override returns (uint256) {
+	function issue(address _to, bytes calldata _validityData, uint256 _topic, uint256 _value, bytes calldata _data) external override returns (uint256 id) {
 		require(_to != address(0x0), "Registry::issue: to must be non-zero.");
 		
 		_validate(_msgSender(), _validityData);
 
-		uint256 id = ++_latestCertificateId;
-		ERC1155._mint(_to, id, _value, _issuanceData);
+		id = ++_latestCertificateId;
+		ERC1155._mint(_to, id, _value, new bytes(0)); // Check **
 
 		certificateStorage[id] = Certificate({
 			topic: _topic,
 			issuer: _msgSender(),
 			validityData: _validityData,
-			data: _issuanceData
+			data: _data
 		});
 
 		emit IssuanceSingle(_msgSender(), _topic, id, _value);
-
-		return id;
 	}
 
 	/// @notice See {IERC1888-batchIssue}.
     /// @dev `_to` cannot be the zero address.
-    /// @dev `_issuanceData`, `_values` and `_validityCalls` must have the same length.
-	function batchIssue(address _to, bytes memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external override returns (uint256[] memory) {
-		require(_to != address(0x0), "Registry::issue: to must be non-zero.");
-		require(_issuanceData.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
-		require(_values.length == _validityCalls.length, "Registry::batchIssueMultiple: _values and _validityCalls arrays have to be the same length");
+    /// @dev `_data`, `_values` and `_validityData` must have the same length.
+	function batchIssue(address _to, bytes[] calldata _validityData, uint256[] calldata _topics, uint256[] calldata _values, bytes[] calldata _data) external override returns (uint256[] memory ids) {
+		require(_to != address(0x0), "Registry::batchIssue: to must be non-zero.");
+		require(_data.length == _values.length, "Registry::batchIssue: _data and _values arrays have to be the same length");
+		require(_values.length == _validityData.length, "Registry::batchIssue: _values and _validityData arrays have to be the same length");
 
-		uint256[] memory ids = new uint256[](_values.length);
+		ids = new uint256[](_values.length);
 
 		address operator = _msgSender();
 
 		for (uint256 i = 0; i <= _values.length; i++) {
 			ids[i] = i + _latestCertificateId + 1;
-			_validate(operator, _validityCalls[i]);
+			_validate(operator, _validityData[i]);
 		}
 			
-		ERC1155._mintBatch(_to, ids, _values, _issuanceData);
+		ERC1155._mintBatch(_to, ids, _values, new bytes(0)); // Check **
 
 		for (uint256 i = 0; i < ids.length; i++) {
 			certificateStorage[ids[i]] = Certificate({
-				topic: _topic,
+				topic: _topics[i],
 				issuer: operator,
-				validityData: _validityCalls[i],
-				data: _issuanceData
+				validityData: _validityData[i],
+				data: _data[i]
 			});
 		}
 
-		emit IssuanceBatch(operator, _topic, ids, _values);
-
-		return ids;
+		emit IssuanceBatch(operator, _topics, ids, _values);
 	}
 
 	/// @notice Similar to {IERC1888-batchIssue}, but not a part of the ERC-1888 standard.
     /// @dev Allows batch issuing to an array of _to addresses.
     /// @dev `_to` cannot be the zero addresses.
-    /// @dev `_to`, `_issuanceData`, `_values` and `_validityCalls` must have the same length.
-	function batchIssueMultiple(address[] memory _to, bytes[] memory _issuanceData, uint256 _topic, uint256[] memory _values, bytes[] memory _validityCalls) external returns (uint256[] memory) {
-		require(_to.length == _issuanceData.length, "Registry::batchIssueMultiple: _to and _issuanceData arrays have to be the same length");
-		require(_issuanceData.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
-		require(_values.length == _validityCalls.length, "Registry::batchIssueMultiple: _values and _validityCalls arrays have to be the same length");
+    /// @dev `_to`, `_data`, `_values`, `_topics` and `_validityData` must have the same length.
+	function batchIssueMultiple(address[] calldata _to, bytes[] calldata _validityData, uint256[] calldata _topics, uint256[] calldata _values, bytes[] calldata _data) external returns (uint256[] memory ids) {
+		require(_to.length == _data.length, "Registry::batchIssueMultiple: _to and _issuanceData arrays have to be the same length");
+		require(_data.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
+		require(_values.length == _validityData.length, "Registry::batchIssueMultiple: _values and _validityData arrays have to be the same length");
+		require(_validityData.length == _topics.length, "Registry::batchIssueMultiple: _validityData and _topics arrays have to be the same length");
 
-		uint256[] memory ids = new uint256[](_values.length);
+		ids = new uint256[](_values.length);
 
 		address operator = _msgSender();
 
 		for (uint256 i = 0; i < _values.length; i++) {
 			ids[i] = i + _latestCertificateId + 1;
-			_validate(operator, _validityCalls[i]);
+			_validate(operator, _validityData[i]);
 		}
 			
 		for (uint256 i = 0; i < ids.length; i++) {
-			require(_to[i] != address(0x0), "Registry::issue: to must be non-zero.");
-			ERC1155._mint(_to[i], ids[i], _values[i], _issuanceData[i]);
+			require(_to[i] != address(0x0), "Registry::batchIssueMultiple: to must be non-zero.");
+			ERC1155._mint(_to[i], ids[i], _values[i], _data[i]); // Check **
 
 			certificateStorage[ids[i]] = Certificate({
-				topic: _topic,
+				topic: _topics[i],
 				issuer: operator,
-				validityData: _validityCalls[i],
-				data: _issuanceData[i]
+				validityData: _validityData[i],
+				data: _data[i]
 			});
 		}
 
 		_latestCertificateId = ids[ids.length - 1];
 
-		emit IssuanceBatch(operator, _topic, ids, _values);
-
-		return ids;
+		emit IssuanceBatch(operator, _topics, ids, _values);
 	}
 
 	/// @notice Allows the issuer to mint more fungible tokens for existing ERC-188 certificates.
@@ -122,7 +118,7 @@ contract Registry is ERC1155, ERC1888 {
 		Certificate memory cert = certificateStorage[_id];
 		require(_msgSender() == cert.issuer, "Registry::mint: only the original certificate issuer can mint more tokens");
 
-		ERC1155._mint(_to, _id, _quantity, new bytes(0));
+		ERC1155._mint(_to, _id, _quantity, new bytes(0)); // Check **
 	}
 
 	/// @notice See {IERC1888-safeTransferAndClaimFrom}.
