@@ -26,7 +26,6 @@ export type ComposedDevice = {
   gridOperator: string;
   smartMeterId: string;
   description: string;
-  country: string;
   postalCode: string;
   region: string;
   subregion: string;
