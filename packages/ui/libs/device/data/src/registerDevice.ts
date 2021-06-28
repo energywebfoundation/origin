@@ -11,8 +11,11 @@ import {
 } from '@energyweb/origin-ui-core';
 import { TRegisterDeviceFormValues } from './types';
 import { decomposeForIRec, decomposeForOrigin } from './utils';
+import { AxiosError } from 'axios';
+import { useTranslation } from 'react-i18next';
 
 export const useApiRegisterDevice = () => {
+  const { t } = useTranslation();
   const { mutate } = useOriginCreateDevice();
   const { mutateAsync } = useIRecCreateDevice();
   const userQueryKey = getUserControllerMeQueryKey();
@@ -33,10 +36,16 @@ export const useApiRegisterDevice = () => {
         },
         {
           onSuccess: () => {
-            // @should localize
             showNotification(
-              `New device successfully created.`,
+              t('device.register.notifications.registerSuccess'),
               NotificationTypeEnum.Success
+            );
+          },
+          onError: (error: AxiosError) => {
+            console.error(error);
+            showNotification(
+              t('device.register.notifications.registerError'),
+              NotificationTypeEnum.Error
             );
           },
         }

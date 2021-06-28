@@ -3,7 +3,6 @@ import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CertificationRequest as CertificationRequestOnChain } from '@energyweb/issuer';
 import { BlockchainPropertiesService } from '../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate/certificate.entity';
 import { CertificateCreatedEvent } from '../certificate/events/certificate-created-event';
@@ -36,22 +35,20 @@ export class SyncCertificationRequestsTask {
 
         for (const certReq of approvedCertRequests) {
             const certificate = await this.certificateRepository.findOne({
-                where: {
-                    tokenId: certReq.issuedCertificateTokenId
-                }
+                where: { id: certReq.issuedCertificateId }
             });
 
-            if (!certificate?.tokenId && certificate?.tokenId !== 0) {
+            if (!certificate?.id && certificate?.id !== 0) {
                 this.logger.debug(
-                    `Certification request #${certReq.id} has a certificate ${certReq.issuedCertificateTokenId} assigned but this certificate doesn't exist in the database.`
+                    `Certification request #${certReq.id} has a certificate ${certReq.issuedCertificateId} assigned but this certificate doesn't exist in the database.`
                 );
                 this.logger.debug(
-                    `Emitting CertificateCreatedEvent for certificate with tokenId ${certificate.tokenId}...`
+                    `Emitting CertificateCreatedEvent for certificate with id ${certificate.id}...`
                 );
 
                 this.eventBus.publish(
                     new CertificateCreatedEvent(
-                        certificate.tokenId,
+                        certificate.id,
                         certificate.issuedPrivately
                             ? { owner: certReq.owner, energy: certReq.energy }
                             : null
@@ -72,15 +69,8 @@ export class SyncCertificationRequestsTask {
             }
         });
 
-        const blockchainProperties = await this.blockchainPropertiesService.get();
-
         unapprovedCertRequests.forEach(async (certReq) => {
-            const onchain = await new CertificationRequestOnChain(
-                certReq.requestId,
-                blockchainProperties.wrap()
-            ).sync();
-
-            if (onchain.approved) {
+            if (certReq.approved) {
                 this.logger.warn(
                     `Certification Request ${certReq.id} is unapproved but should be approved. Fixing...`
                 );

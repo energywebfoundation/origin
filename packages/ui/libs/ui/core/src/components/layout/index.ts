@@ -7,3 +7,4 @@ export * from './TopBar';
 export * from './ProgressLine';
 export * from './GenericMap';
 export * from './ResponsiveSidebar';
+export * from './BlockTintedBottom';

@@ -211,7 +211,7 @@
         "leadUserFax": "Fax",
         "notifications": {
           "unauthorized": "Unauthorized",
-          "registerErorr": "Organization could not be created",
+          "registerError": "Organization could not be created",
           "registerSuccess": "Organization registered"
         }
       },
@@ -279,6 +279,8 @@
         "viewDetailsButton": "View Details"
       },
       "detailView": {
+        "photo": "Photo",
+        "map": "Map",
         "smartMeter": {
           "tableTime": "Time ({timezone})",
           "tableMeterValue": "Meter value ({unit})",
@@ -290,19 +292,30 @@
       },
       "register": {
         "formTitle": "Register New Device",
+        "deviceInfoFormTitle": "Device Information",
         "facilityName": "Facility Name",
         "fuelType": "Fuel Type",
         "deviceType": "Device Type",
         "commissioningDate": "Vintage / Commercial Operation Date",
         "registrationDate": "Registration Date",
         "capacity": "Capacity (MW)",
+        "gridOperator": "Grid Operator",
+        "description": "Description",
+
+        "deviceLocationFormTitle": "Device Location",
+        "country": "Country",
         "region": "Region",
         "subregion": "Subregion",
-        "gridOperator": "Grid Operator",
+        "postalCode": "Postal Code",
         "address": "Address",
         "latitude": "Latitude",
         "longitude": "Longitude",
-        "projectStory": "Project story"
+
+        "deviceImagesFormTitle": "Device Images",
+        "notifications": {
+          "registerSuccess": "New device created successfully",
+          "registerError": "Error while creating device"
+        }
       },
       "pending": {
         "owner": "Owner",

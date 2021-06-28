@@ -13,9 +13,8 @@ import { useStyles } from './GenericMap.styles';
 export interface GenericMapProps {
   apiKey: string;
   allItems: any[];
-  infoWindowContent: FC;
+  infoWindowContent?: FC;
   containerClassName?: string;
-  zoom?: number;
   mapProps?: GoogleMapProps;
 }
 
@@ -24,7 +23,6 @@ export const GenericMap: FC<GenericMapProps> = ({
   allItems,
   infoWindowContent: InfoWindowContent,
   containerClassName,
-  zoom,
   mapProps,
 }) => {
   const {
@@ -35,14 +33,15 @@ export const GenericMap: FC<GenericMapProps> = ({
     setItemHighllighted,
   } = useGenericMapEffects(allItems);
   const classes = useStyles();
+
   return (
     <LoadScriptNext
       googleMapsApiKey={apiKey}
       loadingElement={<CircularProgress />}
     >
       <GoogleMap
+        zoom={10}
         center={defaultCenter}
-        zoom={zoom ?? 10}
         mapTypeId="hybrid"
         onLoad={(mapObject) => updateBounds(mapObject)}
         mapContainerClassName={containerClassName ?? classes.map}
@@ -60,7 +59,7 @@ export const GenericMap: FC<GenericMapProps> = ({
           </React.Fragment>
         ))}
 
-        {itemHighlighted && (
+        {itemHighlighted && InfoWindowContent && (
           <InfoWindow
             position={{
               lat: parseFloat(itemHighlighted.latitude),

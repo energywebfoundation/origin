@@ -1,4 +1,4 @@
-import { GenericForm } from '@energyweb/origin-ui-core';
+import { MultiStepForm } from '@energyweb/origin-ui-core';
 import { Paper, CircularProgress } from '@material-ui/core';
 import React from 'react';
 import { useRegisterPageEffects } from './RegisterPage.effects';
@@ -13,10 +13,8 @@ export const RegisterPage: React.FC = () => {
   }
 
   return (
-    <>
-      <Paper classes={{ root: classes.paper }}>
-        <GenericForm {...formProps} />
-      </Paper>
-    </>
+    <Paper classes={{ root: classes.paper }}>
+      <MultiStepForm {...formProps} />
+    </Paper>
   );
 };

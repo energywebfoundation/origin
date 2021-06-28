@@ -1,5 +1,5 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { IsBoolean, IsInt, IsPositive, IsString, Min } from 'class-validator';
 import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
@@ -7,9 +7,10 @@ import { BlockchainProperties } from '../blockchain/blockchain-properties.entity
 export const CERTIFICATES_TABLE_NAME = 'issuer_certificate';
 
 @Entity({ name: CERTIFICATES_TABLE_NAME })
-@Unique(['tokenId'])
 export class Certificate extends ExtendedBaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
+    @IsInt()
+    @Min(1)
     id: number;
 
     @Column()
@@ -47,11 +48,6 @@ export class Certificate extends ExtendedBaseEntity {
 
     @ManyToOne(() => BlockchainProperties)
     blockchain: BlockchainProperties;
-
-    @Column({ nullable: true })
-    @IsInt()
-    @Min(0)
-    tokenId: number;
 
     @Column({ nullable: true })
     @IsString()

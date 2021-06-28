@@ -32,8 +32,8 @@ export interface IClaimData {
 
 export interface IData {
     deviceId: string;
-    generationStartTime: number;
-    generationEndTime: number;
+    generationStartTime: Timestamp;
+    generationEndTime: Timestamp;
     metadata: string;
 }
 
@@ -50,7 +50,7 @@ export interface ICertificate extends IData {
     id: number;
     issuer: string;
     certificationRequestId: number;
-    creationTime: number;
+    creationTime: Timestamp;
     creationBlockHash: string;
     owners: IShareInCertificate;
     claimers: IShareInCertificate;
@@ -59,13 +59,13 @@ export interface ICertificate extends IData {
 export class Certificate implements ICertificate {
     public deviceId: string;
 
-    public generationStartTime: number;
+    public generationStartTime: Timestamp;
 
-    public generationEndTime: number;
+    public generationEndTime: Timestamp;
 
     public issuer: string;
 
-    public creationTime: number;
+    public creationTime: Timestamp;
 
     public creationBlockHash: string;
 

@@ -9,7 +9,6 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { TestUser, bootstrapTestInstance, deviceManager } from './issuer-api';
 import { CERTIFICATION_REQUESTS_TABLE_NAME } from '../src/pods/certification-request/certification-request.entity';
 import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
-import { CertificationRequestStatus } from '../src/pods/certification-request/certification-request-status.enum';
 import { CertificationRequestDTO } from '../src/pods/certification-request';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -66,13 +65,11 @@ describe('Certification Request tests', () => {
                     fromTime,
                     toTime,
                     created,
-                    requestId,
                     owner,
                     approved,
                     revoked,
                     files,
-                    energy,
-                    status
+                    energy
                 }
             } = await request(app.getHttpServer())
                 .post('/certification-request')
@@ -84,11 +81,9 @@ describe('Certification Request tests', () => {
             expect(fromTime).to.equal(certReqData.fromTime);
             expect(toTime).to.equal(certReqData.toTime);
             expect(created).to.be.null;
-            expect(requestId).to.be.null;
             expect(owner).to.equal(getAddress(certReqData.to));
             expect(approved).to.be.false;
             expect(revoked).to.be.false;
-            expect(status).to.be.equal(CertificationRequestStatus.Queued);
             expect(JSON.stringify(files)).to.equal(JSON.stringify(certReqData.files));
             expect(energy).to.equal(certReqData.energy);
 
@@ -139,41 +134,39 @@ describe('Certification Request tests', () => {
         expect(success).to.be.true;
 
         const {
-            body: { issuedCertificateTokenId: newCertificateTokenId }
+            body: { issuedCertificateId: newCertificateId }
         } = await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
-        expect(newCertificateTokenId).to.be.above(-1);
+        expect(newCertificateId).to.be.above(0);
 
         await sleep(1000);
 
         const { body: certificate } = await request(app.getHttpServer())
-            .get(`/certificate/token-id/${newCertificateTokenId}`)
+            .get(`/certificate/${newCertificateId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
+        expect(certificate.id).to.be.above(0);
         expect(certificate.deviceId).to.equal(certificationRequestTestData.deviceId);
         expect(certificate.generationStartTime).to.equal(certificationRequestTestData.fromTime);
         expect(certificate.generationEndTime).to.equal(certificationRequestTestData.toTime);
         expect(certificate.creationTime).to.be.above(1);
         expect(certificate.creationBlockHash);
-        expect(certificate.tokenId).to.be.above(-1);
         expect(certificate.issuedPrivately).to.be.false;
         expect(certificate.isOwned).to.be.true;
     });
 
     it('should revoke a certification request', async () => {
-        let certificationRequestId;
-
-        await request(app.getHttpServer())
+        const {
+            body: { id: certificationRequestId }
+        } = await request(app.getHttpServer())
             .post('/certification-request')
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(certificationRequestTestData)
-            .expect((res) => {
-                certificationRequestId = res.body.id;
-            });
+            .expect(HttpStatus.CREATED);
 
         // need to wait for item to be picked up from the queue and deployed
         await sleep(3000);
@@ -258,7 +251,7 @@ describe('Certification Request tests', () => {
         await sleep(3000);
 
         const {
-            body: { issuedCertificateTokenId: newCertificateTokenId }
+            body: { issuedCertificateId: newCertificateId }
         } = await request(app.getHttpServer())
             .get(`/certification-request/${certificationRequestId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
@@ -267,7 +260,7 @@ describe('Certification Request tests', () => {
         const {
             body: { energy, issuedPrivately }
         } = await request(app.getHttpServer())
-            .get(`/certificate/token-id/${newCertificateTokenId}`)
+            .get(`/certificate/${newCertificateId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 

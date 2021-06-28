@@ -11,19 +11,18 @@ export const useDetailViewPageEffects = () => {
   const {
     device,
     isLoading: isDeviceLoading,
-    ownerName,
     certifiedAmount,
   } = useDeviceDetailData(id);
 
   const { allTypes, isLoading: isDeviceTypesLoading } = useAllDeviceFuelTypes();
   const { locationProps, cardProps } = useDeviceDetailViewLogic({
     device,
-    owner: ownerName,
+    owner: device.ownerId,
     allTypes,
     certifiedAmount,
   });
 
   const isLoading = isDeviceLoading || isDeviceTypesLoading;
 
-  return { locationProps, cardProps, device, isLoading };
+  return { locationProps, cardProps, device, isLoading, allTypes };
 };

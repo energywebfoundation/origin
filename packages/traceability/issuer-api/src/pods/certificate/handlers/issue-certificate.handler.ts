@@ -60,8 +60,8 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
         }
 
         const certificate = this.repository.create({
+            id: cert.id,
             blockchain: blockchainProperties,
-            tokenId: cert.id,
             deviceId: cert.deviceId,
             generationStartTime: cert.generationStartTime,
             generationEndTime: cert.generationEndTime,

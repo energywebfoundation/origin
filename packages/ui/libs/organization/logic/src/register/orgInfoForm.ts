@@ -1,8 +1,6 @@
 import * as yup from 'yup';
-import {
-  BUSINESS_LEGAL_TYPE_OPTIONS,
-  COUNTRY_OPTIONS_ISO,
-} from '../select-options';
+import { BUSINESS_LEGAL_TYPE_OPTIONS } from '../select-options';
+import { COUNTRY_OPTIONS_ISO } from '@energyweb/origin-ui-utils';
 import { TCreateOrgInfoForm } from './types';
 
 export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({

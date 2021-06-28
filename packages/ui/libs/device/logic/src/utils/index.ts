@@ -10,3 +10,4 @@ export * from './useMainFuelType';
 export * from './getTimeUnitOnWindow';
 export * from './TimeUnitPluralEnum';
 export * from './fuelToDeviceTypesMatching';
+export * from './gridOperatorOptions';
