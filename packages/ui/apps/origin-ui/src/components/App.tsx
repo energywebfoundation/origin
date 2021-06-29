@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import {
   MainLayout,
+  PageNotFound,
   TMenuSection,
   TopBarButtonData,
 } from '@energyweb/origin-ui-core';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { initializeI18N } from '@energyweb/origin-ui-utils';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 import { AuthApp, AdminApp, AccountApp } from '@energyweb/origin-ui-user-view';
@@ -44,6 +45,9 @@ export const App: FC<AppProps> = ({
         <Route path="auth/*" element={<AuthApp />} />
         <Route path="account/*" element={<AccountApp />} />
         <Route path="admin/*" element={<AdminApp />} />
+
+        <Route element={<Navigate to="device/all" />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </MainLayout>
   );

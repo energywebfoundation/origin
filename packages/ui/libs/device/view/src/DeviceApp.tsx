@@ -1,3 +1,4 @@
+import { PageNotFound } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import {
@@ -18,6 +19,8 @@ export const DeviceApp: FC = () => {
       <Route path="pending" element={<PendingPage />} />
       <Route path="register" element={<RegisterPage />} />
       <Route path="detail-view/:id" element={<DetailViewPage />} />
+
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };

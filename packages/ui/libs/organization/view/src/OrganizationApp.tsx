@@ -1,3 +1,4 @@
+import { PageNotFound } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { OrganizationModalsCenter } from './containers';
@@ -23,6 +24,8 @@ export const OrganizationApp: FC = () => {
         <Route path="all" element={<AllOrganizationsPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="register-irec" element={<RegisterIRecPage />} />
+
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
 
       <OrganizationModalsCenter />
