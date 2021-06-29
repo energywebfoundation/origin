@@ -1,17 +1,13 @@
-import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, Validate, IsEthereumAddress } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { ValidateNested, IsEthereumAddress } from 'class-validator';
+import { CertificateAmountDTO } from '../certificate-amount.dto';
 
 export class BatchTransferCertificatesDTO {
-    @ApiProperty({ type: [Number] })
-    @IsArray()
-    certificateIds: number[];
+    @ApiProperty({ type: [CertificateAmountDTO] })
+    @ValidateNested({ each: true })
+    certificateAmounts: CertificateAmountDTO[];
 
     @ApiProperty({ type: String })
     @IsEthereumAddress()
     to: string;
-
-    @ApiPropertyOptional({ type: [String] })
-    @Validate(IntUnitsOfEnergy, { each: true })
-    values?: string[];
 }

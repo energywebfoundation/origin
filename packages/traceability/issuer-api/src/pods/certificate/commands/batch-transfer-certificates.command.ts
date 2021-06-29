@@ -1,10 +1,9 @@
-import { BigNumber } from 'ethers';
+import { CertificateAmount } from '../types';
 
 export class BatchTransferCertificatesCommand {
     constructor(
-        public readonly certificateIds: number[],
+        public readonly certificateAmounts: CertificateAmount[],
         public readonly to: string,
-        public readonly forAddress: string,
-        public readonly values?: BigNumber[]
+        public readonly forAddress: string
     ) {}
 }

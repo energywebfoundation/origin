@@ -22,7 +22,6 @@ import { CommandBus } from '@nestjs/cqrs';
 import { Role } from '@energyweb/origin-backend-core';
 
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { BigNumber } from 'ethers';
 import { BatchClaimCertificatesCommand } from './commands/batch-claim-certificates.command';
 import { BatchClaimCertificatesDTO } from './commands/batch-claim-certificates.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
@@ -64,15 +63,10 @@ export class CertificateBatchController {
     })
     public async batchTransfer(
         @BlockchainAccountDecorator() blockchainAddress: string,
-        @Body() { certificateIds, values, to }: BatchTransferCertificatesDTO
+        @Body() { certificateAmounts, to }: BatchTransferCertificatesDTO
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
-            new BatchTransferCertificatesCommand(
-                certificateIds,
-                to,
-                blockchainAddress,
-                values.map((value) => BigNumber.from(value))
-            )
+            new BatchTransferCertificatesCommand(certificateAmounts, to, blockchainAddress)
         );
     }
 
@@ -86,15 +80,10 @@ export class CertificateBatchController {
     })
     public async batchClaim(
         @BlockchainAccountDecorator() blockchainAddress: string,
-        @Body() dto: BatchClaimCertificatesDTO
+        @Body() { certificateAmounts, claimData }: BatchClaimCertificatesDTO
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
-            new BatchClaimCertificatesCommand(
-                dto.certificateIds,
-                dto.claimData,
-                blockchainAddress,
-                dto.values?.map((value) => BigNumber.from(value))
-            )
+            new BatchClaimCertificatesCommand(certificateAmounts, claimData, blockchainAddress)
         );
     }
 }

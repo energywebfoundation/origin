@@ -20,32 +20,41 @@ export class BatchTransferCertificatesHandler
     ) {}
 
     async execute({
-        certificateIds,
+        certificateAmounts,
         to,
-        values,
         forAddress
     }: BatchTransferCertificatesCommand): Promise<ISuccessResponse> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
-        const certificatesToTransfer = await this.repository.findByIds(certificateIds, {
-            relations: ['blockchain']
-        });
+        const certificatesToTransfer = await this.repository.findByIds(
+            certificateAmounts.map((cert) => cert.id),
+            { relations: ['blockchain'] }
+        );
 
-        if (
-            !certificatesToTransfer.every(
-                (cert) => cert.owners[forAddress] && BigNumber.from(cert.owners[forAddress]).gt(0)
+        const notOwnedCertificates = certificatesToTransfer
+            .filter(
+                (cert) =>
+                    !cert.owners[forAddress] ||
+                    BigNumber.from(cert.owners[forAddress] ?? 0).isZero()
             )
-        ) {
-            return ResponseSuccess('You have requested claiming of a certificate you do not own');
+            .map((cert) => cert.id);
+
+        if (notOwnedCertificates.length > 0) {
+            return ResponseFailure(
+                `Requested transferring of certificates, but you do not own certificates with IDs: ${notOwnedCertificates.join(
+                    ', '
+                )}`,
+                HttpStatus.FORBIDDEN
+            );
         }
 
         try {
             const batchTransferTx = await CertificateBatchOperations.transferCertificates(
-                certificateIds,
+                certificateAmounts.map((cert) => cert.id),
                 to,
                 blockchainProperties.wrap(),
                 forAddress,
-                values
+                certificateAmounts.map((cert) => BigNumber.from(cert.amount))
             );
 
             const receipt = await batchTransferTx.wait();

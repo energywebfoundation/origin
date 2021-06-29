@@ -38,15 +38,21 @@ const claimData: IClaimData = {
     toDate: moment().subtract(1, 'month').toISOString()
 };
 
+const getUserBlockchainAddress = (user: TestUser) =>
+    testUsers.get(user).organization.blockchainAccountAddress;
+
 describe('Certificate tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
 
-    const createCertificate = async (user: TestUser): Promise<CertificateDTO> => {
+    const createCertificate = async (toUser?: TestUser): Promise<CertificateDTO> => {
         const { body } = await request(app.getHttpServer())
             .post('/certificate')
-            .set({ 'test-user': user })
-            .send(certificateTestData)
+            .set({ 'test-user': TestUser.Issuer })
+            .send({
+                ...certificateTestData,
+                to: toUser ? getUserBlockchainAddress(toUser) : certificateTestData.to
+            })
             .expect(HttpStatus.CREATED);
 
         return body;
@@ -100,7 +106,7 @@ describe('Certificate tests', () => {
             creationBlockHash,
             isOwned,
             isClaimed
-        } = await createCertificate(TestUser.Issuer);
+        } = await createCertificate();
 
         expect(id).to.be.above(0);
         expect(deviceId).to.equal(certificateTestData.deviceId);
@@ -118,7 +124,7 @@ describe('Certificate tests', () => {
     });
 
     it('should transfer a certificate', async () => {
-        const { id: certificateId } = await createCertificate(TestUser.Issuer);
+        const { id: certificateId } = await createCertificate();
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/transfer`)
@@ -141,7 +147,7 @@ describe('Certificate tests', () => {
     });
 
     it('should claim a certificate', async () => {
-        const { id: certificateId } = await createCertificate(TestUser.Issuer);
+        const { id: certificateId } = await createCertificate();
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/claim`)
@@ -173,7 +179,7 @@ describe('Certificate tests', () => {
     });
 
     it('should partially claim a certificate', async () => {
-        const { id: certificateId } = await createCertificate(TestUser.Issuer);
+        const { id: certificateId } = await createCertificate();
 
         const amountToClaim = BigNumber.from(certificateTestData.energy).div(2).toString();
 
@@ -208,7 +214,7 @@ describe('Certificate tests', () => {
     });
 
     it('should return all claiming information', async () => {
-        const { id: certificateId } = await createCertificate(TestUser.Issuer);
+        const { id: certificateId } = await createCertificate();
 
         const amount = parseInt(certificateTestData.energy, 10) / 2;
 
@@ -261,13 +267,19 @@ describe('Certificate tests', () => {
     });
 
     it('should batch claim certificates', async () => {
-        const { id: certificateId1 } = await createCertificate(TestUser.Issuer);
-        const { id: certificateId2 } = await createCertificate(TestUser.Issuer);
+        const { id: certificateId1 } = await createCertificate();
+        const { id: certificateId2 } = await createCertificate();
 
         await request(app.getHttpServer())
             .put(`/certificate-batch/claim`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({ claimData, certificateIds: [certificateId1, certificateId2] })
+            .send({
+                claimData,
+                certificateAmounts: [
+                    { id: certificateId1, amount: certificateTestData.energy },
+                    { id: certificateId2, amount: certificateTestData.energy }
+                ]
+            })
             .expect(HttpStatus.OK);
 
         await sleep(10000);
@@ -312,8 +324,8 @@ describe('Certificate tests', () => {
     });
 
     it('should batch claim certificates with specified amounts', async () => {
-        const { id: certificateId1 } = await createCertificate(TestUser.Issuer);
-        const { id: certificateId2 } = await createCertificate(TestUser.Issuer);
+        const { id: certificateId1 } = await createCertificate();
+        const { id: certificateId2 } = await createCertificate();
 
         const halfAmount = BigNumber.from(certificateTestData.energy).div(2).toString();
 
@@ -322,8 +334,10 @@ describe('Certificate tests', () => {
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 claimData,
-                certificateIds: [certificateId1, certificateId2],
-                values: [halfAmount, halfAmount]
+                certificateAmounts: [
+                    { id: certificateId1, amount: halfAmount },
+                    { id: certificateId2, amount: halfAmount }
+                ]
             })
             .expect(HttpStatus.OK);
 
@@ -350,9 +364,32 @@ describe('Certificate tests', () => {
         expect(certificate2.energy.claimedVolume).to.equal(halfAmount);
     });
 
+    it('should reject batch claiming un-owned certificate', async () => {
+        const { id: certificateId1 } = await createCertificate();
+        const { id: certificateId2 } = await createCertificate(
+            TestUser.OtherOrganizationDeviceManager
+        );
+
+        const {
+            body: { message }
+        } = await request(app.getHttpServer())
+            .put(`/certificate-batch/claim`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({
+                claimData,
+                certificateAmounts: [
+                    { id: certificateId1, amount: certificateTestData.energy },
+                    { id: certificateId2, amount: certificateTestData.energy }
+                ]
+            })
+            .expect(HttpStatus.FORBIDDEN);
+
+        expect(message).to.include(certificateId2.toString());
+    });
+
     it('should batch transfer certificates', async () => {
-        const { id: certificateId1 } = await createCertificate(TestUser.Issuer);
-        const { id: certificateId2 } = await createCertificate(TestUser.Issuer);
+        const { id: certificateId1 } = await createCertificate();
+        const { id: certificateId2 } = await createCertificate();
 
         const halfAmount = BigNumber.from(certificateTestData.energy).div(2).toString();
 
@@ -360,10 +397,11 @@ describe('Certificate tests', () => {
             .put(`/certificate-batch/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
-                certificateIds: [certificateId1, certificateId2],
-                to: testUsers.get(TestUser.OtherOrganizationDeviceManager).organization
-                    .blockchainAccountAddress,
-                values: [halfAmount, halfAmount]
+                certificateAmounts: [
+                    { id: certificateId1, amount: halfAmount },
+                    { id: certificateId2, amount: halfAmount }
+                ],
+                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
             })
             .expect(HttpStatus.OK);
 
@@ -396,6 +434,29 @@ describe('Certificate tests', () => {
         );
         expect(certificate2Other.isOwned).to.be.true;
         expect(certificate2Other.energy.publicVolume).to.equal(halfAmount);
+    });
+
+    it('should reject batch transferring un-owned certificate', async () => {
+        const { id: certificateId1 } = await createCertificate();
+        const { id: certificateId2 } = await createCertificate(
+            TestUser.OtherOrganizationDeviceManager
+        );
+
+        const {
+            body: { message }
+        } = await request(app.getHttpServer())
+            .put(`/certificate-batch/transfer`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({
+                certificateAmounts: [
+                    { id: certificateId1, amount: certificateTestData.energy },
+                    { id: certificateId2, amount: certificateTestData.energy }
+                ],
+                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
+            })
+            .expect(HttpStatus.FORBIDDEN);
+
+        expect(message).to.include(certificateId2.toString());
     });
 
     it('should create a private certificate', async () => {
@@ -435,7 +496,7 @@ describe('Certificate tests', () => {
             .put(`/certificate/${id}/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
-                to: testUsers.get(TestUser.Issuer).organization.blockchainAccountAddress,
+                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
                 amount: certificateTestData.energy
             })
             .expect(HttpStatus.OK);
@@ -446,7 +507,7 @@ describe('Certificate tests', () => {
             body: { energy: receiverEnergy }
         } = await request(app.getHttpServer())
             .get(`/certificate/${id}`)
-            .set({ 'test-user': TestUser.Issuer })
+            .set({ 'test-user': TestUser.OtherOrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
         expect(receiverEnergy.privateVolume).to.equal(certificateTestData.energy);
@@ -520,8 +581,8 @@ describe('Certificate tests', () => {
     });
 
     it('should return sum of all certified energy for a given device id', async () => {
-        await createCertificate(TestUser.Issuer);
-        await createCertificate(TestUser.Issuer);
+        await createCertificate();
+        await createCertificate();
 
         const startDate = moment.unix(certificateTestData.fromTime).toISOString();
         const endDate = moment.unix(certificateTestData.toTime).toISOString();
@@ -542,7 +603,7 @@ describe('Certificate tests', () => {
     });
 
     it('should get certificates without a blockchain account attached', async () => {
-        const { id } = await createCertificate(TestUser.Issuer);
+        const { id } = await createCertificate();
 
         await request(app.getHttpServer())
             .get(`/certificate/${id}`)
