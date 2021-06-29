@@ -6,7 +6,6 @@ Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
 ** Data set to 0 because there is no meaningful check yet to be done on the data
 
 
-
 ### `constructor(string _uri)` (public)
 
 
