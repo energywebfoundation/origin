@@ -8,3 +8,4 @@ export * from './ProgressLine';
 export * from './GenericMap';
 export * from './ResponsiveSidebar';
 export * from './BlockTintedBottom';
+export * from './PageNotFound';
