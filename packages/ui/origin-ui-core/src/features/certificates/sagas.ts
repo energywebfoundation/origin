@@ -481,7 +481,7 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
         yield put(fromGeneralActions.setLoading(true));
 
         try {
-            yield apply(certificatesClient, certificatesClient.bulkClaim, [
+            yield apply(certificatesClient, certificatesClient.batchClaim, [
                 {
                     certificateIds: certificateIds.map((id) => id),
                     claimData
