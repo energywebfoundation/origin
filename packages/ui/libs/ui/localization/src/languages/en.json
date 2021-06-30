@@ -345,6 +345,28 @@
       "map": {
         "owner": "Owner",
         "seeMore": "See more"
+      },
+      "import": {
+        "device": "Device",
+        "importButton": "Import",
+        "capacity": "Capacity (MW)",
+        "country": "Country",
+        "devicesToImport": "Devices to import",
+        "devicesInSystem": "Devices in system",
+        "formTitle": "Attach additional device data",
+        "smartMeterId": "Smart meter ID",
+        "timezone": "Timezone",
+        "gridOperator": "Grid Operator",
+        "postalCode": "Postal Code",
+        "region": "Region",
+        "subregion": "Subregion",
+        "description": "Description",
+        "deviceImages": "Device images",
+        "saveData": "Save data",
+        "notifications": {
+          "importSuccess": "Device has been successfully imported",
+          "importError": "Error while importing device"
+        }
       }
     },
     "user": {
