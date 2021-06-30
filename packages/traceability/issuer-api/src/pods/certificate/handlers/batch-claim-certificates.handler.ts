@@ -8,6 +8,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BatchClaimCertificatesCommand } from '../commands/batch-claim-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
+import { TOTAL_AMOUNT } from '../types';
 
 @CommandHandler(BatchClaimCertificatesCommand)
 export class BatchClaimCertificatesHandler
@@ -48,13 +49,21 @@ export class BatchClaimCertificatesHandler
             );
         }
 
+        const amounts = certificateAmounts.map((cert) =>
+            BigNumber.from(
+                cert.amount === TOTAL_AMOUNT
+                    ? certificatesToClaim.find((c) => c.id === cert.id).owners[forAddress]
+                    : cert.amount
+            )
+        );
+
         try {
             const batchClaimTx = await CertificateBatchOperations.claimCertificates(
                 certificateAmounts.map((cert) => cert.id),
                 claimData,
                 blockchainProperties.wrap(),
                 forAddress,
-                certificateAmounts.map((cert) => BigNumber.from(cert.amount))
+                amounts
             );
 
             const receipt = await batchClaimTx.wait();

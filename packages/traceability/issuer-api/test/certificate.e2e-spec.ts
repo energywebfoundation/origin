@@ -306,7 +306,7 @@ describe('Certificate tests', () => {
             .send({
                 claimData,
                 certificateAmounts: [
-                    { id: certificateId1, amount: certificateTestData.energy },
+                    { id: certificateId1, amount: 'TOTAL' },
                     { id: certificateId2, amount: certificateTestData.energy }
                 ]
             })
@@ -417,7 +417,24 @@ describe('Certificate tests', () => {
         expect(message).to.include(certificateId2.toString());
     });
 
-    it('should batch transfer certificates', async () => {
+    it('should batch transfer whole certificates', async () => {
+        const { id: certificateId1 } = await createCertificate();
+        const { id: certificateId2 } = await createCertificate();
+
+        await request(app.getHttpServer())
+            .put(`/certificate-batch/transfer`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({
+                certificateAmounts: [
+                    { id: certificateId1, amount: 'TOTAL' },
+                    { id: certificateId2, amount: certificateTestData.energy }
+                ],
+                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
+            })
+            .expect(HttpStatus.OK);
+    });
+
+    it('should batch transfer certificates partially', async () => {
         const { id: certificateId1 } = await createCertificate();
         const { id: certificateId2 } = await createCertificate();
 

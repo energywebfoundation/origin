@@ -111,7 +111,7 @@ export function ClaimModal(props: IProps) {
             ? requestClaimCertificateBulk({
                   certificateAmounts: certificateIds.map((id) => ({
                       id,
-                      amount: '0' // TO-DO: Replace 0 with a specific amount
+                      amount: 'TOTAL'
                   })),
                   claimData
               })

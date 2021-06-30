@@ -8,6 +8,7 @@ import { HttpStatus } from '@nestjs/common';
 import { BatchTransferCertificatesCommand } from '../commands/batch-transfer-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
+import { TOTAL_AMOUNT } from '../types';
 
 @CommandHandler(BatchTransferCertificatesCommand)
 export class BatchTransferCertificatesHandler
@@ -48,13 +49,21 @@ export class BatchTransferCertificatesHandler
             );
         }
 
+        const amounts = certificateAmounts.map((cert) =>
+            BigNumber.from(
+                cert.amount === TOTAL_AMOUNT
+                    ? certificatesToTransfer.find((c) => c.id === cert.id).owners[forAddress]
+                    : cert.amount
+            )
+        );
+
         try {
             const batchTransferTx = await CertificateBatchOperations.transferCertificates(
                 certificateAmounts.map((cert) => cert.id),
                 to,
                 blockchainProperties.wrap(),
                 forAddress,
-                certificateAmounts.map((cert) => BigNumber.from(cert.amount))
+                amounts
             );
 
             const receipt = await batchTransferTx.wait();
