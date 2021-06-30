@@ -46,9 +46,7 @@
       "@energyweb/origin-ui-exchange-logic": [
         "libs/exchange/logic/src/index.ts"
       ],
-      "@energyweb/origin-ui-exchange-data-access": [
-        "libs/exchange/data-access/src/index.ts"
-      ],
+      "@energyweb/origin-ui-exchange-data": ["libs/exchange/data/src/index.ts"],
       "@energyweb/origin-ui-organization-view": [
         "libs/organization/view/src/index.ts"
       ],

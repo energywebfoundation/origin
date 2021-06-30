@@ -358,49 +358,6 @@
         }
       }
     },
-    "exchange-data-access": {
-      "root": "libs/exchange/data-access",
-      "sourceRoot": "libs/exchange/data-access/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/exchange/data-access",
-            "tsConfig": "libs/exchange/data-access/tsconfig.lib.json",
-            "project": "libs/exchange/data-access/package.json",
-            "entryFile": "libs/exchange/data-access/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
-            "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": [
-              "libs/exchange/data-access/**/*.{ts,tsx,js,jsx}"
-            ]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/exchange/data-access"],
-          "options": {
-            "jestConfig": "libs/exchange/data-access/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "exchange-view": {
       "root": "libs/exchange/view",
       "sourceRoot": "libs/exchange/view/src",
@@ -1165,6 +1122,47 @@
           "outputs": ["coverage/libs/user/data"],
           "options": {
             "jestConfig": "libs/user/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "exchange-data": {
+      "root": "libs/exchange/data",
+      "sourceRoot": "libs/exchange/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/exchange/data",
+            "tsConfig": "libs/exchange/data/tsconfig.lib.json",
+            "project": "libs/exchange/data/package.json",
+            "entryFile": "libs/exchange/data/src/index.ts",
+            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/exchange/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/exchange/data"],
+          "options": {
+            "jestConfig": "libs/exchange/data/jest.config.js",
             "passWithNoTests": true
           }
         }

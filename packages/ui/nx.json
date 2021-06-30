@@ -51,9 +51,6 @@
     "ui-assets": {
       "tags": []
     },
-    "exchange-data-access": {
-      "tags": []
-    },
     "exchange-view": {
       "tags": []
     },
@@ -110,6 +107,9 @@
       "tags": []
     },
     "user-data": {
+      "tags": []
+    },
+    "exchange-data": {
       "tags": []
     }
   }
