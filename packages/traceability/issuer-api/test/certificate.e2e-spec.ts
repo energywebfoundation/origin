@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-import { IClaim, IClaimData } from '@energyweb/issuer';
+import { IClaimData } from '@energyweb/issuer';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
@@ -17,6 +17,7 @@ import {
     TestUser,
     testUsers
 } from './issuer-api';
+import { ClaimDTO } from '../src';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -198,11 +199,11 @@ describe('Certificate tests', () => {
         expect(energy.claimedVolume).to.equal(certificateTestData.energy);
         expect(
             myClaims.some(
-                (claim: IClaim) =>
+                (claim: ClaimDTO) =>
                     claim.to === deviceManager.address &&
                     claim.from === deviceManager.address &&
                     JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                    claim.value === parseInt(certificateTestData.energy, 10)
+                    claim.value === certificateTestData.energy
             )
         ).to.be.true;
         expect(claims).to.deep.equal(myClaims);
@@ -234,11 +235,11 @@ describe('Certificate tests', () => {
         expect(energy.claimedVolume).to.equal(amountToClaim);
         expect(
             myClaims.some(
-                (claim: IClaim) =>
+                (claim: ClaimDTO) =>
                     claim.to === deviceManager.address &&
                     claim.from === deviceManager.address &&
                     JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                    claim.value === parseInt(amountToClaim, 10)
+                    claim.value === amountToClaim
             )
         ).to.be.true;
     });
@@ -246,7 +247,7 @@ describe('Certificate tests', () => {
     it('should return all claiming information', async () => {
         const { id: certificateId } = await createCertificate();
 
-        const amount = parseInt(certificateTestData.energy, 10) / 2;
+        const amount = BigNumber.from(certificateTestData.energy).div(2).toString();
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/transfer`)
@@ -278,20 +279,20 @@ describe('Certificate tests', () => {
         expect(claims).to.have.length(2);
         expect(
             claims.some(
-                (claim: IClaim) =>
+                (claim: ClaimDTO) =>
                     claim.to === deviceManager.address &&
                     claim.from === deviceManager.address &&
                     JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                    claim.value === amount
+                    claim.value === amount.toString()
             )
         ).to.be.true;
         expect(
             claims.some(
-                (claim: IClaim) =>
+                (claim: ClaimDTO) =>
                     claim.to === otherDeviceManager.address &&
                     claim.from === otherDeviceManager.address &&
                     JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                    claim.value === amount
+                    claim.value === amount.toString()
             )
         ).to.be.true;
     });
@@ -325,11 +326,11 @@ describe('Certificate tests', () => {
         expect(certificate1.energy.claimedVolume).to.equal(certificateTestData.energy);
         expect(
             certificate1.myClaims.some(
-                (claim: IClaim) =>
+                (claim: ClaimDTO) =>
                     claim.to === deviceManager.address &&
                     claim.from === deviceManager.address &&
                     JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                    claim.value === parseInt(certificateTestData.energy, 10)
+                    claim.value === certificateTestData.energy
             )
         ).to.be.true;
 
@@ -344,11 +345,11 @@ describe('Certificate tests', () => {
         expect(certificate2.energy.claimedVolume).to.equal(certificateTestData.energy);
         expect(
             certificate2.myClaims.some(
-                (claim: IClaim) =>
+                (claim: ClaimDTO) =>
                     claim.to === deviceManager.address &&
                     claim.from === deviceManager.address &&
                     JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                    claim.value === parseInt(certificateTestData.energy, 10)
+                    claim.value === certificateTestData.energy
             )
         ).to.be.true;
     });
@@ -599,11 +600,11 @@ describe('Certificate tests', () => {
                 expect(energy.claimedVolume).to.equal(value);
                 expect(
                     myClaims.some(
-                        (claim: IClaim) =>
+                        (claim: ClaimDTO) =>
                             claim.to === deviceManager.address &&
                             claim.from === deviceManager.address &&
                             JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
-                            claim.value === parseInt(value, 10)
+                            claim.value === value
                     )
                 ).to.be.true;
                 expect(latestCommitment.commitment[deviceManager.address]).to.equal('0');

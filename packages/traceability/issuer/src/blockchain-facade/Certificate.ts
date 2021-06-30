@@ -41,8 +41,8 @@ export interface IClaim {
     id: number;
     from: string;
     to: string;
-    topic: number;
-    value: number;
+    topic: string; // BigNumber string
+    value: string; // BigNumber string
     claimData: IClaimData;
 }
 
@@ -315,8 +315,8 @@ export class Certificate implements ICertificate {
                     id: _id.toNumber(),
                     from: _claimIssuer,
                     to: _claimSubject,
-                    topic: _topic.toNumber(),
-                    value: _value.toNumber(),
+                    topic: _topic.toString(),
+                    value: _value.toString(),
                     claimData
                 });
             }
@@ -342,8 +342,8 @@ export class Certificate implements ICertificate {
                     id: _ids[index].toNumber(),
                     from: _claimIssuer,
                     to: _claimSubject,
-                    topic: _topics[index]?.toNumber(),
-                    value: _values[index].toNumber(),
+                    topic: _topics[index]?.toString(),
+                    value: _values[index].toString(),
                     claimData
                 });
             }
