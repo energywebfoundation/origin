@@ -4,3 +4,4 @@ export * from './PendingPage';
 export * from './RegisterPage';
 export * from './MapViewPage';
 export * from './DetailViewPage';
+export * from './DeviceImportPage';

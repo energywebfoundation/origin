@@ -8,3 +8,4 @@ export * from './types';
 export * from './smartMeter';
 export * from './pending';
 export * from './utils';
+export * from './deviceImport';

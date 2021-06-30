@@ -2,7 +2,7 @@ import { useDeviceRegistryControllerGetMyDevices } from '@energyweb/origin-devic
 import { useDeviceControllerGetMyDevices } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { composeMyDevices } from './utils';
 
-export const useMyDevices = () => {
+export const useApiMyDevices = () => {
   const { data: allOriginDevices, isLoading: isOriginDevicesLoading } =
     useDeviceRegistryControllerGetMyDevices();
 
