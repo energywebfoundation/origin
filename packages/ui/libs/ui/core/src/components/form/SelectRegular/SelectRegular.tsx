@@ -37,6 +37,7 @@ export const SelectRegular: FC<SelectRegularProps> = ({
       value={value ?? ''}
       defaultValue={value}
       onChange={onChange}
+      required={field.required}
       {...textFieldProps}
     >
       {field.options.map((option) => (

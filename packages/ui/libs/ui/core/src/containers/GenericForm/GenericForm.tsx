@@ -15,6 +15,7 @@ export const GenericForm: TGenericForm = memo(
     buttonText,
     buttonFullWidth,
     buttonWrapperProps,
+    secondaryButtons,
     children,
     formClass,
     inputsVariant,
@@ -75,6 +76,12 @@ export const GenericForm: TGenericForm = memo(
           justifyContent="flex-end"
           {...buttonWrapperProps}
         >
+          {secondaryButtons &&
+            secondaryButtons.map((button) => (
+              <Button key={`secondary-button-${button.label}`} {...button}>
+                {button.label}
+              </Button>
+            ))}
           <Button
             fullWidth={buttonFullWidth}
             color="primary"

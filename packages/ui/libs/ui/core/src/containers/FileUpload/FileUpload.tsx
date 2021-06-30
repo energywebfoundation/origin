@@ -1,5 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
-import { TypographyProps } from '@material-ui/system';
+import { Box, Typography, TypographyProps } from '@material-ui/core';
 import React, { FC } from 'react';
 import { UploadChip } from '../../components/file';
 import {

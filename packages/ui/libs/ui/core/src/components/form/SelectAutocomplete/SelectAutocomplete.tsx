@@ -12,7 +12,6 @@ export interface SelectAutocompleteProps<ValueType> {
   errorText: string;
   variant?: 'standard' | 'outlined' | 'filled';
   disabled?: boolean;
-  required?: boolean;
   dependentValue?: ValueType;
 }
 
@@ -27,7 +26,6 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
   errorExists,
   errorText,
   disabled,
-  required,
   variant,
   dependentValue,
 }) => {
@@ -55,7 +53,7 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
       renderInput={(params) => (
         <TextField
           {...params}
-          required={required}
+          required={field.required}
           label={field.label}
           onChange={(event) => setTextValue(event.target.value)}
           helperText={errorText}
