@@ -60,9 +60,8 @@ export function ClaimModal(props: IProps) {
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
     );
 
-    const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-        energyInDisplayUnit
-    );
+    const energyInBaseUnit =
+        EnergyFormatter.getBaseValueFromValueInDisplayUnit(energyInDisplayUnit);
 
     const [validation, setValidation] = useState({
         energyInDisplayUnit: true
@@ -109,7 +108,13 @@ export function ClaimModal(props: IProps) {
         };
 
         const action = isBulkClaim
-            ? requestClaimCertificateBulk({ certificateIds, claimData })
+            ? requestClaimCertificateBulk({
+                  certificateAmounts: certificateIds.map((id) => ({
+                      id,
+                      amount: '0' // TO-DO: Replace 0 with a specific amount
+                  })),
+                  claimData
+              })
             : requestClaimCertificate({
                   certificateId: certificateIds[0],
                   claimData,
@@ -124,9 +129,8 @@ export function ClaimModal(props: IProps) {
         switch (event.target.id) {
             case 'energyInDisplayUnitInput':
                 const newEnergyInDisplayUnit = Number(event.target.value);
-                const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-                    newEnergyInDisplayUnit
-                );
+                const newEnergyInBaseValueUnit =
+                    EnergyFormatter.getBaseValueFromValueInDisplayUnit(newEnergyInDisplayUnit);
 
                 const ownedPublicVolume = certificates[0]?.energy.publicVolume;
 

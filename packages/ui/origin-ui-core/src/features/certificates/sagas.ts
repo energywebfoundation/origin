@@ -474,7 +474,7 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
         }
 
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
-        const { certificateIds, claimData } = action.payload;
+        const { certificateAmounts, claimData } = action.payload;
 
         const i18n = getI18n();
 
@@ -483,7 +483,7 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
         try {
             yield apply(certificatesClient, certificatesClient.batchClaim, [
                 {
-                    certificateIds: certificateIds.map((id) => id),
+                    certificateAmounts,
                     claimData
                 }
             ]);

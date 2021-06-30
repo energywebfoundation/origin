@@ -123,14 +123,34 @@ describe('Certificate tests', () => {
         expect(certificate1.energy.publicVolume).to.equal(certificateTestData.energy);
     });
 
-    it.only('should batch issue certificates', async () => {
+    it('should return sum of all certified energy for a given device id', async () => {
+        await createCertificate();
+        await createCertificate();
+
+        const startDate = moment.unix(certificateTestData.fromTime).toISOString();
+        const endDate = moment.unix(certificateTestData.toTime).toISOString();
+
+        await request(app.getHttpServer())
+            .get(
+                `/certificate/issuer/certified/${certificateTestData.deviceId}?start=${startDate}&end=${endDate}`
+            )
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect(HttpStatus.OK)
+            .expect((res) => {
+                expect(res.text).to.equal(
+                    `${constants.Two.mul(BigNumber.from(certificateTestData.energy))}`
+                );
+            });
+    });
+
+    it('should batch issue certificates', async () => {
         const { body: ids } = await request(app.getHttpServer())
             .post(`/certificate-batch/issue`)
             .set({ 'test-user': TestUser.Issuer })
             .send([certificateTestData, certificateTestData])
             .expect(HttpStatus.CREATED);
 
-        expect(ids).to.be.an('array').with.members([1, 2]);
+        expect(ids).to.be.an('array').with.lengthOf(2);
     });
 
     it('should transfer a certificate', async () => {
@@ -415,7 +435,7 @@ describe('Certificate tests', () => {
             })
             .expect(HttpStatus.OK);
 
-        await sleep(5000);
+        await sleep(10000);
 
         const certificate1DeviceManager = await getCertificate(
             certificateId1,
@@ -588,28 +608,6 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.OK);
 
         expect(events.length).to.be.above(0);
-    });
-
-    it('should return sum of all certified energy for a given device id', async () => {
-        await createCertificate();
-        await createCertificate();
-
-        const startDate = moment.unix(certificateTestData.fromTime).toISOString();
-        const endDate = moment.unix(certificateTestData.toTime).toISOString();
-
-        await request(app.getHttpServer())
-            .get(
-                `/certificate/issuer/certified/${certificateTestData.deviceId}?start=${startDate}&end=${endDate}`
-            )
-            .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                expect(res.text).to.equal(
-                    `${BigNumber.from(constants.Two).mul(
-                        BigNumber.from(certificateTestData.energy)
-                    )}`
-                );
-            });
     });
 
     it('should get certificates without a blockchain account attached', async () => {
