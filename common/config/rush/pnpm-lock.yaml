@@ -221,6 +221,7 @@ dependencies:
   truffle-typings: 1.0.8
   ts-jest: 26.4.0
   ts-sinon: 2.0.1
+  tsconfig-paths-webpack-plugin: 3.5.1
   tslib: 2.0.0
   typechain: 5.1.1
   typedoc: 0.21.2
@@ -24624,11 +24625,11 @@ packages:
   /jest-util/26.6.2:
     dependencies:
       '@jest/types': 26.6.2
-      '@types/node': 14.14.43
+      '@types/node': 14.17.4
       chalk: 4.1.1
       graceful-fs: 4.2.6
       is-ci: 2.0.0
-      micromatch: 4.0.2
+      micromatch: 4.0.4
     dev: false
     engines:
       node: '>= 10.14.2'
@@ -35544,7 +35545,7 @@ packages:
       integrity: sha512-S/gOOPOkV8rIL4LurZ1vUdYCVgo15iX9ZMJ6wx6w2OgcpT/G4wMyHB6WM+xheSqGMrWKuxFul+aXpCju3wmj/g==
   /tsconfig-paths-webpack-plugin/3.5.1:
     dependencies:
-      chalk: 4.1.0
+      chalk: 4.1.1
       enhanced-resolve: 5.7.0
       tsconfig-paths: 3.9.0
     dev: false
@@ -40984,6 +40985,7 @@ packages:
       toastr: 2.1.4
       ts-jest: 26.4.0_jest@26.2.2+typescript@4.0.7
       ts-node: 9.1.1_typescript@4.0.7
+      tsconfig-paths-webpack-plugin: 3.5.1
       tslib: 2.0.0
       typescript: 4.0.7
       url-loader: 3.0.0_webpack@4.42.0
@@ -40996,7 +40998,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-BINuttBWfeOy2WSpKPJnCEHmmeSNv3wC/rP+FL9DqXhDFZpwkV7cPTyLY8f/7iQ8fkWmaUuxLPCW7MGiiuIdSQ==
+      integrity: sha512-pZN1wP5bU61Yl85SCaiDd7PRmypEG8DwatjJ1TnlIuYA/YN6SppG5gX+TWPunxIu7qvUosIBf8v1WR3uENvwAw==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -41296,6 +41298,7 @@ specifiers:
   truffle-typings: 1.0.8
   ts-jest: 26.4.0
   ts-sinon: 2.0.1
+  tsconfig-paths-webpack-plugin: 3.5.1
   tslib: 2.0.0
   typechain: 5.1.1
   typedoc: 0.21.2
