@@ -25,10 +25,11 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BatchClaimCertificatesCommand } from './commands/batch-claim-certificates.command';
 import { BatchClaimCertificatesDTO } from './commands/batch-claim-certificates.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { BatchIssueCertificatesDTO } from './commands/batch-issue-certificates.dto';
+import { BatchIssueCertificateDTO } from './commands/batch-issue-certificates.dto';
 import { BatchIssueCertificatesCommand } from './commands/batch-issue-certificates.command';
 import { BatchTransferCertificatesDTO } from './commands/batch-transfer-certificates.dto';
 import { BatchTransferCertificatesCommand } from './commands/batch-transfer-certificates.command';
+import { CertificateIdsDTO } from './dto/certificate-ids.dto';
 
 @ApiTags('certificates')
 @ApiBearerAuth('access-token')
@@ -41,14 +42,14 @@ export class CertificateBatchController {
     @Post('issue')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, BlockchainAccountGuard)
     @Roles(Role.Issuer)
-    @ApiBody({ type: BatchIssueCertificatesDTO })
+    @ApiBody({ type: [BatchIssueCertificateDTO] })
     @ApiResponse({
         status: HttpStatus.CREATED,
-        type: SuccessResponseDTO,
-        description: 'Returns whether the batch issuance succeeded'
+        type: CertificateIdsDTO,
+        description: 'Returns the IDs of created certificates'
     })
     public async batchIssue(
-        @Body() { certificatesInfo }: BatchIssueCertificatesDTO
+        @Body() certificatesInfo: BatchIssueCertificateDTO[]
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(new BatchIssueCertificatesCommand(certificatesInfo));
     }

@@ -1,7 +1,7 @@
 import { IClaimData } from '@energyweb/issuer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ValidateNested, IsObject } from 'class-validator';
-import { CertificateAmountDTO } from '../certificate-amount.dto';
+import { CertificateAmountDTO } from '../dto/certificate-amount.dto';
 
 export class BatchClaimCertificatesDTO {
     @ApiProperty({ type: [CertificateAmountDTO] })

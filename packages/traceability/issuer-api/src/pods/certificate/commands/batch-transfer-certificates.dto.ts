@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ValidateNested, IsEthereumAddress } from 'class-validator';
-import { CertificateAmountDTO } from '../certificate-amount.dto';
+import { CertificateAmountDTO } from '../dto/certificate-amount.dto';
 
 export class BatchTransferCertificatesDTO {
     @ApiProperty({ type: [CertificateAmountDTO] })

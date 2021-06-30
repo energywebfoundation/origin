@@ -40,7 +40,7 @@ import { ClaimCertificateCommand } from './commands/claim-certificate.command';
 import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
 import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
-import { CertificateDTO } from './certificate.dto';
+import { CertificateDTO } from './dto/certificate.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { certificateToDto } from './utils';
 import { Certificate } from './certificate.entity';

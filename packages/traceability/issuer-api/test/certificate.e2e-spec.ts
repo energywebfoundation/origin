@@ -7,7 +7,7 @@ import { BigNumber, constants } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
-import { CertificateDTO } from '../src/pods/certificate/certificate.dto';
+import { CertificateDTO } from '../src/pods/certificate/dto/certificate.dto';
 import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
 import {
     bootstrapTestInstance,
@@ -121,6 +121,16 @@ describe('Certificate tests', () => {
 
         expect(certificate1.isOwned).to.be.true;
         expect(certificate1.energy.publicVolume).to.equal(certificateTestData.energy);
+    });
+
+    it.only('should batch issue certificates', async () => {
+        const { body: ids } = await request(app.getHttpServer())
+            .post(`/certificate-batch/issue`)
+            .set({ 'test-user': TestUser.Issuer })
+            .send([certificateTestData, certificateTestData])
+            .expect(HttpStatus.CREATED);
+
+        expect(ids).to.be.an('array').with.members([1, 2]);
     });
 
     it('should transfer a certificate', async () => {
