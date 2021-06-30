@@ -54,6 +54,7 @@ export const FormInput: TFormInput = memo(
         helperText={errorText ?? ''}
         fullWidth
         margin="normal"
+        required={field.required}
         variant={variant ?? 'standard'}
         InputProps={{
           startAdornment: field.startAdornment && (

@@ -1,3 +1,4 @@
+import { PageNotFound } from '@energyweb/origin-ui-core';
 import React from 'react';
 
 import { Route, Routes } from 'react-router';
@@ -9,6 +10,7 @@ export const AdminApp = () => {
       <Route path="users" element={<AdminUsersPage />} />
       <Route path="update-user/:id" element={<AdminUpdateUserPage />} />
       <Route path="claims" element={<AdminClaimsPage />} />
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };

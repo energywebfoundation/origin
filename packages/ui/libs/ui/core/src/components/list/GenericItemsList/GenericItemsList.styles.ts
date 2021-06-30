@@ -8,4 +8,8 @@ export const useStyles = makeStyles((theme) => ({
   paperWrapper: {
     padding: 20,
   },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
 }));

@@ -24,5 +24,3 @@ export const AppContainer = () => {
     </>
   );
 };
-
-export default AppContainer;

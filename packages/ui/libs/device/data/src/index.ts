@@ -9,3 +9,4 @@ export * from './deviceTypes';
 export * from './registerDevice';
 export * from './pendingDevices';
 export * from './fileUpload';
+export * from './deviceImport';

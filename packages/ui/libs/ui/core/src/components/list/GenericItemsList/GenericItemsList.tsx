@@ -1,5 +1,13 @@
-import React from 'react';
-import { Paper, Typography, Checkbox, List } from '@material-ui/core';
+import React, { useState } from 'react';
+import {
+  Paper,
+  Typography,
+  Checkbox,
+  List,
+  TypographyProps,
+  Pagination,
+  PaginationProps,
+} from '@material-ui/core';
 import {
   ListItemsContainer,
   ListItemsContainerProps,
@@ -9,9 +17,14 @@ import { useStyles } from './GenericItemsList.styles';
 export interface GenericItemsListProps<ContainerId, ItemId> {
   listContainers: ListItemsContainerProps<ContainerId, ItemId>[];
   listTitle?: string;
+  titleProps?: TypographyProps;
+  checkboxes?: boolean;
   allSelected?: boolean;
   selectAllHandler?: () => void;
   selectAllText?: string;
+  pagination?: boolean;
+  pageSize?: number;
+  paginationProps?: PaginationProps;
 }
 
 export type TGenericItemsList = <ContainerId, ItemId>(
@@ -20,17 +33,39 @@ export type TGenericItemsList = <ContainerId, ItemId>(
 
 export const GenericItemsList: TGenericItemsList = ({
   listTitle,
+  titleProps,
+  checkboxes,
   allSelected,
   selectAllHandler,
   selectAllText,
   listContainers,
+  pagination,
+  pageSize = 5,
+  paginationProps,
 }) => {
   const classes = useStyles();
+  const [page, setPage] = useState(1);
+
+  function paginate(allItems, itemsPerPage, currentPage) {
+    return allItems.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+  }
+
+  const formattedItems = pagination
+    ? paginate(listContainers, pageSize, page)
+    : listContainers;
+
   return (
     <Paper className={classes.paperWrapper}>
-      {listTitle && <Typography variant="h4">{listTitle}</Typography>}
+      {listTitle && (
+        <Typography variant="h4" {...titleProps}>
+          {listTitle}
+        </Typography>
+      )}
 
-      {selectAllHandler && (
+      {checkboxes && (
         <div className={classes.selectAllHolder}>
           <Checkbox
             color="primary"
@@ -42,13 +77,25 @@ export const GenericItemsList: TGenericItemsList = ({
       )}
 
       <List>
-        {listContainers.map((container) => (
+        {formattedItems.map((container) => (
           <ListItemsContainer
             key={`container-${container.id}`}
+            checkboxes={checkboxes}
             {...container}
           />
         ))}
       </List>
+
+      {pagination && (
+        <Pagination
+          className={classes.pagination}
+          size="small"
+          defaultPage={1}
+          count={Math.ceil(listContainers.length / pageSize)}
+          onChange={(event, index) => setPage(index)}
+          {...paginationProps}
+        />
+      )}
     </Paper>
   );
 };

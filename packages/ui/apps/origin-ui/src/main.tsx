@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ErrorFallback } from '@energyweb/origin-ui-core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { OriginQueryClientProvider } from '@energyweb/origin-ui-react-query-providers';
-import AppContainer from './app-container/AppContainer';
+import { AppContainer } from './AppContainer';
 import { BlockchainProvider } from '@energyweb/origin-ui-blockchain';
 
 ReactDOM.render(

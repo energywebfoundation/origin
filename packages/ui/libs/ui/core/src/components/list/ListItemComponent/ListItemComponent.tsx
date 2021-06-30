@@ -4,9 +4,10 @@ import { useStyles } from './ListItemComponent.styles';
 
 export interface ListItemComponentProps<Id> {
   id: Id;
-  itemChecked: boolean;
-  handleItemCheck: (id: Id) => void;
   itemContent: React.ReactNode;
+  itemChecked?: boolean;
+  handleItemCheck?: (id: Id) => void;
+  checkboxes?: boolean;
 }
 
 type TListItemsContainer = <Id>(
@@ -18,17 +19,20 @@ export const ListItemComponent: TListItemsContainer = ({
   itemChecked,
   handleItemCheck,
   itemContent,
+  checkboxes,
 }) => {
   const classes = useStyles();
   return (
     <ListItem className={classes.listItem}>
-      <ListItemIcon>
-        <Checkbox
-          color="primary"
-          checked={itemChecked}
-          onChange={() => handleItemCheck(id)}
-        />
-      </ListItemIcon>
+      {checkboxes && (
+        <ListItemIcon>
+          <Checkbox
+            color="primary"
+            checked={itemChecked}
+            onChange={() => handleItemCheck(id)}
+          />
+        </ListItemIcon>
+      )}
       {itemContent}
     </ListItem>
   );

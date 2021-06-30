@@ -19,8 +19,10 @@ import {
 import { EnergyTypeEnum } from '@energyweb/origin-ui-utils';
 import { FC } from 'react';
 
+type TImageType = FC<React.SVGProps<SVGSVGElement> & { title?: string }>;
+
 const images: {
-  [k: string]: { regular: FC; selected: FC };
+  [k: string]: { regular: TImageType; selected: TImageType };
 } = {
   [EnergyTypeEnum.WIND]: { regular: WindRegular, selected: WindSelected },
   [EnergyTypeEnum.SOLAR]: { regular: SolarRegular, selected: SolarSelected },
@@ -64,6 +66,6 @@ const images: {
 };
 
 export const getEnergyTypeImage = (type: EnergyTypeEnum, selected = false) => {
-  const deviceType = type || EnergyTypeEnum.SOLAR;
-  return images[deviceType][selected ? 'selected' : 'regular'];
+  const fuelType = type || EnergyTypeEnum.SOLAR;
+  return images[fuelType.toLowerCase()][selected ? 'selected' : 'regular'];
 };

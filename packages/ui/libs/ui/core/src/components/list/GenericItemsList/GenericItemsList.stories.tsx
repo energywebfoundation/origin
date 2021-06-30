@@ -8,7 +8,7 @@ export default {
   component: GenericItemsList,
 } as Meta;
 
-export const Default = (args: GenericItemsListProps<number, number>) => {
+export const WithCheckboxes = (args: GenericItemsListProps<number, number>) => {
   const [allSelected, setAllSelected] = useState(false);
   const [checkedContainers, setCheckedContainers] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
@@ -94,7 +94,51 @@ export const Default = (args: GenericItemsListProps<number, number>) => {
   );
 };
 
-Default.args = {
+WithCheckboxes.args = {
   listTitle: 'Generic list',
   selectAllText: 'Select all',
+  checkboxes: true,
+};
+
+export const WithoutCheckboxes = (
+  args: GenericItemsListProps<number, number>
+) => {
+  const listContainers = [
+    {
+      id: 1,
+      containerHeader: <Typography variant="h5">First container</Typography>,
+      containerItems: [
+        {
+          id: 1,
+          itemContent: (
+            <Typography>This is the first item of first container</Typography>
+          ),
+        },
+      ],
+    },
+    {
+      id: 2,
+      containerHeader: <Typography variant="h5">Second container</Typography>,
+      containerItems: [
+        {
+          id: 2,
+          itemContent: (
+            <Typography>This is the first item of second container</Typography>
+          ),
+        },
+        {
+          id: 3,
+          itemContent: (
+            <Typography>This is the second item of second container</Typography>
+          ),
+        },
+      ],
+    },
+  ];
+
+  return <GenericItemsList listContainers={listContainers} {...args} />;
+};
+
+WithoutCheckboxes.args = {
+  listTitle: 'Generic list',
 };

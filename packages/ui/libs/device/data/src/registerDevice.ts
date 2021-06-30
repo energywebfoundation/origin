@@ -13,9 +13,11 @@ import { TRegisterDeviceFormValues } from './types';
 import { decomposeForIRec, decomposeForOrigin } from './utils';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 export const useApiRegisterDevice = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { mutate } = useOriginCreateDevice();
   const { mutateAsync } = useIRecCreateDevice();
   const userQueryKey = getUserControllerMeQueryKey();
@@ -40,6 +42,7 @@ export const useApiRegisterDevice = () => {
               t('device.register.notifications.registerSuccess'),
               NotificationTypeEnum.Success
             );
+            navigate('/device/my');
           },
           onError: (error: AxiosError) => {
             console.error(error);

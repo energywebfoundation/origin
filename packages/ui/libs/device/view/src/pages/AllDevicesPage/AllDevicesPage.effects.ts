@@ -1,3 +1,4 @@
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import {
   useApiAllDevices,
   useAllDeviceFuelTypes,
@@ -8,7 +9,11 @@ export const useAllDevicesPageEffects = () => {
   const { allTypes: allDeviceTypes, isLoading: allTypesLoading } =
     useAllDeviceFuelTypes();
 
+  const allActiveDevices = allDevices.filter(
+    (device) => device.status === DeviceState.Approved
+  );
+
   const isLoading = isAllDevicesLoading || allTypesLoading;
 
-  return { allDevices, allDeviceTypes, isLoading };
+  return { allActiveDevices, allDeviceTypes, isLoading };
 };

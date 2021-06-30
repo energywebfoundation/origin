@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import {
   BaseTextFieldProps,
   BoxProps,
+  ButtonProps,
   TypographyVariant,
 } from '@material-ui/core';
 import { DeepPartial, UnpackNestedValue, UseFormReset } from 'react-hook-form';
@@ -17,6 +18,7 @@ export type GenericFormField = {
   name: string;
   label: string | null;
   type?: 'text' | 'password';
+  required?: boolean;
   frozen?: boolean;
   select?: boolean;
   options?: FormSelectOption[];
@@ -37,6 +39,10 @@ export type GenericFormField = {
   dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
 };
 
+export type GenericFormSecondaryButton = ButtonProps & {
+  label: string;
+};
+
 export interface GenericFormProps<FormValuesType> {
   hideSubmitButton?: boolean;
   submitHandler: (
@@ -49,6 +55,7 @@ export interface GenericFormProps<FormValuesType> {
   buttonText: string;
   buttonFullWidth?: boolean;
   buttonWrapperProps?: BoxProps;
+  secondaryButtons?: GenericFormSecondaryButton[];
   formTitle?: string;
   formTitleVariant?: TypographyVariant;
   formClass?: string;

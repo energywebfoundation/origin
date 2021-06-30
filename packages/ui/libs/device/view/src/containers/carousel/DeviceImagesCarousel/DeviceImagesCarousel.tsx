@@ -33,6 +33,7 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
       {false ? (
         <img src={images[0]} {...itemProps} />
       ) : (
+        // @ts-ignore
         <FallbackIcon {...itemProps} />
       )}
       <CarouselControls
