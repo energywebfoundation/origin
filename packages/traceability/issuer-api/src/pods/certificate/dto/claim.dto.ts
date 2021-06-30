@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IClaim } from '@energyweb/issuer';
-import { IsInt, IsPositive, IsString, ValidateNested } from 'class-validator';
+import { Validate, IsInt, IsPositive, IsString, ValidateNested } from 'class-validator';
 import { ClaimDataDTO } from '../commands/claim-data.dto';
+import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 
 export class ClaimDTO implements IClaim {
     @ApiProperty({ type: Number })
@@ -17,15 +18,13 @@ export class ClaimDTO implements IClaim {
     @IsString()
     to: string;
 
-    @ApiProperty({ type: Number })
-    @IsInt()
-    @IsPositive()
-    topic: number;
+    @ApiProperty({ type: String })
+    @IsString()
+    topic: string;
 
-    @ApiProperty({ type: Number })
-    @IsInt()
-    @IsPositive()
-    value: number;
+    @ApiProperty({ type: String })
+    @Validate(IntUnitsOfEnergy)
+    value: string;
 
     @ApiProperty({ type: ClaimDataDTO })
     @ValidateNested()
