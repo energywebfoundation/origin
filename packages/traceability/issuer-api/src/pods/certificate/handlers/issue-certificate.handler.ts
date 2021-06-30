@@ -9,7 +9,7 @@ import { BigNumber } from 'ethers';
 import { IssueCertificateCommand } from '../commands/issue-certificate.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { CertificateDTO } from '../certificate.dto';
+import { CertificateDTO } from '../dto/certificate.dto';
 import { certificateToDto } from '../utils';
 import { CertificatePersistedEvent } from '../events/certificate-persisted.event';
 

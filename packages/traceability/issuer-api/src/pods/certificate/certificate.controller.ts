@@ -38,11 +38,9 @@ import { TransferCertificateDTO } from './commands/transfer-certificate.dto';
 import { ClaimCertificateDTO } from './commands/claim-certificate.dto';
 import { ClaimCertificateCommand } from './commands/claim-certificate.command';
 import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
-import { BulkClaimCertificatesCommand } from './commands/bulk-claim-certificates.command';
-import { BulkClaimCertificatesDTO } from './commands/bulk-claim-certificates.dto';
 import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
-import { CertificateDTO } from './certificate.dto';
+import { CertificateDTO } from './dto/certificate.dto';
 import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { certificateToDto } from './utils';
 import { Certificate } from './certificate.entity';
@@ -183,23 +181,6 @@ export class CertificateController {
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
             new ClaimCertificateCommand(certificateId, dto.claimData, blockchainAddress, dto.amount)
-        );
-    }
-
-    @Put('/bulk-claim')
-    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
-    @ApiBody({ type: BulkClaimCertificatesDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: SuccessResponseDTO,
-        description: 'Returns whether the bulk claim succeeded'
-    })
-    public async bulkClaim(
-        @BlockchainAccountDecorator() blockchainAddress: string,
-        @Body() dto: BulkClaimCertificatesDTO
-    ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
-            new BulkClaimCertificatesCommand(dto.certificateIds, dto.claimData, blockchainAddress)
         );
     }
 
