@@ -53,95 +53,51 @@ describe('IREC API', () => {
             const [firstAccount] = await participantClient.account.getAll();
             const [accountBalance] = await participantClient.account.getBalance(firstAccount.code);
 
+            expect(accountBalance.balance).to.be.a('number');
             expect(accountBalance.code).to.equal(firstAccount.code);
-            expect(accountBalance.product).to.be.instanceOf(Product);
+            expect(accountBalance.product.code).to.be.a('string');
+            expect(accountBalance.product.name).to.be.a('string');
+            expect(accountBalance.product.unit).to.be.a('string');
         });
 
         it('should fetch items by code', async () => {
-            const [accountItem] = await participantClient.account.getItems(tradeAccount);
-
-            expect(accountItem).to.exist;
-            expect(accountItem.items).to.exist;
-            expect(accountItem.code).to.be.equal(tradeAccount);
-
-            const [item] = accountItem.items;
-
-            expect(item.code).to.exist;
-            expect(item.asset).to.exist;
-
-            expect(item.asset.start).to.be.an.instanceOf(Date);
-            expect(item.asset.end).to.be.an.instanceOf(Date);
+            const accountItems = await participantClient.account.getItems(tradeAccount);
+            accountItems.forEach((accountItem) => {
+                expect(accountItem).to.exist;
+                expect(accountItem.co2Produced).to.be.a('number');
+                expect(accountItem.product).to.be.a('string');
+                expect(accountItem.country).to.be.a('string');
+                expect(accountItem.device.code).to.be.a('string');
+                expect(accountItem.device.name).to.be.a('string');
+                expect(accountItem.deviceSupported).to.be.a('boolean');
+                expect(accountItem.tagged).to.be.a('boolean');
+                expect(accountItem.startDate).to.be.a('string');
+                expect(accountItem.endDate).to.be.a('string');
+                expect(accountItem.fuelType.code).to.be.a('string');
+                expect(accountItem.fuelType.description).to.be.a('string');
+                expect(accountItem.deviceType.code).to.be.a('string');
+                expect(accountItem.deviceType.description).to.be.a('string');
+            });
         });
-
-        it('should fetch transactions', async () => {
-            const transactions = await participantClient.account.getTransactions(tradeAccount);
-
-            expect(transactions).to.exist;
-        });
-    });
-
-    it('should be able to request certificate', async () => {
-        const [accountItem] = await participantClient.account.getItems(tradeAccount);
-
-        const [lastItem] = accountItem.items.sort(
-            (a, b) => b.asset.end.getTime() - a.asset.end.getTime()
-        );
-
-        const beforeTransactions = await participantClient.account.getTransactions(tradeAccount);
-
-        const createdIssue = await registrantClient.issue.create({
-            device: 'DEVICE001',
-            recipient: tradeAccount,
-            start: moment(lastItem.asset.end).add(1, 'day').toDate(),
-            end: moment(lastItem.asset.end).add(2, 'day').toDate(),
-            production: 100,
-            fuelType: 'ES200'
-        });
-
-        await participantClient.issue.submit(createdIssue.code, 'Note');
-        await participantClient.issue.verify(createdIssue.code, 'Note');
-
-        const approval = new ApproveIssue();
-        approval.issuer = issueAccount;
-
-        await participantClient.issue.approve(createdIssue.code, approval);
-
-        const afterTransactions = await registrantClient.account.getTransactions(tradeAccount);
-
-        expect(afterTransactions).to.has.lengthOf(beforeTransactions.length + 1);
     });
 
     it('should be able to redeem the certificate', async () => {
-        const [account] = await participantClient.account.getItems(tradeAccount);
-        const [newestItem] = account.items;
+        const accountItems = await participantClient.account.getItems(tradeAccount);
 
         const reservationItem = new ReservationItem();
-        reservationItem.code = newestItem.code;
+        reservationItem.code = accountItems[0].code;
         reservationItem.amount = 1;
 
-        const redemption = new Redemption();
-        redemption.items = [reservationItem];
-        redemption.beneficiary = 1;
-        redemption.start = new Date('2020-01-01');
-        redemption.end = new Date('2020-02-01');
-        redemption.purpose = 'Purpose';
-        redemption.sender = tradeAccount;
-        redemption.recipient = redemptionAccount;
-        redemption.approver = process.env.IREC_API_LOGIN;
-
-        await participantClient.redeem(redemption);
-    });
-
-    it('should be able to upload pdf evidence file', async () => {
-        const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
-
-        const [fileId] = await registrantClient.file.upload([file]);
-
-        expect(fileId).to.exist;
-
-        const url = await registrantClient.file.download(fileId);
-
-        expect(url).to.exist;
+        await participantClient.redeem({
+            items: [reservationItem],
+            beneficiary: 1,
+            start: new Date('2020-01-01'),
+            end: new Date('2020-02-01'),
+            purpose: 'Purpose',
+            sender: tradeAccount,
+            recipient: redemptionAccount,
+            approver: issueAccount
+        });
     });
 
     describe('Organization', () => {

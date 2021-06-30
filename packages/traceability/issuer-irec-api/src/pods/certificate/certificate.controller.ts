@@ -9,20 +9,21 @@ import {
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
 import {
     ActiveUserGuard,
     ExceptionInterceptor,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import { CertificateController } from '@energyweb/issuer-api';
-
-import { IssueWithStatus } from '@energyweb/issuer-irec-api-wrapper';
-import { GetIrecCertificatesToImportCommand } from './command/get-irec-certificates-to-import.command';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { IssueWithStatus } from '@energyweb/issuer-irec-api-wrapper';
+
+import { GetIrecCertificatesToImportCommand } from './command';
 
 @ApiTags('certificates')
 @ApiBearerAuth('access-token')
-@Controller('certificate')
+@Controller('/certificate')
 @UseInterceptors(ExceptionInterceptor)
 @UsePipes(ValidationPipe)
 export class IrecCertificateController extends CertificateController {
