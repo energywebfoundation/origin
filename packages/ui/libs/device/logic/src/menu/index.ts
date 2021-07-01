@@ -17,6 +17,7 @@ type TGetDeviceMenu = (args?: TGetDeviceMenuArgs) => TMenuSection;
 export const getDeviceMenu: TGetDeviceMenu = ({
   t,
   isOpen,
+  showSection,
   showAllDevices,
   showMapView,
   showMyDevices,
@@ -60,7 +61,7 @@ export const getDeviceMenu: TGetDeviceMenu = ({
   return {
     isOpen,
     sectionTitle: t('navigation.device.sectionTitle'),
-    show: true,
+    show: showSection,
     rootUrl: '/device',
     menuList,
   };

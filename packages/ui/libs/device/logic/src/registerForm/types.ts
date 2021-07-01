@@ -7,8 +7,8 @@ import { TFunction } from 'i18next';
 
 export type DeviceInfoFormValues = {
   facilityName: string;
-  fuelType: string;
-  deviceType: string;
+  fuelType: string[];
+  deviceType: string[];
   commissioningDate: string;
   registrationDate: string;
   description: string;
@@ -24,7 +24,7 @@ export type TCreateDeviceInfoForm = (
 ) => MultiStepFormItem<DeviceInfoFormValues>;
 
 export type DeviceLocationFormValues = {
-  countryCode: string;
+  countryCode: string[];
   region: string;
   subregion: string;
   postalCode: string;

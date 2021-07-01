@@ -6,7 +6,7 @@ export const createDeviceLocationForm: TCreateDeviceLocationForm = (t) => ({
   formTitle: t('device.register.deviceLocationFormTitle'),
   inputsVariant: 'filled',
   initialValues: {
-    countryCode: '',
+    countryCode: [],
     region: '',
     subregion: '',
     postalCode: '',
@@ -30,30 +30,37 @@ export const createDeviceLocationForm: TCreateDeviceLocationForm = (t) => ({
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
+      required: true,
     },
     {
       name: 'region',
       label: t('device.register.region'),
+      required: true,
     },
     {
       name: 'subregion',
       label: t('device.register.subregion'),
+      required: true,
     },
     {
       name: 'postalCode',
       label: t('device.register.postalCode'),
+      required: true,
     },
     {
       name: 'address',
       label: t('device.register.address'),
+      required: true,
     },
     {
       name: 'latitude',
       label: t('device.register.latitude'),
+      required: true,
     },
     {
       name: 'longitude',
       label: t('device.register.longitude'),
+      required: true,
     },
   ],
   buttonText: t('general.buttons.nextStep'),

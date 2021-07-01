@@ -7,3 +7,5 @@ export * from './DoubleColumnForm';
 export * from './SingleColumnForm';
 export * from './HierarchicalSelect';
 export * from './SelectRegular';
+export * from './SelectAutocomplete';
+export * from './MaterialDatepicker';
