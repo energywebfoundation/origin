@@ -16,8 +16,8 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
   inputsVariant: 'filled',
   initialValues: {
     facilityName: '',
-    fuelType: '',
-    deviceType: '',
+    fuelType: [],
+    deviceType: [],
     commissioningDate: '',
     registrationDate: '',
     description: '',
@@ -63,6 +63,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
     {
       name: 'facilityName',
       label: t('device.register.facilityName'),
+      required: true,
     },
     {
       name: 'fuelType',
@@ -70,6 +71,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       select: true,
       autocomplete: true,
       options: prepareFuelTypesOptions(allFuelTypes),
+      required: true,
     },
     {
       name: 'deviceType',
@@ -78,16 +80,31 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       autocomplete: true,
       dependentOn: 'fuelType',
       dependentOptionsCallback: prepareDeviceTypesOptions(allDeviceTypes),
+      required: true,
     },
     {
       name: 'commissioningDate',
       label: t('device.register.commissioningDate'),
       datePicker: true,
+      required: true,
     },
     {
       name: 'registrationDate',
       label: t('device.register.registrationDate'),
       datePicker: true,
+      required: true,
+    },
+    {
+      name: 'gridOperator',
+      label: t('device.register.gridOperator'),
+      select: true,
+      options: gridOperatorOptions,
+      required: true,
+    },
+    {
+      name: 'capacity',
+      label: t('device.register.capacity'),
+      required: true,
     },
     {
       name: 'description',
@@ -100,16 +117,6 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
     {
       name: 'smartMeterId',
       label: externalDeviceId,
-    },
-    {
-      name: 'capacity',
-      label: t('device.register.capacity'),
-    },
-    {
-      name: 'gridOperator',
-      label: t('device.register.gridOperator'),
-      select: true,
-      options: gridOperatorOptions,
     },
   ],
   buttonText: t('general.buttons.nextStep'),

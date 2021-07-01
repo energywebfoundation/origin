@@ -18,10 +18,12 @@ export const prepareFuelTypesOptions = (
 
 export const prepareDeviceTypesOptions = (
   allDeviceTypes: CodeNameDTO[]
-): ((selected: string) => FormSelectOption[]) => {
-  return (selectedFuel: string) => {
+): ((selected: FormSelectOption[]) => FormSelectOption[]) => {
+  return (selectedFuelOption: FormSelectOption[]) => {
+    const selectedValue = selectedFuelOption[0]?.value;
+
     const availableTypesForSelectedFuel: string[] =
-      fuelToDeviceTypesMatching[selectedFuel];
+      fuelToDeviceTypesMatching[selectedValue];
     const filteredDeviceTypes = allDeviceTypes?.filter((type) =>
       availableTypesForSelectedFuel?.some(
         (available) => available === type.code
