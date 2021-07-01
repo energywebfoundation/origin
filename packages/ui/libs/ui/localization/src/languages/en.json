@@ -15,6 +15,10 @@
         "register": "Register Device",
         "import": "Import Device"
       },
+      "exchange": {
+        "sectionTitle": "Exchange",
+        "viewMarket": "View Market"
+      },
       "organization": {
         "sectionTitle": "Organization",
         "register": "Register",
