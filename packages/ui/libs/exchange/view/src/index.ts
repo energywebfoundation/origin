@@ -1,1 +1,1 @@
-export * from './lib/exchange-view';
+export * from './ExchangeApp';
