@@ -37,15 +37,15 @@ export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;
 
 export type TRegisterDeviceFormValues = {
   facilityName: string;
-  deviceType: string;
-  fuelType: string;
+  fuelType: string[];
+  deviceType: string[];
   commissioningDate: string;
   registrationDate: string;
   capacity: string;
   gridOperator: string;
   description: string;
   smartMeterId: string;
-  countryCode: string;
+  countryCode: string[];
   region: string;
   subregion: string;
   postalCode: string;

@@ -60,9 +60,9 @@ export function decomposeForIRec(
 ): IRecCreateDeviceDTO {
   const iRecCreateDevice: IRecCreateDeviceDTO = {
     name: newDevice.facilityName,
-    deviceType: newDevice.deviceType,
-    fuelType: newDevice.fuelType,
-    countryCode: organization.country,
+    deviceType: newDevice.deviceType[0],
+    fuelType: newDevice.fuelType[0],
+    countryCode: newDevice.countryCode[0],
     capacity: PowerFormatter.getBaseValueFromValueInDisplayUnit(
       parseFloat(newDevice.capacity)
     ),
