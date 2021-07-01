@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getOrganizationMenu } from '@energyweb/origin-ui-organization-logic';
 import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
+import { getExchangeMenu } from '@energyweb/origin-ui-exchange-logic';
 import {
   getAccountMenu,
   useTopbarButtonList,
@@ -22,6 +23,7 @@ export const useAppContainerEffects = () => {
     isDeviceTabActive,
     isAccountTabActive,
     isAdminTabAcive,
+    isExchangeTabActive,
   } = useActiveMenuTab();
 
   const userHasOrg = Boolean(user?.organization?.id);
@@ -64,6 +66,12 @@ export const useAppContainerEffects = () => {
     showRegisterDevice: userIsDeviceManagerOrAdmin,
     showDeviceImport: userIsDeviceManagerOrAdmin,
   });
+  const exchangeMenu = getExchangeMenu({
+    t,
+    isOpen: isExchangeTabActive,
+    showSection: true,
+    showViewMarket: true,
+  });
   const accountMenu = getAccountMenu({
     t,
     isOpen: isAccountTabActive,
@@ -79,7 +87,13 @@ export const useAppContainerEffects = () => {
     showUsers: true,
   });
 
-  const menuSections = [deviceMenu, orgMenu, accountMenu, adminMenu];
+  const menuSections = [
+    deviceMenu,
+    exchangeMenu,
+    orgMenu,
+    accountMenu,
+    adminMenu,
+  ];
 
   return {
     topbarButtons,
