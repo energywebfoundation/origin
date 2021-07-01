@@ -1,22 +1,29 @@
-import { Tabs, Tab, Paper } from '@material-ui/core';
-import React, { FC } from 'react';
+import { Tabs, Tab, TabsProps } from '@material-ui/core';
+import React, { DetailedHTMLProps, FC, HTMLAttributes, ReactNode } from 'react';
 import { useListActionsBlockEffects } from './ListActionsBlock.effects';
-import { useStyles } from './ListActionsBlock.styles';
 
 export type ListAction = {
   name: string;
-  content: FC;
+  content: ReactNode;
 };
 
 export interface ListActionsBlockProps {
   actions: ListAction[];
+  tabsProps?: TabsProps;
+  wrapperProps?: DetailedHTMLProps<
+    HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >;
 }
 
-export const ListActionsBlock: FC<ListActionsBlockProps> = ({ actions }) => {
+export const ListActionsBlock: FC<ListActionsBlockProps> = ({
+  actions,
+  tabsProps,
+  wrapperProps,
+}) => {
   const { tabIndex, setTabIndex } = useListActionsBlockEffects();
-  const classes = useStyles();
   return (
-    <div>
+    <div {...wrapperProps}>
       <Tabs
         value={tabIndex}
         onChange={(ev, index) => {
@@ -26,14 +33,13 @@ export const ListActionsBlock: FC<ListActionsBlockProps> = ({ actions }) => {
         textColor="primary"
         variant="scrollable"
         scrollButtons="auto"
+        {...tabsProps}
       >
         {actions.map((action) => (
           <Tab key={action.name} label={action.name} />
         ))}
       </Tabs>
-      <Paper className={classes.contentWrapper}>
-        {actions[tabIndex].content}
-      </Paper>
+      {actions[tabIndex].content}
     </div>
   );
 };
