@@ -16,7 +16,7 @@ import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
   name: string;
-  label: string | null;
+  label: string;
   type?: 'text' | 'password';
   required?: boolean;
   frozen?: boolean;

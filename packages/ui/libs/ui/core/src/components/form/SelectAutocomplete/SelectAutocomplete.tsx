@@ -3,20 +3,22 @@ import { TextField, Autocomplete, Chip } from '@material-ui/core';
 import { useSelectAutocompleteEffects } from './SelectAutocomplete.effects';
 import { useStyles } from './SelectAutocomplete.styles';
 import { GenericFormField } from '../../../containers/GenericForm';
+import { FormSelectOption } from '../FormSelect';
 
-export interface SelectAutocompleteProps<ValueType> {
-  value: ValueType;
+export interface SelectAutocompleteProps {
+  value: FormSelectOption[];
   field: GenericFormField;
   onChange: (...event: any[]) => void;
   errorExists: boolean;
   errorText: string;
   variant?: 'standard' | 'outlined' | 'filled';
   disabled?: boolean;
-  dependentValue?: ValueType;
+  dependentValue?: FormSelectOption[];
+  className?: string;
 }
 
-export type TSelectAutocomplete = <ValueType>(
-  props: PropsWithChildren<SelectAutocompleteProps<ValueType>>
+export type TSelectAutocomplete = (
+  props: PropsWithChildren<SelectAutocompleteProps>
 ) => ReactElement;
 
 export const SelectAutocomplete: TSelectAutocomplete = ({
@@ -28,28 +30,25 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
   disabled,
   variant,
   dependentValue,
+  className,
 }) => {
-  const {
-    options,
-    textValue,
-    setTextValue,
-    singleChangeHandler,
-    multipleChangeHandler,
-  } = useSelectAutocompleteEffects(onChange, value, dependentValue, field);
+  const { options, textValue, setTextValue, changeHandler } =
+    useSelectAutocompleteEffects(onChange, value, dependentValue, field);
   const classes = useStyles();
-  // @should fix bug with nulling the parent
+
   return (
     <Autocomplete
-      multiple={field.multiple}
+      multiple
       filterSelectedOptions
       options={options}
-      className={classes.autocomplete}
+      className={`${classes.autocomplete} ${className}`}
       inputValue={textValue}
       getOptionLabel={(option) => option.label}
-      onChange={field.multiple ? multipleChangeHandler : singleChangeHandler}
+      onChange={changeHandler}
       getOptionSelected={(option, value) => option.value === value.value}
       getOptionDisabled={() => disabled}
       disabled={disabled}
+      value={value}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -64,8 +63,8 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
           {...field.textFieldProps}
         />
       )}
-      renderTags={(value, getTagProps) =>
-        value.map((option, index) => (
+      renderTags={(value, getTagProps) => {
+        return value.map((option, index) => (
           <Chip
             label={option.label}
             color="primary"
@@ -73,8 +72,8 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
             disabled={disabled}
             {...getTagProps({ index })}
           />
-        ))
-      }
+        ));
+      }}
     />
   );
 };
