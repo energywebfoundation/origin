@@ -1,7 +1,7 @@
 import {
   CreateCertificationRequestDTO,
   useCertificationRequestControllerCreate,
-} from '@energyweb/issuer-api-react-query-client';
+} from '@energyweb/issuer-irec-api-react-query-client';
 import { useAccountControllerGetAccount } from '@energyweb/exchange-react-query-client';
 import {
   NotificationTypeEnum,

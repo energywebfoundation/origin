@@ -1,4 +1,4 @@
-import { useCertificateControllerGetAggregateCertifiedEnergyByDeviceId } from '@energyweb/issuer-api-react-query-client';
+import { useCertificateControllerGetAggregateCertifiedEnergyByDeviceId } from '@energyweb/issuer-irec-api-react-query-client';
 import {
   OriginDeviceDTO,
   useDeviceRegistryControllerGet,

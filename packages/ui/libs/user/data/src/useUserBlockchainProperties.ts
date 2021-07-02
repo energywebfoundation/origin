@@ -1,4 +1,4 @@
-import { useBlockchainPropertiesControllerGet } from '@energyweb/issuer-api-react-query-client';
+import { useBlockchainPropertiesControllerGet } from '@energyweb/issuer-irec-api-react-query-client';
 import { useAuthIsAuthenticated } from '@energyweb/origin-ui-react-query-providers';
 
 export const useApiFetchUserBlockchainPropertiesData = () => {
