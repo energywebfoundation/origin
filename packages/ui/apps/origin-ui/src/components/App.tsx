@@ -11,6 +11,7 @@ import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 import { AuthApp, AdminApp, AccountApp } from '@energyweb/origin-ui-user-view';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
+import { CertificateApp } from '@energyweb/origin-ui-certificate-view';
 import { ExchangeApp } from '@energyweb/origin-ui-exchange-view';
 import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
@@ -43,6 +44,7 @@ export const App: FC<AppProps> = ({
       <Routes>
         <Route path="device/*" element={<DeviceApp />} />
         <Route path="exchange/*" element={<ExchangeApp />} />
+        <Route path="certificate/*" element={<CertificateApp />} />
         <Route path="organization/*" element={<OrganizationApp />} />
         <Route path="auth/*" element={<AuthApp />} />
         <Route path="account/*" element={<AccountApp />} />
