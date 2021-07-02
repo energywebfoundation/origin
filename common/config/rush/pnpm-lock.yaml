@@ -59,9 +59,9 @@ dependencies:
   '@rush-temp/issuer': file:projects/issuer.tgz_react@17.0.2
   '@rush-temp/issuer-api': file:projects/issuer-api.tgz_942fe617dc2cde4c906e97a909aaca4d
   '@rush-temp/issuer-api-client': file:projects/issuer-api-client.tgz_5a94b92a977e24ee7d8096311d2b36db
-  '@rush-temp/issuer-api-react-query-client': file:projects/issuer-api-react-query-client.tgz_49c57a5d89b848257c14896a3d269eec
   '@rush-temp/issuer-irec-api': file:projects/issuer-irec-api.tgz_94d1e2e31e9b0d599593bb09a5c05add
   '@rush-temp/issuer-irec-api-client': file:projects/issuer-irec-api-client.tgz_5a94b92a977e24ee7d8096311d2b36db
+  '@rush-temp/issuer-irec-api-react-query-client': file:projects/issuer-irec-api-react-query-client.tgz_49c57a5d89b848257c14896a3d269eec
   '@rush-temp/issuer-irec-api-wrapper': file:projects/issuer-irec-api-wrapper.tgz
   '@rush-temp/migrations': file:projects/migrations.tgz
   '@rush-temp/migrations-irec': file:projects/migrations-irec.tgz
@@ -5902,7 +5902,7 @@ packages:
       jest-haste-map: 26.6.2
       jest-regex-util: 26.0.0
       jest-util: 26.6.2
-      micromatch: 4.0.2
+      micromatch: 4.0.4
       pirates: 4.0.1
       slash: 3.0.0
       source-map: 0.6.1
@@ -39771,39 +39771,6 @@ packages:
       integrity: sha512-aBF+yvdpIew+uoPJgPnnbiT0RNL9fGsf+3nXsScbHhpPiwqV2s5ik/0K0N2skQheHXsKgNuo5B4jhaUiQLxtHQ==
       tarball: file:projects/issuer-api-client.tgz
     version: 0.0.0
-  file:projects/issuer-api-react-query-client.tgz_49c57a5d89b848257c14896a3d269eec:
-    dependencies:
-      '@nestjs/swagger': 4.8.0_f18e3db8227e96bdf566fec6d1f585c4
-      '@nestjs/testing': 7.6.15_@nestjs+platform-express@7.6.18
-      '@nestjs/typeorm': 7.1.5_ad629c3ce4400cde9fb32aa259f3d0d5
-      '@types/mocha': 8.2.2
-      '@types/node': 14.14.37
-      axios: 0.21.1
-      barrelsby: 2.2.0
-      json-to-pretty-yaml: 1.2.2
-      mocha: 8.3.2
-      orval: 5.0.0-alpha.9
-      prettier: 2.2.1
-      react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
-      ts-node: 9.1.1_typescript@4.1.5
-      typescript: 4.1.5
-    dev: false
-    id: file:projects/issuer-api-react-query-client.tgz
-    name: '@rush-temp/issuer-api-react-query-client'
-    peerDependencies:
-      '@nestjs/platform-express': '*'
-      class-transformer: '*'
-      class-validator: '*'
-      react: '*'
-      react-dom: '*'
-      reflect-metadata: '*'
-      rxjs: '*'
-      swagger-ui-express: '*'
-      typeorm: '*'
-    resolution:
-      integrity: sha512-7HZlb955dOVYwwZbFVbcfq6auntNFN409jrKdx5Zs/QXVTBHTtsR4aS5iKXEE0mXpgiYY/34xakNozkIequyFA==
-      tarball: file:projects/issuer-api-react-query-client.tgz
-    version: 0.0.0
   file:projects/issuer-api.tgz_942fe617dc2cde4c906e97a909aaca4d:
     dependencies:
       '@nestjs/cli': 7.6.0
@@ -39886,6 +39853,39 @@ packages:
     resolution:
       integrity: sha512-qKaJkrqV7RPSo8tvgDAjvMD9jBggUM28ilNnynbkZ735awjPQRrWI7wSn+w6dpMBrfIsL9VYXzVb0Je1Z23ljA==
       tarball: file:projects/issuer-irec-api-client.tgz
+    version: 0.0.0
+  file:projects/issuer-irec-api-react-query-client.tgz_49c57a5d89b848257c14896a3d269eec:
+    dependencies:
+      '@nestjs/swagger': 4.8.0_f18e3db8227e96bdf566fec6d1f585c4
+      '@nestjs/testing': 7.6.15_@nestjs+platform-express@7.6.18
+      '@nestjs/typeorm': 7.1.5_ad629c3ce4400cde9fb32aa259f3d0d5
+      '@types/mocha': 8.2.2
+      '@types/node': 14.14.37
+      axios: 0.21.1
+      barrelsby: 2.2.0
+      json-to-pretty-yaml: 1.2.2
+      mocha: 8.3.2
+      orval: 5.0.0-alpha.9
+      prettier: 2.2.1
+      react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
+      ts-node: 9.1.1_typescript@4.1.5
+      typescript: 4.1.5
+    dev: false
+    id: file:projects/issuer-irec-api-react-query-client.tgz
+    name: '@rush-temp/issuer-irec-api-react-query-client'
+    peerDependencies:
+      '@nestjs/platform-express': '*'
+      class-transformer: '*'
+      class-validator: '*'
+      react: '*'
+      react-dom: '*'
+      reflect-metadata: '*'
+      rxjs: '*'
+      swagger-ui-express: '*'
+      typeorm: '*'
+    resolution:
+      integrity: sha512-zTxwiLMKsfhkHXD3YN/1yFgIl9AK3cRfu0w0XQkRyCifsJcwpnEU9lN9UN8h0oQxtiTksGC+rpBVKLRvYSDp/Q==
+      tarball: file:projects/issuer-irec-api-react-query-client.tgz
     version: 0.0.0
   file:projects/issuer-irec-api-wrapper.tgz:
     dependencies:
@@ -40998,7 +40998,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-pZN1wP5bU61Yl85SCaiDd7PRmypEG8DwatjJ1TnlIuYA/YN6SppG5gX+TWPunxIu7qvUosIBf8v1WR3uENvwAw==
+      integrity: sha512-Vwz7hzr2V6eeTJucNVNbDz2Nc3J7o9AiJOl/74Zg65WrO4xQqeRVufqxq1BWznTMheRo9CvGLhNfd5+GdUfHHA==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -41136,9 +41136,9 @@ specifiers:
   '@rush-temp/issuer': file:./projects/issuer.tgz
   '@rush-temp/issuer-api': file:./projects/issuer-api.tgz
   '@rush-temp/issuer-api-client': file:./projects/issuer-api-client.tgz
-  '@rush-temp/issuer-api-react-query-client': file:./projects/issuer-api-react-query-client.tgz
   '@rush-temp/issuer-irec-api': file:./projects/issuer-irec-api.tgz
   '@rush-temp/issuer-irec-api-client': file:./projects/issuer-irec-api-client.tgz
+  '@rush-temp/issuer-irec-api-react-query-client': file:./projects/issuer-irec-api-react-query-client.tgz
   '@rush-temp/issuer-irec-api-wrapper': file:./projects/issuer-irec-api-wrapper.tgz
   '@rush-temp/migrations': file:./projects/migrations.tgz
   '@rush-temp/migrations-irec': file:./projects/migrations-irec.tgz

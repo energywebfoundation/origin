@@ -553,8 +553,8 @@
             "projectFolder": "packages/api-clients/react-query/origin-backend"
         },
         {
-            "packageName": "@energyweb/issuer-api-react-query-client",
-            "projectFolder": "packages/api-clients/react-query/issuer-api"
+            "packageName": "@energyweb/issuer-irec-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/issuer-irec-api"
         },
         {
             "packageName": "ui-packages",

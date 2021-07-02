@@ -2,7 +2,7 @@ import fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { entities, AppModule } from '@energyweb/issuer-api';
+import { entities, AppModule } from '@energyweb/issuer-irec-api';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Yaml = require('json-to-pretty-yaml');
@@ -29,8 +29,8 @@ export const generateSchema = async () => {
     app.setGlobalPrefix('api');
 
     const options = new DocumentBuilder()
-        .setTitle('Issuer API')
-        .setDescription('Swagger documentation for the Issuer API')
+        .setTitle('Issuer I-REC API')
+        .setDescription('Swagger documentation for the Issuer I-REC API')
         .setVersion('0.1')
         .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
         .build();
