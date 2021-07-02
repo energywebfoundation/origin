@@ -24,7 +24,7 @@ import { RegisterResponseDTO } from './registration-response.dto';
 import { RegistrationDTO } from './registration.dto';
 import { RegistrationService } from './registration.service';
 
-@ApiTags('irec_registration')
+@ApiTags('irec-registration')
 @ApiBearerAuth('access-token')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)

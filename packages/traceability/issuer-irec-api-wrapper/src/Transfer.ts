@@ -35,11 +35,6 @@ export class Transfer {
     @IsString()
     approver: string;
 
-    @Expose({ name: 'rqd_volume', toPlainOnly: true })
-    get total(): number {
-        return this.items.reduce((sum, v) => sum + v.amount, 0);
-    }
-
     @Expose({ name: 'reservation_items', toPlainOnly: true })
     @ValidateNested()
     items: ReservationItem[];

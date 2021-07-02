@@ -18,7 +18,7 @@ import { CreateConnectionDTO } from '../irec';
 import { ConnectionDTO } from './dto';
 import { CreateConnectionCommand, GetConnectionCommand } from './commands';
 
-@ApiTags('irec_connection')
+@ApiTags('irec-connection')
 @ApiBearerAuth('access-token')
 @UsePipes(ValidationPipe)
 @Controller('irec/connection')
