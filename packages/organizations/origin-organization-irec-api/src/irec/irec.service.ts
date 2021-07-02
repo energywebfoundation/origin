@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import {
     AccessTokens,
     Account,
+    AccountItem,
     AccountType,
     Beneficiary,
     BeneficiaryUpdateParams,
@@ -80,7 +81,7 @@ export interface IIrecService {
         issuerAccountCode: string
     ): Promise<Transaction>;
 
-    getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]>;
+    getCertificates(user: UserIdentifier): Promise<AccountItem[]>;
 
     approveDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 
@@ -250,12 +251,10 @@ export class IrecService implements IIrecService {
         return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
     }
 
-    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
-        return [];
-        // TODO: get certificates somehow
-        // NOTE: wait for IREC guys to implement cross ids between issue request and items
-        // const irecClient = await this.getIrecClient(user);
-        // return irecClient.account.getItems();
+    async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
+        const irecClient = await this.getIrecClient(user);
+        const tradeAccountCode = await this.getTradeAccountCode(user);
+        return irecClient.account.getItems(tradeAccountCode);
     }
 
     async approveDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {

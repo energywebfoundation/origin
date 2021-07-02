@@ -281,7 +281,7 @@ export class IRECAPIClient extends EventEmitter {
 
                 await validateOrReject(beneficiaryParams);
 
-                const url = `${beneficiaryManagementUrl}/${id}/edit`;
+                const url = `${beneficiaryManagementUrl}/${id}`;
 
                 const response = await this.axiosInstance.put<unknown>(
                     url,
@@ -482,13 +482,16 @@ export class IRECAPIClient extends EventEmitter {
     }
 
     public async redeem(redemption: Redemption): Promise<RedeemTransactionResult> {
+        const r =
+            redemption instanceof Redemption ? redemption : plainToClass(Redemption, redemption);
+
         await validateOrReject(redemption);
 
         const url = `${this.endPointUrl}/api/irec/redemption-management`;
 
         const response = await this.axiosInstance.post<{ transaction: any }>(
             url,
-            classToPlain(redemption),
+            classToPlain(r),
             this.config
         );
 
