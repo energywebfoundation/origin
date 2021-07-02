@@ -17,11 +17,11 @@ import {
 } from '@energyweb/origin-backend-utils';
 import { CertificateController } from '@energyweb/issuer-api';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { IssueWithStatus } from '@energyweb/issuer-irec-api-wrapper';
 
 import { GetIrecCertificatesToImportCommand } from './command';
+import { IrecAccountItemDto } from './dto/irec-account-item.dto';
 
-@ApiTags('certificates')
+@ApiTags('irec-certificates')
 @ApiBearerAuth('access-token')
 @Controller('/certificate')
 @UseInterceptors(ExceptionInterceptor)
@@ -31,12 +31,12 @@ export class IrecCertificateController extends CertificateController {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [IssueWithStatus],
+        type: [IrecAccountItemDto],
         description: 'Returns not imported IREC certificates'
     })
     public async getIrecCertificateToImport(
         @UserDecorator() user: ILoggedInUser
-    ): Promise<IssueWithStatus[]> {
+    ): Promise<IrecAccountItemDto[]> {
         return await this.commandBus.execute(new GetIrecCertificatesToImportCommand(user));
     }
 }

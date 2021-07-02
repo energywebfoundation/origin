@@ -1,8 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import moment from 'moment-timezone';
 import { IsNotEmpty, IsString } from 'class-validator';
-
-import { Product } from './Product';
 
 export class CodeName {
     @IsString()

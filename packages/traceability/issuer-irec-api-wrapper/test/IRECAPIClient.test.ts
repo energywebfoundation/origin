@@ -1,17 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
-import fs from 'fs';
-import moment from 'moment-timezone';
 
-import {
-    ApproveIssue,
-    FuelType,
-    DeviceType,
-    IRECAPIClient,
-    Product,
-    Redemption,
-    ReservationItem
-} from '../src';
+import { DeviceType, FuelType, IRECAPIClient, ReservationItem } from '../src';
 
 import { credentials, getClient, validateCodeName, validateOrganization } from './helpers';
 
