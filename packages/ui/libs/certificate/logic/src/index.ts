@@ -1,1 +1,1 @@
-export * from './lib/certificate-logic';
+export * from './menu';

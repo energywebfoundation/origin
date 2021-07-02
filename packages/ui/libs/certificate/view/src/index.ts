@@ -1,1 +1,1 @@
-export * from './lib/certificate-view';
+export * from './CertificateApp';
