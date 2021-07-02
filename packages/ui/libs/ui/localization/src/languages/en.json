@@ -15,6 +15,13 @@
         "register": "Register Device",
         "import": "Import Device"
       },
+      "certificate": {
+        "sectionTitle": "Certificate",
+        "exchangeInbox": "Exchange Inbox",
+        "blockchainInbox": "Blockchain Inbox",
+        "requests": "Requests",
+        "pending": "Pending"
+      },
       "exchange": {
         "sectionTitle": "Exchange",
         "viewMarket": "View Market"
