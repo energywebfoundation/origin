@@ -17,7 +17,7 @@ import {
     TransferService,
     DB_TABLE_PREFIX,
     testUtils,
-    RequestBulkClaimDTO
+    RequestBatchClaimDTO
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
@@ -319,7 +319,7 @@ describe('Deposits using deployed registry', () => {
         expect(claimDetails.claimData.beneficiary).to.equal(depositAddress);
     });
 
-    it('should bulk claim from the exchange', async () => {
+    it('should batch claim from the exchange', async () => {
         const tokenAmount = '10';
         const token2Amount = '5';
         const exchangeAddress = configService.get('EXCHANGE_WALLET_PUB');
@@ -327,7 +327,7 @@ describe('Deposits using deployed registry', () => {
         const assetId = await depositToExchangeAddress(tokenAmount);
         const asset2Id = await depositToExchangeAddress(token2Amount, token2Id);
 
-        const bulkClaim: RequestBulkClaimDTO = {
+        const batchClaim: RequestBatchClaimDTO = {
             assetIds: [assetId, asset2Id]
         };
 
@@ -338,8 +338,8 @@ describe('Deposits using deployed registry', () => {
         expect(balance2.toNumber()).to.be.least(Number(token2Amount));
 
         await request(app.getHttpServer())
-            .post('/transfer/claim/bulk')
-            .send(bulkClaim)
+            .post('/transfer/claim/batch')
+            .send(batchClaim)
             .expect(HttpStatus.CREATED);
 
         await sleep(5000);

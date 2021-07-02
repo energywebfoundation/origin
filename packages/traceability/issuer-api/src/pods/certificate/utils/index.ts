@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers';
-import { CertificateDTO } from '../certificate.dto';
+import { CertificateDTO } from '../dto/certificate.dto';
 import { Certificate } from '../certificate.entity';
 
 export const certificateToDto = async (

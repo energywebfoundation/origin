@@ -44,7 +44,9 @@ import {
     ImportIrecDeviceDTO,
     IrecDeviceDTO,
     PublicDeviceDTO,
-    UpdateDeviceDTO
+    UpdateDeviceDTO,
+    UpdateDeviceStateDTO,
+    DeviceState
 } from './dto';
 
 @ApiTags('device')
@@ -204,6 +206,28 @@ export class DeviceController {
         @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<DeviceDTO> {
         const device = await this.deviceService.importIrecDevice(loggedInUser, deviceToImport);
+
+        return plainToClass(DeviceDTO, device);
+    }
+
+    @Put('/:id/status')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Issuer, Role.Admin)
+    @ApiBody({ type: UpdateDeviceStateDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: DeviceDTO,
+        description: `Update device status`
+    })
+    @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
+    async updateDeviceStatus(
+        @Param('id') id: string,
+        @Body() { status }: UpdateDeviceStateDTO
+    ): Promise<DeviceDTO> {
+        const device =
+            status === DeviceState.Approved
+                ? await this.deviceService.approveDevice(id)
+                : await this.deviceService.rejectDevice(id);
 
         return plainToClass(DeviceDTO, device);
     }

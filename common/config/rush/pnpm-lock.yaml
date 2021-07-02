@@ -7,10 +7,10 @@ dependencies:
   '@emotion/react': 11.0.0_a358369399a29ca6c22d461cd854bd75
   '@emotion/styled': 11.0.0_44be8c82ff0878abed0bc536b3cc94df
   '@energyweb/energy-api-influxdb': 0.7.1_1ba596b413b1fee075d934d39aaa8f96
-  '@ethersproject/abi': 5.4.0
-  '@ethersproject/abstract-provider': 5.4.0
-  '@ethersproject/contracts': 5.4.0
-  '@ethersproject/providers': 5.4.0
+  '@ethersproject/abi': 5.3.1
+  '@ethersproject/abstract-provider': 5.3.0
+  '@ethersproject/contracts': 5.3.0
+  '@ethersproject/providers': 5.3.1
   '@hookform/resolvers': 2.4.0_react-hook-form@7.4.1
   '@jest/globals': 27.0.5
   '@material-ui/core': 5.0.0-alpha.29_4ab85874b31dff7706e0e8b1afe0d037
@@ -96,7 +96,7 @@ dependencies:
   '@svgr/webpack': 5.5.0
   '@testing-library/jest-dom': 5.12.0
   '@testing-library/react': 11.1.2_react-dom@17.0.2+react@17.0.2
-  '@typechain/ethers-v5': 7.0.1_08a8f4144633c11d466aab832a663e35
+  '@typechain/ethers-v5': 7.0.1_b9058ef33b6924c2b981182665d35726
   '@types/bcryptjs': 2.4.2
   '@types/bn.js': 5.1.0
   '@types/body-parser': 1.19.0
@@ -4203,6 +4203,20 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Cqktk+hSIckwP/W8O47Eef60VwmoSC/L3lY0+dIBhQPCNn9E4V7rwmm2aFrNRRDJfFlGuZ1khkQUOc3oBX+niw==
+  /@ethersproject/abi/5.3.1:
+    dependencies:
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/bignumber': 5.4.0
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/constants': 5.4.0
+      '@ethersproject/hash': 5.4.0
+      '@ethersproject/keccak256': 5.4.0
+      '@ethersproject/logger': 5.4.0
+      '@ethersproject/properties': 5.4.0
+      '@ethersproject/strings': 5.4.0
+    dev: false
+    resolution:
+      integrity: sha512-F98FWTJG7nWWAQ4DcV6R0cSlrj67MWK3ylahuFbzkumem5cLWg1p7fZ3vIdRoS1c7TEf55Lvyx0w7ICR47IImw==
   /@ethersproject/abi/5.4.0:
     dependencies:
       '@ethersproject/address': 5.4.0
@@ -4241,6 +4255,18 @@ packages:
     dev: false
     resolution:
       integrity: sha512-X9fMkqpeu9ayC3JyBkeeZhn35P4xQkpGX/l+FrxDtEW9tybf/UWXSMi8bGThpPtfJ6q6U2LDetXSpSwK4TfYQQ==
+  /@ethersproject/abstract-provider/5.3.0:
+    dependencies:
+      '@ethersproject/bignumber': 5.4.0
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/logger': 5.4.0
+      '@ethersproject/networks': 5.4.0
+      '@ethersproject/properties': 5.4.0
+      '@ethersproject/transactions': 5.4.0
+      '@ethersproject/web': 5.4.0
+    dev: false
+    resolution:
+      integrity: sha512-1+MLhGP1GwxBDBNwMWVmhCsvKwh4gK7oIfOrmlmePNeskg1NhIrYssraJBieaFNHUYfKEd/1DjiVZMw8Qu5Cxw==
   /@ethersproject/abstract-provider/5.4.0:
     dependencies:
       '@ethersproject/bignumber': 5.4.0
@@ -4373,6 +4399,21 @@ packages:
     dev: false
     resolution:
       integrity: sha512-FTUUd/6x00dYL2VufE2VowZ7h3mAyBfCQMGwI3tKDIWka+C0CunllFiKrlYCdiHFuVeMotR65dIcnzbLn72MCw==
+  /@ethersproject/contracts/5.3.0:
+    dependencies:
+      '@ethersproject/abi': 5.4.0
+      '@ethersproject/abstract-provider': 5.4.0
+      '@ethersproject/abstract-signer': 5.4.0
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/bignumber': 5.4.0
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/constants': 5.4.0
+      '@ethersproject/logger': 5.4.0
+      '@ethersproject/properties': 5.4.0
+      '@ethersproject/transactions': 5.4.0
+    dev: false
+    resolution:
+      integrity: sha512-eDyQ8ltykvyQqnGZxb/c1e0OnEtzqXhNNC4BX8nhYBCaoBrYYuK/1fLmyEvc5+XUMoxNhwpYkoSSwvPLci7/Zg==
   /@ethersproject/contracts/5.4.0:
     dependencies:
       '@ethersproject/abi': 5.4.0
@@ -4568,6 +4609,30 @@ packages:
     dev: false
     resolution:
       integrity: sha512-eJ94z2tgPaUgUmxwd3BVkIzkgkbNIkY6wRPVas04LVaBTycObQbgj794aaUu2bfk7+Bn2B/gjUZtJW1ybxh9/A==
+  /@ethersproject/providers/5.3.1:
+    dependencies:
+      '@ethersproject/abstract-provider': 5.4.0
+      '@ethersproject/abstract-signer': 5.4.0
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/basex': 5.4.0
+      '@ethersproject/bignumber': 5.4.0
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/constants': 5.4.0
+      '@ethersproject/hash': 5.4.0
+      '@ethersproject/logger': 5.4.0
+      '@ethersproject/networks': 5.4.0
+      '@ethersproject/properties': 5.4.0
+      '@ethersproject/random': 5.4.0
+      '@ethersproject/rlp': 5.4.0
+      '@ethersproject/sha2': 5.4.0
+      '@ethersproject/strings': 5.4.0
+      '@ethersproject/transactions': 5.4.0
+      '@ethersproject/web': 5.4.0
+      bech32: 1.1.4
+      ws: 7.4.6
+    dev: false
+    resolution:
+      integrity: sha512-HC63vENTrur6/JKEhcQbA8PRDj1FAesdpX98IW+xAAo3EAkf70ou5fMIA3KCGzJDLNTeYA4C2Bonz849tVLekg==
   /@ethersproject/providers/5.4.0:
     dependencies:
       '@ethersproject/abstract-provider': 5.4.0
@@ -10786,12 +10851,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-2OFOi9p+QOrcIMySEnr+WlOiKaFZ1bY56jA98YyECewJHfhPFWUBZEhc4nWGRT0ahK08Vus9+gcuBX8QIpCIIw==
-  /@typechain/ethers-v5/7.0.1_08a8f4144633c11d466aab832a663e35:
+  /@typechain/ethers-v5/7.0.1_44718edb0b03ec2e0bc750e7571c1e31:
     dependencies:
-      '@ethersproject/abi': 5.4.0
-      '@ethersproject/providers': 5.4.0
+      '@ethersproject/abi': 5.3.1
+      '@ethersproject/providers': 5.3.1
       ethers: 5.4.0
-      typechain: 5.1.1
+      typechain: 5.1.1_typescript@4.3.4
+      typescript: 4.3.4
     dev: false
     peerDependencies:
       '@ethersproject/abi': ^5.0.0
@@ -10802,13 +10868,12 @@ packages:
       typescript: '>=4.0.0'
     resolution:
       integrity: sha512-mXEJ7LG0pOYO+MRPkHtbf30Ey9X2KAsU0wkeoVvjQIn7iAY6tB3k3s+82bbmJAUMyENbQ04RDOZit36CgSG6Gg==
-  /@typechain/ethers-v5/7.0.1_507f9a4f7a9c4a05a6891552904e3b57:
+  /@typechain/ethers-v5/7.0.1_b9058ef33b6924c2b981182665d35726:
     dependencies:
-      '@ethersproject/abi': 5.4.0
-      '@ethersproject/providers': 5.4.0
+      '@ethersproject/abi': 5.3.1
+      '@ethersproject/providers': 5.3.1
       ethers: 5.4.0
-      typechain: 5.1.1_typescript@4.3.4
-      typescript: 4.3.4
+      typechain: 5.1.1
     dev: false
     peerDependencies:
       '@ethersproject/abi': ^5.0.0
@@ -39466,10 +39531,10 @@ packages:
     version: 0.0.0
   file:projects/exchange-io-erc1888.tgz_ba29e1fb7bd7509881c6534b579d5a20:
     dependencies:
-      '@ethersproject/abi': 5.4.0
-      '@ethersproject/abstract-provider': 5.4.0
-      '@ethersproject/contracts': 5.4.0
-      '@ethersproject/providers': 5.4.0
+      '@ethersproject/abi': 5.3.1
+      '@ethersproject/abstract-provider': 5.3.0
+      '@ethersproject/contracts': 5.3.0
+      '@ethersproject/providers': 5.3.1
       '@nestjs/cli': 7.6.0
       '@nestjs/common': 7.6.18_fbc9982997ba253269f25bdc348cb93c
       '@nestjs/config': 0.6.3_ad92c204621b18a69181da190abca121
@@ -39507,7 +39572,7 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-t6ZpXPdV0RL5yoPCtcoJ9XhBPlPTbHoMB95H3EIFSFY9a62BkxkaPmi071InMeo8raWjkSqAwz3u//KvCviMVA==
+      integrity: sha512-IDvz9ui9qNSmNJQyIp462ZHSo44BuayoRDOov0a/ysBzbBhY5OPEvsHtOISWre6RiyTyG5XY4K/9grVTFsQcnQ==
       tarball: file:projects/exchange-io-erc1888.tgz
     version: 0.0.0
   file:projects/exchange-irec-client.tgz_5a94b92a977e24ee7d8096311d2b36db:
@@ -39655,16 +39720,16 @@ packages:
     version: 0.0.0
   file:projects/exchange-token-account.tgz_react@17.0.2:
     dependencies:
-      '@ethersproject/abi': 5.4.0
+      '@ethersproject/abi': 5.3.1
       '@ethersproject/abstract-provider': 5.0.10
-      '@ethersproject/contracts': 5.4.0
-      '@ethersproject/providers': 5.4.0
+      '@ethersproject/contracts': 5.3.0
+      '@ethersproject/providers': 5.3.1
       '@openzeppelin/cli': 2.8.2
       '@openzeppelin/contracts': 4.1.0
       '@openzeppelin/contracts-ethereum-package': 2.5.0_@openzeppelin+upgrades@2.8.0
       '@openzeppelin/contracts-upgradeable': 4.1.0
       '@openzeppelin/upgrades': 2.8.0
-      '@typechain/ethers-v5': 7.0.1_507f9a4f7a9c4a05a6891552904e3b57
+      '@typechain/ethers-v5': 7.0.1_44718edb0b03ec2e0bc750e7571c1e31
       '@types/mocha': 8.2.2
       '@types/node': 14.17.4
       chai: 4.3.0
@@ -39681,7 +39746,7 @@ packages:
     peerDependencies:
       react: '*'
     resolution:
-      integrity: sha512-0OZGaehuWiiYzkdvJ/3ZLp8Goxz1cJnZ3Y9TjDg0gZJYEuqZ9tuTF6mjUmhxc6aXhJ+xkCFqg+APPt6Jn9c5+w==
+      integrity: sha512-qyYD57AxsHv9ShMo7k84/BB2IIRH940qOSk4c7OUh329t4y7SQaV1yoA9Q/RFeuyqrRPagsmNfxeyTboEnpe7A==
       tarball: file:projects/exchange-token-account.tgz
     version: 0.0.0
   file:projects/exchange.tgz_4b9e71779303fd8f563f2e6697ed22f3:
@@ -39966,17 +40031,17 @@ packages:
     version: 0.0.0
   file:projects/issuer.tgz_react@17.0.2:
     dependencies:
-      '@ethersproject/abi': 5.4.0
+      '@ethersproject/abi': 5.3.1
       '@ethersproject/abstract-provider': 5.0.10
-      '@ethersproject/contracts': 5.4.0
-      '@ethersproject/providers': 5.4.0
+      '@ethersproject/contracts': 5.3.0
+      '@ethersproject/providers': 5.3.1
       '@openzeppelin/cli': 2.8.2
       '@openzeppelin/contracts': 4.1.0
       '@openzeppelin/contracts-ethereum-package': 2.5.0_@openzeppelin+upgrades@2.8.0
       '@openzeppelin/contracts-upgradeable': 4.1.0
       '@openzeppelin/truffle-upgrades': 1.7.1_truffle@5.3.12
       '@openzeppelin/upgrades': 2.8.0
-      '@typechain/ethers-v5': 7.0.1_507f9a4f7a9c4a05a6891552904e3b57
+      '@typechain/ethers-v5': 7.0.1_44718edb0b03ec2e0bc750e7571c1e31
       '@types/chai': 4.2.15
       '@types/dotenv': 6.1.1
       '@types/mocha': 8.2.2
@@ -40007,7 +40072,7 @@ packages:
     peerDependencies:
       react: '*'
     resolution:
-      integrity: sha512-qq0/Y4mKHNBNEKmCVvSTDLJUGSyVmbA874mo9dzIGe5dbN2IRtQQ74PXK7X4AI6ka1GrEweeqhclkFUB7TuyIQ==
+      integrity: sha512-MD4dubG+4zG64kpKd9gMggkeOhwPX637Rwk6XcL590cg6JAhzKnN70M6q167ol6wNMH9eKPnuhwSQUGcu5sU/A==
       tarball: file:projects/issuer.tgz
     version: 0.0.0
   file:projects/migrations-irec.tgz:
@@ -41084,10 +41149,10 @@ specifiers:
   '@emotion/react': 11.0.0
   '@emotion/styled': 11.0.0
   '@energyweb/energy-api-influxdb': 0.7.1
-  '@ethersproject/abi': 5.4.0
-  '@ethersproject/abstract-provider': 5.4.0
-  '@ethersproject/contracts': 5.4.0
-  '@ethersproject/providers': 5.4.0
+  '@ethersproject/abi': 5.3.1
+  '@ethersproject/abstract-provider': 5.3.0
+  '@ethersproject/contracts': 5.3.0
+  '@ethersproject/providers': 5.3.1
   '@hookform/resolvers': ^2.3.0
   '@jest/globals': 27.0.5
   '@material-ui/core': 5.0.0-alpha.29
