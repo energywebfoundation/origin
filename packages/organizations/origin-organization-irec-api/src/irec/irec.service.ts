@@ -16,7 +16,8 @@ import {
     IRECAPIClient,
     IssuanceStatus,
     Issue,
-    IssueWithStatus
+    IssueWithStatus,
+    Transaction
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 
@@ -61,6 +62,8 @@ export interface IIrecService {
 
     getTradeAccountCode(user: UserIdentifier): Promise<string>;
 
+    getIssueAccountCode(user: UserIdentifier): Promise<string>;
+
     createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus>;
 
     updateIssueRequest(user: UserIdentifier, code: string, issue: Issue): Promise<IssueWithStatus>;
@@ -68,6 +71,20 @@ export interface IIrecService {
     getIssueRequest(user: UserIdentifier, code: string): Promise<IssueWithStatus>;
 
     uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]>;
+
+    verifyIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void>;
+
+    approveIssueRequest(
+        user: UserIdentifier,
+        issueRequestCode: string,
+        issuerAccountCode: string
+    ): Promise<Transaction>;
+
+    getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]>;
+
+    approveDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
+
+    rejectDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 }
 
 @Injectable()
@@ -175,6 +192,11 @@ export class IrecService implements IIrecService {
         return accounts.find((account: Account) => account.type === AccountType.Trade)?.code || '';
     }
 
+    async getIssueAccountCode(user: UserIdentifier): Promise<string> {
+        const accounts = await this.getAccountInfo(user);
+        return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
+    }
+
     async createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {
         const irecClient = await this.getIrecClient(user);
         const irecIssue: IssueWithStatus = await irecClient.issue.create(issue);
@@ -212,5 +234,55 @@ export class IrecService implements IIrecService {
     ): Promise<string[]> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.file.upload(files);
+    }
+
+    async verifyIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void> {
+        const irecClient = await this.getIrecClient(user);
+        await irecClient.issue.verify(issueRequestCode);
+    }
+
+    async approveIssueRequest(
+        user: UserIdentifier,
+        issueRequestCode: string,
+        issuerAccountCode: string
+    ): Promise<Transaction> {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
+    }
+
+    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
+        return [];
+        // TODO: get certificates somehow
+        // NOTE: wait for IREC guys to implement cross ids between issue request and items
+        // const irecClient = await this.getIrecClient(user);
+        // return irecClient.account.getItems();
+    }
+
+    async approveDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
+        const irecClient = await this.getIrecClient(user);
+        const device = await irecClient.device.get(code);
+
+        if (device.status !== DeviceState.InProgress) {
+            throw new Error('To approve IREC device its state have to be In-Progress');
+        }
+
+        await irecClient.device.verify(code);
+        await irecClient.device.approve(code);
+
+        device.status = DeviceState.Approved;
+        return device;
+    }
+
+    async rejectDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {
+        const irecClient = await this.getIrecClient(user);
+        const device = await irecClient.device.get(code);
+
+        if (device.status !== DeviceState.InProgress) {
+            throw new Error('To reject IREC device its state have to be In-Progress');
+        }
+
+        await irecClient.device.reject(code);
+        device.status = DeviceState.Rejected;
+        return device;
     }
 }

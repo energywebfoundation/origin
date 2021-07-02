@@ -6,7 +6,7 @@ export class CertificationRequestFieldsIrec {
     userId: string;
 
     @ApiProperty({ type: String, required: false })
-    irecIssueId?: string;
+    irecIssueRequestId?: string;
 }
 
 export class IrecCertificationRequestDTO extends CertificationRequestFieldsIrec {

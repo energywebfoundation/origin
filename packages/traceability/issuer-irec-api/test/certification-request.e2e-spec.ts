@@ -21,7 +21,7 @@ const certificationRequestTestData = {
     energy: '1000000',
     fromTime: moment().subtract(2, 'month').unix(),
     toTime: moment().subtract(1, 'month').unix(),
-    deviceId: 'ABC-123',
+    deviceId: 'mockDeviceCode',
     files: ['test.pdf', 'test2.pdf']
 };
 
@@ -135,7 +135,6 @@ describe('Certification Request tests', () => {
             .put(`/irec/certification-request/${certificationRequestId}/approve`)
             .set({ 'test-user': TestUser.Issuer })
             .expect(HttpStatus.OK);
-
         expect(success).to.be.true;
 
         const {
@@ -144,7 +143,6 @@ describe('Certification Request tests', () => {
             .get(`/irec/certification-request/${certificationRequestId}`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
-
         expect(newCertificateId).to.be.above(0);
 
         await sleep(1000);

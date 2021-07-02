@@ -1,11 +1,4 @@
 import {
-    ActiveUserGuard,
-    ExceptionInterceptor,
-    Roles,
-    RolesGuard,
-    UserDecorator
-} from '@energyweb/origin-backend-utils';
-import {
     Body,
     Controller,
     Get,
@@ -19,17 +12,16 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-    ILoggedInUser,
-    ISuccessResponse,
-    ResponseFailure,
-    Role,
-    ValidateDeviceOwnershipQuery
-} from '@energyweb/origin-backend-core';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import {
-    ApproveCertificationRequestCommand,
+    ActiveUserGuard,
+    ExceptionInterceptor,
+    Roles,
+    RolesGuard,
+    UserDecorator
+} from '@energyweb/origin-backend-utils';
+import {
     CertificateBoundToCertificationRequestCommand,
     CreateCertificationRequestDTO,
     GetAllCertificationRequestsQuery,
@@ -39,10 +31,20 @@ import {
     SuccessResponseDTO,
     ValidateCertificationRequestCommand
 } from '@energyweb/issuer-api';
-import { CreateIrecCertificationRequestCommand } from './commands';
+import {
+    ApproveIrecCertificationRequestCommand,
+    CreateIrecCertificationRequestCommand
+} from './commands';
 import { FullCertificationRequestDTO } from './full-certification-request.dto';
+import {
+    ILoggedInUser,
+    ISuccessResponse,
+    ResponseFailure,
+    Role,
+    ValidateDeviceOwnershipQuery
+} from '@energyweb/origin-backend-core';
 
-@ApiTags('certification-requests')
+@ApiTags('irec-certification-requests')
 @ApiBearerAuth('access-token')
 @Controller('irec/certification-request')
 @UseInterceptors(ExceptionInterceptor)
@@ -147,7 +149,7 @@ export class CertificationRequestController {
         description: 'Approves a Certification Request'
     })
     public async approve(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(new ApproveCertificationRequestCommand(id));
+        return this.commandBus.execute(new ApproveIrecCertificationRequestCommand(id));
     }
 
     @Put('/:id/revoke')

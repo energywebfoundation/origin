@@ -1,5 +1,5 @@
-export * from './bulk-claim-certificates.command';
-export * from './bulk-claim-certificates.dto';
+export * from './batch-claim-certificates.command';
+export * from './batch-claim-certificates.dto';
 export * from './claim-certificate.command';
 export * from './claim-certificate.dto';
 export * from './issue-certificate.command';
