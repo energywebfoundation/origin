@@ -5,7 +5,7 @@ import {
   AccountBalanceDTO,
   AccountDTO,
 } from '@energyweb/exchange-react-query-client';
-import { BlockchainPropertiesDTO } from '@energyweb/issuer-api-react-query-client';
+import { BlockchainPropertiesDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { providers, Signer } from 'ethers';
 
 type BlockchainProviderProps = {

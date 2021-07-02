@@ -19,7 +19,7 @@ import {
   getAccountBalanceControllerGetQueryKey,
   getAccountControllerGetAccountQueryKey,
 } from '@energyweb/exchange-react-query-client';
-import { BlockchainPropertiesDTO } from '@energyweb/issuer-api-react-query-client';
+import { BlockchainPropertiesDTO } from '@energyweb/issuer-irec-api-react-query-client';
 
 const checkBlockchainNetwork = (
   user: UserDTO,

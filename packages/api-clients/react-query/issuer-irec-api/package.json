@@ -1,5 +1,5 @@
 {
-    "name": "@energyweb/issuer-api-react-query-client",
+    "name": "@energyweb/issuer-irec-api-react-query-client",
     "version": "0.1.0",
     "description": "React Query Client library interacting with the Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/exchange#readme",
@@ -28,7 +28,7 @@
     },
     "devDependencies": {
         "typescript": "4.1.5",
-        "@energyweb/issuer-api": "0.2.0",
+        "@energyweb/issuer-irec-api": "0.1.0",
         "@nestjs/swagger": "4.8.0",
         "@nestjs/testing": "7.6.15",
         "@nestjs/typeorm": "7.1.5",

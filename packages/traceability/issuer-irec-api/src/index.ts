@@ -20,12 +20,13 @@ export { BlockchainPropertiesService } from '@energyweb/issuer-api/dist/js/src/p
 export { AppModule, providers } from './app.module';
 export * from './pods/certification-request';
 
+export const usedEntities = [...OriginBackendEntities, ...OrganizationEntities];
 export const entities = [
     Certificate,
     CertificationRequest,
     IrecCertificationRequest,
-    BlockchainProperties
+    BlockchainProperties,
+    ...usedEntities
 ];
-export const usedEntities = [...OriginBackendEntities, ...OrganizationEntities];
 
 export const modules = [CertificateModule, CertificationRequestModule, BlockchainPropertiesModule];

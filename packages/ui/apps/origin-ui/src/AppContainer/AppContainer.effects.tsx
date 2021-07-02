@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { getOrganizationMenu } from '@energyweb/origin-ui-organization-logic';
 import { getDeviceMenu } from '@energyweb/origin-ui-device-logic';
 import { getExchangeMenu } from '@energyweb/origin-ui-exchange-logic';
+import { getCertificateMenu } from '@energyweb/origin-ui-certificate-logic';
 import {
   getAccountMenu,
+  getAdminMenu,
   useTopbarButtonList,
 } from '@energyweb/origin-ui-user-logic';
-import { getAdminMenu } from '@energyweb/origin-ui-user-logic';
 
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
@@ -24,6 +25,7 @@ export const useAppContainerEffects = () => {
     isAccountTabActive,
     isAdminTabAcive,
     isExchangeTabActive,
+    isCertificateTabActive,
   } = useActiveMenuTab();
 
   const userHasOrg = Boolean(user?.organization?.id);
@@ -66,6 +68,15 @@ export const useAppContainerEffects = () => {
     showRegisterDevice: userIsDeviceManagerOrAdmin,
     showDeviceImport: userIsDeviceManagerOrAdmin,
   });
+  const certificateMenu = getCertificateMenu({
+    t,
+    isOpen: isCertificateTabActive,
+    showSection: true,
+    showExchangeInbox: true,
+    showBlockchainInbox: true,
+    showRequests: true,
+    showPending: true,
+  });
   const exchangeMenu = getExchangeMenu({
     t,
     isOpen: isExchangeTabActive,
@@ -89,6 +100,7 @@ export const useAppContainerEffects = () => {
 
   const menuSections = [
     deviceMenu,
+    certificateMenu,
     exchangeMenu,
     orgMenu,
     accountMenu,
