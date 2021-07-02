@@ -1,3 +1,4 @@
+import { GridProps } from '@material-ui/core';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { GenericItemsListProps, ListAction } from '../../components/list';
 import { ActionsEnum } from './ItemsListWithActions.reducer';
@@ -20,6 +21,15 @@ export interface ItemsListWithActionsProps<ContainerId, ItemId> {
   actions: ListAction[];
   listTitle?: string;
   selectAllText?: string;
+  checkboxes?: GenericItemsListProps<ContainerId, ItemId>['checkboxes'];
+  pagination?: GenericItemsListProps<ContainerId, ItemId>['pagination'];
+  pageSize?: GenericItemsListProps<ContainerId, ItemId>['pageSize'];
+  paginationProps?: GenericItemsListProps<
+    ContainerId,
+    ItemId
+  >['paginationProps'];
+  itemsGridProps?: GridProps;
+  actionsGridProps?: GridProps;
 }
 
 export type TItemsListWithActions = <ContainerId, ItemId>(

@@ -9,19 +9,32 @@ export const ItemsListWithActions: TItemsListWithActions = ({
   actions,
   listTitle,
   selectAllText,
+  checkboxes,
+  pagination,
+  pageSize,
+  paginationProps,
+  itemsGridProps,
+  actionsGridProps,
 }) => {
-  const listProps = useItemsListWithActionsEffects({ content });
+  const { allSelected, selectAllHandler, listContainers } =
+    useItemsListWithActionsEffects({ content });
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6} {...itemsGridProps}>
         <GenericItemsList
           listTitle={listTitle}
           selectAllText={selectAllText}
-          {...listProps}
+          allSelected={allSelected}
+          selectAllHandler={selectAllHandler}
+          listContainers={listContainers}
+          checkboxes={checkboxes}
+          pagination={pagination}
+          pageSize={pageSize}
+          paginationProps={paginationProps}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6} {...actionsGridProps}>
         <ListActionsBlock actions={actions} />
       </Grid>
     </Grid>
