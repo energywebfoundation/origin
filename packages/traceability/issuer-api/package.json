@@ -47,7 +47,7 @@
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/passport": "7.1.6",
         "@nestjs/schedule": "0.4.3",
-        "@nestjs/swagger": "4.8.1",
+        "@nestjs/swagger": "4.8.2",
         "@nestjs/typeorm": "7.1.5",
         "class-validator": "0.13.1",
         "ethers": "5.3.1",
