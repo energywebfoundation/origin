@@ -40,7 +40,7 @@
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.18",
         "@nestjs/cqrs": "7.0.1",
-        "@nestjs/passport": "7.1.5",
+        "@nestjs/passport": "7.1.6",
         "@nestjs/typeorm": "7.1.5",
         "ethers": "5.3.1",
         "moment": "2.29.1",
