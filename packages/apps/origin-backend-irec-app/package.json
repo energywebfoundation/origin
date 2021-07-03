@@ -56,7 +56,7 @@
         "@nestjs/schedule": "0.4.3",
         "@nestjs/swagger": "4.8.1",
         "@nestjs/typeorm": "7.1.5",
-        "@nestjs/passport": "7.1.5",
+        "@nestjs/passport": "7.1.6",
         "body-parser": "1.19.0",
         "class-validator": "0.13.1",
         "cors": "2.8.5",
