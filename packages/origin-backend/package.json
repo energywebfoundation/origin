@@ -89,7 +89,7 @@
         "@types/uuid": "8.3.1",
         "@types/websocket": "1.0.3",
         "@types/ws": "7.4.6",
-        "jest": "27.0.5",
+        "jest": "27.0.6",
         "nodemailer": "6.6.2",
         "polly-js": "1.8.2",
         "supertest": "6.1.3",
