@@ -55,7 +55,7 @@
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
         "dotenv": "10.0.0",
-        "ethers": "5.3.1",
+        "ethers": "5.4.1",
         "express": "4.17.1",
         "moment": "2.29.1",
         "multer": "1.4.2",
