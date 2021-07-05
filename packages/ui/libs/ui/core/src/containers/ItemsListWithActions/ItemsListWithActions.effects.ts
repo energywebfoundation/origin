@@ -4,10 +4,7 @@ import {
   initialState,
   reducer,
 } from './ItemsListWithActions.reducer';
-import {
-  TItemsListWithActionsContainers,
-  TUseItemsListWithActionsEffects,
-} from './ItemsListWithActions.types';
+import { TUseItemsListWithActionsEffects } from './ItemsListWithActions.types';
 import { pick, pickBy } from 'lodash';
 
 export const useItemsListWithActionsEffects: TUseItemsListWithActionsEffects =
