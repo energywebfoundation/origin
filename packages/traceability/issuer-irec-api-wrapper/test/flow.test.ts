@@ -105,7 +105,7 @@ describe('API flows', () => {
         expect(device.capacity).to.equal(1000);
         expect(device.name).to.equal('DeviceZZZ');
         expect(device.status).to.equal(DeviceState.Draft);
-    }).timeout(10000);
+    }).timeout(15000);
 
     it('should pass create and approve issue flow', async () => {
         const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
@@ -174,7 +174,7 @@ describe('API flows', () => {
         expect(issue.status).to.equal(IssuanceStatus.Issued);
         issuerIssue = await issuerClient.issue.get(issueCode);
         expect(issuerIssue.status).to.equal(IssuanceStatus.Issued);
-    }).timeout(10000);
+    }).timeout(15000);
 
     it('should create and update beneficiary', async () => {
         const beneficiaryParams: BeneficiaryCreateParams = {
@@ -190,7 +190,7 @@ describe('API flows', () => {
         const beneficiaries: Beneficiary[] = await participantClient.beneficiary.getAll();
 
         const newBeneficiary = beneficiaries.find((b) => b.name === beneficiaryParams.name);
-        expect(newBeneficiary).to.be.not.equal(undefined);
+        expect(newBeneficiary).to.not.equal(undefined);
         expect(newBeneficiary.id).to.be.a('number');
         expect(newBeneficiary.active).to.equal(false);
         let beneficiary = await participantClient.beneficiary.get(newBeneficiary.id);
@@ -204,5 +204,5 @@ describe('API flows', () => {
         const beneficiary2 = await participantClient.beneficiary.get(newBeneficiary.id);
         expect(beneficiary.active).to.equal(true);
         expect(beneficiary).to.deep.equal(beneficiary2);
-    }).timeout(10000);
+    }).timeout(15000);
 });

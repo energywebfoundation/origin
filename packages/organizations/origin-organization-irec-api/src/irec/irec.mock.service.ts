@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import {
     AccessTokens,
     Account,
+    AccountItem,
     AccountType,
     Beneficiary,
     BeneficiaryUpdateParams,
@@ -234,7 +235,7 @@ export class IrecMockService implements IIrecService {
         };
     }
 
-    async getCertificates(user: UserIdentifier): Promise<IssueWithStatus[]> {
+    async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
         return [];
     }
 

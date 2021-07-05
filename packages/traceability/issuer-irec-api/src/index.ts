@@ -21,13 +21,14 @@ export { AppModule, providers } from './app.module';
 export * from './pods/certification-request';
 export * from './pods/certificate';
 
+export const usedEntities = [...OriginBackendEntities, ...OrganizationEntities];
 export const entities = [
     Certificate,
     CertificationRequest,
     IrecCertificationRequest,
     BlockchainProperties,
-    IrecCertificate
+    IrecCertificate,
+    ...usedEntities
 ];
-export const usedEntities = [...OriginBackendEntities, ...OrganizationEntities];
 
 export const modules = [CertificateModule, CertificationRequestModule, BlockchainPropertiesModule];

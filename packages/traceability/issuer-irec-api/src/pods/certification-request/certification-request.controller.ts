@@ -44,9 +44,9 @@ import {
     ValidateDeviceOwnershipQuery
 } from '@energyweb/origin-backend-core';
 
-@ApiTags('certification-requests')
+@ApiTags('irec-certification-requests')
 @ApiBearerAuth('access-token')
-@Controller('irec/certification-request')
+@Controller('/irec/certification-request')
 @UseInterceptors(ExceptionInterceptor)
 export class CertificationRequestController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
