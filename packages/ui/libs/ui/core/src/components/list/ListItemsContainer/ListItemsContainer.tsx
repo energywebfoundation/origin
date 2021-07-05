@@ -1,5 +1,11 @@
 import React from 'react';
-import { Checkbox, List, ListItem, ListItemIcon } from '@material-ui/core';
+import {
+  Checkbox,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemProps,
+} from '@material-ui/core';
 import {
   ListItemComponent,
   ListItemComponentProps,
@@ -13,6 +19,8 @@ export interface ListItemsContainerProps<ContainerId, ItemId> {
   isChecked?: boolean;
   handleContainerCheck?: (id: ContainerId) => void;
   checkboxes?: boolean;
+  containerListItemProps?: ListItemProps;
+  itemListItemProps?: ListItemProps;
 }
 
 type TListItemsContainer = <ContainerId, ItemId>(
@@ -26,11 +34,13 @@ export const ListItemsContainer: TListItemsContainer = ({
   containerHeader,
   containerItems,
   checkboxes,
+  containerListItemProps,
+  itemListItemProps,
 }) => {
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
-      <ListItem className={classes.header}>
+      <ListItem className={classes.header} {...containerListItemProps}>
         {checkboxes && (
           <ListItemIcon>
             <Checkbox
@@ -47,6 +57,7 @@ export const ListItemsContainer: TListItemsContainer = ({
           <ListItemComponent
             key={`container-${id}-item-${item.id}`}
             checkboxes={checkboxes}
+            listItemProps={itemListItemProps}
             {...item}
           />
         ))}

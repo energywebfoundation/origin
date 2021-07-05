@@ -10,12 +10,12 @@ export default {
 } as Meta;
 
 export const WithoutCheckboxes = (
-  args: Omit<ItemsListWithActionsProps<number, number>, 'content'>
+  args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
 ) => {
-  const content: ItemsListWithActionsProps<number, string>['content'] =
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
     new Map();
 
-  content.set(1, {
+  containers.set(1, {
     containerComponent: <Typography>First container</Typography>,
     items: [
       {
@@ -26,7 +26,7 @@ export const WithoutCheckboxes = (
       },
     ],
   });
-  content.set(2, {
+  containers.set(2, {
     containerComponent: <Typography>Second container</Typography>,
     items: [
       {
@@ -44,7 +44,7 @@ export const WithoutCheckboxes = (
     ],
   });
 
-  return <ItemsListWithActions content={content} {...args} />;
+  return <ItemsListWithActions containers={containers} {...args} />;
 };
 
 WithoutCheckboxes.args = {
@@ -57,12 +57,12 @@ WithoutCheckboxes.args = {
 };
 
 export const WithCheckboxes = (
-  args: Omit<ItemsListWithActionsProps<number, number>, 'content'>
+  args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
 ) => {
-  const content: ItemsListWithActionsProps<number, string>['content'] =
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
     new Map();
 
-  content.set(1, {
+  containers.set(1, {
     containerComponent: <Typography>First container</Typography>,
     items: [
       {
@@ -73,7 +73,7 @@ export const WithCheckboxes = (
       },
     ],
   });
-  content.set(2, {
+  containers.set(2, {
     containerComponent: <Typography>Second container</Typography>,
     items: [
       {
@@ -91,7 +91,7 @@ export const WithCheckboxes = (
     ],
   });
 
-  return <ItemsListWithActions content={content} {...args} />;
+  return <ItemsListWithActions containers={containers} {...args} />;
 };
 
 WithCheckboxes.args = {
@@ -105,12 +105,12 @@ WithCheckboxes.args = {
 };
 
 export const WithPagination = (
-  args: Omit<ItemsListWithActionsProps<number, number>, 'content'>
+  args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
 ) => {
-  const content: ItemsListWithActionsProps<number, string>['content'] =
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
     new Map();
 
-  content.set(1, {
+  containers.set(1, {
     containerComponent: <Typography>First container</Typography>,
     items: [
       {
@@ -121,7 +121,7 @@ export const WithPagination = (
       },
     ],
   });
-  content.set(2, {
+  containers.set(2, {
     containerComponent: <Typography>Second container</Typography>,
     items: [
       {
@@ -139,7 +139,7 @@ export const WithPagination = (
     ],
   });
 
-  return <ItemsListWithActions content={content} {...args} />;
+  return <ItemsListWithActions containers={containers} {...args} />;
 };
 
 WithPagination.args = {

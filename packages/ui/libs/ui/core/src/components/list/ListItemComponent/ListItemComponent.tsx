@@ -1,5 +1,10 @@
 import React from 'react';
-import { Checkbox, ListItem, ListItemIcon } from '@material-ui/core';
+import {
+  Checkbox,
+  ListItem,
+  ListItemIcon,
+  ListItemProps,
+} from '@material-ui/core';
 import { useStyles } from './ListItemComponent.styles';
 
 export interface ListItemComponentProps<Id> {
@@ -8,6 +13,7 @@ export interface ListItemComponentProps<Id> {
   itemChecked?: boolean;
   handleItemCheck?: (id: Id) => void;
   checkboxes?: boolean;
+  listItemProps?: ListItemProps;
 }
 
 type TListItemsContainer = <Id>(
@@ -20,10 +26,11 @@ export const ListItemComponent: TListItemsContainer = ({
   handleItemCheck,
   itemContent,
   checkboxes,
+  listItemProps,
 }) => {
   const classes = useStyles();
   return (
-    <ListItem className={classes.listItem}>
+    <ListItem className={classes.listItem} {...listItemProps}>
       {checkboxes && (
         <ListItemIcon>
           <Checkbox

@@ -1,4 +1,4 @@
-import { GridProps } from '@material-ui/core';
+import { GridProps, ListItemProps } from '@material-ui/core';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { GenericItemsListProps, ListAction } from '../../components/list';
 import { ActionsEnum } from './ItemsListWithActions.reducer';
@@ -8,18 +8,21 @@ export type TItemsListWithActionsItem<Id> = {
   id: Id;
   component: ReactNode;
 };
-export type TItemsListWithActionsContainer<ContainerId, ItemId> = Map<
+export type TItemsListWithActionsContainers<ContainerId, ItemId> = Map<
   ContainerId,
   {
     containerComponent: ReactNode;
     items: TItemsListWithActionsItem<ItemId>[];
+    containerListItemProps?: ListItemProps;
+    itemListItemProps?: ListItemProps;
   }
 >;
 
 export interface ItemsListWithActionsProps<ContainerId, ItemId> {
-  content: TItemsListWithActionsContainer<ContainerId, ItemId>;
+  containers: TItemsListWithActionsContainers<ContainerId, ItemId>;
   actions: ListAction[];
   listTitle?: string;
+  listTitleProps?: GenericItemsListProps<ContainerId, ItemId>['titleProps'];
   selectAllText?: string;
   checkboxes?: GenericItemsListProps<ContainerId, ItemId>['checkboxes'];
   pagination?: GenericItemsListProps<ContainerId, ItemId>['pagination'];
@@ -39,7 +42,7 @@ export type TItemsListWithActions = <ContainerId, ItemId>(
 
 // Effects types
 type UseItemsListWithActionsEffectsArgs<ContainerId, ItemId> = {
-  content: TItemsListWithActionsContainer<ContainerId, ItemId>;
+  containers: TItemsListWithActionsContainers<ContainerId, ItemId>;
 };
 
 type UseItemsListWithActionsEffectsReturnType<ContainerId, ItemId> = Omit<
