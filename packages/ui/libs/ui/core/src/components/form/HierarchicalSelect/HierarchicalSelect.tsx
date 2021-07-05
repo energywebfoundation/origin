@@ -44,9 +44,11 @@ export const HierarchicalSelect: THierarchicalSelect = memo(
                 field.hierarchicalOptions[level]
               );
               const showInput = inputDisplayer(value as string, idx);
+              // @ts-ignore
               return (
                 showInput && (
                   <SelectAutocomplete
+                    // @ts-ignore
                     value={value}
                     field={{
                       ...field,
