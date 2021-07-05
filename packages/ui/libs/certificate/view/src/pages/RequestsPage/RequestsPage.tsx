@@ -1,5 +1,10 @@
-import React, { FC } from 'react';
+import { TableComponent } from '@energyweb/origin-ui-core';
+import React from 'react';
+import { FC } from 'react';
+import { useRequestsPageEffects } from './RequestsPage.effects';
 
 export const RequestsPage: FC = () => {
-  return <div>RequestsPage</div>;
+  const { tableData } = useRequestsPageEffects();
+
+  return <TableComponent {...tableData} />;
 };
