@@ -4,8 +4,12 @@ import {
   ListAction,
 } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
-import { ListItemContent, ListItemHeader, SellAction } from '../../containers';
-import { WithdrawAction } from '../../containers/list/WithdrawAction';
+import {
+  ListItemContent,
+  ListItemHeader,
+  SellAction,
+  WithdrawAction,
+} from '../../containers';
 
 export const ExchangeInboxPage: FC = () => {
   const actions: ListAction[] = [
