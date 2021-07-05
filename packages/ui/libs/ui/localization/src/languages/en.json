@@ -380,6 +380,21 @@
         }
       }
     },
+    "certificate": {
+      "requests": {
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "deviceType": "Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved",
+        "pending": "Pending"
+      }
+    },
     "user": {
       "register": {
         "title": "Title",
