@@ -20,7 +20,7 @@ export class CheckDeviceStateTask {
         const devices = await this.deviceService.findAll();
         for (const device of devices) {
             const irecDevice = await this.irecService.getDevice(device.ownerId, device.code);
-            if (irecDevice.status !== device.status) {
+            if (irecDevice && irecDevice.status !== device.status) {
                 await this.deviceService.updateStatus(device.id, irecDevice.status);
 
                 this.eventBus.publish(new DeviceStatusChangedEvent(device, irecDevice.status));
