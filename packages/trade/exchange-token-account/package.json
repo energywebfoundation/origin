@@ -33,9 +33,9 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@ethersproject/abi": "5.3.1",
-        "@ethersproject/contracts": "5.3.0",
-        "@ethersproject/providers": "5.3.1",
+        "@ethersproject/abi": "5.4.0",
+        "@ethersproject/contracts": "5.4.0",
+        "@ethersproject/providers": "5.4.0",
         "chai": "4.3.0",
         "ethers": "5.4.0"
     },

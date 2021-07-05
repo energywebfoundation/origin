@@ -30,6 +30,5 @@ export const entities = [
     IrecCertificate,
     ...usedEntities
 ];
-export const usedEntities = [...OriginBackendEntities, ...OrganizationEntities];
 
 export const modules = [CertificateModule, CertificationRequestModule, BlockchainPropertiesModule];
