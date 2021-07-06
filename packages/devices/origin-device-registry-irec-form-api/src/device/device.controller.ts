@@ -54,7 +54,7 @@ import { DeviceDTO } from './dto/device.dto';
 import { SmartMeterReadDTO } from './dto/smart-meter-readings.dto';
 import { UpdateDeviceStatusDTO } from './dto/update-device-status.dto';
 
-@ApiTags('irec-device')
+@ApiTags('device')
 @ApiBearerAuth('access-token')
 @Controller('/Device')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
