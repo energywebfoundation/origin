@@ -22,7 +22,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
     ? requests.map((request) => {
         const status = request.approved
           ? t('certificate.requests.approved')
-          : t('certificate.requests.pedning');
+          : t('certificate.requests.pending');
         const device = devices.find(
           (device) => request.deviceId === device.externalRegistryId
         );
