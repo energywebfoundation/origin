@@ -7,7 +7,7 @@ export type TUseLogicCertificateRequestsArgs = {
   devices: ComposedPublicDevice[];
   requests: FullCertificationRequestDTO[];
   loading: boolean;
-  allDeviceTypes: CodeNameDTO[];
+  allFuelTypes: CodeNameDTO[];
 };
 
 export type TFormatCertificateRequestsReturnData = TableRowData<
