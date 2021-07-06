@@ -24,10 +24,10 @@ import {
 } from './commands';
 import { CreateBeneficiaryDTO } from './dto/create-beneficiary.dto';
 
-@ApiTags('irec_beneficiary')
+@ApiTags('irec-beneficiary')
 @ApiBearerAuth('access-token')
 @UsePipes(ValidationPipe)
-@Controller('irec/beneficiary')
+@Controller('/irec/beneficiary')
 export class BeneficiaryController {
     constructor(private readonly commandBus: CommandBus) {}
 
