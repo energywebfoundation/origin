@@ -8,7 +8,10 @@ import { useRequestCertificatesLogic } from '@energyweb/origin-ui-device-logic';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const useRequestCertificateFormEffects = (device: ComposedDevice) => {
+export const useRequestCertificateFormEffects = (
+  device: ComposedDevice,
+  closeForm: () => void
+) => {
   const { t } = useTranslation();
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
@@ -16,6 +19,7 @@ export const useRequestCertificateFormEffects = (device: ComposedDevice) => {
   const { requestHandler, isLoading } = useRequestCertificatesHandler({
     files,
     deviceId: device.externalRegistryId,
+    closeForm,
   });
   const formProps = {
     ...formLogic,

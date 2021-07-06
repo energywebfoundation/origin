@@ -49,7 +49,12 @@ export const MyDeviceCardsList: React.FC<MyDeviceCardsListProps> = ({
           PaperProps: { className: classes.drawerPaper },
         }}
       >
-        {selectedDevice && <RequestCertificateForm device={selectedDevice} />}
+        {selectedDevice && (
+          <RequestCertificateForm
+            closeForm={closeSidebar}
+            device={selectedDevice}
+          />
+        )}
       </ResponsiveSidebar>
     </Grid>
   );
