@@ -11,7 +11,7 @@ export const createPrimaryContactDetailsForm: TCreatePrimaryContactDetailsForms 
       primaryContactOrganizationName: '',
       primaryContactOrganizationAddress: '',
       primaryContactOrganizationPostalCode: '',
-      primaryContactOrganizationCountry: '',
+      primaryContactOrganizationCountry: [],
       subsidiaries: '',
       primaryContactName: '',
       primaryContactEmail: '',

@@ -1,4 +1,5 @@
 import {
+  FormSelectOption,
   MultiStepFormItem,
   MultiStepFormProps,
 } from '@energyweb/origin-ui-core';
@@ -10,7 +11,7 @@ export type OrganizationInfoFormValues = {
   businessType: string;
   city: string;
   zipCode: string;
-  country: string;
+  country: FormSelectOption[];
   tradeRegistryCompanyNumber: string;
   vatNumber: string;
 };
@@ -22,7 +23,7 @@ export type TCreateOrgInfoForm = (
 export type SignatoryInfoFormValues = {
   signatoryAddress: string;
   signatoryCity: string;
-  signatoryCountry: string;
+  signatoryCountry: FormSelectOption[];
   signatoryEmail: string;
   signatoryFullName: string;
   signatoryTelephone: string;
