@@ -149,31 +149,39 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         let result: ContractTransaction;
 
-        const certificate = await new Certificate(
-            Number(transfer.asset.tokenId),
-            this.blockchainProperties
-        ).sync();
+        try {
+            const certificate = await new Certificate(
+                Number(transfer.asset.tokenId),
+                this.blockchainProperties
+            ).sync();
 
-        if (transfer.direction === TransferDirection.Withdrawal) {
-            result = await certificate.transfer(transfer.address, BigNumber.from(transfer.amount));
-        } else if (transfer.direction === TransferDirection.Claim) {
-            result = await certificate.claim(
-                { beneficiary: transfer.address },
-                BigNumber.from(transfer.amount)
-            );
-        } else {
-            throw Error(
-                `Unable to process transfer with direction ${
-                    TransferDirection[transfer.direction]
-                }.`
-            );
+            if (transfer.direction === TransferDirection.Withdrawal) {
+                result = await certificate.transfer(
+                    transfer.address,
+                    BigNumber.from(transfer.amount)
+                );
+            } else if (transfer.direction === TransferDirection.Claim) {
+                result = await certificate.claim(
+                    { beneficiary: transfer.address },
+                    BigNumber.from(transfer.amount)
+                );
+            } else {
+                throw Error(
+                    `Unable to process transfer with direction ${
+                        TransferDirection[transfer.direction]
+                    }.`
+                );
+            }
+
+            await this.transferService.setAsUnconfirmed(id, result.hash);
+
+            const receipt = await result.wait();
+
+            await this.handleConfirmation(transfer, receipt);
+        } catch (error) {
+            this.logger.error(`[Transfer ${id}] Error processing transfer: ${error.message}`);
+            this.logger.error(`[Transfer ${id}] Error trace: ${JSON.stringify(error)}`);
         }
-
-        await this.transferService.setAsUnconfirmed(id, result.hash);
-
-        const receipt = await result.wait();
-
-        await this.handleConfirmation(transfer, receipt);
     }
 
     private async processAcceptedWithdrawals() {
