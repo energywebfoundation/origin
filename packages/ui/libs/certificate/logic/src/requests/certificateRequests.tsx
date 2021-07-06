@@ -20,15 +20,15 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
   const { t } = useTranslation();
   return requests.length > 0 && devices.length > 0
     ? requests.map((request) => {
-        const status = request.approved
+        const status = request?.approved
           ? t('certificate.requests.approved')
           : t('certificate.requests.pending');
         const device = devices.find(
-          (device) => request.deviceId === device.externalRegistryId
+          (device) => request?.deviceId === device.externalRegistryId
         );
 
         return {
-          id: request.id.toString(),
+          id: request?.id?.toString(),
           facility: device?.name,
           location: `${device?.region}, ${device?.subregion}`,
           gridOperator: device?.gridOperator,
@@ -37,7 +37,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
               ?.name || '',
           capacity: PowerFormatter.format(device?.capacity),
           meterRead: EnergyFormatter.format(request?.energy),
-          files: request?.files.map((fileId) => (
+          files: request?.files?.map((fileId) => (
             <div key={fileId}>
               <a
                 style={{ cursor: 'pointer', textDecoration: 'underline' }}
@@ -51,8 +51,8 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
           )),
           timeFrame: (
             <div style={{ whiteSpace: 'nowrap' }}>
-              {formatDate(request.fromTime * 1000)} -{' '}
-              {formatDate(request.toTime * 1000)}
+              {formatDate(request?.fromTime * 1000)} -{' '}
+              {formatDate(request?.toTime * 1000)}
             </div>
           ),
           status,

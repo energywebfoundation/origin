@@ -11,7 +11,7 @@ export const downloadFileHandler = async (id: string, name: string) => {
     const response = await downloadFunc(id);
 
     if (response) {
-      const imageType = response?.headers['content-type'];
+      const imageType = response.headers['content-type'];
       const blob = new Blob(
         [Buffer.from(response.data.data as unknown as string)],
         {
