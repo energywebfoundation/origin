@@ -15,12 +15,6 @@ export const useStyles = makeStyles({
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  totalPrice: {
     margin: '20px 0',
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
   },
 });

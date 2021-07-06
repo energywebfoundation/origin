@@ -1,16 +1,26 @@
 import { Button, Paper, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
 import { SelectedItem } from '../SelectedItem';
-import { useStyles } from './DepositAction.styles';
+import { useStyles } from './CertificateActionContent.styles';
 
-export const DepositAction: FC = () => {
+export interface CertificateActionContentProps {
+  title: string;
+  buttonText: string;
+}
+
+export const CertificateActionContent: FC<CertificateActionContentProps> = ({
+  title,
+  buttonText,
+  children,
+}) => {
   const classes = useStyles();
   const hasCertificates = false;
+  const amountSelected = hasCertificates ? 1 : 0;
 
   return (
     <Paper className={classes.paper}>
       <Typography gutterBottom variant="h6">
-        Selected for Deposit
+        {title}
       </Typography>
       {hasCertificates ? (
         <SelectedItem />
@@ -23,8 +33,9 @@ export const DepositAction: FC = () => {
         <Typography color="textSecondary">Total volume</Typography>
         <Typography>0 MWh</Typography>
       </div>
+      {children}
       <Button fullWidth disabled color="primary" variant="contained">
-        Deposit 0 Certificate(s)
+        {`${buttonText} ${amountSelected} Certificate(s)`}
       </Button>
     </Paper>
   );
