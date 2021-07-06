@@ -13,6 +13,8 @@ import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-a
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
+import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
+import { LoggedInUser } from '@energyweb/origin-backend-core';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateIrecCertificationRequestHandler
@@ -20,17 +22,18 @@ export class CreateIrecCertificationRequestHandler
 {
     constructor(
         @InjectRepository(CertificationRequest)
-        readonly repository: Repository<CertificationRequest>,
-        readonly blockchainPropertiesService: BlockchainPropertiesService,
+        private readonly repository: Repository<CertificationRequest>,
+        private readonly blockchainPropertiesService: BlockchainPropertiesService,
 
         @InjectRepository(IrecCertificationRequest)
-        readonly irecRepository: Repository<IrecCertificationRequest>,
-        readonly eventBus: EventBus,
-        readonly commandBus: CommandBus,
+        private readonly irecRepository: Repository<IrecCertificationRequest>,
+        private readonly eventBus: EventBus,
+        private readonly commandBus: CommandBus,
         @Inject(IREC_SERVICE)
-        readonly irecService: IrecService,
-        readonly userService: UserService,
-        readonly fileService: FileService
+        private readonly irecService: IrecService,
+        private readonly userService: UserService,
+        private readonly fileService: FileService,
+        private readonly deviceService: DeviceService
     ) {}
 
     async execute(
@@ -54,12 +57,15 @@ export class CreateIrecCertificationRequestHandler
         });
         await this.irecRepository.save(irecCertificationRequest);
 
-        await this.createIrecIssuanceRequest(certificationRequest);
+        await this.createIrecIssuanceRequest(certificationRequest, params.user);
 
         return { ...certificationRequest, userId: irecCertificationRequest.userId };
     }
 
-    async createIrecIssuanceRequest(request: CertificationRequest): Promise<void> {
+    async createIrecIssuanceRequest(
+        request: CertificationRequest,
+        user: LoggedInUser
+    ): Promise<void> {
         const irecCertificationRequest = await this.irecRepository.findOne({
             certificationRequestId: request.id
         });
@@ -67,10 +73,10 @@ export class CreateIrecCertificationRequestHandler
 
         const platformAdmin = await this.userService.getPlatformAdmin();
 
-        let fileIds: string[];
+        let fileIds: string[] = [];
         if (request.files?.length) {
             const files = await Promise.all(
-                request.files.map((fileId) => this.fileService.get(fileId))
+                request.files.map((fileId) => this.fileService.get(fileId, user))
             );
             fileIds = await this.irecService.uploadFiles(
                 userId,
@@ -78,7 +84,7 @@ export class CreateIrecCertificationRequestHandler
             );
         }
 
-        const irecDevice = await this.irecService.getDevice(userId, request.deviceId);
+        const irecDevice = await this.deviceService.findOne(request.deviceId);
         const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
         const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
             device: request.deviceId,
