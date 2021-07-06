@@ -350,7 +350,9 @@
           "energy": "Amount of energy in MW"
         },
         "notifications": {
-          "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates."
+          "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates.",
+          "certificateRequestSuccess": "Certificate has been successfully requested",
+          "certificateRequestError": "Error while requesting certificate"
         }
       },
       "map": {
@@ -378,6 +380,21 @@
           "importSuccess": "Device has been successfully imported",
           "importError": "Error while importing device"
         }
+      }
+    },
+    "certificate": {
+      "requests": {
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "fuelType": "Fuel Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved",
+        "pending": "Pending"
       }
     },
     "user": {

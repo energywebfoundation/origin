@@ -21,11 +21,13 @@ type FormValuesTypes = {
 type TUseRequestCertificatesHandlerArgs = {
   files: UploadedFile[];
   deviceId: string;
+  closeForm: () => void;
 };
 
 export const useRequestCertificatesHandler = ({
   files,
   deviceId,
+  closeForm,
 }: TUseRequestCertificatesHandlerArgs) => {
   const { t } = useTranslation();
   const { data, isLoading } = useAccountControllerGetAccount({
@@ -59,7 +61,24 @@ export const useRequestCertificatesHandler = ({
       files: files.map((f) => f.uploadedName),
       isPrivate: false,
     };
-    mutate({ data: formattedValues });
+    mutate(
+      { data: formattedValues },
+      {
+        onSuccess: () => {
+          showNotification(
+            t('device.my.notifications.certificateRequestSuccess'),
+            NotificationTypeEnum.Success
+          );
+          closeForm();
+        },
+        onError: () => {
+          showNotification(
+            t('device.my.notifications.certificateRequestError'),
+            NotificationTypeEnum.Error
+          );
+        },
+      }
+    );
   };
 
   return { isLoading, requestHandler };
