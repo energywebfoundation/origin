@@ -33,7 +33,7 @@ export class CheckCertificationRequestStateTask {
                 certificateRequest.irecIssueId
             );
 
-            if (irecIssue.status === IssuanceStatus.Approved) {
+            if (irecIssue && irecIssue.status === IssuanceStatus.Approved) {
                 await this.commandBus.execute(
                     new ApproveCertificationRequestCommand(certificateRequest.id)
                 );
