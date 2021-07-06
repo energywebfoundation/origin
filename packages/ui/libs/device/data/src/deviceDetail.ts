@@ -1,4 +1,4 @@
-import { useCertificateControllerGetAggregateCertifiedEnergyByDeviceId } from '@energyweb/issuer-irec-api-react-query-client';
+import { useIrecCertificateControllerGetAggregateCertifiedEnergyByDeviceId } from '@energyweb/issuer-irec-api-react-query-client';
 import {
   OriginDeviceDTO,
   useDeviceRegistryControllerGet,
@@ -12,7 +12,7 @@ const useCertifiedAmountForDevice = (
   const start = new Date(new Date().getFullYear(), 0, 1).toISOString();
   const end = new Date(new Date().getFullYear(), 11, 31).toISOString();
   const { data: certifiedAmount, isLoading: isCertifiedLoading } =
-    useCertificateControllerGetAggregateCertifiedEnergyByDeviceId(
+    useIrecCertificateControllerGetAggregateCertifiedEnergyByDeviceId(
       id,
       { start, end },
       {

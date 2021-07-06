@@ -11,6 +11,7 @@ import {
     CertificationRequest,
     SyncCertificationRequestsTask
 } from '@energyweb/issuer-api';
+import { DeviceModule } from '@energyweb/origin-device-registry-irec-local-api';
 
 import { CertificateModule } from '../certificate';
 import { Handlers } from './handlers';
@@ -28,7 +29,8 @@ import { CheckCertificationRequestStateTask } from './cron';
         UserModule,
         FileModule,
         ConnectionModule,
-        IrecModule
+        IrecModule,
+        DeviceModule
     ],
     controllers: [CertificationRequestController],
     providers: [...Handlers, SyncCertificationRequestsTask, CheckCertificationRequestStateTask],
