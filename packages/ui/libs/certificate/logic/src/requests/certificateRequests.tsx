@@ -24,7 +24,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
           ? t('certificate.requests.approved')
           : t('certificate.requests.pedning');
         const device = devices.find(
-          (device) => request.deviceId === device.code
+          (device) => request.deviceId === device.externalRegistryId
         );
 
         return {

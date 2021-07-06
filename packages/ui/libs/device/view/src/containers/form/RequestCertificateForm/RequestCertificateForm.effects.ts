@@ -15,7 +15,7 @@ export const useRequestCertificateFormEffects = (device: ComposedDevice) => {
   const formLogic = useRequestCertificatesLogic();
   const { requestHandler, isLoading } = useRequestCertificatesHandler({
     files,
-    deviceId: device.id,
+    deviceId: device.externalRegistryId,
   });
   const formProps = {
     ...formLogic,
