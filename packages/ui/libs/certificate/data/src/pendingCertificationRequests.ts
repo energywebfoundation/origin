@@ -27,26 +27,13 @@ export const useApiHandlersForPendingRequests = () => {
   const certificationRequestsKey =
     getCertificationRequestControllerGetAllQueryKey();
 
-  const filterRequest = (id: FullCertificationRequestDTO['id']) => {
-    queryClient.setQueryData<FullCertificationRequestDTO[]>(
-      certificationRequestsKey,
-      (oldRequests) => {
-        const filteredRequests = oldRequests.filter(
-          (request) => request.id !== id
-        );
-
-        return filteredRequests;
-      }
-    );
-  };
-
   const { mutate: approve } = useCertificationRequestControllerApprove({
-    onMutate: async ({ id }) => filterRequest(id),
     onSuccess: () => {
       showNotification(
         t('certificate.pending.notifications.approveSuccess'),
         NotificationTypeEnum.Success
       );
+      queryClient.invalidateQueries(certificationRequestsKey);
     },
     onError: (error) => {
       console.log(error);
@@ -55,18 +42,15 @@ export const useApiHandlersForPendingRequests = () => {
         NotificationTypeEnum.Error
       );
     },
-    onSettled: () => {
-      queryClient.invalidateQueries(certificationRequestsKey);
-    },
   });
 
   const { mutate: revoke } = useCertificationRequestControllerRevoke({
-    onMutate: async ({ id }) => filterRequest(id),
     onSuccess: () => {
       showNotification(
         t('certificate.pending.notifications.revokeSuccess'),
         NotificationTypeEnum.Success
       );
+      queryClient.invalidateQueries(certificationRequestsKey);
     },
     onError: (error) => {
       console.log(error);
@@ -74,9 +58,6 @@ export const useApiHandlersForPendingRequests = () => {
         t('organization.invitations.notifications.revokeError'),
         NotificationTypeEnum.Error
       );
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(certificationRequestsKey);
     },
   });
 
