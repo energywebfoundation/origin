@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import {
   BlockchainInboxPage,
   ExchangeInboxPage,
+  ClaimsReportPage,
   PendingPage,
   RequestsPage,
 } from './pages';
@@ -13,6 +14,7 @@ export const CertificateApp: FC = () => {
     <Routes>
       <Route path="exchange-inbox" element={<ExchangeInboxPage />} />
       <Route path="blockchain-inbox" element={<BlockchainInboxPage />} />
+      <Route path="claims-report" element={<ClaimsReportPage />} />
       <Route path="requests" element={<RequestsPage />} />
       <Route path="pending" element={<PendingPage />} />
 

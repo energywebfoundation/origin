@@ -74,6 +74,7 @@ export const useAppContainerEffects = () => {
     showSection: true,
     showExchangeInbox: true,
     showBlockchainInbox: true,
+    showClaimsReport: true,
     showRequests: true,
     showPending: true,
   });
