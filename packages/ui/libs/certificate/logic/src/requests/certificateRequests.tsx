@@ -29,7 +29,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
         );
 
         return {
-          id: request.id,
+          id: request?.id,
           facility: device?.name,
           location: `${device?.region}, ${device?.subregion}`,
           gridOperator: device?.gridOperator,
