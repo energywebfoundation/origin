@@ -385,7 +385,7 @@
         "facility": "Facility",
         "gridOperator": "Grid operator",
         "location": "Region, province",
-        "deviceType": "Type",
+        "fuelType": "Fuel Type",
         "capacity": "Capacity",
         "meterRead": "Meter Read",
         "files": "Evidence files",
@@ -393,6 +393,16 @@
         "status": "Status",
         "approved": "Approved",
         "pending": "Pending"
+      },
+      "pending": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "notifications": {
+          "approveSuccess": "Certificate approved",
+          "approveError": "Error while approving certificate",
+          "revokeSuccess": "Certificate revoked",
+          "revokeError": "Error while revoking certificate"
+        }
       }
     },
     "user": {
