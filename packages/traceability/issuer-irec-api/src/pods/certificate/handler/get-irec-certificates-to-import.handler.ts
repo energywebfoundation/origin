@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Inject } from '@nestjs/common';
 import { GetAllCertificationRequestsQuery } from '@energyweb/issuer-api';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
-import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 
 import { GetIrecCertificatesToImportCommand } from '../command';
 import { IrecCertificate } from '../irec-certificate.entity';
