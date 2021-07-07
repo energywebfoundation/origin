@@ -15,6 +15,7 @@ import {
 const formatRequestsData: TFormatCertificateRequestsData = ({
   devices,
   requests,
+  actions,
   allFuelTypes,
 }) => {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
         );
 
         return {
-          id: request?.id?.toString(),
+          id: request?.id,
           facility: device?.name,
           location: `${device?.region}, ${device?.subregion}`,
           gridOperator: device?.gridOperator,
@@ -56,6 +57,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
             </div>
           ),
           status,
+          actions,
         };
       })
     : ([] as TFormatCertificateRequestsReturnData);
@@ -64,6 +66,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
 export const useLogicCertificateRequests: TUseLogicCertificateRequests = ({
   devices,
   requests,
+  actions,
   loading,
   allFuelTypes,
 }) => {
@@ -83,9 +86,10 @@ export const useLogicCertificateRequests: TUseLogicCertificateRequests = ({
       files: t('certificate.requests.files'),
       timeFrame: t('certificate.requests.timeFrame'),
       status: t('certificate.requests.status'),
+      actions: '',
     },
     pageSize: 10,
     loading: loading,
-    data: formatRequestsData({ devices, requests, allFuelTypes }),
+    data: formatRequestsData({ devices, requests, actions, allFuelTypes }),
   };
 };
