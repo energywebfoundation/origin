@@ -9,14 +9,13 @@ export const useRequestsPageEffects = () => {
   const { myDevices: devices, isLoading: areDevicesLoading } =
     useApiMyDevices();
 
-  const { allTypes: allFuelTypes, isLoading: isDeviceTypesloading } =
+  const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
     useAllFuelTypes();
 
   const { requests, isLoading: allRequestsLoading } =
     useCertificationRequests();
 
-  const loading =
-    isDeviceTypesloading || areDevicesLoading || allRequestsLoading;
+  const loading = isFuelTypesloading || areDevicesLoading || allRequestsLoading;
 
   const tableData = useLogicCertificateRequests({
     devices,

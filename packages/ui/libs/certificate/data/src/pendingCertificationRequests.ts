@@ -35,7 +35,7 @@ export const useApiHandlersForPendingRequests = () => {
           (request) => request.id !== id
         );
 
-        return [...filteredRequests];
+        return filteredRequests;
       }
     );
   };

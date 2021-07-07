@@ -15,7 +15,7 @@ export const usePendingPageEffects = () => {
   const { allDevices: devices, isLoading: areDevicesLoading } =
     useApiAllDevices();
 
-  const { allTypes: allFuelTypes, isLoading: isDeviceTypesloading } =
+  const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
     useAllFuelTypes();
 
   const { pendingRequests: requests, isLoading: allRequestsLoading } =
@@ -23,8 +23,7 @@ export const usePendingPageEffects = () => {
 
   const { approveHandler, rejectHandler } = useApiHandlersForPendingRequests();
 
-  const loading =
-    isDeviceTypesloading || areDevicesLoading || allRequestsLoading;
+  const loading = isFuelTypesloading || areDevicesLoading || allRequestsLoading;
 
   const actions = [
     {
