@@ -9,14 +9,16 @@ import { useRequestCertificateFormEffects } from './RequestCertificateForm.effec
 
 export interface RequestCertificateFormProps {
   device: ComposedDevice;
+  closeForm: () => void;
 }
 
 export const RequestCertificateForm: FC<RequestCertificateFormProps> = ({
   device,
+  closeForm,
 }) => {
   const classes = useStyles();
   const { formProps, fileUploadProps, isLoading, formTitle } =
-    useRequestCertificateFormEffects(device);
+    useRequestCertificateFormEffects(device, closeForm);
 
   if (isLoading) {
     return <></>;

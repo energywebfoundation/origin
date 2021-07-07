@@ -1,4 +1,3 @@
-export * from './lib/certificate-data-access';
 export * from './certificationRequests';
 export * from './pendingCertificationRequests';
 export * from './fileUDownload';
