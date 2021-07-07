@@ -1,3 +1,4 @@
+export * from './allCertificates';
 export * from './certificationRequests';
 export * from './fileUDownload';
 export * from './fuelTypes';

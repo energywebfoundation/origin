@@ -3,6 +3,7 @@ import {
   ItemsListWithActionsProps,
   ListAction,
 } from '@energyweb/origin-ui-core';
+import { CircularProgress } from '@material-ui/core';
 import React, { FC } from 'react';
 import {
   ListItemContent,
@@ -10,8 +11,11 @@ import {
   SellAction,
   WithdrawAction,
 } from '../../containers';
+import { useExchangeInboxPageEffects } from './ExchangeInboxPage.effects';
 
 export const ExchangeInboxPage: FC = () => {
+  const { isLoading } = useExchangeInboxPageEffects();
+
   const actions: ListAction[] = [
     {
       name: 'Sell',
@@ -56,6 +60,8 @@ export const ExchangeInboxPage: FC = () => {
       },
     ],
   });
+
+  if (isLoading) return <CircularProgress />;
 
   return (
     <ItemsListWithActions
