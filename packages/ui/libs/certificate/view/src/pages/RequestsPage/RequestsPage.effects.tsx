@@ -1,7 +1,7 @@
 import {
   useCertificationRequests,
   useApiMyDevices,
-  useAllDeviceTypes,
+  useAllFuelTypes,
 } from '@energyweb/origin-ui-certificate-data';
 import { useLogicCertificateRequests } from '@energyweb/origin-ui-certificate-logic';
 
@@ -9,8 +9,8 @@ export const useRequestsPageEffects = () => {
   const { myDevices: devices, isLoading: areDevicesLoading } =
     useApiMyDevices();
 
-  const { allTypes: allDeviceTypes, isLoading: isDeviceTypesloading } =
-    useAllDeviceTypes();
+  const { allTypes: allFuelTypes, isLoading: isDeviceTypesloading } =
+    useAllFuelTypes();
 
   const { requests, isLoading: allRequestsLoading } =
     useCertificationRequests();
@@ -22,7 +22,7 @@ export const useRequestsPageEffects = () => {
     devices,
     requests,
     loading,
-    allDeviceTypes,
+    allFuelTypes,
   });
 
   return {

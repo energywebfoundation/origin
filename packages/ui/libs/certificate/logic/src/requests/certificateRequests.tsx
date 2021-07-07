@@ -15,7 +15,8 @@ import {
 const formatRequestsData: TFormatCertificateRequestsData = ({
   devices,
   requests,
-  allDeviceTypes,
+  actions,
+  allFuelTypes,
 }) => {
   const { t } = useTranslation();
   return requests.length > 0 && devices.length > 0
@@ -28,16 +29,16 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
         );
 
         return {
-          id: request.id.toString(),
-          facility: device.name,
-          location: `${device.region}, ${device.subregion}`,
-          gridOperator: device.gridOperator,
-          deviceType:
-            allDeviceTypes?.find((type) => type.code === device.deviceType)
+          id: request.id,
+          facility: device?.name,
+          location: `${device?.region}, ${device?.subregion}`,
+          gridOperator: device?.gridOperator,
+          fuelType:
+            allFuelTypes?.find((type) => type.code === device?.fuelType)
               ?.name || '',
-          capacity: PowerFormatter.format(device.capacity),
-          meterRead: EnergyFormatter.format(request.energy),
-          files: request.files.map((fileId) => (
+          capacity: PowerFormatter.format(device?.capacity),
+          meterRead: EnergyFormatter.format(request?.energy),
+          files: request?.files.map((fileId) => (
             <div key={fileId}>
               <a
                 style={{ cursor: 'pointer', textDecoration: 'underline' }}
@@ -56,6 +57,7 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
             </div>
           ),
           status,
+          actions,
         };
       })
     : ([] as TFormatCertificateRequestsReturnData);
@@ -64,8 +66,9 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
 export const useLogicCertificateRequests: TUseLogicCertificateRequests = ({
   devices,
   requests,
+  actions,
   loading,
-  allDeviceTypes,
+  allFuelTypes,
 }) => {
   const { t } = useTranslation();
   return {
@@ -73,7 +76,7 @@ export const useLogicCertificateRequests: TUseLogicCertificateRequests = ({
       facility: t('certificate.requests.facility'),
       location: t('certificate.requests.location'),
       gridOperator: t('certificate.requests.gridOperator'),
-      deviceType: t('certificate.requests.deviceType'),
+      fuelType: t('certificate.requests.fuelType'),
       capacity: `${t('certificate.requests.capacity')} (${
         PowerFormatter.displayUnit
       })`,
@@ -83,9 +86,10 @@ export const useLogicCertificateRequests: TUseLogicCertificateRequests = ({
       files: t('certificate.requests.files'),
       timeFrame: t('certificate.requests.timeFrame'),
       status: t('certificate.requests.status'),
+      actions: '',
     },
     pageSize: 10,
     loading: loading,
-    data: formatRequestsData({ devices, requests, allDeviceTypes }),
+    data: formatRequestsData({ devices, requests, actions, allFuelTypes }),
   };
 };
