@@ -20,28 +20,18 @@ export class GetIrecCertificatesToImportHandler
         @InjectRepository(IrecCertificate)
         private readonly repository: Repository<IrecCertificate>,
         @Inject(IREC_SERVICE)
-        private readonly irecService: IrecService,
-        private readonly deviceService: DeviceService
+        private readonly irecService: IrecService
     ) {}
 
     async execute({
         user: { id, organizationId, ownerId }
     }: GetIrecCertificatesToImportCommand): Promise<IrecAccountItemDto[]> {
         const certificates = await this.irecService.getCertificates(id);
-        const irecDevices = await this.deviceService.findAll({ where: { ownerId } });
-        const deviceCodes = irecDevices.map((d) => d.code);
-        const ownCertificates = certificates.filter((certificate) => {
-            return deviceCodes.includes(certificate.device.code);
-        });
-
-        const certificateRequests = await this.queryBus.execute(
-            new GetAllCertificationRequestsQuery({ owner: ownerId })
-        );
 
         const certificationRequests = await this.queryBus.execute<
             GetAllCertificationRequestsQuery,
             FullCertificationRequestDTO[]
-        >(new GetAllCertificationRequestsQuery({ owner: String(organizationId) }));
+        >(new GetAllCertificationRequestsQuery({ owner: String(ownerId) }));
 
         return certificates.filter((issue) => {
             const certificationRequest = certificationRequests.find(

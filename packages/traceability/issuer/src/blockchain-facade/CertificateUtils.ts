@@ -56,7 +56,7 @@ export const encodeData = (data: IData): string => {
 
     return utils.defaultAbiCoder.encode(
         ['uint256', 'uint256', 'string', 'string'],
-        [generationStartTime, generationEndTime, deviceId, metadata]
+        [generationStartTime, generationEndTime, deviceId, metadata ?? '']
     );
 };
 

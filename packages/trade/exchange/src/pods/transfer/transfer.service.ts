@@ -17,7 +17,7 @@ import { Transfer } from './transfer.entity';
 import { WithdrawalRequestedEvent } from './events/withdrawal-requested.event';
 import { RequestClaimDTO } from './dto/request-claim.dto';
 import { ClaimRequestedEvent } from './events/claim-requested.event';
-import { RequestBulkClaimDTO } from './dto/request-bulk-claim.dto';
+import { RequestBatchClaimDTO } from './dto/request-batch-claim.dto';
 import { GetAssetAmountQuery } from '../account-balance/queries/get-asset-amount.query';
 import { AssetAmount } from '../account-balance/account-balance.service';
 
@@ -113,9 +113,9 @@ export class TransferService {
         );
     }
 
-    public async requestBulkClaim(
+    public async requestBatchClaim(
         userId: string,
-        { assetIds }: RequestBulkClaimDTO,
+        { assetIds }: RequestBatchClaimDTO,
         transaction?: EntityManager
     ): Promise<Transfer['id'][]> {
         const { address } = await this.accountService.getAccount(userId);

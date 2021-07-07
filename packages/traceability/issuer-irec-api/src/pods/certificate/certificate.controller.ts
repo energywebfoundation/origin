@@ -19,7 +19,7 @@ import { CertificateController } from '@energyweb/issuer-api';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 
 import { GetIrecCertificatesToImportCommand } from './command';
-import { IrecAccountItemDto } from './dto/irec-account-item.dto';
+import { IrecAccountItemDto } from './dto';
 
 @ApiTags('irec-certificates')
 @ApiBearerAuth('access-token')

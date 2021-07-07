@@ -21,7 +21,7 @@ const certificationRequestTestData = {
     energy: '1000000',
     fromTime: moment().subtract(2, 'month').unix(),
     toTime: moment().subtract(1, 'month').unix(),
-    deviceId: 'mockDeviceCode',
+    deviceId: '123e4567-e89b-12d3-a456-426614174000',
     files: ['test.pdf', 'test2.pdf']
 };
 

@@ -25,7 +25,7 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
 import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
-import { RequestBulkClaimDTO } from './dto/request-bulk-claim.dto';
+import { RequestBatchClaimDTO } from './dto/request-batch-claim.dto';
 import { RequestClaimDTO } from './dto/request-claim.dto';
 import { ClaimBeingProcessedError } from './errors/claim-being-processed.error';
 import { WithdrawalBeingProcessedError } from './errors/withdrawal-being-processed.error';
@@ -107,20 +107,20 @@ export class TransferController {
         }
     }
 
-    @Post('claim/bulk')
+    @Post('claim/batch')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin)
-    @ApiBody({ type: RequestBulkClaimDTO })
+    @ApiBody({ type: RequestBatchClaimDTO })
     @ApiResponse({ status: HttpStatus.CREATED, type: String, description: 'Request a claim' })
-    public async requestBulkClaim(
+    public async requestBatchClaim(
         @UserDecorator() { ownerId }: ILoggedInUser,
-        @Body() bulkClaim: RequestBulkClaimDTO
+        @Body() batchClaim: RequestBatchClaimDTO
     ): Promise<string[]> {
         try {
             const result = await ensureSingleProcessOnly(
                 ownerId,
                 'requestClaim',
-                () => this.transferService.requestBulkClaim(ownerId, bulkClaim),
+                () => this.transferService.requestBatchClaim(ownerId, batchClaim),
                 new ClaimBeingProcessedError()
             );
 
