@@ -383,6 +383,24 @@
       }
     },
     "certificate": {
+      "exchangeInbox": {
+        "title": "Exchange Inbox",
+        "selectAll": "Select All",
+        "generationTime": "Generation Time Frame",
+        "viewButton": "View",
+        "selectedForSale": "Selected For Sale",
+        "price": "Price per MWh",
+        "totalPrice": "Total Price",
+        "sellButton": "Sell",
+        "selectedForWithdraw": "Selected For Withdrawal",
+        "withdrawButton": "Withdraw",
+        "notifications": {
+          "sellSuccess": "Certificate has been successfully posted to exchange",
+          "sellError": "Error while posting certificate for sale",
+          "withdrawSuccess": "Certificate has been successfully withdrawn",
+          "withdrawError": "Error while withdrawing certificate"
+        }
+      },
       "requests": {
         "facility": "Facility",
         "gridOperator": "Grid operator",
@@ -395,6 +413,10 @@
         "status": "Status",
         "approved": "Approved",
         "pending": "Pending"
+      },
+      "inbox": {
+        "selectCertificate": "Select Certificate",
+        "totalVolume": "Total Volume"
       }
     },
     "user": {
@@ -516,7 +538,11 @@
         "change": "Change",
         "confirm": "Confirm",
         "edit": "Edit",
-        "update": "Update"
+        "update": "Update",
+        "save": "Save"
+      },
+      "input": {
+        "editAmount": "Edit amount"
       },
       "notifications": {
         "unknownError": "Unknown error"
