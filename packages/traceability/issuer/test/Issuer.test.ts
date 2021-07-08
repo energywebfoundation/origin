@@ -7,7 +7,7 @@ import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { Wallet, BigNumber } from 'ethers';
 import { migrateIssuer, migratePrivateIssuer, migrateRegistry } from '../src/migrate';
-import { CertificationRequest, IBlockchainProperties } from '../src';
+import { CertificationRequest, IBlockchainProperties, Certificate } from '../src';
 import { decodeData, encodeData } from '../src/blockchain-facade/CertificateUtils';
 
 describe('Issuer', () => {
@@ -173,6 +173,35 @@ describe('Issuer', () => {
 
         certificationRequest = await certificationRequest.sync();
         assert.isTrue(certificationRequest.revoked);
+    });
+
+    it('issuer should be able to mint more volume to an existing certificate', async () => {
+        setActiveUser(deviceOwnerWallet);
+
+        const volume = BigNumber.from(1e9);
+        let certificationRequest = await createCertificationRequest();
+
+        setActiveUser(issuerWallet);
+        certificationRequest = await certificationRequest.sync();
+
+        const certificateId = await certificationRequest.approve(volume);
+
+        assert.exists(certificationRequest.issuedCertificateTokenId);
+
+        let certificate = await new Certificate(certificateId, blockchainProperties).sync();
+
+        assert.equal(certificate.owners[deviceOwnerWallet.address], volume.toString());
+
+        const additionalVolumeToMint = BigNumber.from(1e9);
+        const mintTx = await certificate.mint(deviceOwnerWallet.address, additionalVolumeToMint);
+        await mintTx.wait();
+
+        certificate = await certificate.sync();
+
+        assert.equal(
+            certificate.owners[deviceOwnerWallet.address],
+            volume.add(additionalVolumeToMint).toString()
+        );
     });
 
     it('issuer should be able to revoke a certificationRequest', async () => {
