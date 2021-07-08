@@ -11,7 +11,7 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
     signatoryAddress: '',
     signatoryZipCode: '',
     signatoryCity: '',
-    signatoryCountry: '',
+    signatoryCountry: [],
     signatoryEmail: '',
     signatoryPhoneNumber: '',
   },

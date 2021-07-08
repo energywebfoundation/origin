@@ -1,3 +1,4 @@
+export * from './exchangeCertificates';
 export * from './certificationRequests';
 export * from './pendingCertificationRequests';
 export * from './fileUDownload';
@@ -8,3 +9,9 @@ export * from './myDevices';
 export * from './utils';
 export * from './types';
 export * from './mock';
+export * from './cachedExchangeCertificates';
+export * from './cachedMyDevices';
+export * from './cachedFuelTypes';
+export * from './sellCertificate';
+export * from './withdrawCertificate';
+export * from './cachedUser';

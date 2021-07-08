@@ -25,7 +25,14 @@ export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
       ...values,
       // @should be changed on backend and migrated
       // from int to string because of auto-gen client/enum issues
-      accountType: (values.accountType as unknown) as IRECAccountType,
+      headquarterCountry: values.headquarterCountry
+        .map((option) => option.value)[0]
+        .toString(),
+      primaryContactOrganizationCountry:
+        values.primaryContactOrganizationCountry
+          .map((option) => option.value)[0]
+          .toString(),
+      accountType: values.accountType as unknown as IRECAccountType,
       registrationYear: Number(values.registrationYear),
       activeCountries: values.activeCountries.map((i) => i?.value as string),
     };

@@ -4,3 +4,4 @@ export * from './MainLayout';
 export * from './TableComponent';
 export * from './FileUpload';
 export * from './DownloadableChip';
+export * from './ItemsListWithActions';

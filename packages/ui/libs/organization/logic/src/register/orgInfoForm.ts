@@ -12,7 +12,7 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
     address: '',
     zipCode: '',
     city: '',
-    country: '',
+    country: [],
     businessType: '',
     tradeRegistryCompanyNumber: '',
     vatNumber: '',

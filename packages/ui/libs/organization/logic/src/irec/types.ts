@@ -8,7 +8,7 @@ import { TFunction } from 'i18next';
 
 export type IRecRegistrationInfoForm = {
   accountType: IRECAccountType;
-  headquarterCountry: string;
+  headquarterCountry: FormSelectOption[];
   registrationYear: string;
   employeesNumber: string;
   shareholders: string;
@@ -28,7 +28,7 @@ export type PrimaryContactDetailsForms = {
   primaryContactOrganizationName: string;
   primaryContactOrganizationAddress: string;
   primaryContactOrganizationPostalCode: string;
-  primaryContactOrganizationCountry: string;
+  primaryContactOrganizationCountry: FormSelectOption[];
   subsidiaries?: string;
   primaryContactName: string;
   primaryContactEmail: string;

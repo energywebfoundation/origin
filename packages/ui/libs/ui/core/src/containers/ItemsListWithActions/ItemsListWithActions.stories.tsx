@@ -9,15 +9,13 @@ export default {
   component: ItemsListWithActions,
 } as Meta;
 
-export const Default = (
-  args: Omit<ItemsListWithActionsProps<number, number>, 'content'>
+export const WithoutCheckboxes = (
+  args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
 ) => {
-  const content: ItemsListWithActionsProps<
-    number,
-    string
-  >['content'] = new Map();
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
+    new Map();
 
-  content.set(1, {
+  containers.set(1, {
     containerComponent: <Typography>First container</Typography>,
     items: [
       {
@@ -28,7 +26,7 @@ export const Default = (
       },
     ],
   });
-  content.set(2, {
+  containers.set(2, {
     containerComponent: <Typography>Second container</Typography>,
     items: [
       {
@@ -46,14 +44,111 @@ export const Default = (
     ],
   });
 
-  return <ItemsListWithActions content={content} {...args} />;
+  return <ItemsListWithActions containers={containers} {...args} />;
 };
 
-Default.args = {
+WithoutCheckboxes.args = {
   actions: [
     { name: 'Sell', content: <Typography>Sell action text</Typography> },
     { name: 'Buy', content: <Typography>Buy action text</Typography> },
   ],
   listTitle: 'Items list with Actions',
   selectAllText: 'Select all items and containers',
+};
+
+export const WithCheckboxes = (
+  args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
+) => {
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
+    new Map();
+
+  containers.set(1, {
+    containerComponent: <Typography>First container</Typography>,
+    items: [
+      {
+        id: '1',
+        component: (
+          <Typography>This is the first item of first container</Typography>
+        ),
+      },
+    ],
+  });
+  containers.set(2, {
+    containerComponent: <Typography>Second container</Typography>,
+    items: [
+      {
+        id: '2',
+        component: (
+          <Typography>This is the first item of second container</Typography>
+        ),
+      },
+      {
+        id: '3',
+        component: (
+          <Typography>This is the second item of second container</Typography>
+        ),
+      },
+    ],
+  });
+
+  return <ItemsListWithActions containers={containers} {...args} />;
+};
+
+WithCheckboxes.args = {
+  actions: [
+    { name: 'Sell', content: <Typography>Sell action text</Typography> },
+    { name: 'Buy', content: <Typography>Buy action text</Typography> },
+  ],
+  listTitle: 'Items list with Actions',
+  selectAllText: 'Select all items and containers',
+  checkboxes: true,
+};
+
+export const WithPagination = (
+  args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
+) => {
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
+    new Map();
+
+  containers.set(1, {
+    containerComponent: <Typography>First container</Typography>,
+    items: [
+      {
+        id: '1',
+        component: (
+          <Typography>This is the first item of first container</Typography>
+        ),
+      },
+    ],
+  });
+  containers.set(2, {
+    containerComponent: <Typography>Second container</Typography>,
+    items: [
+      {
+        id: '2',
+        component: (
+          <Typography>This is the first item of second container</Typography>
+        ),
+      },
+      {
+        id: '3',
+        component: (
+          <Typography>This is the second item of second container</Typography>
+        ),
+      },
+    ],
+  });
+
+  return <ItemsListWithActions containers={containers} {...args} />;
+};
+
+WithPagination.args = {
+  actions: [
+    { name: 'Sell', content: <Typography>Sell action text</Typography> },
+    { name: 'Buy', content: <Typography>Buy action text</Typography> },
+  ],
+  listTitle: 'Items list with Actions',
+  selectAllText: 'Select all items and containers',
+  pagination: true,
+  pageSize: 1,
 };

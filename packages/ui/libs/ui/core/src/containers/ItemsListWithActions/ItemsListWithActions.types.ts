@@ -1,3 +1,4 @@
+import { GridProps, ListItemProps } from '@material-ui/core';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { GenericItemsListProps, ListAction } from '../../components/list';
 import { ActionsEnum } from './ItemsListWithActions.reducer';
@@ -7,19 +8,32 @@ export type TItemsListWithActionsItem<Id> = {
   id: Id;
   component: ReactNode;
 };
-export type TItemsListWithActionsContainer<ContainerId, ItemId> = Map<
+export type TItemsListWithActionsContainers<ContainerId, ItemId> = Map<
   ContainerId,
   {
     containerComponent: ReactNode;
     items: TItemsListWithActionsItem<ItemId>[];
+    containerListItemProps?: ListItemProps;
+    itemListItemProps?: ListItemProps;
   }
 >;
 
 export interface ItemsListWithActionsProps<ContainerId, ItemId> {
-  content: TItemsListWithActionsContainer<ContainerId, ItemId>;
+  containers: TItemsListWithActionsContainers<ContainerId, ItemId>;
   actions: ListAction[];
   listTitle?: string;
+  listTitleProps?: GenericItemsListProps<ContainerId, ItemId>['titleProps'];
   selectAllText?: string;
+  checkboxes?: GenericItemsListProps<ContainerId, ItemId>['checkboxes'];
+  pagination?: GenericItemsListProps<ContainerId, ItemId>['pagination'];
+  pageSize?: GenericItemsListProps<ContainerId, ItemId>['pageSize'];
+  paginationProps?: GenericItemsListProps<
+    ContainerId,
+    ItemId
+  >['paginationProps'];
+  itemsGridProps?: GridProps;
+  actionsGridProps?: GridProps;
+  emptyListComponent?: ReactNode;
 }
 
 export type TItemsListWithActions = <ContainerId, ItemId>(
@@ -29,13 +43,16 @@ export type TItemsListWithActions = <ContainerId, ItemId>(
 
 // Effects types
 type UseItemsListWithActionsEffectsArgs<ContainerId, ItemId> = {
-  content: TItemsListWithActionsContainer<ContainerId, ItemId>;
+  containers: TItemsListWithActionsContainers<ContainerId, ItemId>;
 };
 
 type UseItemsListWithActionsEffectsReturnType<ContainerId, ItemId> = Omit<
   GenericItemsListProps<ContainerId, ItemId>,
   'listTitle' | 'selectAllText'
->;
+> & {
+  selectedItems: ItemId[];
+  resetState: () => void;
+};
 
 export type TUseItemsListWithActionsEffects = <ContainerId, ItemId>(
   props: UseItemsListWithActionsEffectsArgs<ContainerId, ItemId>
@@ -43,31 +60,32 @@ export type TUseItemsListWithActionsEffects = <ContainerId, ItemId>(
 // Effects types
 
 // Reducer types
-type CheckedObject = {
-  [key: string]: boolean;
-};
-export type ItemsListWithActionsInitialState = {
+export type ItemsListWithActionsInitialState<ContainerId, ItemId> = {
   allChecked: boolean;
-  containersChecked: CheckedObject;
-  itemsChecked: CheckedObject;
+  containersChecked: ContainerId[];
+  itemsChecked: ItemId[];
 };
 
 type TDispatchCheckAll = { type: ActionsEnum.CHECK_ALL };
-type TDispatchCheckContainer = {
+type TDispatchCheckContainer<ContainerId> = {
   type: ActionsEnum.CHECK_CONTAINER;
-  payload: { key: string; value: boolean };
+  payload: ContainerId;
 };
-type TDispatchCheckItem = {
+type TDispatchCheckItem<ItemId> = {
   type: ActionsEnum.CHECK_ITEM;
-  payload: { key: string; value: boolean };
+  payload: ItemId[];
 };
-type ItemsListActionsType =
+type TDispatchResetState = {
+  type: ActionsEnum.RESET_STATE;
+};
+type ItemsListActionsType<ContainerId, ItemId> =
   | TDispatchCheckAll
-  | TDispatchCheckContainer
-  | TDispatchCheckItem;
+  | TDispatchCheckContainer<ContainerId>
+  | TDispatchCheckItem<ItemId>
+  | TDispatchResetState;
 
 export type TItemsListWithActionsReducer<ContainerId, ItemId> = (
-  state: ItemsListWithActionsInitialState,
-  action: ItemsListActionsType
-) => ItemsListWithActionsInitialState;
+  state: ItemsListWithActionsInitialState<ContainerId, ItemId>,
+  action: ItemsListActionsType<ContainerId, ItemId>
+) => ItemsListWithActionsInitialState<ContainerId, ItemId>;
 // Reducer types

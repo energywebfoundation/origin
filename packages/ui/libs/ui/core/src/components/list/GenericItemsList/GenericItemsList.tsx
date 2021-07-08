@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   Paper,
   Typography,
@@ -25,6 +25,7 @@ export interface GenericItemsListProps<ContainerId, ItemId> {
   pagination?: boolean;
   pageSize?: number;
   paginationProps?: PaginationProps;
+  emptyListComponent?: ReactNode;
 }
 
 export type TGenericItemsList = <ContainerId, ItemId>(
@@ -42,6 +43,7 @@ export const GenericItemsList: TGenericItemsList = ({
   pagination,
   pageSize = 5,
   paginationProps,
+  emptyListComponent,
 }) => {
   const classes = useStyles();
   const [page, setPage] = useState(1);
@@ -65,7 +67,7 @@ export const GenericItemsList: TGenericItemsList = ({
         </Typography>
       )}
 
-      {checkboxes && (
+      {checkboxes && listContainers.length > 0 && (
         <div className={classes.selectAllHolder}>
           <Checkbox
             color="primary"
@@ -76,15 +78,19 @@ export const GenericItemsList: TGenericItemsList = ({
         </div>
       )}
 
-      <List>
-        {formattedItems.map((container) => (
-          <ListItemsContainer
-            key={`container-${container.id}`}
-            checkboxes={checkboxes}
-            {...container}
-          />
-        ))}
-      </List>
+      {listContainers.length > 0 ? (
+        <List>
+          {formattedItems.map((container) => (
+            <ListItemsContainer
+              key={`container-${container.id}`}
+              checkboxes={checkboxes}
+              {...container}
+            />
+          ))}
+        </List>
+      ) : (
+        emptyListComponent
+      )}
 
       {pagination && (
         <Pagination

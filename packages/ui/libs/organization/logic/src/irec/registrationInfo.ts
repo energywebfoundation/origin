@@ -14,7 +14,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
   inputsVariant: 'filled',
   initialValues: {
     accountType: null,
-    headquarterCountry: '',
+    headquarterCountry: [],
     registrationYear: '',
     employeesNumber: '',
     shareholders: '',

@@ -1,27 +1,48 @@
 import { Tabs, Tab, TabsProps } from '@material-ui/core';
-import React, { DetailedHTMLProps, FC, HTMLAttributes, ReactNode } from 'react';
+import React, {
+  DetailedHTMLProps,
+  HTMLAttributes,
+  PropsWithChildren,
+  ReactElement,
+  ReactNode,
+} from 'react';
 import { useListActionsBlockEffects } from './ListActionsBlock.effects';
 
-export type ListAction = {
-  name: string;
-  content: ReactNode;
+export type ListActionComponentProps<ItemId> = {
+  selectedIds: ItemId[];
+  resetIds?: () => void;
 };
 
-export interface ListActionsBlockProps {
-  actions: ListAction[];
+export type ListAction<ItemId = {}> = {
+  name: string;
+  content?: ReactNode;
+  component?: React.FC<ListActionComponentProps<ItemId>>;
+};
+
+export type ListActionsBlockProps<ItemId = {}> = {
+  actions: ListAction<ItemId>[];
+  selectedIds?: ItemId[];
+  resetSelected?: () => void;
   tabsProps?: TabsProps;
   wrapperProps?: DetailedHTMLProps<
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
-}
+};
 
-export const ListActionsBlock: FC<ListActionsBlockProps> = ({
+export type TListActionsBlock = <ItemId>(
+  props: PropsWithChildren<ListActionsBlockProps<ItemId>>
+) => ReactElement;
+
+export const ListActionsBlock: TListActionsBlock = ({
   actions,
+  selectedIds,
+  resetSelected,
   tabsProps,
   wrapperProps,
 }) => {
   const { tabIndex, setTabIndex } = useListActionsBlockEffects();
+  const { content, component: Component } = actions[tabIndex];
   return (
     <div {...wrapperProps}>
       <Tabs
@@ -39,7 +60,11 @@ export const ListActionsBlock: FC<ListActionsBlockProps> = ({
           <Tab key={action.name} label={action.name} />
         ))}
       </Tabs>
-      {actions[tabIndex].content}
+      {content ? (
+        content
+      ) : (
+        <Component selectedIds={selectedIds} resetIds={resetSelected} />
+      )}
     </div>
   );
 };

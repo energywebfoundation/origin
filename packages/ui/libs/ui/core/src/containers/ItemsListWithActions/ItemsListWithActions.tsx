@@ -5,24 +5,50 @@ import { TItemsListWithActions } from './ItemsListWithActions.types';
 import { useItemsListWithActionsEffects } from './ItemsListWithActions.effects';
 
 export const ItemsListWithActions: TItemsListWithActions = ({
-  content,
+  containers,
   actions,
   listTitle,
+  listTitleProps,
   selectAllText,
+  checkboxes,
+  pagination,
+  pageSize,
+  paginationProps,
+  itemsGridProps,
+  actionsGridProps,
+  emptyListComponent,
 }) => {
-  const listProps = useItemsListWithActionsEffects({ content });
+  const {
+    allSelected,
+    selectAllHandler,
+    listContainers,
+    selectedItems,
+    resetState,
+  } = useItemsListWithActionsEffects({ containers });
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={7} {...itemsGridProps}>
         <GenericItemsList
           listTitle={listTitle}
+          titleProps={listTitleProps}
           selectAllText={selectAllText}
-          {...listProps}
+          allSelected={allSelected}
+          selectAllHandler={selectAllHandler}
+          listContainers={listContainers}
+          checkboxes={checkboxes}
+          pagination={pagination}
+          pageSize={pageSize}
+          paginationProps={paginationProps}
+          emptyListComponent={emptyListComponent}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
-        <ListActionsBlock actions={actions} />
+      <Grid item xs={12} md={5} {...actionsGridProps}>
+        <ListActionsBlock
+          actions={actions}
+          selectedIds={selectedItems}
+          resetSelected={resetState}
+        />
       </Grid>
     </Grid>
   );
