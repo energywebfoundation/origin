@@ -204,6 +204,46 @@ describe('Issuer', () => {
         );
     });
 
+    it('issuer should not be able to mint more volume to an existing certificate thats issued by a different issuer', async () => {
+        setActiveUser(deviceOwnerWallet);
+
+        const volume = BigNumber.from(1e9);
+        let certificationRequest = await createCertificationRequest();
+
+        setActiveUser(issuerWallet);
+        certificationRequest = await certificationRequest.sync();
+        const certificateId = await certificationRequest.approve(volume);
+
+        let certificate = await new Certificate(certificateId, blockchainProperties).sync();
+
+        const attackerIssuerContract = await migrateIssuer(
+            provider,
+            issuerPK,
+            blockchainProperties.registry.address
+        );
+
+        certificate.blockchainProperties = {
+            ...certificate.blockchainProperties,
+            issuer: attackerIssuerContract
+        };
+
+        const additionalVolumeToMint = BigNumber.from(1e9);
+
+        let failed = false;
+
+        try {
+            const mintTx = await certificate.mint(
+                deviceOwnerWallet.address,
+                additionalVolumeToMint
+            );
+            await mintTx.wait();
+        } catch (error) {
+            failed = true;
+        }
+
+        assert.isTrue(failed);
+    });
+
     it('issuer should be able to revoke a certificationRequest', async () => {
         setActiveUser(issuerWallet);
 
