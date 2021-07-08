@@ -17,6 +17,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
 
     event CertificateRevoked(uint256 indexed _certificateId);
+    event CertificateVolumeMinted(address indexed _owner, uint256 indexed _certificateId, uint256 indexed _volume);
 
     // Certificate topic - check ERC-1888 topic description
     uint256 public certificateTopic;
@@ -230,6 +231,16 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             _values
         );
     }
+
+	/// @notice Mint more volume to existing certificates
+    /// @param _to To whom the volume should be minted.
+	/// @param _certificateId The ID of the certificate.
+	/// @param _volume Volume that should be minted.
+	function mint(address _to, uint256 _certificateId, uint256 _volume) external onlyOwner {
+        registry.mint(_certificateId, _to, _volume);
+
+        emit CertificateVolumeMinted(_to, _certificateId, _volume);
+	}
 
     /// @notice Validation for certification requests.
     /// @dev Used by other contracts to validate the token.
