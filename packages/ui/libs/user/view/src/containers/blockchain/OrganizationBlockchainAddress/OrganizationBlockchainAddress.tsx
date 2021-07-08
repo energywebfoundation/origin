@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-
 import {
   Button,
   CircularProgress,
@@ -11,8 +10,9 @@ import { useOrganizationBlockchainAddressEffects } from './OrganizationBlockchai
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
 import { Info } from '@material-ui/icons';
 import { useStyles } from './OrganizationBlockchainAddress.styles';
+import { withMetamask } from '@energyweb/origin-ui-blockchain';
 
-export const OrganizationBlockchainAddress: FC = () => {
+const Component: FC = () => {
   const {
     submitHandler,
     isLoading,
@@ -64,3 +64,5 @@ export const OrganizationBlockchainAddress: FC = () => {
     </Grid>
   );
 };
+
+export const OrganizationBlockchainAddress = withMetamask(Component);

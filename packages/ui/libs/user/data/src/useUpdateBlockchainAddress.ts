@@ -4,10 +4,6 @@ import {
   useOrganizationControllerSetBlockchainAddress,
   UserStatus,
 } from '@energyweb/origin-backend-react-query-client';
-import {
-  useBlockchainDefaultAccount,
-  useBlockchainWeb3Instance,
-} from '@energyweb/origin-ui-blockchain';
 import { useTranslation } from 'react-i18next';
 import { signTypedMessage } from '@energyweb/utils-general';
 import {
@@ -17,6 +13,7 @@ import {
 import { useUser } from './useUser';
 import { useQueryClient } from 'react-query';
 import { userApiErrorHandler } from './errorHandler';
+import { useWeb3React } from '@web3-react/core';
 
 export const useUpdateBlockchainAddress = (
   setIsUpdating: (value: boolean) => void
@@ -29,8 +26,7 @@ export const useUpdateBlockchainAddress = (
 
   const { user, userLoading } = useUser();
   const blockchainAddress = user?.organization?.blockchainAccountAddress;
-  const web3 = useBlockchainWeb3Instance();
-  const activeAccount = useBlockchainDefaultAccount();
+  const { library: web3, account } = useWeb3React();
 
   const registrationMessage = process.env.NX_REGISTRATION_MESSAGE_TO_SIGN;
 
@@ -47,14 +43,10 @@ export const useUpdateBlockchainAddress = (
         user?.organization?.status !== OrganizationStatus.Active
       ) {
         throw Error(t('user.profile.notifications.onlyMembersOfActiveOrgCan'));
-      } else if (
-        activeAccount === null ||
-        web3?.connection?.url !== 'metamask'
-      ) {
+      } else if (account === null || web3?.connection?.url !== 'metamask') {
         throw Error(t('user.profile.notifications.noBlockchainConnection'));
       } else if (
-        user?.organization?.blockchainAccountAddress ===
-        activeAccount.toLowerCase()
+        user?.organization?.blockchainAccountAddress === account.toLowerCase()
       ) {
         throw Error(
           t('user.profile.notifications.thisAccountAlreadyConnected')
@@ -63,7 +55,7 @@ export const useUpdateBlockchainAddress = (
 
       setIsUpdating(true);
 
-      signTypedMessage(activeAccount, registrationMessage, web3).then(
+      signTypedMessage(account, registrationMessage, web3).then(
         (signedMessage) => {
           mutate(
             { data: { signedMessage } },

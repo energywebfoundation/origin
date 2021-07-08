@@ -5,20 +5,21 @@ import { OriginThemeProvider } from '@energyweb/origin-ui-theme';
 import { BrowserRouter } from 'react-router-dom';
 import { ErrorFallback } from '@energyweb/origin-ui-core';
 import { ErrorBoundary } from 'react-error-boundary';
+import { getLibrary } from '@energyweb/origin-ui-blockchain';
 import { OriginQueryClientProvider } from '@energyweb/origin-ui-react-query-providers';
 import { AppContainer } from './AppContainer';
-import { BlockchainProvider } from '@energyweb/origin-ui-blockchain';
+import { Web3ReactProvider } from '@web3-react/core';
 
 ReactDOM.render(
   <React.StrictMode>
     <OriginThemeProvider>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <BrowserRouter>
-          <OriginQueryClientProvider>
-            <BlockchainProvider>
+          <Web3ReactProvider getLibrary={getLibrary}>
+            <OriginQueryClientProvider>
               <AppContainer />
-            </BlockchainProvider>
-          </OriginQueryClientProvider>
+            </OriginQueryClientProvider>
+          </Web3ReactProvider>
         </BrowserRouter>
       </ErrorBoundary>
     </OriginThemeProvider>

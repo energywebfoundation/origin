@@ -33,7 +33,7 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
       .required()
       .label(t('organization.register.signatoryCity')),
     signatoryCountry: yup
-      .string()
+      .array()
       .required()
       .label(t('organization.register.signatoryCountry')),
     signatoryEmail: yup

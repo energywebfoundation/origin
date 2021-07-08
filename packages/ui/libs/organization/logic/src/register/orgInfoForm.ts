@@ -29,7 +29,7 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
       .label(t('organization.register.orgInfoZipCode')),
     city: yup.string().required().label(t('organization.register.orgInfoCity')),
     country: yup
-      .string()
+      .array()
       .required()
       .label(t('organization.register.orgInfoCountry')),
     businessType: yup
