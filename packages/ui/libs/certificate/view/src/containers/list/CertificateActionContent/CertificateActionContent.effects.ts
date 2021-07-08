@@ -1,4 +1,3 @@
-import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CertificateActionContentProps } from './CertificateActionContent';
