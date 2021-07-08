@@ -13,8 +13,7 @@ export const useClaimsReportPageEffects = () => {
   const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
     useAllFuelTypes();
 
-  const { certificates, isLoading: allCertificatesLoading } =
-    useIrecCertificates();
+  const { isLoading: allCertificatesLoading } = useIrecCertificates();
 
   const loading =
     isFuelTypesloading || areDevicesLoading || allCertificatesLoading;

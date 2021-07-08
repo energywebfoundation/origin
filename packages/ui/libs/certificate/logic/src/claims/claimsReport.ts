@@ -19,7 +19,7 @@ const formatClaimsReportData: TFormatClaimsReportData = ({
         );
 
         return {
-          id: certificate.id,
+          id: certificate?.id,
           fuelType:
             allFuelTypes?.find((type) => type.code === device?.fuelType)
               ?.name || '',
