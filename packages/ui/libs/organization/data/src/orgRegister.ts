@@ -5,9 +5,11 @@ import {
   useOrganizationControllerRegister,
 } from '@energyweb/origin-backend-react-query-client';
 import {
+  FormSelectOption,
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
+import { Countries } from '@energyweb/origin-ui-utils';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
@@ -16,6 +18,14 @@ interface IUseOrganizationRegisterHandlerProps {
   openRoleChangedModal: () => void;
   openAlreadyExistsModal: () => void;
 }
+
+type OrgRegisterFormValues = Omit<
+  NewOrganizationDTO,
+  'country' | 'signatoryCountry'
+> & {
+  country: FormSelectOption[];
+  signatoryCountry: FormSelectOption[];
+};
 
 export const useOrganizationRegisterHandler = ({
   openRoleChangedModal,
@@ -27,9 +37,14 @@ export const useOrganizationRegisterHandler = ({
   const { mutate } = useOrganizationControllerRegister();
   const userKey = getUserControllerMeQueryKey();
 
-  const registerHandler = (values: NewOrganizationDTO) => {
+  const registerHandler = (values: OrgRegisterFormValues) => {
+    const formattedValues: NewOrganizationDTO = {
+      ...values,
+      country: values.country[0].value as string,
+      signatoryCountry: values.signatoryCountry[0].value as string,
+    };
     mutate(
-      { data: values },
+      { data: formattedValues },
       {
         onSuccess: () => {
           showNotification(
