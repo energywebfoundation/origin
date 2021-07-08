@@ -33,6 +33,7 @@ export interface ItemsListWithActionsProps<ContainerId, ItemId> {
   >['paginationProps'];
   itemsGridProps?: GridProps;
   actionsGridProps?: GridProps;
+  emptyListComponent?: ReactNode;
 }
 
 export type TItemsListWithActions = <ContainerId, ItemId>(
@@ -48,7 +49,10 @@ type UseItemsListWithActionsEffectsArgs<ContainerId, ItemId> = {
 type UseItemsListWithActionsEffectsReturnType<ContainerId, ItemId> = Omit<
   GenericItemsListProps<ContainerId, ItemId>,
   'listTitle' | 'selectAllText'
->;
+> & {
+  selectedItems: ItemId[];
+  resetState: () => void;
+};
 
 export type TUseItemsListWithActionsEffects = <ContainerId, ItemId>(
   props: UseItemsListWithActionsEffectsArgs<ContainerId, ItemId>
@@ -56,31 +60,32 @@ export type TUseItemsListWithActionsEffects = <ContainerId, ItemId>(
 // Effects types
 
 // Reducer types
-type CheckedObject = {
-  [key: string]: boolean;
-};
-export type ItemsListWithActionsInitialState = {
+export type ItemsListWithActionsInitialState<ContainerId, ItemId> = {
   allChecked: boolean;
-  containersChecked: CheckedObject;
-  itemsChecked: CheckedObject;
+  containersChecked: ContainerId[];
+  itemsChecked: ItemId[];
 };
 
 type TDispatchCheckAll = { type: ActionsEnum.CHECK_ALL };
-type TDispatchCheckContainer = {
+type TDispatchCheckContainer<ContainerId> = {
   type: ActionsEnum.CHECK_CONTAINER;
-  payload: { key: string; value: boolean };
+  payload: ContainerId;
 };
-type TDispatchCheckItem = {
+type TDispatchCheckItem<ItemId> = {
   type: ActionsEnum.CHECK_ITEM;
-  payload: { key: string; value: boolean };
+  payload: ItemId[];
 };
-type ItemsListActionsType =
+type TDispatchResetState = {
+  type: ActionsEnum.RESET_STATE;
+};
+type ItemsListActionsType<ContainerId, ItemId> =
   | TDispatchCheckAll
-  | TDispatchCheckContainer
-  | TDispatchCheckItem;
+  | TDispatchCheckContainer<ContainerId>
+  | TDispatchCheckItem<ItemId>
+  | TDispatchResetState;
 
 export type TItemsListWithActionsReducer<ContainerId, ItemId> = (
-  state: ItemsListWithActionsInitialState,
-  action: ItemsListActionsType
-) => ItemsListWithActionsInitialState;
+  state: ItemsListWithActionsInitialState<ContainerId, ItemId>,
+  action: ItemsListActionsType<ContainerId, ItemId>
+) => ItemsListWithActionsInitialState<ContainerId, ItemId>;
 // Reducer types

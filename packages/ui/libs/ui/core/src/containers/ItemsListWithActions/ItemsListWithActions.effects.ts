@@ -4,39 +4,19 @@ import {
   initialState,
   reducer,
 } from './ItemsListWithActions.reducer';
-import { TUseItemsListWithActionsEffects } from './ItemsListWithActions.types';
-import { pick, pickBy } from 'lodash';
+import {
+  TItemsListWithActionsItem,
+  TUseItemsListWithActionsEffects,
+} from './ItemsListWithActions.types';
 
 export const useItemsListWithActionsEffects: TUseItemsListWithActionsEffects =
   ({ containers }) => {
     const [state, dispatch] = useReducer(reducer, initialState);
-
-    const allSelected: boolean = state.allChecked;
+    const allSelected = state.allChecked;
     const containerIds = containers.keys();
 
-    const selectAllHandler = () => {
-      dispatch({ type: ActionsEnum.CHECK_ALL });
-
-      for (const id of containerIds) {
-        dispatch({
-          type: ActionsEnum.CHECK_CONTAINER,
-          payload: { key: String(id), value: !state.allChecked },
-        });
-        const items = containers.get(id).items;
-        items.forEach((item) =>
-          dispatch({
-            type: ActionsEnum.CHECK_ITEM,
-            payload: { key: String(item.id), value: !state.allChecked },
-          })
-        );
-      }
-    };
-
     useEffect(() => {
-      const checkedContainers = pickBy(state.containersChecked, (value) => {
-        return value === true;
-      });
-      const checkedContainersLength = Object.keys(checkedContainers).length;
+      const checkedContainersLength = state.containersChecked.length;
       const isDifferentSize = checkedContainersLength !== containers.size;
 
       if (isDifferentSize && state.allChecked) {
@@ -46,92 +26,100 @@ export const useItemsListWithActionsEffects: TUseItemsListWithActionsEffects =
       }
     }, [state.containersChecked]);
 
-    const checkContainerHandler = (id: any) => {
-      const containerIdString = String(id);
+    const checkContainerHandler = <ContainerId>(id: ContainerId) => {
+      const containerWasChecked = state.containersChecked.includes(id);
+      const itemsState = [...state.itemsChecked];
 
       dispatch({
         type: ActionsEnum.CHECK_CONTAINER,
-        payload: {
-          key: containerIdString,
-          value: !state.containersChecked[containerIdString],
-        },
+        payload: id,
       });
-      const items = containers.get(id).items;
-      items.forEach((item) =>
-        dispatch({
-          type: ActionsEnum.CHECK_ITEM,
-          payload: {
-            key: String(item.id),
-            value: !state.containersChecked[containerIdString],
-          },
-        })
+
+      const items = containers.get(id as any).items;
+      const itemsIds = items.map((item) => item.id);
+      const itemsStateWithoutThisContainer = itemsState.filter(
+        (item) => !itemsIds.includes(item as any)
       );
+      dispatch({
+        type: ActionsEnum.CHECK_ITEM,
+        payload: containerWasChecked
+          ? itemsStateWithoutThisContainer
+          : [...itemsStateWithoutThisContainer, ...itemsIds],
+      });
     };
 
-    const createCheckItemHandler = (containerId: any, items: any[]) => {
-      const containerIdString = String(containerId);
+    const createCheckItemHandler = <ContainerId, ItemId>(
+      containerId: ContainerId,
+      items: TItemsListWithActionsItem<ItemId>[]
+    ) => {
       const itemsIds = items.map((item) => item.id);
 
       return (id) => {
+        const itemChecked = state.itemsChecked.includes(id);
+        const stateWithThisItemChecked = [...state.itemsChecked, id];
+        const stateWithoutThisItem = state.itemsChecked.filter(
+          (item) => item !== id
+        );
+
         dispatch({
           type: ActionsEnum.CHECK_ITEM,
-          payload: { key: String(id), value: !state.itemsChecked[String(id)] },
+          payload: itemChecked
+            ? stateWithoutThisItem
+            : stateWithThisItemChecked,
         });
 
-        const parentContainerState = state.containersChecked[containerIdString];
-
-        const theseItemsState = pick(state.itemsChecked, [...itemsIds]);
-        theseItemsState[String(id)] = !state.itemsChecked[String(id)];
-        const onlyCheckedItems = pickBy(
-          theseItemsState,
-          (value) => value === true
+        const parentChecked = state.containersChecked.includes(containerId);
+        const allItemsFromContainerChecked = itemsIds.every((itemId) =>
+          stateWithThisItemChecked.includes(itemId)
         );
-        const allItemsInContainerAreSelected =
-          Object.keys(onlyCheckedItems).length === items.length;
 
-        if (parentContainerState) {
+        if (parentChecked) {
           dispatch({
             type: ActionsEnum.CHECK_CONTAINER,
-            payload: {
-              key: containerIdString,
-              value: !parentContainerState,
-            },
+            payload: containerId,
           });
-        } else if (allItemsInContainerAreSelected && !parentContainerState) {
+        } else if (allItemsFromContainerChecked && !parentChecked) {
           dispatch({
             type: ActionsEnum.CHECK_CONTAINER,
-            payload: {
-              key: containerIdString,
-              value: !parentContainerState,
-            },
+            payload: containerId,
           });
         }
       };
+    };
+
+    const selectAllHandler = () => {
+      for (const id of containerIds) {
+        checkContainerHandler(id);
+      }
+    };
+
+    const resetState = () => {
+      dispatch({ type: ActionsEnum.RESET_STATE });
     };
 
     const listContainers = [];
     for (const [key, value] of containers) {
       listContainers.push({
         id: key,
-        isChecked: !!state.containersChecked[String(key)],
+        isChecked: state.containersChecked.includes(key),
         handleContainerCheck: checkContainerHandler,
         containerHeader: value.containerComponent,
         containerListItemProps: value.containerListItemProps,
         itemListItemProps: value.itemListItemProps,
         containerItems: value.items.map((item) => ({
           id: item.id,
-          itemChecked: !!state.itemsChecked[String(item.id)],
+          itemChecked: state.itemsChecked.includes(item.id),
           handleItemCheck: createCheckItemHandler(key, value.items),
           itemContent: item.component,
         })),
       });
     }
 
-    const listProps = {
+    return {
       allSelected,
       selectAllHandler,
+      resetState,
       listContainers,
+      selectedItems: state.itemsChecked,
     };
-
-    return listProps;
   };

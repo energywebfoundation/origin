@@ -7,15 +7,16 @@ export enum ActionsEnum {
   CHECK_ALL = 'SET_ALL_CHECKED',
   CHECK_CONTAINER = 'SET_CONTAINER_CHECKED',
   CHECK_ITEM = 'CHECK_ITEM',
+  RESET_STATE = 'RESET_STATE',
 }
 
-export const initialState: ItemsListWithActionsInitialState = {
+export const initialState: ItemsListWithActionsInitialState<any, any> = {
   allChecked: false,
-  containersChecked: {},
-  itemsChecked: {},
+  containersChecked: [],
+  itemsChecked: [],
 };
 
-export const reducer: TItemsListWithActionsReducer<unknown, unknown> = (
+export const reducer: TItemsListWithActionsReducer<any, any> = (
   state,
   action
 ) => {
@@ -24,21 +25,25 @@ export const reducer: TItemsListWithActionsReducer<unknown, unknown> = (
       return { ...state, allChecked: !state.allChecked };
 
     case ActionsEnum.CHECK_CONTAINER:
+      const containerChecked = state.containersChecked.includes(action.payload);
+      if (containerChecked) {
+        const newState = [...state.containersChecked].filter(
+          (containerId) => containerId !== action.payload
+        );
+        return { ...state, containersChecked: newState };
+      }
       return {
         ...state,
-        containersChecked: {
-          ...state.containersChecked,
-          [action.payload.key]: action.payload.value,
-        },
+        containersChecked: [...state.containersChecked, action.payload],
       };
 
     case ActionsEnum.CHECK_ITEM:
       return {
         ...state,
-        itemsChecked: {
-          ...state.itemsChecked,
-          [action.payload.key]: action.payload.value,
-        },
+        itemsChecked: action.payload,
       };
+
+    case ActionsEnum.RESET_STATE:
+      return initialState;
   }
 };

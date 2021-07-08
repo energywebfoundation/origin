@@ -16,9 +16,15 @@ export const ItemsListWithActions: TItemsListWithActions = ({
   paginationProps,
   itemsGridProps,
   actionsGridProps,
+  emptyListComponent,
 }) => {
-  const { allSelected, selectAllHandler, listContainers } =
-    useItemsListWithActionsEffects({ containers });
+  const {
+    allSelected,
+    selectAllHandler,
+    listContainers,
+    selectedItems,
+    resetState,
+  } = useItemsListWithActionsEffects({ containers });
 
   return (
     <Grid container spacing={3}>
@@ -34,10 +40,15 @@ export const ItemsListWithActions: TItemsListWithActions = ({
           pagination={pagination}
           pageSize={pageSize}
           paginationProps={paginationProps}
+          emptyListComponent={emptyListComponent}
         />
       </Grid>
       <Grid item xs={12} md={5} {...actionsGridProps}>
-        <ListActionsBlock actions={actions} />
+        <ListActionsBlock
+          actions={actions}
+          selectedIds={selectedItems}
+          resetSelected={resetState}
+        />
       </Grid>
     </Grid>
   );
