@@ -19,6 +19,7 @@
         "sectionTitle": "Certificate",
         "exchangeInbox": "Exchange Inbox",
         "blockchainInbox": "Blockchain Inbox",
+        "claimsReport": "Claims report",
         "requests": "Requests",
         "pending": "Pending"
       },
@@ -417,6 +418,25 @@
       "inbox": {
         "selectCertificate": "Select Certificate",
         "totalVolume": "Total Volume"
+      },
+      "pending": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "notifications": {
+          "approveSuccess": "Certificate approved",
+          "approveError": "Error while approving certificate",
+          "revokeSuccess": "Certificate revoked",
+          "revokeError": "Error while revoking certificate"
+        }
+      },
+      "claimsReport": {
+        "fuelType": "Fuel Type",
+        "vintageCOD": "Vintage / (Commercial Operation Date)",
+        "location": "Region, province",
+        "gridOperator": "Grid operator",
+        "compliance": "Compliance",
+        "certificationDate": "Certification Date",
+        "certifiedEnergy": "Certified Energy"
       }
     },
     "user": {

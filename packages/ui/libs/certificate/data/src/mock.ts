@@ -55,3 +55,60 @@ export const requests = [
     irecIssueRequestId: 'string',
   },
 ];
+
+export const certificates = [
+  {
+    id: 1,
+    deviceId: 'd242c965-81a0-4917-afa1-f5217937afd6',
+    generationStartTime: 0,
+    generationEndTime: 0,
+    creationTime: 1606428000000,
+    metadata: 'string',
+    energy: {
+      publicVolume: '100',
+      privateVolume: '200',
+      claimedVolume: '30000',
+    },
+    isOwned: true,
+    isClaimed: true,
+    myClaims: [
+      {
+        id: 1,
+        from: 'string',
+        to: 'string',
+        topic: 'string',
+        value: 'string',
+        claimData: {
+          beneficiary: 'string',
+          address: 'string',
+          region: 'string',
+          zipCode: 'string',
+          countryCode: 'string',
+          fromDate: '2021-07-07T12:32:31.721Z',
+          toDate: '2021-07-07T12:32:31.721Z',
+        },
+      },
+    ],
+    claims: [
+      {
+        id: 0,
+        from: 'string',
+        to: 'string',
+        topic: 'string',
+        value: 'string',
+        claimData: {
+          beneficiary: 'string',
+          address: 'string',
+          region: 'string',
+          zipCode: 'string',
+          countryCode: 'string',
+          fromDate: '2021-07-07T12:32:31.721Z',
+          toDate: '2021-07-07T12:32:31.721Z',
+        },
+      },
+    ],
+    blockchain: {},
+    creationBlockHash: 'string',
+    issuedPrivately: true,
+  },
+];
