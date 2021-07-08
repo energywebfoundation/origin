@@ -2,6 +2,7 @@ export * from './certificationRequests';
 export * from './pendingCertificationRequests';
 export * from './fileUDownload';
 export * from './fuelTypes';
+export * from './certificates';
 export * from './allDevices';
 export * from './myDevices';
 export * from './utils';

@@ -6,6 +6,7 @@ type TGetCertificateMenuArgs = {
   showSection: boolean;
   showExchangeInbox: boolean;
   showBlockchainInbox: boolean;
+  showClaimsReport: boolean;
   showRequests: boolean;
   showPending: boolean;
 };
@@ -18,6 +19,7 @@ export const getCertificateMenu: TGetCertificateMenu = ({
   showSection,
   showExchangeInbox,
   showBlockchainInbox,
+  showClaimsReport,
   showRequests,
   showPending,
 }) => {
@@ -31,6 +33,11 @@ export const getCertificateMenu: TGetCertificateMenu = ({
       url: 'blockchain-inbox',
       label: t('navigation.certificate.blockchainInbox'),
       show: showBlockchainInbox,
+    },
+    {
+      url: 'claims-report',
+      label: t('navigation.certificate.claimsReport'),
+      show: showClaimsReport,
     },
     {
       url: 'requests',
