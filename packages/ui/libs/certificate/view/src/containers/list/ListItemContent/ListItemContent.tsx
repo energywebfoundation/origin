@@ -1,27 +1,42 @@
-import { SolarRegular } from '@energyweb/origin-ui-assets';
 import { Button, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useStyles } from './ListItemContent.styles';
 
-export const ListItemContent: FC = () => {
+export interface ListItemContentProps {
+  icon: FC<React.SVGProps<SVGSVGElement>>;
+  fuelType: string;
+  energy: string;
+  generationTimeTitle: string;
+  generationTimeText: string;
+  viewButtonLabel: string;
+}
+
+export const ListItemContent: FC<ListItemContentProps> = ({
+  icon: Icon,
+  fuelType,
+  energy,
+  generationTimeTitle,
+  generationTimeText,
+  viewButtonLabel,
+}) => {
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
       <div className={classes.infoBlock}>
-        <SolarRegular className={classes.icon} />
+        <Icon className={classes.icon} />
         <div>
           <div>
-            <Typography color="textSecondary">Solar</Typography>
-            <Typography gutterBottom>1000 MWh</Typography>
+            <Typography color="textSecondary">{fuelType}</Typography>
+            <Typography gutterBottom>{energy}</Typography>
           </div>
           <div>
-            <Typography color="textSecondary">Generation Time Frame</Typography>
-            <Typography>Dec 1, 2020 - Dec 31, 2020</Typography>
+            <Typography color="textSecondary">{generationTimeTitle}</Typography>
+            <Typography>{generationTimeText}</Typography>
           </div>
         </div>
       </div>
       <Button className={classes.button} variant="outlined" color="primary">
-        View
+        {viewButtonLabel}
       </Button>
     </div>
   );

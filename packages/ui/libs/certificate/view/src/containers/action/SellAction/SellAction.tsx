@@ -1,25 +1,48 @@
+import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { TextField, Typography } from '@material-ui/core';
-import React, { FC, useState } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
+import { useSellActionEffects } from './SellAction.effects';
 import { useStyles } from './SellAction.styles';
 
-export const SellAction: FC = () => {
+interface SellActionProps<Id> extends ListActionComponentProps<Id> {}
+
+export type TSellAction = <Id>(
+  props: PropsWithChildren<SellActionProps<Id>>
+) => ReactElement;
+
+export const SellAction: TSellAction = ({ selectedIds, resetIds }) => {
   const classes = useStyles();
-  const [price, setPrice] = useState('');
+  const {
+    title,
+    buttonText,
+    totalPriceText,
+    priceInputLabel,
+    price,
+    selectedItems,
+    handlePriceChange,
+    sellHandler,
+  } = useSellActionEffects(selectedIds, resetIds);
 
   return (
-    <CertificateActionContent title="Selected for Sale" buttonText="Sell">
+    <CertificateActionContent
+      title={title}
+      buttonText={buttonText}
+      selectedIds={selectedIds}
+      selectedItems={selectedItems}
+      submitHandler={sellHandler}
+    >
       <>
         <TextField
           fullWidth
           variant="standard"
-          label="Price per MWh"
+          label={priceInputLabel}
           margin="dense"
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={handlePriceChange}
           value={price}
         />
         <div className={classes.totalPrice}>
-          <Typography color="textSecondary">Total price</Typography>
+          <Typography color="textSecondary">{totalPriceText}</Typography>
           <Typography>$ 0.00</Typography>
         </div>
       </>

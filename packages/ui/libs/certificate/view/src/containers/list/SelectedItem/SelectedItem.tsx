@@ -1,62 +1,90 @@
-import React, { FC, useState } from 'react';
-import { SolarSelected } from '@energyweb/origin-ui-assets';
+import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { Button, IconButton, TextField, Typography } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import { useStyles } from './SelectedItem.styles';
+import { useSelectedItemEffects } from './SelectedItem.effects';
 
-export const SelectedItem: FC = () => {
+export interface SelectedItemProps<Id> {
+  id: Id;
+  icon: FC<React.SVGProps<SVGSVGElement>>;
+  deviceName: string;
+  energy: string;
+  generationTime: string;
+  amount: string;
+  onAmountChange: (id: Id, amount: string) => void;
+}
+
+export type TSelectedItem = <Id>(
+  props: PropsWithChildren<SelectedItemProps<Id>>
+) => ReactElement;
+
+export const SelectedItem: TSelectedItem = ({
+  id,
+  icon: Icon,
+  deviceName,
+  generationTime,
+  amount,
+  onAmountChange,
+}) => {
   const classes = useStyles();
-  const [editMode, setEditMode] = useState(false);
 
-  const openEditMode = () => {
-    setEditMode(true);
-  };
-
-  const closeEditMode = () => {
-    setEditMode(false);
-  };
+  const {
+    editMode,
+    openEditMode,
+    closeEditMode,
+    saveText,
+    cancelText,
+    inputValue,
+    handleSave,
+    handleInputChange,
+    editInputLabel,
+  } = useSelectedItemEffects(id, onAmountChange);
 
   return (
     <div className={classes.block}>
       <div className={classes.wrapper}>
         <div className={classes.item}>
-          <SolarSelected className={classes.icon} />
+          <Icon className={classes.icon} />
           <div>
-            <Typography>Solar Facility A</Typography>
-            <Typography color="textSecondary">
-              Nov 1, 2020 - Dec 31,2020
-            </Typography>
+            <Typography>{deviceName}</Typography>
+            <Typography color="textSecondary">{generationTime}</Typography>
           </div>
         </div>
         <div className={classes.item}>
-          {!editMode ? (
-            <>
-              <Typography style={{ marginRight: 10 }}>1000 MWh</Typography>
+          <>
+            <Typography style={{ marginRight: 10 }}>{amount} MWh</Typography>
+            {!editMode ? (
               <IconButton onClick={openEditMode}>
                 <Edit color="primary" />
               </IconButton>
-            </>
-          ) : (
-            <Button
-              className={classes.item}
-              onClick={closeEditMode}
-              color="inherit"
-            >
-              Cancel
-            </Button>
-          )}
+            ) : (
+              <Button
+                className={classes.item}
+                onClick={closeEditMode}
+                color="inherit"
+              >
+                {cancelText}
+              </Button>
+            )}
+          </>
         </div>
       </div>
       {editMode ? (
         <div className={classes.editForm}>
           <TextField
-            label="Edit amount"
+            label={editInputLabel}
             fullWidth
             className={classes.editField}
             variant="standard"
+            value={inputValue}
+            onChange={handleInputChange}
           />
-          <Button className={classes.editButton} variant="contained">
-            Save
+          <Button
+            onClick={handleSave}
+            className={classes.editButton}
+            variant="contained"
+          >
+            {saveText}
           </Button>
         </div>
       ) : null}

@@ -9,6 +9,7 @@ export const useStyles = makeStyles((theme) => ({
       theme.palette.mode
     ),
     padding: 10,
+    marginBottom: 10,
   },
   wrapper: {
     width: '100%',
