@@ -1,1 +1,2 @@
-export * from './providers/ethereum-provider/BlockchainProvider';
+export * from './getLibrary';
+export * from './hoc';

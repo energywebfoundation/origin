@@ -129,6 +129,8 @@ dependencies:
   '@types/ws': 7.4.5
   '@typescript-eslint/eslint-plugin': 4.3.0_64ad990ef16b3a7f8f5ab9b6794a2155
   '@typescript-eslint/parser': 4.3.0_eslint@7.10.0
+  '@web3-react/core': 6.1.9_react@17.0.2
+  '@web3-react/injected-connector': 6.0.7
   babel-jest: 26.2.2_@babel+core@7.9.6
   babel-loader: 8.1.0_@babel+core@7.9.6+webpack@4.42.0
   babel-plugin-styled-components: 1.12.0
@@ -12054,6 +12056,37 @@ packages:
     dev: false
     resolution:
       integrity: sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
+  /@web3-react/abstract-connector/6.0.7:
+    dependencies:
+      '@web3-react/types': 6.0.7
+    dev: false
+    resolution:
+      integrity: sha512-RhQasA4Ox8CxUC0OENc1AJJm8UTybu/oOCM61Zjg6y0iF7Z0sqv1Ai1VdhC33hrQpA8qSBgoXN9PaP8jKmtdqg==
+  /@web3-react/core/6.1.9_react@17.0.2:
+    dependencies:
+      '@ethersproject/keccak256': 5.4.0
+      '@web3-react/abstract-connector': 6.0.7
+      '@web3-react/types': 6.0.7
+      react: 17.0.2
+      tiny-invariant: 1.1.0
+      tiny-warning: 1.0.3
+    dev: false
+    peerDependencies:
+      react: '>=16.8'
+    resolution:
+      integrity: sha512-P877DslsbAkWIlMANpWiK7pCvNwlz0kJC0EGckuVh0wlA23J4UnFxq6xyOaxkxaDCu14rA/tAO0NbwjcXTQgSA==
+  /@web3-react/injected-connector/6.0.7:
+    dependencies:
+      '@web3-react/abstract-connector': 6.0.7
+      '@web3-react/types': 6.0.7
+      tiny-warning: 1.0.3
+    dev: false
+    resolution:
+      integrity: sha512-Y7aJSz6pg+MWKtvdyuqyy6LWuH+4Tqtph1LWfiyVms9II9ar/9B/de4R8wh4wjg91wmHkU+D75yP09E/Soh2RA==
+  /@web3-react/types/6.0.7:
+    dev: false
+    resolution:
+      integrity: sha512-ofGmfDhxmNT1/P/MgVa8IKSkCStFiyvXe+U5tyZurKdrtTDFU+wJ/LxClPDtFerWpczNFPUSrKcuhfPX1sI6+A==
   /@webassemblyjs/ast/1.11.0:
     dependencies:
       '@webassemblyjs/helper-numbers': 1.11.0
@@ -17431,6 +17464,19 @@ packages:
         optional: true
     resolution:
       integrity: sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
+  /debug/4.3.2:
+    dependencies:
+      ms: 2.1.2
+    dev: false
+    engines:
+      node: '>=6.0'
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    resolution:
+      integrity: sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==
   /debug/4.3.2_supports-color@8.1.1:
     dependencies:
       ms: 2.1.2
@@ -23694,7 +23740,7 @@ packages:
       integrity: sha512-wcdi+uAKzfiGT2abPpKZ0hSU1rGQjUQnLvtY5MpQ7QCTahD3VODhcu4wcfY1YtkGaDD5yuydOLINXsfbus9ROw==
   /istanbul-lib-source-maps/4.0.0:
     dependencies:
-      debug: 4.3.1
+      debug: 4.3.2
       istanbul-lib-coverage: 3.0.0
       source-map: 0.6.1
     dev: false
@@ -34993,6 +35039,10 @@ packages:
     optional: true
     resolution:
       integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
+  /tiny-invariant/1.1.0:
+    dev: false
+    resolution:
+      integrity: sha512-ytxQvrb1cPc9WBEI/HSeYYoGD0kWnGEOR8RY6KomWLBVhqz0RgTwVO9dLrGz7dC+nN9llyI7OKAgRq8Vq4ZBSw==
   /tiny-queue/0.2.1:
     dev: false
     optional: true
@@ -39961,7 +40011,7 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-hx3LSGQVGVWB7tAKUYR/Ftm1OS2qL5fhrA4twr7IV6GwHz8tSzBE6xbji6NDfsMSE11Yr+QqQv1TthmCsUYZpg==
+      integrity: sha512-+r6IOtAXIE9VW1LkFbwJZK4WvFmwrEFig58ppB9M4Pxe8iusf23esq/QWGC0lgADP5G9dioLkqkoGOX/1Vx5uQ==
       tarball: file:projects/issuer-irec-api.tgz
     version: 0.0.0
   file:projects/issuer.tgz_react@17.0.2:
@@ -40937,6 +40987,8 @@ packages:
       '@types/webpack': 4.41.21
       '@typescript-eslint/eslint-plugin': 4.3.0_994d979c051549b216df6838c5973d27
       '@typescript-eslint/parser': 4.3.0_eslint@7.10.0+typescript@4.0.7
+      '@web3-react/core': 6.1.9_react@17.0.2
+      '@web3-react/injected-connector': 6.0.7
       axios: 0.21.1
       babel-jest: 26.2.2_@babel+core@7.9.6
       babel-loader: 8.1.0_@babel+core@7.9.6+webpack@4.42.0
@@ -40998,7 +41050,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-Vwz7hzr2V6eeTJucNVNbDz2Nc3J7o9AiJOl/74Zg65WrO4xQqeRVufqxq1BWznTMheRo9CvGLhNfd5+GdUfHHA==
+      integrity: sha512-jnac3DrHKrmP0ofZ4g6o7t8jrfCjumbtfmG4r4fr7IJM00GsZ5zjqicYNFv9avJPxjCzHZBn2OGllHftUsyXzQ==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -41206,6 +41258,8 @@ specifiers:
   '@types/ws': 7.4.5
   '@typescript-eslint/eslint-plugin': 4.3.0
   '@typescript-eslint/parser': 4.3.0
+  '@web3-react/core': 6.1.9
+  '@web3-react/injected-connector': 6.0.7
   babel-jest: 26.2.2
   babel-loader: 8.1.0
   babel-plugin-styled-components: ^1.12.0
