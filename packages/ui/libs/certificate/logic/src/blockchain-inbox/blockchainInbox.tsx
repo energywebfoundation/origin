@@ -1,4 +1,3 @@
-import { certificationRequestControllerApprove } from '@energyweb/issuer-irec-api-react-query-client';
 import {
   Countries,
   EnergyTypeEnum,
