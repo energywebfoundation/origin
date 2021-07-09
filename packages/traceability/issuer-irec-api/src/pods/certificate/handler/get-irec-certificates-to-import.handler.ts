@@ -2,6 +2,7 @@ import { Repository } from 'typeorm';
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inject } from '@nestjs/common';
+
 import { GetAllCertificationRequestsQuery } from '@energyweb/issuer-api';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
