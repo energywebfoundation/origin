@@ -164,14 +164,14 @@ export class TransferService {
 
         const { address } = await this.accountService.getAccount(userId);
 
-        return this.triggerClaim(
+        return this.triggerSend(
             {
                 userId,
                 amount,
                 address,
                 asset: { id: assetId } as Asset,
                 status: TransferStatus.Accepted,
-                direction: TransferDirection.Claim
+                direction: TransferDirection.Send
             },
             transaction
         );
@@ -285,7 +285,7 @@ export class TransferService {
                 tr.getRepository<Transfer>(Transfer).save(claim)
             );
 
-            this.logger.error(`Created new claim with id=${storedClaim.id}`);
+            this.logger.debug(`Created new claim with id=${storedClaim.id}`);
 
             this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
 
@@ -308,7 +308,7 @@ export class TransferService {
                 tr.getRepository<Transfer>(Transfer).save(send)
             );
 
-            this.logger.error(`Created new send with id=${storedSend.id}`);
+            this.logger.debug(`Created new send with id=${storedSend.id}`);
 
             this.eventBus.publish(new SendRequestedEvent(storedSend));
 

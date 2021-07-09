@@ -17,7 +17,8 @@ import {
     TransferService,
     DB_TABLE_PREFIX,
     testUtils,
-    RequestBatchClaimDTO
+    RequestBatchClaimDTO,
+    RequestSendDTO
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
@@ -347,5 +348,33 @@ describe('Deposits using deployed registry', () => {
         const claimedBalance = await getClaimedBalance(exchangeAddress, tokenId);
 
         expect(claimedBalance.toNumber()).to.be.least(Number(tokenAmount) + Number(token2Amount));
+    });
+
+    it('should send to requested address', async () => {
+        const destinationAddress = ethers.Wallet.createRandom().address;
+        const sendAmount = '5';
+        const depositAmount = '10';
+
+        const assetId = await depositToExchangeAddress(depositAmount);
+
+        const send: RequestSendDTO = {
+            assetId,
+            amount: sendAmount,
+            address: destinationAddress
+        };
+
+        const startBalance = await getBalance(destinationAddress, tokenId);
+        expect(startBalance.isZero()).equals(true);
+
+        await request(app.getHttpServer())
+            .post('/transfer/send')
+            .send(send)
+            .expect(HttpStatus.CREATED);
+
+        await sleep(5000);
+
+        const endBalance = await getClaimedBalance(destinationAddress, tokenId);
+
+        expect(endBalance.toString()).equals(sendAmount);
     });
 });
