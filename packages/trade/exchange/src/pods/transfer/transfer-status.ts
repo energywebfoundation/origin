@@ -1,7 +1,7 @@
 export enum TransferStatus {
-    Unknown,
-    Accepted,
-    Unconfirmed,
-    Confirmed,
-    Error
+    Unknown = 'Unknown',
+    Accepted = 'Accepted',
+    Unconfirmed = 'Unconfirmed',
+    Confirmed = 'Confirmed',
+    Error = 'Error'
 }
