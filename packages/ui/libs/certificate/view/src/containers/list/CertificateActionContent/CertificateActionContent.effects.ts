@@ -29,7 +29,7 @@ export const useCertificateActionContentEffects = <Id>(
           const preparedNewItem: EnergyAmounts<Id> = {
             id,
             amount: parseInt(
-              items.find((item) => item.id === id).energy
+              items.find((item) => item.id === id).energy.replace(/,/g, '')
             ).toString(),
           };
           setEnergyAmounts([...energyAmounts, preparedNewItem]);
@@ -66,10 +66,12 @@ export const useCertificateActionContentEffects = <Id>(
     setEnergyAmounts(newAmounts);
   };
 
-  const handleSubmit = () => {
-    energyAmounts.forEach((item) => {
-      submitHandler(item.id, item.amount);
-    });
+  const handleSubmit = async () => {
+    await Promise.all(
+      energyAmounts.map(async (item) => {
+        await submitHandler(item.id, item.amount);
+      })
+    );
   };
 
   const getEnergyAmountForItem = (id: Id) => {

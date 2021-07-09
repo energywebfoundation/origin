@@ -8,7 +8,7 @@ export interface CertificateActionContentProps<Id> {
   title: string;
   buttonText: string;
   selectedIds: Id[];
-  submitHandler: (id: Id, amount: string) => void;
+  submitHandler: (id: Id, amount: string) => void | Promise<void>;
   selectedItems: Omit<SelectedItemProps<Id>, 'amount' | 'onAmountChange'>[];
 }
 

@@ -1,3 +1,4 @@
+import { certificationRequestControllerApprove } from '@energyweb/issuer-irec-api-react-query-client';
 import {
   Countries,
   EnergyTypeEnum,
@@ -7,10 +8,10 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { getEnergyTypeImage, getMainFuelType } from '../utils';
-import { ExchangeInboxContainers, TUseExchangeInboxLogic } from './types';
+import { BlockchainInboxContainers, TUseBlockchainInboxLogic } from './types';
 
-export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
-  exchangeCertificates,
+export const useBlockchainInboxLogic: TUseBlockchainInboxLogic = ({
+  blockchainCertificates,
   myDevices,
   allFuelTypes,
   actions,
@@ -19,23 +20,26 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
 }) => {
   const { t } = useTranslation();
 
-  const containers: ExchangeInboxContainers = new Map();
-  const generationTimeTitle = t('certificate.exchangeInbox.generationTime');
+  const containers: BlockchainInboxContainers = new Map();
+  const generationTimeTitle = t('certificate.blockchainInbox.generationTime');
   const viewButtonLabel = t('certificate.inbox.viewButton');
 
-  if (myDevices && exchangeCertificates) {
+  if (myDevices && blockchainCertificates) {
     myDevices.forEach((device) => {
-      const deviceHasCertificates = exchangeCertificates.find(
-        (certificate) =>
-          certificate.asset.deviceId === device.externalRegistryId
+      const deviceHasCertificates = blockchainCertificates.find(
+        (certificate) => certificate.deviceId === device.externalRegistryId
       );
       if (!deviceHasCertificates) {
         return;
       }
-      const certificatesMatchingDevice = exchangeCertificates.filter(
+      const certificatesMatchingDevice = blockchainCertificates.filter(
         (certificate) =>
-          certificate.asset.deviceId === device.externalRegistryId
+          certificate.deviceId === device.externalRegistryId &&
+          parseInt(certificate.energy.publicVolume) > 0
       );
+      if (certificatesMatchingDevice.length === 0) {
+        return;
+      }
       const countryName = Countries.find(
         (country) => country.code === device.countryCode
       )?.name;
@@ -52,15 +56,15 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
         containerListItemProps: { style: { padding: 8 } },
         itemListItemProps: { style: { padding: 8 } },
         items: certificatesMatchingDevice.map((certificate) => {
-          const startDate = formatDate(certificate.asset.generationFrom);
-          const endDate = formatDate(certificate.asset.generationTo);
+          const startDate = formatDate(certificate.generationStartTime * 1000);
+          const endDate = formatDate(certificate.generationEndTime * 1000);
           const generationTimeText = `${startDate} - ${endDate}`;
           const formattedEnergy = PowerFormatter.format(
-            parseInt(certificate.amount),
+            parseInt(certificate.energy.publicVolume),
             true
           );
           return {
-            id: certificate.asset.id,
+            id: certificate.id,
             component: (
               <ListItemContent
                 icon={deviceIcon}
@@ -81,7 +85,7 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
     listTitleProps: { gutterBottom: true, variant: 'h5' },
     itemsGridProps: { mt: 6 },
     checkboxes: true,
-    listTitle: t('certificate.exchangeInbox.title'),
+    listTitle: t('certificate.blockchainInbox.title'),
     selectAllText: t('certificate.inbox.selectAll'),
     containers: containers,
     actions: actions,

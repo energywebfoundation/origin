@@ -15,3 +15,7 @@ export * from './cachedFuelTypes';
 export * from './sellCertificate';
 export * from './withdrawCertificate';
 export * from './cachedUser';
+export * from './blockchainCertificates';
+export * from './cachedBlockchainCertificates';
+export * from './depositCertificate';
+export * from './retireCertificate';
