@@ -1,4 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useContainer } from 'class-validator';
+import { CanActivate, ExecutionContext, Type } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { AuthGuard } from '@nestjs/passport';
+import { Test } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { CertificateUtils, Contracts } from '@energyweb/issuer';
 import {
     IUser,
@@ -9,15 +16,10 @@ import {
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { CanActivate, ExecutionContext, Type } from '@nestjs/common';
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { AuthGuard } from '@nestjs/passport';
-import { Test } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { useContainer } from 'class-validator';
+import { FileService, UserService } from '@energyweb/origin-backend';
+import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 
 import { AppModule, BlockchainPropertiesService, entities, usedEntities } from '../src';
-import { FileService, UserService } from '@energyweb/origin-backend';
 
 const web3 = 'http://localhost:8581';
 const provider = getProviderWithFallback(web3);
@@ -172,6 +174,10 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         .overrideProvider(FileService)
         .useValue({
             get: () => ({ data: Buffer.from('yay data') })
+        })
+        .overrideProvider(DeviceService)
+        .useValue({
+            findOne: () => ({ fuelType: '' })
         })
         .compile();
 
