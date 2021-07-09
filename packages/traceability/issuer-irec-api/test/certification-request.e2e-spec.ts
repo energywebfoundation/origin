@@ -58,50 +58,53 @@ describe('Certification Request tests', () => {
             .expect(HttpStatus.BAD_REQUEST);
     });
 
-    [
-        certificationRequestTestData,
-        { ...certificationRequestTestData, to: '0x0089d53f703f7e0843953d48133f74ce247184c2' },
-        { ...certificationRequestTestData, to: '0x7CB57B5A97EABE94205C07890BE4C1AD31E486A8' }
-    ].forEach((certReqData) => {
-        it(`should create a certification request + entry in the DB: ${certReqData.to}`, async () => {
-            const {
-                body: {
-                    deviceId,
-                    fromTime,
-                    toTime,
-                    created,
-                    owner,
-                    approved,
-                    revoked,
-                    files,
-                    energy
-                }
-            } = await request(app.getHttpServer())
-                .post('/irec/certification-request')
-                .set({ 'test-user': TestUser.OrganizationDeviceManager })
-                .send(certReqData)
-                .expect(HttpStatus.CREATED);
+    it(`should create a certification request and check listing`, async () => {
+        const {
+            body: { deviceId, fromTime, toTime, created, owner, approved, revoked, files, energy }
+        } = await request(app.getHttpServer())
+            .post('/irec/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send(certificationRequestTestData)
+            .expect(HttpStatus.CREATED);
 
-            expect(deviceId).to.equal(certReqData.deviceId);
-            expect(fromTime).to.equal(certReqData.fromTime);
-            expect(toTime).to.equal(certReqData.toTime);
-            expect(created).to.be.null;
-            expect(owner).to.equal(getAddress(certReqData.to));
-            expect(approved).to.be.false;
-            expect(revoked).to.be.false;
-            expect(JSON.stringify(files)).to.equal(JSON.stringify(certReqData.files));
-            expect(energy).to.equal(certReqData.energy);
+        expect(deviceId).to.equal(certificationRequestTestData.deviceId);
+        expect(fromTime).to.equal(certificationRequestTestData.fromTime);
+        expect(toTime).to.equal(certificationRequestTestData.toTime);
+        expect(created).to.be.null;
+        expect(owner).to.equal(getAddress(certificationRequestTestData.to));
+        expect(approved).to.be.false;
+        expect(revoked).to.be.false;
+        expect(JSON.stringify(files)).to.equal(JSON.stringify(certificationRequestTestData.files));
+        expect(energy).to.equal(certificationRequestTestData.energy);
 
-            const { body: requests } = await request(app.getHttpServer())
-                .get(`/irec/certification-request`)
-                .set({ 'test-user': TestUser.OrganizationDeviceManager })
-                .expect(HttpStatus.OK);
+        await request(app.getHttpServer())
+            .post('/irec/certification-request')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({
+                ...certificationRequestTestData,
+                to: '0x0089d53f703f7e0843953d48133f74ce247184c2',
+                fromTime: moment().subtract(4, 'month').unix(),
+                toTime: moment().subtract(3, 'month').unix()
+            })
+            .expect(HttpStatus.CREATED);
 
-            const cr = requests.find(
-                (req: FullCertificationRequestDTO) => req.owner === getAddress(certReqData.to)
-            );
-            expect(cr).to.be.not.empty;
-        });
+        const { body: requests } = await request(app.getHttpServer())
+            .get(`/irec/certification-request`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect(HttpStatus.OK);
+
+        expect(requests.length).to.equal(1);
+        const cr = requests.find(
+            (req: FullCertificationRequestDTO) =>
+                req.owner === getAddress(certificationRequestTestData.to)
+        );
+        expect(cr).to.be.not.empty;
+
+        const { body: requests2 } = await request(app.getHttpServer())
+            .get(`/irec/certification-request`)
+            .set({ 'test-user': TestUser.Issuer })
+            .expect(HttpStatus.OK);
+        expect(requests2.length).to.equal(2);
     });
 
     it('should not be able to request certification request twice for the same time period', async () => {
