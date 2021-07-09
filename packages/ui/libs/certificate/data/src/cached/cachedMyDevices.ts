@@ -7,8 +7,8 @@ import {
   getDeviceControllerGetMyDevicesQueryKey,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { useQueryClient } from 'react-query';
-import { ComposedDevice } from './types';
-import { composeMyDevices } from './utils';
+import { ComposedDevice } from '../types';
+import { composeMyDevices } from '../utils';
 
 export const useCachedMyDevices = () => {
   const queryClient = useQueryClient();
