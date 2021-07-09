@@ -278,6 +278,15 @@ export class Certificate implements ICertificate {
         );
     }
 
+    async mint(to: string, volume: BigNumber): Promise<ContractTransaction> {
+        const toAddress = ethers.utils.getAddress(to);
+
+        const { issuer } = this.blockchainProperties;
+        const issuerWithSigner = issuer.connect(this.blockchainProperties.activeUser);
+
+        return issuerWithSigner.mint(toAddress, this.id, volume);
+    }
+
     async revoke(): Promise<ContractTransaction> {
         const { issuer } = this.blockchainProperties;
         const issuerWithSigner = issuer.connect(this.blockchainProperties.activeUser);
