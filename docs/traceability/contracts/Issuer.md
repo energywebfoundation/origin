@@ -80,6 +80,13 @@ Directly issue a batch of certificates without going through the request/approve
 
 
 
+### `mint(address _to, uint256 _certificateId, uint256 _volume)` (external)
+
+Mint more volume to existing certificates
+
+
+
+
 ### `isRequestValid(uint256 _requestId) → bool` (external)
 
 Validation for certification requests.
@@ -151,6 +158,12 @@ Allow only to the owner of the contract.
 
 
 ### `CertificateRevoked(uint256 _certificateId)`
+
+
+
+
+
+### `CertificateVolumeMinted(address _owner, uint256 _certificateId, uint256 _volume)`
 
 
 
