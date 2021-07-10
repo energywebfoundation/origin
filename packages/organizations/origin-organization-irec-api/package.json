@@ -60,7 +60,7 @@
         "superagent-use": "0.1.0",
         "supertest": "6.1.3",
         "supertest-capture-error": "1.0.0",
-        "@types/mocha": "8.2.2",
+        "@types/mocha": "8.2.3",
         "mocha": "9.0.2",
         "@types/chai": "4.2.15",
         "chai": "4.3.0",
