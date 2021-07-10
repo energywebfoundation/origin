@@ -32,7 +32,7 @@
         "@nestjs/swagger": "4.8.2",
         "@nestjs/testing": "7.6.18",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.3.5",
+        "@openapitools/openapi-generator-cli": "2.3.6",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.3.2",
         "ts-node": "9.1.1",
