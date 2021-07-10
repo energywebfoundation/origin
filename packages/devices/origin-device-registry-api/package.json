@@ -60,7 +60,7 @@
         "supertest-capture-error": "1.0.0",
         "ts-node": "9.1.1",
         "ts-sinon": "2.0.1",
-        "@types/mocha": "8.2.2",
+        "@types/mocha": "8.2.3",
         "mocha": "9.0.2",
         "@types/chai": "4.2.15",
         "chai": "4.3.0"
