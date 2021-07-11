@@ -38,7 +38,7 @@
         "@energyweb/utils-general": "11.0.2",
         "@nestjs/common": "7.6.18",
         "bn.js": "5.2.0",
-        "immutable": "4.0.0-rc.12",
+        "immutable": "4.0.0-rc.14",
         "moment": "2.29.1",
         "moment-range": "4.0.2",
         "rxjs": "6.6.7"
