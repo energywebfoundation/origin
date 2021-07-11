@@ -34,7 +34,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@nestjs/common": "7.6.18",
+        "@nestjs/common": "8.0.1",
         "bn.js": "5.2.0",
         "chai": "4.3.0",
         "immutable": "4.0.0-rc.12",
