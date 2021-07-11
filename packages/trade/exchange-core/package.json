@@ -37,7 +37,7 @@
         "@nestjs/common": "7.6.18",
         "bn.js": "5.2.0",
         "chai": "4.3.0",
-        "immutable": "4.0.0-rc.12",
+        "immutable": "4.0.0-rc.14",
         "moment": "2.29.1",
         "rxjs": "6.6.7"
     },
