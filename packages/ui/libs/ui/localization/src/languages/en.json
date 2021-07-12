@@ -414,9 +414,17 @@
         "selectBeneficiaries": "Select beneficiaries",
         "beneficiaryId": "ID:",
         "beneficiaryName": "Name:",
+        "transferActionTitle": "Transfer",
+        "selectedForTransfer": "Selected For Transfer",
+        "transferButton": "Transfer",
+        "blockchainAddress": "Blockchain address",
         "notifications": {
           "depositSuccess": "Certificate has been successfully deposited",
-          "depositError": "Error while depositing certificate"
+          "depositError": "Error while depositing certificate",
+          "retireSuccess": "Certificate has been successfully retired",
+          "retireError": "Error while retiring certificate",
+          "transferSuccess": "Certificate has been successfully transfered",
+          "transferError": "Error while transfering certificate"
         }
       },
       "inbox": {
