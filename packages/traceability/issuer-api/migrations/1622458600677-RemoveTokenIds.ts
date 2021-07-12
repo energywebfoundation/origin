@@ -28,6 +28,10 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
             CERTIFICATION REQUESTS
         */
         await queryRunner.query(
+            `ALTER TABLE "issuer_certification_request" RENAME COLUMN "issuedCertificateTokenId" to "issuedCertificateId"`
+        );
+
+        await queryRunner.query(
             `ALTER TABLE "issuer_certification_request" DROP CONSTRAINT "PK_126b742d59e12ccc099febcbc1e"`
         );
         await queryRunner.query(`ALTER TABLE "issuer_certification_request" DROP COLUMN id`);
