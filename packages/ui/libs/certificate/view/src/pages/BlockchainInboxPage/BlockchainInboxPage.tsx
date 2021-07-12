@@ -1,35 +1,21 @@
-import {
-  ItemsListWithActions,
-  ItemsListWithActionsProps,
-  ListAction,
-} from '@energyweb/origin-ui-core';
+import { ItemsListWithActions } from '@energyweb/origin-ui-core';
+import { CircularProgress, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
-// import { DepositAction, RetireAction } from '../../containers';
+import { withMetamask } from '@energyweb/origin-ui-blockchain';
+import { useBlockchainInboxPageEffects } from './BlockchainInboxPage.effects';
 
-export const BlockchainInboxPage: FC = () => {
-  const actions: ListAction[] = [
-    // {
-    //   name: 'Deposit',
-    //   content: <DepositAction />,
-    // },
-    // {
-    //   name: 'Retire',
-    //   content: <RetireAction />,
-    // },
-  ];
+const Component: FC = () => {
+  const { isLoading, listProps, noCertificatesText } =
+    useBlockchainInboxPageEffects();
 
-  const containers: ItemsListWithActionsProps<number, string>['containers'] =
-    new Map();
+  if (isLoading) return <CircularProgress />;
 
   return (
     <ItemsListWithActions
-      listTitleProps={{ gutterBottom: true, variant: 'h5' }}
-      itemsGridProps={{ mt: 6 }}
-      listTitle="Blockchain Inbox"
-      selectAllText="Select all"
-      checkboxes
-      containers={containers}
-      actions={actions}
+      emptyListComponent={<Typography>{noCertificatesText}</Typography>}
+      {...listProps}
     />
   );
 };
+
+export const BlockchainInboxPage = withMetamask(Component);

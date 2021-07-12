@@ -386,9 +386,9 @@
     "certificate": {
       "exchangeInbox": {
         "title": "Exchange Inbox",
-        "selectAll": "Select All",
+        "sellActionTitle": "Sell",
+        "withdrawActionTitle": "Withdraw",
         "generationTime": "Generation Time Frame",
-        "viewButton": "View",
         "selectedForSale": "Selected For Sale",
         "price": "Price per MWh",
         "totalPrice": "Total Price",
@@ -402,6 +402,39 @@
           "withdrawError": "Error while withdrawing certificate"
         }
       },
+      "blockchainInbox": {
+        "title": "Blockchain Inbox",
+        "depositActionTitle": "Deposit",
+        "retireActionTitle": "Retire",
+        "selectedForDeposit": "Selected For Deposit",
+        "depositButton": "Deposit",
+        "selectedForRetirement": "Selected For Retirement",
+        "retireButton": "Retire",
+        "generationTime": "Generation Time Frame",
+        "selectBeneficiaries": "Select beneficiaries",
+        "beneficiaryId": "ID:",
+        "beneficiaryName": "Name:",
+        "transferActionTitle": "Transfer",
+        "selectedForTransfer": "Selected For Transfer",
+        "transferButton": "Transfer",
+        "blockchainAddress": "Blockchain address",
+        "notifications": {
+          "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can deposit certificates",
+          "depositSuccess": "Certificate has been successfully deposited",
+          "depositError": "Error while depositing certificate",
+          "retireSuccess": "Certificate has been successfully retired",
+          "retireError": "Error while retiring certificate",
+          "transferSuccess": "Certificate has been successfully transfered",
+          "transferError": "Error while transfering certificate"
+        }
+      },
+      "inbox": {
+        "selectAll": "Select All",
+        "selectCertificate": "Select Certificate",
+        "totalVolume": "Total Volume",
+        "viewButton": "View",
+        "noCertificates": "You don't have any certificates in the inbox"
+      },
       "requests": {
         "facility": "Facility",
         "gridOperator": "Grid operator",
@@ -414,10 +447,6 @@
         "status": "Status",
         "approved": "Approved",
         "pending": "Pending"
-      },
-      "inbox": {
-        "selectCertificate": "Select Certificate",
-        "totalVolume": "Total Volume"
       },
       "pending": {
         "approve": "Approve",
@@ -435,7 +464,7 @@
         "location": "Region, province",
         "gridOperator": "Grid operator",
         "compliance": "Compliance",
-        "certificationDate": "Certification Date",
+        "claimDate": "Claim Date",
         "certifiedEnergy": "Certified Energy"
       }
     },

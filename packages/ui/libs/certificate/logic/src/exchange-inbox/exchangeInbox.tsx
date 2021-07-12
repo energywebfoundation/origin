@@ -11,7 +11,7 @@ import { ExchangeInboxContainers, TUseExchangeInboxLogic } from './types';
 
 export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
   exchangeCertificates,
-  myDevices,
+  allDevices,
   allFuelTypes,
   actions,
   ListItemHeader,
@@ -21,10 +21,10 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
 
   const containers: ExchangeInboxContainers = new Map();
   const generationTimeTitle = t('certificate.exchangeInbox.generationTime');
-  const viewButtonLabel = t('certificate.exchangeInbox.viewButton');
+  const viewButtonLabel = t('certificate.inbox.viewButton');
 
-  if (myDevices && exchangeCertificates) {
-    myDevices.forEach((device) => {
+  if (allDevices && exchangeCertificates) {
+    allDevices.forEach((device) => {
       const deviceHasCertificates = exchangeCertificates.find(
         (certificate) =>
           certificate.asset.deviceId === device.externalRegistryId
@@ -82,7 +82,7 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
     itemsGridProps: { mt: 6 },
     checkboxes: true,
     listTitle: t('certificate.exchangeInbox.title'),
-    selectAllText: t('certificate.exchangeInbox.selectAll'),
+    selectAllText: t('certificate.inbox.selectAll'),
     containers: containers,
     actions: actions,
   };

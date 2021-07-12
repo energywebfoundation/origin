@@ -4,15 +4,14 @@ import React, { FC } from 'react';
 import { useExchangeInboxPageEffects } from './ExchangeInboxPage.effects';
 
 export const ExchangeInboxPage: FC = () => {
-  const { isLoading, listProps } = useExchangeInboxPageEffects();
+  const { isLoading, listProps, noCertificatesText } =
+    useExchangeInboxPageEffects();
 
   if (isLoading) return <CircularProgress />;
 
   return (
     <ItemsListWithActions
-      emptyListComponent={
-        <Typography>You don't have any certificates</Typography>
-      }
+      emptyListComponent={<Typography>{noCertificatesText}</Typography>}
       {...listProps}
     />
   );

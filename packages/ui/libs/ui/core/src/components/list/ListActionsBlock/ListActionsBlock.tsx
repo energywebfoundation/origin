@@ -42,6 +42,11 @@ export const ListActionsBlock: TListActionsBlock = ({
   wrapperProps,
 }) => {
   const { tabIndex, setTabIndex } = useListActionsBlockEffects();
+
+  if (!actions[tabIndex]) {
+    return <></>;
+  }
+
   const { content, component: Component } = actions[tabIndex];
   return (
     <div {...wrapperProps}>

@@ -30,7 +30,7 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
 }) => {
   const classes = useStyles();
   const availableLinks = menuList.filter((item) => item.show);
-  const sectionTitleUrl = `${rootUrl}/${availableLinks[0].url}`;
+  const sectionTitleUrl = `${rootUrl}/${availableLinks[0]?.url}`;
 
   return (
     <div className={classes.wrapper}>

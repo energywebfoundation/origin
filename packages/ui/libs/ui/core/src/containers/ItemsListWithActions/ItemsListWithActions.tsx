@@ -17,6 +17,7 @@ export const ItemsListWithActions: TItemsListWithActions = ({
   itemsGridProps,
   actionsGridProps,
   emptyListComponent,
+  actionsTabsProps,
 }) => {
   const {
     allSelected,
@@ -48,6 +49,7 @@ export const ItemsListWithActions: TItemsListWithActions = ({
           actions={actions}
           selectedIds={selectedItems}
           resetSelected={resetState}
+          tabsProps={actionsTabsProps}
         />
       </Grid>
     </Grid>

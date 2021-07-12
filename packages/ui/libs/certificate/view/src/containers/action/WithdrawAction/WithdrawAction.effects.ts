@@ -1,7 +1,7 @@
 import {
   useCachedExchangeCertificates,
   useCachedAllFuelTypes,
-  useCachedMyDevices,
+  useCachedAllDevices,
   useCachedUser,
   useWithdrawCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
@@ -12,7 +12,7 @@ export const useWithdrawActionEffects = <Id>(
   resetIds: () => void
 ) => {
   const exchangeCertificates = useCachedExchangeCertificates();
-  const myDevices = useCachedMyDevices();
+  const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
   const user = useCachedUser();
 
@@ -27,7 +27,7 @@ export const useWithdrawActionEffects = <Id>(
   const actionLogic = useWithdrawActionLogic({
     selectedIds,
     exchangeCertificates,
-    myDevices,
+    allDevices,
     allFuelTypes,
   });
 

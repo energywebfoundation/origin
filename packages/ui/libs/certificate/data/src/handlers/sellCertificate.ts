@@ -29,7 +29,7 @@ export const useSellCertificateHandler = (
     const assetId = exchangeCertificates.find(
       (cert) =>
         cert.asset.id === (id as unknown as AccountAssetDTO['asset']['id'])
-    )?.asset?.deviceId;
+    ).asset?.id;
 
     const data: CreateAskDTO = {
       volume: PowerFormatter.getBaseValueFromValueInDisplayUnit(

@@ -1,11 +1,6 @@
-import {
-    ActiveUserGuard,
-    BlockchainAccountGuard,
-    BlockchainAccountDecorator,
-    ExceptionInterceptor,
-    Roles,
-    RolesGuard
-} from '@energyweb/origin-backend-utils';
+import moment from 'moment';
+import { BigNumber } from 'ethers';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     Body,
     Controller,
@@ -24,24 +19,34 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+
+import {
+    ActiveUserGuard,
+    BlockchainAccountGuard,
+    BlockchainAccountDecorator,
+    ExceptionInterceptor,
+    Roles,
+    RolesGuard
+} from '@energyweb/origin-backend-utils';
 import { Role } from '@energyweb/origin-backend-core';
 
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import moment from 'moment';
-import { BigNumber } from 'ethers';
-import { IssueCertificateCommand } from './commands/issue-certificate.command';
-import { IssueCertificateDTO } from './commands/issue-certificate.dto';
-import { GetAllCertificatesQuery } from './queries/get-all-certificates.query';
-import { GetCertificateQuery } from './queries/get-certificate.query';
-import { TransferCertificateCommand } from './commands/transfer-certificate.command';
-import { TransferCertificateDTO } from './commands/transfer-certificate.dto';
-import { ClaimCertificateDTO } from './commands/claim-certificate.dto';
-import { ClaimCertificateCommand } from './commands/claim-certificate.command';
-import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
+import {
+    IssueCertificateCommand,
+    IssueCertificateDTO,
+    TransferCertificateCommand,
+    TransferCertificateDTO,
+    ClaimCertificateDTO,
+    ClaimCertificateCommand
+} from './commands';
+import {
+    GetAllCertificatesQuery,
+    GetCertificateQuery,
+    GetAggregateCertifiedEnergyByDeviceIdQuery,
+    GetAllCertificateEventsQuery
+} from './queries';
+import { CertificateDTO } from './dto';
 import { CertificateEvent } from '../../types';
-import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
-import { CertificateDTO } from './dto/certificate.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { SuccessResponseDTO } from '../../utils';
 import { certificateToDto } from './utils';
 import { Certificate } from './certificate.entity';
 

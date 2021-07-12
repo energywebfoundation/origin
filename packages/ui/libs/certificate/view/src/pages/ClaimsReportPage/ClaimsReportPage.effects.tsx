@@ -1,27 +1,30 @@
 import {
-  useIrecCertificates,
-  useApiMyDevices,
   useAllFuelTypes,
-  certificates as certificatesMock,
+  useClaimedCertificates,
 } from '@energyweb/origin-ui-certificate-data';
 import { useLogicClaimsReport } from '@energyweb/origin-ui-certificate-logic';
+import { useApiAllDevices } from '@energyweb/origin-ui-device-data';
 
 export const useClaimsReportPageEffects = () => {
-  const { myDevices: devices, isLoading: areDevicesLoading } =
-    useApiMyDevices();
+  const {
+    claimedCertificates,
+    blockchainCertificates,
+    isLoading: areClaimedLoading,
+  } = useClaimedCertificates();
+
+  const { allDevices: devices, isLoading: areDevicesLoading } =
+    useApiAllDevices();
 
   const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
     useAllFuelTypes();
 
-  const { isLoading: allCertificatesLoading } = useIrecCertificates();
-
-  const loading =
-    isFuelTypesloading || areDevicesLoading || allCertificatesLoading;
+  const loading = areClaimedLoading || isFuelTypesloading || areDevicesLoading;
 
   const tableData = useLogicClaimsReport({
     devices,
     allFuelTypes,
-    certificates: certificatesMock,
+    blockchainCertificates,
+    claimedCertificates,
     loading,
   });
 

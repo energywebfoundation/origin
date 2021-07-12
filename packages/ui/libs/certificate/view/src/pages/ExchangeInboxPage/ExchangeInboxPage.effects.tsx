@@ -1,10 +1,11 @@
 import {
   useAllFuelTypes,
+  useApiAllDevices,
   useApiAllExchangeCertificates,
-  useApiMyDevices,
 } from '@energyweb/origin-ui-certificate-data';
 import { useExchangeInboxLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
 import {
   ListItemContent,
   ListItemHeader,
@@ -13,9 +14,11 @@ import {
 } from '../../containers';
 
 export const useExchangeInboxPageEffects = () => {
+  const { t } = useTranslation();
+
   const { exchangeCertificates, isLoading: areCertificatesLoading } =
     useApiAllExchangeCertificates();
-  const { myDevices, isLoading: areDevicesLoading } = useApiMyDevices();
+  const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllFuelTypes();
 
@@ -24,23 +27,25 @@ export const useExchangeInboxPageEffects = () => {
 
   const actions: ListAction[] = [
     {
-      name: 'Sell',
+      name: t('certificate.exchangeInbox.sellActionTitle'),
       component: SellAction,
     },
     {
-      name: 'Withdraw',
+      name: t('certificate.exchangeInbox.withdrawActionTitle'),
       component: WithdrawAction,
     },
   ];
 
   const listProps = useExchangeInboxLogic({
     exchangeCertificates,
-    myDevices,
+    allDevices,
     allFuelTypes,
     actions,
     ListItemHeader,
     ListItemContent,
   });
 
-  return { isLoading, listProps };
+  const noCertificatesText = t('certificate.inbox.noCertificates');
+
+  return { isLoading, listProps, noCertificatesText };
 };

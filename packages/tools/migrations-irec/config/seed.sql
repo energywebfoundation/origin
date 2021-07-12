@@ -665,3 +665,52 @@ VALUES (
         'METER003',
         'Biomass Facility description'
     );
+
+INSERT INTO public."irec_beneficiary" (
+    "createdAt",
+    "updatedAt",
+    "id",
+    "irecBeneficiaryId",
+    "organizationId"
+)
+VALUES (
+           '2020-03-30 09:55:25.962333+02',
+           '2020-03-30 09:55:25.962333+02',
+           1,
+           1,
+           1
+       ),
+       (
+           '2020-03-30 09:55:25.962333+02',
+           '2020-03-30 09:55:25.962333+02',
+           2,
+           2,
+           2
+       ),
+       (
+           '2020-03-30 09:55:25.962333+02',
+           '2020-03-30 09:55:25.962333+02',
+           3,
+           3,
+           3
+       ),
+       (
+           '2020-03-30 09:55:25.962333+02',
+           '2020-03-30 09:55:25.962333+02',
+           4,
+           4,
+           4
+       ),(
+           '2020-03-30 09:55:25.962333+02',
+           '2020-03-30 09:55:25.962333+02',
+           5,
+           5,
+           5
+       );
+SELECT setval(
+               pg_get_serial_sequence('public.irec_beneficiary', 'id'),
+               (
+                   SELECT MAX("id")
+                   FROM public.irec_beneficiary
+               ) + 1
+           );

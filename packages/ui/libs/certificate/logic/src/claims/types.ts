@@ -5,14 +5,13 @@ import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 
 export type TUseLogicClaimsReportArgs = {
   devices: ComposedPublicDevice[];
-  certificates: CertificateDTO[];
+  blockchainCertificates: CertificateDTO[];
+  claimedCertificates: CertificateDTO['myClaims'];
   allFuelTypes: CodeNameDTO[];
   loading: boolean;
 };
 
-export type TFormatClaimsReportReturnData = TableRowData<
-  CertificateDTO['id']
->[];
+export type TFormatClaimsReportReturnData = TableRowData<string>[];
 
 export type TFormatClaimsReportData = (
   props: Omit<TUseLogicClaimsReportArgs, 'loading'>
@@ -20,4 +19,4 @@ export type TFormatClaimsReportData = (
 
 export type TUseLogicClaimsReport = (
   props: TUseLogicClaimsReportArgs
-) => TableComponentProps<CertificateDTO['id']>;
+) => TableComponentProps<string>;

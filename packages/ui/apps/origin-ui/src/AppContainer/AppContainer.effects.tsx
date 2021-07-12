@@ -71,12 +71,12 @@ export const useAppContainerEffects = () => {
   const certificateMenu = getCertificateMenu({
     t,
     isOpen: isCertificateTabActive,
-    showSection: true,
-    showExchangeInbox: true,
-    showBlockchainInbox: true,
-    showClaimsReport: true,
-    showRequests: true,
-    showPending: true,
+    showSection: (userIsActive && userHasOrg) || userIsIssuer,
+    showExchangeInbox: userIsActive && userHasOrg,
+    showBlockchainInbox: userIsActive && userHasOrg,
+    showClaimsReport: userIsActive && userHasOrg,
+    showRequests: userIsActive && userHasOrg,
+    showPending: userIsIssuer,
   });
   const exchangeMenu = getExchangeMenu({
     t,

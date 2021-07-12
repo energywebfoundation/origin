@@ -1,4 +1,4 @@
-import { GridProps, ListItemProps } from '@material-ui/core';
+import { GridProps, ListItemProps, TabsProps } from '@material-ui/core';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { GenericItemsListProps, ListAction } from '../../components/list';
 import { ActionsEnum } from './ItemsListWithActions.reducer';
@@ -34,6 +34,7 @@ export interface ItemsListWithActionsProps<ContainerId, ItemId> {
   itemsGridProps?: GridProps;
   actionsGridProps?: GridProps;
   emptyListComponent?: ReactNode;
+  actionsTabsProps?: TabsProps;
 }
 
 export type TItemsListWithActions = <ContainerId, ItemId>(

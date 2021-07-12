@@ -10,7 +10,8 @@ type EnergyAmounts<Id> = {
 export const useCertificateActionContentEffects = <Id>(
   selectedIds: Id[],
   selectedItems: CertificateActionContentProps<Id>['selectedItems'],
-  submitHandler: CertificateActionContentProps<Id>['submitHandler']
+  submitHandler: CertificateActionContentProps<Id>['submitHandler'],
+  setTotalAmount?: CertificateActionContentProps<Id>['setTotalAmount']
 ) => {
   const { t } = useTranslation();
   const [energyAmounts, setEnergyAmounts] = useState<EnergyAmounts<Id>[]>([]);
@@ -29,7 +30,7 @@ export const useCertificateActionContentEffects = <Id>(
           const preparedNewItem: EnergyAmounts<Id> = {
             id,
             amount: parseInt(
-              items.find((item) => item.id === id).energy
+              items.find((item) => item.id === id).energy.replace(/,/g, '')
             ).toString(),
           };
           setEnergyAmounts([...energyAmounts, preparedNewItem]);
@@ -66,10 +67,12 @@ export const useCertificateActionContentEffects = <Id>(
     setEnergyAmounts(newAmounts);
   };
 
-  const handleSubmit = () => {
-    energyAmounts.forEach((item) => {
-      submitHandler(item.id, item.amount);
-    });
+  const handleSubmit = async () => {
+    await Promise.all(
+      energyAmounts.map(async (item) => {
+        await submitHandler(item.id, item.amount);
+      })
+    );
   };
 
   const getEnergyAmountForItem = (id: Id) => {
@@ -78,10 +81,21 @@ export const useCertificateActionContentEffects = <Id>(
 
   const selectCertificateText = t('certificate.inbox.selectCertificate');
   const totalVolumeText = t('certificate.inbox.totalVolume');
+  const totalVolume = energyAmounts.reduce(
+    (total, current) => (total += parseInt(current.amount)),
+    0
+  );
+
+  useEffect(() => {
+    if (setTotalAmount) {
+      setTotalAmount(totalVolume);
+    }
+  }, [totalVolume]);
 
   return {
     selectCertificateText,
     totalVolumeText,
+    totalVolume,
     getEnergyAmountForItem,
     handleItemEnergyAmountChange,
     handleSubmit,

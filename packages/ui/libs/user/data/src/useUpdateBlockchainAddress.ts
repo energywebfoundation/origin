@@ -43,8 +43,6 @@ export const useUpdateBlockchainAddress = (
         user?.organization?.status !== OrganizationStatus.Active
       ) {
         throw Error(t('user.profile.notifications.onlyMembersOfActiveOrgCan'));
-      } else if (account === null || web3?.connection?.url !== 'metamask') {
-        throw Error(t('user.profile.notifications.noBlockchainConnection'));
       } else if (
         user?.organization?.blockchainAccountAddress === account.toLowerCase()
       ) {

@@ -1,5 +1,5 @@
 import { fileControllerDownload } from '@energyweb/origin-backend-react-query-client';
-import { ApiDownloadFunction } from './types';
+import { ApiDownloadFunction } from '../types';
 
 export const fileUDownloadHandler = async (id: string) => {
   return await fileControllerDownload(id);
