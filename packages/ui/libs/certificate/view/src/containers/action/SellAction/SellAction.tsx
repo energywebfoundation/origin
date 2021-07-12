@@ -22,6 +22,9 @@ export const SellAction: TSellAction = ({ selectedIds, resetIds }) => {
     selectedItems,
     handlePriceChange,
     sellHandler,
+    setTotalAmount,
+    totalPrice,
+    buttonDisabled,
   } = useSellActionEffects(selectedIds, resetIds);
 
   return (
@@ -31,6 +34,8 @@ export const SellAction: TSellAction = ({ selectedIds, resetIds }) => {
       selectedIds={selectedIds}
       selectedItems={selectedItems}
       submitHandler={sellHandler}
+      setTotalAmount={setTotalAmount}
+      buttonDisabled={buttonDisabled}
     >
       <>
         <TextField
@@ -43,7 +48,7 @@ export const SellAction: TSellAction = ({ selectedIds, resetIds }) => {
         />
         <div className={classes.totalPrice}>
           <Typography color="textSecondary">{totalPriceText}</Typography>
-          <Typography>$ 0.00</Typography>
+          <Typography>$ {totalPrice}</Typography>
         </div>
       </>
     </CertificateActionContent>

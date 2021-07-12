@@ -5,12 +5,13 @@ import {
   useSellCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
 import { useSellActionLogic } from '@energyweb/origin-ui-certificate-logic';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 export const useSellActionEffects = <Id>(
   selectedIds: Id[],
   resetIds: () => void
 ) => {
+  const [totalAmount, setTotalAmount] = useState<number>();
   const [price, setPrice] = useState('');
 
   const handlePriceChange = (
@@ -36,5 +37,20 @@ export const useSellActionEffects = <Id>(
     allFuelTypes,
   });
 
-  return { ...actionLogic, price, handlePriceChange, sellHandler };
+  const calculatedTotalPrice = parseFloat(price) * totalAmount;
+  const totalPrice = isNaN(calculatedTotalPrice)
+    ? '0.00'
+    : calculatedTotalPrice.toFixed(2).toString();
+  const buttonDisabled =
+    isNaN(calculatedTotalPrice) || calculatedTotalPrice === 0;
+
+  return {
+    ...actionLogic,
+    price,
+    handlePriceChange,
+    sellHandler,
+    setTotalAmount,
+    totalPrice,
+    buttonDisabled,
+  };
 };

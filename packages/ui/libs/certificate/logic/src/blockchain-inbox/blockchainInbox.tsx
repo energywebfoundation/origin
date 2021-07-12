@@ -88,5 +88,6 @@ export const useBlockchainInboxLogic: TUseBlockchainInboxLogic = ({
     selectAllText: t('certificate.inbox.selectAll'),
     containers: containers,
     actions: actions,
+    actionsTabsProps: { scrollButtons: false },
   };
 };

@@ -35,11 +35,14 @@ export const useTransferActionEffects = <Id>(
     allFuelTypes,
   });
 
+  const buttonDisabled = !recipientAddress;
+
   return {
     ...actionLogic,
     recipientAddress,
     handleAddressChange,
     transferHandler,
     isLoading,
+    buttonDisabled,
   };
 };

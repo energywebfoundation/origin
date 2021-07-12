@@ -24,6 +24,7 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
     isLoading,
     beneficiarySelectorProps,
     selectedBeneficiaryId,
+    buttonDisabled,
   } = useRetireActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
@@ -35,6 +36,7 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
       selectedIds={selectedIds}
       selectedItems={selectedItems}
       submitHandler={retireHandler}
+      buttonDisabled={buttonDisabled}
     >
       <SelectRegular
         textFieldProps={{ margin: 'none', className: classes.selector }}

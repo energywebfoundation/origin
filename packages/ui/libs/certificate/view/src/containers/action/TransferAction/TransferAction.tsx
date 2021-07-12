@@ -22,6 +22,7 @@ export const TransferAction: TTransferAction = ({ selectedIds, resetIds }) => {
     recipientAddress,
     handleAddressChange,
     isLoading,
+    buttonDisabled,
   } = useTransferActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
@@ -33,6 +34,7 @@ export const TransferAction: TTransferAction = ({ selectedIds, resetIds }) => {
       selectedIds={selectedIds}
       selectedItems={selectedItems}
       submitHandler={transferHandler}
+      buttonDisabled={buttonDisabled}
     >
       <TextField
         fullWidth

@@ -48,12 +48,13 @@ export const useRetireActionEffects = <Id>(
   });
 
   const isLoading = areBeneficiariesLoading || isHandlerLoading;
-
+  const buttonDisabled = !selectedBeneficiaryId;
   return {
     ...actionLogic,
     retireHandler,
     isLoading,
     beneficiarySelectorProps,
     selectedBeneficiaryId,
+    buttonDisabled,
   };
 };

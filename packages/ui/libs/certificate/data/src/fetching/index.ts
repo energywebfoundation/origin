@@ -8,3 +8,4 @@ export * from './myDevices';
 export * from './pendingCertificationRequests';
 export * from './platformBeneficiaries';
 export * from './claimedCertificates';
+export * from './exchangeAddress';

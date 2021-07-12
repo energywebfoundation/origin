@@ -10,6 +10,8 @@ export interface CertificateActionContentProps<Id> {
   selectedIds: Id[];
   submitHandler: (id: Id, amount: string) => void | Promise<void>;
   selectedItems: Omit<SelectedItemProps<Id>, 'amount' | 'onAmountChange'>[];
+  buttonDisabled?: boolean;
+  setTotalAmount?: (newValue: number) => void;
 }
 
 export type TCertificateActionContent = <Id>(
@@ -22,6 +24,8 @@ export const CertificateActionContent: TCertificateActionContent = ({
   selectedIds,
   selectedItems,
   submitHandler,
+  buttonDisabled,
+  setTotalAmount,
   children,
 }) => {
   const classes = useStyles();
@@ -31,10 +35,12 @@ export const CertificateActionContent: TCertificateActionContent = ({
     getEnergyAmountForItem,
     handleItemEnergyAmountChange,
     handleSubmit,
+    totalVolume,
   } = useCertificateActionContentEffects(
     selectedIds,
     selectedItems,
-    submitHandler
+    submitHandler,
+    setTotalAmount
   );
 
   return (
@@ -58,12 +64,12 @@ export const CertificateActionContent: TCertificateActionContent = ({
       )}
       <div className={classes.totalVolume}>
         <Typography color="textSecondary">{totalVolumeText}</Typography>
-        <Typography>0 MWh</Typography>
+        <Typography>{totalVolume} MWh</Typography>
       </div>
       {children}
       <Button
         fullWidth
-        disabled={selectedIds.length === 0}
+        disabled={selectedIds.length === 0 || buttonDisabled}
         color="primary"
         variant="contained"
         onClick={handleSubmit}

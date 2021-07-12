@@ -10,7 +10,8 @@ type EnergyAmounts<Id> = {
 export const useCertificateActionContentEffects = <Id>(
   selectedIds: Id[],
   selectedItems: CertificateActionContentProps<Id>['selectedItems'],
-  submitHandler: CertificateActionContentProps<Id>['submitHandler']
+  submitHandler: CertificateActionContentProps<Id>['submitHandler'],
+  setTotalAmount?: CertificateActionContentProps<Id>['setTotalAmount']
 ) => {
   const { t } = useTranslation();
   const [energyAmounts, setEnergyAmounts] = useState<EnergyAmounts<Id>[]>([]);
@@ -80,10 +81,21 @@ export const useCertificateActionContentEffects = <Id>(
 
   const selectCertificateText = t('certificate.inbox.selectCertificate');
   const totalVolumeText = t('certificate.inbox.totalVolume');
+  const totalVolume = energyAmounts.reduce(
+    (total, current) => (total += parseInt(current.amount)),
+    0
+  );
+
+  useEffect(() => {
+    if (setTotalAmount) {
+      setTotalAmount(totalVolume);
+    }
+  }, [totalVolume]);
 
   return {
     selectCertificateText,
     totalVolumeText,
+    totalVolume,
     getEnergyAmountForItem,
     handleItemEnergyAmountChange,
     handleSubmit,
