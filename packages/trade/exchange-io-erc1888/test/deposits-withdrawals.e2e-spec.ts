@@ -373,7 +373,7 @@ describe('Deposits using deployed registry', () => {
 
         await sleep(5000);
 
-        const endBalance = await getClaimedBalance(destinationAddress, tokenId);
+        const endBalance = await getBalance(destinationAddress, tokenId);
 
         expect(endBalance.toString()).equals(sendAmount);
     });

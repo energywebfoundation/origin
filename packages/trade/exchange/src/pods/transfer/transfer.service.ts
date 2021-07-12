@@ -157,12 +157,10 @@ export class TransferService {
 
     public async requestSend(
         userId: string,
-        { amount, assetId }: RequestSendDTO,
+        { address, amount, assetId }: RequestSendDTO,
         transaction?: EntityManager
     ): Promise<Transfer['id']> {
         await this.validateEnoughFunds(userId, assetId, amount);
-
-        const { address } = await this.accountService.getAccount(userId);
 
         return this.triggerSend(
             {
