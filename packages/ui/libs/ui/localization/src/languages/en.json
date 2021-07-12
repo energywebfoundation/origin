@@ -411,6 +411,9 @@
         "selectedForRetirement": "Selected For Retirement",
         "retireButton": "Retire",
         "generationTime": "Generation Time Frame",
+        "selectBeneficiaries": "Select beneficiaries",
+        "beneficiaryId": "ID:",
+        "beneficiaryName": "Name:",
         "notifications": {
           "depositSuccess": "Certificate has been successfully deposited",
           "depositError": "Error while depositing certificate"
@@ -452,7 +455,7 @@
         "location": "Region, province",
         "gridOperator": "Grid operator",
         "compliance": "Compliance",
-        "certificationDate": "Certification Date",
+        "claimDate": "Claim Date",
         "certifiedEnergy": "Certified Energy"
       }
     },
