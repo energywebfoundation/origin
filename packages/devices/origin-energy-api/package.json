@@ -26,11 +26,12 @@
     "dependencies": {
         "@energyweb/energy-api-influxdb": "0.7.1",
         "@energyweb/origin-backend-core": "8.0.1",
+        "@nestjs/cli": "8.0.2",
         "@nestjs/common": "8.0.1",
-        "@nestjs/config": "0.6.3",
+        "@nestjs/config": "1.0.0",
         "@nestjs/core": "8.0.1",
-        "@nestjs/passport": "7.1.6",
-        "@nestjs/swagger": "4.8.2"
+        "@nestjs/passport": "8.0.0",
+        "@nestjs/swagger": "5.0.0"
     },
     "devDependencies": {
         "typescript": "4.3.5",

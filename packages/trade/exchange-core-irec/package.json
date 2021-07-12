@@ -38,10 +38,10 @@
         "@energyweb/utils-general": "11.0.2",
         "@nestjs/common": "8.0.1",
         "bn.js": "5.2.0",
-        "immutable": "4.0.0-rc.12",
+        "immutable": "4.0.0-rc.14",
         "moment": "2.29.1",
         "moment-range": "4.0.2",
-        "rxjs": "6.6.7"
+        "rxjs": "7.2.0"
     },
     "devDependencies": {
         "typescript": "4.3.5",

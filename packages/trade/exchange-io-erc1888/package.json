@@ -37,14 +37,14 @@
         "@energyweb/origin-backend-utils": "1.5.1",
         "@energyweb/utils-general": "11.0.2",
         "@nestjs/common": "8.0.1",
-        "@nestjs/config": "0.6.3",
+        "@nestjs/config": "1.0.0",
         "@nestjs/core": "8.0.1",
-        "@nestjs/cqrs": "7.0.1",
-        "@nestjs/passport": "7.1.6",
-        "@nestjs/typeorm": "7.1.5",
+        "@nestjs/cqrs": "8.0.0",
+        "@nestjs/passport": "8.0.0",
+        "@nestjs/typeorm": "8.0.1",
         "ethers": "5.4.1",
         "moment": "2.29.1",
-        "rxjs": "6.6.7"
+        "rxjs": "7.2.0"
     },
     "devDependencies": {
         "typescript": "4.3.5",

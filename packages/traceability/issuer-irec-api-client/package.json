@@ -28,9 +28,9 @@
     "devDependencies": {
         "typescript": "4.3.5",
         "@energyweb/issuer-irec-api": "0.1.0",
-        "@nestjs/swagger": "4.8.2",
+        "@nestjs/swagger": "5.0.0",
         "@nestjs/testing": "8.0.1",
-        "@nestjs/typeorm": "7.1.5",
+        "@nestjs/typeorm": "8.0.1",
         "@openapitools/openapi-generator-cli": "2.3.6",
         "json-to-pretty-yaml": "1.2.2",
         "prettier": "2.3.2",

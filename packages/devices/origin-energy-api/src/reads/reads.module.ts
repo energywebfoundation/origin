@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ReadsController } from './reads.controller';
 
 @Module({
-    imports: [ConfigModule],
+    imports: [ConfigModule.forRoot()],
     controllers: [ReadsController],
     providers: [ReadsService]
 })

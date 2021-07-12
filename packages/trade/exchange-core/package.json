@@ -37,9 +37,9 @@
         "@nestjs/common": "8.0.1",
         "bn.js": "5.2.0",
         "chai": "4.3.0",
-        "immutable": "4.0.0-rc.12",
+        "immutable": "4.0.0-rc.14",
         "moment": "2.29.1",
-        "rxjs": "6.6.7"
+        "rxjs": "7.2.0"
     },
     "devDependencies": {
         "typescript": "4.3.5",
