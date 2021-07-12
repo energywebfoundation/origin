@@ -71,8 +71,15 @@ export class CertificationRequestController {
         type: [CertificationRequestDTO],
         description: 'Returns all Certification Requests'
     })
-    public async getAll(): Promise<CertificationRequestDTO[]> {
-        return this.queryBus.execute(new GetAllCertificationRequestsQuery());
+    public async getAll(@UserDecorator() user: ILoggedInUser): Promise<CertificationRequestDTO[]> {
+        const fullAccessRoles = [Role.Issuer, Role.Admin];
+        if (fullAccessRoles.some((role) => user.hasRole(role))) {
+            return this.queryBus.execute(new GetAllCertificationRequestsQuery());
+        }
+
+        return this.queryBus.execute(
+            new GetAllCertificationRequestsQuery({ owner: user.blockchainAccountAddress })
+        );
     }
 
     @Get('/:certificateId')
