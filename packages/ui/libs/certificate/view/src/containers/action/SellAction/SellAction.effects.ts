@@ -5,7 +5,7 @@ import {
   useSellCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
 import { useSellActionLogic } from '@energyweb/origin-ui-certificate-logic';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 export const useSellActionEffects = <Id>(
   selectedIds: Id[],
