@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { formatSelectedBlockchainItems } from './formatSelectedBlockchain';
-import { SelectedItem, TUseDepositActionLogic } from './types';
+import { SelectedItem, TUseTransferActionLogic } from './types';
 
-export const useDepositActionLogic: TUseDepositActionLogic = <Id>({
+export const useTransferActionLogic: TUseTransferActionLogic = <Id>({
   selectedIds,
   blockchainCertificates,
   allDevices,
@@ -20,8 +20,9 @@ export const useDepositActionLogic: TUseDepositActionLogic = <Id>({
     : [];
 
   return {
-    title: t('certificate.blockchainInbox.selectedForDeposit'),
-    buttonText: t('certificate.blockchainInbox.depositButton'),
+    title: t('certificate.blockchainInbox.selectedForTransfer'),
+    buttonText: t('certificate.blockchainInbox.transferButton'),
+    addressInputLabel: t('certificate.blockchainInbox.blockchainAddress'),
     selectedItems,
   };
 };

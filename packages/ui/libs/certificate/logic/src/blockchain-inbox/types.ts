@@ -1,7 +1,7 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
-import { ComposedDevice } from '@energyweb/origin-ui-certificate-data';
+import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import {
   ItemsListWithActionsProps,
   ListAction,
@@ -12,7 +12,7 @@ import React, { FC } from 'react';
 
 type TUseBlockchainInboxLogicArgs = {
   blockchainCertificates: CertificateDTO[];
-  myDevices: ComposedDevice[];
+  allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
   actions: ListAction[];
   ListItemHeader: React.FC<{ name: string; country: string }>;
@@ -29,12 +29,12 @@ type TUseBlockchainInboxLogicArgs = {
 export type TUseBlockchainInboxLogic = (
   args: TUseBlockchainInboxLogicArgs
 ) => ItemsListWithActionsProps<
-  ComposedDevice['externalRegistryId'],
+  ComposedPublicDevice['externalRegistryId'],
   CertificateDTO['id']
 >;
 
 export type BlockchainInboxContainers = TItemsListWithActionsContainers<
-  ComposedDevice['externalRegistryId'],
+  ComposedPublicDevice['externalRegistryId'],
   CertificateDTO['id']
 >;
 
@@ -49,7 +49,7 @@ export type SelectedItem<Id> = {
 type TUseDepositActionLogicArgs<Id> = {
   selectedIds: Id[];
   blockchainCertificates: CertificateDTO[];
-  myDevices: ComposedDevice[];
+  allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
@@ -64,7 +64,7 @@ export type TUseDepositActionLogic = <Id>(
 type TUseRetireActionLogicArgs<Id> = {
   selectedIds: Id[];
   blockchainCertificates: CertificateDTO[];
-  myDevices: ComposedDevice[];
+  allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
@@ -82,3 +82,30 @@ export type TUseBeneficiariesSelectorLogic = (
     React.SetStateAction<BeneficiaryDTO['irecBeneficiaryId']>
   >
 ) => Omit<SelectRegularProps, 'value'>;
+
+type TUseTransferActionLogicArgs<Id> = {
+  selectedIds: Id[];
+  blockchainCertificates: CertificateDTO[];
+  allDevices: ComposedPublicDevice[];
+  allFuelTypes: CodeNameDTO[];
+};
+
+export type TUseTransferActionLogic = <Id>(
+  args: TUseTransferActionLogicArgs<Id>
+) => {
+  title: string;
+  buttonText: string;
+  addressInputLabel: string;
+  selectedItems: SelectedItem<Id>[];
+};
+
+type FormatSelectedBlockchainItemsArgs<Id> = {
+  selectedIds: Id[];
+  blockchainCertificates: CertificateDTO[];
+  allDevices: ComposedPublicDevice[];
+  allFuelTypes: CodeNameDTO[];
+};
+
+export type TFormatSelectedBlockchainItems = <Id>(
+  args: FormatSelectedBlockchainItemsArgs<Id>
+) => SelectedItem<Id>[];

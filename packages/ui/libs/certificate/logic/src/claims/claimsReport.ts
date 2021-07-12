@@ -25,7 +25,7 @@ const formatClaimsReportData: TFormatClaimsReportData = ({
         );
 
         return {
-          id: certificate?.id,
+          id: `${certificate.id};${certificate.claimData.fromDate}`,
           fuelType:
             allFuelTypes?.find((type) => type.code === device?.fuelType)
               ?.name || '',
@@ -33,7 +33,7 @@ const formatClaimsReportData: TFormatClaimsReportData = ({
           location: `${device?.region}, ${device?.subregion}`,
           gridOperator: device?.gridOperator,
           compliance,
-          claimDate: formatDate(certificate?.claimData.fromDate),
+          claimDate: formatDate(certificate.claimData.fromDate),
           certifiedEnergy: EnergyFormatter.getValueInDisplayUnit(
             certificate.value
           ).toString(),

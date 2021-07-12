@@ -1,22 +1,19 @@
-import { IClaimData } from '@energyweb/issuer';
 import {
   CertificateDTO,
   getIrecCertificateControllerGetAllQueryKey,
 } from '@energyweb/issuer-irec-api-react-query-client';
-import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
-import dayjs from 'dayjs';
 import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useGetBlockchainCertificateHandler } from '../fetching';
 
-export const useRetireCertificateHandler = (
-  selectedBeneficiary: BeneficiaryDTO,
+export const useTransferCertificateHandler = (
+  receiverAddress: string,
   resetList: () => void
 ) => {
   const { t } = useTranslation();
@@ -27,7 +24,7 @@ export const useRetireCertificateHandler = (
   const { getBlockchainCertificate, isLoading: isGetBlockchainLoading } =
     useGetBlockchainCertificateHandler();
 
-  const retireHandler = async <Id>(id: Id, amount: string) => {
+  const transferHandler = async <Id>(id: Id, amount: string) => {
     try {
       const onChainCertificate = await getBlockchainCertificate(
         id as unknown as CertificateDTO['id']
@@ -35,18 +32,9 @@ export const useRetireCertificateHandler = (
       const formattedAmount = BigNumber.from(
         PowerFormatter.getBaseValueFromValueInDisplayUnit(Number(amount))
       );
-      const claimData: IClaimData = {
-        beneficiary: selectedBeneficiary.organization.name,
-        address: selectedBeneficiary.organization.address,
-        zipCode: selectedBeneficiary.organization.zipCode,
-        region: selectedBeneficiary.organization.city,
-        countryCode: selectedBeneficiary.organization.country,
-        //mock which should be here instead? additional datepickers?
-        fromDate: dayjs().toISOString(),
-        toDate: dayjs().toISOString(),
-      };
-      const transaction = await onChainCertificate.claim(
-        claimData,
+
+      const transaction = await onChainCertificate.transfer(
+        receiverAddress,
         formattedAmount
       );
       const receipt = await transaction.wait();
@@ -54,7 +42,7 @@ export const useRetireCertificateHandler = (
         throw new Error('Transaction failed');
       }
       showNotification(
-        t('certificate.blockchainInbox.notifications.retireSuccess'),
+        t('certificate.blockchainInbox.notifications.transferSuccess'),
         NotificationTypeEnum.Success
       );
       queryClient.resetQueries(blockchainCertificatesQueryKey);
@@ -62,7 +50,7 @@ export const useRetireCertificateHandler = (
     } catch (error) {
       console.error(error);
       showNotification(
-        t('certificate.blockchainInbox.notifications.retireError'),
+        t('certificate.blockchainInbox.notifications.transferError'),
         NotificationTypeEnum.Error
       );
     }
@@ -70,5 +58,5 @@ export const useRetireCertificateHandler = (
 
   const isLoading = isGetBlockchainLoading;
 
-  return { retireHandler, isLoading };
+  return { transferHandler, isLoading };
 };

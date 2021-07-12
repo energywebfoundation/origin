@@ -1,6 +1,6 @@
 import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { ComposedDevice } from '@energyweb/origin-ui-certificate-data';
+import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import {
   ItemsListWithActionsProps,
   ListAction,
@@ -10,7 +10,7 @@ import React, { FC } from 'react';
 
 type TUseExchangeInboxLogicArgs = {
   exchangeCertificates: AccountAssetDTO[];
-  myDevices: ComposedDevice[];
+  allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
   actions: ListAction[];
   ListItemHeader: React.FC<{ name: string; country: string }>;
@@ -27,12 +27,12 @@ type TUseExchangeInboxLogicArgs = {
 export type TUseExchangeInboxLogic = (
   args: TUseExchangeInboxLogicArgs
 ) => ItemsListWithActionsProps<
-  ComposedDevice['externalRegistryId'],
+  ComposedPublicDevice['externalRegistryId'],
   AccountAssetDTO['asset']['id']
 >;
 
 export type ExchangeInboxContainers = TItemsListWithActionsContainers<
-  ComposedDevice['externalRegistryId'],
+  ComposedPublicDevice['externalRegistryId'],
   AccountAssetDTO['asset']['id']
 >;
 
@@ -47,7 +47,7 @@ export type SelectedItem<Id> = {
 type TUseSellActionLogicArgs<Id> = {
   selectedIds: Id[];
   exchangeCertificates: AccountAssetDTO[];
-  myDevices: ComposedDevice[];
+  allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
@@ -62,7 +62,7 @@ export type TUseSellActionLogic = <Id>(args: TUseSellActionLogicArgs<Id>) => {
 type TUseWithdrawActionLogicArgs<Id> = {
   selectedIds: Id[];
   exchangeCertificates: AccountAssetDTO[];
-  myDevices: ComposedDevice[];
+  allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
@@ -73,3 +73,14 @@ export type TUseWithdrawActionLogic = <Id>(
   buttonText: string;
   selectedItems: SelectedItem<Id>[];
 };
+
+type TFormatSelectedExchangeItemsArgs<Id> = {
+  selectedIds: Id[];
+  exchangeCertificates: AccountAssetDTO[];
+  allDevices: ComposedPublicDevice[];
+  allFuelTypes: CodeNameDTO[];
+};
+
+export type TFormatSelectedExchangeItems = <Id>(
+  args: TFormatSelectedExchangeItemsArgs<Id>
+) => SelectedItem<Id>[];

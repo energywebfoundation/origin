@@ -11,7 +11,7 @@ import { ExchangeInboxContainers, TUseExchangeInboxLogic } from './types';
 
 export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
   exchangeCertificates,
-  myDevices,
+  allDevices,
   allFuelTypes,
   actions,
   ListItemHeader,
@@ -23,8 +23,8 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
   const generationTimeTitle = t('certificate.exchangeInbox.generationTime');
   const viewButtonLabel = t('certificate.inbox.viewButton');
 
-  if (myDevices && exchangeCertificates) {
-    myDevices.forEach((device) => {
+  if (allDevices && exchangeCertificates) {
+    allDevices.forEach((device) => {
       const deviceHasCertificates = exchangeCertificates.find(
         (certificate) =>
           certificate.asset.deviceId === device.externalRegistryId

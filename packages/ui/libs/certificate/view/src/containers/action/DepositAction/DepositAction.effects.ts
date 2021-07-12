@@ -1,7 +1,7 @@
 import {
   useCachedBlockchainCertificates,
   useCachedAllFuelTypes,
-  useCachedMyDevices,
+  useCachedAllDevices,
   useDepositCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
 import { useDepositActionLogic } from '@energyweb/origin-ui-certificate-logic';
@@ -11,7 +11,7 @@ export const useDepositActionEffects = <Id>(
   resetIds: () => void
 ) => {
   const blockchainCertificates = useCachedBlockchainCertificates();
-  const myDevices = useCachedMyDevices();
+  const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
 
   const { depositHandler, isLoading } = useDepositCertificateHandler(resetIds);
@@ -19,7 +19,7 @@ export const useDepositActionEffects = <Id>(
   const actionLogic = useDepositActionLogic({
     selectedIds,
     blockchainCertificates,
-    myDevices,
+    allDevices,
     allFuelTypes,
   });
 

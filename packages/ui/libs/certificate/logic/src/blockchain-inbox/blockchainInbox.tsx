@@ -11,7 +11,7 @@ import { BlockchainInboxContainers, TUseBlockchainInboxLogic } from './types';
 
 export const useBlockchainInboxLogic: TUseBlockchainInboxLogic = ({
   blockchainCertificates,
-  myDevices,
+  allDevices,
   allFuelTypes,
   actions,
   ListItemHeader,
@@ -23,8 +23,8 @@ export const useBlockchainInboxLogic: TUseBlockchainInboxLogic = ({
   const generationTimeTitle = t('certificate.blockchainInbox.generationTime');
   const viewButtonLabel = t('certificate.inbox.viewButton');
 
-  if (myDevices && blockchainCertificates) {
-    myDevices.forEach((device) => {
+  if (allDevices && blockchainCertificates) {
+    allDevices.forEach((device) => {
       const deviceHasCertificates = blockchainCertificates.find(
         (certificate) => certificate.deviceId === device.externalRegistryId
       );

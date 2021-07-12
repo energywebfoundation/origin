@@ -1,16 +1,17 @@
 import {
   useAllFuelTypes,
   useAllBlockchainCertificates,
-  useApiMyDevices,
+  useApiAllDevices,
 } from '@energyweb/origin-ui-certificate-data';
 import { useBlockchainInboxLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import {
-  DepositAction,
-  RetireAction,
   ListItemContent,
   ListItemHeader,
+  DepositAction,
+  RetireAction,
+  TransferAction,
 } from '../../containers';
 
 export const useBlockchainInboxPageEffects = () => {
@@ -18,7 +19,7 @@ export const useBlockchainInboxPageEffects = () => {
 
   const { blockchainCertificates, isLoading: areCertificatesLoading } =
     useAllBlockchainCertificates();
-  const { myDevices, isLoading: areDevicesLoading } = useApiMyDevices();
+  const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllFuelTypes();
 
@@ -34,11 +35,15 @@ export const useBlockchainInboxPageEffects = () => {
       name: t('certificate.blockchainInbox.retireActionTitle'),
       component: RetireAction,
     },
+    {
+      name: t('certificate.blockchainInbox.transferActionTitle'),
+      component: TransferAction,
+    },
   ];
 
   const listProps = useBlockchainInboxLogic({
     blockchainCertificates,
-    myDevices,
+    allDevices,
     allFuelTypes,
     actions,
     ListItemHeader,
