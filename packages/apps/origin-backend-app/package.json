@@ -61,7 +61,7 @@
         "mandrill-nodemailer-transport": "1.2.1",
         "swagger-ui-express": "4.1.6",
         "typeorm": "0.2.34",
-        "@nestjs/passport": "7.1.6"
+        "@nestjs/passport": "8.0.0"
     },
     "devDependencies": {
         "typescript": "4.3.5",
