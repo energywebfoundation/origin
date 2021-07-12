@@ -1,7 +1,7 @@
 import {
   useCachedExchangeCertificates,
   useCachedAllFuelTypes,
-  useCachedMyDevices,
+  useCachedAllDevices,
   useSellCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
 import { useSellActionLogic } from '@energyweb/origin-ui-certificate-logic';
@@ -20,7 +20,7 @@ export const useSellActionEffects = <Id>(
   };
 
   const exchangeCertificates = useCachedExchangeCertificates();
-  const myDevices = useCachedMyDevices();
+  const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
 
   const sellHandler = useSellCertificateHandler(
@@ -32,7 +32,7 @@ export const useSellActionEffects = <Id>(
   const actionLogic = useSellActionLogic({
     selectedIds,
     exchangeCertificates,
-    myDevices,
+    allDevices,
     allFuelTypes,
   });
 

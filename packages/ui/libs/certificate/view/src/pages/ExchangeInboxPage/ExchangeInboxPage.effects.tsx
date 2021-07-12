@@ -1,7 +1,7 @@
 import {
   useAllFuelTypes,
+  useApiAllDevices,
   useApiAllExchangeCertificates,
-  useApiMyDevices,
 } from '@energyweb/origin-ui-certificate-data';
 import { useExchangeInboxLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
@@ -18,7 +18,7 @@ export const useExchangeInboxPageEffects = () => {
 
   const { exchangeCertificates, isLoading: areCertificatesLoading } =
     useApiAllExchangeCertificates();
-  const { myDevices, isLoading: areDevicesLoading } = useApiMyDevices();
+  const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllFuelTypes();
 
@@ -38,7 +38,7 @@ export const useExchangeInboxPageEffects = () => {
 
   const listProps = useExchangeInboxLogic({
     exchangeCertificates,
-    myDevices,
+    allDevices,
     allFuelTypes,
     actions,
     ListItemHeader,
