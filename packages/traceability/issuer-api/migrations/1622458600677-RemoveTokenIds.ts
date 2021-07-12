@@ -7,51 +7,43 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
         /* 
             CERTIFICATES
         */
-        const oldCertificates = await queryRunner.query(
-            `SELECT id, "tokenId" FROM "issuer_certificate"`
+        await queryRunner.query(
+            `ALTER TABLE "issuer_certificate" DROP CONSTRAINT "PK_e4ce09f2a73bbe3a7227df421e7"`
         );
-
-        await queryRunner.query(`ALTER TABLE "issuer_certificate" ALTER COLUMN "id" DROP DEFAULT`);
-        await queryRunner.query(`DROP SEQUENCE IF EXISTS "issuer_certificate_id_seq"`);
-
-        for (const oldCertificate of oldCertificates) {
-            await queryRunner.query(
-                `UPDATE "issuer_certificate" SET id = ${oldCertificate.tokenId} WHERE id = '${oldCertificate.id}'`
-            );
-        }
-
+        await queryRunner.query(`ALTER TABLE "issuer_certificate" DROP COLUMN id`);
         await queryRunner.query(
             `ALTER TABLE "issuer_certificate" DROP CONSTRAINT "UQ_6489c34207c69cdc7b90afb4491"`
         );
-        await queryRunner.query(`ALTER TABLE "issuer_certificate" DROP COLUMN "tokenId"`);
+
+        await queryRunner.query(`ALTER TABLE "issuer_certificate" RENAME COLUMN "tokenId" to id`);
+
+        await queryRunner.query(
+            `CREATE SEQUENCE "issuer_certificate_id_seq" OWNED BY "issuer_certificate"."id"`
+        );
+        await queryRunner.query(
+            `SELECT setval(pg_get_serial_sequence('issuer_certificate', 'id'), ( SELECT MAX("id") FROM issuer_certificate) + 1)`
+        );
 
         /*
             CERTIFICATION REQUESTS
         */
-        const oldCertificationRequests = await queryRunner.query(
-            `SELECT id, "requestId" FROM "issuer_certification_request"`
-        );
-
         await queryRunner.query(
-            `ALTER TABLE "issuer_certification_request" RENAME COLUMN "issuedCertificateTokenId" to "issuedCertificateId"`
+            `ALTER TABLE "issuer_certification_request" DROP CONSTRAINT "PK_126b742d59e12ccc099febcbc1e"`
         );
-
-        await queryRunner.query(
-            `ALTER TABLE "issuer_certification_request" ALTER COLUMN "id" DROP DEFAULT`
-        );
-        await queryRunner.query(`DROP SEQUENCE IF EXISTS "issuer_certification_request_id_seq"`);
-
-        for (const oldCertReq of oldCertificationRequests) {
-            await queryRunner.query(
-                `UPDATE "issuer_certification_request" SET id = ${oldCertReq.requestId} WHERE id = '${oldCertReq.id}'`
-            );
-        }
-
+        await queryRunner.query(`ALTER TABLE "issuer_certification_request" DROP COLUMN id`);
         await queryRunner.query(
             `ALTER TABLE "issuer_certification_request" DROP CONSTRAINT "UQ_551869cc9ee5caeccd53c966cdd"`
         );
+
         await queryRunner.query(
-            `ALTER TABLE "issuer_certification_request" DROP COLUMN "requestId"`
+            `ALTER TABLE "issuer_certification_request" RENAME COLUMN "requestId" to id`
+        );
+
+        await queryRunner.query(
+            `CREATE SEQUENCE "issuer_certification_request_id_seq" OWNED BY "issuer_certification_request"."id"`
+        );
+        await queryRunner.query(
+            `SELECT setval(pg_get_serial_sequence('issuer_certification_request', 'id'), ( SELECT MAX("id") FROM issuer_certification_request) + 1)`
         );
     }
 
@@ -59,39 +51,16 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
         /* 
             CERTIFICATES
         */
-        const oldCertificates = await queryRunner.query(`SELECT id FROM "issuer_certificate"`);
-
-        await queryRunner.query(
-            `CREATE SEQUENCE "issuer_certificate_id_seq" OWNED BY "issuer_certificate"."id"`
-        );
-        await queryRunner.query(
-            `ALTER TABLE "issuer_certificate" ALTER COLUMN "id" SET DEFAULT nextval('issuer_certificate_id_seq')`
-        );
         await queryRunner.query(`ALTER TABLE "issuer_certificate" ADD "tokenId" integer`);
         await queryRunner.query(
             `ALTER TABLE "issuer_certificate" ADD CONSTRAINT "UQ_6489c34207c69cdc7b90afb4491" UNIQUE ("tokenId")`
         );
 
-        for (const oldCertificate of oldCertificates) {
-            await queryRunner.query(
-                `UPDATE "issuer_certificate" SET "tokenId" = ${oldCertificate.id} WHERE id = '${oldCertificate.id}'`
-            );
-        }
+        await queryRunner.query(`UPDATE "issuer_certificate" SET "tokenId" = id`);
 
         /*
             CERTIFICATION REQUESTS
         */
-        const oldCertificationRequests = await queryRunner.query(
-            `SELECT id FROM "issuer_certification_request"`
-        );
-
-        await queryRunner.query(
-            `CREATE SEQUENCE "issuer_certification_request_id_seq" OWNED BY "issuer_certification_request"."id"`
-        );
-        await queryRunner.query(
-            `ALTER TABLE "issuer_certification_request" ALTER COLUMN "id" SET DEFAULT nextval('issuer_certification_request_id_seq')`
-        );
-
         await queryRunner.query(
             `ALTER TABLE "issuer_certification_request" RENAME COLUMN "issuedCertificateId" to "issuedCertificateTokenId"`
         );
@@ -103,10 +72,6 @@ export class RemoveTokenIds1622458600677 implements MigrationInterface {
             `ALTER TABLE "issuer_certification_request" ADD CONSTRAINT "UQ_551869cc9ee5caeccd53c966cdd" UNIQUE ("requestId")`
         );
 
-        for (const oldCertReq of oldCertificationRequests) {
-            await queryRunner.query(
-                `UPDATE "issuer_certification_request" SET "requestId" = ${oldCertReq.requestId} WHERE id = '${oldCertReq.id}'`
-            );
-        }
+        await queryRunner.query(`UPDATE "issuer_certification_request" SET "requestId" = id`);
     }
 }
