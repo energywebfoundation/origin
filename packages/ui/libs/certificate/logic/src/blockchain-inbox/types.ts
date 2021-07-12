@@ -1,9 +1,11 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { ComposedDevice } from '@energyweb/origin-ui-certificate-data';
 import {
   ItemsListWithActionsProps,
   ListAction,
+  SelectRegularProps,
   TItemsListWithActionsContainers,
 } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
@@ -73,3 +75,10 @@ export type TUseRetireActionLogic = <Id>(
   buttonText: string;
   selectedItems: SelectedItem<Id>[];
 };
+
+export type TUseBeneficiariesSelectorLogic = (
+  allBeneficiaries: BeneficiaryDTO[],
+  setSelectedBeneficiary: React.Dispatch<
+    React.SetStateAction<BeneficiaryDTO['irecBeneficiaryId']>
+  >
+) => Omit<SelectRegularProps, 'value'>;

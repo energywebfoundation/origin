@@ -6,3 +6,5 @@ export * from './fuelTypes';
 export * from './getBlockchainCertificate';
 export * from './myDevices';
 export * from './pendingCertificationRequests';
+export * from './platformBeneficiaries';
+export * from './claimedCertificates';

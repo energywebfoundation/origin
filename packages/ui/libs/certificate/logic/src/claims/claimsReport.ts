@@ -8,14 +8,20 @@ import {
 
 const formatClaimsReportData: TFormatClaimsReportData = ({
   devices,
-  certificates,
+  blockchainCertificates,
+  claimedCertificates,
   allFuelTypes,
 }) => {
-  return certificates.length > 0 && devices.length > 0
-    ? certificates.map((certificate) => {
+  return claimedCertificates?.length > 0 && devices.length > 0
+    ? claimedCertificates?.map((certificate) => {
         const compliance = 'I-REC';
+        const fullCertificateData = blockchainCertificates.find(
+          (bc) => bc.id === certificate.id
+        );
+
         const device = devices.find(
-          (device) => certificate?.deviceId === device.externalRegistryId
+          (device) =>
+            fullCertificateData?.deviceId === device.externalRegistryId
         );
 
         return {
@@ -27,9 +33,9 @@ const formatClaimsReportData: TFormatClaimsReportData = ({
           location: `${device?.region}, ${device?.subregion}`,
           gridOperator: device?.gridOperator,
           compliance,
-          certificationDate: formatDate(certificate?.creationTime),
+          claimDate: formatDate(certificate?.claimData.fromDate),
           certifiedEnergy: EnergyFormatter.getValueInDisplayUnit(
-            certificate?.energy?.claimedVolume
+            certificate.value
           ).toString(),
         };
       })
@@ -38,7 +44,8 @@ const formatClaimsReportData: TFormatClaimsReportData = ({
 
 export const useLogicClaimsReport: TUseLogicClaimsReport = ({
   devices,
-  certificates,
+  blockchainCertificates,
+  claimedCertificates,
   allFuelTypes,
   loading,
 }) => {
@@ -50,13 +57,18 @@ export const useLogicClaimsReport: TUseLogicClaimsReport = ({
       location: t('certificate.claimsReport.location'),
       gridOperator: t('certificate.claimsReport.gridOperator'),
       compliance: t('certificate.claimsReport.compliance'),
-      certificationDate: t('certificate.claimsReport.certificationDate'),
+      claimDate: t('certificate.claimsReport.claimDate'),
       certifiedEnergy: `${t('certificate.claimsReport.certifiedEnergy')} (${
         EnergyFormatter.displayUnit
       })`,
     },
     pageSize: 10,
     loading,
-    data: formatClaimsReportData({ devices, certificates, allFuelTypes }),
+    data: formatClaimsReportData({
+      devices,
+      blockchainCertificates,
+      claimedCertificates,
+      allFuelTypes,
+    }),
   };
 };

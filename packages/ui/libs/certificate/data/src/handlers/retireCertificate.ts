@@ -3,17 +3,22 @@ import {
   CertificateDTO,
   getIrecCertificateControllerGetAllQueryKey,
 } from '@energyweb/issuer-irec-api-react-query-client';
+import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
+import dayjs from 'dayjs';
 import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useGetBlockchainCertificateHandler } from '../fetching';
 
-export const useRetireCertificateHandler = (resetList: () => void) => {
+export const useRetireCertificateHandler = (
+  selectedBeneficiary: BeneficiaryDTO,
+  resetList: () => void
+) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const blockchainCertificatesQueryKey =
@@ -30,8 +35,16 @@ export const useRetireCertificateHandler = (resetList: () => void) => {
       const formattedAmount = BigNumber.from(
         PowerFormatter.getBaseValueFromValueInDisplayUnit(Number(amount))
       );
-      //mock
-      const claimData: IClaimData = {};
+      const claimData: IClaimData = {
+        beneficiary: selectedBeneficiary.organization.name,
+        address: selectedBeneficiary.organization.address,
+        zipCode: selectedBeneficiary.organization.zipCode,
+        region: selectedBeneficiary.organization.city,
+        countryCode: selectedBeneficiary.organization.country,
+        //mock which should be here instead? additional datepickers?
+        fromDate: dayjs().toISOString(),
+        toDate: dayjs().toISOString(),
+      };
       const transaction = await onChainCertificate.claim(
         claimData,
         formattedAmount

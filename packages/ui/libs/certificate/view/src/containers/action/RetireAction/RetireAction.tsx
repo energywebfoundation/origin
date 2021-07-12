@@ -1,8 +1,12 @@
-import { ListActionComponentProps } from '@energyweb/origin-ui-core';
+import {
+  ListActionComponentProps,
+  SelectRegular,
+} from '@energyweb/origin-ui-core';
 import { CircularProgress } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useRetireActionEffects } from './RetireAction.effects';
+import { useStyles } from './RetireAction.styles';
 
 interface RetireActionProps<Id> extends ListActionComponentProps<Id> {}
 
@@ -11,8 +15,16 @@ export type TRetireAction = <Id>(
 ) => ReactElement;
 
 export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
-  const { title, buttonText, selectedItems, retireHandler, isLoading } =
-    useRetireActionEffects(selectedIds, resetIds);
+  const classes = useStyles();
+  const {
+    title,
+    buttonText,
+    selectedItems,
+    retireHandler,
+    isLoading,
+    beneficiarySelectorProps,
+    selectedBeneficiaryId,
+  } = useRetireActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
 
@@ -23,6 +35,12 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
       selectedIds={selectedIds}
       selectedItems={selectedItems}
       submitHandler={retireHandler}
-    />
+    >
+      <SelectRegular
+        textFieldProps={{ margin: 'none', className: classes.selector }}
+        value={selectedBeneficiaryId}
+        {...beneficiarySelectorProps}
+      />
+    </CertificateActionContent>
   );
 };

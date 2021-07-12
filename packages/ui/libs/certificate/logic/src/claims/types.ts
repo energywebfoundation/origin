@@ -5,7 +5,8 @@ import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 
 export type TUseLogicClaimsReportArgs = {
   devices: ComposedPublicDevice[];
-  certificates: CertificateDTO[];
+  blockchainCertificates: CertificateDTO[];
+  claimedCertificates: CertificateDTO['claims'];
   allFuelTypes: CodeNameDTO[];
   loading: boolean;
 };
