@@ -52,7 +52,7 @@
         "@nestjs/common": "7.6.18",
         "@nestjs/config": "0.6.3",
         "@nestjs/core": "7.6.18",
-        "@nestjs/cqrs": "7.0.1",
+        "@nestjs/cqrs": "8.0.0",
         "@nestjs/schedule": "1.0.0",
         "@nestjs/swagger": "4.8.2",
         "@nestjs/typeorm": "7.1.5",
