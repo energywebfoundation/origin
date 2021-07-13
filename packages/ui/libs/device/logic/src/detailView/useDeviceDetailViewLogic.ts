@@ -37,7 +37,7 @@ export const useDeviceDetailViewLogic: TUseDeviceDetailViewLogic = ({
     specFields: [
       {
         label: t('device.card.certifiedMw'),
-        value: certifiedAmount,
+        value: PowerFormatter.format(parseInt(certifiedAmount)),
       },
       {
         label: t('device.card.nameplateCapacity'),
