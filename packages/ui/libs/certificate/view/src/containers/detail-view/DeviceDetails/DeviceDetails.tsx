@@ -18,7 +18,7 @@ export const DeviceDetails: FC<DeviceDetailsProps> = ({ device }) => {
   const { locationProps, cardProps, isLoading, allTypes } =
     useDetailViewPageEffects(device);
 
-  if (isLoading || device === null) return <CircularProgress />;
+  if (isLoading) return <CircularProgress />;
 
   return (
     <div className={classes.wrapper}>

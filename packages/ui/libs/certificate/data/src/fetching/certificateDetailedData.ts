@@ -20,7 +20,7 @@ export const useCertificateDetailedData = (id: string) => {
   const { exchangeCertificates, isLoading: areExchangeCertificateLoading } =
     useApiAllExchangeCertificates();
 
-  const exchangeCertificate = exchangeCertificates?.find(
+  const exchangeCertificate = exchangeCertificates.find(
     (certificate) => certificate.asset.tokenId === id
   );
 

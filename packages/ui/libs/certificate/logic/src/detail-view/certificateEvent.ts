@@ -29,74 +29,75 @@ export const useCertificateBlockchainEventsLogic = (
 
   // this any type is used here because CertificatEvent type does not contain all values
   // it actually returns. Same property names has different typing for different events (e.g. value / _value)
-  const jointEvents = certificate?.events
-    ? certificate.events?.map((event: any) => {
-        let label: string;
-        let description: string;
+  const jointEvents =
+    certificate.events?.length > 0
+      ? certificate.events?.map((event: any) => {
+          let label: string;
+          let description: string;
 
-        switch (event.name) {
-          case 'IssuanceSingle':
-            label = t('certificate.detailView.events.certified');
-            description = t(
-              'certificate.detailView.events.certificationRequestApproved'
-            );
-
-            break;
-          case 'TransferSingle':
-            if (event.from === '0x0000000000000000000000000000000000000000') {
-              label = t('certificate.detailView.events.initialOwner');
+          switch (event.name) {
+            case 'IssuanceSingle':
+              label = t('certificate.detailView.events.certified');
               description = t(
-                'certificate.detailView.events.transferedToInitialOwner',
-                {
+                'certificate.detailView.events.certificationRequestApproved'
+              );
+
+              break;
+            case 'TransferSingle':
+              if (event.from === '0x0000000000000000000000000000000000000000') {
+                label = t('certificate.detailView.events.initialOwner');
+                description = t(
+                  'certificate.detailView.events.transferedToInitialOwner',
+                  {
+                    amount: PowerFormatter.format(
+                      BigNumber.from(event.value).toNumber(),
+                      true
+                    ),
+                    address: transformAddress(event.to),
+                  }
+                );
+              } else if (
+                event.to === '0x0000000000000000000000000000000000000000'
+              ) {
+                label = '';
+                description = '';
+              } else {
+                label = t('certificate.detailView.events.changedOwnership');
+                description = t('certificate.detailView.events.transferred', {
                   amount: PowerFormatter.format(
                     BigNumber.from(event.value).toNumber(),
                     true
                   ),
-                  address: transformAddress(event.to),
-                }
-              );
-            } else if (
-              event.to === '0x0000000000000000000000000000000000000000'
-            ) {
-              label = '';
-              description = '';
-            } else {
-              label = t('certificate.detailView.events.changedOwnership');
-              description = t('certificate.detailView.events.transferred', {
+                  newOwner: transformAddress(event.to),
+                  oldOwner: transformAddress(event.from),
+                });
+              }
+              break;
+            case 'ClaimSingle':
+              label = t('certificate.detailView.events.claimedTitle');
+              description = t('certificate.detailView.events.claimedContent', {
                 amount: PowerFormatter.format(
-                  BigNumber.from(event.value).toNumber(),
+                  BigNumber.from(event._value).toNumber(),
                   true
                 ),
-                newOwner: transformAddress(event.to),
-                oldOwner: transformAddress(event.from),
+                claimer: transformAddress(event._claimIssuer),
               });
-            }
-            break;
-          case 'ClaimSingle':
-            label = t('certificate.detailView.events.claimedTitle');
-            description = t('certificate.detailView.events.claimedContent', {
-              amount: PowerFormatter.format(
-                BigNumber.from(event._value).toNumber(),
-                true
-              ),
-              claimer: transformAddress(event._claimIssuer),
-            });
-            break;
+              break;
 
-          default:
-            label = event.name;
-        }
+            default:
+              label = event.name;
+          }
 
-        return {
-          txHash: event.transactionHash,
-          label,
-          description,
-          timestamp: event.timestamp * 1000,
-        };
-      })
-    : [];
+          return {
+            txHash: event.transactionHash,
+            label,
+            description,
+            timestamp: event.timestamp * 1000,
+          };
+        })
+      : [];
 
-  jointEvents.unshift({
+  jointEvents?.unshift({
     txHash: '',
     label: t('certificate.detailView.events.requestedTitle'),
     description: t('certificate.detailView.events.requestedContent', {
@@ -109,7 +110,7 @@ export const useCertificateBlockchainEventsLogic = (
     timestamp: dayjs((certificate.requestPart as any).createdAt).unix() * 1000,
   });
 
-  const filteredEvents = jointEvents.filter(
+  const filteredEvents = jointEvents?.filter(
     (event) => !!event.label || !!event.description
   );
 
