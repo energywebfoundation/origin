@@ -13,6 +13,16 @@ export const useStyles = makeStyles((theme) => ({
   },
   eventsItem: {
     padding: '10px 20px',
+    [theme.breakpoints.down('md')]: {
+      '& > p': {
+        fontSize: '0.8em',
+      },
+    },
+    [theme.breakpoints.down('sm')]: {
+      '& > p': {
+        fontSize: '0.5em',
+      },
+    },
   },
   link: {
     textDecoration: 'none',

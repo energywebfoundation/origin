@@ -34,15 +34,15 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
     <>
       <Paper className={classes.paper}>
         <Grid container>
-          <Grid item lg={4}>
+          <Grid item md={4} xs={12}>
             <StyledTitleAndText {...certificateId} />
             <StyledTitleAndText {...certifiedEnergy} />
           </Grid>
-          <Grid item lg={4}>
+          <Grid item md={4} xs={12}>
             <StyledTitleAndText {...claimed} />
             <StyledTitleAndText {...creationDate} />
           </Grid>
-          <Grid item lg={4}>
+          <Grid item md={4} xs={12}>
             <StyledTitleAndText {...generationStartDate} />
             <StyledTitleAndText {...generationEndDate} />
           </Grid>
@@ -57,29 +57,31 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
         >
           {blockhainTransactionsTitle}
         </Typography>
-        {eventsData.map((event) => (
-          <SmallTitleWithText
-            wrapperProps={{ className: classes.eventsItem }}
-            key={event.label + event.txHash}
-            titleElement={
-              <Typography color="textSecondary">
-                {formatDate(event.timestamp)}
-                {event.txHash && ' - '}
-                {event.txHash && (
-                  <a
-                    className={classes.link}
-                    href={`${blockExplorerUrl}/tx/${event.txHash}`}
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    {event.txHash}
-                  </a>
-                )}
-              </Typography>
-            }
-            text={`${event.label} - ${event.description}`}
-          />
-        ))}
+        <div>
+          {eventsData.map((event) => (
+            <SmallTitleWithText
+              wrapperProps={{ className: classes.eventsItem }}
+              key={event.label + event.txHash}
+              titleElement={
+                <Typography color="textSecondary">
+                  {formatDate(event.timestamp)}
+                  {event.txHash && ' - '}
+                  {event.txHash && (
+                    <a
+                      className={classes.link}
+                      href={`${blockExplorerUrl}/tx/${event.txHash}`}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      {event.txHash}
+                    </a>
+                  )}
+                </Typography>
+              }
+              text={`${event.label} - ${event.description}`}
+            />
+          ))}
+        </div>
       </Paper>
     </>
   );

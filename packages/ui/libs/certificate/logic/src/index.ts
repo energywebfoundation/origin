@@ -4,3 +4,4 @@ export * from './requests';
 export * from './exchange-inbox';
 export * from './blockchain-inbox';
 export * from './detail-view';
+export * from './device-details';

@@ -10,3 +10,5 @@ export * from './platformBeneficiaries';
 export * from './claimedCertificates';
 export * from './exchangeAddress';
 export * from './certificateDetailedData';
+export * from './deviceCertifiedAmount';
+export * from './deviceById';

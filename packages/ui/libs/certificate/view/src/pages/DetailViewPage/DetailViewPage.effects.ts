@@ -1,10 +1,17 @@
 import { useCertificateDetailedData } from '@energyweb/origin-ui-certificate-data';
+import { useDeviceByExternalRegistryId } from '@energyweb/origin-ui-certificate-data';
 import { useParams } from 'react-router';
 
 export const useDetailedPageViewEffects = () => {
   const { id } = useParams();
 
-  const { certificate, isLoading } = useCertificateDetailedData(id);
+  const { certificate, isLoading: isCertificateLoading } =
+    useCertificateDetailedData(id);
+  const { device, isLoading: isDeviceLoading } = useDeviceByExternalRegistryId(
+    certificate?.blockchainPart?.deviceId
+  );
 
-  return { certificate, isLoading };
+  const isLoading = isCertificateLoading || isDeviceLoading;
+
+  return { certificate, isLoading, device };
 };
