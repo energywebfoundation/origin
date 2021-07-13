@@ -63,6 +63,7 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
             id: certificate.asset.id,
             component: (
               <ListItemContent
+                certificateId={certificate.asset.tokenId}
                 icon={deviceIcon}
                 fuelType={deviceFuelType}
                 energy={formattedEnergy}

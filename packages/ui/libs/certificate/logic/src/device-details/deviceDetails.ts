@@ -5,10 +5,10 @@ import {
 } from '@energyweb/origin-ui-utils';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { TUseDeviceDetailViewLogic } from './types';
-import { getEnergyTypeImage, useMainFuelType } from '../utils';
+import { TUseDeviceDetailsLogic } from './types';
+import { getEnergyTypeImage, getMainFuelType } from '../utils';
 
-export const useDeviceDetailViewLogic: TUseDeviceDetailViewLogic = ({
+export const useDeviceDetailsLogic: TUseDeviceDetailsLogic = ({
   device,
   owner,
   allTypes,
@@ -23,7 +23,7 @@ export const useDeviceDetailViewLogic: TUseDeviceDetailViewLogic = ({
     coordinates: `${device.latitude}, ${device.longitude}`,
   };
 
-  const { mainType, restType } = useMainFuelType(device.fuelType, allTypes);
+  const { mainType, restType } = getMainFuelType(device.fuelType, allTypes);
   const deviceIcon = getEnergyTypeImage(
     mainType.toLowerCase() as EnergyTypeEnum
   );

@@ -1,8 +1,10 @@
 import { Button, Typography } from '@material-ui/core';
-import React, { FC } from 'react';
+import React, { FC, PropsWithChildren, ReactElement } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStyles } from './ListItemContent.styles';
 
-export interface ListItemContentProps {
+export interface ListItemContentProps<Id> {
+  certificateId: Id;
   icon: FC<React.SVGProps<SVGSVGElement>>;
   fuelType: string;
   energy: string;
@@ -11,7 +13,12 @@ export interface ListItemContentProps {
   viewButtonLabel: string;
 }
 
-export const ListItemContent: FC<ListItemContentProps> = ({
+export type TListItemContent = <Id>(
+  props: PropsWithChildren<ListItemContentProps<Id>>
+) => ReactElement;
+
+export const ListItemContent: TListItemContent = ({
+  certificateId,
   icon: Icon,
   fuelType,
   energy,
@@ -20,6 +27,12 @@ export const ListItemContent: FC<ListItemContentProps> = ({
   viewButtonLabel,
 }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
+
+  const handleViewNavigate = () => {
+    navigate(`/certificate/detail-view/${certificateId}`);
+  };
+
   return (
     <div className={classes.wrapper}>
       <div className={classes.infoBlock}>
@@ -35,7 +48,12 @@ export const ListItemContent: FC<ListItemContentProps> = ({
           </div>
         </div>
       </div>
-      <Button className={classes.button} variant="outlined" color="primary">
+      <Button
+        onClick={handleViewNavigate}
+        className={classes.button}
+        variant="outlined"
+        color="primary"
+      >
         {viewButtonLabel}
       </Button>
     </div>

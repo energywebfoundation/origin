@@ -435,6 +435,33 @@
         "viewButton": "View",
         "noCertificates": "You don't have any certificates in the inbox"
       },
+      "detailView": {
+        "certificateId": "Certificate ID",
+        "certifiedEnergy": "Certified Energy (MWh)",
+        "claimed": "Claimed",
+        "yes": "Yes",
+        "no": "No",
+        "creationDate": "Creation Date",
+        "generationStartDate": "Generation Start Date",
+        "generationEndDate": "Generation End Date",
+        "blockchainTransactions": "Blockchain Transactions",
+        "events": {
+          "exchangeWallet": "Exchange Wallet",
+          "exchangeDepositAddress": "Exchange Deposit Address",
+          "certified": "Certified",
+          "initialOwner": "Initial owner",
+          "changedOwnership": "Changed ownership",
+          "claimedTitle": "Certificate claimed",
+          "requestedTitle": "Requested certification",
+          "certificationRequestApproved": "Local issuer approved the certification request",
+          "transferred": "Transferred {amount} from {oldOwner} to {newOwner}",
+          "claimedContent": "Claimed {amount} by {claimer}",
+          "requestedContent": "{requestor} requested certification of {amount}",
+          "requestedClaimTitle": "Requested claim",
+          "requestedClaimContent": "For {amount} by {claimer}",
+          "transferedToInitialOwner": "Transfered {amount} to the {address} of the initial owner"
+        }
+      },
       "requests": {
         "facility": "Facility",
         "gridOperator": "Grid operator",

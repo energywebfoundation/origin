@@ -8,20 +8,27 @@ import {
 } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 
+export interface ListItemContentProps<Id> {
+  certificateId: Id;
+  icon: FC<React.SVGProps<SVGSVGElement>>;
+  fuelType: string;
+  energy: string;
+  generationTimeTitle: string;
+  generationTimeText: string;
+  viewButtonLabel: string;
+}
+
+export type TListItemContent = <Id>(
+  props: React.PropsWithChildren<ListItemContentProps<Id>>
+) => React.ReactElement;
+
 type TUseExchangeInboxLogicArgs = {
   exchangeCertificates: AccountAssetDTO[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
   actions: ListAction[];
   ListItemHeader: React.FC<{ name: string; country: string }>;
-  ListItemContent: React.FC<{
-    icon: React.FC<React.SVGProps<SVGSVGElement>>;
-    fuelType: string;
-    energy: string;
-    generationTimeTitle: string;
-    generationTimeText: string;
-    viewButtonLabel: string;
-  }>;
+  ListItemContent: TListItemContent;
 };
 
 export type TUseExchangeInboxLogic = (

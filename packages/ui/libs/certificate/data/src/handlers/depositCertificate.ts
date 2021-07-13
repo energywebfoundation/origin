@@ -32,7 +32,7 @@ export const useDepositCertificateHandler = (resetList: () => void) => {
     useGetBlockchainCertificateHandler();
 
   const depositHandler = async <Id>(id: Id, amount: string) => {
-    if (exchangeAddress) {
+    if (!exchangeAddress) {
       showNotification(
         t(
           'certificate.blockchainInbox.notifications.onlyUsersWithExchangeAddress'
