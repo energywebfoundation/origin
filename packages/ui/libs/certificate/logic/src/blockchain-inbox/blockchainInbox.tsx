@@ -66,6 +66,7 @@ export const useBlockchainInboxLogic: TUseBlockchainInboxLogic = ({
             id: certificate.id,
             component: (
               <ListItemContent
+                certificateId={certificate.id}
                 icon={deviceIcon}
                 fuelType={deviceFuelType}
                 energy={formattedEnergy}

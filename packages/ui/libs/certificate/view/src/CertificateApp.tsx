@@ -7,6 +7,7 @@ import {
   ClaimsReportPage,
   PendingPage,
   RequestsPage,
+  DetailViewPage,
 } from './pages';
 
 export const CertificateApp: FC = () => {
@@ -17,7 +18,7 @@ export const CertificateApp: FC = () => {
       <Route path="claims-report" element={<ClaimsReportPage />} />
       <Route path="requests" element={<RequestsPage />} />
       <Route path="pending" element={<PendingPage />} />
-
+      <Route path="detail-view/:id" element={<DetailViewPage />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
