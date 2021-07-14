@@ -1,5 +1,9 @@
+import { TableComponent } from '@energyweb/origin-ui-core';
 import React from 'react';
+import { useAdminClaimsPageEffects } from './AdminClaimsPage.effects';
 
 export const AdminClaimsPage = () => {
-  return <>claims page</>;
+  const tableProps = useAdminClaimsPageEffects();
+
+  return <TableComponent {...tableProps} />;
 };

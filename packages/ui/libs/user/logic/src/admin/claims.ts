@@ -1,0 +1,61 @@
+import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
+import { TableComponentProps, TableRowData } from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
+import { ComposedPublicDevice } from '@energyweb/origin-ui-user-data';
+import { formatDate, PowerFormatter } from '@energyweb/origin-ui-utils';
+
+type TUseClaimsTableLogicArgs = {
+  certificates: CertificateDTO[];
+  allDevices: ComposedPublicDevice[];
+  isLoading: boolean;
+};
+type TUseClaimsTableLogic = (
+  args: TUseClaimsTableLogicArgs
+) => TableComponentProps<CertificateDTO['id']>;
+
+type TFormatClaims = (
+  args: Omit<TUseClaimsTableLogicArgs, 'isLoading'>
+) => TableRowData<CertificateDTO['id']>[];
+
+const formatClaims: TFormatClaims = ({ certificates, allDevices }) => {
+  let formattedClaims = [];
+
+  certificates?.forEach((certificate) =>
+    certificate.claims?.forEach((claim) => {
+      formattedClaims.push({
+        id: `${certificate.id};${claim.claimData.fromDate}`,
+        certificateId: certificate.id,
+        deviceName: allDevices.find(
+          (device) => device.externalRegistryId === certificate.deviceId
+        )?.name,
+        energy: PowerFormatter.format(parseInt(claim.value), true),
+        beneficiary: claim.claimData.beneficiary,
+        fromDate: formatDate(claim.claimData.fromDate),
+        toDate: formatDate(claim.claimData.toDate),
+      });
+    })
+  );
+
+  return formattedClaims;
+};
+
+export const useClaimsTableLogic: TUseClaimsTableLogic = ({
+  isLoading,
+  certificates,
+  allDevices,
+}) => {
+  const { t } = useTranslation();
+  return {
+    header: {
+      certificateId: t('admin.claims.certificateId'),
+      deviceName: t('admin.claims.deviceName'),
+      energy: t('admin.claims.energy'),
+      beneficiary: t('admin.claims.beneficiary'),
+      fromDate: t('admin.claims.fromDate'),
+      toDate: t('admin.claims.toDate'),
+    },
+    pageSize: 10,
+    loading: isLoading,
+    data: formatClaims({ certificates, allDevices }),
+  };
+};
