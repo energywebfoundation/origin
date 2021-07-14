@@ -75,7 +75,7 @@ export const useAppContainerEffects = () => {
     showExchangeInbox: userIsActive && userHasOrg,
     showBlockchainInbox: userIsActive && userHasOrg,
     showClaimsReport: userIsActive && userHasOrg,
-    showRequests: userIsActive && userHasOrg,
+    showRequests: userIsActive && userHasOrg && !userIsIssuer,
     showPending: userIsIssuer,
   });
   const exchangeMenu = getExchangeMenu({
