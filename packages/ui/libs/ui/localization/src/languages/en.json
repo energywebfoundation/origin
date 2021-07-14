@@ -227,6 +227,17 @@
           "registerSuccess": "Organization registered"
         }
       },
+      "all": {
+        "name": "Name",
+        "country": "Country",
+        "tradeRegistryNumber": "Trade Registry Company Number",
+        "status": "Status",
+        "approve": "Approve",
+        "notifications": {
+          "approvedSuccess": "Organization was successfully approved",
+          "approvedError": "Error while approving organization"
+        }
+      },
       "modals": {
         "roleChanged": {
           "title": "Successfully joined {organizationName}",
