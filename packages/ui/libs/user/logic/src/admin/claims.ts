@@ -56,6 +56,6 @@ export const useClaimsTableLogic: TUseClaimsTableLogic = ({
     },
     pageSize: 10,
     loading: isLoading,
-    data: formatClaims({ certificates, allDevices }) ?? [],
+    data: formatClaims({ certificates, allDevices }),
   };
 };
