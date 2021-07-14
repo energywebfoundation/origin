@@ -1,5 +1,9 @@
+import { TableComponent } from '@energyweb/origin-ui-core';
 import React from 'react';
+import { useAllOrganizationsPageEffects } from './AllOrganizationsPage.effects';
 
 export const AllOrganizationsPage = () => {
-  return <div>This is a All Organizations Page</div>;
+  const tableProps = useAllOrganizationsPageEffects();
+
+  return <TableComponent {...tableProps} />;
 };
