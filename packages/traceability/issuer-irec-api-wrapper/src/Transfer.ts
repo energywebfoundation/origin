@@ -62,4 +62,8 @@ export class Redemption extends Transfer {
     @IsString()
     @IsNotEmpty()
     purpose: string;
+
+    @Expose({ name: 'rqd_volume', toPlainOnly: true })
+    @IsNumber()
+    volume: number;
 }

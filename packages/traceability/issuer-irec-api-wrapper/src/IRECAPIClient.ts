@@ -487,7 +487,7 @@ export class IRECAPIClient extends EventEmitter {
 
         await validateOrReject(redemption);
 
-        const url = `${this.endPointUrl}/api/irec/redemption-management`;
+        const url = `${this.endPointUrl}/api/irec/v1/redemption-management`;
 
         const response = await this.axiosInstance.post<{ transaction: any }>(
             url,
