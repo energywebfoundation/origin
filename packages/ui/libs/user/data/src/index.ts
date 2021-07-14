@@ -15,3 +15,5 @@ export * from './useFetchUserAccountData';
 export * from './useUserAccountBalance';
 export * from './useResendConfirmationEmail';
 export * from './useUserBlockchainProperties';
+export * from './allDevices';
+export * from './blockchainCertificates';
