@@ -2,6 +2,7 @@ import {
   useCertificationRequests,
   useApiMyDevices,
   useAllFuelTypes,
+  useExchangeAddress,
 } from '@energyweb/origin-ui-certificate-data';
 import { useLogicCertificateRequests } from '@energyweb/origin-ui-certificate-logic';
 
@@ -15,13 +16,21 @@ export const useRequestsPageEffects = () => {
   const { requests, isLoading: allRequestsLoading } =
     useCertificationRequests();
 
-  const loading = isFuelTypesloading || areDevicesLoading || allRequestsLoading;
+  const { exchangeAddress, isLoading: isExchangeAddressLoading } =
+    useExchangeAddress();
+
+  const loading =
+    isFuelTypesloading ||
+    areDevicesLoading ||
+    allRequestsLoading ||
+    isExchangeAddressLoading;
 
   const tableData = useLogicCertificateRequests({
     devices,
     requests,
-    loading,
     allFuelTypes,
+    exchangeAddress,
+    loading,
   });
 
   return {
