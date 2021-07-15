@@ -8,7 +8,6 @@ import {
 import { downloadFileHandler } from '@energyweb/origin-ui-certificate-data';
 import {
   TFormatCertificateRequestsData,
-  TFormatCertificateRequestsReturnData,
   TUseLogicCertificateRequests,
 } from './types';
 
