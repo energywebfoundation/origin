@@ -60,7 +60,6 @@ export const useRetireCertificateHandler = (
       queryClient.resetQueries(blockchainCertificatesQueryKey);
       resetList();
     } catch (error) {
-      console.error(error);
       showNotification(
         t('certificate.blockchainInbox.notifications.retireError'),
         NotificationTypeEnum.Error

@@ -63,7 +63,6 @@ export const useDepositCertificateHandler = (resetList: () => void) => {
       queryClient.resetQueries(blockchainCertificatesQueryKey);
       resetList();
     } catch (error) {
-      console.error(error);
       showNotification(
         t('certificate.blockchainInbox.notifications.depositError'),
         NotificationTypeEnum.Error
