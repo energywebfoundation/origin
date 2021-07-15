@@ -1,6 +1,7 @@
 {
   "name": "ui-packages",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
@@ -25,7 +26,6 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help"
   },
-  "private": true,
   "dependencies": {
     "@emotion/react": "11.0.0",
     "@emotion/styled": "11.0.0",
@@ -101,10 +101,10 @@
     "@svgr/webpack": "^5.4.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "11.1.2",
-    "@types/jest": "26.0.23",
+    "@types/jest": "26.0.24",
     "@types/lodash": "^4.14.168",
     "@types/material-ui": "^0.21.8",
-    "@types/node": "14.17.4",
+    "@types/node": "14.17.5",
     "@types/react": "17.0.1",
     "@types/react-dom": "17.0.1",
     "@types/react-is": "17.0.0",
