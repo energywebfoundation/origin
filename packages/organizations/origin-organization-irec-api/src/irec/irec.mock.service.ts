@@ -5,6 +5,7 @@ import {
     Account,
     AccountItem,
     AccountType,
+    ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
     Device,
@@ -14,7 +15,6 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
-    Transaction,
     TransactionType
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
@@ -223,8 +223,9 @@ export class IrecMockService implements IIrecService {
         user: UserIdentifier,
         issueRequestCode: string,
         issuerAccountCode: string
-    ): Promise<Transaction> {
+    ): Promise<ApproveTransaction> {
         return {
+            asset: 'TESTACC-0202-0202-0202-02',
             code: `TRANSACTION-${randomString()}`,
             volume: 1000,
             notes: '',

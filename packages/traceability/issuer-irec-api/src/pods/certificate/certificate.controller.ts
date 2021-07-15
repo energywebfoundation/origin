@@ -23,7 +23,7 @@ import { IrecAccountItemDto } from './dto';
 
 @ApiTags('irec-certificates')
 @ApiBearerAuth('access-token')
-@Controller('/certificate')
+@Controller('/irec/certificate')
 @UseInterceptors(ExceptionInterceptor)
 @UsePipes(ValidationPipe)
 export class IrecCertificateController extends CertificateController {

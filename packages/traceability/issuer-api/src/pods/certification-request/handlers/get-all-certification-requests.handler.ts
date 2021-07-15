@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { GetAllCertificationRequestsQuery } from '../queries';
 import { CertificationRequest } from '../certification-request.entity';
@@ -16,6 +16,10 @@ export class GetAllCertificationRequestsHandler
     ) {}
 
     async execute({ query }: GetAllCertificationRequestsQuery): Promise<CertificationRequestDTO[]> {
-        return this.repository.find(query);
+        return this.repository.find({
+            ...(query.hasOwnProperty('approved') ? { approved: query.approved } : {}),
+            ...(query.owner ? { owner: query.owner } : {}),
+            ...(query.deviceIds?.length ? { deviceId: In(query.deviceIds) } : {})
+        });
     }
 }

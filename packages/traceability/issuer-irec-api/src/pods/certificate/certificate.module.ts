@@ -3,12 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 
 import {
+    BlockchainPropertiesModule,
     Certificate,
-    OnChainCertificateWatcher,
-    BlockchainPropertiesModule
+    CertificateBatchController,
+    OnChainCertificateWatcher
 } from '@energyweb/issuer-api';
 import { IrecModule } from '@energyweb/origin-organization-irec-api';
 import { DeviceModule } from '@energyweb/origin-device-registry-irec-local-api';
+import { DeviceRegistryModule } from '@energyweb/origin-device-registry-api';
 
 import { IrecCertificateController } from './certificate.controller';
 import { IrecCertificate } from './irec-certificate.entity';
@@ -20,9 +22,10 @@ import { CertificateHandlers } from './handler';
         TypeOrmModule.forFeature([Certificate, IrecCertificate]),
         BlockchainPropertiesModule,
         IrecModule,
-        DeviceModule
+        DeviceModule,
+        DeviceRegistryModule
     ],
-    controllers: [IrecCertificateController],
+    controllers: [IrecCertificateController, CertificateBatchController],
     providers: [...CertificateHandlers, OnChainCertificateWatcher],
     exports: [...CertificateHandlers, OnChainCertificateWatcher]
 })

@@ -177,7 +177,8 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         })
         .overrideProvider(DeviceService)
         .useValue({
-            findOne: () => ({ fuelType: '' })
+            findOne: () => ({ fuelType: '' }),
+            findAll: (): object[] => []
         })
         .compile();
 

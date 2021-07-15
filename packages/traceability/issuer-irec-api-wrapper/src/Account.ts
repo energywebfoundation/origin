@@ -78,6 +78,10 @@ export class Transaction {
     transactionType: TransactionType;
 }
 
+export class ApproveTransaction extends Transaction {
+    asset: string;
+}
+
 export class TransactionResult extends Transaction {
     @Expose({ name: 'type', toClassOnly: true })
     transactionType: TransactionType;

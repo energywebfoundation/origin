@@ -14,7 +14,7 @@ export class IrecCertificationRequest
     certificationRequestId: number;
 
     @Column()
-    userId: string;
+    organizationId: string;
 
     @Column({ default: '' })
     @IsOptional()
@@ -22,5 +22,5 @@ export class IrecCertificationRequest
 
     @Column({ default: '' })
     @IsOptional()
-    irecCertificateId: string; // It is called an "Item" in IREC API
+    irecAssetId: string;
 }

@@ -12,6 +12,7 @@ import EventEmitter from 'events';
 import {
     Account,
     AccountBalance,
+    ApproveTransaction,
     RedeemTransaction,
     RedeemTransactionResult,
     Transaction,
@@ -223,7 +224,7 @@ export class IRECAPIClient extends EventEmitter {
             withdraw: async (code: string, notes?: string): Promise<void> => {
                 await setState(code, 'withdraw', notes);
             },
-            approve: async (code: string, approve: ApproveIssue): Promise<Transaction> => {
+            approve: async (code: string, approve: ApproveIssue): Promise<ApproveTransaction> => {
                 const appr =
                     approve instanceof ApproveIssue ? approve : plainToClass(ApproveIssue, approve);
 
@@ -237,7 +238,8 @@ export class IRECAPIClient extends EventEmitter {
                     this.config
                 );
 
-                return plainToClass(Transaction, response.data?.transaction);
+                const asset = response.data.asset;
+                return plainToClass(ApproveTransaction, { ...response.data.transaction, asset });
             },
             getStatus: async (code: string): Promise<IssueWithStatus> => {
                 const url = `${issueManagementUrl}/${code}`;

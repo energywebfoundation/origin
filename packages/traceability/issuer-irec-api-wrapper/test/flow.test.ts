@@ -107,7 +107,7 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(15000);
 
-    it('should pass create and approve issue flow', async () => {
+    it.only('should pass create and approve issue flow', async () => {
         const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
         const [fileId] = await registrantClient.file.upload([file]);
 
@@ -166,6 +166,7 @@ describe('API flows', () => {
         });
 
         expect(transaction.code).to.be.a('string');
+        expect(transaction.asset).to.be.a('string');
         expect(transaction.volume).to.equal(10);
         expect(transaction.sender).to.equal(issueAccount);
         expect(transaction.recipient).to.equal(tradeAccount);

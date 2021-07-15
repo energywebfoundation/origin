@@ -7,6 +7,7 @@ import {
     Account,
     AccountItem,
     AccountType,
+    ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
     Device,
@@ -17,8 +18,7 @@ import {
     IRECAPIClient,
     IssuanceStatus,
     Issue,
-    IssueWithStatus,
-    Transaction
+    IssueWithStatus
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
 
@@ -79,7 +79,7 @@ export interface IIrecService {
         user: UserIdentifier,
         issueRequestCode: string,
         issuerAccountCode: string
-    ): Promise<Transaction>;
+    ): Promise<ApproveTransaction>;
 
     getCertificates(user: UserIdentifier): Promise<AccountItem[]>;
 
@@ -246,7 +246,7 @@ export class IrecService implements IIrecService {
         user: UserIdentifier,
         issueRequestCode: string,
         issuerAccountCode: string
-    ): Promise<Transaction> {
+    ): Promise<ApproveTransaction> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
     }
