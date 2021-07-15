@@ -13,7 +13,10 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 
-export const usePendingInvitationModalHandlers = (closeModal: () => void) => {
+export const usePendingInvitationModalHandlers = (
+  closeModal: () => void,
+  openRoleChangeModal: () => void
+) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -31,7 +34,7 @@ export const usePendingInvitationModalHandlers = (closeModal: () => void) => {
           queryClient.invalidateQueries(userQueryKey);
           queryClient.invalidateQueries(invitationsQueryKey);
           closeModal();
-          navigate('/');
+          openRoleChangeModal();
           showNotification(
             t('user.modals.pendingInvitation.acceptSuccess'),
             NotificationTypeEnum.Success

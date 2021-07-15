@@ -9,6 +9,7 @@ export interface IUserModalsStore {
     invitation: InvitationDTO;
   };
   createExchangeAddress: boolean;
+  roleChanged: boolean;
 }
 
 interface IShowUserRegisteredAction {
@@ -34,8 +35,14 @@ interface IShowCreateExchangeAddressAction {
   payload: boolean;
 }
 
+interface IShowRoleChangeAction {
+  type: UserModalsActionsEnum.SHOW_ROLE_CHANGED;
+  payload: boolean;
+}
+
 export type TUserModalsAction =
   | IShowUserRegisteredAction
   | IShowLoginRegisterOrgAction
   | IShowPendingInvitationActions
-  | IShowCreateExchangeAddressAction;
+  | IShowCreateExchangeAddressAction
+  | IShowRoleChangeAction;

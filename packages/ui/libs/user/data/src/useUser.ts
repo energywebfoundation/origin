@@ -3,7 +3,7 @@ import {
   getAuthenticationToken,
   removeAuthenticationToken,
 } from '@energyweb/origin-ui-shared-state';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';
 

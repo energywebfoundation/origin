@@ -20,8 +20,15 @@ export const usePendingInvitationEffects = () => {
     });
   };
 
+  const openRoleChangeModal = () => {
+    dispatchModals({
+      type: UserModalsActionsEnum.SHOW_ROLE_CHANGED,
+      payload: true,
+    });
+  };
+
   const { acceptHandler, declineHandler, laterHandler } =
-    usePendingInvitationModalHandlers(closeModal);
+    usePendingInvitationModalHandlers(closeModal, openRoleChangeModal);
 
   const { title, text, buttons } = usePendingInvitationModalLogic({
     invitation,

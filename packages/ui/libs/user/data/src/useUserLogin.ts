@@ -67,7 +67,7 @@ export const useUserLogin = (
 
           if (
             !user?.organization &&
-            (!pendingInvitations || pendingInvitations?.length === 0)
+            (!pendingInvitations || pendingInvitations.length === 0)
           ) {
             openRegisterOrgModal();
             return;
