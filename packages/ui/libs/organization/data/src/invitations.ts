@@ -18,26 +18,24 @@ import { useTranslation } from 'react-i18next';
 export const useSentOrgInvitationsData = () => {
   const { data: user, isLoading: userLoading } = useUserControllerMe();
 
-  const {
-    data: invitations,
-    isLoading: invitationsLoading,
-  } = useOrganizationControllerGetInvitationsForOrganization(
-    user?.organization?.id
-  );
+  const { data: invitations, isLoading: invitationsLoading } =
+    useOrganizationControllerGetInvitationsForOrganization(
+      user?.organization?.id
+    );
 
   return { isLoading: userLoading || invitationsLoading, invitations };
 };
 
 export const useReceivedInvitationsData = () => {
-  const {
-    isLoading,
-    data: invitations,
-  } = useInvitationControllerGetInvitations();
+  const { isLoading, data: invitations } =
+    useInvitationControllerGetInvitations();
 
   return { isLoading, invitations };
 };
 
-export const useReceivedInvitationsActions = () => {
+export const useReceivedInvitationsActions = (
+  openRoleChangedModal: () => void
+) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const invitationsKey = getInvitationControllerGetInvitationsQueryKey();
@@ -62,6 +60,7 @@ export const useReceivedInvitationsActions = () => {
             t('organization.invitations.notifications.acceptedSuccess'),
             NotificationTypeEnum.Success
           );
+          openRoleChangedModal();
         },
         onError: (error) => {
           console.log(error);

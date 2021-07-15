@@ -11,20 +11,31 @@ import {
 import { Check, Clear } from '@material-ui/icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  OrganizationModalsActionsEnum,
+  useOrgModalsDispatch,
+} from '../../context';
 
 export const useInvitationsPageEffects = () => {
   const { t } = useTranslation();
+  const dispatchModals = useOrgModalsDispatch();
 
-  const {
-    isLoading: isSentLoading,
-    invitations: sentInvitations,
-  } = useSentOrgInvitationsData();
+  const { isLoading: isSentLoading, invitations: sentInvitations } =
+    useSentOrgInvitationsData();
   const sentInvitationsTable = useSentInvitationsTableLogic(
     sentInvitations,
     isSentLoading
   );
 
-  const { acceptInvite, rejectInvite } = useReceivedInvitationsActions();
+  const openRoleChangedModal = () => {
+    dispatchModals({
+      type: OrganizationModalsActionsEnum.SHOW_ROLE_CHANGED,
+      payload: true,
+    });
+  };
+
+  const { acceptInvite, rejectInvite } =
+    useReceivedInvitationsActions(openRoleChangedModal);
   const receivedInvitationsActions = [
     {
       icon: <Check />,
@@ -37,10 +48,8 @@ export const useInvitationsPageEffects = () => {
       onClick: (id: InvitationDTO['id']) => rejectInvite(id),
     },
   ];
-  const {
-    isLoading: isReceivedLoading,
-    invitations: receivedInvitations,
-  } = useReceivedInvitationsData();
+  const { isLoading: isReceivedLoading, invitations: receivedInvitations } =
+    useReceivedInvitationsData();
   const receivedInvitationsTable = useReceivedInvitationsTableLogic(
     receivedInvitations,
     receivedInvitationsActions,

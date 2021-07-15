@@ -5,7 +5,7 @@ import { IRecConnectOrRegisterModal } from './IRecConnectOrRegister';
 import { IRecRegisteredThankYou } from './IRecRegisteredThankYou';
 import { OrganizationAlreadyExists } from './OrganizationAlreadyExists';
 import { RegisterThankYou } from './RegisterThankYou';
-import { RoleChanged } from './RoleChanged/RoleChanged';
+import { RoleChanged } from './RoleChanged';
 
 export const OrganizationModalsCenter: FC = () => {
   return (
