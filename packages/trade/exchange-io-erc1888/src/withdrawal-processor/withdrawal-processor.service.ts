@@ -248,8 +248,8 @@ export class WithdrawalProcessorService implements OnModuleInit {
     ) {
         const { id } = transfer;
 
-        const isWithdrawalOrSend = (transfer: Transfer) =>
-            [TransferDirection.Withdrawal, TransferDirection.Send].includes(transfer.direction);
+        const isWithdrawalOrSend = (t: Transfer) =>
+            [TransferDirection.Withdrawal, TransferDirection.Send].includes(t.direction);
 
         const logName = isWithdrawalOrSend(transfer) ? 'TransferSingle' : 'ClaimSingle';
 
