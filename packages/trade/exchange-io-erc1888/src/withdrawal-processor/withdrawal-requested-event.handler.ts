@@ -13,6 +13,6 @@ export class WithdrawalRequestedEventHandler {
         this.logger.log(
             `Received withdrawal requested event with transfer id=${event.transfer.id}`
         );
-        this.withdrawalProcessorService.requestWithdrawal(event.transfer);
+        this.withdrawalProcessorService.request(event.transfer);
     }
 }
