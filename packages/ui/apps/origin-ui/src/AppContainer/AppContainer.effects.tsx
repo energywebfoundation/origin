@@ -13,8 +13,12 @@ import {
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
 import { useActiveMenuTab } from '../components';
+import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
+import { useInvitationControllerGetInvitations } from '@energyweb/origin-organization-irec-api-react-query-client';
 
 export const useAppContainerEffects = () => {
+  useAxiosInterceptors();
+
   const { t } = useTranslation();
   const { isAuthenticated, user, logout } = useUser();
 
@@ -27,7 +31,9 @@ export const useAppContainerEffects = () => {
     isExchangeTabActive,
     isCertificateTabActive,
   } = useActiveMenuTab();
-
+  const { data: userInvitations } = useInvitationControllerGetInvitations({
+    enabled: isAuthenticated,
+  });
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsDeviceManagerOrAdmin = isRole(
@@ -52,7 +58,10 @@ export const useAppContainerEffects = () => {
     showRegisterOrg: !userHasOrg,
     showMyOrg: userHasOrg,
     showMembers: userHasOrg && userIsOrgAdmin,
-    showInvitations: userHasOrg && userIsOrgAdmin ? true : false,
+    showInvitations:
+      userHasOrg && userIsOrgAdmin
+        ? true
+        : !!userInvitations && userInvitations.length > 0,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: true,

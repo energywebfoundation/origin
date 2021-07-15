@@ -1,17 +1,11 @@
 import { getAuthenticationToken } from '@energyweb/origin-ui-shared-state';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 export const useAxiosInterceptors = () => {
   const token = getAuthenticationToken();
 
-  axios.interceptors.request.use(
-    (config: AxiosRequestConfig): AxiosRequestConfig => {
-      config.baseURL = process.env.NX_BACKEND_URL;
-      config.headers.Authorization = `Bearer ${token}`;
-
-      return config;
-    }
-  );
+  axios.defaults.baseURL = process.env.NX_BACKEND_URL;
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
   axios.interceptors.response.use(
     (response) => response,

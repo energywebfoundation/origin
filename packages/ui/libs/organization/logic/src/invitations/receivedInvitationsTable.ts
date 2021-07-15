@@ -16,7 +16,11 @@ const prepareReceivedInvitation = (
   status: invite.status,
   actions:
     OrganizationInvitationStatus[invite.status] ===
-      OrganizationInvitationStatus.Pending && actions,
+      OrganizationInvitationStatus.Pending ||
+    OrganizationInvitationStatus[invite.status] ===
+      OrganizationInvitationStatus.Viewed
+      ? actions
+      : undefined,
 });
 
 export const useReceivedInvitationsTableLogic = (
