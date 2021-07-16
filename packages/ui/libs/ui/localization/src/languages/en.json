@@ -399,6 +399,7 @@
         "title": "Exchange Inbox",
         "sellActionTitle": "Sell",
         "withdrawActionTitle": "Withdraw",
+        "transferActionTitle": "Transfer",
         "generationTime": "Generation Time Frame",
         "selectedForSale": "Selected For Sale",
         "price": "Price per MWh",
@@ -406,11 +407,16 @@
         "sellButton": "Sell",
         "selectedForWithdraw": "Selected For Withdrawal",
         "withdrawButton": "Withdraw",
+        "selectedForTransfer": "Selected For Transfer",
+        "exchangeAddress": "Exchange Deposit Address",
+        "transferButton": "Transfer",
         "notifications": {
           "sellSuccess": "Certificate has been successfully posted to exchange",
           "sellError": "Error while posting certificate for sale",
           "withdrawSuccess": "Certificate has been successfully withdrawn",
-          "withdrawError": "Error while withdrawing certificate"
+          "withdrawError": "Error while withdrawing certificate",
+          "transferSuccess": "Certificate has been successfully transfered",
+          "transferError": "Error while transfering certificate"
         }
       },
       "blockchainInbox": {

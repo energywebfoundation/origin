@@ -84,6 +84,7 @@ export const useExchangeInboxLogic: TUseExchangeInboxLogic = ({
     checkboxes: true,
     listTitle: t('certificate.exchangeInbox.title'),
     selectAllText: t('certificate.inbox.selectAll'),
+    actionsTabsProps: { scrollButtons: false },
     containers: containers,
     actions: actions,
   };

@@ -7,7 +7,7 @@ import {
   useApiAllDevices,
   useAllFuelTypes,
 } from '@energyweb/origin-ui-certificate-data';
-import { useLogicCertificateRequests } from '@energyweb/origin-ui-certificate-logic';
+import { usePendingCertificatsLogic } from '@energyweb/origin-ui-certificate-logic';
 
 export const usePendingPageEffects = () => {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ export const usePendingPageEffects = () => {
     },
   ];
 
-  const tableData = useLogicCertificateRequests({
+  const tableData = usePendingCertificatsLogic({
     devices,
     requests,
     actions,

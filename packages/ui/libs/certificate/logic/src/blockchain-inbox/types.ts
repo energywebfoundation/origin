@@ -90,15 +90,15 @@ export type TUseBeneficiariesSelectorLogic = (
   >
 ) => Omit<SelectRegularProps, 'value'>;
 
-type TUseTransferActionLogicArgs<Id> = {
+type TUseBlockchainTransferActionLogicArgs<Id> = {
   selectedIds: Id[];
   blockchainCertificates: CertificateDTO[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseTransferActionLogic = <Id>(
-  args: TUseTransferActionLogicArgs<Id>
+export type TUseBlockchainTransferActionLogic = <Id>(
+  args: TUseBlockchainTransferActionLogicArgs<Id>
 ) => {
   title: string;
   buttonText: string;

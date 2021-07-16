@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useGetBlockchainCertificateHandler } from '../fetching';
 
-export const useTransferCertificateHandler = (
+export const useBlockchainTransferCertificateHandler = (
   receiverAddress: string,
   resetList: () => void
 ) => {

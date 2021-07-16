@@ -11,7 +11,7 @@ import {
   ListItemHeader,
   DepositAction,
   RetireAction,
-  TransferAction,
+  BlockchainTransferAction,
 } from '../../containers';
 
 export const useBlockchainInboxPageEffects = () => {
@@ -37,7 +37,7 @@ export const useBlockchainInboxPageEffects = () => {
     },
     {
       name: t('certificate.blockchainInbox.transferActionTitle'),
-      component: TransferAction,
+      component: BlockchainTransferAction,
     },
   ];
 
