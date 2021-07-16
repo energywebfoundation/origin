@@ -91,3 +91,19 @@ type TFormatSelectedExchangeItemsArgs<Id> = {
 export type TFormatSelectedExchangeItems = <Id>(
   args: TFormatSelectedExchangeItemsArgs<Id>
 ) => SelectedItem<Id>[];
+
+type TUseExchangeTransferActionLogicArgs<Id> = {
+  selectedIds: Id[];
+  exchangeCertificates: AccountAssetDTO[];
+  allDevices: ComposedPublicDevice[];
+  allFuelTypes: CodeNameDTO[];
+};
+
+export type TUseExchangeTransferActionLogic = <Id>(
+  args: TUseExchangeTransferActionLogicArgs<Id>
+) => {
+  title: string;
+  buttonText: string;
+  addressInputLabel: string;
+  selectedItems: SelectedItem<Id>[];
+};

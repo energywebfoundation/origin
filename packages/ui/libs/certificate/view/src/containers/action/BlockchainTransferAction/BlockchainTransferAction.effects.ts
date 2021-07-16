@@ -2,12 +2,12 @@ import {
   useCachedAllFuelTypes,
   useCachedAllDevices,
   useCachedBlockchainCertificates,
-  useTransferCertificateHandler,
+  useBlockchainTransferCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
-import { useTransferActionLogic } from '@energyweb/origin-ui-certificate-logic';
+import { useBlockchainTransferActionLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ChangeEvent, useState } from 'react';
 
-export const useTransferActionEffects = <Id>(
+export const useBlockchainTransferActionEffects = <Id>(
   selectedIds: Id[],
   resetIds: () => void
 ) => {
@@ -23,12 +23,10 @@ export const useTransferActionEffects = <Id>(
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
 
-  const { transferHandler, isLoading } = useTransferCertificateHandler(
-    recipientAddress,
-    resetIds
-  );
+  const { transferHandler, isLoading } =
+    useBlockchainTransferCertificateHandler(recipientAddress, resetIds);
 
-  const actionLogic = useTransferActionLogic({
+  const actionLogic = useBlockchainTransferActionLogic({
     selectedIds,
     blockchainCertificates,
     allDevices,

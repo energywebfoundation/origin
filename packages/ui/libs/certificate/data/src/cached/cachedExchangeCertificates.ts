@@ -12,5 +12,5 @@ export const useCachedExchangeCertificates = () => {
     exchangeCertificatesQueryKey
   );
 
-  return accountBalance.available;
+  return accountBalance?.available;
 };

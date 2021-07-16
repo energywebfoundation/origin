@@ -11,6 +11,7 @@ import {
   ListItemHeader,
   SellAction,
   WithdrawAction,
+  ExchangeTransferAction,
 } from '../../containers';
 
 export const useExchangeInboxPageEffects = () => {
@@ -33,6 +34,10 @@ export const useExchangeInboxPageEffects = () => {
     {
       name: t('certificate.exchangeInbox.withdrawActionTitle'),
       component: WithdrawAction,
+    },
+    {
+      name: t('certificate.exchangeInbox.transferActionTitle'),
+      component: ExchangeTransferAction,
     },
   ];
 

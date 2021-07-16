@@ -1,4 +1,4 @@
 export * from './blockchainInbox';
 export * from './depositAction';
 export * from './retireAction';
-export * from './transferAction';
+export * from './blockchainTransferAction';

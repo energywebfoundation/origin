@@ -1,6 +1,9 @@
-export * from './depositCertificate';
 export * from './fileUDownload';
-export * from './retireCertificate';
+
 export * from './sellCertificate';
 export * from './withdrawCertificate';
-export * from './transferCertificate';
+export * from './exchangeTransferCertificate';
+
+export * from './depositCertificate';
+export * from './retireCertificate';
+export * from './blockchainTransferCertificate';

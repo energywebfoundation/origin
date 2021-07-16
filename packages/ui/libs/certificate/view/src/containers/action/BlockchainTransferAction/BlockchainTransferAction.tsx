@@ -2,16 +2,20 @@ import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { CircularProgress, TextField } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
-import { useTransferActionEffects } from './TransferAction.effects';
-import { useStyles } from './TransferAction.styles';
+import { useBlockchainTransferActionEffects } from './BlockchainTransferAction.effects';
+import { useStyles } from './BlockchainTransferAction.styles';
 
-interface TransferActionProps<Id> extends ListActionComponentProps<Id> {}
+interface BlockchainTransferActionProps<Id>
+  extends ListActionComponentProps<Id> {}
 
-export type TTransferAction = <Id>(
-  props: PropsWithChildren<TransferActionProps<Id>>
+export type TBlockchainTransferAction = <Id>(
+  props: PropsWithChildren<BlockchainTransferActionProps<Id>>
 ) => ReactElement;
 
-export const TransferAction: TTransferAction = ({ selectedIds, resetIds }) => {
+export const BlockchainTransferAction: TBlockchainTransferAction = ({
+  selectedIds,
+  resetIds,
+}) => {
   const classes = useStyles();
   const {
     title,
@@ -23,7 +27,7 @@ export const TransferAction: TTransferAction = ({ selectedIds, resetIds }) => {
     handleAddressChange,
     isLoading,
     buttonDisabled,
-  } = useTransferActionEffects(selectedIds, resetIds);
+  } = useBlockchainTransferActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
 
