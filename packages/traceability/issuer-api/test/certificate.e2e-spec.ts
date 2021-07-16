@@ -152,6 +152,16 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.CREATED);
 
         expect(ids).to.be.an('array').with.lengthOf(2);
+
+        await sleep(10000);
+
+        const { isOwned, energy } = await getCertificate(
+            ids[0],
+            TestUser.OrganizationDeviceManager
+        );
+
+        expect(isOwned).to.be.true;
+        expect(energy.publicVolume).to.equal(certificateTestData.energy);
     });
 
     it('should transfer a certificate', async () => {

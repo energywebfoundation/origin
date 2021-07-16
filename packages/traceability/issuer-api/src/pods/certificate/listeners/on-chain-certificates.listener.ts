@@ -96,7 +96,7 @@ export class OnChainCertificateWatcher implements OnModuleInit {
             case EventType.IssuanceBatch:
                 event._ids.forEach((id: any) => {
                     logEvent(EventType.IssuanceBatch, [id.toNumber()]);
-                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
+                    this.eventBus.publish(new CertificateCreatedEvent(id.toNumber()));
                 });
                 break;
 
