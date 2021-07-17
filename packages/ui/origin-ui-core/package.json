@@ -71,7 +71,7 @@
         "toastr": "2.1.4",
         "winston": "3.3.3",
         "yup": "0.32.9",
-        "@reduxjs/toolkit": "1.6.0",
+        "@reduxjs/toolkit": "1.6.1",
         "@vmw/queue-for-redux-saga": "0.3.1"
     },
     "devDependencies": {
