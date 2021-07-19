@@ -3,11 +3,11 @@ import React, { PropsWithChildren, ReactElement } from 'react';
 import { SelectedItem, SelectedItemProps } from '../SelectedItem';
 import {
   EnergyAmounts,
-  useCertificateActionContentEffects,
-} from './CertificateActionContent.effects';
-import { useStyles } from './CertificateActionContent.styles';
+  useBundleActionContentEffects,
+} from './BundleActionContent.effects';
+import { useStyles } from './BundleActionContent.styles';
 
-export interface CertificateActionContentProps<Id> {
+export interface BundleActionContentProps<Id> {
   title: string;
   buttonText: string;
   selectedIds: Id[];
@@ -17,11 +17,11 @@ export interface CertificateActionContentProps<Id> {
   setTotalAmount?: (newValue: number) => void;
 }
 
-export type TCertificateActionContent = <Id>(
-  props: PropsWithChildren<CertificateActionContentProps<Id>>
+export type TBundleActionContent = <Id>(
+  props: PropsWithChildren<BundleActionContentProps<Id>>
 ) => ReactElement;
 
-export const CertificateActionContent: TCertificateActionContent = ({
+export const BundleActionContent: TBundleActionContent = ({
   title,
   buttonText,
   selectedIds,
@@ -39,7 +39,7 @@ export const CertificateActionContent: TCertificateActionContent = ({
     handleItemEnergyAmountChange,
     handleSubmit,
     totalVolume,
-  } = useCertificateActionContentEffects(
+  } = useBundleActionContentEffects(
     selectedIds,
     selectedItems,
     submitHandler,

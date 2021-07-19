@@ -1,24 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CertificateActionContentProps } from './CertificateActionContent';
+import { BundleActionContentProps } from './BundleActionContent';
 
 export type EnergyAmounts<Id> = {
   id: Id;
   amount: string;
 };
 
-export const useCertificateActionContentEffects = <Id>(
+export const useBundleActionContentEffects = <Id>(
   selectedIds: Id[],
-  selectedItems: CertificateActionContentProps<Id>['selectedItems'],
-  submitHandler: CertificateActionContentProps<Id>['submitHandler'],
-  setTotalAmount?: CertificateActionContentProps<Id>['setTotalAmount']
+  selectedItems: BundleActionContentProps<Id>['selectedItems'],
+  submitHandler: BundleActionContentProps<Id>['submitHandler'],
+  setTotalAmount?: BundleActionContentProps<Id>['setTotalAmount']
 ) => {
   const { t } = useTranslation();
   const [energyAmounts, setEnergyAmounts] = useState<EnergyAmounts<Id>[]>([]);
 
   const addOrRemoveEnergyOnCheck = (
     ids: Id[],
-    items: CertificateActionContentProps<Id>['selectedItems']
+    items: BundleActionContentProps<Id>['selectedItems']
   ) => {
     if (ids.length === 0) {
       setEnergyAmounts([]);
@@ -81,7 +81,7 @@ export const useCertificateActionContentEffects = <Id>(
 
   const selectCertificateText = t('exchange.createBundle.selectCertificate');
   const totalVolumeText = t('exchange.createBundle.totalVolume');
-  console.log(energyAmounts);
+
   const totalVolume = energyAmounts.reduce(
     (total, current) => (total += parseInt(current.amount)),
     0

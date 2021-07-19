@@ -8,26 +8,20 @@ import {
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { FC } from 'react';
 
-export interface ListItemContentProps<Id> {
-  certificateId: Id;
+export interface ListItemContentProps {
   icon: FC<React.SVGProps<SVGSVGElement>>;
   fuelType: string;
   energy: string;
   certificationDateTitle: string;
   certificationDateText: string;
 }
-
-export type TListItemContent = <Id>(
-  props: React.PropsWithChildren<ListItemContentProps<Id>>
-) => React.ReactElement;
-
 type TUseCreateBundleLogicArgs = {
   exchangeCertificates: AccountAssetDTO[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
   actions: ListAction[];
   ListItemHeader: React.FC<{ name: string; country: string }>;
-  ListItemContent: TListItemContent;
+  ListItemContent: React.FC<ListItemContentProps>;
 };
 
 export type TUseCreateBundleLogic = (

@@ -1,7 +1,7 @@
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { TextField, Typography } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { CertificateActionContent } from '../../list';
+import { BundleActionContent } from '../../list';
 import { useSellActionEffects } from './SellAsBundleAction.effects';
 import { useStyles } from './SellAsBundleAction.styles';
 
@@ -31,7 +31,7 @@ export const SellAsBundleAction: TSellAsBundleAction = ({
   } = useSellActionEffects(selectedIds, resetIds);
 
   return (
-    <CertificateActionContent
+    <BundleActionContent
       title={title}
       buttonText={buttonText}
       selectedIds={selectedIds}
@@ -54,6 +54,6 @@ export const SellAsBundleAction: TSellAsBundleAction = ({
           <Typography>$ {totalPrice}</Typography>
         </div>
       </>
-    </CertificateActionContent>
+    </BundleActionContent>
   );
 };

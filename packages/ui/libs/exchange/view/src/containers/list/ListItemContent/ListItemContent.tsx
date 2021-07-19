@@ -1,10 +1,8 @@
 import { Typography } from '@material-ui/core';
-import React, { FC, PropsWithChildren, ReactElement } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { FC } from 'react';
 import { useStyles } from './ListItemContent.styles';
 
-export interface ListItemContentProps<Id> {
-  certificateId: Id;
+export interface ListItemContentProps {
   icon: FC<React.SVGProps<SVGSVGElement>>;
   fuelType: string;
   energy: string;
@@ -12,12 +10,7 @@ export interface ListItemContentProps<Id> {
   certificationDateText: string;
 }
 
-export type TListItemContent = <Id>(
-  props: PropsWithChildren<ListItemContentProps<Id>>
-) => ReactElement;
-
-export const ListItemContent: TListItemContent = ({
-  certificateId,
+export const ListItemContent: React.FC<ListItemContentProps> = ({
   icon: Icon,
   fuelType,
   energy,
@@ -25,7 +18,6 @@ export const ListItemContent: TListItemContent = ({
   certificationDateText,
 }) => {
   const classes = useStyles();
-  const navigate = useNavigate();
 
   return (
     <div className={classes.wrapper}>
