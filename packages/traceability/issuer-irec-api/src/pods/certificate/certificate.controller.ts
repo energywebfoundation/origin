@@ -1,25 +1,38 @@
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiBody,
+    ApiForbiddenResponse,
+    ApiResponse,
+    ApiTags
+} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import {
+    Body,
     Controller,
     Get,
     HttpStatus,
+    Post,
     UseGuards,
     UseInterceptors,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 import {
+    ActiveOrganizationGuard,
     ActiveUserGuard,
     ExceptionInterceptor,
+    Roles,
+    RolesGuard,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import { CertificateController } from '@energyweb/issuer-api';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { DeviceDTO } from '@energyweb/origin-device-registry-irec-local-api';
 
-import { GetIrecCertificatesToImportCommand } from './command';
-import { IrecAccountItemDto } from './dto';
+import { GetIrecCertificatesToImportCommand, ImportIrecCertificateCommand } from './command';
+import { IrecAccountItemDto, ImportIrecCertificateDTO } from './dto';
 
 @ApiTags('irec-certificates')
 @ApiBearerAuth('access-token')
@@ -38,5 +51,28 @@ export class IrecCertificateController extends CertificateController {
         @UserDecorator() user: ILoggedInUser
     ): Promise<IrecAccountItemDto[]> {
         return await this.commandBus.execute(new GetIrecCertificatesToImportCommand(user));
+    }
+
+    @Post('/import-irec-certificate')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: ImportIrecCertificateDTO })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: DeviceDTO,
+        description: 'Imports a certificate from IREC'
+    })
+    @ApiForbiddenResponse({
+        status: HttpStatus.FORBIDDEN,
+        description: `User doesn't have the correct permissions`
+    })
+    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST })
+    async importIrecDevice(
+        @Body() certificateToImport: ImportIrecCertificateDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<DeviceDTO> {
+        return await this.commandBus.execute(
+            new ImportIrecCertificateCommand(loggedInUser, certificateToImport)
+        );
     }
 }

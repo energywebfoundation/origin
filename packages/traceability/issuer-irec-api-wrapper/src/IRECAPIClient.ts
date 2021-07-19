@@ -470,13 +470,15 @@ export class IRECAPIClient extends EventEmitter {
     }
 
     public async transfer(transfer: Transfer): Promise<TransactionResult> {
-        await validateOrReject(transfer);
+        const t = transfer instanceof Transfer ? transfer : plainToClass(Transfer, transfer);
 
-        const url = `${this.endPointUrl}/api/irec/transfer-management`;
+        await validateOrReject(t);
+
+        const url = `${this.endPointUrl}/api/irec/v1/transfer-management`;
 
         const response = await this.axiosInstance.post<{ transaction: any }>(
             url,
-            classToPlain(transfer),
+            classToPlain(t),
             this.config
         );
 

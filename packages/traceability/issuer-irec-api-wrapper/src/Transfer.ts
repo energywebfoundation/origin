@@ -1,4 +1,4 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import {
     IsDate,
     IsNotEmpty,
@@ -37,7 +37,12 @@ export class Transfer {
 
     @Expose({ name: 'reservation_items', toPlainOnly: true })
     @ValidateNested()
+    @Type(() => ReservationItem)
     items: ReservationItem[];
+
+    @Expose({ name: 'rqd_volume', toPlainOnly: true })
+    @IsNumber()
+    volume: number;
 
     @IsOptional()
     @IsString()
@@ -62,8 +67,4 @@ export class Redemption extends Transfer {
     @IsString()
     @IsNotEmpty()
     purpose: string;
-
-    @Expose({ name: 'rqd_volume', toPlainOnly: true })
-    @IsNumber()
-    volume: number;
 }

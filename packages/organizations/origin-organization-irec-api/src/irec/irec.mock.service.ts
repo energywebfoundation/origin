@@ -15,6 +15,7 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
+    TransactionResult,
     TransactionType
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
@@ -22,6 +23,8 @@ import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-co
 import { ReadStream } from 'fs';
 import { CreateConnectionDTO } from './dto';
 import { IIrecService } from './irec.service';
+import { ConnectionDTO } from '../connection';
+import { IRECAccountType } from '../registration';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
@@ -87,6 +90,45 @@ export class IrecMockService implements IIrecService {
             status: IssuanceStatus.Approved
         }
     ];
+
+    public async getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO> {
+        return {
+            accessToken: 'access-token',
+            refreshToken: 'refresh-token',
+            expiryDate: new Date(),
+            userName: 'irecUser',
+            registration: {
+                id: '123',
+                owner: '234',
+                accountType: IRECAccountType.Both,
+                headquarterCountry: '',
+                registrationYear: 2020,
+                employeesNumber: '1-50',
+                shareholders: '',
+                website: 'https://example.com',
+                activeCountries: ['UK'],
+                mainBusiness: '',
+                ceoName: '',
+                ceoPassportNumber: '',
+                balanceSheetTotal: '',
+                subsidiaries: '',
+                primaryContactOrganizationName: '',
+                primaryContactOrganizationAddress: '',
+                primaryContactOrganizationPostalCode: '',
+                primaryContactOrganizationCountry: '',
+                primaryContactName: '',
+                primaryContactEmail: '',
+                primaryContactPhoneNumber: '',
+                primaryContactFax: '',
+                leadUserTitle: '',
+                leadUserFirstName: '',
+                leadUserLastName: '',
+                leadUserEmail: 'ceo@example.com',
+                leadUserPhoneNumber: '',
+                leadUserFax: ''
+            }
+        };
+    }
 
     async login({
         userName,
@@ -238,6 +280,22 @@ export class IrecMockService implements IIrecService {
 
     async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
         return [];
+    }
+
+    async transferCertificate(
+        fromUser: UserIdentifier,
+        toUser: UserIdentifier,
+        assetId: string
+    ): Promise<TransactionResult> {
+        return {
+            code: 'transactioncode',
+            volume: 123,
+            notes: '',
+            time: new Date(),
+            transactionType: TransactionType.Transfer,
+            sender: 'sender-trade-acc',
+            recipient: 'recepient-trade-acc'
+        };
     }
 
     async approveDevice(user: UserIdentifier, code: string): Promise<Device> {

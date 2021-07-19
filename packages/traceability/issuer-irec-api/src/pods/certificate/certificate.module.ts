@@ -11,6 +11,7 @@ import {
 import { IrecModule } from '@energyweb/origin-organization-irec-api';
 import { DeviceModule } from '@energyweb/origin-device-registry-irec-local-api';
 import { DeviceRegistryModule } from '@energyweb/origin-device-registry-api';
+import { UserModule } from '@energyweb/origin-backend';
 
 import { IrecCertificateController } from './certificate.controller';
 import { IrecCertificate } from './irec-certificate.entity';
@@ -22,8 +23,9 @@ import { CertificateHandlers } from './handler';
         TypeOrmModule.forFeature([Certificate, IrecCertificate]),
         BlockchainPropertiesModule,
         IrecModule,
+        DeviceRegistryModule,
         DeviceModule,
-        DeviceRegistryModule
+        UserModule
     ],
     controllers: [IrecCertificateController, CertificateBatchController],
     providers: [...CertificateHandlers, OnChainCertificateWatcher],
