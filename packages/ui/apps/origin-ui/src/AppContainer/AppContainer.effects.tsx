@@ -92,7 +92,9 @@ export const useAppContainerEffects = () => {
     isOpen: isExchangeTabActive,
     showSection: true,
     showViewMarket: true,
+    showAllBundles: true,
     showCreateBundle: true,
+    showMyBundles: true,
   });
   const accountMenu = getAccountMenu({
     t,
