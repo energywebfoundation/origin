@@ -8,3 +8,5 @@ export { RegistrationCreatedHandler } from './registration-created.handler';
 export { OrganizationRegisteredHandler } from './organization-registered.handler';
 export { DeviceCreatedHandler } from './device-created.handler';
 export { CertificateRequestApprovedHandler } from './certificate-request-approved.handler';
+export { IrecCertificateImportFailedHandler } from './irec-certificate-import-failed.handler';
+export { IrecCertificateImportSuccessHandler } from './irec-certificate-import-success.handler';

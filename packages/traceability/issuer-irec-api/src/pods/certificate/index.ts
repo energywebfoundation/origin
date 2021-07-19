@@ -1,6 +1,5 @@
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/commands';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/events';
-export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/handlers';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/listeners';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/queries';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/utils';
@@ -9,3 +8,7 @@ export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/certificate.en
 export * from './certificate.controller';
 export * from './irec-certificate.entity';
 export * from './certificate.module';
+export * from './event';
+export * from './dto';
+export * from './command';
+export * from './handler';

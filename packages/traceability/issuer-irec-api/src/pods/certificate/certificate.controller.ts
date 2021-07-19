@@ -28,7 +28,7 @@ import {
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import { CertificateController } from '@energyweb/issuer-api';
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 import { DeviceDTO } from '@energyweb/origin-device-registry-irec-local-api';
 
 import { GetIrecCertificatesToImportCommand, ImportIrecCertificateCommand } from './command';
