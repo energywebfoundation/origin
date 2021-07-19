@@ -11,6 +11,7 @@ import {
   TableComponentFooter,
 } from '../../components/table';
 import { usePaginateData } from './usePaginateData';
+import { useStyles } from './TableComponent.styles';
 
 export const TABLE_COMPONENT__DEFAULT_PAGE_SIZE = 5;
 
@@ -37,8 +38,9 @@ export const TableComponent: TTableComponent = ({
     data,
     pageSize
   );
+  const classes = useStyles();
   return (
-    <>
+    <div className={classes.wrapper}>
       {tableTitle && (
         <Typography gutterBottom {...tableTitleProps}>
           {tableTitle}
@@ -65,6 +67,6 @@ export const TableComponent: TTableComponent = ({
           totalPages={totalPages || Math.ceil(data.length / pageSize)}
         />
       </Table>
-    </>
+    </div>
   );
 };
