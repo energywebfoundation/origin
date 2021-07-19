@@ -1,6 +1,5 @@
+import React, { FC } from 'react';
 import { TableComponent } from '@energyweb/origin-ui-core';
-import React from 'react';
-import { FC } from 'react';
 import { usePendingPageEffects } from './PendingPage.effects';
 
 export const PendingPage: FC = () => {
