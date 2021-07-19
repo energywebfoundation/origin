@@ -2,7 +2,7 @@ import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-re
 import {
   ComposedPublicDevice,
   ComposedDevice,
-} from '@energyweb/origin-ui-device-data';
+} from '@energyweb/origin-ui-certificate-data';
 
 export const getMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
   if (!fuelType || !allTypes) {
