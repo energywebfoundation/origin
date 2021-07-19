@@ -21,7 +21,7 @@
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet --fix --no-error-on-unmatched-pattern",
         "test": "mocha -r ts-node/register src/**/*.spec.ts",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
-        "clean": "shx rm -rf dist dist",
+        "clean": "shx rm -rf dist",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -n",
         "typeorm:run": "yarn typeorm migration:run",

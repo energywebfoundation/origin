@@ -75,6 +75,15 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
+            "commandKind": "bulk",
+            "name": "clean",
+            "summary": "Cleans the repo",
+            "safeForSimultaneousRushProcesses": false,
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "name": "run:origin",
             "commandKind": "global",
             "summary": "Runs the full Origin development suite with a local blockchain",
