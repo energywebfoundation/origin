@@ -1,7 +1,6 @@
 export * from './blockchainNetwork';
 export * from './certificates';
 export * from './countries';
-export * from './classes';
 export * from './constants';
 export * from './date';
 export * from './exchange';
