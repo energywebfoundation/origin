@@ -14,13 +14,12 @@ import { DeviceRegistryModule } from '@energyweb/origin-device-registry-api';
 import { UserModule } from '@energyweb/origin-backend';
 
 import { IrecCertificateController } from './certificate.controller';
-import { IrecCertificate } from './irec-certificate.entity';
 import { CertificateHandlers } from './handler';
 
 @Module({
     imports: [
         CqrsModule,
-        TypeOrmModule.forFeature([Certificate, IrecCertificate]),
+        TypeOrmModule.forFeature([Certificate]),
         BlockchainPropertiesModule,
         IrecModule,
         DeviceRegistryModule,

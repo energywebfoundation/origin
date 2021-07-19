@@ -11,7 +11,6 @@ import { entities as DeviceEntities } from '@energyweb/origin-device-registry-ir
 import { entities as DeviceRegistryEntities } from '@energyweb/origin-device-registry-api';
 
 import { CertificationRequestModule, IrecCertificationRequest } from './pods/certification-request';
-import { IrecCertificate } from './pods/certificate';
 
 export * from '@energyweb/issuer-api/dist/js/src/pods/blockchain';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certification-request/certification-request.entity';
@@ -34,7 +33,6 @@ export const entities = [
     CertificationRequest,
     IrecCertificationRequest,
     BlockchainProperties,
-    IrecCertificate,
     ...usedEntities
 ];
 

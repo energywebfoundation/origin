@@ -6,7 +6,6 @@ export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/utils';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/dto';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certificate/certificate.entity';
 export * from './certificate.controller';
-export * from './irec-certificate.entity';
 export * from './certificate.module';
 export * from './event';
 export * from './dto';

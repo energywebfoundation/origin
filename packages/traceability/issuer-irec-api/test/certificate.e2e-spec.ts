@@ -7,12 +7,7 @@ import { BigNumber, constants } from 'ethers';
 import moment from 'moment';
 import request from 'supertest';
 
-import {
-    ClaimDTO,
-    CertificateDTO,
-    CERTIFICATES_TABLE_NAME,
-    IREC_CERTIFICATES_TABLE_NAME
-} from '../src';
+import { CertificateDTO, CERTIFICATES_TABLE_NAME, ClaimDTO } from '../src';
 import {
     bootstrapTestInstance,
     deviceManager,
@@ -91,13 +86,10 @@ describe('Certificate tests', () => {
 
     afterEach(async () => {
         await databaseService.truncate(CERTIFICATES_TABLE_NAME);
-        await databaseService.truncate(IREC_CERTIFICATES_TABLE_NAME);
     });
 
     after(async () => {
         await databaseService.truncate(CERTIFICATES_TABLE_NAME);
-        await databaseService.truncate(IREC_CERTIFICATES_TABLE_NAME);
-
         await databaseService.cleanUp();
         await app.close();
     });
