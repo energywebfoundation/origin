@@ -19,7 +19,8 @@
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "precommit": "lint-staged",
-        "test:api": "mocha -r ts-node/register test/*.test.ts --timeout 600000 --exit"
+        "test:api": "mocha -r ts-node/register test/*.test.ts --timeout 600000 --exit",
+        "clean": "shx rm -rf dist"
     },
     "dependencies": {
         "axios": "0.21.1",

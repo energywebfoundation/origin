@@ -20,7 +20,7 @@
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet --fix",
         "test:e2e": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
-        "clean": "shx rm -rf dist dist",
+        "clean": "shx rm -rf dist",
         "precommit": "lint-staged"
     },
     "dependencies": {
