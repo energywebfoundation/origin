@@ -93,6 +93,7 @@ export const useAppContainerEffects = () => {
     showSection: true,
     showViewMarket: true,
     showCreateBundle: true,
+    showSupply: true,
   });
   const accountMenu = getAccountMenu({
     t,

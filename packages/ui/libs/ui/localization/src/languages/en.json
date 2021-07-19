@@ -26,7 +26,8 @@
       "exchange": {
         "sectionTitle": "Exchange",
         "viewMarket": "View Market",
-        "createBundle": "Create bundle"
+        "createBundle": "Create bundle",
+        "supply": "Supply"
       },
       "organization": {
         "sectionTitle": "Organization",
