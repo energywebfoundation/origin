@@ -50,21 +50,23 @@ export const ListActionsBlock: TListActionsBlock = ({
   const { content, component: Component } = actions[tabIndex];
   return (
     <div {...wrapperProps}>
-      <Tabs
-        value={tabIndex}
-        onChange={(ev, index) => {
-          setTabIndex(index);
-        }}
-        indicatorColor="primary"
-        textColor="primary"
-        variant="scrollable"
-        scrollButtons="auto"
-        {...tabsProps}
-      >
-        {actions.map((action) => (
-          <Tab key={action.name} label={action.name} />
-        ))}
-      </Tabs>
+      {actions.length > 2 && (
+        <Tabs
+          value={tabIndex}
+          onChange={(ev, index) => {
+            setTabIndex(index);
+          }}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="scrollable"
+          scrollButtons="auto"
+          {...tabsProps}
+        >
+          {actions.map((action) => (
+            <Tab key={action.name} label={action.name} />
+          ))}
+        </Tabs>
+      )}
       {content ? (
         content
       ) : (
