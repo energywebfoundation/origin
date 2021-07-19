@@ -7,3 +7,5 @@ export * from './cachedExchangeCertificates';
 export * from './cachedFuelTypes';
 export * from './utils';
 export * from './createBundle';
+export * from './allBundles';
+export * from './cachedUser';
