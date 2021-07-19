@@ -81,9 +81,9 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isCertificateTabActive,
     showSection: (userIsActive && userHasOrg) || userIsIssuer,
-    showExchangeInbox: userIsActive && userHasOrg,
-    showBlockchainInbox: userIsActive && userHasOrg,
-    showClaimsReport: userIsActive && userHasOrg,
+    showExchangeInbox: userIsActive && userHasOrg && !userIsIssuer,
+    showBlockchainInbox: userIsActive && userHasOrg && !userIsIssuer,
+    showClaimsReport: userIsActive && userHasOrg && !userIsIssuer,
     showRequests: userIsActive && userHasOrg && !userIsIssuer,
     showPending: userIsIssuer,
   });
@@ -92,6 +92,7 @@ export const useAppContainerEffects = () => {
     isOpen: isExchangeTabActive,
     showSection: true,
     showViewMarket: true,
+    showCreateBundle: true,
   });
   const accountMenu = getAccountMenu({
     t,

@@ -25,7 +25,8 @@
       },
       "exchange": {
         "sectionTitle": "Exchange",
-        "viewMarket": "View Market"
+        "viewMarket": "View Market",
+        "createBundle": "Create bundle"
       },
       "organization": {
         "sectionTitle": "Organization",
@@ -510,6 +511,23 @@
         "compliance": "Compliance",
         "claimDate": "Claim Date",
         "certifiedEnergy": "Certified Energy"
+      }
+    },
+    "exchange": {
+      "createBundle": {
+        "title": "Create Bundle",
+        "selectAll": "Select All",
+        "certificationDate": "Certification date",
+        "selectedForSale": "Selected For Sale",
+        "selectCertificate": "Select Certificate",
+        "totalVolume": "Total Volume",
+        "price": "Price per MWh",
+        "totalPrice": "Total Price",
+        "sellAsBundleButton": "Sell as bundle",
+        "notifications": {
+          "createSuccess": "Bundle has been successfully created and published for sale",
+          "createError": "Error while creating bundle"
+        }
       }
     },
     "user": {

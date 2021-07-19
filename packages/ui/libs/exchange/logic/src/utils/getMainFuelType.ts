@@ -1,8 +1,5 @@
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import {
-  ComposedPublicDevice,
-  ComposedDevice,
-} from '@energyweb/origin-ui-certificate-data';
+import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 
 export const getMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
   if (!fuelType || !allTypes) {
@@ -24,9 +21,7 @@ export const getMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
   }
 };
 
-export const getDeviceDetailedFuelType = (
-  device: ComposedPublicDevice | ComposedDevice
-) => {
+export const getDeviceDetailedFuelType = (device: ComposedPublicDevice) => {
   const arr = device.deviceType.split(';');
   arr.shift();
   return arr.length > 1 ? arr.join(' - ') : arr[0];
