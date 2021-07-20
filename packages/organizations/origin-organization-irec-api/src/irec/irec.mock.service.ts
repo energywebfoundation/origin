@@ -279,7 +279,32 @@ export class IrecMockService implements IIrecService {
     }
 
     async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
-        return [];
+        return [
+            {
+                code: 'PARTICIPANTUSER001-2020-0101-2011-00-1',
+                volume: 1000,
+                startDate: '2019-01-01',
+                endDate: '2019-12-31',
+                fuelType: {
+                    code: 'ES200',
+                    description: 'Wind'
+                },
+                deviceType: {
+                    code: 'T020001',
+                    description: 'Wind: Onshore'
+                },
+                device: {
+                    code: 'DEVICE001',
+                    name: 'DEVICE001'
+                },
+                deviceSupported: true,
+                tagged: false,
+                co2Produced: 0,
+                country: 'GB',
+                product: 'IREC(E)',
+                asset: 'test-asset-id'
+            }
+        ];
     }
 
     async transferCertificate(

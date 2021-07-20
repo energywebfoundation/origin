@@ -40,7 +40,7 @@ import { IrecAccountItemDto, ImportIrecCertificateDTO } from './dto';
 @UseInterceptors(ExceptionInterceptor)
 @UsePipes(ValidationPipe)
 export class IrecCertificateController extends CertificateController {
-    @Get('/irec-certificates-to-import')
+    @Get('/certificates-to-import')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -62,11 +62,6 @@ export class IrecCertificateController extends CertificateController {
         type: DeviceDTO,
         description: 'Imports a certificate from IREC'
     })
-    @ApiForbiddenResponse({
-        status: HttpStatus.FORBIDDEN,
-        description: `User doesn't have the correct permissions`
-    })
-    @ApiBadRequestResponse({ status: HttpStatus.BAD_REQUEST })
     async importIrecDevice(
         @Body() certificateToImport: ImportIrecCertificateDTO,
         @UserDecorator() loggedInUser: ILoggedInUser

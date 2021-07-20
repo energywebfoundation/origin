@@ -107,7 +107,7 @@ describe('API flows', () => {
         expect(device.status).to.equal(DeviceState.Draft);
     }).timeout(15000);
 
-    it.only('should pass create and approve issue flow', async () => {
+    it('should pass create and approve issue flow', async () => {
         const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
         const [fileId] = await registrantClient.file.upload([file]);
 

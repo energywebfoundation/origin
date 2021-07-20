@@ -367,4 +367,14 @@ describe('Certificate tests', () => {
             .set({ 'test-user': TestUser.UserWithoutBlockchainAccount })
             .expect(HttpStatus.OK);
     });
+
+    it('should return list of certificates to import', async () => {
+        const { body: list } = await request(app.getHttpServer())
+            .get(`/irec/certificate/certificates-to-import`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect(HttpStatus.OK);
+
+        expect(list.length).to.equal(1);
+        expect(list[0].asset).to.equal('test-asset-id');
+    });
 });
