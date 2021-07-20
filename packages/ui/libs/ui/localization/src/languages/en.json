@@ -538,6 +538,20 @@
         "price": "Price per MWh",
         "createBundle": "Create bundle"
       },
+      "myBundles": {
+        "tableTitle": "My bundles",
+        "totalEnergy": "Total energy",
+        "solar": "Solar",
+        "wind": "Wind",
+        "hydro": "Hydro",
+        "other": "Other",
+        "price": "Price per MWh",
+        "removeBundle": "Remove bundle",
+        "notifications": {
+          "removeSuccess": "Bundle successfully removed",
+          "removeError": "Error while removing bundle"
+        }
+      },
       "createBundle": {
         "title": "Create Bundle",
         "selectAll": "Select All",
