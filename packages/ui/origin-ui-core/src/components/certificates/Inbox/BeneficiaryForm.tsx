@@ -71,11 +71,11 @@ export function BeneficiaryForm(props: IProps): JSX.Element {
                     fullWidth
                 />
                 <TextField
-                    label={t('certificate.properties.address')}
-                    value={data.address ?? ''}
+                    label={t('certificate.properties.location')}
+                    value={data.location ?? ''}
                     name="address"
-                    error={Boolean(errors.address)}
-                    helperText={errors.address?.message}
+                    error={Boolean(errors.location)}
+                    helperText={errors.location?.message}
                     inputRef={register}
                     onChange={(e) => setField('address', e.target.value as string)}
                     className="mt-4"
@@ -83,38 +83,17 @@ export function BeneficiaryForm(props: IProps): JSX.Element {
                 />
 
                 <div style={{ display: 'flex' }}>
-                    <TextField
-                        label={t('certificate.properties.region')}
-                        value={data.region ?? ''}
-                        onChange={(e) => setField('region', e.target.value as string)}
-                        className="mt-4 mr-1"
-                        style={{ width: '50%' }}
-                    />
-                    <TextField
-                        label={t('certificate.properties.zip')}
-                        inputRef={register}
-                        name="zipCode"
-                        error={Boolean(errors.zipCode)}
-                        helperText={errors.zipCode?.message}
-                        value={data.zipCode ?? ''}
-                        onChange={(e) => setField('zipCode', e.target.value as string)}
-                        className="mt-4 ml-2"
-                        style={{ width: '50%' }}
-                    />
-                </div>
-
-                <div style={{ display: 'flex' }}>
                     <MaterialDatePicker
-                        label="From date"
-                        value={data.fromDate ?? ''}
-                        onChange={(date) => setField('fromDate', date.toISOString())}
+                        label="Period start date"
+                        value={data.periodStartDate ?? ''}
+                        onChange={(date) => setField('periodStartDate', date.toISOString())}
                         className="mt-4 mr-1"
                         style={{ width: '50%' }}
                     />
                     <MaterialDatePicker
-                        label="To date"
-                        value={data.toDate ?? ''}
-                        onChange={(date) => setField('toDate', date.toISOString())}
+                        label="Period eng date"
+                        value={data.periodEndDate ?? ''}
+                        onChange={(date) => setField('periodEndDate', date.toISOString())}
                         className="mt-4 ml-2"
                         style={{ width: '50%' }}
                     />

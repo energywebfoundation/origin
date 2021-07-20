@@ -28,13 +28,12 @@ import {
 } from '../utils/PreciseProofUtils';
 
 export interface IClaimData {
-    beneficiary?: string;
-    address?: string;
-    region?: string;
-    zipCode?: string;
-    countryCode?: string;
-    fromDate?: string;
-    toDate?: string;
+    beneficiary: string;
+    location: string;
+    countryCode: string;
+    periodStartDate: string;
+    periodEndDate: string;
+    purpose: string;
 }
 
 export interface IData {
