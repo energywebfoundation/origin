@@ -3,3 +3,4 @@ export * from './marketFilters';
 export * from './utils';
 export * from './createBundle';
 export * from './allBundles';
+export * from './myBundles';

@@ -1,46 +1,53 @@
-import { BundlePublicDTO } from '@energyweb/exchange-react-query-client';
+import { Bundle } from '@energyweb/exchange-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { TableComponentProps } from '@energyweb/origin-ui-core';
+import {
+  TableActionData,
+  TableComponentProps,
+} from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { EnergyTypeEnum } from '@energyweb/origin-ui-utils';
 import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { getBundleEnergyShares } from '../utils';
 
-type TUseAllBundlesTablesLogicArgs = {
+type TUseMyBundlesTablesLogicArgs = {
   isLoading: boolean;
-  allBundles: BundlePublicDTO[];
+  myBundles: Bundle[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
+  actions: TableActionData<Bundle['id']>[];
 };
 
-export type TUseAllBundlesTablesLogic = (
-  args: TUseAllBundlesTablesLogicArgs
-) => TableComponentProps<BundlePublicDTO['id']>;
+export type TUseMyBundlesTablesLogic = (
+  args: TUseMyBundlesTablesLogicArgs
+) => TableComponentProps<Bundle['id']>;
 
-export const useAllBundlesTablesLogic: TUseAllBundlesTablesLogic = ({
+export const useMyBundlesTablesLogic: TUseMyBundlesTablesLogic = ({
   isLoading,
-  allBundles,
+  myBundles,
   allDevices,
   allFuelTypes,
+  actions,
 }) => {
   const { t } = useTranslation();
   return {
-    tableTitle: t('exchange.allBundles.tableTitle'),
+    tableTitle: t('exchange.myBundles.tableTitle'),
     tableTitleProps: { variant: 'h5', gutterBottom: true },
     pageSize: 25,
     header: {
-      total: t('exchange.allBundles.totalEnergy'),
-      solar: t('exchange.allBundles.solar'),
-      wind: t('exchange.allBundles.wind'),
-      [EnergyTypeEnum.HYDRO]: t('exchange.allBundles.hydro'),
-      other: t('exchange.allBundles.other'),
-      price: t('exchange.allBundles.price'),
+      total: t('exchange.myBundles.totalEnergy'),
+      solar: t('exchange.myBundles.solar'),
+      wind: t('exchange.myBundles.wind'),
+      [EnergyTypeEnum.HYDRO]: t('exchange.myBundles.hydro'),
+      other: t('exchange.myBundles.other'),
+      price: t('exchange.myBundles.price'),
+      actions: '',
     },
     loading: isLoading,
     data:
-      allBundles?.map((bundle) => ({
+      myBundles?.map((bundle) => ({
         id: bundle.id,
+        actions,
         price: `$ ${BigNumber.from(bundle.price)
           .div(BigNumber.from(100))
           .toNumber()

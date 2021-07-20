@@ -6,7 +6,7 @@ import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-re
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { BigNumber } from 'ethers';
-import { getMainFuelType } from '../utils';
+import { getMainFuelType } from '.';
 
 export const getBundleEnergyShares = (
   bundle: BundlePublicDTO | Bundle,

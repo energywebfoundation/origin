@@ -9,3 +9,4 @@ export * from './utils';
 export * from './createBundle';
 export * from './allBundles';
 export * from './cachedUser';
+export * from './myBundles';
