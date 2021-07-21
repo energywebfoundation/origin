@@ -1,3 +1,7 @@
+import {
+  Bundle,
+  BundlePublicDTO,
+} from '@energyweb/exchange-react-query-client';
 import { IDeviceWithSupply } from '@energyweb/origin-ui-exchange-logic';
 import { ExchangeModalsActionsEnum } from './reducer';
 
@@ -9,6 +13,11 @@ export interface IExchangeModalsStore {
   updateSupply: {
     open: boolean;
     deviceWithSupply: IDeviceWithSupply;
+  };
+  bundleDetails: {
+    open: boolean;
+    bundle: Bundle | BundlePublicDTO;
+    isOwner?: boolean;
   };
 }
 
@@ -28,6 +37,16 @@ interface IShowRemoveSupplyAction {
   };
 }
 
+interface IShowBundleDetailsAction {
+  type: ExchangeModalsActionsEnum.SHOW_BUNDLE_DETAILS;
+  payload: {
+    open: boolean;
+    bundle: Bundle | BundlePublicDTO;
+    isOwner?: boolean;
+  };
+}
+
 export type TExchangeModalsAction =
   | IShowUpdateSupplyAction
-  | IShowRemoveSupplyAction;
+  | IShowRemoveSupplyAction
+  | IShowBundleDetailsAction;
