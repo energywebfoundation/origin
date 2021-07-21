@@ -11,6 +11,7 @@ import {
   TypographyProps,
 } from '@material-ui/core';
 import React, { FC, ReactNode } from 'react';
+import { CloseButton } from '../../buttons';
 import { ModalTextContent } from '../ModalTextContent';
 import { useStyles } from './GenericModal.styles';
 
@@ -22,6 +23,8 @@ type ModalButtonData = ButtonProps & {
 export interface GenericModalProps {
   open: boolean;
   title?: string;
+  handleClose?: () => void;
+  closeButton?: boolean;
   text?: string | string[];
   buttons?: ModalButtonData[];
   customContent?: ReactNode;
@@ -41,11 +44,19 @@ export const GenericModal: FC<GenericModalProps> = ({
   dialogProps,
   titleProps,
   textProps,
+  handleClose,
+  closeButton,
 }) => {
   const classes = useStyles();
   const dialogWidthSmall = dialogProps && dialogProps.maxWidth === 'sm';
   return (
-    <Dialog open={open} fullWidth maxWidth="md" {...dialogProps}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="md"
+      {...dialogProps}
+    >
       <Grid container>
         {icon && (
           <Grid className={classes.iconGrid} item md={dialogWidthSmall ? 3 : 2}>
@@ -54,13 +65,22 @@ export const GenericModal: FC<GenericModalProps> = ({
         )}
 
         <Grid item md={icon ? (dialogWidthSmall ? 9 : 10) : 12} xs={12}>
-          {title && (
-            <DialogTitle disableTypography>
-              <Typography variant="h5" {...titleProps}>
-                {title}
-              </Typography>
-            </DialogTitle>
-          )}
+          <Grid container alignItems="center" justifyContent="space-between">
+            {title && (
+              <Grid item>
+                <DialogTitle disableTypography>
+                  <Typography variant="h5" {...titleProps}>
+                    {title}
+                  </Typography>
+                </DialogTitle>
+              </Grid>
+            )}
+            {closeButton && (
+              <Grid item>
+                <CloseButton onClose={handleClose} />
+              </Grid>
+            )}
+          </Grid>
           <DialogContent>
             {customContent ?? (
               <ModalTextContent textProps={textProps} text={text} />

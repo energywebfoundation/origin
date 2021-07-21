@@ -26,38 +26,23 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
     gridOperator: '',
   },
   validationSchema: yup.object().shape({
-    facilityName: yup.string().required(
-      t('validation.requiredField', {
-        field: t('device.register.facilityName'),
-      })
-    ),
-    fuelType: yup.string().required(
-      t('validation.requiredField', {
-        field: t('device.register.fuelType'),
-      })
-    ),
-    deviceType: yup.string().required(
-      t('validation.requiredField', {
-        field: t('device.register.deviceType'),
-      })
-    ),
-    commissioningDate: yup.string().required(
-      t('validation.requiredField', {
-        field: t('device.register.commissioningDate'),
-      })
-    ),
-    registrationDate: yup.string().required(
-      t('validation.requiredField', {
-        field: t('device.register.registrationDate'),
-      })
-    ),
+    facilityName: yup
+      .string()
+      .required()
+      .label(t('device.register.facilityName')),
+    fuelType: yup.array().required().label(t('device.register.fuelType')),
+    deviceType: yup.array().required().label(t('device.register.deviceType')),
+    commissioningDate: yup
+      .string()
+      .required()
+      .label(t('device.register.commissioningDate')),
+    registrationDate: yup
+      .string()
+      .required()
+      .label(t('device.register.registrationDate')),
+    capacity: yup.string().required().label(t('device.register.capacity')),
     description: yup.string(),
     smartMeterId: yup.string(),
-    capacity: yup.string().required(
-      t('validation.requiredField', {
-        field: t('device.register.capacity'),
-      })
-    ),
   }),
   fields: [
     {

@@ -72,20 +72,22 @@ export const usePendingCertificatsLogic: TUsePendingCertificatesLogic = ({
 }) => {
   const { t } = useTranslation();
   return {
+    tableTitle: t('certificate.pending.tableTitle'),
+    tableTitleProps: { variant: 'h4', gutterBottom: true },
     header: {
-      facility: t('certificate.requests.facility'),
-      location: t('certificate.requests.location'),
-      gridOperator: t('certificate.requests.gridOperator'),
-      fuelType: t('certificate.requests.fuelType'),
-      capacity: `${t('certificate.requests.capacity')} (${
+      facility: t('certificate.pending.facility'),
+      location: t('certificate.pending.location'),
+      gridOperator: t('certificate.pending.gridOperator'),
+      fuelType: t('certificate.pending.fuelType'),
+      capacity: `${t('certificate.pending.capacity')} (${
         PowerFormatter.displayUnit
       })`,
-      meterRead: `${t('certificate.requests.meterRead')} (${
+      meterRead: `${t('certificate.pending.meterRead')} (${
         EnergyFormatter.displayUnit
       })`,
-      files: t('certificate.requests.files'),
-      timeFrame: t('certificate.requests.timeFrame'),
-      status: t('certificate.requests.status'),
+      files: t('certificate.pending.files'),
+      timeFrame: t('certificate.pending.timeFrame'),
+      status: t('certificate.pending.status'),
       actions: '',
     },
     pageSize: 10,

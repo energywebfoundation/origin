@@ -9,6 +9,7 @@ interface TableComponentBodyProps<Id> {
   headerData: TableHeaderData;
   pageSize: number;
   loading: boolean;
+  onRowClick?: (id: Id) => void;
 }
 
 export type TTableComponentBody = <Id>(
@@ -20,6 +21,7 @@ export const TableComponentBody: TTableComponentBody = ({
   rowData,
   headerData,
   pageSize,
+  onRowClick,
 }) => {
   return (
     <TableBody>
@@ -34,6 +36,7 @@ export const TableComponentBody: TTableComponentBody = ({
             key={row.id.toString()}
             row={row}
             headerData={headerData}
+            onRowClick={onRowClick}
           />
         ))
       )}

@@ -5,7 +5,7 @@ import {
   TableCell,
 } from '@material-ui/core';
 import { MoreHoriz } from '@material-ui/icons';
-import React, { PropsWithChildren, ReactElement } from 'react';
+import React, { PropsWithChildren, ReactElement, SyntheticEvent } from 'react';
 import { TableActionData } from '../../../containers';
 import { useStyles } from './TableComponentActions.styles';
 import { useTableActionsEffects } from './TableComponentsActions.effects';
@@ -47,7 +47,10 @@ export const TableComponentActions: TTableComponentActions = ({
             key={action.name + id}
             icon={action.icon}
             tooltipTitle={action.name}
-            onClick={() => action.onClick(id)}
+            onClick={(event: SyntheticEvent) => {
+              event.stopPropagation();
+              action.onClick(id);
+            }}
             classes={{
               fab: classes.speedDialActionButton,
               staticTooltipLabel: classes.speedDialActionTooltip,

@@ -26,7 +26,9 @@
       "exchange": {
         "sectionTitle": "Exchange",
         "viewMarket": "View Market",
-        "createBundle": "Create bundle"
+        "allBundles": "All bundles",
+        "createBundle": "Create bundle",
+        "myBundles": "My bundles"
       },
       "organization": {
         "sectionTitle": "Organization",
@@ -494,6 +496,18 @@
         "pending": "Pending"
       },
       "pending": {
+        "tableTitle": "Pending Certificates",
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "fuelType": "Fuel Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved",
+        "pending": "Pending",
         "approve": "Approve",
         "reject": "Reject",
         "notifications": {
@@ -514,6 +528,34 @@
       }
     },
     "exchange": {
+      "allBundles": {
+        "tableTitle": "All bundles",
+        "totalEnergy": "Total energy",
+        "solar": "Solar",
+        "wind": "Wind",
+        "hydro": "Hydro",
+        "other": "Other",
+        "price": "Price per MWh",
+        "createBundle": "Create bundle",
+        "notifications": {
+          "bundleBuySuccess": "Bundle bought",
+          "bundleBuyError": "Error while buying bundle"
+        }
+      },
+      "myBundles": {
+        "tableTitle": "My bundles",
+        "totalEnergy": "Total energy",
+        "solar": "Solar",
+        "wind": "Wind",
+        "hydro": "Hydro",
+        "other": "Other",
+        "price": "Price per MWh",
+        "removeBundle": "Remove bundle",
+        "notifications": {
+          "removeSuccess": "Bundle successfully removed",
+          "removeError": "Error while removing bundle"
+        }
+      },
       "createBundle": {
         "title": "Create Bundle",
         "selectAll": "Select All",
@@ -524,6 +566,7 @@
         "price": "Price per MWh",
         "totalPrice": "Total Price",
         "sellAsBundleButton": "Sell as bundle",
+        "noCertificates": "You don't have any certificates to create a bundle from",
         "notifications": {
           "createSuccess": "Bundle has been successfully created and published for sale",
           "createError": "Error while creating bundle"
