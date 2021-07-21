@@ -7,3 +7,7 @@ export * from './cachedExchangeCertificates';
 export * from './cachedFuelTypes';
 export * from './utils';
 export * from './createBundle';
+export * from './allSupply';
+export * from './myDevices';
+export * from './updateSupply';
+export * from './removeSupply';
