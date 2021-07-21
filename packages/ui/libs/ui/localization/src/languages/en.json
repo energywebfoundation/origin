@@ -536,7 +536,11 @@
         "hydro": "Hydro",
         "other": "Other",
         "price": "Price per MWh",
-        "createBundle": "Create bundle"
+        "createBundle": "Create bundle",
+        "notifications": {
+          "bundleBuySuccess": "Bundle bought",
+          "bundleBuyError": "Error while buying bundle"
+        }
       },
       "myBundles": {
         "tableTitle": "My bundles",
