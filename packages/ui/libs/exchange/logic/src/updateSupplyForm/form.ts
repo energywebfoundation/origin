@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { supplyStatusOptions, SupplyStatus } from './supplyStatusOptions';
 import { TUseUpdateSupplyFormLogic } from './types';
 
-export const UpdateSupplyFormLogic: TUseUpdateSupplyFormLogic = (
+export const useUpdateSupplyFormLogic: TUseUpdateSupplyFormLogic = (
   handleClose,
   deviceWithSupply
 ) => {

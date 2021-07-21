@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { SupplyDto } from '@energyweb/exchange-react-query-client';
-import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { SupplyStatus } from '@energyweb/origin-ui-exchange-logic';
 import { TUseLogicSupply, TFormatSupplyData } from './types';
 
@@ -33,7 +32,7 @@ const formatSupplyData: TFormatSupplyData = ({
         toBeCertified: 0,
         actions,
       };
-    }) || ([] as ComposedPublicDevice[])
+    }) || []
   );
 };
 

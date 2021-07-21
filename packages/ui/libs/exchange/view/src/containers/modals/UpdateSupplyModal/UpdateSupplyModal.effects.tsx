@@ -1,5 +1,5 @@
 import { useApiUpdateSupplyHandler } from '@energyweb/origin-ui-exchange-data';
-import { UpdateSupplyFormLogic } from '@energyweb/origin-ui-exchange-logic';
+import { useUpdateSupplyFormLogic } from '@energyweb/origin-ui-exchange-logic';
 import {
   ExchangeModalsActionsEnum,
   useExchangeModalsStore,
@@ -22,7 +22,7 @@ export const useUpdateSupplyModalEffects = () => {
     });
   };
 
-  const formLogic = UpdateSupplyFormLogic(
+  const formLogic = useUpdateSupplyFormLogic(
     handleModalClose,
     updateSupply?.deviceWithSupply
   );
