@@ -23,6 +23,7 @@ export interface TableComponentProps<Id> {
   tableTitle?: string;
   tableTitleProps?: TypographyProps;
   pageSize?: number;
+  onRowClick?: (id: Id) => void;
 }
 
 export const TableComponent: TTableComponent = ({
@@ -33,6 +34,7 @@ export const TableComponent: TTableComponent = ({
   pageSize = TABLE_COMPONENT__DEFAULT_PAGE_SIZE,
   totalPages,
   loading,
+  onRowClick,
 }) => {
   const { activePage, setActivePage, paginatedData } = usePaginateData(
     data,
@@ -53,6 +55,7 @@ export const TableComponent: TTableComponent = ({
           headerData={header}
           pageSize={pageSize}
           loading={loading}
+          onRowClick={onRowClick}
         />
         <TableComponentFooter
           totalRows={data.length}
