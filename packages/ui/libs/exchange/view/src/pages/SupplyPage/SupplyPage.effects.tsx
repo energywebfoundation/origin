@@ -11,8 +11,8 @@ import {
   createDeviceWithSupply,
 } from '@energyweb/origin-ui-exchange-logic';
 import {
-  useSupplyUpdateModalDispatch,
-  UpdateSupplyModalActionsEnum,
+  useExchangeModalsDispatch,
+  ExchangeModalsActionsEnum,
 } from '../../context';
 import { useTranslation } from 'react-i18next';
 import { Edit, Remove } from '@material-ui/icons';
@@ -20,7 +20,7 @@ import { Edit, Remove } from '@material-ui/icons';
 export const useSupplyPageEffects = () => {
   const { t } = useTranslation();
 
-  const dispatchModals = useSupplyUpdateModalDispatch();
+  const dispatchModals = useExchangeModalsDispatch();
 
   const { myDevices: devices, isLoading: areDevicesLoading } =
     useApiMyDevices();
@@ -29,8 +29,6 @@ export const useSupplyPageEffects = () => {
     useAllDeviceFuelTypes();
 
   const { allSupply: supplies, isLoading: areSuppliesLoading } = useAllSupply();
-
-  const { removeSupplyHandler } = useApiRemoveSupplyHandler();
 
   const getDeviceWithSupply = (
     id: ComposedPublicDevice['externalRegistryId']
@@ -52,7 +50,7 @@ export const useSupplyPageEffects = () => {
     const deviceWithSupply = getDeviceWithSupply(id);
 
     dispatchModals({
-      type: UpdateSupplyModalActionsEnum.SHOW_UPDATE_SUPPLY,
+      type: ExchangeModalsActionsEnum.SHOW_UPDATE_SUPPLY,
       payload: {
         open: true,
         deviceWithSupply,
@@ -72,7 +70,13 @@ export const useSupplyPageEffects = () => {
       onClick: (id: ComposedPublicDevice['externalRegistryId']) => {
         const deviceWithSupply = getDeviceWithSupply(id);
 
-        removeSupplyHandler(deviceWithSupply?.supplyId);
+        dispatchModals({
+          type: ExchangeModalsActionsEnum.SHOW_REMOVE_SUPPLY,
+          payload: {
+            open: true,
+            supplyId: deviceWithSupply?.supplyId,
+          },
+        });
       },
     },
   ];

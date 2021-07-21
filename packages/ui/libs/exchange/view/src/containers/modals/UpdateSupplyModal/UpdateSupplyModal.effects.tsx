@@ -1,20 +1,20 @@
 import { useApiUpdateSupplyHandler } from '@energyweb/origin-ui-exchange-data';
 import { UpdateSupplyFormLogic } from '@energyweb/origin-ui-exchange-logic';
 import {
-  UpdateSupplyModalActionsEnum,
-  useSupplyUpdateModalStore,
-  useSupplyUpdateModalDispatch,
+  ExchangeModalsActionsEnum,
+  useExchangeModalsStore,
+  useExchangeModalsDispatch,
 } from '../../../context';
 
 export const useUpdateSupplyModalEffects = () => {
-  const { updateSupply } = useSupplyUpdateModalStore();
+  const { updateSupply } = useExchangeModalsStore();
 
-  const dispatchModals = useSupplyUpdateModalDispatch();
+  const dispatchModals = useExchangeModalsDispatch();
   const isOpen = updateSupply?.open;
 
   const handleModalClose = () => {
     dispatchModals({
-      type: UpdateSupplyModalActionsEnum.SHOW_UPDATE_SUPPLY,
+      type: ExchangeModalsActionsEnum.SHOW_UPDATE_SUPPLY,
       payload: {
         open: false,
         deviceWithSupply: null,

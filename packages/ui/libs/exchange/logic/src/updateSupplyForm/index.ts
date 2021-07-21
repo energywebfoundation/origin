@@ -1,3 +1,3 @@
 export * from './form';
-export * from './types';
 export * from './supplyStatusOptions';
+export * from './types';

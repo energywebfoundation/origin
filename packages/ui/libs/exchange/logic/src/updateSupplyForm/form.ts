@@ -19,7 +19,7 @@ export const UpdateSupplyFormLogic: TUseUpdateSupplyFormLogic = (
   };
 
   return {
-    formTitle: t('exchange.supply.updateSupply'),
+    formTitle: t('exchange.supply.modals.updateSupply.title'),
     formTitleVariant: 'h5',
     initialValues: initialFormData,
     fields: [

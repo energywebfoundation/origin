@@ -16,27 +16,35 @@ export const useApiRemoveSupplyHandler = () => {
 
   const allSupplyQueryKey = getSupplyControllerFindAllQueryKey();
 
-  const { mutate } = useSupplyControllerRemove({
-    onSuccess: () => {
-      showNotification(
-        t('exchange.supply.notifications.removeSupplySuccess'),
-        NotificationTypeEnum.Success
-      );
-      queryClient.invalidateQueries(allSupplyQueryKey);
-    },
-    onError: (error) => {
-      console.log(error);
-      showNotification(
-        t('exchange.supply.notifications.removeSupplyError'),
-        NotificationTypeEnum.Error
-      );
-    },
-  });
+  const { mutate } = useSupplyControllerRemove();
 
-  const removeSupplyHandler = (id: IDeviceWithSupply['supplyId']) => {
+  const removeSupplyHandler = (
+    id: IDeviceWithSupply['supplyId'],
+    closeModal: () => void
+  ) => {
     if (id) {
-      mutate({ id });
+      mutate(
+        { id },
+        {
+          onSuccess: () => {
+            showNotification(
+              t('exchange.supply.notifications.removeSupplySuccess'),
+              NotificationTypeEnum.Success
+            );
+            queryClient.invalidateQueries(allSupplyQueryKey);
+            closeModal();
+          },
+          onError: (error) => {
+            console.log(error);
+            showNotification(
+              t('exchange.supply.notifications.removeSupplyError'),
+              NotificationTypeEnum.Error
+            );
+          },
+        }
+      );
     } else {
+      closeModal();
       showNotification(
         t('exchange.supply.notifications.missingSupplyError'),
         NotificationTypeEnum.Error
