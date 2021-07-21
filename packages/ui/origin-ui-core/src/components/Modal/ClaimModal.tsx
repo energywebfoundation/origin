@@ -49,12 +49,12 @@ export function ClaimModal(props: IProps) {
     const countryCodes = Countries.map((country) => country.code);
 
     const [beneficiary, setBeneficiary] = useState(user?.organization?.name);
-    const [address, setAddress] = useState(user?.organization?.address);
-    const [zipCode, setZipCode] = useState(user?.organization?.zipCode);
-    const [region, setRegion] = useState(null);
+    const [location, setLocation] = useState(
+        `${user?.organization?.address}, ${user?.organization?.zipCode}`
+    );
     const [countryCode, setCountryCode] = useState(user?.organization?.country);
-    const [fromDate, setFromDate] = useState<string>(new Date().toISOString());
-    const [toDate, setToDate] = useState<string>(new Date().toISOString());
+    const [periodStartDate, setPeriodStartDate] = useState<string>(new Date().toISOString());
+    const [periodEndDate, setPeriodEndDate] = useState<string>(new Date().toISOString());
 
     const [energyInDisplayUnit, setEnergyInDisplayUnit] = useState(
         EnergyFormatter.getValueInDisplayUnit(DEFAULT_ENERGY_IN_BASE_UNIT)
@@ -80,9 +80,8 @@ export function ClaimModal(props: IProps) {
     useEffect(() => {
         if (user?.organization) {
             setBeneficiary(user.organization.name);
-            setAddress(user.organization.address);
+            setLocation(`${user.organization.address}, ${user.organization.zipCode}`);
             setCountryCode(user.organization.country);
-            setZipCode(user.organization.zipCode);
         }
     }, [user]);
 
@@ -99,12 +98,11 @@ export function ClaimModal(props: IProps) {
     async function claim() {
         const claimData: IClaimData = {
             beneficiary,
-            address,
-            region,
-            zipCode,
+            location,
             countryCode,
-            fromDate,
-            toDate
+            periodStartDate,
+            periodEndDate,
+            purpose: ''
         };
 
         const action = isBulkClaim
@@ -190,39 +188,25 @@ export function ClaimModal(props: IProps) {
                     fullWidth
                 />
                 <TextField
-                    label="Address"
-                    value={address ?? ''}
-                    onChange={(e) => setAddress(e.target.value as string)}
-                    className="mt-4"
-                    fullWidth
-                />
-                <TextField
-                    label="Region"
-                    value={region ?? ''}
-                    onChange={(e) => setRegion(e.target.value as string)}
-                    className="mt-4"
-                    fullWidth
-                />
-                <TextField
-                    label="ZIP"
-                    value={zipCode ?? ''}
-                    onChange={(e) => setZipCode(e.target.value as string)}
+                    label="Location"
+                    value={location ?? ''}
+                    onChange={(e) => setLocation(e.target.value as string)}
                     className="mt-4"
                     fullWidth
                 />
 
                 <div style={{ display: 'flex' }}>
                     <MaterialDatePicker
-                        label="From date"
-                        value={fromDate ?? ''}
-                        onChange={(date) => setFromDate(date.toISOString())}
+                        label="Period start date"
+                        value={periodStartDate ?? ''}
+                        onChange={(date) => setPeriodStartDate(date.toISOString())}
                         className="mt-4 mr-1"
                         style={{ width: '50%' }}
                     />
                     <MaterialDatePicker
-                        label="To date"
-                        value={toDate ?? ''}
-                        onChange={(date) => setToDate(date.toISOString())}
+                        label="Period end date"
+                        value={periodEndDate ?? ''}
+                        onChange={(date) => setPeriodEndDate(date.toISOString())}
                         className="mt-4 ml-1"
                         style={{ width: '50%' }}
                     />

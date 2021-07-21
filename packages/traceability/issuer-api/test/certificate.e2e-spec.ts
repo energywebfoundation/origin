@@ -30,13 +30,12 @@ const certificateTestData = {
 };
 
 const claimData: IClaimData = {
-    beneficiary: 'Testing beneficiary 1234',
-    address: 'Random address 123, Somewhere',
-    region: 'Northernmost Region',
-    zipCode: '321-45',
+    beneficiary: '1234',
+    location: 'Random address 123, Somewhere',
     countryCode: 'DE',
-    fromDate: moment().subtract(2, 'month').toISOString(),
-    toDate: moment().subtract(1, 'month').toISOString()
+    periodStartDate: moment('2020-01-01').toISOString(),
+    periodEndDate: moment('2020-02-1').toISOString(),
+    purpose: 'Some random purpose'
 };
 
 const getUserBlockchainAddress = (user: TestUser) =>
