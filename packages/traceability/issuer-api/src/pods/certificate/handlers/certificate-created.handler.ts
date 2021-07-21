@@ -42,7 +42,14 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
             );
         }
 
-        const cert = await new CertificateFacade(id, blockchainProperties.wrap()).sync();
+        let cert;
+
+        try {
+            cert = await new CertificateFacade(id, blockchainProperties.wrap()).sync();
+        } catch (e) {
+            this.logger.error(e.message);
+            throw e;
+        }
 
         let latestCommitment: IOwnershipCommitmentProof;
 

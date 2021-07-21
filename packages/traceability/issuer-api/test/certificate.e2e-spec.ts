@@ -30,13 +30,12 @@ const certificateTestData = {
 };
 
 const claimData: IClaimData = {
-    beneficiary: 'Testing beneficiary 1234',
-    address: 'Random address 123, Somewhere',
-    region: 'Northernmost Region',
-    zipCode: '321-45',
+    beneficiary: '1234',
+    location: 'Random address 123, Somewhere',
     countryCode: 'DE',
-    fromDate: moment().subtract(2, 'month').toISOString(),
-    toDate: moment().subtract(1, 'month').toISOString()
+    periodStartDate: moment('2020-01-01').toISOString(),
+    periodEndDate: moment('2020-02-1').toISOString(),
+    purpose: 'Some random purpose'
 };
 
 const getUserBlockchainAddress = (user: TestUser) =>
@@ -152,6 +151,16 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.CREATED);
 
         expect(ids).to.be.an('array').with.lengthOf(2);
+
+        await sleep(10000);
+
+        const { isOwned, energy } = await getCertificate(
+            ids[0],
+            TestUser.OrganizationDeviceManager
+        );
+
+        expect(isOwned).to.be.true;
+        expect(energy.publicVolume).to.equal(certificateTestData.energy);
     });
 
     it('should transfer a certificate', async () => {

@@ -9,11 +9,16 @@ export async function deployContracts(
     const adminPK = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
 
     const registry = await IssuerContracts.migrateRegistry(provider, adminPK);
-
     const issuer = await IssuerContracts.migrateIssuer(provider, adminPK, registry.address);
+    const privateIssuer = await IssuerContracts.migratePrivateIssuer(
+        provider,
+        adminPK,
+        issuer.address
+    );
 
     return {
         registry: registry.address,
-        issuer: issuer.address
+        issuer: issuer.address,
+        privateIssuer: privateIssuer.address
     };
 }

@@ -39,23 +39,21 @@ describe('Certificate tests', () => {
     const totalVolume = BigNumber.from(1e9);
 
     const claimData: IClaimData = {
-        beneficiary: 'Testing beneficiary 1234',
-        address: 'Random address 123, Somewhere',
-        region: 'Northernmost Region',
-        zipCode: '321-45',
+        beneficiary: '1234',
+        location: 'Random address 123, Somewhere',
         countryCode: 'DE',
-        fromDate: moment('2020-01-01').toISOString(),
-        toDate: moment('2020-02-1').toISOString()
+        periodStartDate: moment('2020-01-01').toISOString(),
+        periodEndDate: moment('2020-02-1').toISOString(),
+        purpose: 'Some random purpose'
     };
 
     const emptyClaimData: IClaimData = {
         beneficiary: '',
-        address: '',
-        region: '',
-        zipCode: '',
+        location: '',
         countryCode: '',
-        fromDate: '',
-        toDate: ''
+        periodStartDate: '',
+        periodEndDate: '',
+        purpose: ''
     };
 
     const setActiveUser = (wallet: Wallet) => {
@@ -185,7 +183,7 @@ describe('Certificate tests', () => {
         let failed = false;
 
         try {
-            await certificate.claim({}, totalVolume);
+            await certificate.claim(emptyClaimData, totalVolume);
         } catch (e) {
             failed = true;
         }
