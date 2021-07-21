@@ -1,3 +1,4 @@
+import { Bundle } from '@energyweb/exchange-react-query-client';
 import {
   useAllDeviceFuelTypes,
   useApiAllDevices,
@@ -8,6 +9,10 @@ import { useMyBundlesTablesLogic } from '@energyweb/origin-ui-exchange-logic';
 import { Cancel } from '@material-ui/icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  ExchangeModalsActionsEnum,
+  useExchangeModalsDispatch,
+} from '../../context';
 
 export const useMyBundlesPageEffects = () => {
   const { t } = useTranslation();
@@ -15,6 +20,19 @@ export const useMyBundlesPageEffects = () => {
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllDeviceFuelTypes();
+
+  const dispatchModals = useExchangeModalsDispatch();
+
+  const openDetailsModal = (bundle: Bundle) => {
+    dispatchModals({
+      type: ExchangeModalsActionsEnum.SHOW_BUNDLE_DETAILS,
+      payload: {
+        open: true,
+        bundle,
+        isOwner: true,
+      },
+    });
+  };
 
   const removeHandler = useApiRemoveBundleHandler();
 
@@ -34,6 +52,7 @@ export const useMyBundlesPageEffects = () => {
     actions,
     allFuelTypes,
     isLoading,
+    openDetailsModal,
   });
 
   return tableData;

@@ -12,6 +12,7 @@ type TUseAllBundlesTablesLogicArgs = {
   allBundles: BundlePublicDTO[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
+  openDetailsModal: (bundle: BundlePublicDTO) => void;
 };
 
 export type TUseAllBundlesTablesLogic = (
@@ -23,8 +24,15 @@ export const useAllBundlesTablesLogic: TUseAllBundlesTablesLogic = ({
   allBundles,
   allDevices,
   allFuelTypes,
+  openDetailsModal,
 }) => {
   const { t } = useTranslation();
+
+  const handleRowClick = (id: BundlePublicDTO['id']) => {
+    const bundleToShow = allBundles.find((bundle) => bundle.id === id);
+    openDetailsModal(bundleToShow);
+  };
+
   return {
     tableTitle: t('exchange.allBundles.tableTitle'),
     tableTitleProps: { variant: 'h5', gutterBottom: true },
@@ -38,6 +46,7 @@ export const useAllBundlesTablesLogic: TUseAllBundlesTablesLogic = ({
       price: t('exchange.allBundles.price'),
     },
     loading: isLoading,
+    onRowClick: handleRowClick,
     data:
       allBundles?.map((bundle) => ({
         id: bundle.id,

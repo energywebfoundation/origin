@@ -16,6 +16,7 @@ type TUseMyBundlesTablesLogicArgs = {
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
   actions: TableActionData<Bundle['id']>[];
+  openDetailsModal: (bundle: Bundle) => void;
 };
 
 export type TUseMyBundlesTablesLogic = (
@@ -28,12 +29,21 @@ export const useMyBundlesTablesLogic: TUseMyBundlesTablesLogic = ({
   allDevices,
   allFuelTypes,
   actions,
+  openDetailsModal,
 }) => {
   const { t } = useTranslation();
+
+  const handleRowClick = (id: Bundle['id']) => {
+    const bundleToShow = myBundles.find((bundle) => bundle.id === id);
+    openDetailsModal(bundleToShow);
+  };
+
   return {
     tableTitle: t('exchange.myBundles.tableTitle'),
     tableTitleProps: { variant: 'h5', gutterBottom: true },
     pageSize: 25,
+    loading: isLoading,
+    onRowClick: handleRowClick,
     header: {
       total: t('exchange.myBundles.totalEnergy'),
       solar: t('exchange.myBundles.solar'),
@@ -43,7 +53,6 @@ export const useMyBundlesTablesLogic: TUseMyBundlesTablesLogic = ({
       price: t('exchange.myBundles.price'),
       actions: '',
     },
-    loading: isLoading,
     data:
       myBundles?.map((bundle) => ({
         id: bundle.id,
