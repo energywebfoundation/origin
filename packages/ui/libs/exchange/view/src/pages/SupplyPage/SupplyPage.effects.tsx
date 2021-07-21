@@ -4,7 +4,6 @@ import {
   useAllDeviceFuelTypes,
   useAllSupply,
   ComposedPublicDevice,
-  useApiRemoveSupplyHandler,
 } from '@energyweb/origin-ui-exchange-data';
 import {
   useLogicSupply,

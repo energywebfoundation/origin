@@ -24,10 +24,10 @@ export const useUpdateSupplyModalEffects = () => {
 
   const formLogic = UpdateSupplyFormLogic(
     handleModalClose,
-    updateSupply.deviceWithSupply
+    updateSupply?.deviceWithSupply
   );
   const submitHandler = useApiUpdateSupplyHandler(
-    updateSupply.deviceWithSupply,
+    updateSupply?.deviceWithSupply,
     handleModalClose
   );
   const formProps = {

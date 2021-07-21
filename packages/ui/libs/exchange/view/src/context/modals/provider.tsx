@@ -6,7 +6,7 @@ const ExchangeModalsStore = createContext<IExchangeModalsStore>(null);
 const ExchangeModalsDispatch =
   createContext<React.Dispatch<TExchangeModalsAction>>(null);
 
-export const SupplyUpdateModalProvider = ({ children }) => {
+export const ExchangeModalsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(
     exchangeModalsReducer,
     exchangeModalsInitialState

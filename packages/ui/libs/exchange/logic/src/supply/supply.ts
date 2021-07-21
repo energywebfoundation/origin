@@ -16,9 +16,9 @@ const formatSupplyData: TFormatSupplyData = ({
         supplies?.find((supply) => supply?.deviceId === device.id) ||
         ({} as SupplyDto);
 
-      const price = isNaN(matchingSupply?.price)
+      const price = isNaN(matchingSupply.price)
         ? '0.00'
-        : matchingSupply?.price.toFixed(2).toString();
+        : matchingSupply.price.toFixed(2).toString();
 
       return {
         id: device?.externalRegistryId,
@@ -27,7 +27,7 @@ const formatSupplyData: TFormatSupplyData = ({
           '',
         facilityName: device?.name,
         price: `$${price}`,
-        status: matchingSupply?.active
+        status: matchingSupply.active
           ? SupplyStatus.Active
           : SupplyStatus.Paused,
         toBeCertified: 0,
