@@ -26,6 +26,7 @@
       "exchange": {
         "sectionTitle": "Exchange",
         "viewMarket": "View Market",
+        "supply": "Supply",
         "allBundles": "All bundles",
         "createBundle": "Create bundle",
         "myBundles": "My bundles"
@@ -570,6 +571,35 @@
         "notifications": {
           "createSuccess": "Bundle has been successfully created and published for sale",
           "createError": "Error while creating bundle"
+        }
+      },
+      "supply": {
+        "fuelType": "Fuel Type",
+        "facilityName": "Facility Name",
+        "price": "Price",
+        "status": "Status",
+        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "update": "Update",
+        "remove": "Remove",
+        "cancel": "Cancel",
+        "modals": {
+          "updateSupply": {
+            "title": "Update Supply"
+          },
+          "removeSupplyConfirm": {
+            "title": "Are you sure you want remove?",
+            "no": "No",
+            "yes": "Yes"
+          }
+        },
+        "notifications": {
+          "updateSupplySuccess": "Supply updated successfully",
+          "updateSupplyError": "Error while updating supply",
+          "createSupplySuccess": "Supply created successfully",
+          "createSupplyError": "Error while creating supply",
+          "removeSupplySuccess": "Supply removed successfully",
+          "removeSupplyError": "Error while removing supply",
+          "missingSupplyError": "This device is missing supply"
         }
       }
     },

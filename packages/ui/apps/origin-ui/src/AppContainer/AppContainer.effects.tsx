@@ -94,6 +94,7 @@ export const useAppContainerEffects = () => {
     showViewMarket: true,
     showAllBundles: true,
     showCreateBundle: true,
+    showSupply: true,
     showMyBundles: true,
   });
   const accountMenu = getAccountMenu({
