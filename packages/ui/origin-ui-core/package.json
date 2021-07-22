@@ -45,7 +45,7 @@
         "@react-google-maps/api": "2.2.0",
         "@unicef/material-ui-currency-textfield": "0.8.6",
         "axios": "0.21.1",
-        "chart.js": "2.9.4",
+        "chart.js": "3.4.1",
         "clsx": "1.1.1",
         "connected-react-router": "6.9.1",
         "ethers": "5.3.1",
