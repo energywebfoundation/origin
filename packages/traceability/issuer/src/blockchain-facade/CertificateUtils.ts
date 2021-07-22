@@ -17,37 +17,29 @@ export interface IShareInCertificate {
 }
 
 export const encodeClaimData = (claimData: IClaimData): string => {
-    const { beneficiary, address, region, zipCode, countryCode, fromDate, toDate } = claimData;
+    const { beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose } =
+        claimData;
 
     return utils.defaultAbiCoder.encode(
-        ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
-        [
-            beneficiary ?? '',
-            address ?? '',
-            region ?? '',
-            zipCode ?? '',
-            countryCode ?? '',
-            fromDate ?? '',
-            toDate ?? ''
-        ]
+        ['string', 'string', 'string', 'string', 'string', 'string'],
+        [beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose]
     );
 };
 
 export const decodeClaimData = (encodedClaimData: string): IClaimData => {
-    const [beneficiary, address, region, zipCode, countryCode, fromDate, toDate] =
+    const [beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose] =
         utils.defaultAbiCoder.decode(
-            ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
+            ['string', 'string', 'string', 'string', 'string', 'string'],
             encodedClaimData
         );
 
     return {
         beneficiary,
-        address,
-        region,
-        zipCode,
+        location,
         countryCode,
-        fromDate,
-        toDate
+        periodStartDate,
+        periodEndDate,
+        purpose
     };
 };
 

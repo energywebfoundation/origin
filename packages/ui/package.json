@@ -52,7 +52,7 @@
     "core-js": "3.6.5",
     "dayjs": "^1.10.4",
     "document-register-element": "1.13.1",
-    "ethers": "5.4.1",
+    "ethers": "5.3.1",
     "history": "5.0.0",
     "i18next": "^20.2.1",
     "i18next-icu": "1.4.2",
@@ -74,7 +74,7 @@
     "react-chartjs-2": "3.0.3",
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",
-    "@ethersproject/providers": "5.4.1",
+    "@ethersproject/providers": "5.3.1",
     "chart.js": "3.3.2",
     "tslib": "2.0.0",
     "yup": "^0.32.9"

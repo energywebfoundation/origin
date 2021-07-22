@@ -1,4 +1,11 @@
-import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber, utils } from 'ethers';
+import {
+    Event as BlockchainEvent,
+    ContractTransaction,
+    ethers,
+    BigNumber,
+    utils,
+    providers
+} from 'ethers';
 
 import { Timestamp } from '@energyweb/utils-general';
 
@@ -21,13 +28,12 @@ import {
 } from '../utils/PreciseProofUtils';
 
 export interface IClaimData {
-    beneficiary?: string;
-    address?: string;
-    region?: string;
-    zipCode?: string;
-    countryCode?: string;
-    fromDate?: string;
-    toDate?: string;
+    beneficiary: string;
+    location: string;
+    countryCode: string;
+    periodStartDate: string;
+    periodEndDate: string;
+    purpose: string;
 }
 
 export interface IData {
@@ -49,7 +55,6 @@ export interface IClaim {
 export interface ICertificate extends IData {
     id: number;
     issuer: string;
-    certificationRequestId: number;
     creationTime: Timestamp;
     creationBlockHash: string;
     owners: IShareInCertificate;
@@ -68,8 +73,6 @@ export class Certificate implements ICertificate {
     public creationTime: Timestamp;
 
     public creationBlockHash: string;
-
-    public certificationRequestId: number;
 
     public initialized = false;
 
@@ -187,19 +190,9 @@ export class Certificate implements ICertificate {
         const { registry } = this.blockchainProperties;
         const certOnChain = await registry.getCertificate(this.id);
 
-        const { issuer } = this.blockchainProperties;
-
         const decodedData = decodeData(certOnChain.data);
 
-        const allIssuanceLogs = await getEventsFromContract(
-            registry,
-            registry.filters.IssuanceSingle(null, null, null)
-        );
-        const issuanceLog = allIssuanceLogs.filter(
-            (event) => event._id.toString() === this.id.toString()
-        )[0];
-        const issuanceBlock = await registry.provider.getBlock(issuanceLog.blockHash);
-
+        const issuanceBlock = await this.getIssuanceBlock();
         this.generationStartTime = decodedData.generationStartTime;
         this.generationEndTime = decodedData.generationEndTime;
         this.deviceId = decodedData.deviceId;
@@ -207,14 +200,7 @@ export class Certificate implements ICertificate {
 
         this.issuer = certOnChain.issuer;
         this.creationTime = Number(issuanceBlock.timestamp);
-        this.creationBlockHash = issuanceLog.blockHash;
-
-        const certificationRequestApprovedEvents = await getEventsFromContract(
-            issuer,
-            issuer.filters.CertificationRequestApproved(null, null, this.id)
-        );
-
-        this.certificationRequestId = certificationRequestApprovedEvents[0]._id;
+        this.creationBlockHash = issuanceBlock.hash;
 
         this.owners = await calculateOwnership(this.id, this.blockchainProperties);
         this.claimers = await calculateClaims(this.id, this.blockchainProperties);
@@ -359,5 +345,31 @@ export class Certificate implements ICertificate {
         }
 
         return claims;
+    }
+
+    private async getIssuanceBlock(): Promise<providers.Block> {
+        const { registry } = this.blockchainProperties;
+
+        const allIssuanceLogs = await getEventsFromContract(
+            registry,
+            registry.filters.IssuanceSingle(null, null, null)
+        );
+
+        let issuanceLog = allIssuanceLogs.find(
+            (event) => event._id.toString() === this.id.toString()
+        );
+
+        if (!issuanceLog) {
+            const allBatchIssuanceLogs = await getEventsFromContract(
+                registry,
+                registry.filters.IssuanceBatch(null, null, null, null)
+            );
+
+            issuanceLog = allBatchIssuanceLogs.find((event) =>
+                event._ids.map((id: BigNumber) => id.toString()).includes(this.id.toString())
+            );
+        }
+
+        return registry.provider.getBlock(issuanceLog.blockHash);
     }
 }

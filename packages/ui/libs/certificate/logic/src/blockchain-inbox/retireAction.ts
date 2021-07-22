@@ -1,8 +1,10 @@
+import { Dayjs } from 'dayjs';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatSelectedBlockchainItems } from './formatSelectedBlockchain';
 import {
   SelectedItem,
-  TUseBeneficiariesSelectorLogic,
+  TUseBeneficiaryFormLogic,
   TUseRetireActionLogic,
 } from './types';
 
@@ -30,12 +32,19 @@ export const useRetireActionLogic: TUseRetireActionLogic = <Id>({
   };
 };
 
-export const useBeneficiariesSelectorLogic: TUseBeneficiariesSelectorLogic = (
+export const useBeneficiaryFormLogic: TUseBeneficiaryFormLogic = ({
   allBeneficiaries,
-  setSelectedBeneficiary
-) => {
+  setSelectedBeneficiary,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+  purpose,
+  setPurpose,
+}) => {
   const { t } = useTranslation();
-  return {
+
+  const selectorProps = {
     field: {
       name: 'beneficiaries',
       label: t('certificate.blockchainInbox.selectBeneficiaries'),
@@ -55,4 +64,36 @@ export const useBeneficiariesSelectorLogic: TUseBeneficiariesSelectorLogic = (
     errorText: '',
     onChange: (event) => setSelectedBeneficiary(event.target.value),
   };
+
+  const startPickerProps = {
+    field: {
+      name: 'startDate',
+      label: t('certificate.blockchainInbox.startDate'),
+      textFieldProps: { variant: 'filled' as any },
+    },
+    value: startDate,
+    onChange: (event: Dayjs) => setStartDate(event.toISOString()),
+  };
+
+  const endPickerProps = {
+    field: {
+      name: 'endDate',
+      label: t('certificate.blockchainInbox.endDate'),
+      textFieldProps: { variant: 'filled' as any },
+    },
+    value: endDate,
+    onChange: (event: Dayjs) => setEndDate(event.toISOString()),
+  };
+
+  const purposeInputProps = {
+    value: purpose,
+    onChange: (event: ChangeEvent<HTMLInputElement>) =>
+      setPurpose(event.target.value),
+    multiline: true,
+    fullWidth: true,
+    label: t('certificate.blockchainInbox.purpose'),
+    variant: 'filled' as any,
+  };
+
+  return { selectorProps, startPickerProps, endPickerProps, purposeInputProps };
 };

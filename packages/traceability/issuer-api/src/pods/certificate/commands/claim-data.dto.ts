@@ -1,39 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IClaimData } from '@energyweb/issuer';
+import { IsDateString, IsString } from 'class-validator';
 
-export class ClaimDataDTO {
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
+export class ClaimDataDTO implements IClaimData {
+    @ApiProperty({ type: String })
     @IsString()
-    beneficiary?: string;
+    beneficiary: string;
 
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
+    @ApiProperty({ type: String })
     @IsString()
-    address?: string;
+    location: string;
 
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
+    @ApiProperty({ type: String })
     @IsString()
-    region?: string;
+    countryCode: string;
 
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
-    @IsString()
-    zipCode?: string;
-
-    @ApiProperty({ type: String, required: false })
-    @IsOptional()
-    @IsString()
-    countryCode?: string;
-
-    @ApiProperty({ type: Date, required: false })
-    @IsOptional()
+    @ApiProperty({ type: String })
     @IsDateString()
-    fromDate?: string;
+    periodStartDate: string;
 
-    @ApiProperty({ type: Date, required: false })
-    @IsOptional()
+    @ApiProperty({ type: String })
     @IsDateString()
-    toDate?: string;
+    periodEndDate: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    purpose: string;
 }

@@ -5,9 +5,11 @@ import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import {
   ItemsListWithActionsProps,
   ListAction,
+  MaterialDatepickerProps,
   SelectRegularProps,
   TItemsListWithActionsContainers,
 } from '@energyweb/origin-ui-core';
+import { TextFieldProps } from '@material-ui/core';
 import React, { FC } from 'react';
 
 export interface ListItemContentProps<Id> {
@@ -83,12 +85,25 @@ export type TUseRetireActionLogic = <Id>(
   selectedItems: SelectedItem<Id>[];
 };
 
-export type TUseBeneficiariesSelectorLogic = (
-  allBeneficiaries: BeneficiaryDTO[],
-  setSelectedBeneficiary: React.Dispatch<
-    React.SetStateAction<BeneficiaryDTO['irecBeneficiaryId']>
-  >
-) => Omit<SelectRegularProps, 'value'>;
+type TUseBeneficiaryFormLogicArgs = {
+  allBeneficiaries: BeneficiaryDTO[];
+  setSelectedBeneficiary: (
+    newValue: BeneficiaryDTO['irecBeneficiaryId']
+  ) => void;
+  startDate: string;
+  setStartDate: (newValue: string) => void;
+  endDate: string;
+  setEndDate: (newValue: string) => void;
+  purpose: string;
+  setPurpose: (newValue: string) => void;
+};
+
+export type TUseBeneficiaryFormLogic = (args: TUseBeneficiaryFormLogicArgs) => {
+  selectorProps: Omit<SelectRegularProps, 'value'>;
+  startPickerProps: MaterialDatepickerProps;
+  endPickerProps: MaterialDatepickerProps;
+  purposeInputProps: TextFieldProps;
+};
 
 type TUseBlockchainTransferActionLogicArgs<Id> = {
   selectedIds: Id[];

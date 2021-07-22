@@ -2,12 +2,13 @@ import { DateFormatEnum } from '@energyweb/origin-ui-utils';
 import { TextField, TextFieldProps } from '@material-ui/core';
 import { DatePicker, LocalizationProvider } from '@material-ui/lab';
 import AdapterDayJs from '@material-ui/lab/AdapterDayjs';
+import { Dayjs } from 'dayjs';
 import React, { FC } from 'react';
 import { GenericFormField } from '../../../containers';
 
 export interface MaterialDatepickerProps {
   value: any;
-  onChange: (...event: any[]) => void;
+  onChange: (event: Dayjs) => void;
   field: GenericFormField;
   disabled?: boolean;
   errorExists?: boolean;

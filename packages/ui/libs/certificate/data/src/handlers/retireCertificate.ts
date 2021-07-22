@@ -9,7 +9,6 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
-import dayjs from 'dayjs';
 import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
@@ -17,7 +16,10 @@ import { useGetBlockchainCertificateHandler } from '../fetching';
 
 export const useRetireCertificateHandler = (
   selectedBeneficiary: BeneficiaryDTO,
-  resetList: () => void
+  resetList: () => void,
+  startDate: string,
+  endDate: string,
+  purpose: string
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -37,13 +39,11 @@ export const useRetireCertificateHandler = (
       );
       const claimData: IClaimData = {
         beneficiary: selectedBeneficiary.organization.name,
-        address: selectedBeneficiary.organization.address,
-        zipCode: selectedBeneficiary.organization.zipCode,
-        region: selectedBeneficiary.organization.city,
+        location: selectedBeneficiary.organization.address,
         countryCode: selectedBeneficiary.organization.country,
-        //mock which should be here instead? additional datepickers?
-        fromDate: dayjs().toISOString(),
-        toDate: dayjs().toISOString(),
+        periodStartDate: startDate,
+        periodEndDate: endDate,
+        purpose,
       };
       const transaction = await onChainCertificate.claim(
         claimData,

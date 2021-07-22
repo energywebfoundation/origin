@@ -6,7 +6,7 @@ import {
   usePlatformBeneficiaries,
 } from '@energyweb/origin-ui-certificate-data';
 import {
-  useBeneficiariesSelectorLogic,
+  useBeneficiaryFormLogic,
   useRetireActionLogic,
 } from '@energyweb/origin-ui-certificate-logic';
 import { useMemo, useState } from 'react';
@@ -24,10 +24,22 @@ export const useRetireActionEffects = <Id>(
     useState<BeneficiaryDTO['irecBeneficiaryId']>();
   const { platformBeneficiaries, isLoading: areBeneficiariesLoading } =
     usePlatformBeneficiaries();
-  const beneficiarySelectorProps = useBeneficiariesSelectorLogic(
-    platformBeneficiaries,
-    setSelectedBeneficiaryId
-  );
+
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [purpose, setPurpose] = useState('');
+
+  const { selectorProps, startPickerProps, endPickerProps, purposeInputProps } =
+    useBeneficiaryFormLogic({
+      allBeneficiaries: platformBeneficiaries,
+      setSelectedBeneficiary: setSelectedBeneficiaryId,
+      startDate,
+      setStartDate,
+      endDate,
+      setEndDate,
+      purpose,
+      setPurpose,
+    });
 
   const selectedBeneficiary = useMemo(
     () =>
@@ -38,7 +50,13 @@ export const useRetireActionEffects = <Id>(
   );
 
   const { retireHandler, isLoading: isHandlerLoading } =
-    useRetireCertificateHandler(selectedBeneficiary, resetIds);
+    useRetireCertificateHandler(
+      selectedBeneficiary,
+      resetIds,
+      startDate,
+      endDate,
+      purpose
+    );
 
   const actionLogic = useRetireActionLogic({
     selectedIds,
@@ -48,12 +66,17 @@ export const useRetireActionEffects = <Id>(
   });
 
   const isLoading = areBeneficiariesLoading || isHandlerLoading;
-  const buttonDisabled = !selectedBeneficiaryId;
+  const buttonDisabled =
+    !selectedBeneficiaryId || !startDate || !endDate || !purpose;
+
   return {
     ...actionLogic,
     retireHandler,
     isLoading,
-    beneficiarySelectorProps,
+    selectorProps,
+    startPickerProps,
+    endPickerProps,
+    purposeInputProps,
     selectedBeneficiaryId,
     buttonDisabled,
   };

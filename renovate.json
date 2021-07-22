@@ -14,7 +14,8 @@
         },
         {
             "packagePatterns": ["ethers"],
-            "groupName": "ethers"
+            "groupName": "ethers",
+            "enabled": false
         },
         {
             "packagePatterns": ["nestjs"],
