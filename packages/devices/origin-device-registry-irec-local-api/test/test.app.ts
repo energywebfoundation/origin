@@ -13,8 +13,7 @@ import {
     Connection,
     IrecService,
     Registration,
-    UserIdentifier,
-    usedEntities
+    UserIdentifier
 } from '@energyweb/origin-organization-irec-api';
 
 import { AuthGuard } from '@nestjs/passport';
@@ -27,6 +26,7 @@ import {
     DeviceCreateParams,
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
+import { usedEntities } from '../src';
 import { Device, DeviceModule, DeviceService, ImportIrecDeviceDTO } from '../src/device';
 import { UserService } from '@energyweb/origin-backend';
 

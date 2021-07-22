@@ -61,14 +61,8 @@ const confirmDeposit = () => {
 
 describe('Demand orders trading', () => {
     before(async () => {
-        ({
-            transferService,
-            accountService,
-            databaseService,
-            demandService,
-            orderService,
-            app
-        } = await bootstrapTestInstance());
+        ({ transferService, accountService, databaseService, demandService, orderService, app } =
+            await bootstrapTestInstance());
 
         await app.init();
     });

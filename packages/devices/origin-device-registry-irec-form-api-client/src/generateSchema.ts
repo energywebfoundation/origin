@@ -31,8 +31,8 @@ export const generateSchema = async () => {
     app.setGlobalPrefix('api');
 
     const options = new DocumentBuilder()
-        .setTitle('Origin Device Registry I-REC API')
-        .setDescription('Swagger documentation for the Origin Device Registry I-REC API')
+        .setTitle('Origin Device Registry I-REC Form API')
+        .setDescription('Swagger documentation for the Origin Device Registry I-REC Form API')
         .setVersion('0.1')
         .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token')
         .build();

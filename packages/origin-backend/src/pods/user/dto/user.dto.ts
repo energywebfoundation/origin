@@ -1,4 +1,4 @@
-import { IPublicOrganization, IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import { IFullOrganization, IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsBoolean,
@@ -10,7 +10,7 @@ import {
     IsString,
     ValidateNested
 } from 'class-validator';
-import { PublicOrganizationInfoDTO } from '../../organization';
+import { FullOrganizationInfoDTO } from '../../organization';
 
 export class UserDTO implements IUser {
     @ApiProperty({ type: Number })
@@ -60,9 +60,9 @@ export class UserDTO implements IUser {
     @IsEnum(KYCStatus)
     kycStatus: KYCStatus;
 
-    @ApiProperty({ type: PublicOrganizationInfoDTO })
+    @ApiProperty({ type: FullOrganizationInfoDTO })
     @ValidateNested()
-    organization: IPublicOrganization;
+    organization: IFullOrganization;
 
     @ApiProperty({ type: Boolean, required: false })
     @IsOptional()

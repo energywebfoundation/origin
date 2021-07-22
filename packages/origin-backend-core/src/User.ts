@@ -1,4 +1,4 @@
-import { IPublicOrganization } from './Organization';
+import { IFullOrganization } from './Organization';
 import { IEmailConfirmation } from './EmailConfirmation';
 
 export enum Role {
@@ -61,7 +61,7 @@ export interface IUserProperties {
 }
 
 export interface IUser extends IUserProperties {
-    organization: IPublicOrganization;
+    organization: IFullOrganization;
     emailConfirmed?: IEmailConfirmation['confirmed'];
 }
 

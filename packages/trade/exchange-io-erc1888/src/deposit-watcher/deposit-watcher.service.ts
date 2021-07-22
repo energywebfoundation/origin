@@ -131,11 +131,8 @@ export class DepositWatcherService implements OnModuleInit {
     private async decodeDataField(certificateId: string) {
         const { data } = await this.registry.getCertificate(certificateId);
 
-        const {
-            generationStartTime,
-            generationEndTime,
-            deviceId
-        } = await CertificateUtils.decodeData(data);
+        const { generationStartTime, generationEndTime, deviceId } =
+            await CertificateUtils.decodeData(data);
 
         return {
             generationFrom: moment.unix(generationStartTime).toDate(),

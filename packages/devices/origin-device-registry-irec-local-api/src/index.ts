@@ -6,5 +6,5 @@ export * from './device';
 export * from './utils';
 export * from './app.module';
 
-export const entities = [Device];
 export const usedEntities = [...BackendEntities, ...IrecOrganizationEntities];
+export const entities = [Device, ...usedEntities];

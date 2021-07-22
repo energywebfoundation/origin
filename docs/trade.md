@@ -12,6 +12,7 @@ Trade SDK is responsible for enabling an order book style exchange for RECs. It 
 ## Components overview
 
 ![Components overview](images/exchange-packages-overview.png)
+
 ### @energyweb/exchange-core
 
 Package contains the implementation of order book based matching engine with robust test engine that allows developers to instantiate their own version based on the supplied types for **TProduct** and **TProductFilter**.
@@ -26,8 +27,8 @@ export class MatchingEngine<TProduct, TProductFilter> {
 
 Origin matching engine uses a custom algorithm for matching bids and asks, the matchable properties are:
 
-- price
-- product
+-   price
+-   product
 
 while ordering is based on order arrival time.
 
@@ -35,7 +36,7 @@ Both `price` and `product` matching can be customized to meet the needs of the i
 
 Concrete use-case implementations are available in a separate packages
 
-- I-REC Product Matching rules - `@energyweb/exchange-core-irec` 
+-   I-REC Product Matching rules - `@energyweb/exchange-core-irec`
 
 #### Price strategies
 
@@ -63,6 +64,7 @@ export class AskPriceStrategy implements IPriceStrategy {
     }
 }
 ```
+
 [Source](https://github.com/energywebfoundation/origin/blob/121fafd84515d482b42b477fe9f8c617481d22b2/packages/trade/exchange-core/src/strategy/AskPriceStrategy.ts)
 
 <div class="admonition attention">
@@ -86,7 +88,7 @@ The `MatchingEngine` is designed in such way that it delegates the product match
   </p>
 </div>
 
-The example of *product* that is being used for I-REC based RECs is
+The example of _product_ that is being used for I-REC based RECs is
 
 ```typescript
 export class IRECProduct {
@@ -97,6 +99,7 @@ export class IRECProduct {
     public gridOperator?: string[];
 }
 ```
+
 [Source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core-irec/src/IRECProduct.ts)
 
 Now, in order to provide the MatchingEngine a compatible type for `Orders` one need to provide object that follows an `IMatchable<IRECProduct, IRECProductFilter>` specification
@@ -110,8 +113,8 @@ export interface IMatchableOrder<TProduct, TProductFilter> extends IOrder {
     product: TProduct;
 }
 ```
-[Source](https://github.com/energywebfoundation/origin/blob/121fafd84515d482b42b477fe9f8c617481d22b2/packages/trade/exchange-core/src/IMatchableOrder.ts)
 
+[Source](https://github.com/energywebfoundation/origin/blob/121fafd84515d482b42b477fe9f8c617481d22b2/packages/trade/exchange-core/src/IMatchableOrder.ts)
 
 ```typescript
 export class AskProduct implements IMatchableProduct<IRECProduct, IRECProductFilter> {
@@ -150,21 +153,21 @@ export class AskProduct implements IMatchableProduct<IRECProduct, IRECProductFil
     ...
 }
 ```
+
 [Source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core-irec/src/AskProduct.ts)
 
 For some use-case it might be necessary to provide a separate object for Asks and Bids.
-
 
 ### @energyweb/exchange
 
 The main responsibilities for `@energyweb/exchange` project is to:
 
-- provide an API endpoints to interact with Trading features
-- host matching engine
-- persistency concerns for Orders, Trades
-- accounting and reports
-- deposits and withdrawals
-- higher level features like Demand, Supply
+-   provide an API endpoints to interact with Trading features
+-   host matching engine
+-   persistency concerns for Orders, Trades
+-   accounting and reports
+-   deposits and withdrawals
+-   higher level features like Demand, Supply
 
 <div class="admonition note">
   <p class="first admonition-title">Note</p>

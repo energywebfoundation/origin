@@ -37,13 +37,11 @@ type OrderBookAction<TProduct, TProductFilter> = {
 const prettyJSON = (input: any) => JSON.stringify(input, null, 2);
 
 export class MatchingEngine<TProduct, TProductFilter> {
-    private bids: List<IMatchableOrder<TProduct, TProductFilter>> = List<
-        IMatchableOrder<TProduct, TProductFilter>
-    >();
+    private bids: List<IMatchableOrder<TProduct, TProductFilter>> =
+        List<IMatchableOrder<TProduct, TProductFilter>>();
 
-    private asks: List<IMatchableOrder<TProduct, TProductFilter>> = List<
-        IMatchableOrder<TProduct, TProductFilter>
-    >();
+    private asks: List<IMatchableOrder<TProduct, TProductFilter>> =
+        List<IMatchableOrder<TProduct, TProductFilter>>();
 
     private readonly triggers = new Subject();
 

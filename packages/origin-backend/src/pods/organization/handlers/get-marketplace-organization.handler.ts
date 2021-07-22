@@ -6,7 +6,8 @@ import { GetMarketplaceOrganizationCommand } from '../commands';
 
 @CommandHandler(GetMarketplaceOrganizationCommand)
 export class GetMarketplaceOrganizationHandler
-    implements ICommandHandler<GetMarketplaceOrganizationCommand> {
+    implements ICommandHandler<GetMarketplaceOrganizationCommand>
+{
     constructor(private readonly userService: UserService) {}
 
     async execute(): Promise<IPublicOrganization> {
