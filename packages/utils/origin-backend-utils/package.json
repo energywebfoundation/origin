@@ -30,10 +30,10 @@
     },
     "dependencies": {
         "@energyweb/origin-backend-core": "8.0.1",
-        "@nestjs/common": "7.6.18",
+        "@nestjs/common": "8.0.4",
         "@nestjs/config": "1.0.0",
-        "@nestjs/core": "7.6.18",
-        "@nestjs/swagger": "4.8.2",
+        "@nestjs/core": "8.0.4",
+        "@nestjs/swagger": "5.0.8",
         "bn.js": "5.2.0",
         "class-validator": "0.13.1",
         "polly-js": "1.8.2",
