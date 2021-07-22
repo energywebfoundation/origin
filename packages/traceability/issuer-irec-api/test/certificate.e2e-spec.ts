@@ -368,13 +368,30 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.OK);
     });
 
-    it('should return list of certificates to import', async () => {
-        const { body: list } = await request(app.getHttpServer())
+    it('should import certificate', async () => {
+        let certificates = await getCertificates(TestUser.OrganizationDeviceManager);
+        expect(certificates.length).to.equal(0);
+
+        const {
+            body: [certificateToImport]
+        } = await request(app.getHttpServer())
             .get(`/irec/certificate/certificates-to-import`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
-        expect(list.length).to.equal(1);
-        expect(list[0].asset).to.equal('test-asset-id');
+        expect(certificateToImport.asset).to.equal('test-asset-id');
+
+        await request(app.getHttpServer())
+            .post(`/irec/certificate/import-certificate`)
+            .send({ assetId: certificateToImport.asset })
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect((r) => {
+                console.log('POST /irec/certificate/import-certificate', r.body);
+            })
+            .expect(HttpStatus.CREATED);
+
+        await sleep(10000);
+
+        certificates = await getCertificates(TestUser.OrganizationDeviceManager);
     });
 });

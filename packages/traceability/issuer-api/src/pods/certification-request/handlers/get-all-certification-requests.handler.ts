@@ -16,10 +16,11 @@ export class GetAllCertificationRequestsHandler
     ) {}
 
     async execute({ query }: GetAllCertificationRequestsQuery): Promise<CertificationRequestDTO[]> {
+        const q = query || {};
         return this.repository.find({
-            ...(query.hasOwnProperty('approved') ? { approved: query.approved } : {}),
-            ...(query.owner ? { owner: query.owner } : {}),
-            ...(query.deviceIds?.length ? { deviceId: In(query.deviceIds) } : {})
+            ...(q.hasOwnProperty('approved') ? { approved: q.approved } : {}),
+            ...(q.owner ? { owner: q.owner } : {}),
+            ...(q.deviceIds?.length ? { deviceId: In(q.deviceIds) } : {})
         });
     }
 }

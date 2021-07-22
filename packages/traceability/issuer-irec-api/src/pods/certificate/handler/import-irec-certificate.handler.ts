@@ -47,7 +47,7 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
             where: { ownerId: user.ownerId }
         });
         const irecDevice = irecDevices.find((d) => d.code === irecCertificate.device.code);
-        if (!irecDevice || irecDevice.ownerId !== user.ownerId) {
+        if (!irecDevice || String(irecDevice.ownerId) !== String(user.ownerId)) {
             throw new BadRequestException('Unknown IREC device');
         }
 

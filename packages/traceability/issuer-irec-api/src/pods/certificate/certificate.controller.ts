@@ -1,11 +1,4 @@
-import {
-    ApiBadRequestResponse,
-    ApiBearerAuth,
-    ApiBody,
-    ApiForbiddenResponse,
-    ApiResponse,
-    ApiTags
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import {
     Body,
@@ -27,12 +20,11 @@ import {
     RolesGuard,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
-import { CertificateController } from '@energyweb/issuer-api';
+import { CertificateController, SuccessResponseDTO } from '@energyweb/issuer-api';
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
-import { DeviceDTO } from '@energyweb/origin-device-registry-irec-local-api';
 
 import { GetIrecCertificatesToImportCommand, ImportIrecCertificateCommand } from './command';
-import { IrecAccountItemDto, ImportIrecCertificateDTO } from './dto';
+import { ImportIrecCertificateDTO, IrecAccountItemDto } from './dto';
 
 @ApiTags('irec-certificates')
 @ApiBearerAuth('access-token')
@@ -53,19 +45,19 @@ export class IrecCertificateController extends CertificateController {
         return await this.commandBus.execute(new GetIrecCertificatesToImportCommand(user));
     }
 
-    @Post('/import-irec-certificate')
+    @Post('/import-certificate')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
     @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
     @ApiBody({ type: ImportIrecCertificateDTO })
     @ApiResponse({
         status: HttpStatus.CREATED,
-        type: DeviceDTO,
+        type: SuccessResponseDTO,
         description: 'Imports a certificate from IREC'
     })
     async importIrecDevice(
         @Body() certificateToImport: ImportIrecCertificateDTO,
         @UserDecorator() loggedInUser: ILoggedInUser
-    ): Promise<DeviceDTO> {
+    ): Promise<SuccessResponseDTO> {
         return await this.commandBus.execute(
             new ImportIrecCertificateCommand(loggedInUser, certificateToImport)
         );

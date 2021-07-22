@@ -294,8 +294,8 @@ export class IrecMockService implements IIrecService {
                     description: 'Wind: Onshore'
                 },
                 device: {
-                    code: 'DEVICE001',
-                    name: 'DEVICE001'
+                    code: 'mockDeviceCode',
+                    name: 'mockDeviceName'
                 },
                 deviceSupported: true,
                 tagged: false,
