@@ -23,15 +23,15 @@ const formatClaims: TFormatClaims = ({ certificates, allDevices }) => {
   certificates?.forEach((certificate) =>
     certificate.claims?.forEach((claim) => {
       formattedClaims.push({
-        id: `${certificate.id};${claim.claimData.fromDate}`,
+        id: `${certificate.id};${claim.claimData.periodStartDate}`,
         certificateId: certificate.id,
         deviceName: allDevices.find(
           (device) => device.externalRegistryId === certificate.deviceId
         )?.name,
         energy: PowerFormatter.format(parseInt(claim.value), true),
         beneficiary: claim.claimData.beneficiary,
-        fromDate: formatDate(claim.claimData.fromDate),
-        toDate: formatDate(claim.claimData.toDate),
+        fromDate: formatDate(claim.claimData.periodStartDate),
+        toDate: formatDate(claim.claimData.periodEndDate),
       });
     })
   );
