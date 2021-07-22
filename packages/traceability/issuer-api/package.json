@@ -55,7 +55,7 @@
         "moment-range": "4.0.2",
         "pg": "8.6.0",
         "precise-proofs-js": "1.2.0",
-        "rxjs": "6.6.7",
+        "rxjs": "7.2.0",
         "swagger-ui-express": "4.1.6",
         "typeorm": "0.2.34",
         "ganache-cli": "6.12.2"

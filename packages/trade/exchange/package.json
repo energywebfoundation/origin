@@ -63,7 +63,7 @@
         "pg": "8.6.0",
         "polly-js": "1.8.2",
         "reflect-metadata": "0.1.13",
-        "rxjs": "6.6.7",
+        "rxjs": "7.2.0",
         "swagger-ui-express": "4.1.6",
         "typeorm": "0.2.34"
     },
