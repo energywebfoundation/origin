@@ -1,8 +1,9 @@
 import {
   ListActionComponentProps,
+  MaterialDatepicker,
   SelectRegular,
 } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Grid, TextField } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useRetireActionEffects } from './RetireAction.effects';
@@ -22,9 +23,12 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
     selectedItems,
     retireHandler,
     isLoading,
-    beneficiarySelectorProps,
     selectedBeneficiaryId,
     buttonDisabled,
+    selectorProps,
+    startPickerProps,
+    endPickerProps,
+    purposeInputProps,
   } = useRetireActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
@@ -39,10 +43,19 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
       buttonDisabled={buttonDisabled}
     >
       <SelectRegular
-        textFieldProps={{ margin: 'none', className: classes.selector }}
+        textFieldProps={{ margin: 'none', variant: 'filled' }}
         value={selectedBeneficiaryId}
-        {...beneficiarySelectorProps}
+        {...selectorProps}
       />
+      <Grid container spacing={1} className={classes.mb}>
+        <Grid item xs={6}>
+          <MaterialDatepicker {...startPickerProps} />
+        </Grid>
+        <Grid item xs={6}>
+          <MaterialDatepicker {...endPickerProps} />
+        </Grid>
+      </Grid>
+      <TextField className={classes.mb} {...purposeInputProps} />
     </CertificateActionContent>
   );
 };
