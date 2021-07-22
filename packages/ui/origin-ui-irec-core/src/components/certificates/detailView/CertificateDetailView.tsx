@@ -309,10 +309,12 @@ export function CertificateDetailView(props: IProps) {
 
                 if (uniqueClaims.length > 0) {
                     const fieldData = uniqueClaims.map((oneBeneficiary) => {
-                        const { fromDate, toDate } = oneBeneficiary;
+                        const { periodStartDate, periodEndDate } = oneBeneficiary;
 
-                        oneBeneficiary.fromDate = fromDate && `[From: ${formatDate(fromDate)}`;
-                        oneBeneficiary.toDate = toDate && `To: ${formatDate(toDate)}]`;
+                        oneBeneficiary.periodStartDate =
+                            periodStartDate && `[From: ${formatDate(periodStartDate)}`;
+                        oneBeneficiary.periodEndDate =
+                            periodEndDate && `To: ${formatDate(periodEndDate)}]`;
 
                         return Object.values(oneBeneficiary)
                             .filter((value) => value !== '')

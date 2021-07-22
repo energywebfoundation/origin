@@ -22,8 +22,8 @@ type Record = {
     deviceName: string;
     energy: string;
     beneficiary: string;
-    fromDate: string;
-    toDate: string;
+    periodStartDate: string;
+    periodEndDate: string;
 };
 
 type DeviceNamesMap = Map<string, string>;
@@ -66,9 +66,8 @@ export function AdminClaimsTable(): JSX.Element {
         const newPaginatedData: Record[] = [];
 
         try {
-            const {
-                data: certificates
-            }: { data: CertificateDTO[] } = await certificatesClient.getAll();
+            const { data: certificates }: { data: CertificateDTO[] } =
+                await certificatesClient.getAll();
 
             const deviceNames: DeviceNamesMap = new Map<string, string>();
 
@@ -85,8 +84,8 @@ export function AdminClaimsTable(): JSX.Element {
                             ),
                         energy: EnergyFormatter.format(claim.value, true),
                         beneficiary: claim.claimData.beneficiary,
-                        fromDate: formatDate(claim.claimData.fromDate),
-                        toDate: formatDate(claim.claimData.toDate)
+                        periodStartDate: formatDate(claim.claimData.periodStartDate),
+                        periodEndDate: formatDate(claim.claimData.periodEndDate)
                     });
                 });
             });

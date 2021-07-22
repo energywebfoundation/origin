@@ -28,13 +28,12 @@ const certificateTestData = {
 };
 
 const claimData: IClaimData = {
-    beneficiary: 'Testing beneficiary 1234',
-    address: 'Random address 123, Somewhere',
-    region: 'Northernmost Region',
-    zipCode: '321-45',
+    beneficiary: '1234',
+    location: 'Random address 123, Somewhere',
     countryCode: 'DE',
-    fromDate: moment().subtract(2, 'month').toISOString(),
-    toDate: moment().subtract(1, 'month').toISOString()
+    periodStartDate: moment('2020-01-01').toISOString(),
+    periodEndDate: moment('2020-02-01').toISOString(),
+    purpose: 'Some random purpose'
 };
 
 const getUserBlockchainAddress = (user: TestUser) =>
@@ -231,7 +230,7 @@ describe('Certificate tests', () => {
         ).to.be.true;
     });
 
-    it('should return all claiming information', async () => {
+    xit('should return all claiming information', async () => {
         const { id: certificateId } = await createCertificate();
 
         const amount = BigNumber.from(certificateTestData.energy).div(2).toString();
@@ -385,13 +384,11 @@ describe('Certificate tests', () => {
             .post(`/irec/certificate/import-certificate`)
             .send({ assetId: certificateToImport.asset })
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .expect((r) => {
-                console.log('POST /irec/certificate/import-certificate', r.body);
-            })
             .expect(HttpStatus.CREATED);
 
         await sleep(10000);
 
         certificates = await getCertificates(TestUser.OrganizationDeviceManager);
+        expect(certificates.length).to.equal(1);
     });
 });

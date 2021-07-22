@@ -33,12 +33,11 @@ export function BlockchainInboxPage(): JSX.Element {
         setRetireForBeneficiary(false);
         setBeneficiaryFormData({
             beneficiary: user?.organization?.name,
-            address: user?.organization?.address,
-            zipCode: user?.organization?.zipCode,
-            region: null,
+            location: `${user?.organization?.address}, ${user?.organization?.zipCode}`,
             countryCode: user?.organization?.country,
-            fromDate: new Date().toISOString(),
-            toDate: new Date().toISOString()
+            periodStartDate: new Date().toISOString(),
+            periodEndDate: new Date().toISOString(),
+            purpose: ''
         });
     }, [user]);
 
