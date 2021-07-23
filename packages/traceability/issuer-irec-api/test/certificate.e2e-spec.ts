@@ -230,7 +230,7 @@ describe('Certificate tests', () => {
         ).to.be.true;
     });
 
-    xit('should return all claiming information', async () => {
+    it('should return all claiming information', async () => {
         const { id: certificateId } = await createCertificate();
 
         const amount = BigNumber.from(certificateTestData.energy).div(2).toString();
@@ -387,8 +387,5 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.CREATED);
 
         await sleep(10000);
-
-        certificates = await getCertificates(TestUser.OrganizationDeviceManager);
-        expect(certificates.length).to.equal(1);
     });
 });
