@@ -3,10 +3,13 @@ import { CertificationRequestDTO } from '@energyweb/issuer-api';
 
 export class CertificationRequestFieldsIrec {
     @ApiProperty({ type: String, required: true })
-    userId: string;
+    organizationId: string;
 
     @ApiProperty({ type: String, required: false })
     irecIssueRequestId?: string;
+
+    @ApiProperty({ type: String, required: false })
+    irecAssetId?: string;
 }
 
 export class IrecCertificationRequestDTO extends CertificationRequestFieldsIrec {

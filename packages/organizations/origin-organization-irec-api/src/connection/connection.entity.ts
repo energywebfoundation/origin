@@ -12,6 +12,11 @@ export class Connection extends ExtendedBaseEntity {
     @Column()
     @IsNotEmpty()
     @IsString()
+    userName: string;
+
+    @Column()
+    @IsNotEmpty()
+    @IsString()
     accessToken: string;
 
     @Column()

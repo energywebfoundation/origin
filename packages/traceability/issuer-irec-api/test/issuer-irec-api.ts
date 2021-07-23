@@ -17,9 +17,10 @@ import {
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { FileService, UserService } from '@energyweb/origin-backend';
+import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 
-import { AppModule, BlockchainPropertiesService, entities, usedEntities } from '../src';
+import { AppModule, BlockchainPropertiesService, entities } from '../src';
 
 const web3 = 'http://localhost:8581';
 const provider = getProviderWithFallback(web3);
@@ -154,7 +155,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [...entities, ...usedEntities],
+                entities,
                 logging: ['info'],
                 keepConnectionAlive: true
             }),
@@ -177,7 +178,34 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         })
         .overrideProvider(DeviceService)
         .useValue({
-            findOne: () => ({ fuelType: '' })
+            findOne: () => ({ fuelType: '' }),
+            findAll: (): object[] => [
+                {
+                    id: 1,
+                    ownerId: 1000,
+                    address: '1 Wind Farm Avenue, London',
+                    capacity: 500,
+                    commissioningDate: new Date('2001-08-10'),
+                    countryCode: 'GB',
+                    defaultAccount: 'someTradeAccount',
+                    deviceType: 'TC110',
+                    fuelType: 'ES200',
+                    issuer: 'someIssuerCode',
+                    latitude: '53.405088',
+                    longitude: '-1.744222',
+                    name: 'DeviceXYZ',
+                    notes: 'Lorem ipsum dolor sit amet',
+                    registrantOrganization: 'someRegistrantCode',
+                    registrationDate: new Date('2001-09-20'),
+                    status: 'Approved',
+                    code: 'mockDeviceCode',
+                    active: true
+                }
+            ]
+        })
+        .overrideProvider(DeviceRegistryService)
+        .useValue({
+            find: () => [{ id: 1, externalRegistryId: 1 }]
         })
         .compile();
 

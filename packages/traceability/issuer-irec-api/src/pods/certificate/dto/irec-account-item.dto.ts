@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { AccountItem, CodeDescription, CodeName } from '@energyweb/issuer-irec-api-wrapper';
 import { IsBoolean, IsISO31661Alpha2, IsString } from 'class-validator';
 
-export class IrecAccountItemDto extends AccountItem {
+export class IrecAccountItemDto implements AccountItem {
     @ApiProperty({ type: String })
     @IsString()
     code: string;
@@ -43,4 +43,8 @@ export class IrecAccountItemDto extends AccountItem {
     @ApiProperty({ type: String })
     @IsString()
     product: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    asset: string;
 }

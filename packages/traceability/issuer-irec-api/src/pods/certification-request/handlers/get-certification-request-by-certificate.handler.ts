@@ -39,7 +39,7 @@ export class GetCertificationRequestByCertificateHandler
         return {
             ...certificationRequest,
             irecIssueRequestId: irecCertificationRequest.irecIssueRequestId,
-            userId: irecCertificationRequest.userId
+            organizationId: irecCertificationRequest.organizationId
         };
     }
 }
