@@ -22,7 +22,7 @@ export const TotalAndButtons: FC<TotalAndButtonsProps> = ({
     <div className={classes.wrapper}>
       <div>
         <Typography variant="h6">TOTAL:</Typography>
-        <Typography variant="h5">{totalPrice}</Typography>
+        <Typography variant="h5">{'$ ' + totalPrice}</Typography>
       </div>
       <div>
         {buttons.map((button) => (

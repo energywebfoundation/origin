@@ -9,7 +9,7 @@ export interface FormDatePickerProps<FormValuesType> {
   errorExists: boolean;
   errorText: string;
   variant?: 'standard' | 'outlined' | 'filled';
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export type TFormDatePicker = <FormValuesType>(

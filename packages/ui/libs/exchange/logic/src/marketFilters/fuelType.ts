@@ -4,6 +4,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { prepareFuelTypesOptions } from '../utils';
+import { useTranslation } from 'react-i18next';
 
 type TUseFuelTypeFilterLogic = (
   allFuelTypes: CodeNameDTO[],
@@ -16,12 +17,13 @@ export const useFuelTypeFilterLogic: TUseFuelTypeFilterLogic = (
   value,
   onChange
 ) => {
+  const { t } = useTranslation();
   return {
     value,
     onChange,
     field: {
       name: 'fuelType',
-      label: 'Fuel type',
+      label: t('exchange.viewMarket.fuelType'),
       options: prepareFuelTypesOptions(allFuelTypes),
       multiple: true,
     },

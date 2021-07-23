@@ -532,6 +532,32 @@
       }
     },
     "exchange": {
+      "viewMarket": {
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "regions": "Regions",
+        "gridOperator": "Grid Operator",
+        "subregions": "Subregions",
+        "oneTimePurchase": "One time purchase",
+        "repeatedPurchase": "Repeated purchase",
+        "generationFrom": "Generation Start Date",
+        "generationTo": "Generation End Date",
+        "energy": "Energy",
+        "price": "Price",
+        "placeBidButton": "Place bid order",
+        "period": "Period",
+        "volume": "Volume",
+        "demandStartDate": "Demand start date",
+        "demandEndDate": "Demand end date",
+        "totalVolume": "Total Volume",
+        "placeDemandButton": "Place demand order",
+        "notifications": {
+          "createBidSuccess": "Bid successfully placed",
+          "createBidError": "Error while creating bid",
+          "createDemandSuccess": "Demand successfully placed",
+          "creteDemandError": "Error while creating demand"
+        }
+      },
       "allBundles": {
         "tableTitle": "All bundles",
         "totalEnergy": "Total energy",
@@ -603,6 +629,18 @@
           "removeSupplySuccess": "Supply removed successfully",
           "removeSupplyError": "Error while removing supply",
           "missingSupplyError": "This device is missing supply"
+        }
+      },
+      "properties": {
+        "period": {
+          "daily": "Daily",
+          "weekly": "Weekly",
+          "monthly": "Monthly",
+          "yearly": "Yearly",
+          "day": "Day",
+          "week": "Week",
+          "month": "Month",
+          "year": "Year"
         }
       }
     },

@@ -2,6 +2,7 @@ import {
   FormSelectOption,
   SelectAutocompleteProps,
 } from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
 import { gridOperatorOptions } from '../utils';
 
 type TUseGridOperatorFilterLogic = (
@@ -13,12 +14,13 @@ export const useGridOperatorFilterLogic: TUseGridOperatorFilterLogic = (
   value,
   onChange
 ) => {
+  const { t } = useTranslation();
   return {
     value,
     onChange,
     field: {
       name: 'gridOperator',
-      label: 'Grid Operator',
+      label: t('exchange.viewMarket.gridOperator'),
       options: gridOperatorOptions,
     },
     errorExists: false,

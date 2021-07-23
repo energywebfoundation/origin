@@ -50,7 +50,7 @@ export const ListActionsBlock: TListActionsBlock = ({
   const { content, component: Component } = actions[tabIndex];
   return (
     <div {...wrapperProps}>
-      {actions.length > 2 && (
+      {actions.length >= 2 && (
         <Tabs
           value={tabIndex}
           onChange={(ev, index) => {

@@ -4,3 +4,5 @@ export * from './gridOperatorOptions';
 export * from './getEnergyTypeImage';
 export * from './getMainFuelType';
 export * from './getBundleEnergyShares';
+export * from './prepareSubRegionsOptions';
+export * from './demandPeriod';
