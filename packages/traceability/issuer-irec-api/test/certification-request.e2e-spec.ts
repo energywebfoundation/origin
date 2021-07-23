@@ -225,7 +225,7 @@ describe('Certification Request tests', () => {
             });
     });
 
-    xit('should approve a private certification request', async () => {
+    it('should approve a private certification request', async () => {
         const {
             body: { id: certificationRequestId, isPrivate }
         } = await request(app.getHttpServer())

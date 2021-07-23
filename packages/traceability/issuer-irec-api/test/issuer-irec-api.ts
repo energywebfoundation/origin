@@ -20,7 +20,7 @@ import { FileService, UserService } from '@energyweb/origin-backend';
 import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 
-import { AppModule, BlockchainPropertiesService, entities, usedEntities } from '../src';
+import { AppModule, BlockchainPropertiesService, entities } from '../src';
 
 const web3 = 'http://localhost:8581';
 const provider = getProviderWithFallback(web3);
@@ -155,7 +155,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [...entities, ...usedEntities],
+                entities,
                 logging: ['info'],
                 keepConnectionAlive: true
             }),
