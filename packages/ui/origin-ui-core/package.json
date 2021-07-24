@@ -76,9 +76,9 @@
     },
     "devDependencies": {
         "@babel/core": "7.14.8",
-        "@storybook/addon-actions": "6.3.4",
-        "@storybook/addon-essentials": "6.3.4",
-        "@storybook/addon-links": "6.3.4",
+        "@storybook/addon-actions": "6.3.5",
+        "@storybook/addon-essentials": "6.3.5",
+        "@storybook/addon-links": "6.3.5",
         "@storybook/react": "6.3.5",
         "@svgr/webpack": "5.5.0",
         "@testing-library/react": "11.2.7",
