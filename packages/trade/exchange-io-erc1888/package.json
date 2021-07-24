@@ -54,7 +54,7 @@
         "@types/supertest": "2.0.11",
         "@types/superagent": "4.1.12",
         "class-validator": "0.13.1",
-        "eslint-plugin-jest": "24.3.6",
+        "eslint-plugin-jest": "24.4.0",
         "jest": "27.0.6",
         "polly-js": "1.8.2",
         "prettier": "2.3.2",
