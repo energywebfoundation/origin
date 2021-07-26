@@ -41,7 +41,6 @@ export const SingleColumnForm: TSingleColumnForm = ({
         (field) =>
           (field.select && (
             <FormSelect
-              disable={editDisabled || field.frozen || processing}
               key={field.label}
               field={field}
               control={control}

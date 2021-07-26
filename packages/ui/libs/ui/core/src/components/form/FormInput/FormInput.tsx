@@ -19,7 +19,7 @@ export interface FormInputProps<FormValues> extends BaseTextFieldProps {
   errorExists: boolean;
   errorText: string;
   isDirty: boolean;
-  disabled: boolean;
+  disabled?: boolean;
   variant?: 'standard' | 'outlined' | 'filled';
 }
 
@@ -35,7 +35,7 @@ export const FormInput: TFormInput = memo(
     errorText,
     isDirty,
     variant,
-    disabled,
+    disabled = false,
     ...rest
   }) => {
     const { ref, name, onBlur, onChange } = register(field.name as any);

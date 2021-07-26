@@ -14,7 +14,6 @@ export interface FormSelectProps<FormValuesType> {
   control: Control<FormValuesType>;
   errorExists: boolean;
   errorText: string;
-  disable: boolean;
   variant?: 'standard' | 'outlined' | 'filled';
 }
 
