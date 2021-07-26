@@ -36,19 +36,15 @@ export const useApiBuyDirectHandler = (
       {
         onSuccess: () => {
           showNotification(
-            t(
-              'exchange.viewMarket.notifications.buyDirectSuccess',
-              NotificationTypeEnum.Success
-            )
+            t('exchange.viewMarket.notifications.buyDirectSuccess'),
+            NotificationTypeEnum.Success
           );
           closeModal();
         },
         onError: () => {
           showNotification(
-            t(
-              'exchange.viewMarket.notifications.buyDirectError',
-              NotificationTypeEnum.Error
-            )
+            t('exchange.viewMarket.notifications.buyDirectError'),
+            NotificationTypeEnum.Error
           );
           closeModal();
         },
