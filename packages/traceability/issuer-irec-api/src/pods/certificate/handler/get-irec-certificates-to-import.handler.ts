@@ -7,7 +7,6 @@ import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-a
 import { GetIrecCertificatesToImportCommand } from '../command';
 import { FullCertificationRequestDTO } from '../../certification-request';
 import { IrecAccountItemDto } from '../dto';
-import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 
 @CommandHandler(GetIrecCertificatesToImportCommand)
 export class GetIrecCertificatesToImportHandler
@@ -16,18 +15,16 @@ export class GetIrecCertificatesToImportHandler
     constructor(
         private readonly queryBus: QueryBus,
         @Inject(IREC_SERVICE)
-        private readonly irecService: IrecService,
-        private readonly deviceRegistryService: DeviceRegistryService
+        private readonly irecService: IrecService
     ) {}
 
     async execute({ user }: GetIrecCertificatesToImportCommand): Promise<IrecAccountItemDto[]> {
         const irecCertificates = await this.irecService.getCertificates(user);
-        const devices = await this.deviceRegistryService.find({ where: { owner: user.ownerId } });
 
         const certificationRequests = await this.queryBus.execute<
             GetAllCertificationRequestsQuery,
             FullCertificationRequestDTO[]
-        >(new GetAllCertificationRequestsQuery({ deviceIds: devices.map((d) => d.id) }));
+        >(new GetAllCertificationRequestsQuery({ deviceIds: [] }));
 
         return irecCertificates.filter((issue) => {
             return !certificationRequests.some((cr) => issue.asset === cr.irecAssetId);

@@ -1,17 +1,12 @@
 import { CommandBus, CommandHandler, EventBus, ICommandHandler, QueryBus } from '@nestjs/cqrs';
-import { BadRequestException, Inject, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Inject } from '@nestjs/common';
 
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 import { UserService } from '@energyweb/origin-backend';
 
 import { ImportIrecCertificateCommand } from '../command';
-import { IrecCertificateImportFailedEvent } from '../event';
-import {
-    ApproveCertificationRequestCommand,
-    CreateCertificationRequestCommand
-} from '@energyweb/issuer-api';
-import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
+
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IrecCertificationRequest } from '../../certification-request';
@@ -25,7 +20,6 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly irecDeviceService: DeviceService,
-        private readonly deviceRegistryService: DeviceRegistryService,
         private readonly userService: UserService,
         @InjectRepository(IrecCertificationRequest)
         private readonly irecCertificationRequestRepository: Repository<IrecCertificationRequest>
@@ -50,50 +44,50 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
         if (!irecDevice || String(irecDevice.ownerId) !== String(user.ownerId)) {
             throw new BadRequestException('Unknown IREC device');
         }
-
-        const [originDevice] = await this.deviceRegistryService.find({
-            where: { externalRegistryId: irecDevice.id }
-        });
-        if (!originDevice) {
-            throw new BadRequestException('Unknown IREC device');
-        }
-
-        const platformAdmin = await this.userService.getPlatformAdmin();
-        const transaction = await this.irecService.transferCertificate(
-            user,
-            platformAdmin.organization.id,
-            certificateToImport.assetId
-        );
-
-        if (!transaction) {
-            this.eventBus.publish(
-                new IrecCertificateImportFailedEvent(user, certificateToImport.assetId)
-            );
-            throw new InternalServerErrorException('IREC API refuses to transfer certificate');
-        }
-
-        const certificationRequest = await this.commandBus.execute(
-            new CreateCertificationRequestCommand(
-                user.blockchainAccountAddress,
-                String(irecCertificate.volume * 1e6),
-                new Date(irecCertificate.startDate).getTime() / 1000,
-                new Date(irecCertificate.endDate).getTime() / 1000,
-                originDevice.id,
-                [],
-                true
-            )
-        );
-
-        await this.irecCertificationRequestRepository.save(
-            this.irecCertificationRequestRepository.create({
-                certificationRequestId: certificationRequest.id,
-                irecAssetId: certificateToImport.assetId,
-                organizationId: String(user.organizationId)
-            })
-        );
-
-        await this.commandBus.execute(
-            new ApproveCertificationRequestCommand(certificationRequest.id)
-        );
+        //
+        // const [originDevice] = await this.deviceRegistryService.find({
+        //     where: { externalRegistryId: irecDevice.id }
+        // });
+        // if (!originDevice) {
+        //     throw new BadRequestException('Unknown IREC device');
+        // }
+        //
+        // const platformAdmin = await this.userService.getPlatformAdmin();
+        // const transaction = await this.irecService.transferCertificate(
+        //     user,
+        //     platformAdmin.organization.id,
+        //     certificateToImport.assetId
+        // );
+        //
+        // if (!transaction) {
+        //     this.eventBus.publish(
+        //         new IrecCertificateImportFailedEvent(user, certificateToImport.assetId)
+        //     );
+        //     throw new InternalServerErrorException('IREC API refuses to transfer certificate');
+        // }
+        //
+        // const certificationRequest = await this.commandBus.execute(
+        //     new CreateCertificationRequestCommand(
+        //         user.blockchainAccountAddress,
+        //         String(irecCertificate.volume * 1e6),
+        //         new Date(irecCertificate.startDate).getTime() / 1000,
+        //         new Date(irecCertificate.endDate).getTime() / 1000,
+        //         originDevice.id,
+        //         [],
+        //         true
+        //     )
+        // );
+        //
+        // await this.irecCertificationRequestRepository.save(
+        //     this.irecCertificationRequestRepository.create({
+        //         certificationRequestId: certificationRequest.id,
+        //         irecAssetId: certificateToImport.assetId,
+        //         organizationId: String(user.organizationId)
+        //     })
+        // );
+        //
+        // await this.commandBus.execute(
+        //     new ApproveCertificationRequestCommand(certificationRequest.id)
+        // );
     }
 }

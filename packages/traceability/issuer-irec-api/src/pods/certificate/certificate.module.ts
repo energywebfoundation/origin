@@ -10,7 +10,6 @@ import {
 } from '@energyweb/issuer-api';
 import { IrecModule } from '@energyweb/origin-organization-irec-api';
 import { DeviceModule } from '@energyweb/origin-device-registry-irec-local-api';
-import { DeviceRegistryModule } from '@energyweb/origin-device-registry-api';
 import { UserModule } from '@energyweb/origin-backend';
 
 import { CertificationRequestModule, IrecCertificationRequest } from '../certification-request';
@@ -23,7 +22,6 @@ import { CertificateHandlers } from './handler';
         TypeOrmModule.forFeature([Certificate, IrecCertificationRequest]),
         BlockchainPropertiesModule,
         IrecModule,
-        DeviceRegistryModule,
         DeviceModule,
         UserModule,
         forwardRef(() => CertificationRequestModule)

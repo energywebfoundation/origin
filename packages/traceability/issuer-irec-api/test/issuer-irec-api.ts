@@ -17,7 +17,6 @@ import {
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { FileService, UserService } from '@energyweb/origin-backend';
-import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 
 import { AppModule, BlockchainPropertiesService, entities } from '../src';
@@ -202,10 +201,6 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
                     active: true
                 }
             ]
-        })
-        .overrideProvider(DeviceRegistryService)
-        .useValue({
-            find: () => [{ id: 1, externalRegistryId: 1 }]
         })
         .compile();
 
