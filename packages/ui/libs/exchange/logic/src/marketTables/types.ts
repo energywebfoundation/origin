@@ -11,10 +11,12 @@ export type TUseSellOffersTableArgs = {
   asks: OrderBookOrderDTO[];
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
+  className: string;
   user: UserDTO;
+  onBuyClick: (id: OrderBookOrderDTO['id']) => void;
 };
 export type TFormatAsks = (
-  props: Omit<TUseSellOffersTableArgs, 'isLoading'> & {
+  props: Omit<TUseSellOffersTableArgs, 'isLoading' | 'className'> & {
     t: TFunction<'translation'>;
   }
 ) => TableRowData<OrderBookOrderDTO['id']>[];
@@ -28,9 +30,11 @@ export type TUseBuyOffersTableArgs = {
   bids: OrderBookOrderDTO[];
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
+  className: string;
+  user: UserDTO;
 };
 export type TFormatBids = (
-  props: Omit<TUseBuyOffersTableArgs, 'isLoading'>
+  props: Omit<TUseBuyOffersTableArgs, 'isLoading' | 'user' | 'className'>
 ) => TableRowData<OrderBookOrderDTO['id']>[];
 export type TUseBuyOffersTableLogic = (
   props: TUseBuyOffersTableArgs
@@ -42,9 +46,11 @@ export type TUseAsksTableArgs = {
   asks: OrderBookOrderDTO[];
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
+  className: string;
+  user: UserDTO;
 };
 export type TFormatAsksForTradingView = (
-  props: Omit<TUseAsksTableArgs, 'isLoading'>
+  props: Omit<TUseAsksTableArgs, 'isLoading' | 'user' | 'className'>
 ) => TableRowData<OrderBookOrderDTO['id']>[];
 export type TUseAsksTableLogic = (
   props: TUseAsksTableArgs
@@ -54,9 +60,11 @@ export type TUseBidsTableArgs = {
   bids: OrderBookOrderDTO[];
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
+  className: string;
+  user: UserDTO;
 };
 export type TFormatBidsForTradingView = (
-  props: Omit<TUseBidsTableArgs, 'isLoading'>
+  props: Omit<TUseBidsTableArgs, 'isLoading' | 'user' | 'className'>
 ) => TableRowData<OrderBookOrderDTO['id']>[];
 export type TUseBidsTableLogic = (
   props: TUseBidsTableArgs

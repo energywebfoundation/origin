@@ -6,15 +6,26 @@ import {
 import { Button } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { getEnergyTypeImage, getMainFuelType } from '../utils';
+import {
+  getEnergyTypeImage,
+  getMainFuelType,
+  getOwnedOrderStyles,
+} from '../utils';
 import { TFormatAsks, TUseSellOffersTableLogic } from './types';
 
-export const formatAsks: TFormatAsks = ({ t, asks, allFuelTypes, user }) => {
+export const formatAsks: TFormatAsks = ({
+  t,
+  asks,
+  allFuelTypes,
+  user,
+  onBuyClick,
+}) => {
   return asks?.map((ask) => {
     const fuelCode = ask.product.deviceType[0].split(';')[0];
     const { mainType } = getMainFuelType(fuelCode, allFuelTypes);
     const Icon = getEnergyTypeImage(mainType as EnergyTypeEnum, true);
     const buyText = t('exchange.viewMarket.buy');
+
     return {
       id: ask.id,
       fuelType: <Icon style={{ width: 20 }} />,
@@ -25,7 +36,7 @@ export const formatAsks: TFormatAsks = ({ t, asks, allFuelTypes, user }) => {
       generationEnd: formatDate(ask.product.generationTo),
       buyDirect:
         user?.id?.toString() !== ask.userId ? (
-          <Button variant="contained" onClick={() => console.log(ask.id)}>
+          <Button variant="contained" onClick={() => onBuyClick(ask.id)}>
             {buyText}
           </Button>
         ) : null,
@@ -38,6 +49,8 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
   allFuelTypes,
   isLoading,
   user,
+  className,
+  onBuyClick,
 }) => {
   const { t } = useTranslation();
   return {
@@ -50,7 +63,8 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
       generationEnd: t('exchange.viewMarket.generationEnd'),
       buyDirect: t('exchange.viewMarket.buyDirect'),
     },
+    getCustomRowClassName: getOwnedOrderStyles(asks, user?.id, className),
     loading: isLoading,
-    data: formatAsks({ t, asks, user, allFuelTypes }) ?? [],
+    data: formatAsks({ t, asks, user, allFuelTypes, onBuyClick }) ?? [],
   };
 };

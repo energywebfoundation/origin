@@ -1,10 +1,14 @@
-import { useCachedAllFuelTypes } from '@energyweb/origin-ui-exchange-data';
+import {
+  useCachedAllFuelTypes,
+  useCachedUser,
+} from '@energyweb/origin-ui-exchange-data';
 import {
   useAsksTableLogic,
   useBidsTableLogic,
 } from '@energyweb/origin-ui-exchange-logic';
 import { useTranslation } from 'react-i18next';
 import { TradingViewProps } from './TradingView';
+import { useStyles } from './TradingView.styles';
 
 export const useTradingViewEffects = ({
   orderBookData,
@@ -12,16 +16,22 @@ export const useTradingViewEffects = ({
 }: TradingViewProps) => {
   const { t } = useTranslation();
   const allFuelTypes = useCachedAllFuelTypes();
+  const user = useCachedUser();
+  const classes = useStyles();
 
   const asksTableProps = useAsksTableLogic({
     asks: orderBookData.asks,
     isLoading,
     allFuelTypes,
+    user,
+    className: classes.owned,
   });
   const bidsTableProps = useBidsTableLogic({
     bids: orderBookData.bids,
     isLoading,
     allFuelTypes,
+    user,
+    className: classes.owned,
   });
 
   const asksTitle = t('exchange.viewMarket.asks');

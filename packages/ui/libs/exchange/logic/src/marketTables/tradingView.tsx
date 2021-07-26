@@ -2,7 +2,11 @@ import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { getEnergyTypeImage, getMainFuelType } from '../utils';
+import {
+  getEnergyTypeImage,
+  getMainFuelType,
+  getOwnedOrderStyles,
+} from '../utils';
 import {
   TFormatAsksForTradingView,
   TFormatBidsForTradingView,
@@ -32,6 +36,8 @@ export const useAsksTableLogic: TUseAsksTableLogic = ({
   asks,
   allFuelTypes,
   isLoading,
+  user,
+  className,
 }) => {
   const { t } = useTranslation();
   return {
@@ -41,6 +47,7 @@ export const useAsksTableLogic: TUseAsksTableLogic = ({
       price: t('exchange.viewMarket.price'),
     },
     loading: isLoading,
+    getCustomRowClassName: getOwnedOrderStyles(asks, user?.id, className),
     data: formatAsksForTradingView({ asks, allFuelTypes }) ?? [],
   };
 };
@@ -75,6 +82,8 @@ export const useBidsTableLogic: TUseBidsTableLogic = ({
   bids,
   allFuelTypes,
   isLoading,
+  user,
+  className,
 }) => {
   const { t } = useTranslation();
   return {
@@ -84,6 +93,7 @@ export const useBidsTableLogic: TUseBidsTableLogic = ({
       price: t('exchange.viewMarket.price'),
     },
     loading: isLoading,
+    getCustomRowClassName: getOwnedOrderStyles(bids, user?.id, className),
     data: formatBidsForTradingView({ bids, allFuelTypes }) ?? [],
   };
 };

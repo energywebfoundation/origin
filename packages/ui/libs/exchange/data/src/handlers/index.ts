@@ -5,3 +5,4 @@ export * from './updateSupply';
 export * from './createBid';
 export * from './demandTotalVolume';
 export * from './createDemand';
+export * from './buyDirect';

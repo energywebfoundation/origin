@@ -5,6 +5,8 @@ export const useStyles = makeStyles((theme) => ({
   container: {
     padding: 10,
     backgroundColor: LightenColor(theme.palette.background.paper, 0.5),
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   iconPopover: {
     marginLeft: 20,

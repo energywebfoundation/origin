@@ -6,7 +6,11 @@ import {
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { getEnergyTypeImage, getMainFuelType } from '../utils';
+import {
+  getEnergyTypeImage,
+  getMainFuelType,
+  getOwnedOrderStyles,
+} from '../utils';
 import { TFormatBids, TUseBuyOffersTableLogic } from './types';
 
 export const formatBids: TFormatBids = ({ bids, allFuelTypes }) => {
@@ -46,6 +50,8 @@ export const useBuyOffersTableLogic: TUseBuyOffersTableLogic = ({
   bids,
   allFuelTypes,
   isLoading,
+  user,
+  className,
 }) => {
   const { t } = useTranslation();
   return {
@@ -58,6 +64,7 @@ export const useBuyOffersTableLogic: TUseBuyOffersTableLogic = ({
       generationEnd: t('exchange.viewMarket.generationEnd'),
     },
     loading: isLoading,
+    getCustomRowClassName: getOwnedOrderStyles(bids, user?.id, className),
     data: formatBids({ bids, allFuelTypes }) ?? [],
   };
 };
