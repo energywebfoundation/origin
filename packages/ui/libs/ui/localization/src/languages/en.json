@@ -39,7 +39,8 @@
         "invitations": "Invitations",
         "invite": "Invite",
         "all": "All Organizations",
-        "registerIRec": "Register I-REC"
+        "registerIRec": "Register I-REC",
+        "beneficiaries": "Beneficiaries"
       },
       "account": {
         "sectionTitle": "Account",
@@ -85,6 +86,13 @@
           "registeredFailure": "Organization could not be created.",
           "unauthorized": "Unauthorized"
         }
+      },
+      "beneficiaries": {
+        "formTitle": "Create beneficiary",
+        "name": "Name",
+        "country": "Country",
+        "location": "Location",
+        "create": "Create"
       },
       "view": {
         "regular": {
