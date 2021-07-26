@@ -532,6 +532,50 @@
       }
     },
     "exchange": {
+      "viewMarket": {
+        "market": "Market",
+        "type": "Type",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "regions": "Regions",
+        "gridOperator": "Grid Operator",
+        "subregions": "Subregions",
+        "oneTimePurchase": "One time purchase",
+        "repeatedPurchase": "Repeated purchase",
+        "generationFrom": "Generation Start Date",
+        "generationTo": "Generation End Date",
+        "energy": "Energy",
+        "price": "Price",
+        "placeBidButton": "Place bid order",
+        "period": "Period",
+        "volume": "Volume",
+        "demandStartDate": "Demand start date",
+        "demandEndDate": "Demand end date",
+        "totalVolume": "Total Volume",
+        "placeDemandButton": "Place demand order",
+        "sellOffers": "Sell offers",
+        "buyOffers": "Buy offers",
+        "generationStart": "Generation Start",
+        "generationEnd": "Generation End",
+        "buyDirect": "Direct buy",
+        "buy": "Buy",
+        "tradingView": "Trading view",
+        "matching": "Matching",
+        "asks": "Asks",
+        "bids": "Bids",
+        "popover": {
+          "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",
+          "asksFurtherInstructions": "To see all available asks, remove the set market filters. To see a list of your active asks go to \"My Orders\".",
+          "bidsDescription": "Below you see all the buy offers that are matching the certificate criteria you defined in the market filter.",
+          "bidsFurtherInstructions": "To see more specific bids, set the appropriate market filters. To see a list of your active bids go to \"My Orders\"."
+        },
+        "notifications": {
+          "createBidSuccess": "Bid successfully placed",
+          "createBidError": "Error while creating bid",
+          "createDemandSuccess": "Demand successfully placed",
+          "creteDemandError": "Error while creating demand"
+        }
+      },
       "allBundles": {
         "tableTitle": "All bundles",
         "totalEnergy": "Total energy",
@@ -603,6 +647,18 @@
           "removeSupplySuccess": "Supply removed successfully",
           "removeSupplyError": "Error while removing supply",
           "missingSupplyError": "This device is missing supply"
+        }
+      },
+      "properties": {
+        "period": {
+          "daily": "Daily",
+          "weekly": "Weekly",
+          "monthly": "Monthly",
+          "yearly": "Yearly",
+          "day": "Day",
+          "week": "Week",
+          "month": "Month",
+          "year": "Year"
         }
       }
     },
