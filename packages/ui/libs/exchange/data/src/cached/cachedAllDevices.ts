@@ -7,7 +7,7 @@ import {
   PublicDeviceDTO,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { useQueryClient } from 'react-query';
-import { composePublicDevices, ComposedPublicDevice } from './utils';
+import { composePublicDevices, ComposedPublicDevice } from '../utils';
 
 export const useCachedAllDevices = () => {
   const queryClient = useQueryClient();
