@@ -282,60 +282,6 @@ describe('Certificate tests', () => {
         ).to.be.true;
     });
 
-    it('should create a private certificate', async () => {
-        const {
-            body: { id }
-        } = await request(app.getHttpServer())
-            .post('/irec/certificate')
-            .set({ 'test-user': TestUser.Issuer })
-            .send({
-                ...certificateTestData,
-                isPrivate: true
-            })
-            .expect(HttpStatus.CREATED);
-
-        const certificate = await getCertificate(id, TestUser.OrganizationDeviceManager);
-
-        expect(certificate.isOwned).to.be.true;
-        expect(certificate.energy.privateVolume).to.equal(certificateTestData.energy);
-        expect(certificate.energy.publicVolume).to.equal('0');
-    });
-
-    it('should transfer a private certificate', async () => {
-        const {
-            body: { id }
-        } = await request(app.getHttpServer())
-            .post('/irec/certificate')
-            .set({ 'test-user': TestUser.Issuer })
-            .send({
-                ...certificateTestData,
-                isPrivate: true
-            })
-            .expect(HttpStatus.CREATED);
-
-        const {
-            body: { success: transferSuccess }
-        } = await request(app.getHttpServer())
-            .put(`/irec/certificate/${id}/transfer`)
-            .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
-                amount: certificateTestData.energy
-            })
-            .expect(HttpStatus.OK);
-
-        expect(transferSuccess).to.be.true;
-
-        const {
-            body: { energy: receiverEnergy }
-        } = await request(app.getHttpServer())
-            .get(`/irec/certificate/${id}`)
-            .set({ 'test-user': TestUser.OtherOrganizationDeviceManager })
-            .expect(HttpStatus.OK);
-
-        expect(receiverEnergy.privateVolume).to.equal(certificateTestData.energy);
-    });
-
     it('should get all certificate events', async () => {
         const {
             body: { id }

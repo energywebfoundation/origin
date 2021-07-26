@@ -23,7 +23,7 @@
         "run:exchange-ui": "lerna run start --scope @energyweb/exchange-ui-core --stream",
         "run:ui": "lerna run start --scope @energyweb/origin-ui --stream",
         "run:irec-ui": "lerna run start --scope @energyweb/origin-ui-irec-core --stream",
-        "run:ganache": "ganache-cli -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
+        "run:ganache": "npx ganache-cli -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
         "run:simulator": "lerna run start --scope @energyweb/solar-simulator --stream",
         "run:mock-data": "lerna run deploy-mock-readings --scope @energyweb/solar-simulator --stream",
         "cypress:open": "concurrently \"yarn run:origin\" \"wait-on tcp:3030 && lerna run cypress:open --scope @energyweb/origin-ui --stream\"",
