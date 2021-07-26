@@ -5,6 +5,7 @@ import {
     Account,
     AccountItem,
     AccountType,
+    ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
     Device,
@@ -14,7 +15,7 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
-    Transaction,
+    TransactionResult,
     TransactionType
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
@@ -22,6 +23,8 @@ import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-co
 import { ReadStream } from 'fs';
 import { CreateConnectionDTO } from './dto';
 import { IIrecService } from './irec.service';
+import { ConnectionDTO } from '../connection';
+import { IRECAccountType } from '../registration';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
@@ -87,6 +90,45 @@ export class IrecMockService implements IIrecService {
             status: IssuanceStatus.Approved
         }
     ];
+
+    public async getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO> {
+        return {
+            accessToken: 'access-token',
+            refreshToken: 'refresh-token',
+            expiryDate: new Date(),
+            userName: 'irecUser',
+            registration: {
+                id: '123',
+                owner: '234',
+                accountType: IRECAccountType.Both,
+                headquarterCountry: '',
+                registrationYear: 2020,
+                employeesNumber: '1-50',
+                shareholders: '',
+                website: 'https://example.com',
+                activeCountries: ['UK'],
+                mainBusiness: '',
+                ceoName: '',
+                ceoPassportNumber: '',
+                balanceSheetTotal: '',
+                subsidiaries: '',
+                primaryContactOrganizationName: '',
+                primaryContactOrganizationAddress: '',
+                primaryContactOrganizationPostalCode: '',
+                primaryContactOrganizationCountry: '',
+                primaryContactName: '',
+                primaryContactEmail: '',
+                primaryContactPhoneNumber: '',
+                primaryContactFax: '',
+                leadUserTitle: '',
+                leadUserFirstName: '',
+                leadUserLastName: '',
+                leadUserEmail: 'ceo@example.com',
+                leadUserPhoneNumber: '',
+                leadUserFax: ''
+            }
+        };
+    }
 
     async login({
         userName,
@@ -223,8 +265,9 @@ export class IrecMockService implements IIrecService {
         user: UserIdentifier,
         issueRequestCode: string,
         issuerAccountCode: string
-    ): Promise<Transaction> {
+    ): Promise<ApproveTransaction> {
         return {
+            asset: 'TESTACC-0202-0202-0202-02',
             code: `TRANSACTION-${randomString()}`,
             volume: 1000,
             notes: '',
@@ -236,7 +279,48 @@ export class IrecMockService implements IIrecService {
     }
 
     async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
-        return [];
+        return [
+            {
+                code: 'PARTICIPANTUSER001-2020-0101-2011-00-1',
+                volume: 1000,
+                startDate: '2019-01-01',
+                endDate: '2019-12-31',
+                fuelType: {
+                    code: 'ES200',
+                    description: 'Wind'
+                },
+                deviceType: {
+                    code: 'T020001',
+                    description: 'Wind: Onshore'
+                },
+                device: {
+                    code: 'mockDeviceCode',
+                    name: 'mockDeviceName'
+                },
+                deviceSupported: true,
+                tagged: false,
+                co2Produced: 0,
+                country: 'GB',
+                product: 'IREC(E)',
+                asset: 'test-asset-id'
+            }
+        ];
+    }
+
+    async transferCertificate(
+        fromUser: UserIdentifier,
+        toUser: UserIdentifier,
+        assetId: string
+    ): Promise<TransactionResult> {
+        return {
+            code: 'transactioncode',
+            volume: 123,
+            notes: '',
+            time: new Date(),
+            transactionType: TransactionType.Transfer,
+            sender: 'sender-trade-acc',
+            recipient: 'recepient-trade-acc'
+        };
     }
 
     async approveDevice(user: UserIdentifier, code: string): Promise<Device> {

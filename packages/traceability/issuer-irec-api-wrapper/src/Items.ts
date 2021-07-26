@@ -55,4 +55,6 @@ export class AccountItem {
     country: string;
 
     product: string;
+
+    asset: string;
 }

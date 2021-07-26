@@ -78,16 +78,11 @@ export class Transaction {
     transactionType: TransactionType;
 }
 
-export class TransactionResult extends Transaction {
-    @Expose({ name: 'type', toClassOnly: true })
-    transactionType: TransactionType;
-
-    @Expose({ name: 'source_account', toClassOnly: true })
-    sender: string;
-
-    @Expose({ name: 'destination_account', toClassOnly: true })
-    recipient: string;
+export class ApproveTransaction extends Transaction {
+    asset: string;
 }
+
+export class TransactionResult extends Transaction {}
 
 export class RedeemBeneficiary {
     id: number;

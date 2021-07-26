@@ -1,33 +1,38 @@
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 import {
+    Body,
     Controller,
     Get,
     HttpStatus,
+    Post,
     UseGuards,
     UseInterceptors,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 import {
+    ActiveOrganizationGuard,
     ActiveUserGuard,
     ExceptionInterceptor,
+    Roles,
+    RolesGuard,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
-import { CertificateController } from '@energyweb/issuer-api';
-import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { CertificateController, SuccessResponseDTO } from '@energyweb/issuer-api';
+import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 
-import { GetIrecCertificatesToImportCommand } from './command';
-import { IrecAccountItemDto } from './dto';
+import { GetIrecCertificatesToImportCommand, ImportIrecCertificateCommand } from './command';
+import { ImportIrecCertificateDTO, IrecAccountItemDto } from './dto';
 
 @ApiTags('irec-certificates')
 @ApiBearerAuth('access-token')
-@Controller('/certificate')
+@Controller('/irec/certificate')
 @UseInterceptors(ExceptionInterceptor)
 @UsePipes(ValidationPipe)
 export class IrecCertificateController extends CertificateController {
-    @Get('/irec-certificates-to-import')
+    @Get('/certificates-to-import')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({
         status: HttpStatus.OK,
@@ -38,5 +43,23 @@ export class IrecCertificateController extends CertificateController {
         @UserDecorator() user: ILoggedInUser
     ): Promise<IrecAccountItemDto[]> {
         return await this.commandBus.execute(new GetIrecCertificatesToImportCommand(user));
+    }
+
+    @Post('/import-certificate')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, ActiveOrganizationGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager)
+    @ApiBody({ type: ImportIrecCertificateDTO })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: SuccessResponseDTO,
+        description: 'Imports a certificate from IREC'
+    })
+    async importIrecDevice(
+        @Body() certificateToImport: ImportIrecCertificateDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
+    ): Promise<SuccessResponseDTO> {
+        return await this.commandBus.execute(
+            new ImportIrecCertificateCommand(loggedInUser, certificateToImport)
+        );
     }
 }

@@ -34,7 +34,7 @@ const claimData: IClaimData = {
     location: 'Random address 123, Somewhere',
     countryCode: 'DE',
     periodStartDate: moment('2020-01-01').toISOString(),
-    periodEndDate: moment('2020-02-1').toISOString(),
+    periodEndDate: moment('2020-02-01').toISOString(),
     purpose: 'Some random purpose'
 };
 

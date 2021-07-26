@@ -18,6 +18,9 @@ export class ConnectionDTO {
     @ValidateNested()
     registration: RegistrationDTO;
 
+    @ApiProperty({ type: String })
+    userName: string;
+
     public static wrap(connection: Connection): ConnectionDTO {
         return plainToClass(ConnectionDTO, connection);
     }
