@@ -573,7 +573,15 @@
           "createBidSuccess": "Bid successfully placed",
           "createBidError": "Error while creating bid",
           "createDemandSuccess": "Demand successfully placed",
-          "creteDemandError": "Error while creating demand"
+          "creteDemandError": "Error while creating demand",
+          "buyDirectSuccess": "Direct buy succeed",
+          "buyDirectError": "Direct buy failed"
+        },
+        "modals": {
+          "buyDirect": {
+            "title": "Direct buy",
+            "buy": "Buy"
+          }
         }
       },
       "allBundles": {
@@ -621,6 +629,7 @@
         }
       },
       "supply": {
+        "tableTitle": "Supply",
         "fuelType": "Fuel Type",
         "facilityName": "Facility Name",
         "price": "Price",
