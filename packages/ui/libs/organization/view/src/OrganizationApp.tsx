@@ -11,6 +11,7 @@ import {
   MembersPage,
   InvitePage,
   AllOrganizationsPage,
+  BeneficiariesPage,
 } from './pages';
 
 export const OrganizationApp: FC = () => {
@@ -24,6 +25,7 @@ export const OrganizationApp: FC = () => {
         <Route path="all" element={<AllOrganizationsPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="register-irec" element={<RegisterIRecPage />} />
+        <Route path="beneficiaries" element={<BeneficiariesPage />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>

@@ -5,3 +5,4 @@ export * from './InvitationsPage';
 export * from './MembersPage';
 export * from './InvitePage';
 export * from './AllOrganizationsPage';
+export * from './BeneficiariesPage';
