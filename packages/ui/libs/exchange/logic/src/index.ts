@@ -10,3 +10,4 @@ export * from './myBundles';
 export * from './oneTimePurchase';
 export * from './repeatedPurchase';
 export * from './marketTables';
+export * from './myOrders';

@@ -9,6 +9,7 @@ type TGetExchangeMenuArgs = {
   showCreateBundle: boolean;
   showSupply: boolean;
   showMyBundles: boolean;
+  showMyOrders: boolean;
 };
 
 type TGetExchangeMenu = (args?: TGetExchangeMenuArgs) => TMenuSection;
@@ -20,6 +21,7 @@ export const getExchangeMenu: TGetExchangeMenu = ({
   showViewMarket,
   showCreateBundle,
   showSupply,
+  showMyOrders,
 }) => {
   const menuList = [
     {
@@ -38,14 +40,19 @@ export const getExchangeMenu: TGetExchangeMenu = ({
       show: showCreateBundle,
     },
     {
-      url: 'supply',
-      label: t('navigation.exchange.supply'),
-      show: showSupply,
-    },
-    {
       url: 'my-bundles',
       label: t('navigation.exchange.myBundles'),
       show: showCreateBundle,
+    },
+    {
+      url: 'my-orders',
+      label: t('navigation.exchange.myOrders'),
+      show: showMyOrders,
+    },
+    {
+      url: 'supply',
+      label: t('navigation.exchange.supply'),
+      show: showSupply,
     },
   ];
 
