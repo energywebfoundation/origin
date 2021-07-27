@@ -33,7 +33,11 @@ export class AddOrganizationBeneficiaryHandler
         const newBeneficiary = this.repository.create({
             irecBeneficiaryId: beneficiary.irecBeneficiaryId,
             organizationId: beneficiary.organizationId,
-            ownerId: ownerId
+            ownerId: ownerId,
+            name: beneficiary.name,
+            countryCode: beneficiary.countryCode,
+            location: beneficiary.location,
+            active: true
         });
 
         const storedBeneficiary = await this.repository.save(newBeneficiary);

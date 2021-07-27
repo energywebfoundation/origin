@@ -27,13 +27,19 @@ import {
     ReservationItem,
     TransactionResult
 } from '@energyweb/issuer-irec-api-wrapper';
-import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
 
 import { CreateConnectionDTO } from './dto';
 import { ConnectionDTO, GetConnectionCommand, RefreshTokensCommand } from '../connection';
 import { ReadStream } from 'fs';
 
 export type UserIdentifier = ILoggedInUser | string | number;
+
+export interface ICreateBeneficiary {
+    name: string;
+    countryCode: string;
+    location: string;
+}
 
 export interface IIrecService {
     getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO>;
@@ -45,10 +51,7 @@ export interface IIrecService {
         clientSecret
     }: CreateConnectionDTO): Promise<AccessTokens>;
 
-    createBeneficiary(
-        user: UserIdentifier,
-        organization: IPublicOrganization
-    ): Promise<Beneficiary>;
+    createBeneficiary(user: UserIdentifier, beneficiary: ICreateBeneficiary): Promise<Beneficiary>;
 
     updateBeneficiary(
         user: UserIdentifier,
@@ -147,13 +150,13 @@ export class IrecService implements IIrecService {
 
     async createBeneficiary(
         user: UserIdentifier,
-        organization: IPublicOrganization
+        beneficiary: ICreateBeneficiary
     ): Promise<Beneficiary> {
         const irecClient = await this.getIrecClient(user);
         return await irecClient.beneficiary.create({
-            name: organization.name,
-            countryCode: organization.country,
-            location: `${organization.city}. ${organization.address}`,
+            name: beneficiary.name,
+            countryCode: beneficiary.countryCode,
+            location: beneficiary.location,
             active: true
         });
     }

@@ -16,13 +16,13 @@ import { CommandBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { BeneficiaryDTO } from './dto/beneficiary.dto';
 import {
     AddOrganizationBeneficiaryCommand,
+    CreateLocalBeneficiaryCommand,
     GetBeneficiariesCommand,
     RemoveOrganizationBeneficiaryCommand
 } from './commands';
-import { CreateBeneficiaryDTO } from './dto/create-beneficiary.dto';
+import { AddBeneficiaryDto, BeneficiaryDTO, CreateBeneficiaryDto } from './dto';
 
 @ApiTags('irec-beneficiary')
 @ApiBearerAuth('access-token')
@@ -73,20 +73,37 @@ export class BeneficiaryController {
         );
     }
 
-    @Post()
+    @Post('/company')
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin)
-    @ApiBody({ type: CreateBeneficiaryDTO })
+    @ApiBody({ type: AddBeneficiaryDto })
     @ApiCreatedResponse({
         type: BeneficiaryDTO,
         description: 'Adds beneficiary to organizations beneficiary list'
     })
     public async addOrganizationBeneficiary(
         @UserDecorator() user: ILoggedInUser,
-        @Body() { irecBeneficiaryId }: CreateBeneficiaryDTO
+        @Body() { irecBeneficiaryId }: AddBeneficiaryDto
     ): Promise<BeneficiaryDTO> {
         return this.commandBus.execute(
             new AddOrganizationBeneficiaryCommand(user.organizationId, irecBeneficiaryId)
+        );
+    }
+
+    @Post()
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @ApiBody({ type: CreateBeneficiaryDto })
+    @ApiCreatedResponse({
+        type: BeneficiaryDTO,
+        description: 'Creates new beneficiary and adds it to organization beneficiary list'
+    })
+    public async createBeneficiary(
+        @UserDecorator() user: ILoggedInUser,
+        @Body() body: CreateBeneficiaryDto
+    ): Promise<BeneficiaryDTO> {
+        return this.commandBus.execute(
+            new CreateLocalBeneficiaryCommand(user.organizationId, body)
         );
     }
 }

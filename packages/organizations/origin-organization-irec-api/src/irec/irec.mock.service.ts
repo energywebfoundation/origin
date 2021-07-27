@@ -18,11 +18,11 @@ import {
     TransactionResult,
     TransactionType
 } from '@energyweb/issuer-irec-api-wrapper';
-import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
 
 import { ReadStream } from 'fs';
 import { CreateConnectionDTO } from './dto';
-import { IIrecService } from './irec.service';
+import { ICreateBeneficiary, IIrecService } from './irec.service';
 import { ConnectionDTO } from '../connection';
 import { IRECAccountType } from '../registration';
 
@@ -145,13 +145,13 @@ export class IrecMockService implements IIrecService {
 
     async createBeneficiary(
         user: UserIdentifier,
-        organization: IPublicOrganization
+        beneficiary: ICreateBeneficiary
     ): Promise<Beneficiary> {
         return {
             id: 1,
-            name: organization.name,
-            countryCode: organization.country,
-            location: `${organization.city}, ${organization.address}`,
+            name: beneficiary.name,
+            countryCode: beneficiary.countryCode,
+            location: beneficiary.location,
             active: true
         };
     }
