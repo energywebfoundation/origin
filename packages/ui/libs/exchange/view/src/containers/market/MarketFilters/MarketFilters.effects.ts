@@ -2,11 +2,14 @@ import { FormSelectOption } from '@energyweb/origin-ui-core';
 import {
   useAllDeviceFuelTypes,
   useAllDeviceTypes,
+  useApiRegionsConfiguration,
 } from '@energyweb/origin-ui-exchange-data';
 import {
   useDeviceTypeFilterLogic,
   useFuelTypeFilterLogic,
   useGridOperatorFilterLogic,
+  useRegionsFilterLogic,
+  useSubRegionsFilterLogic,
 } from '@energyweb/origin-ui-exchange-logic';
 import { MarketFilterActionEnum } from '../../../pages';
 import { MarketFiltersProps } from './MarketFilters';
@@ -26,7 +29,6 @@ export const useMarketFiltersEffects = ({
       payload: newValues,
     });
   };
-
   const fuelTypeAutocompleteProps = useFuelTypeFilterLogic(
     allFuelTypes,
     state.fuelType,
@@ -39,8 +41,8 @@ export const useMarketFiltersEffects = ({
       payload: newValues,
     });
   };
-
   const deviceTypeAutocompleteProps = useDeviceTypeFilterLogic(
+    allFuelTypes,
     allDeviceTypes,
     state.deviceType,
     handleDeviceTypeChange,
@@ -53,18 +55,51 @@ export const useMarketFiltersEffects = ({
       payload: newValues,
     });
   };
-
   const gridOperatorAutocompleteProps = useGridOperatorFilterLogic(
     state.gridOperator,
     handleGridOperatorChange
   );
 
-  const isLoading = areFuelTypesLoading || areDeviceTypesLoading;
+  const {
+    allRegions,
+    country,
+    isLoading: areRegionsLoading,
+  } = useApiRegionsConfiguration();
+  const handleRegionChange = (newValues: FormSelectOption[]) => {
+    dispatch({
+      type: MarketFilterActionEnum.SET_REGIONS,
+      payload: newValues,
+    });
+  };
+  const regionsAutocompleteProps = useRegionsFilterLogic(
+    state.regions,
+    handleRegionChange,
+    allRegions
+  );
+
+  const handleSubRegionChange = (newValues: FormSelectOption[]) => {
+    dispatch({
+      type: MarketFilterActionEnum.SET_SUBREGIONS,
+      payload: newValues,
+    });
+  };
+  const subRegionsAutocompleteProps = useSubRegionsFilterLogic(
+    state.subregions,
+    handleSubRegionChange,
+    country,
+    allRegions,
+    state.regions
+  );
+
+  const isLoading =
+    areFuelTypesLoading || areDeviceTypesLoading || areRegionsLoading;
 
   return {
     fuelTypeAutocompleteProps,
     deviceTypeAutocompleteProps,
     gridOperatorAutocompleteProps,
+    regionsAutocompleteProps,
+    subRegionsAutocompleteProps,
     isLoading,
   };
 };

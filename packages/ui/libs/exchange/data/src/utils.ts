@@ -5,6 +5,10 @@ import {
   DeviceDTO as IRecMyDeviceDTO,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
+import {
+  Filter,
+  ProductFilterDTO,
+} from '@energyweb/exchange-irec-react-query-client';
 
 export type ComposedDevice = {
   id: string;
@@ -78,3 +82,37 @@ export function composeMyDevices(
   }
   return composedResult;
 }
+
+export type OrderBookFilters = {
+  deviceType: string[];
+  gridOperator: string[];
+  generationDateStart?: string;
+  generationDateEnd?: string;
+  location: string[];
+};
+
+export const getProductFilterConfig = ({
+  deviceType,
+  gridOperator,
+  generationDateStart,
+  generationDateEnd,
+  location,
+}: OrderBookFilters): ProductFilterDTO => {
+  return {
+    deviceTypeFilter:
+      deviceType.length > 0 ? Filter.Specific : Filter.Unspecified,
+    locationFilter: location.length > 0 ? Filter.Specific : Filter.Unspecified,
+    gridOperatorFilter:
+      gridOperator.length > 0 ? Filter.Specific : Filter.Unspecified,
+    generationTimeFilter:
+      generationDateStart && generationDateEnd
+        ? Filter.Specific
+        : Filter.Unspecified,
+    deviceVintageFilter: Filter.Unspecified,
+    deviceType: deviceType.length > 0 ? deviceType : undefined,
+    location: location.length > 0 ? location : undefined,
+    gridOperator: gridOperator.length > 0 ? gridOperator : undefined,
+    generationFrom: generationDateStart ?? undefined,
+    generationTo: generationDateEnd ?? undefined,
+  };
+};

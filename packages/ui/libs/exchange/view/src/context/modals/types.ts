@@ -1,3 +1,4 @@
+import { OrderBookOrderDTO } from '@energyweb/exchange-irec-react-query-client';
 import {
   Bundle,
   BundlePublicDTO,
@@ -18,6 +19,10 @@ export interface IExchangeModalsStore {
     open: boolean;
     bundle: Bundle | BundlePublicDTO;
     isOwner?: boolean;
+  };
+  buyDirect: {
+    open: boolean;
+    ask: OrderBookOrderDTO;
   };
 }
 
@@ -46,7 +51,16 @@ interface IShowBundleDetailsAction {
   };
 }
 
+interface IShowBuyDirectAction {
+  type: ExchangeModalsActionsEnum.SHOW_BUY_DIRECT;
+  payload: {
+    open: boolean;
+    ask: OrderBookOrderDTO;
+  };
+}
+
 export type TExchangeModalsAction =
   | IShowUpdateSupplyAction
   | IShowRemoveSupplyAction
-  | IShowBundleDetailsAction;
+  | IShowBundleDetailsAction
+  | IShowBuyDirectAction;
