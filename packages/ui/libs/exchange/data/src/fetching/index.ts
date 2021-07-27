@@ -1,6 +1,7 @@
 export * from './allBundles';
 export * from './allDevices';
 export * from './allSupply';
+export * from './myTrades';
 export * from './bundleSplits';
 export * from './deviceTypes';
 export * from './exchangeCertificates';
