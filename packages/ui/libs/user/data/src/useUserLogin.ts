@@ -3,8 +3,10 @@ import {
   getAccountControllerGetAccountQueryKey,
 } from '@energyweb/exchange-react-query-client';
 import {
+  isRole,
   OrganizationInvitationStatus,
   OrganizationStatus,
+  Role,
   UserStatus,
 } from '@energyweb/origin-backend-core';
 import {
@@ -83,6 +85,7 @@ export const useUserLogin = (
           if (
             user?.organization.status === OrganizationStatus.Active &&
             user.status === UserStatus.Active &&
+            !isRole(user, Role.Issuer) &&
             !exchangeAddress
           ) {
             openExchangeAddressModal();

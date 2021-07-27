@@ -45,6 +45,7 @@ export const useLogicSupply: TUseLogicSupply = ({
 }) => {
   const { t } = useTranslation();
   return {
+    tableTitle: t('exchange.supply.tableTitle'),
     header: {
       fuelType: t('exchange.supply.fuelType'),
       facilityName: t('exchange.supply.facilityName'),

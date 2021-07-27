@@ -9,6 +9,7 @@ interface TableComponentRowProps<Id> {
   row: TableRowData<Id>;
   headerData: TableHeaderData;
   onRowClick?: (id: Id) => void;
+  className?: string;
 }
 
 export type TTableComponentRow = <Id>(
@@ -19,6 +20,7 @@ export const TableComponentRow: TTableComponentRow = ({
   row,
   headerData,
   onRowClick,
+  className,
 }) => {
   const classes = useStyles();
   const headerKeys = Object.keys(headerData);
@@ -27,8 +29,10 @@ export const TableComponentRow: TTableComponentRow = ({
     onRowClick && onRowClick(row.id);
   };
 
+  const rowClass = `${className} ${onRowClick && classes.hover}`;
+
   return (
-    <TableRow className={onRowClick && classes.hover} onClick={handleClick}>
+    <TableRow className={rowClass} onClick={handleClick}>
       {headerKeys.map((key) =>
         key === 'actions' ? (
           <TableComponentActions

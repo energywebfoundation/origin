@@ -9,3 +9,4 @@ export * from './fuelTypes';
 export * from './myBundles';
 export * from './myDevices';
 export * from './regionsConfig';
+export * from './orderbook';
