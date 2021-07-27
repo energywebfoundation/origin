@@ -29,7 +29,8 @@
         "supply": "Supply",
         "allBundles": "All bundles",
         "createBundle": "Create bundle",
-        "myBundles": "My bundles"
+        "myBundles": "My bundles",
+        "myOrders": "My orders"
       },
       "organization": {
         "sectionTitle": "Organization",
@@ -627,6 +628,22 @@
           "createSuccess": "Bundle has been successfully created and published for sale",
           "createError": "Error while creating bundle"
         }
+      },
+      "myOrders": {
+        "demands": "Demands",
+        "volume": "Volume",
+        "price": "Price",
+        "type": "Type",
+        "period": "Period",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "status": "Status",
+        "bids": "Bids",
+        "filled": "Filled",
+        "generationStart": "Generation Start",
+        "generationEnd": "Generation End",
+        "asks": "Asks",
+        "facilityName": "Facility Name"
       },
       "supply": {
         "tableTitle": "Supply",
