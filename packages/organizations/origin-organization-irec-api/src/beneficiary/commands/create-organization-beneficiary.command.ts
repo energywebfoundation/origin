@@ -1,5 +1,5 @@
 import { IPublicOrganization } from '@energyweb/origin-backend-core';
 
-export class CreateBeneficiaryCommand {
+export class CreateOrganizationBeneficiaryCommand {
     constructor(public readonly organization: IPublicOrganization) {}
 }
