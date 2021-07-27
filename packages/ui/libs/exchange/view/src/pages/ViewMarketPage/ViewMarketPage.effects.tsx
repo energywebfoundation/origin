@@ -5,6 +5,7 @@ import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
 import {
   OrderBookFilters,
   useApiOrderbookPoll,
+  useCachedUser,
 } from '@energyweb/origin-ui-exchange-data';
 import {
   OneTimePurchase,
@@ -24,8 +25,9 @@ export const useViewMarketPageEffects = () => {
     gridOperator: state.gridOperator.map((type) => type.value.toString()),
     location: state.subregions.map((subregion) => subregion.value.toString()),
   };
+  const user = useCachedUser();
 
-  const { orderbookData, isLoading } = useApiOrderbookPoll(filters);
+  const { orderBookData, isLoading } = useApiOrderbookPoll(filters, user);
 
   const oneTimePurchase: ListAction = {
     name: t('exchange.viewMarket.oneTimePurchase'),
@@ -41,16 +43,16 @@ export const useViewMarketPageEffects = () => {
 
   const sellOffers: ListAction = {
     name: t('exchange.viewMarket.sellOffers'),
-    content: <SellOffers asks={orderbookData.asks} isLoading={isLoading} />,
+    content: <SellOffers asks={orderBookData.asks} isLoading={isLoading} />,
   };
   const buyOffers: ListAction = {
     name: t('exchange.viewMarket.buyOffers'),
-    content: <BuyOffers bids={orderbookData.bids} isLoading={isLoading} />,
+    content: <BuyOffers bids={orderBookData.bids} isLoading={isLoading} />,
   };
   const tradingView: ListAction = {
     name: t('exchange.viewMarket.tradingView'),
     content: (
-      <TradingView orderBookData={orderbookData} isLoading={isLoading} />
+      <TradingView orderBookData={orderBookData} isLoading={isLoading} />
     ),
   };
 

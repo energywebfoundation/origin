@@ -5,12 +5,9 @@ import {
   OrderBookDTO,
 } from '@energyweb/exchange-irec-react-query-client';
 import { UserStatus } from '@energyweb/origin-backend-core';
-import {
-  getUserControllerMeQueryKey,
-  UserDTO,
-} from '@energyweb/origin-backend-react-query-client';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { useEffect, useState } from 'react';
-import { useQueryClient } from 'react-query';
+import { isEqual } from 'lodash';
 import { getProductFilterConfig, OrderBookFilters } from '../utils';
 
 export type TOrdersTotalVolume = {
@@ -45,7 +42,7 @@ const getOrdersTotalVolume = async (
   }
 };
 
-const REFRESH_INTERVAL_MS = 3000;
+const REFRESH_INTERVAL_MS = 5000;
 const INITIAL_ORDERBOOK_STATE = {
   asks: [],
   bids: [],
@@ -54,52 +51,47 @@ const INITIAL_ORDERBOOK_STATE = {
   totalBids: null,
 };
 
-export const useApiOrderbookPoll = (marketFilters: OrderBookFilters) => {
-  const [orderbookData, setOrderbookData] = useState<TOrderBookData>(
+export const useApiOrderbookPoll = (
+  marketFilters: OrderBookFilters,
+  user: UserDTO
+) => {
+  const [orderBookData, setOrderBookData] = useState<TOrderBookData>(
     INITIAL_ORDERBOOK_STATE
   );
-  const productFilters = getProductFilterConfig(marketFilters);
-  const queryClient = useQueryClient();
-  const userQueryKey = getUserControllerMeQueryKey();
 
-  const fetchOrderBook = async (isMounted: boolean) => {
-    const user = queryClient.getQueryData<UserDTO>(userQueryKey);
-    const userIsActive = user?.status === UserStatus.Active;
-
-    const orderBookData = userIsActive
+  const getAndSetData = async () => {
+    const productFilters = getProductFilterConfig(marketFilters);
+    const userIsActive = user && user.status == UserStatus.Active;
+    const orders = userIsActive
       ? await orderBookControllerGetByProduct(productFilters)
       : await orderBookControllerGetByProductPublic(productFilters);
+    const totalOrders = await getOrdersTotalVolume(userIsActive);
+    const newOrderBookData = {
+      ...orders,
+      ...totalOrders,
+    };
 
-    const orderBookTotalOrders = await getOrdersTotalVolume(userIsActive);
-    if (isMounted) {
-      const newOrderbookData = {
-        ...orderBookData,
-        ...orderBookTotalOrders,
-      };
-      setOrderbookData(newOrderbookData || INITIAL_ORDERBOOK_STATE);
+    if (!isEqual(newOrderBookData, orderBookData)) {
+      setOrderBookData(newOrderBookData);
     }
   };
 
   useEffect(() => {
-    let isMounted = true;
-
-    const _fetch = async () => {
-      await fetchOrderBook(isMounted);
-    };
-
-    _fetch();
-    const intervalRef = setInterval(_fetch, REFRESH_INTERVAL_MS);
-
+    getAndSetData();
+    const intervalRef = setInterval(getAndSetData, REFRESH_INTERVAL_MS);
     return () => {
-      isMounted = false;
       clearInterval(intervalRef);
     };
-  }, []);
+  }, [
+    marketFilters.deviceType,
+    marketFilters.gridOperator,
+    marketFilters.location,
+  ]);
 
   const isLoading =
-    orderbookData?.lastTradedPrice === null ||
-    orderbookData?.totalAsks === null ||
-    orderbookData?.totalBids === null;
+    orderBookData.lastTradedPrice === null ||
+    orderBookData.totalAsks === null ||
+    orderBookData.totalBids === null;
 
-  return { orderbookData, isLoading };
+  return { orderBookData, isLoading };
 };
