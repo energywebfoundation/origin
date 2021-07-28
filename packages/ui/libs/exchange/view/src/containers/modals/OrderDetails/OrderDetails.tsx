@@ -8,7 +8,8 @@ import { useOrderDetailsEffects } from './OrderDetails.effects';
 
 export const OrderDetails = () => {
   const classes = useStyles();
-  const { genericModalProps, modalFields } = useOrderDetailsEffects();
+  const { genericModalProps, modalFields, fieldLabels } =
+    useOrderDetailsEffects();
 
   const {
     validFrom,
@@ -22,6 +23,14 @@ export const OrderDetails = () => {
     region,
     filled,
   } = modalFields;
+
+  const {
+    orderIdLabel,
+    fuelTypeLabel,
+    gridOperatorLabel,
+    regionLabel,
+    filledLabel,
+  } = fieldLabels;
 
   return (
     <GenericModal
@@ -45,7 +54,7 @@ export const OrderDetails = () => {
           >
             <Box px={2}>
               <Typography fontSize={12} color="textSecondary">
-                Order No.
+                {orderIdLabel}
               </Typography>
               <Typography fontSize={12} color="textSecondary">
                 {orderId}
@@ -96,7 +105,7 @@ export const OrderDetails = () => {
           >
             <Box p={1}>
               <Typography fontSize={12} color="textSecondary">
-                Device Type
+                {fuelTypeLabel}
               </Typography>
               <Typography fontSize={12} color="textSecondary">
                 {fuelType}
@@ -104,7 +113,7 @@ export const OrderDetails = () => {
             </Box>
             <Box p={1}>
               <Typography fontSize={12} color="textSecondary">
-                Grid Operator
+                {gridOperatorLabel}
               </Typography>
               <Typography fontSize={12} color="textSecondary">
                 {gridOperator}
@@ -112,7 +121,7 @@ export const OrderDetails = () => {
             </Box>
             <Box p={1}>
               <Typography fontSize={12} color="textSecondary">
-                Region
+                {regionLabel}
               </Typography>
               <Typography fontSize={12} color="textSecondary">
                 {region}
@@ -123,7 +132,7 @@ export const OrderDetails = () => {
           <Box className={classes.lightBlock}>
             <Box px={2} py={1}>
               <Typography fontSize={12} color="textSecondary">
-                Filled
+                {filledLabel}
               </Typography>
               <Typography fontSize={12} color="textSecondary">
                 {filled}

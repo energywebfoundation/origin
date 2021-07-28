@@ -65,5 +65,13 @@ export const useOrderDetailsEffects = () => {
     ],
   };
 
-  return { genericModalProps, modalFields };
+  const fieldLabels = {
+    orderIdLabel: t('exchange.myOrders.orderNo'),
+    fuelTypeLabel: t('exchange.myOrders.fuelType'),
+    gridOperatorLabel: t('exchange.myOrders.gridOperator'),
+    regionLabel: t('exchange.myOrders.region'),
+    filledLabel: t('exchange.myOrders.filled'),
+  };
+
+  return { genericModalProps, modalFields, fieldLabels };
 };

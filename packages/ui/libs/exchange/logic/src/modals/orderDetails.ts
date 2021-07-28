@@ -6,6 +6,7 @@ import {
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { EnergyFormatter, formatDate } from '@energyweb/origin-ui-utils';
+import { useTranslation } from 'react-i18next';
 import { getMainFuelType } from '../utils';
 
 export const useOrderDetailsLogic = (
@@ -13,7 +14,9 @@ export const useOrderDetailsLogic = (
   allFuelTypes: CodeNameDTO[],
   allDevices: ComposedPublicDevice[]
 ) => {
-  if (!order) return {};
+  const { t } = useTranslation();
+
+  if (!order) return { modalFields: {}, fieldLabels: {} };
 
   const fuelTypes = order.product?.deviceType?.map((type) => {
     const fuelType = type.split(';')[0];
