@@ -647,6 +647,11 @@
         "remove": "Remove",
         "bid": "Bid",
         "ask": "Ask",
+        "view": "View",
+        "orderNo": "Order No.",
+        "fuelType": "Fuel Type",
+        "gridOperator": "Grid Operator",
+        "region": "Region",
         "modals": {
           "removeOrderConfirm": {
             "title": "Are you sure you want remove?"
