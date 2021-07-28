@@ -6,6 +6,7 @@ export enum ExchangeModalsActionsEnum {
   SHOW_BUNDLE_DETAILS = 'SHOW_BUNDLE_DETAILS',
   SHOW_BUY_DIRECT = 'SHOW_BUY_DIRECT',
   SHOW_REMOVE_ORDER_CONFIRM = 'SHOW_REMOVE_ORDER_CONFIRM',
+  SHOW_ORDER_DETAILS = 'SHOW_ORDER_DETAILS',
 }
 
 export const exchangeModalsInitialState: IExchangeModalsStore = {
@@ -31,6 +32,10 @@ export const exchangeModalsInitialState: IExchangeModalsStore = {
     id: null,
     removeHandler: null,
   },
+  orderDetails: {
+    open: false,
+    order: null,
+  },
 };
 
 export const exchangeModalsReducer = (
@@ -48,5 +53,7 @@ export const exchangeModalsReducer = (
       return { ...state, buyDirect: action.payload };
     case ExchangeModalsActionsEnum.SHOW_REMOVE_ORDER_CONFIRM:
       return { ...state, removeOrder: action.payload };
+    case ExchangeModalsActionsEnum.SHOW_ORDER_DETAILS:
+      return { ...state, orderDetails: action.payload };
   }
 };

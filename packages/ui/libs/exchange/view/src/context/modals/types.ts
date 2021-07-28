@@ -36,6 +36,10 @@ export interface IExchangeModalsStore {
       closeModal: () => void
     ) => void;
   };
+  orderDetails: {
+    open: boolean;
+    order: OrderDTO;
+  };
 }
 
 interface IShowUpdateSupplyAction {
@@ -83,9 +87,18 @@ interface IShowRemoveOrderConfirmAction {
   };
 }
 
+interface IShowOrderDetailsAction {
+  type: ExchangeModalsActionsEnum.SHOW_ORDER_DETAILS;
+  payload: {
+    open: boolean;
+    order: OrderDTO;
+  };
+}
+
 export type TExchangeModalsAction =
   | IShowUpdateSupplyAction
   | IShowRemoveSupplyAction
   | IShowBundleDetailsAction
   | IShowBuyDirectAction
-  | IShowRemoveOrderConfirmAction;
+  | IShowRemoveOrderConfirmAction
+  | IShowOrderDetailsAction;

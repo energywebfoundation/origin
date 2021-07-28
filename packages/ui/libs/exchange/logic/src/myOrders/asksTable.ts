@@ -3,10 +3,10 @@ import { EnergyFormatter, formatDate } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import { TFormatAsks, TUseAsksTableLogic } from './types';
 
-const formatAsksForMyOrders: TFormatAsks = ({ asks, myDevices, actions }) => {
+const formatAsksForMyOrders: TFormatAsks = ({ asks, allDevices, actions }) => {
   return asks?.map((ask) => {
     // asset is not included in OrderDTO
-    const deviceName = myDevices.find(
+    const deviceName = allDevices.find(
       (device) => device.externalRegistryId === (ask as any).asset.deviceId
     )?.name;
     const startVol = parseInt(EnergyFormatter.format(ask.startVolume));
@@ -32,9 +32,10 @@ const formatAsksForMyOrders: TFormatAsks = ({ asks, myDevices, actions }) => {
 
 export const useMyOrdersAsksTableLogic: TUseAsksTableLogic = ({
   asks,
-  myDevices,
+  allDevices,
   isLoading,
   actions,
+  openDetailsModal,
 }) => {
   const { t } = useTranslation();
   return {
@@ -49,6 +50,7 @@ export const useMyOrdersAsksTableLogic: TUseAsksTableLogic = ({
       actions: '',
     },
     loading: isLoading,
-    data: formatAsksForMyOrders({ myDevices, asks, actions }) ?? [],
+    data: formatAsksForMyOrders({ allDevices, asks, actions }) ?? [],
+    onRowClick: openDetailsModal,
   };
 };

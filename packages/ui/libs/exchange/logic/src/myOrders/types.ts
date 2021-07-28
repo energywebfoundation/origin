@@ -8,7 +8,7 @@ import {
   TableComponentProps,
   TableRowData,
 } from '@energyweb/origin-ui-core';
-import { ComposedDevice } from '@energyweb/origin-ui-exchange-data';
+import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 
 export type TUseDemandsTableArgs = {
   demands: DemandDTO[];
@@ -28,9 +28,10 @@ export type TUseBidsTableArgs = {
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
   actions: TableActionData<OrderDTO['id']>[];
+  openDetailsModal: (id: OrderDTO['id']) => void;
 };
 export type TFormatBids = (
-  props: Omit<TUseBidsTableArgs, 'isLoading'>
+  props: Omit<TUseBidsTableArgs, 'isLoading' | 'openDetailsModal'>
 ) => TableRowData<OrderDTO['id']>[];
 export type TUseBidsTableLogic = (
   props: TUseBidsTableArgs
@@ -38,12 +39,13 @@ export type TUseBidsTableLogic = (
 
 export type TUseAsksTableArgs = {
   asks: OrderDTO[];
-  myDevices: ComposedDevice[];
+  allDevices: ComposedPublicDevice[];
   isLoading: boolean;
   actions: TableActionData<OrderDTO['id']>[];
+  openDetailsModal: (id: OrderDTO['id']) => void;
 };
 export type TFormatAsks = (
-  props: Omit<TUseAsksTableArgs, 'isLoading'>
+  props: Omit<TUseAsksTableArgs, 'isLoading' | 'openDetailsModal'>
 ) => TableRowData<OrderDTO['id']>[];
 export type TUseAsksTableLogic = (
   props: TUseAsksTableArgs

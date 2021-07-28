@@ -47,6 +47,7 @@ export const useMyOrdersBidsTableLogic: TUseBidsTableLogic = ({
   allFuelTypes,
   isLoading,
   actions,
+  openDetailsModal,
 }) => {
   const { t } = useTranslation();
   return {
@@ -61,6 +62,7 @@ export const useMyOrdersBidsTableLogic: TUseBidsTableLogic = ({
       actions: '',
     },
     loading: isLoading,
+    onRowClick: openDetailsModal,
     data: formatBidsForMyOrders({ allFuelTypes, bids, actions }) ?? [],
   };
 };

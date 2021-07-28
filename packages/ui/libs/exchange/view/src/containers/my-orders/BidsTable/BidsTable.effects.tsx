@@ -1,11 +1,11 @@
 import { OrderDTO } from '@energyweb/exchange-irec-react-query-client';
 import { TableActionData } from '@energyweb/origin-ui-core';
 import {
+  useAllDeviceFuelTypes,
   useApiCancelOrderHandler,
-  useCachedAllFuelTypes,
 } from '@energyweb/origin-ui-exchange-data';
 import { useMyOrdersBidsTableLogic } from '@energyweb/origin-ui-exchange-logic';
-import { Remove } from '@material-ui/icons';
+import { Remove, Visibility } from '@material-ui/icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,7 +15,8 @@ import {
 import { BidsTableProps } from './BidsTable';
 
 export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
-  const allFuelTypes = useCachedAllFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
   const { t } = useTranslation();
   const dispatchModals = useExchangeModalsDispatch();
 
@@ -32,19 +33,36 @@ export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
     });
   };
 
+  const openDetailsModal = (id: OrderDTO['id']) => {
+    const orderToShow = bids?.find((bid) => bid.id === id);
+    dispatchModals({
+      type: ExchangeModalsActionsEnum.SHOW_ORDER_DETAILS,
+      payload: {
+        open: true,
+        order: orderToShow,
+      },
+    });
+  };
+
   const actions: TableActionData<OrderDTO['id']>[] = [
     {
       name: t('exchange.myOrders.remove'),
       icon: <Remove />,
       onClick: (id: OrderDTO['id']) => openRemoveModal(id),
     },
+    {
+      name: t('exchange.myOrders.view'),
+      icon: <Visibility />,
+      onClick: (id: OrderDTO['id']) => openDetailsModal(id),
+    },
   ];
 
   const tableData = useMyOrdersBidsTableLogic({
     bids,
-    isLoading,
+    isLoading: isLoading || areFuelTypesLoading,
     allFuelTypes,
     actions,
+    openDetailsModal,
   });
   return tableData;
 };

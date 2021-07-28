@@ -4,6 +4,7 @@ import { RemoveSupplyConfirmModal } from './RemoveSupplyConfirmModal';
 import { BundleDetails } from './BundleDetails';
 import { DirectBuy } from './DirectBuy';
 import { RemoveOrderConfirm } from './RemoveOrderConfirm';
+import { OrderDetails } from './OrderDetails';
 
 export const ExchangeModals: FC = () => {
   return (
@@ -13,6 +14,7 @@ export const ExchangeModals: FC = () => {
       <RemoveSupplyConfirmModal />
       <DirectBuy />
       <RemoveOrderConfirm />
+      <OrderDetails />
     </>
   );
 };
