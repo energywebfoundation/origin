@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { TRemoveConfirmModalLogic } from './types';
 
-export const useRemoveSupplyConfirmLogic: TRemoveConfirmModalLogic = (
+export const useRemoveOrderConfirmLogic: TRemoveConfirmModalLogic = (
   closeModal,
   submitHandler
 ) => {
   const { t } = useTranslation();
   return {
-    title: t('exchange.supply.modals.removeSupplyConfirm.title'),
+    title: t('exchange.myOrders.modals.removeOrderConfirm.title'),
     text: '',
     buttons: [
       {

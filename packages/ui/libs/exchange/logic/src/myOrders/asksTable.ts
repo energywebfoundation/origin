@@ -1,13 +1,21 @@
+import { OrderStatus } from '@energyweb/exchange-irec-react-query-client';
 import { EnergyFormatter, formatDate } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import { TFormatAsks, TUseAsksTableLogic } from './types';
 
-export const formatAsks: TFormatAsks = ({ asks, myDevices }) => {
+const formatAsksForMyOrders: TFormatAsks = ({ asks, myDevices, actions }) => {
   return asks?.map((ask) => {
     // asset is not included in OrderDTO
     const deviceName = myDevices.find(
       (device) => device.externalRegistryId === (ask as any).asset.deviceId
     )?.name;
+    const startVol = parseInt(EnergyFormatter.format(ask.startVolume));
+    const currentVol = parseInt(EnergyFormatter.format(ask.currentVolume));
+    const percentageFilled = (currentVol * 100) / startVol;
+    const filled =
+      ask.status === OrderStatus.PartiallyFilled
+        ? `${percentageFilled}%`
+        : '0%';
 
     return {
       id: ask.id,
@@ -16,7 +24,8 @@ export const formatAsks: TFormatAsks = ({ asks, myDevices }) => {
       facilityName: deviceName || '-',
       generationStart: formatDate(ask.product.generationFrom) || '-',
       generationEnd: formatDate(ask.product.generationTo) || '-',
-      filled: (ask as any)?.filled || '-',
+      filled,
+      actions,
     };
   });
 };
@@ -25,6 +34,7 @@ export const useMyOrdersAsksTableLogic: TUseAsksTableLogic = ({
   asks,
   myDevices,
   isLoading,
+  actions,
 }) => {
   const { t } = useTranslation();
   return {
@@ -36,8 +46,9 @@ export const useMyOrdersAsksTableLogic: TUseAsksTableLogic = ({
       generationStart: t('exchange.myOrders.generationStart'),
       generationEnd: t('exchange.myOrders.generationEnd'),
       filled: t('exchange.myOrders.filled'),
+      actions: '',
     },
     loading: isLoading,
-    data: formatAsks({ myDevices, asks }) ?? [],
+    data: formatAsksForMyOrders({ myDevices, asks, actions }) ?? [],
   };
 };

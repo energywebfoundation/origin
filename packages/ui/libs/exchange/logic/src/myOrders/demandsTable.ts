@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { getMainFuelType } from '../utils';
 import { TFormatDemands, TUseDemandsTableLogic } from './types';
 
-export const formatDemands: TFormatDemands = ({ demands, allFuelTypes }) => {
+export const formatDemands: TFormatDemands = ({
+  demands,
+  allFuelTypes,
+  actions,
+}) => {
   return demands?.map((demand) => {
     const fuelCode = demand.product.deviceType[0].split(';')[0];
     const { mainType } = getMainFuelType(fuelCode, allFuelTypes);
@@ -17,6 +21,7 @@ export const formatDemands: TFormatDemands = ({ demands, allFuelTypes }) => {
       generationStart: formatDate(demand.start),
       generationEnd: formatDate(demand.end),
       status: demand.status,
+      actions,
     };
   });
 };
@@ -25,6 +30,7 @@ export const useDemandsTableLogic: TUseDemandsTableLogic = ({
   demands,
   allFuelTypes,
   isLoading,
+  actions,
 }) => {
   const { t } = useTranslation();
   return {
@@ -37,8 +43,9 @@ export const useDemandsTableLogic: TUseDemandsTableLogic = ({
       generationStart: t('exchange.myOrders.startDate'),
       generationEnd: t('exchange.myOrders.endDate'),
       status: t('exchange.myOrders.status'),
+      actions: '',
     },
     loading: isLoading,
-    data: formatDemands({ allFuelTypes, demands }) ?? [],
+    data: formatDemands({ allFuelTypes, demands, actions }) ?? [],
   };
 };
