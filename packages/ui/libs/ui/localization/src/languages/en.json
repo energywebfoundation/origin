@@ -643,7 +643,22 @@
         "generationStart": "Generation Start",
         "generationEnd": "Generation End",
         "asks": "Asks",
-        "facilityName": "Facility Name"
+        "facilityName": "Facility Name",
+        "remove": "Remove",
+        "bid": "Bid",
+        "ask": "Ask",
+        "modals": {
+          "removeOrderConfirm": {
+            "title": "Are you sure you want remove?"
+          }
+        },
+        "notifications": {
+          "orderRemoveSuccess": "{orderSide} has been successfully removed",
+          "orderRemoveError": "Error while removing order",
+          "demandRemoveSuccess": "Demand has been successfully removed",
+          "demandRemoveError": "Error while removing demand",
+          "demandShouldBePaused": "Demand should be paused before removing"
+        }
       },
       "supply": {
         "tableTitle": "Supply",
@@ -842,7 +857,9 @@
         "save": "Save",
         "later": "Later",
         "decline": "Decline",
-        "accept": "Accept"
+        "accept": "Accept",
+        "no": "No",
+        "yes": "Yes"
       },
       "input": {
         "editAmount": "Edit amount"
