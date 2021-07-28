@@ -69,6 +69,13 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
         },
       },
     },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: 'none',
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
