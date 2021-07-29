@@ -18,34 +18,33 @@ export const useCreateBeneficiaryFormLogic: TUseCreateBeneficiaryFormLogic =
         name: yup
           .string()
           .required()
-          .label(t('organization.beneficiaries.name')),
+          .label(t('organization.createBeneficiary.name')),
         countryCode: yup
           .array()
           .required()
-          .label(t('organization.beneficiaries.country')),
+          .label(t('organization.createBeneficiary.country')),
         location: yup
           .string()
           .required()
-          .label(t('organization.beneficiaries.location')),
+          .label(t('organization.createBeneficiary.location')),
       }),
       fields: [
         {
           name: 'name',
-          label: t('organization.beneficiaries.name'),
+          label: t('organization.createBeneficiary.name'),
         },
         {
           name: 'countryCode',
-          label: t('organization.beneficiaries.country'),
+          label: t('organization.createBeneficiary.country'),
           select: true,
           autocomplete: true,
           options: COUNTRY_OPTIONS_ISO,
-          required: true,
         },
         {
           name: 'location',
-          label: t('organization.beneficiaries.location'),
+          label: t('organization.createBeneficiary.location'),
         },
       ],
-      buttonText: t('organization.beneficiaries.create'),
+      buttonText: t('organization.createBeneficiary.create'),
     };
   };

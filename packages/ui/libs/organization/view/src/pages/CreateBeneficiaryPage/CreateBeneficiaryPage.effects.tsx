@@ -1,8 +1,8 @@
+import { useCreateBeneficiaryHandler } from '@energyweb/origin-ui-organization-data';
 import { useCreateBeneficiaryFormLogic } from '@energyweb/origin-ui-organization-logic';
 
-export const useBeneficiariesPageEffects = () => {
-  const submitHandler = () => {};
-
+export const useCreateBeneficiaryPageEffects = () => {
+  const submitHandler = useCreateBeneficiaryHandler();
   const formLogic = useCreateBeneficiaryFormLogic();
 
   const formProps = {
