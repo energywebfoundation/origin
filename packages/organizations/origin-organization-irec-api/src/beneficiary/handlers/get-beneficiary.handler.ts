@@ -1,11 +1,11 @@
 import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GetOrganizationCommand, Organization } from '@energyweb/origin-backend';
+import { GetOrganizationCommand } from '@energyweb/origin-backend';
 
 import { Beneficiary } from '../beneficiary.entity';
-import { GetBeneficiaryCommand } from '../commands/get-beneficiary.command';
-import { BeneficiaryDTO } from '../dto/beneficiary.dto';
+import { GetBeneficiaryCommand } from '../commands';
+import { BeneficiaryDTO } from '../dto';
 
 @CommandHandler(GetBeneficiaryCommand)
 export class GetBeneficiaryHandler implements ICommandHandler<GetBeneficiaryCommand> {
@@ -22,15 +22,13 @@ export class GetBeneficiaryHandler implements ICommandHandler<GetBeneficiaryComm
             return;
         }
 
-        const organization: Organization = await this.commandBus.execute(
-            new GetOrganizationCommand(String(beneficiary.ownerId))
-        );
-
         return BeneficiaryDTO.wrap({
-            id: beneficiary.id,
-            irecBeneficiaryId: beneficiary.irecBeneficiaryId,
-            organization,
-            ownerId: beneficiary.ownerId
+            ...beneficiary,
+            organization: beneficiary.organizationId
+                ? await this.commandBus.execute(
+                      new GetOrganizationCommand(String(beneficiary.ownerId))
+                  )
+                : null
         });
     }
 }

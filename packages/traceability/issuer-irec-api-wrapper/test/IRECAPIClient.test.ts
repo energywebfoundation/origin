@@ -67,6 +67,7 @@ describe('IREC API', () => {
                 expect(accountItem.fuelType.description).to.be.a('string');
                 expect(accountItem.deviceType.code).to.be.a('string');
                 expect(accountItem.deviceType.description).to.be.a('string');
+                expect(accountItem.asset).to.be.a('string');
             });
         });
     });
@@ -79,14 +80,16 @@ describe('IREC API', () => {
         reservationItem.amount = 1;
 
         await participantClient.redeem({
+            sender: tradeAccount,
+            recipient: redemptionAccount,
+            approver: issueAccount,
             items: [reservationItem],
+            notes: 'notes',
             beneficiary: 1,
             start: new Date('2020-01-01'),
             end: new Date('2020-02-01'),
             purpose: 'Purpose',
-            sender: tradeAccount,
-            recipient: redemptionAccount,
-            approver: issueAccount
+            volume: 1
         });
     });
 

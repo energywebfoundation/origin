@@ -63,7 +63,7 @@ export class ApproveIrecCertificationRequestHandler
             issueAccountCode
         );
 
-        await this.irecRepository.update(id, { irecCertificateId: transaction.code });
+        await this.irecRepository.update(id, { irecAssetId: transaction.asset });
 
         return this.commandBus.execute(new ApproveCertificationRequestCommand(id));
     }

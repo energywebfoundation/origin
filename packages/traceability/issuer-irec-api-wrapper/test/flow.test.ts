@@ -166,6 +166,7 @@ describe('API flows', () => {
         });
 
         expect(transaction.code).to.be.a('string');
+        expect(transaction.asset).to.be.a('string');
         expect(transaction.volume).to.equal(10);
         expect(transaction.sender).to.equal(issueAccount);
         expect(transaction.recipient).to.equal(tradeAccount);

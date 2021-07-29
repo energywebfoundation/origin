@@ -12,6 +12,7 @@ import EventEmitter from 'events';
 import {
     Account,
     AccountBalance,
+    ApproveTransaction,
     RedeemTransaction,
     RedeemTransactionResult,
     Transaction,
@@ -223,7 +224,7 @@ export class IRECAPIClient extends EventEmitter {
             withdraw: async (code: string, notes?: string): Promise<void> => {
                 await setState(code, 'withdraw', notes);
             },
-            approve: async (code: string, approve: ApproveIssue): Promise<Transaction> => {
+            approve: async (code: string, approve: ApproveIssue): Promise<ApproveTransaction> => {
                 const appr =
                     approve instanceof ApproveIssue ? approve : plainToClass(ApproveIssue, approve);
 
@@ -237,7 +238,8 @@ export class IRECAPIClient extends EventEmitter {
                     this.config
                 );
 
-                return plainToClass(Transaction, response.data?.transaction);
+                const asset = response.data.asset;
+                return plainToClass(ApproveTransaction, { ...response.data.transaction, asset });
             },
             getStatus: async (code: string): Promise<IssueWithStatus> => {
                 const url = `${issueManagementUrl}/${code}`;
@@ -468,13 +470,15 @@ export class IRECAPIClient extends EventEmitter {
     }
 
     public async transfer(transfer: Transfer): Promise<TransactionResult> {
-        await validateOrReject(transfer);
+        const t = transfer instanceof Transfer ? transfer : plainToClass(Transfer, transfer);
 
-        const url = `${this.endPointUrl}/api/irec/transfer-management`;
+        await validateOrReject(t);
+
+        const url = `${this.endPointUrl}/api/irec/v1/transfer-management`;
 
         const response = await this.axiosInstance.post<{ transaction: any }>(
             url,
-            classToPlain(transfer),
+            classToPlain(t),
             this.config
         );
 
@@ -487,7 +491,7 @@ export class IRECAPIClient extends EventEmitter {
 
         await validateOrReject(redemption);
 
-        const url = `${this.endPointUrl}/api/irec/redemption-management`;
+        const url = `${this.endPointUrl}/api/irec/v1/redemption-management`;
 
         const response = await this.axiosInstance.post<{ transaction: any }>(
             url,
