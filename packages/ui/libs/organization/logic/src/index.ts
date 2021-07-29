@@ -8,3 +8,4 @@ export * from './members';
 export * from './invitations';
 export * from './utils';
 export * from './all-organizations';
+export * from './beneficiaries';
