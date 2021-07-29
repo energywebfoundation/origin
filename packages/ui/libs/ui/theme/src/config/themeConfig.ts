@@ -29,21 +29,18 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     MuiFilledInput: {
       styleOverrides: {
         root: {
-          backgroundColor: LightenColor(
-            styleConfig.MAIN_BACKGROUND_COLOR,
-            -0.5
-          ),
+          backgroundColor: LightenColor(styleConfig.MAIN_BACKGROUND_COLOR, -2),
           borderRadius: 5,
           '&.Mui-disabled': {
             backgroundColor: LightenColor(
               styleConfig.MAIN_BACKGROUND_COLOR,
-              -2
+              -3
             ),
           },
           '&.Mui-focused': {
             backgroundColor: LightenColor(
               styleConfig.MAIN_BACKGROUND_COLOR,
-              -0.5
+              -1.5
             ),
           },
         },
@@ -66,6 +63,7 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
         root: {
           backgroundColor: styleConfig.MAIN_BACKGROUND_COLOR,
           color: styleConfig.TEXT_COLOR_DEFAULT,
+          backgroundImage: 'none',
         },
       },
     },
