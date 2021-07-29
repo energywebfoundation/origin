@@ -652,9 +652,10 @@
         "fuelType": "Fuel Type",
         "gridOperator": "Grid Operator",
         "region": "Region",
+        "update": "Update",
         "modals": {
           "removeOrderConfirm": {
-            "title": "Are you sure you want remove?"
+            "title": "Are you sure you want to remove?"
           }
         },
         "notifications": {
@@ -662,7 +663,13 @@
           "orderRemoveError": "Error while removing order",
           "demandRemoveSuccess": "Demand has been successfully removed",
           "demandRemoveError": "Error while removing demand",
-          "demandShouldBePaused": "Demand should be paused before removing"
+          "demandShouldBePaused": "Demand should be paused before removing",
+          "demandPausedSuccess": "Demand paused",
+          "demandPausedError": "Error while pausing demand",
+          "demandResumedSuccess": "Demand resumed",
+          "demandResumedError": "Error while resuming demand",
+          "demandUpdateSuccess": "Demand updated",
+          "demandUpdateError": "Error while updating demand"
         }
       },
       "supply": {
@@ -680,7 +687,7 @@
             "title": "Update Supply"
           },
           "removeSupplyConfirm": {
-            "title": "Are you sure you want remove?",
+            "title": "Are you sure you want to remove supply?",
             "no": "No",
             "yes": "Yes"
           }
