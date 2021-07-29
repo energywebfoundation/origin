@@ -671,46 +671,70 @@ INSERT INTO public."irec_beneficiary" (
     "updatedAt",
     "id",
     "irecBeneficiaryId",
-    "organizationId"
+    "organizationId",
+    "name",
+    "countryCode",
+    "location",
+    "active"
 )
 VALUES (
-           '2020-03-30 09:55:25.962333+02',
-           '2020-03-30 09:55:25.962333+02',
-           1,
-           1,
-           1
-       ),
-       (
-           '2020-03-30 09:55:25.962333+02',
-           '2020-03-30 09:55:25.962333+02',
-           2,
-           2,
-           2
-       ),
-       (
-           '2020-03-30 09:55:25.962333+02',
-           '2020-03-30 09:55:25.962333+02',
-           3,
-           3,
-           3
-       ),
-       (
-           '2020-03-30 09:55:25.962333+02',
-           '2020-03-30 09:55:25.962333+02',
-           4,
-           4,
-           4
-       ),(
-           '2020-03-30 09:55:25.962333+02',
-           '2020-03-30 09:55:25.962333+02',
-           5,
-           5,
-           5
-       );
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        1,
+        1,
+        1,
+        'TestOrg1',
+        'GB',
+        'Test location 1',
+        true
+    ),
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        2,
+        2,
+        2,
+        'TestOrg2',
+        'GB',
+        'Test location 2',
+        true
+    ),
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        3,
+        3,
+        3,
+        'TestOrg3',
+        'GB',
+        'Test location 3',
+        true
+    ),
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        4,
+        4,
+        4,
+        'TestOrg4',
+        'GB',
+        'Test location 4',
+        true
+    ),(
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        5,
+        5,
+        5,
+        'TestOrg5',
+        'GB',
+        'Test location 5',
+        true
+    );
 SELECT setval(
-               pg_get_serial_sequence('public.irec_beneficiary', 'id'),
-               (
-                   SELECT MAX("id")
-                   FROM public.irec_beneficiary
-               ) + 1
-           );
+    pg_get_serial_sequence('public.irec_beneficiary', 'id'),
+    (
+        SELECT MAX("id")
+        FROM public.irec_beneficiary
+    ) + 1
+);

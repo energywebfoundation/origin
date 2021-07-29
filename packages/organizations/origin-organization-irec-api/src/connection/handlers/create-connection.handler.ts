@@ -39,6 +39,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
 
         const connection = await this.repository.save({
             ...loginResult,
+            userName,
             registration
         });
 

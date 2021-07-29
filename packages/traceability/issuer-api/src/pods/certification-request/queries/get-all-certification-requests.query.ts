@@ -1,6 +1,7 @@
 interface GetCertificationRequestsParams {
     approved?: boolean;
     owner?: string;
+    deviceIds?: string[];
 }
 
 export class GetAllCertificationRequestsQuery {

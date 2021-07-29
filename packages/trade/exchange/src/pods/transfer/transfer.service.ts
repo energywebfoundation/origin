@@ -239,14 +239,12 @@ export class TransferService {
             const { transactionHash, address, amount, asset, blockNumber } = deposit;
 
             let transfer = await this.findOne(null, {
-                where: { transactionHash }
+                where: { transactionHash, direction: TransferDirection.Deposit }
             });
 
             if (transfer) {
                 this.logger.debug(
-                    `Deposit with transactionHash ${transactionHash} already exists and has status ${
-                        TransferStatus[transfer.status]
-                    } `
+                    `Deposit with transactionHash ${transactionHash} already exists and has status ${transfer.status} `
                 );
                 return;
             }

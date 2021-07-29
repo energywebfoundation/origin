@@ -11,9 +11,22 @@ export class Beneficiary extends ExtendedBaseEntity {
     irecBeneficiaryId: number;
 
     @Column()
-    organizationId: number;
+    @IsOptional()
+    organizationId?: number;
 
     @Column()
     @IsOptional()
     ownerId?: number;
+
+    @Column()
+    name: string;
+
+    @Column()
+    countryCode: string;
+
+    @Column()
+    active: boolean;
+
+    @Column()
+    location: string;
 }
