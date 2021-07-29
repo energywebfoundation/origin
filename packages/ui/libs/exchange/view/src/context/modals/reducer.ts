@@ -4,6 +4,7 @@ export enum ExchangeModalsActionsEnum {
   SHOW_UPDATE_SUPPLY = 'SHOW_UPDATE_SUPPLY',
   SHOW_REMOVE_SUPPLY = 'SHOW_REMOVE_SUPPLY',
   SHOW_BUNDLE_DETAILS = 'SHOW_BUNDLE_DETAILS',
+  SHOW_BUY_DIRECT = 'SHOW_BUY_DIRECT',
 }
 
 export const exchangeModalsInitialState: IExchangeModalsStore = {
@@ -20,6 +21,10 @@ export const exchangeModalsInitialState: IExchangeModalsStore = {
     bundle: null,
     isOwner: false,
   },
+  buyDirect: {
+    open: false,
+    ask: null,
+  },
 };
 
 export const exchangeModalsReducer = (
@@ -33,5 +38,7 @@ export const exchangeModalsReducer = (
       return { ...state, removeSupply: action.payload };
     case ExchangeModalsActionsEnum.SHOW_BUNDLE_DETAILS:
       return { ...state, bundleDetails: action.payload };
+    case ExchangeModalsActionsEnum.SHOW_BUY_DIRECT:
+      return { ...state, buyDirect: action.payload };
   }
 };

@@ -7,6 +7,7 @@ import {
   AllBundlesPage,
   CreateBundlePage,
   MyBundlesPage,
+  MyTradesPage,
   ViewMarketPage,
   SupplyPage,
 } from './pages';
@@ -19,6 +20,7 @@ export const ExchangeApp: FC = () => {
         <Route path="/all-bundles" element={<AllBundlesPage />} />
         <Route path="/create-bundle" element={<CreateBundlePage />} />
         <Route path="/my-bundles" element={<MyBundlesPage />} />
+        <Route path="/my-trades" element={<MyTradesPage />} />
         <Route path="/supply" element={<SupplyPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>

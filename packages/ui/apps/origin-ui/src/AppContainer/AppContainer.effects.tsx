@@ -95,6 +95,7 @@ export const useAppContainerEffects = () => {
     showViewMarket: true,
     showAllBundles: true,
     showCreateBundle: true,
+    showMyTrades: true,
     showSupply: true,
     showMyBundles: true,
   });

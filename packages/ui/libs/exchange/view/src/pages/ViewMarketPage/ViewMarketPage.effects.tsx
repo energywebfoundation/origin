@@ -1,28 +1,66 @@
-import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
 import React from 'react';
 import { useReducer } from 'react';
-import { OneTimePurchase } from '../../containers';
+import { useTranslation } from 'react-i18next';
+import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
+import {
+  OrderBookFilters,
+  useApiOrderbookPoll,
+  useCachedUser,
+} from '@energyweb/origin-ui-exchange-data';
+import {
+  OneTimePurchase,
+  RepeatedPurchase,
+  SellOffers,
+  BuyOffers,
+  TradingView,
+} from '../../containers';
 import { initialState, reducer } from './ViewMarketPage.reducer';
 
 export const useViewMarketPageEffects = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { t } = useTranslation();
+
+  const filters: OrderBookFilters = {
+    deviceType: state.deviceType.map((type) => type.value.toString()),
+    gridOperator: state.gridOperator.map((type) => type.value.toString()),
+    location: state.subregions.map((subregion) => subregion.value.toString()),
+  };
+  const user = useCachedUser();
+
+  const { orderBookData, isLoading } = useApiOrderbookPoll(filters, user);
 
   const oneTimePurchase: ListAction = {
-    name: 'One Time Purchase',
-    content: <OneTimePurchase />,
+    name: t('exchange.viewMarket.oneTimePurchase'),
+    content: <OneTimePurchase filters={state} />,
   };
-
   const repeatedPurchase: ListAction = {
-    name: 'Repeated Purchase',
-    content: <div>Repeated Purchase</div>,
+    name: t('exchange.viewMarket.repeatedPurchase'),
+    content: <RepeatedPurchase filters={state} />,
   };
-
-  const listActionsProps: ListActionsBlockProps = {
+  const formActionsProps: ListActionsBlockProps = {
     actions: [oneTimePurchase, repeatedPurchase],
-    tabsProps: {
-      variant: 'fullWidth',
-    },
   };
 
-  return { state, dispatch, listActionsProps };
+  const sellOffers: ListAction = {
+    name: t('exchange.viewMarket.sellOffers'),
+    content: <SellOffers asks={orderBookData.asks} isLoading={isLoading} />,
+  };
+  const buyOffers: ListAction = {
+    name: t('exchange.viewMarket.buyOffers'),
+    content: <BuyOffers bids={orderBookData.bids} isLoading={isLoading} />,
+  };
+  const tradingView: ListAction = {
+    name: t('exchange.viewMarket.tradingView'),
+    content: (
+      <TradingView orderBookData={orderBookData} isLoading={isLoading} />
+    ),
+  };
+
+  const tablesActionsProps: ListActionsBlockProps = {
+    actions: [sellOffers, buyOffers, tradingView],
+  };
+
+  const formTitle = t('exchange.viewMarket.market');
+
+  return { state, dispatch, formActionsProps, formTitle, tablesActionsProps };
 };

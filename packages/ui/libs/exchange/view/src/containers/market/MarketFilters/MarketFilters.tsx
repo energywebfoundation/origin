@@ -1,5 +1,5 @@
 import { SelectAutocomplete } from '@energyweb/origin-ui-core';
-import { CircularProgress, TextField } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import React, { Dispatch, FC } from 'react';
 import {
   MarketFiltersActions,
@@ -18,6 +18,8 @@ export const MarketFilters: FC<MarketFiltersProps> = (props) => {
     fuelTypeAutocompleteProps,
     deviceTypeAutocompleteProps,
     gridOperatorAutocompleteProps,
+    regionsAutocompleteProps,
+    subRegionsAutocompleteProps,
     isLoading,
   } = useMarketFiltersEffects(props);
   const classes = useStyles();
@@ -26,28 +28,32 @@ export const MarketFilters: FC<MarketFiltersProps> = (props) => {
 
   return (
     <div>
-      <div className={classes.blockWrapper}>
+      <div>
         <SelectAutocomplete
-          className={classes.item}
+          className={classes.singleItem}
           {...fuelTypeAutocompleteProps}
-        />
-        <SelectAutocomplete
-          className={classes.item}
-          {...deviceTypeAutocompleteProps}
-        />
-      </div>
-      <div className={classes.blockWrapper}>
-        <TextField label="Region" variant="filled" className={classes.item} />
-        <TextField
-          label="Subregion"
-          variant="filled"
-          className={classes.item}
         />
       </div>
       <div>
         <SelectAutocomplete
           className={classes.singleItem}
+          {...deviceTypeAutocompleteProps}
+        />
+      </div>
+      <div className={classes.blockWrapper}>
+        <SelectAutocomplete
+          className={classes.item}
+          {...regionsAutocompleteProps}
+        />
+        <SelectAutocomplete
+          className={classes.item}
           {...gridOperatorAutocompleteProps}
+        />
+      </div>
+      <div>
+        <SelectAutocomplete
+          className={classes.singleItem}
+          {...subRegionsAutocompleteProps}
         />
       </div>
     </div>

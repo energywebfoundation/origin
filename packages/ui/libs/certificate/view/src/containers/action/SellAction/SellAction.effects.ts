@@ -14,9 +14,7 @@ export const useSellActionEffects = <Id>(
   const [totalAmount, setTotalAmount] = useState<number>();
   const [price, setPrice] = useState('');
 
-  const handlePriceChange = (
-    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
+  const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPrice(event.target.value);
   };
 
@@ -24,10 +22,15 @@ export const useSellActionEffects = <Id>(
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
 
+  const resetAction = () => {
+    resetIds();
+    setPrice('');
+  };
+
   const sellHandler = useSellCertificateHandler(
     price,
     exchangeCertificates,
-    resetIds
+    resetAction
   );
 
   const actionLogic = useSellActionLogic({

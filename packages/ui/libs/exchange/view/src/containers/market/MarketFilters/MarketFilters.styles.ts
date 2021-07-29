@@ -6,7 +6,7 @@ export const useStyles = makeStyles({
     display: 'flex',
   },
   item: {
-    margin: 10,
+    margin: '0 10px',
     width: '50%',
   },
   singleItem: {

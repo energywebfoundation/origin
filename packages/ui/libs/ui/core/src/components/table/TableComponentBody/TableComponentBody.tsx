@@ -10,6 +10,7 @@ interface TableComponentBodyProps<Id> {
   pageSize: number;
   loading: boolean;
   onRowClick?: (id: Id) => void;
+  getCustomRowClassName?: (id: Id) => string;
 }
 
 export type TTableComponentBody = <Id>(
@@ -22,6 +23,7 @@ export const TableComponentBody: TTableComponentBody = ({
   headerData,
   pageSize,
   onRowClick,
+  getCustomRowClassName,
 }) => {
   return (
     <TableBody>
@@ -37,6 +39,7 @@ export const TableComponentBody: TTableComponentBody = ({
             row={row}
             headerData={headerData}
             onRowClick={onRowClick}
+            className={getCustomRowClassName && getCustomRowClassName(row.id)}
           />
         ))
       )}
