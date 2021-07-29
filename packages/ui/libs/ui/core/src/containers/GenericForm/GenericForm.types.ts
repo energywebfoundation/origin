@@ -11,7 +11,12 @@ import {
   ButtonProps,
   TypographyVariant,
 } from '@material-ui/core';
-import { DeepPartial, UnpackNestedValue, UseFormReset } from 'react-hook-form';
+import {
+  DeepPartial,
+  Path,
+  UnpackNestedValue,
+  UseFormReset,
+} from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
@@ -55,6 +60,7 @@ export interface GenericFormProps<FormValuesType> {
   buttonText: string;
   buttonFullWidth?: boolean;
   buttonWrapperProps?: BoxProps;
+  buttonDisabled?: boolean;
   secondaryButtons?: GenericFormSecondaryButton[];
   formTitle?: string;
   formTitleVariant?: TypographyVariant;
@@ -63,7 +69,8 @@ export interface GenericFormProps<FormValuesType> {
   formInputsProps?: BaseTextFieldProps;
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
-  processing?: boolean;
+  inputsToWatch?: Path<FormValuesType>[];
+  onWatchHandler?: (watchedValues: unknown[]) => void;
 }
 
 export type TGenericForm = <FormValuesType>(
