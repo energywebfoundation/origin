@@ -8,3 +8,5 @@ export * from './createDemand';
 export * from './buyDirect';
 export * from './removeOrder';
 export * from './removeDemand';
+export * from './updateDemand';
+export * from './changeDemandStatus';

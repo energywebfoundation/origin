@@ -6,7 +6,7 @@ import {
   useCachedAllFuelTypes,
 } from '@energyweb/origin-ui-exchange-data';
 import { useDemandsTableLogic } from '@energyweb/origin-ui-exchange-logic';
-import { Remove } from '@material-ui/icons';
+import { Edit, Remove } from '@material-ui/icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -33,11 +33,27 @@ export const useDemandsTableEffects = () => {
     });
   };
 
+  const openUpdateDemandModal = (id: DemandDTO['id']) => {
+    const demandToUpdate = allDemands?.find((demand) => demand.id === id);
+    dispatchModals({
+      type: ExchangeModalsActionsEnum.SHOW_UPDATE_DEMAND,
+      payload: {
+        open: true,
+        demand: demandToUpdate,
+      },
+    });
+  };
+
   const actions: TableActionData<DemandDTO['id']>[] = [
     {
       name: t('exchange.myOrders.remove'),
       icon: <Remove />,
       onClick: (id: DemandDTO['id']) => openRemoveModal(id),
+    },
+    {
+      name: t('exchange.myOrders.update'),
+      icon: <Edit />,
+      onClick: (id: DemandDTO['id']) => openUpdateDemandModal(id),
     },
   ];
 
@@ -46,6 +62,7 @@ export const useDemandsTableEffects = () => {
     isLoading,
     allFuelTypes,
     actions,
+    openUpdateModal: openUpdateDemandModal,
   });
 
   return tableData;

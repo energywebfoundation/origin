@@ -31,6 +31,7 @@ export const useDemandsTableLogic: TUseDemandsTableLogic = ({
   allFuelTypes,
   isLoading,
   actions,
+  openUpdateModal,
 }) => {
   const { t } = useTranslation();
   return {
@@ -46,6 +47,7 @@ export const useDemandsTableLogic: TUseDemandsTableLogic = ({
       actions: '',
     },
     loading: isLoading,
+    onRowClick: openUpdateModal,
     data: formatDemands({ allFuelTypes, demands, actions }) ?? [],
   };
 };

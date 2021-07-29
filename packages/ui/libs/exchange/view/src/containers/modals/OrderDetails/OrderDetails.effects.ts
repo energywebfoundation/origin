@@ -37,10 +37,11 @@ export const useOrderDetailsEffects = () => {
   const removeHandler = useApiCancelOrderHandler(orderSideText);
 
   const handleRemove = () => {
+    handleClose();
     dispatchModals({
       type: ExchangeModalsActionsEnum.SHOW_REMOVE_ORDER_CONFIRM,
       payload: {
-        open: false,
+        open: true,
         id: order?.id,
         removeHandler,
       },

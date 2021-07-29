@@ -40,6 +40,10 @@ export interface IExchangeModalsStore {
     open: boolean;
     order: OrderDTO;
   };
+  updateDemand: {
+    open: boolean;
+    demand: DemandDTO;
+  };
 }
 
 interface IShowUpdateSupplyAction {
@@ -95,10 +99,19 @@ interface IShowOrderDetailsAction {
   };
 }
 
+interface IShowUpdateDemandAction {
+  type: ExchangeModalsActionsEnum.SHOW_UPDATE_DEMAND;
+  payload: {
+    open: boolean;
+    demand: DemandDTO;
+  };
+}
+
 export type TExchangeModalsAction =
   | IShowUpdateSupplyAction
   | IShowRemoveSupplyAction
   | IShowBundleDetailsAction
   | IShowBuyDirectAction
   | IShowRemoveOrderConfirmAction
-  | IShowOrderDetailsAction;
+  | IShowOrderDetailsAction
+  | IShowUpdateDemandAction;

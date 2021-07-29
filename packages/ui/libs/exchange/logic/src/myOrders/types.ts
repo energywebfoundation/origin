@@ -15,9 +15,10 @@ export type TUseDemandsTableArgs = {
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
   actions: TableActionData<DemandDTO['id']>[];
+  openUpdateModal: (id: DemandDTO['id']) => void;
 };
 export type TFormatDemands = (
-  props: Omit<TUseDemandsTableArgs, 'isLoading'>
+  props: Omit<TUseDemandsTableArgs, 'isLoading' | 'openUpdateModal'>
 ) => TableRowData<DemandDTO['id']>[];
 export type TUseDemandsTableLogic = (
   props: TUseDemandsTableArgs

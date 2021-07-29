@@ -33,19 +33,19 @@ export const periodTypeOptions = (
     return [
       {
         value: TimeFrame.Daily,
-        label: t('demand.properties.period.day'),
+        label: t('exchange.properties.period.day'),
       },
       {
         value: TimeFrame.Weekly,
-        label: t('demand.properties.period.week'),
+        label: t('exchange.properties.period.week'),
       },
       {
         value: TimeFrame.Monthly,
-        label: t('demand.properties.period.month'),
+        label: t('exchange.properties.period.month'),
       },
       {
         value: TimeFrame.Yearly,
-        label: t('demand.properties.period.year'),
+        label: t('exchange.properties.period.year'),
       },
     ];
   }
