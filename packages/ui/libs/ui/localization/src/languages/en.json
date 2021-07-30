@@ -31,7 +31,7 @@
         "createBundle": "Create bundle",
         "myBundles": "My bundles",
         "myOrders": "My orders",
-        "myTrades": "My Trades"
+        "myTrades": "My trades"
       },
       "organization": {
         "sectionTitle": "Organization",
@@ -663,6 +663,7 @@
         "gridOperator": "Grid Operator",
         "region": "Region",
         "update": "Update",
+        "viewMarket": "View Market",
         "modals": {
           "removeOrderConfirm": {
             "title": "Are you sure you want to remove?"
