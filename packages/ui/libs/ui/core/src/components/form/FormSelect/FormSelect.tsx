@@ -41,15 +41,13 @@ export const FormSelect: TFormSelect = ({
       render={({ field: { value, onChange } }) => {
         return field.autocomplete ? (
           <SelectAutocomplete
-            // @ts-ignore
-            value={value}
+            value={value as FormSelectOption[]}
             field={field}
             onChange={onChange}
             errorExists={errorExists}
             errorText={errorText}
             variant={variant}
-            // @ts-ignore
-            dependentValue={dependentValue}
+            dependentValue={dependentValue as FormSelectOption[]}
           />
         ) : (
           <SelectRegular
