@@ -1,9 +1,5 @@
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
-import {
-  FormInputProps,
-  FormSelectOption,
-  HierarchicalSelectOptions,
-} from '../../components';
+import { FormInputProps, FormSelectOption } from '../../components';
 import * as yup from 'yup';
 import {
   TextFieldProps,
@@ -30,8 +26,6 @@ export type GenericFormField = {
   autocomplete?: boolean;
   multiple?: boolean;
   maxValues?: number;
-  hierarchical?: boolean;
-  hierarchicalOptions?: HierarchicalSelectOptions;
   datePicker?: boolean;
   datePickerProps?: Omit<DatePickerProps, 'value' | 'onChange' | 'renderInput'>;
   startAdornment?: ReactNode;
