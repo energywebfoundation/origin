@@ -25,8 +25,8 @@ const formatBidsForMyOrders: TFormatBids = ({
       fuelType = joinedTypes;
     }
 
-    const startVol = parseInt(EnergyFormatter.format(bid?.startVolume));
-    const currentVol = parseInt(EnergyFormatter.format(bid?.currentVolume));
+    const startVol = parseInt(EnergyFormatter.format(bid.startVolume));
+    const currentVol = parseInt(EnergyFormatter.format(bid.currentVolume));
     const percentageFilled = (currentVol * 100) / startVol;
     const filled =
       bid.status === OrderStatus.PartiallyFilled
@@ -34,14 +34,14 @@ const formatBidsForMyOrders: TFormatBids = ({
         : '0%';
 
     return {
-      id: bid?.id,
-      volume: EnergyFormatter.format(bid?.currentVolume, true),
-      price: bid?.price / 100,
+      id: bid.id,
+      volume: EnergyFormatter.format(bid.currentVolume, true),
+      price: bid.price / 100,
       fuelType,
-      generationStart: bid?.product?.generationFrom
+      generationStart: bid.product?.generationFrom
         ? formatDate(bid.product.generationFrom)
         : '-',
-      generationEnd: bid?.product?.generationTo
+      generationEnd: bid.product?.generationTo
         ? formatDate(bid.product.generationTo)
         : '-',
       filled,
