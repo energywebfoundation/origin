@@ -40,7 +40,8 @@
         "invitations": "Invitations",
         "invite": "Invite",
         "all": "All Organizations",
-        "registerIRec": "Register I-REC"
+        "registerIRec": "Register I-REC",
+        "createBeneficiary": "Create Beneficiary"
       },
       "account": {
         "sectionTitle": "Account",
@@ -85,6 +86,17 @@
           "registeredSuccess": "Organization registered.",
           "registeredFailure": "Organization could not be created.",
           "unauthorized": "Unauthorized"
+        }
+      },
+      "createBeneficiary": {
+        "formTitle": "Create beneficiary",
+        "name": "Name",
+        "country": "Country",
+        "location": "Location",
+        "create": "Create",
+        "notifications": {
+          "createBeneficiarySuccess": "Beneficiary created successfully",
+          "createBeneficiaryError": "Error while creating beneficiary"
         }
       },
       "view": {

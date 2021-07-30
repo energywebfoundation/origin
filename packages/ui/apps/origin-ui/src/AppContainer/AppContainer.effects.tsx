@@ -65,6 +65,7 @@ export const useAppContainerEffects = () => {
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: true,
+    showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
   });
   const deviceMenu = getDeviceMenu({
     t,

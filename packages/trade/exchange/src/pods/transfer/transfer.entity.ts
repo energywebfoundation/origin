@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, Unique } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Asset } from '../asset/asset.entity';
 import { TransferDirection } from './transfer-direction';
@@ -8,6 +8,7 @@ import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: `${DB_TABLE_PREFIX}_transfer` })
+@Unique(['direction', 'transactionHash'])
 export class Transfer extends ExtendedBaseEntity {
     @ApiProperty({ type: String })
     @PrimaryGeneratedColumn('uuid')
@@ -26,7 +27,7 @@ export class Transfer extends ExtendedBaseEntity {
     amount: string;
 
     @ApiProperty({ type: String })
-    @Column({ nullable: true, unique: true })
+    @Column({ nullable: true })
     transactionHash: string;
 
     @ApiProperty({ type: String })

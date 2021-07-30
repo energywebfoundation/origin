@@ -5,8 +5,8 @@ import { IPublicOrganization } from '@energyweb/origin-backend-core';
 import { GetOrganizationsCommand } from '@energyweb/origin-backend';
 
 import { Beneficiary } from '../beneficiary.entity';
-import { BeneficiaryDTO } from '../dto/beneficiary.dto';
-import { GetBeneficiariesCommand } from '../commands/get-beneficiaries.command';
+import { GetBeneficiariesCommand } from '../commands';
+import { BeneficiaryDTO } from '../dto';
 
 @CommandHandler(GetBeneficiariesCommand)
 export class GetBeneficiariesHandler implements ICommandHandler<GetBeneficiariesCommand> {
@@ -26,15 +26,9 @@ export class GetBeneficiariesHandler implements ICommandHandler<GetBeneficiaries
         return beneficiaries.map((beneficiary) => {
             const organization = organizations.find((org) => org.id === beneficiary.organizationId);
 
-            if (!organization) {
-                return;
-            }
-
             return BeneficiaryDTO.wrap({
-                id: beneficiary.id,
-                irecBeneficiaryId: beneficiary.irecBeneficiaryId,
-                organization,
-                ownerId: beneficiary.ownerId
+                ...beneficiary,
+                organization: organization || null
             });
         });
     }

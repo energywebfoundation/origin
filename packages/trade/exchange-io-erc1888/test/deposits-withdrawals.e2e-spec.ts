@@ -1,4 +1,5 @@
 import { DatabaseService } from '@energyweb/origin-backend-utils';
+import { UserStatus } from '@energyweb/origin-backend-core';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { ethers } from 'ethers';
@@ -18,7 +19,8 @@ import {
     DB_TABLE_PREFIX,
     testUtils,
     RequestBatchClaimDTO,
-    RequestSendDTO
+    RequestSendDTO,
+    AccountBalanceService
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
@@ -45,6 +47,7 @@ describe('Deposits using deployed registry', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
     let accountService: AccountService;
+    let accountBalanceService: AccountBalanceService;
     let transferService: TransferService;
     let configService: ConfigService;
 
@@ -67,6 +70,7 @@ describe('Deposits using deployed registry', () => {
     const startExchange = async () => {
         ({
             accountService,
+            accountBalanceService,
             databaseService,
             transferService,
             configService,
@@ -351,8 +355,12 @@ describe('Deposits using deployed registry', () => {
     });
 
     it('should send to requested address', async () => {
-        const destinationAddress = ethers.Wallet.createRandom().address;
-        const sendAmount = '5';
+        const recipient = { id: 2, organization: { id: '2000' }, status: UserStatus.Active };
+        const destinationAddress = await createDepositAddress(
+            accountService,
+            recipient.organization.id
+        );
+        const sendAmount = '3';
         const depositAmount = '10';
 
         const assetId = await depositToExchangeAddress(depositAmount);
@@ -371,10 +379,12 @@ describe('Deposits using deployed registry', () => {
             .send(send)
             .expect(HttpStatus.CREATED);
 
-        await sleep(5000);
+        await sleep(6000);
 
-        const endBalance = await getBalance(destinationAddress, tokenId);
+        const destinationBalance = await accountBalanceService.getAccountBalance(
+            recipient.organization.id
+        );
 
-        expect(endBalance.toString()).equals(sendAmount);
+        expect(destinationBalance.available[0].amount.toString()).equals(sendAmount);
     });
 });

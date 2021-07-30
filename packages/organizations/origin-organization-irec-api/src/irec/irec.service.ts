@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+    BadRequestException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 
@@ -7,6 +12,7 @@ import {
     Account,
     AccountItem,
     AccountType,
+    ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
     Device,
@@ -18,17 +24,26 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
-    Transaction
+    ReservationItem,
+    TransactionResult
 } from '@energyweb/issuer-irec-api-wrapper';
-import { ILoggedInUser, IPublicOrganization } from '@energyweb/origin-backend-core';
+import { ILoggedInUser } from '@energyweb/origin-backend-core';
 
 import { CreateConnectionDTO } from './dto';
-import { GetConnectionCommand, RefreshTokensCommand } from '../connection';
+import { ConnectionDTO, GetConnectionCommand, RefreshTokensCommand } from '../connection';
 import { ReadStream } from 'fs';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
+export interface ICreateBeneficiary {
+    name: string;
+    countryCode: string;
+    location: string;
+}
+
 export interface IIrecService {
+    getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO>;
+
     login({
         userName,
         password,
@@ -36,10 +51,7 @@ export interface IIrecService {
         clientSecret
     }: CreateConnectionDTO): Promise<AccessTokens>;
 
-    createBeneficiary(
-        user: UserIdentifier,
-        organization: IPublicOrganization
-    ): Promise<Beneficiary>;
+    createBeneficiary(user: UserIdentifier, beneficiary: ICreateBeneficiary): Promise<Beneficiary>;
 
     updateBeneficiary(
         user: UserIdentifier,
@@ -79,9 +91,15 @@ export interface IIrecService {
         user: UserIdentifier,
         issueRequestCode: string,
         issuerAccountCode: string
-    ): Promise<Transaction>;
+    ): Promise<ApproveTransaction>;
 
     getCertificates(user: UserIdentifier): Promise<AccountItem[]>;
+
+    transferCertificate(
+        fromUser: UserIdentifier,
+        toUser: UserIdentifier,
+        assetId: string
+    ): Promise<TransactionResult>;
 
     approveDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 
@@ -95,8 +113,12 @@ export class IrecService implements IIrecService {
         private readonly configService: ConfigService
     ) {}
 
-    private async getIrecClient(user: UserIdentifier | string | number) {
-        const irecConnection = await this.commandBus.execute(new GetConnectionCommand(user));
+    public async getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO> {
+        return await this.commandBus.execute(new GetConnectionCommand(user));
+    }
+
+    private async getIrecClient(user: UserIdentifier) {
+        const irecConnection = await this.getConnectionInfo(user);
 
         if (!irecConnection) {
             throw new ForbiddenException('User does not have an IREC connection');
@@ -128,13 +150,13 @@ export class IrecService implements IIrecService {
 
     async createBeneficiary(
         user: UserIdentifier,
-        organization: IPublicOrganization
+        beneficiary: ICreateBeneficiary
     ): Promise<Beneficiary> {
         const irecClient = await this.getIrecClient(user);
         return await irecClient.beneficiary.create({
-            name: organization.name,
-            countryCode: organization.country,
-            location: `${organization.city}. ${organization.address}`,
+            name: beneficiary.name,
+            countryCode: beneficiary.countryCode,
+            location: beneficiary.location,
             active: true
         });
     }
@@ -246,7 +268,7 @@ export class IrecService implements IIrecService {
         user: UserIdentifier,
         issueRequestCode: string,
         issuerAccountCode: string
-    ): Promise<Transaction> {
+    ): Promise<ApproveTransaction> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.issue.approve(issueRequestCode, { issuer: issuerAccountCode });
     }
@@ -255,6 +277,38 @@ export class IrecService implements IIrecService {
         const irecClient = await this.getIrecClient(user);
         const tradeAccountCode = await this.getTradeAccountCode(user);
         return irecClient.account.getItems(tradeAccountCode);
+    }
+
+    async transferCertificate(
+        fromUser: UserIdentifier,
+        toUser: UserIdentifier,
+        assetId: string
+    ): Promise<TransactionResult> {
+        const fromUserClient = await this.getIrecClient(fromUser);
+        const fromUserConnectionInfo = await this.getConnectionInfo(fromUser);
+
+        const fromUserTradeAccount = await this.getTradeAccountCode(fromUser);
+        const toUserTradeAccount = await this.getTradeAccountCode(toUser);
+
+        const items = await fromUserClient.account.getItems(fromUserTradeAccount);
+        const item = items.find((i) => i.asset === assetId);
+
+        if (!item) {
+            throw new NotFoundException('IREC item not found');
+        }
+
+        const transferItem = new ReservationItem();
+        transferItem.code = item.code;
+        transferItem.amount = item.volume;
+
+        return fromUserClient.transfer({
+            sender: fromUserTradeAccount,
+            recipient: toUserTradeAccount,
+            approver: fromUserConnectionInfo.userName,
+            volume: transferItem.amount,
+            items: [transferItem],
+            notes: ''
+        });
     }
 
     async approveDevice(user: UserIdentifier, code: string): Promise<IrecDevice> {

@@ -6,11 +6,13 @@ import { UserService } from '@energyweb/origin-backend';
 
 import { IREC_SERVICE, IrecService } from '../../irec';
 import { Beneficiary } from '../beneficiary.entity';
-import { BeneficiaryDTO } from '../dto/beneficiary.dto';
-import { CreateBeneficiaryCommand, GetBeneficiaryCommand } from '../commands';
+import { CreateLocalBeneficiaryCommand, GetBeneficiaryCommand } from '../commands';
+import { BeneficiaryDTO } from '../dto';
 
-@CommandHandler(CreateBeneficiaryCommand)
-export class CreateBeneficiaryHandler implements ICommandHandler<CreateBeneficiaryCommand> {
+@CommandHandler(CreateLocalBeneficiaryCommand)
+export class CreateLocalBeneficiaryHandler
+    implements ICommandHandler<CreateLocalBeneficiaryCommand>
+{
     constructor(
         @InjectRepository(Beneficiary)
         private readonly repository: Repository<Beneficiary>,
@@ -20,21 +22,28 @@ export class CreateBeneficiaryHandler implements ICommandHandler<CreateBeneficia
         private readonly commandBus: CommandBus
     ) {}
 
-    public async execute({ organization }: CreateBeneficiaryCommand): Promise<BeneficiaryDTO> {
+    public async execute({
+        organizationId,
+        beneficiary
+    }: CreateLocalBeneficiaryCommand): Promise<BeneficiaryDTO> {
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         const irecBeneficiary = await this.irecService.createBeneficiary(
             platformAdmin.id,
-            organization
+            beneficiary
         );
 
-        const beneficiary = this.repository.create({
+        const newBeneficiary = this.repository.create({
             irecBeneficiaryId: irecBeneficiary.id,
-            organizationId: organization.id,
-            ownerId: null
+            organizationId: null,
+            ownerId: organizationId,
+            name: beneficiary.name,
+            countryCode: beneficiary.countryCode,
+            location: beneficiary.location,
+            active: true
         });
 
-        const storedBeneficiary = await this.repository.save(beneficiary);
+        const storedBeneficiary = await this.repository.save(newBeneficiary);
 
         return this.commandBus.execute(new GetBeneficiaryCommand(storedBeneficiary.id));
     }

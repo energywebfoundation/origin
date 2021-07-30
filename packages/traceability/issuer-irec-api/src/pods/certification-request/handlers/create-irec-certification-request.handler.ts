@@ -2,6 +2,7 @@ import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inject } from '@nestjs/common';
+
 import {
     BlockchainPropertiesService,
     CertificationRequest,
@@ -9,12 +10,12 @@ import {
 } from '@energyweb/issuer-api';
 import { FileService, UserService } from '@energyweb/origin-backend';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
+import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
+import { LoggedInUser } from '@energyweb/origin-backend-core';
 
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
-import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
-import { LoggedInUser } from '@energyweb/origin-backend-core';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateIrecCertificationRequestHandler
@@ -53,13 +54,13 @@ export class CreateIrecCertificationRequestHandler
 
         const irecCertificationRequest = this.irecRepository.create({
             certificationRequestId: certificationRequest.id,
-            userId: String(params.user.id)
+            organizationId: String(params.user.organizationId)
         });
         await this.irecRepository.save(irecCertificationRequest);
 
         await this.createIrecIssuanceRequest(certificationRequest, params.user);
 
-        return { ...certificationRequest, userId: irecCertificationRequest.userId };
+        return { ...certificationRequest, organizationId: irecCertificationRequest.organizationId };
     }
 
     async createIrecIssuanceRequest(
@@ -69,7 +70,6 @@ export class CreateIrecCertificationRequestHandler
         const irecCertificationRequest = await this.irecRepository.findOne({
             certificationRequestId: request.id
         });
-        const { userId } = irecCertificationRequest;
 
         const platformAdmin = await this.userService.getPlatformAdmin();
 
@@ -79,7 +79,7 @@ export class CreateIrecCertificationRequestHandler
                 request.files.map((fileId) => this.fileService.get(fileId, user))
             );
             fileIds = await this.irecService.uploadFiles(
-                userId,
+                user,
                 files.map((file) => file.data)
             );
         }

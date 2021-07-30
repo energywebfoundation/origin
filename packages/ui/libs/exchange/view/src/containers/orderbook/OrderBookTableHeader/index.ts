@@ -1,1 +1,1 @@
-export * from './OrderbookTableHeader';
+export * from './OrderBookTableHeader';
