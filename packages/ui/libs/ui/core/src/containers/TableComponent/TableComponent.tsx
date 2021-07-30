@@ -1,31 +1,17 @@
-import { Table, Typography, TypographyProps } from '@material-ui/core';
+import { Table, Typography } from '@material-ui/core';
 import React, { useCallback } from 'react';
-import {
-  TableRowData,
-  TableHeaderData,
-  TTableComponent,
-} from './TableComponent.types';
+import { TTableComponent } from './TableComponent.types';
 import {
   TableComponentHeader,
   TableComponentBody,
   TableComponentFooter,
+  TableFilters,
 } from '../../components/table';
 import { usePaginateData } from './usePaginateData';
 import { useStyles } from './TableComponent.styles';
+import { useFilterTableData } from './useFilterTableData';
 
 export const TABLE_COMPONENT__DEFAULT_PAGE_SIZE = 5;
-
-export interface TableComponentProps<Id> {
-  loading: boolean;
-  data: TableRowData<Id>[];
-  header: TableHeaderData;
-  totalPages?: number;
-  tableTitle?: string;
-  tableTitleProps?: TypographyProps;
-  pageSize?: number;
-  onRowClick?: (id: Id) => void;
-  getCustomRowClassName?: (id: Id) => string;
-}
 
 export const TableComponent: TTableComponent = ({
   data = [],
@@ -34,12 +20,17 @@ export const TableComponent: TTableComponent = ({
   tableTitleProps,
   pageSize = TABLE_COMPONENT__DEFAULT_PAGE_SIZE,
   totalPages,
+  tableFilters,
   loading,
   onRowClick,
   getCustomRowClassName,
 }) => {
-  const { activePage, setActivePage, paginatedData } = usePaginateData(
+  const { filteredData, filters, setFilters } = useFilterTableData(
     data,
+    tableFilters
+  );
+  const { activePage, setActivePage, paginatedData } = usePaginateData(
+    filteredData,
     pageSize
   );
   const classes = useStyles();
@@ -49,6 +40,9 @@ export const TableComponent: TTableComponent = ({
         <Typography gutterBottom {...tableTitleProps}>
           {tableTitle}
         </Typography>
+      )}
+      {tableFilters && tableFilters.length > 0 && (
+        <TableFilters filters={filters} setFilters={setFilters} />
       )}
       <Table size="small" aria-label="a dense table">
         <TableComponentHeader headerData={header} />
@@ -61,7 +55,7 @@ export const TableComponent: TTableComponent = ({
           getCustomRowClassName={getCustomRowClassName}
         />
         <TableComponentFooter
-          totalRows={data.length}
+          totalRows={filteredData.length}
           currentPage={activePage}
           handlePageChange={useCallback(
             (pageNumber) => {
@@ -70,7 +64,7 @@ export const TableComponent: TTableComponent = ({
             [setActivePage]
           )}
           pageSize={pageSize}
-          totalPages={totalPages || Math.ceil(data.length / pageSize)}
+          totalPages={totalPages || Math.ceil(filteredData.length / pageSize)}
         />
       </Table>
     </div>
