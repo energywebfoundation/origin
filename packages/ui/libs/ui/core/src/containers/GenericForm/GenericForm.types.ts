@@ -6,7 +6,7 @@ import {
 } from '../../components';
 import * as yup from 'yup';
 import {
-  BaseTextFieldProps,
+  TextFieldProps,
   BoxProps,
   ButtonProps,
   TypographyVariant,
@@ -39,7 +39,7 @@ export type GenericFormField = {
     element: ReactNode;
     isValidCheck?: boolean;
   };
-  textFieldProps?: BaseTextFieldProps;
+  textFieldProps?: TextFieldProps;
   dependentOn?: string;
   dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
 };
@@ -66,7 +66,7 @@ export interface GenericFormProps<FormValuesType> {
   formTitleVariant?: TypographyVariant;
   formClass?: string;
   inputsVariant?: FormInputProps<FormValuesType>['variant'];
-  formInputsProps?: BaseTextFieldProps;
+  formInputsProps?: TextFieldProps;
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
   inputsToWatch?: Path<FormValuesType>[];
