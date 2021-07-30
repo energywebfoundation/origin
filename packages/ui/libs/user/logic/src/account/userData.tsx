@@ -12,9 +12,17 @@ export type TUpdateUserDataFormValues = {
 };
 
 export const useUpdateUserAccountDataFormConfig = (
-  initialFormData: TUpdateUserDataFormValues
+  user: UserDTO
 ): Omit<GenericFormProps<TUpdateUserDataFormValues>, 'submitHandler'> => {
   const { t } = useTranslation();
+  const { firstName, lastName, telephone, status, kycStatus } = user;
+  const initialFormData: TUpdateUserDataFormValues = {
+    firstName,
+    lastName,
+    telephone,
+    status,
+    kycStatus,
+  };
   return {
     buttonText: t('general.buttons.edit'),
     fields: [
@@ -44,7 +52,7 @@ export const useUpdateUserAccountDataFormConfig = (
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: initialFormData,
     twoColumns: true,
-    inputsVariant: 'filled',
+    inputsVariant: 'filled' as any,
     validationSchema: Yup.object().shape({
       firstName: Yup.string().label(t('user.profile.firstName')).required(),
       lastName: Yup.string().label(t('user.profile.lastName')).required(),
