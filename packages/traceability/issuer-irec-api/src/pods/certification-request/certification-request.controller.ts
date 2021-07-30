@@ -27,13 +27,13 @@ import {
     GetAllCertificationRequestsQuery,
     GetCertificationRequestByCertificateQuery,
     GetCertificationRequestQuery,
-    RevokeCertificationRequestCommand,
     SuccessResponseDTO,
     ValidateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import {
     ApproveIrecCertificationRequestCommand,
-    CreateIrecCertificationRequestCommand
+    CreateIrecCertificationRequestCommand,
+    RevokeIrecCertificationRequestCommand
 } from './commands';
 import { FullCertificationRequestDTO } from './full-certification-request.dto';
 import {
@@ -161,6 +161,6 @@ export class CertificationRequestController {
         description: 'Revokes a Certification Request'
     })
     public async revoke(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(new RevokeCertificationRequestCommand(id));
+        return this.commandBus.execute(new RevokeIrecCertificationRequestCommand(id));
     }
 }

@@ -4,7 +4,8 @@ import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 
 import {
     ApproveCertificationRequestCommand,
-    GetAllCertificationRequestsQuery
+    GetAllCertificationRequestsQuery,
+    RevokeCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
@@ -33,7 +34,11 @@ export class CheckCertificationRequestStateTask {
                 certificateRequest.irecIssueId
             );
 
-            if (irecIssue && irecIssue.status === IssuanceStatus.Approved) {
+            if (!irecIssue) {
+                return;
+            }
+
+            if (irecIssue.status === IssuanceStatus.Approved) {
                 await this.commandBus.execute(
                     new ApproveCertificationRequestCommand(certificateRequest.id)
                 );
@@ -42,6 +47,11 @@ export class CheckCertificationRequestStateTask {
                         certificateRequest,
                         IssuanceStatus.Approved
                     )
+                );
+            }
+            if (irecIssue.status === IssuanceStatus.Rejected) {
+                await this.commandBus.execute(
+                    new RevokeCertificationRequestCommand(certificateRequest.id)
                 );
             }
         }
