@@ -1,4 +1,8 @@
-import { DemandDTO } from '@energyweb/exchange-irec-react-query-client';
+import {
+  DemandDTO,
+  DemandStatus,
+  TimeFrame,
+} from '@energyweb/exchange-irec-react-query-client';
 import { TableActionData } from '@energyweb/origin-ui-core';
 import {
   useApiAllDemands,
@@ -7,12 +11,19 @@ import {
 } from '@energyweb/origin-ui-exchange-data';
 import { useDemandsTableLogic } from '@energyweb/origin-ui-exchange-logic';
 import { Edit, Remove } from '@material-ui/icons';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ExchangeModalsActionsEnum,
   useExchangeModalsDispatch,
 } from '../../../context';
+import {
+  EndDateFilter,
+  DemandPeriodFilter,
+  StartDateFilter,
+  DemandStatusFilter,
+} from '../../table-filters';
 
 export const useDemandsTableEffects = () => {
   const allFuelTypes = useCachedAllFuelTypes();
@@ -57,11 +68,49 @@ export const useDemandsTableEffects = () => {
     },
   ];
 
+  const tableFilters = [
+    {
+      name: 'period',
+      filterFunc: (cellValue: TimeFrame, filterValue: TimeFrame) => {
+        return cellValue === filterValue;
+      },
+      component: DemandPeriodFilter,
+    },
+    {
+      name: 'generationStart',
+      filterFunc: (cellValue: string, filterValue: Dayjs) => {
+        return (
+          dayjs(cellValue).isSame(filterValue, 'day') ||
+          dayjs(cellValue).isAfter(filterValue)
+        );
+      },
+      component: StartDateFilter,
+    },
+    {
+      name: 'status',
+      filterFunc: (cellValue: DemandStatus, filterValue: DemandStatus) => {
+        return cellValue === filterValue;
+      },
+      component: DemandStatusFilter,
+    },
+    {
+      name: 'generationEnd',
+      filterFunc: (cellValue: string, filterValue: Dayjs) => {
+        return (
+          dayjs(cellValue).isSame(filterValue, 'day') ||
+          dayjs(cellValue).isBefore(filterValue)
+        );
+      },
+      component: EndDateFilter,
+    },
+  ];
+
   const tableData = useDemandsTableLogic({
     demands: allDemands,
     isLoading,
     allFuelTypes,
     actions,
+    tableFilters,
     openUpdateModal: openUpdateDemandModal,
   });
 

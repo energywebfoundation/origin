@@ -6,6 +6,7 @@ import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-re
 import {
   TableActionData,
   TableComponentProps,
+  TableFilter,
   TableRowData,
 } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
@@ -15,10 +16,14 @@ export type TUseDemandsTableArgs = {
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
   actions: TableActionData<DemandDTO['id']>[];
+  tableFilters: TableFilter[];
   openUpdateModal: (id: DemandDTO['id']) => void;
 };
 export type TFormatDemands = (
-  props: Omit<TUseDemandsTableArgs, 'isLoading' | 'openUpdateModal'>
+  props: Omit<
+    TUseDemandsTableArgs,
+    'isLoading' | 'openUpdateModal' | 'tableFilters'
+  >
 ) => TableRowData<DemandDTO['id']>[];
 export type TUseDemandsTableLogic = (
   props: TUseDemandsTableArgs
@@ -29,10 +34,14 @@ export type TUseBidsTableArgs = {
   allFuelTypes: CodeNameDTO[];
   isLoading: boolean;
   actions: TableActionData<OrderDTO['id']>[];
+  tableFilters: TableFilter[];
   openDetailsModal: (id: OrderDTO['id']) => void;
 };
 export type TFormatBids = (
-  props: Omit<TUseBidsTableArgs, 'isLoading' | 'openDetailsModal'>
+  props: Omit<
+    TUseBidsTableArgs,
+    'isLoading' | 'openDetailsModal' | 'tableFilters'
+  >
 ) => TableRowData<OrderDTO['id']>[];
 export type TUseBidsTableLogic = (
   props: TUseBidsTableArgs
@@ -43,10 +52,14 @@ export type TUseAsksTableArgs = {
   allDevices: ComposedPublicDevice[];
   isLoading: boolean;
   actions: TableActionData<OrderDTO['id']>[];
+  tableFilters: TableFilter[];
   openDetailsModal: (id: OrderDTO['id']) => void;
 };
 export type TFormatAsks = (
-  props: Omit<TUseAsksTableArgs, 'isLoading' | 'openDetailsModal'>
+  props: Omit<
+    TUseAsksTableArgs,
+    'isLoading' | 'openDetailsModal' | 'tableFilters'
+  >
 ) => TableRowData<OrderDTO['id']>[];
 export type TUseAsksTableLogic = (
   props: TUseAsksTableArgs

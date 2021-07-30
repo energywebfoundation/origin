@@ -29,12 +29,12 @@ export const useUpdateDemandEffects = () => {
   };
 
   const { open, demand } = updateDemand;
-  const initialStatus = !!demand && demand?.status === DemandStatus.ACTIVE;
+  const initialStatus = !!demand && demand.status === DemandStatus.ACTIVE;
   const [demandStatus, setDemandStatus] = useState<boolean>(initialStatus);
 
   useEffect(() => {
     if (!!demand) {
-      const newStatus = demand?.status === DemandStatus.ACTIVE;
+      const newStatus = demand.status === DemandStatus.ACTIVE;
       if (newStatus !== demandStatus) {
         setDemandStatus(newStatus);
       }

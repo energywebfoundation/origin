@@ -4,7 +4,6 @@ import {
 } from '@energyweb/exchange-irec-react-query-client';
 import { GenericFormProps } from '@energyweb/origin-ui-core';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
-import { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';

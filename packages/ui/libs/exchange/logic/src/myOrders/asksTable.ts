@@ -35,6 +35,7 @@ export const useMyOrdersAsksTableLogic: TUseAsksTableLogic = ({
   allDevices,
   isLoading,
   actions,
+  tableFilters,
   openDetailsModal,
 }) => {
   const { t } = useTranslation();
@@ -50,6 +51,7 @@ export const useMyOrdersAsksTableLogic: TUseAsksTableLogic = ({
       actions: '',
     },
     loading: isLoading,
+    tableFilters,
     data: formatAsksForMyOrders({ allDevices, asks, actions }) ?? [],
     onRowClick: openDetailsModal,
   };

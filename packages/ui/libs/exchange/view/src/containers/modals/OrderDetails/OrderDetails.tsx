@@ -1,7 +1,6 @@
 import React from 'react';
 import { GenericModal } from '@energyweb/origin-ui-core';
 import { Box, Divider, Typography } from '@material-ui/core';
-import { formatDate } from '@energyweb/origin-ui-utils';
 import { ArrowRightAlt } from '@material-ui/icons';
 import { useStyles } from './OrderDetails.styles';
 import { useOrderDetailsEffects } from './OrderDetails.effects';

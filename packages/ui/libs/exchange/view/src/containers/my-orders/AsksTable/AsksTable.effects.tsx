@@ -3,16 +3,21 @@ import { TableActionData } from '@energyweb/origin-ui-core';
 import {
   useApiAllDevices,
   useApiCancelOrderHandler,
-  useApiMyDevices,
 } from '@energyweb/origin-ui-exchange-data';
 import { useMyOrdersAsksTableLogic } from '@energyweb/origin-ui-exchange-logic';
 import { Remove, Visibility } from '@material-ui/icons';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ExchangeModalsActionsEnum,
   useExchangeModalsDispatch,
 } from '../../../context';
+import {
+  EndDateFilter,
+  FacilityNameTextFilter,
+  StartDateFilter,
+} from '../../table-filters';
 import { AsksTableProps } from './AsksTable';
 
 export const useAsksTableEffects = ({ asks, isLoading }: AsksTableProps) => {
@@ -58,11 +63,42 @@ export const useAsksTableEffects = ({ asks, isLoading }: AsksTableProps) => {
     },
   ];
 
+  const tableFilters = [
+    {
+      name: 'generationStart',
+      filterFunc: (cellValue: string, filterValue: Dayjs) => {
+        return (
+          dayjs(cellValue).isSame(filterValue, 'day') ||
+          dayjs(cellValue).isAfter(filterValue)
+        );
+      },
+      component: StartDateFilter,
+    },
+    {
+      name: 'facilityName',
+      filterFunc: (cellValue: string, filterValue: string) => {
+        return cellValue.toLowerCase().includes(filterValue.toLowerCase());
+      },
+      component: FacilityNameTextFilter,
+    },
+    {
+      name: 'generationEnd',
+      filterFunc: (cellValue: string, filterValue: Dayjs) => {
+        return (
+          dayjs(cellValue).isSame(filterValue, 'day') ||
+          dayjs(cellValue).isBefore(filterValue)
+        );
+      },
+      component: EndDateFilter,
+    },
+  ];
+
   const tableData = useMyOrdersAsksTableLogic({
     asks,
     allDevices,
     isLoading: isLoading || areDevicesLoading,
     actions,
+    tableFilters,
     openDetailsModal,
   });
   return tableData;

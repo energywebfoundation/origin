@@ -11,7 +11,7 @@ export const useApiBidsAndAsks = () => {
     (order) =>
       order.side === OrderSide.Bid &&
       order.status === OrderStatus.Active &&
-      !(order as any)?.demandId
+      !(order as any).demandId
   );
   const asks = orders?.filter(
     (order) =>

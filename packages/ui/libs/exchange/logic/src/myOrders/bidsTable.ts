@@ -11,14 +11,22 @@ const formatBidsForMyOrders: TFormatBids = ({
 }) => {
   return bids?.map((bid) => {
     let fuelType = '-';
-    if (!!bid?.product?.deviceType) {
-      const fuelCode = bid.product.deviceType[0].split(';')[0];
-      const { mainType } = getMainFuelType(fuelCode, allFuelTypes);
-      fuelType = mainType;
+    if (!!bid.product?.deviceType) {
+      const fuelCodes = new Set<string>();
+      bid.product.deviceType.forEach((type) =>
+        fuelCodes.add(type.split(';')[0])
+      );
+      const joinedTypes = [...fuelCodes]
+        .map((code) => {
+          const { mainType } = getMainFuelType(code, allFuelTypes);
+          return mainType;
+        })
+        .join(', ');
+      fuelType = joinedTypes;
     }
 
-    const startVol = parseInt(EnergyFormatter.format(bid.startVolume));
-    const currentVol = parseInt(EnergyFormatter.format(bid.currentVolume));
+    const startVol = parseInt(EnergyFormatter.format(bid?.startVolume));
+    const currentVol = parseInt(EnergyFormatter.format(bid?.currentVolume));
     const percentageFilled = (currentVol * 100) / startVol;
     const filled =
       bid.status === OrderStatus.PartiallyFilled
@@ -26,10 +34,10 @@ const formatBidsForMyOrders: TFormatBids = ({
         : '0%';
 
     return {
-      id: bid.id,
-      volume: EnergyFormatter.format(bid.currentVolume, true),
-      price: bid.price / 100,
-      fuelType: fuelType,
+      id: bid?.id,
+      volume: EnergyFormatter.format(bid?.currentVolume, true),
+      price: bid?.price / 100,
+      fuelType,
       generationStart: bid?.product?.generationFrom
         ? formatDate(bid.product.generationFrom)
         : '-',
@@ -47,6 +55,7 @@ export const useMyOrdersBidsTableLogic: TUseBidsTableLogic = ({
   allFuelTypes,
   isLoading,
   actions,
+  tableFilters,
   openDetailsModal,
 }) => {
   const { t } = useTranslation();
@@ -55,7 +64,7 @@ export const useMyOrdersBidsTableLogic: TUseBidsTableLogic = ({
     header: {
       volume: t('exchange.myOrders.volume'),
       price: t('exchange.myOrders.price'),
-      fuelType: t('exchange.myOrders.type'),
+      fuelType: t('exchange.myOrders.fuelType'),
       generationStart: t('exchange.myOrders.generationStart'),
       generationEnd: t('exchange.myOrders.generationEnd'),
       filled: t('exchange.myOrders.filled'),
@@ -63,6 +72,7 @@ export const useMyOrdersBidsTableLogic: TUseBidsTableLogic = ({
     },
     loading: isLoading,
     onRowClick: openDetailsModal,
+    tableFilters,
     data: formatBidsForMyOrders({ allFuelTypes, bids, actions }) ?? [],
   };
 };

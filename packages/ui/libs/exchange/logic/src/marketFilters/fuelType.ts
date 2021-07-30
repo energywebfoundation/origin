@@ -27,8 +27,6 @@ export const useFuelTypeFilterLogic: TUseFuelTypeFilterLogic = (
       options: prepareFuelTypesOptions(allFuelTypes),
       multiple: true,
     },
-    errorExists: null,
-    errorText: '',
     variant: 'filled',
   };
 };

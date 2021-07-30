@@ -1,17 +1,23 @@
 import { OrderDTO } from '@energyweb/exchange-irec-react-query-client';
-import { TableActionData } from '@energyweb/origin-ui-core';
+import { FormSelectOption, TableActionData } from '@energyweb/origin-ui-core';
 import {
   useAllDeviceFuelTypes,
   useApiCancelOrderHandler,
 } from '@energyweb/origin-ui-exchange-data';
 import { useMyOrdersBidsTableLogic } from '@energyweb/origin-ui-exchange-logic';
 import { Remove, Visibility } from '@material-ui/icons';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ExchangeModalsActionsEnum,
   useExchangeModalsDispatch,
 } from '../../../context';
+import {
+  EndDateFilter,
+  FuelTypeFilter,
+  StartDateFilter,
+} from '../../table-filters';
 import { BidsTableProps } from './BidsTable';
 
 export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
@@ -57,11 +63,47 @@ export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
     },
   ];
 
+  const tableFilters = [
+    {
+      name: 'generationStart',
+      filterFunc: (cellValue: string, filterValue: Dayjs) => {
+        return (
+          dayjs(cellValue).isSame(filterValue, 'day') ||
+          dayjs(cellValue).isAfter(filterValue)
+        );
+      },
+      component: StartDateFilter,
+    },
+    {
+      name: 'fuelType',
+      filterFunc: (cellValue: string, filterValue: FormSelectOption[]) => {
+        if (!filterValue || filterValue.length < 1) return true;
+        const cellTypesArr = cellValue.split(', ');
+        const filterTypesArr = filterValue.map((filter) => filter.label);
+        return cellTypesArr.some((cellType) =>
+          filterTypesArr.includes(cellType)
+        );
+      },
+      component: FuelTypeFilter,
+    },
+    {
+      name: 'generationEnd',
+      filterFunc: (cellValue: string, filterValue: Dayjs) => {
+        return (
+          dayjs(cellValue).isSame(filterValue, 'day') ||
+          dayjs(cellValue).isBefore(filterValue)
+        );
+      },
+      component: EndDateFilter,
+    },
+  ];
+
   const tableData = useMyOrdersBidsTableLogic({
     bids,
     isLoading: isLoading || areFuelTypesLoading,
     allFuelTypes,
     actions,
+    tableFilters,
     openDetailsModal,
   });
   return tableData;
