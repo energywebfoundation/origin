@@ -1,4 +1,8 @@
-import { OrderBookOrderDTO } from '@energyweb/exchange-irec-react-query-client';
+import {
+  DemandDTO,
+  OrderBookOrderDTO,
+  OrderDTO,
+} from '@energyweb/exchange-irec-react-query-client';
 import {
   Bundle,
   BundlePublicDTO,
@@ -23,6 +27,22 @@ export interface IExchangeModalsStore {
   buyDirect: {
     open: boolean;
     ask: OrderBookOrderDTO;
+  };
+  removeOrder: {
+    open: boolean;
+    id: OrderDTO['id'] | DemandDTO['id'];
+    removeHandler: (
+      id: OrderDTO['id'] | DemandDTO['id'],
+      closeModal: () => void
+    ) => void;
+  };
+  orderDetails: {
+    open: boolean;
+    order: OrderDTO;
+  };
+  updateDemand: {
+    open: boolean;
+    demand: DemandDTO;
   };
 }
 
@@ -59,8 +79,39 @@ interface IShowBuyDirectAction {
   };
 }
 
+interface IShowRemoveOrderConfirmAction {
+  type: ExchangeModalsActionsEnum.SHOW_REMOVE_ORDER_CONFIRM;
+  payload: {
+    open: boolean;
+    id: OrderDTO['id'] | DemandDTO['id'];
+    removeHandler: (
+      id: OrderDTO['id'] | DemandDTO['id'],
+      closeModal: () => void
+    ) => void;
+  };
+}
+
+interface IShowOrderDetailsAction {
+  type: ExchangeModalsActionsEnum.SHOW_ORDER_DETAILS;
+  payload: {
+    open: boolean;
+    order: OrderDTO;
+  };
+}
+
+interface IShowUpdateDemandAction {
+  type: ExchangeModalsActionsEnum.SHOW_UPDATE_DEMAND;
+  payload: {
+    open: boolean;
+    demand: DemandDTO;
+  };
+}
+
 export type TExchangeModalsAction =
   | IShowUpdateSupplyAction
   | IShowRemoveSupplyAction
   | IShowBundleDetailsAction
-  | IShowBuyDirectAction;
+  | IShowBuyDirectAction
+  | IShowRemoveOrderConfirmAction
+  | IShowOrderDetailsAction
+  | IShowUpdateDemandAction;

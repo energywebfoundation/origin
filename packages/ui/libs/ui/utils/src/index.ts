@@ -13,3 +13,4 @@ export * from './convert';
 export * from './localization';
 export * from './types';
 export * from './context';
+export * from './checks';

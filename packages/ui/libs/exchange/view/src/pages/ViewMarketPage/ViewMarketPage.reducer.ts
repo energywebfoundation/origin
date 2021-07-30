@@ -1,4 +1,5 @@
 import { FormSelectOption } from '@energyweb/origin-ui-core';
+import { Dayjs } from 'dayjs';
 
 export type MarketFiltersState = {
   fuelType: FormSelectOption[];
@@ -6,6 +7,8 @@ export type MarketFiltersState = {
   regions: FormSelectOption[];
   subregions: FormSelectOption[];
   gridOperator: FormSelectOption[];
+  generationFrom: Dayjs;
+  generationTo: Dayjs;
 };
 
 export enum MarketFilterActionEnum {
@@ -14,6 +17,9 @@ export enum MarketFilterActionEnum {
   SET_REGIONS = 'SET_REGIONS',
   SET_SUBREGIONS = 'SET_SUBREGIONS',
   SET_GRID_OPERATOR = 'SET_GRID_OPERATOR',
+  SET_GENERATION_FROM = 'SET_GENERATION_FROM',
+  SET_GENERATION_TO = 'SET_GENERATION_TO',
+  SET_MARKET_FILTERS_STATE = 'SET_MARKET_FILTERS_STATE',
 }
 
 export type MarketFiltersActions =
@@ -36,17 +42,31 @@ export type MarketFiltersActions =
   | {
       type: MarketFilterActionEnum.SET_GRID_OPERATOR;
       payload: MarketFiltersState['gridOperator'];
+    }
+  | {
+      type: MarketFilterActionEnum.SET_GENERATION_FROM;
+      payload: MarketFiltersState['generationFrom'];
+    }
+  | {
+      type: MarketFilterActionEnum.SET_GENERATION_TO;
+      payload: MarketFiltersState['generationTo'];
+    }
+  | {
+      type: MarketFilterActionEnum.SET_MARKET_FILTERS_STATE;
+      payload: MarketFiltersState;
     };
 
-export const initialState: MarketFiltersState = {
+export const initialFiltersState: MarketFiltersState = {
   fuelType: [],
   deviceType: [],
   regions: [],
   subregions: [],
   gridOperator: [],
+  generationFrom: null,
+  generationTo: null,
 };
 
-export const reducer = (
+export const filtersReducer = (
   state: MarketFiltersState,
   action: MarketFiltersActions
 ): MarketFiltersState => {
@@ -61,5 +81,11 @@ export const reducer = (
       return { ...state, subregions: action.payload };
     case MarketFilterActionEnum.SET_GRID_OPERATOR:
       return { ...state, gridOperator: action.payload };
+    case MarketFilterActionEnum.SET_GENERATION_FROM:
+      return { ...state, generationFrom: action.payload };
+    case MarketFilterActionEnum.SET_GENERATION_TO:
+      return { ...state, generationTo: action.payload };
+    case MarketFilterActionEnum.SET_MARKET_FILTERS_STATE:
+      return action.payload;
   }
 };

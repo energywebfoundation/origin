@@ -22,16 +22,27 @@ export const GenericForm: TGenericForm = memo(
     formInputsProps,
     partOfMultiForm,
     twoColumns,
-    processing,
     hideSubmitButton,
+    inputsToWatch,
+    onWatchHandler,
+    buttonDisabled,
   }) => {
-    const { control, register, onSubmit, errors, buttonDisabled, dirtyFields } =
-      useGenericFormEffects({
-        validationSchema,
-        submitHandler,
-        initialValues,
-        partOfMultiForm,
-      });
+    const {
+      control,
+      register,
+      onSubmit,
+      errors,
+      submitButtonDisabled,
+      dirtyFields,
+    } = useGenericFormEffects({
+      validationSchema,
+      submitHandler,
+      initialValues,
+      partOfMultiForm,
+      inputsToWatch,
+      onWatchHandler,
+      buttonDisabled,
+    });
 
     return (
       <form onSubmit={onSubmit} className={formClass}>
@@ -45,7 +56,6 @@ export const GenericForm: TGenericForm = memo(
 
         {twoColumns ? (
           <DoubleColumnForm
-            processing={processing}
             fields={fields}
             control={control}
             register={register}
@@ -56,7 +66,6 @@ export const GenericForm: TGenericForm = memo(
           />
         ) : (
           <SingleColumnForm
-            processing={processing}
             fields={fields}
             control={control}
             register={register}
@@ -88,7 +97,7 @@ export const GenericForm: TGenericForm = memo(
             name="submit"
             size="large"
             variant="contained"
-            disabled={buttonDisabled}
+            disabled={submitButtonDisabled}
             type="submit"
           >
             {buttonText}

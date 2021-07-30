@@ -3,6 +3,9 @@ import { UpdateSupplyModal } from './UpdateSupplyModal';
 import { RemoveSupplyConfirmModal } from './RemoveSupplyConfirmModal';
 import { BundleDetails } from './BundleDetails';
 import { DirectBuy } from './DirectBuy';
+import { RemoveOrderConfirm } from './RemoveOrderConfirm';
+import { OrderDetails } from './OrderDetails';
+import { UpdateDemand } from './UpdateDemand';
 
 export const ExchangeModals: FC = () => {
   return (
@@ -11,6 +14,9 @@ export const ExchangeModals: FC = () => {
       <UpdateSupplyModal />
       <RemoveSupplyConfirmModal />
       <DirectBuy />
+      <RemoveOrderConfirm />
+      <OrderDetails />
+      <UpdateDemand />
     </>
   );
 };

@@ -10,3 +10,5 @@ export * from './myBundles';
 export * from './myDevices';
 export * from './regionsConfig';
 export * from './orderbook';
+export * from './allDemands';
+export * from './bidsAndAsks';

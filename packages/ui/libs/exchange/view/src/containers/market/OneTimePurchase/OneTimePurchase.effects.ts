@@ -2,8 +2,13 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useOneTimePurchaseFormLogic } from '@energyweb/origin-ui-exchange-logic';
 import { useApiCreateBidHandler } from '@energyweb/origin-ui-exchange-data';
-import { MarketFiltersState } from '../../../pages';
+import {
+  MarketFilterActionEnum,
+  MarketFiltersActions,
+  MarketFiltersState,
+} from '../../../pages';
 import { Dayjs } from 'dayjs';
+import { Dispatch } from 'react';
 
 type BidFormValues = {
   generationFrom: Dayjs;
@@ -12,11 +17,28 @@ type BidFormValues = {
   price: number;
 };
 
-export const useOneTimePurchaseEffects = (filters: MarketFiltersState) => {
+export const useOneTimePurchaseEffects = (
+  filters: MarketFiltersState,
+  dispatch: Dispatch<MarketFiltersActions>
+) => {
   const { initialValues, validationSchema, fields, buttons } =
     useOneTimePurchaseFormLogic();
 
-  const { register, control, formState, handleSubmit, reset, watch } =
+  const handleGenerationFromChange = (event: Dayjs) => {
+    dispatch({
+      type: MarketFilterActionEnum.SET_GENERATION_FROM,
+      payload: event,
+    });
+  };
+
+  const handleGenerationToChange = (event: Dayjs) => {
+    dispatch({
+      type: MarketFilterActionEnum.SET_GENERATION_TO,
+      payload: event,
+    });
+  };
+
+  const { register, formState, handleSubmit, reset, watch } =
     useForm<BidFormValues>({
       mode: 'onChange',
       resolver: yupResolver(validationSchema),
@@ -44,8 +66,9 @@ export const useOneTimePurchaseEffects = (filters: MarketFiltersState) => {
   }));
 
   return {
+    handleGenerationFromChange,
+    handleGenerationToChange,
     register,
-    control,
     fields,
     buttons: buttonWithState,
     errors,

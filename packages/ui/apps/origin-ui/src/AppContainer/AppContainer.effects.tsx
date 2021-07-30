@@ -98,6 +98,7 @@ export const useAppContainerEffects = () => {
     showMyTrades: true,
     showSupply: true,
     showMyBundles: true,
+    showMyOrders: true,
   });
   const accountMenu = getAccountMenu({
     t,

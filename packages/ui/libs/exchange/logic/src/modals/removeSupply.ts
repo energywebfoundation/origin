@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { TRemoveSupplyConfirmLogic } from './types';
+import { TRemoveConfirmModalLogic } from './types';
 
-export const useRemoveSupplyConfirmLogic: TRemoveSupplyConfirmLogic = (
+export const useRemoveSupplyConfirmLogic: TRemoveConfirmModalLogic = (
   closeModal,
   submitHandler
 ) => {
@@ -11,12 +11,12 @@ export const useRemoveSupplyConfirmLogic: TRemoveSupplyConfirmLogic = (
     text: '',
     buttons: [
       {
-        label: t('exchange.supply.modals.removeSupplyConfirm.no'),
+        label: t('general.buttons.no'),
         onClick: closeModal,
         variant: 'outlined',
       },
       {
-        label: t('exchange.supply.modals.removeSupplyConfirm.yes'),
+        label: t('general.buttons.yes'),
         onClick: submitHandler,
       },
     ],

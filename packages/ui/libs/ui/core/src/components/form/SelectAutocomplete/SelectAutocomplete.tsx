@@ -9,8 +9,8 @@ export interface SelectAutocompleteProps {
   value: FormSelectOption[];
   field: GenericFormField;
   onChange: (...event: any[]) => void;
-  errorExists: boolean;
-  errorText: string;
+  errorExists?: boolean;
+  errorText?: string;
   variant?: 'standard' | 'outlined' | 'filled';
   disabled?: boolean;
   dependentValue?: FormSelectOption[];
@@ -25,8 +25,8 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
   value,
   field,
   onChange,
-  errorExists,
-  errorText,
+  errorExists = false,
+  errorText = '',
   disabled,
   variant,
   dependentValue,

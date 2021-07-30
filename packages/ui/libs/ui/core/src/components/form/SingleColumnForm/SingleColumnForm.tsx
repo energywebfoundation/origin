@@ -16,7 +16,6 @@ export interface SingleColumnFormProps<FormValuesType> {
   dirtyFields: DeepMap<FormValuesType, true>;
   inputsVariant?: FormInputProps<FormValuesType>['variant'];
   formInputsProps?: BaseTextFieldProps;
-  processing?: boolean;
   editDisabled?: boolean;
 }
 
@@ -32,7 +31,6 @@ export const SingleColumnForm: TSingleColumnForm = ({
   dirtyFields,
   inputsVariant,
   formInputsProps,
-  processing,
   editDisabled,
 }) => {
   return (

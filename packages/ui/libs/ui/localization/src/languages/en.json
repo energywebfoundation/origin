@@ -29,8 +29,9 @@
         "supply": "Supply",
         "allBundles": "All bundles",
         "createBundle": "Create bundle",
-        "myTrades": "My Trades",
-        "myBundles": "My bundles"
+        "myBundles": "My bundles",
+        "myOrders": "My orders",
+        "myTrades": "My trades"
       },
       "organization": {
         "sectionTitle": "Organization",
@@ -650,6 +651,50 @@
           "createError": "Error while creating bundle"
         }
       },
+      "myOrders": {
+        "demands": "Demands",
+        "volume": "Volume",
+        "price": "Price",
+        "type": "Type",
+        "period": "Period",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "status": "Status",
+        "bids": "Bids",
+        "filled": "Filled",
+        "generationStart": "Generation Start",
+        "generationEnd": "Generation End",
+        "asks": "Asks",
+        "facilityName": "Facility Name",
+        "remove": "Remove",
+        "bid": "Bid",
+        "ask": "Ask",
+        "view": "View",
+        "orderNo": "Order No.",
+        "fuelType": "Fuel Type",
+        "gridOperator": "Grid Operator",
+        "region": "Region",
+        "update": "Update",
+        "viewMarket": "View Market",
+        "modals": {
+          "removeOrderConfirm": {
+            "title": "Are you sure you want to remove?"
+          }
+        },
+        "notifications": {
+          "orderRemoveSuccess": "{orderSide} has been successfully removed",
+          "orderRemoveError": "Error while removing order",
+          "demandRemoveSuccess": "Demand has been successfully removed",
+          "demandRemoveError": "Error while removing demand",
+          "demandShouldBePaused": "Demand should be paused before removing",
+          "demandPausedSuccess": "Demand paused",
+          "demandPausedError": "Error while pausing demand",
+          "demandResumedSuccess": "Demand resumed",
+          "demandResumedError": "Error while resuming demand",
+          "demandUpdateSuccess": "Demand updated",
+          "demandUpdateError": "Error while updating demand"
+        }
+      },
       "supply": {
         "tableTitle": "Supply",
         "fuelType": "Fuel Type",
@@ -665,7 +710,7 @@
             "title": "Update Supply"
           },
           "removeSupplyConfirm": {
-            "title": "Are you sure you want remove?",
+            "title": "Are you sure you want to remove supply?",
             "no": "No",
             "yes": "Yes"
           }
@@ -690,6 +735,10 @@
           "week": "Week",
           "month": "Month",
           "year": "Year"
+        },
+        "status": {
+          "active": "Active",
+          "paused": "Paused"
         }
       }
     },
@@ -847,7 +896,9 @@
         "save": "Save",
         "later": "Later",
         "decline": "Decline",
-        "accept": "Accept"
+        "accept": "Accept",
+        "no": "No",
+        "yes": "Yes"
       },
       "input": {
         "editAmount": "Edit amount"

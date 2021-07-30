@@ -6,12 +6,17 @@ import {
 } from '../../components';
 import * as yup from 'yup';
 import {
-  BaseTextFieldProps,
+  TextFieldProps,
   BoxProps,
   ButtonProps,
   TypographyVariant,
 } from '@material-ui/core';
-import { DeepPartial, UnpackNestedValue, UseFormReset } from 'react-hook-form';
+import {
+  DeepPartial,
+  Path,
+  UnpackNestedValue,
+  UseFormReset,
+} from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
 export type GenericFormField = {
@@ -34,7 +39,7 @@ export type GenericFormField = {
     element: ReactNode;
     isValidCheck?: boolean;
   };
-  textFieldProps?: BaseTextFieldProps;
+  textFieldProps?: TextFieldProps;
   dependentOn?: string;
   dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
 };
@@ -55,15 +60,17 @@ export interface GenericFormProps<FormValuesType> {
   buttonText: string;
   buttonFullWidth?: boolean;
   buttonWrapperProps?: BoxProps;
+  buttonDisabled?: boolean;
   secondaryButtons?: GenericFormSecondaryButton[];
   formTitle?: string;
   formTitleVariant?: TypographyVariant;
   formClass?: string;
   inputsVariant?: FormInputProps<FormValuesType>['variant'];
-  formInputsProps?: BaseTextFieldProps;
+  formInputsProps?: TextFieldProps;
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
-  processing?: boolean;
+  inputsToWatch?: Path<FormValuesType>[];
+  onWatchHandler?: (watchedValues: unknown[]) => void;
 }
 
 export type TGenericForm = <FormValuesType>(

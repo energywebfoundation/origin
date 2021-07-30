@@ -3,7 +3,9 @@ import {
   ButtonProps,
   Dialog,
   DialogActions,
+  DialogActionsProps,
   DialogContent,
+  DialogContentProps,
   DialogProps,
   DialogTitle,
   Grid,
@@ -32,6 +34,8 @@ export interface GenericModalProps {
   dialogProps?: Omit<DialogProps, 'open'>;
   titleProps?: TypographyProps;
   textProps?: TypographyProps;
+  dialogContentProps?: DialogContentProps;
+  dialogActionsProps?: DialogActionsProps;
 }
 
 export const GenericModal: FC<GenericModalProps> = ({
@@ -46,6 +50,8 @@ export const GenericModal: FC<GenericModalProps> = ({
   textProps,
   handleClose,
   closeButton,
+  dialogContentProps,
+  dialogActionsProps,
 }) => {
   const classes = useStyles();
   const dialogWidthSmall = dialogProps && dialogProps.maxWidth === 'sm';
@@ -81,7 +87,7 @@ export const GenericModal: FC<GenericModalProps> = ({
               </Grid>
             )}
           </Grid>
-          <DialogContent>
+          <DialogContent {...dialogContentProps}>
             {customContent ?? (
               <ModalTextContent textProps={textProps} text={text} />
             )}
@@ -89,7 +95,10 @@ export const GenericModal: FC<GenericModalProps> = ({
         </Grid>
 
         <Grid item xs={12}>
-          <DialogActions className={classes.dialogActions}>
+          <DialogActions
+            className={classes.dialogActions}
+            {...dialogActionsProps}
+          >
             {buttons &&
               buttons.map((button) => (
                 <Button

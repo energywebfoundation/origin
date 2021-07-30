@@ -5,7 +5,7 @@ export type ModalLogicFunctionReturnType = Omit<
   'open' | 'icon'
 >;
 
-export type TRemoveSupplyConfirmLogic = (
+export type TRemoveConfirmModalLogic = (
   closeModal: () => void,
   submitHandler: () => void
 ) => ModalLogicFunctionReturnType;

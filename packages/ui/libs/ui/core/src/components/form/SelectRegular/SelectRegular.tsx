@@ -1,22 +1,22 @@
-import { BaseTextFieldProps, MenuItem, TextField } from '@material-ui/core';
+import { TextFieldProps, MenuItem, TextField } from '@material-ui/core';
 import React, { FC } from 'react';
 import { GenericFormField } from '../../../containers';
 import { FormSelectOption } from '../FormSelect';
 
 export interface SelectRegularProps {
   field: GenericFormField;
-  errorExists: boolean;
-  errorText: string;
+  errorExists?: boolean;
+  errorText?: string;
   value: FormSelectOption['value'];
   onChange: (...event: any[]) => void;
   variant?: 'standard' | 'outlined' | 'filled';
-  textFieldProps?: BaseTextFieldProps;
+  textFieldProps?: TextFieldProps;
 }
 
 export const SelectRegular: FC<SelectRegularProps> = ({
   field,
-  errorExists,
-  errorText,
+  errorExists = false,
+  errorText = '',
   variant,
   value,
   onChange,
