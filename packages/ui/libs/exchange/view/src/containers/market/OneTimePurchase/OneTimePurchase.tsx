@@ -1,45 +1,48 @@
 import { Divider } from '@material-ui/core';
-import React, { FC } from 'react';
-import { FormDatePicker, FormInput } from '@energyweb/origin-ui-core';
+import React, { Dispatch, FC } from 'react';
+import { FormInput, MaterialDatepicker } from '@energyweb/origin-ui-core';
 import { isEmpty } from 'lodash';
 import { TotalAndButtons } from '../TotalAndButtons';
 import { useStyles } from './OneTimePurchase.styles';
 import { useOneTimePurchaseEffects } from './OneTimePurchase.effects';
-import { MarketFiltersState } from '../../../pages';
+import { MarketFiltersActions, MarketFiltersState } from '../../../pages';
 
 interface OneTimePurchaseProps {
   filters: MarketFiltersState;
+  dispatch: Dispatch<MarketFiltersActions>;
 }
 
-export const OneTimePurchase: FC<OneTimePurchaseProps> = ({ filters }) => {
+export const OneTimePurchase: FC<OneTimePurchaseProps> = ({
+  filters,
+  dispatch,
+}) => {
   const classes = useStyles();
   const {
     register,
-    control,
     fields,
     buttons,
     errors,
     dirtyFields,
     totalPrice,
-  } = useOneTimePurchaseEffects(filters);
+    handleGenerationToChange,
+    handleGenerationFromChange,
+  } = useOneTimePurchaseEffects(filters, dispatch);
   const { generationFrom, generationTo, energy, price } = fields;
   return (
     <div>
       <div className={classes.block}>
         <div className={classes.item}>
-          <FormDatePicker
-            control={control}
-            errorExists={!isEmpty(errors[generationFrom.name])}
-            errorText={errors[generationFrom.name]?.message ?? ''}
+          <MaterialDatepicker
             field={generationFrom}
+            value={filters.generationFrom}
+            onChange={handleGenerationFromChange}
           />
         </div>
         <div className={classes.item}>
-          <FormDatePicker
-            control={control}
-            errorExists={!isEmpty(errors[generationTo.name])}
-            errorText={errors[generationTo.name]?.message ?? ''}
+          <MaterialDatepicker
             field={generationTo}
+            value={filters.generationTo}
+            onChange={handleGenerationToChange}
           />
         </div>
       </div>

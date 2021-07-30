@@ -86,6 +86,8 @@ export const useApiOrderbookPoll = (
     marketFilters.deviceType,
     marketFilters.gridOperator,
     marketFilters.location,
+    marketFilters.generationDateStart,
+    marketFilters.generationDateEnd,
   ]);
 
   const isLoading =

@@ -1,5 +1,4 @@
-import React from 'react';
-import { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
 import {
@@ -14,16 +13,48 @@ import {
   BuyOffers,
   TradingView,
 } from '../../containers';
-import { initialState, reducer } from './ViewMarketPage.reducer';
+import {
+  initialFiltersState,
+  filtersReducer,
+  MarketFilterActionEnum,
+  MarketFiltersState,
+} from './ViewMarketPage.reducer';
+import { useLocation } from 'react-router-dom';
 
 export const useViewMarketPageEffects = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(filtersReducer, initialFiltersState);
   const { t } = useTranslation();
+  const location = useLocation();
+  const locationState = location.state as MarketFiltersState;
+
+  useEffect(() => {
+    if (!!locationState) {
+      dispatch({
+        type: MarketFilterActionEnum.SET_MARKET_FILTERS_STATE,
+        payload: {
+          fuelType: locationState.fuelType || initialFiltersState.fuelType,
+          deviceType:
+            locationState.deviceType || initialFiltersState.deviceType,
+          regions: locationState.regions || initialFiltersState.regions,
+          subregions:
+            locationState.subregions || initialFiltersState.subregions,
+          gridOperator:
+            locationState.gridOperator || initialFiltersState.gridOperator,
+          generationFrom:
+            locationState.generationFrom || initialFiltersState.generationFrom,
+          generationTo:
+            locationState.generationTo || initialFiltersState.generationTo,
+        },
+      });
+    }
+  }, [locationState]);
 
   const filters: OrderBookFilters = {
     deviceType: state.deviceType.map((type) => type.value.toString()),
     gridOperator: state.gridOperator.map((type) => type.value.toString()),
     location: state.subregions.map((subregion) => subregion.value.toString()),
+    generationDateStart: state.generationFrom?.toISOString(),
+    generationDateEnd: state.generationTo?.toISOString(),
   };
   const user = useCachedUser();
 
@@ -31,7 +62,7 @@ export const useViewMarketPageEffects = () => {
 
   const oneTimePurchase: ListAction = {
     name: t('exchange.viewMarket.oneTimePurchase'),
-    content: <OneTimePurchase filters={state} />,
+    content: <OneTimePurchase filters={state} dispatch={dispatch} />,
   };
   const repeatedPurchase: ListAction = {
     name: t('exchange.viewMarket.repeatedPurchase'),

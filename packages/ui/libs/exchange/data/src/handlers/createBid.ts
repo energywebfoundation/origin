@@ -18,11 +18,11 @@ type MarketFilters = {
   regions: FormSelectOption[];
   subregions: FormSelectOption[];
   gridOperator: FormSelectOption[];
+  generationFrom: Dayjs;
+  generationTo: Dayjs;
 };
 
 type BidFormValues = {
-  generationFrom: Dayjs;
-  generationTo: Dayjs;
   energy: number;
   price: number;
 };
@@ -54,11 +54,11 @@ export const useApiCreateBidHandler = (
           filters.subregions.length > 0
             ? filters.subregions.map((option) => option.value.toString())
             : undefined,
-        generationFrom: values.generationFrom
-          ? values.generationFrom.toISOString()
+        generationFrom: filters.generationFrom
+          ? filters.generationFrom.toISOString()
           : undefined,
-        generationTo: values.generationTo
-          ? values.generationTo.toISOString()
+        generationTo: filters.generationTo
+          ? filters.generationTo.toISOString()
           : undefined,
       },
     };

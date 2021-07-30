@@ -9,6 +9,7 @@ import { Remove, Visibility } from '@material-ui/icons';
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+// import { useNavigate } from 'react-router-dom';
 import {
   ExchangeModalsActionsEnum,
   useExchangeModalsDispatch,
@@ -24,6 +25,7 @@ export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllDeviceFuelTypes();
   const { t } = useTranslation();
+  // const navigate = useNavigate();
   const dispatchModals = useExchangeModalsDispatch();
 
   const bidText = t('exchange.myOrders.bid');
@@ -50,6 +52,18 @@ export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
     });
   };
 
+  // const viewMarket = (id: OrderDTO['id']) => {
+  //   const bid = bids.find((bid) => bid.id === id);
+  //   navigate('/exchange/view-market', { state: {
+  //       deviceType: bid.product.deviceType ,
+  //       location: bid.product.location,
+  //       gridOperator: bid.product.gridOperator,
+  //       generationFrom: bid.product.generationFrom,
+  //       generationTo: bid.product.generationTo
+  //     }
+  //   });
+  // };
+
   const actions: TableActionData<OrderDTO['id']>[] = [
     {
       name: t('exchange.myOrders.remove'),
@@ -61,6 +75,11 @@ export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
       icon: <Visibility />,
       onClick: (id: OrderDTO['id']) => openDetailsModal(id),
     },
+    // {
+    //   icon: <Search />,
+    //   name: t('exchange.myOrders.viewMarket'),
+    //   onClick: (id: OrderDTO['id']) => viewMarket(id)
+    // },
   ];
 
   const tableFilters = [
