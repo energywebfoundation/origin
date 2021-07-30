@@ -712,6 +712,10 @@
           "week": "Week",
           "month": "Month",
           "year": "Year"
+        },
+        "status": {
+          "active": "Active",
+          "paused": "Paused"
         }
       }
     },
