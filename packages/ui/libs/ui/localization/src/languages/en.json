@@ -30,7 +30,8 @@
         "allBundles": "All bundles",
         "createBundle": "Create bundle",
         "myBundles": "My bundles",
-        "myOrders": "My orders"
+        "myOrders": "My orders",
+        "myTrades": "My Trades"
       },
       "organization": {
         "sectionTitle": "Organization",
@@ -612,6 +613,15 @@
           "removeSuccess": "Bundle successfully removed",
           "removeError": "Error while removing bundle"
         }
+      },
+      "myTrades": {
+        "date": "Date",
+        "side": "Side",
+        "volume": "Volume",
+        "price": "Price",
+        "total": "Total",
+        "buy": "Buy",
+        "sell": "Sell"
       },
       "createBundle": {
         "title": "Create Bundle",
