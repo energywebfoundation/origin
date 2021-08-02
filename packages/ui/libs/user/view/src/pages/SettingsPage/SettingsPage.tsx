@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import {
-  Box,
   Button,
   FormControl,
   FormControlLabel,
@@ -9,6 +8,7 @@ import {
   Paper,
   Select,
   Switch,
+  Grid,
 } from '@material-ui/core';
 import { useStyles } from './SettingsPage.styles';
 import { useSettingsPageEffects } from './SettingsPage.effects';
@@ -29,42 +29,44 @@ export const SettingsPage: FC = () => {
 
   return (
     <Paper className={classes.paper}>
-      <Box width={1}>
-        <FormControlLabel
-          control={
-            <Switch
-              color="primary"
-              checked={notificationsEnabled}
-              onChange={handleNotificationsChange}
-              name="notifications"
-            />
-          }
-          label={notificationsLabel}
-        />
-      </Box>
-      <Box width={0.3}>
-        <FormControl fullWidth>
-          <InputLabel>{languageLabel}</InputLabel>
-          <Select
-            value={language}
-            onChange={handleLanguageChange}
-            name="language"
+      <Grid container>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                checked={notificationsEnabled}
+                onChange={handleNotificationsChange}
+                name="notifications"
+              />
+            }
+            label={notificationsLabel}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <FormControl fullWidth>
+            <InputLabel>{languageLabel}</InputLabel>
+            <Select
+              value={language}
+              onChange={handleLanguageChange}
+              name="language"
+            >
+              {languageOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button
+            variant="contained"
+            className={classes.button}
+            onClick={handleUpdateLanguage}
           >
-            {languageOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Button
-          variant="contained"
-          className={classes.button}
-          onClick={handleUpdateLanguage}
-        >
-          {buttonText}
-        </Button>
-      </Box>
+            {buttonText}
+          </Button>
+        </Grid>
+      </Grid>
     </Paper>
   );
 };

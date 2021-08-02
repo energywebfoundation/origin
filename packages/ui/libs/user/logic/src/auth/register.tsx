@@ -83,8 +83,14 @@ export const useUserSignInFormConfig = (
       firstName: Yup.string().label(t('user.register.firstName')).required(),
       lastName: Yup.string().label(t('user.register.lastName')).required(),
       email: Yup.string().email().label(t('user.register.email')).required(),
-      telephone: Yup.string().label(t('user.register.telephone')).required(),
-      password: Yup.string().label(t('user.register.password')).required(),
+      telephone: Yup.string()
+        .min(10)
+        .label(t('user.register.telephone'))
+        .required(),
+      password: Yup.string()
+        .min(6)
+        .label(t('user.register.password'))
+        .required(),
     }),
   };
 };

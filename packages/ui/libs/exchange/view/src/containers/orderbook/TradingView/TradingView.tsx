@@ -18,10 +18,11 @@ export const TradingView: FC<TradingViewProps> = (props) => {
     bidsTitle,
     popoverTextAsks,
     popoverTextBids,
+    mobileView,
   } = useTradingViewEffects(props);
 
   return (
-    <Box p={4}>
+    <Box py={mobileView ? 2 : 4} px={mobileView ? 0 : 4}>
       <Grid container spacing={3}>
         <Grid item md={6} xs={12}>
           <OrderBookTableHeader

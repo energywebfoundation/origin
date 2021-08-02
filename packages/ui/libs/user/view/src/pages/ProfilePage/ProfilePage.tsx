@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { CircularProgress, Grid, Paper } from '@material-ui/core';
+import { CircularProgress, Paper, Box } from '@material-ui/core';
 import {
   UpdateUserData,
   UpdateUserEmail,
@@ -19,29 +18,19 @@ export const ProfilePage = () => {
   }
 
   return (
-    <Grid item xs={12} className={classes.wrapper}>
-      <Grid container spacing={3}>
-        <Grid xs={12} item>
-          <Paper classes={{ root: classes.paper }}>
-            <UpdateUserData userAccountData={user} />
-          </Paper>
-        </Grid>
-        <Grid xs={12} item>
-          <Paper classes={{ root: classes.paper }}>
-            <UpdateUserEmail userAccountData={user} />
-          </Paper>
-        </Grid>
-        <Grid xs={12} item>
-          <Paper classes={{ root: classes.paper }}>
-            <UpdateUserPassword />
-          </Paper>
-        </Grid>
-        <Grid xs={12} item>
-          <Paper classes={{ root: classes.paper }}>
-            <BlockchainAddressesContainer userAccountData={user} />
-          </Paper>
-        </Grid>
-      </Grid>
-    </Grid>
+    <Box>
+      <Paper classes={{ root: classes.paper }}>
+        <UpdateUserData userAccountData={user} />
+      </Paper>
+      <Paper classes={{ root: classes.paper }}>
+        <UpdateUserEmail userAccountData={user} />
+      </Paper>
+      <Paper classes={{ root: classes.paper }}>
+        <UpdateUserPassword />
+      </Paper>
+      <Paper classes={{ root: classes.paper }}>
+        <BlockchainAddressesContainer userAccountData={user} />
+      </Paper>
+    </Box>
   );
 };

@@ -5,7 +5,7 @@ import { useStyles } from './InvitePage.styles';
 import { useInvitePageEffects } from './InvitePage.effects';
 
 export const InvitePage: FC = () => {
-  const { formData, pageLoading } = useInvitePageEffects();
+  const { formData, pageLoading, mobileView } = useInvitePageEffects();
   const classes = useStyles();
 
   if (pageLoading) {
@@ -16,11 +16,8 @@ export const InvitePage: FC = () => {
     <Paper className={classes.paper}>
       <GenericForm
         inputsVariant="filled"
-        twoColumns
+        twoColumns={!mobileView}
         buttonWrapperProps={{
-          mt: 1,
-          mb: 0,
-          mx: 2,
           justifyContent: 'flex-start',
         }}
         {...formData}

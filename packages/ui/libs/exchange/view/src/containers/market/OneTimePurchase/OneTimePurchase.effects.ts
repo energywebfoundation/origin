@@ -9,6 +9,7 @@ import {
 } from '../../../pages';
 import { Dayjs } from 'dayjs';
 import { Dispatch } from 'react';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
 type BidFormValues = {
   generationFrom: Dayjs;
@@ -21,8 +22,10 @@ export const useOneTimePurchaseEffects = (
   filters: MarketFiltersState,
   dispatch: Dispatch<MarketFiltersActions>
 ) => {
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
   const { initialValues, validationSchema, fields, buttons } =
-    useOneTimePurchaseFormLogic();
+    useOneTimePurchaseFormLogic(mobileView);
 
   const handleGenerationFromChange = (event: Dayjs) => {
     dispatch({

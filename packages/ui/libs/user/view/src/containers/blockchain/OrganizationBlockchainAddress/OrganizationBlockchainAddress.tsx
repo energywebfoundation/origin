@@ -8,9 +8,9 @@ import {
 } from '@material-ui/core';
 import { useOrganizationBlockchainAddressEffects } from './OrganizationBlockchainAddress.effects';
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
+import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import { Info } from '@material-ui/icons';
 import { useStyles } from './OrganizationBlockchainAddress.styles';
-import { withMetamask } from '@energyweb/origin-ui-blockchain';
 
 const Component: FC = () => {
   const {

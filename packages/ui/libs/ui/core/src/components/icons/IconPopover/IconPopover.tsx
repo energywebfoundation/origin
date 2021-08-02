@@ -66,7 +66,7 @@ export const IconPopover = (props: IconPopoverProps) => {
               horizontal: 'left',
             }}
             PaperProps={{
-              style: { width: '30%' },
+              className: classes.popoverPaper,
             }}
           >
             <Typography className={classes.popoverTextBlock}>
@@ -101,7 +101,7 @@ export const IconPopover = (props: IconPopoverProps) => {
             }}
             onClose={handlePopoverClose}
             PaperProps={{
-              style: { width: '30%' },
+              className: classes.popoverPaper,
             }}
             disableRestoreFocus
           >

@@ -4,14 +4,11 @@ import {
   useInviteFormLogic,
   InviteFormValues,
 } from '@energyweb/origin-ui-organization-logic';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
 export const useInvitePageEffects = () => {
-  const {
-    fields,
-    initialValues,
-    validationSchema,
-    buttonText,
-  } = useInviteFormLogic();
+  const { fields, initialValues, validationSchema, buttonText } =
+    useInviteFormLogic();
 
   const { submitHandler, apiLoading } = useOrganizationInviteHandler();
 
@@ -25,5 +22,8 @@ export const useInvitePageEffects = () => {
     submitHandler,
   };
 
-  return { formData, pageLoading };
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
+
+  return { formData, pageLoading, mobileView };
 };

@@ -15,4 +15,14 @@ export const useStyles = makeStyles((theme) => ({
       theme.palette.mode
     )}`,
   },
+  checkbox: {
+    [theme.breakpoints.down('sm')]: {
+      padding: 0,
+    },
+  },
+  listItemIcon: {
+    [theme.breakpoints.down('sm')]: {
+      minWidth: 30,
+    },
+  },
 }));

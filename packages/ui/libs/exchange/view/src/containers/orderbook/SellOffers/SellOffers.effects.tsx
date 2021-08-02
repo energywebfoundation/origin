@@ -4,6 +4,7 @@ import {
   useCachedUser,
 } from '@energyweb/origin-ui-exchange-data';
 import { useSellOffersTableLogic } from '@energyweb/origin-ui-exchange-logic';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import {
   ExchangeModalsActionsEnum,
   useExchangeModalsDispatch,
@@ -38,5 +39,8 @@ export const useSellOffersEffects = (
     className: classes.owned,
   });
 
-  return tableProps;
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('md'));
+
+  return { tableProps, mobileView };
 };

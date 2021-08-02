@@ -4,6 +4,7 @@ import {
   useCachedUser,
 } from '@energyweb/origin-ui-exchange-data';
 import { useBuyOffersTableLogic } from '@energyweb/origin-ui-exchange-logic';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import { useStyles } from './BuyOffers.styles';
 
 export const useBuyOffersEffects = (
@@ -21,5 +22,8 @@ export const useBuyOffersEffects = (
     className: classes.owned,
   });
 
-  return tableProps;
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('md'));
+
+  return { tableProps, mobileView };
 };

@@ -1,6 +1,7 @@
 import { TextFieldProps, MenuItem, TextField } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { UseFormRegister } from 'react-hook-form';
+import { isEmpty } from 'lodash';
 import { GenericFormField } from '../../../containers';
 import { FormSelectOption } from '../FormSelect';
 
@@ -56,18 +57,20 @@ export const SelectRegular: TSelectRegular = ({
           </MenuItem>
         ))}
       </TextField>
-      {field?.additionalInputProps?.valueToOpen === value && (
-        <TextField
-          fullWidth
-          variant={variant ?? 'standard'}
-          label={field.additionalInputProps.label}
-          name={additionalInputRegistration?.name}
-          inputRef={additionalInputRegistration?.ref}
-          onChange={additionalInputRegistration?.onChange}
-          onBlur={additionalInputRegistration?.onBlur}
-          {...textFieldProps}
-        />
-      )}
+      {!isEmpty(field?.additionalInputProps) &&
+        !!field?.additionalInputProps?.valueToOpen &&
+        field?.additionalInputProps?.valueToOpen === value && (
+          <TextField
+            fullWidth
+            variant={variant ?? 'standard'}
+            label={field.additionalInputProps?.label}
+            name={additionalInputRegistration?.name}
+            inputRef={additionalInputRegistration?.ref}
+            onChange={additionalInputRegistration?.onChange}
+            onBlur={additionalInputRegistration?.onBlur}
+            {...textFieldProps}
+          />
+        )}
     </>
   );
 };

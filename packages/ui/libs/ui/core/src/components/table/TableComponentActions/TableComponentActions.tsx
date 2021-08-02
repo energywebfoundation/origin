@@ -24,7 +24,7 @@ export const TableComponentActions: TTableComponentActions = ({
   actions,
 }) => {
   const classes = useStyles();
-  const { open, setOpen } = useTableActionsEffects();
+  const { open, setOpen, handleMobileOpen } = useTableActionsEffects();
 
   if (!actions) {
     return <TableCell></TableCell>;
@@ -37,7 +37,8 @@ export const TableComponentActions: TTableComponentActions = ({
         ariaLabel={`speed-dial-${id}`}
         icon={<SpeedDialIcon icon={<MoreHoriz />} />}
         onClose={() => setOpen(false)}
-        onMouseOver={(event) => setOpen(true)}
+        onMouseOver={() => setOpen(true)}
+        onClick={(event) => handleMobileOpen(event)}
         open={open}
         className={classes.speedDial}
       >
