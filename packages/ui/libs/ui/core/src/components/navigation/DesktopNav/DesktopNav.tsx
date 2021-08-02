@@ -8,8 +8,8 @@ import { useStyles } from './DesktopNav.styles';
 
 export interface DesktopNavProps {
   userAndOrgData: UsernameAndOrgProps;
-  menuSections: TMenuSection[];
   isAuthenticated: boolean;
+  menuSections: TMenuSection[];
 }
 
 export const DesktopNav: FC<DesktopNavProps> = ({

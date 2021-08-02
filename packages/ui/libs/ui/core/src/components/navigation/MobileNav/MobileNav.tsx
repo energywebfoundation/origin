@@ -1,17 +1,22 @@
+import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
 import { Drawer, List } from '@material-ui/core';
 import React, { FC, memo } from 'react';
 import { CloseButton } from '../../buttons';
+import { IconLink } from '../../icons';
+import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';
 import { TMenuSection, NavBarSection } from '../NavBarSection';
 import { useStyles } from './MobileNav.styles';
 
 export interface MobileNavProps {
   open: boolean;
   onClose: () => void;
+  userAndOrgData: UsernameAndOrgProps;
+  isAuthenticated: boolean;
   menuSections: TMenuSection[];
 }
 
 export const MobileNav: FC<MobileNavProps> = memo(
-  ({ open, onClose, menuSections }) => {
+  ({ open, onClose, menuSections, isAuthenticated, userAndOrgData }) => {
     const classes = useStyles();
     return (
       <Drawer
@@ -21,6 +26,12 @@ export const MobileNav: FC<MobileNavProps> = memo(
         className={classes.drawer}
       >
         <CloseButton onClose={onClose} />
+        <IconLink url="/">
+          <EnergyWebLogo className={classes.logo} />
+        </IconLink>
+        {isAuthenticated && (
+          <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />
+        )}
         <List className={classes.list}>
           {menuSections?.map(({ sectionTitle, rootUrl, show, menuList }) => (
             <NavBarSection

@@ -37,6 +37,8 @@ export const NavBar: FC<NavBarProps> = ({
         <MobileNav
           open={openMobile}
           onClose={onMobileClose}
+          isAuthenticated={isAuthenticated}
+          userAndOrgData={{ ...userData, ...orgData }}
           menuSections={menuSections}
         />
       </Box>
