@@ -32,42 +32,42 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
 }) => {
   const menuList: TModuleMenuItem[] = [
     {
-      url: '/register',
+      url: 'register',
       label: t('navigation.organization.register'),
       show: showRegisterOrg,
     },
     {
-      url: '/my',
+      url: 'my',
       label: t('navigation.organization.my'),
       show: showMyOrg,
     },
     {
-      url: '/members',
+      url: 'members',
       label: t('navigation.organization.members'),
       show: showMembers,
     },
     {
-      url: '/invitations',
+      url: 'invitations',
       label: t('navigation.organization.invitations'),
       show: showInvitations,
     },
     {
-      url: '/invite',
+      url: 'invite',
       label: t('navigation.organization.invite'),
       show: showInvite,
     },
     {
-      url: '/all',
+      url: 'all',
       label: t('navigation.organization.all'),
       show: showAllOrgs,
     },
     {
-      url: '/register-irec',
+      url: 'register-irec',
       label: t('navigation.organization.registerIRec'),
       show: showRegisterIRec,
     },
     {
-      url: '/create-beneficiary',
+      url: 'create-beneficiary',
       label: t('navigation.organization.createBeneficiary'),
       show: showCreateBeneficiary,
     },
