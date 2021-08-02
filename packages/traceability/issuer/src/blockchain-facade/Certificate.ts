@@ -99,8 +99,6 @@ export class Certificate implements ICertificate {
             );
         }
 
-        const newCertificate = new Certificate(null, blockchainProperties);
-
         const getIdFromEvents = (logs: BlockchainEvent[]): number =>
             Number(logs.find((log) => log.event === 'CertificationRequestApproved').topics[2]);
 
@@ -117,9 +115,10 @@ export class Certificate implements ICertificate {
         const properChecksumToAddress = ethers.utils.getAddress(to);
 
         const tx = await issuerWithSigner.issue(properChecksumToAddress, value, data);
-        const { events } = await tx.wait();
+        const { events, blockHash } = await tx.wait();
 
-        newCertificate.id = getIdFromEvents(events);
+        const newCertificate = new Certificate(getIdFromEvents(events), blockchainProperties);
+        newCertificate.creationBlockHash = blockHash;
 
         return newCertificate.sync();
     }
@@ -138,8 +137,6 @@ export class Certificate implements ICertificate {
                 `Too much energy requested. Requested: ${value}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
             );
         }
-
-        const newCertificate = new Certificate(null, blockchainProperties);
 
         const getIdFromEvents = (logs: BlockchainEvent[]): number =>
             Number(
@@ -169,9 +166,10 @@ export class Certificate implements ICertificate {
             commitmentProof.rootHash,
             data
         );
-        const { events } = await tx.wait();
+        const { events, blockHash } = await tx.wait();
 
-        newCertificate.id = getIdFromEvents(events);
+        const newCertificate = new Certificate(getIdFromEvents(events), blockchainProperties);
+        newCertificate.creationBlockHash = blockHash;
 
         return {
             certificate: await newCertificate.sync(),
@@ -188,11 +186,15 @@ export class Certificate implements ICertificate {
         }
 
         const { registry } = this.blockchainProperties;
+
+        const issuanceBlock = this.creationBlockHash
+            ? await registry.provider.getBlock(this.creationBlockHash)
+            : await this.getIssuanceBlock();
+
         const certOnChain = await registry.getCertificate(this.id);
 
         const decodedData = decodeData(certOnChain.data);
 
-        const issuanceBlock = await this.getIssuanceBlock();
         this.generationStartTime = decodedData.generationStartTime;
         this.generationEndTime = decodedData.generationEndTime;
         this.deviceId = decodedData.deviceId;
@@ -368,6 +370,10 @@ export class Certificate implements ICertificate {
             issuanceLog = allBatchIssuanceLogs.find((event) =>
                 event._ids.map((id: BigNumber) => id.toString()).includes(this.id.toString())
             );
+
+            if (!issuanceLog) {
+                throw new Error(`Unable to find the issuance event for Certificate ${this.id}`);
+            }
         }
 
         return registry.provider.getBlock(issuanceLog.blockHash);

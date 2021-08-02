@@ -114,6 +114,15 @@ export class OnChainCertificateWatcher implements OnModuleInit {
                 break;
 
             case EventType.TransferBatch:
+                if (event.from === constants.AddressZero) {
+                    this.logger.debug(
+                        `Skipping TransferBatch handler for certificates ${event.ids
+                            .map((id: any) => id.toNumber())
+                            .join(', ')} because it's an issuance.`
+                    );
+                    break;
+                }
+
                 event.ids.forEach((id: any) => {
                     logEvent(EventType.TransferBatch, [id.toNumber()]);
                     this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
@@ -143,8 +152,11 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         this.logger.debug('onApplicationShutdown');
 
         this.provider.off(this.registry.filters.IssuanceSingle(null, null, null));
+        this.provider.off(this.registry.filters.IssuanceBatch(null, null, null));
         this.provider.off(this.registry.filters.TransferSingle(null, null, null, null, null));
+        this.provider.off(this.registry.filters.TransferBatch(null, null, null, null, null));
         this.provider.off(this.registry.filters.ClaimSingle(null, null, null, null, null, null));
+        this.provider.off(this.registry.filters.ClaimBatch(null, null, null, null, null, null));
 
         this.provider = null;
     }
