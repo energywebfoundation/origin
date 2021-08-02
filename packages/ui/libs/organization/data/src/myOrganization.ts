@@ -1,7 +1,4 @@
-import {
-  useUserControllerMe,
-  fileControllerDownload,
-} from '@energyweb/origin-backend-react-query-client';
+import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
 import { useRegistrationControllerGetRegistrations } from '@energyweb/origin-organization-irec-api-react-query-client';
 import axios from 'axios';
 
