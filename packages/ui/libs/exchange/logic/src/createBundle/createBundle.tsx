@@ -1,9 +1,9 @@
 import {
-  Countries,
   EnergyTypeEnum,
   formatDate,
   PowerFormatter,
 } from '@energyweb/origin-ui-utils';
+import { Countries } from '@energyweb/utils-general';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { getEnergyTypeImage, getMainFuelType } from '../utils';
