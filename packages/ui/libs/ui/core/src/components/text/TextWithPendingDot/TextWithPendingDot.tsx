@@ -1,5 +1,10 @@
 import React, { FC, memo } from 'react';
-import { Tooltip, Typography, TypographyVariant } from '@material-ui/core';
+import {
+  Tooltip,
+  Typography,
+  TypographyVariant,
+  TypographyProps,
+} from '@material-ui/core';
 import { Dot } from '../../icons';
 import { useStyles } from './TextWithPendingDot.styles';
 
@@ -8,14 +13,19 @@ export interface TextWithPendingDotProps {
   pending: boolean;
   tooltipText?: string;
   variant?: TypographyVariant;
+  typographyProps?: TypographyProps;
 }
 
 export const TextWithPendingDot: FC<TextWithPendingDotProps> = memo(
-  ({ textContent, pending = false, tooltipText, variant }) => {
+  ({ textContent, pending = false, tooltipText, variant, typographyProps }) => {
     const classes = useStyles();
     return (
       <div className={classes.blockWrapper}>
-        <Typography variant={variant}>{textContent}</Typography>
+        <div>
+          <Typography noWrap variant={variant} {...typographyProps}>
+            {textContent}
+          </Typography>
+        </div>
         {pending && (
           <Tooltip title={tooltipText}>
             <div className={classes.dotWrapper}>
