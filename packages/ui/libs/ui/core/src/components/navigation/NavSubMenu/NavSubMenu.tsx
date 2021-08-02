@@ -1,5 +1,6 @@
 import { Collapse, List } from '@material-ui/core';
 import React, { FC, memo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MenuItem } from '../MenuItem';
 import { TModuleMenuItem } from '../NavBarSection';
 import { useStyles } from './NavSubMenu.styles';
@@ -14,6 +15,7 @@ export interface NavSubMenuProps {
 export const NavSubMenu: FC<NavSubMenuProps> = memo(
   ({ open, menuList, rootUrl, closeMobileNav }) => {
     const classes = useStyles();
+    const location = useLocation();
     return (
       <Collapse in={open} timeout="auto">
         <List className={classes.list}>
@@ -26,6 +28,7 @@ export const NavSubMenu: FC<NavSubMenuProps> = memo(
                   key={link}
                   url={link}
                   label={item.label}
+                  selected={location.pathname === link}
                 />
               );
             }

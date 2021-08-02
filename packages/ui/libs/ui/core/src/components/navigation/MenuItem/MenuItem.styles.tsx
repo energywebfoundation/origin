@@ -2,6 +2,13 @@ import { LightenColor } from '@energyweb/origin-ui-theme';
 import { makeStyles } from '@material-ui/core';
 
 export const useStyles = makeStyles((theme) => ({
+  selected: {
+    backgroundColor: LightenColor(
+      theme.palette.background.paper,
+      3,
+      theme.palette.mode
+    ),
+  },
   listItem: {
     padding: 0,
   },
