@@ -1,4 +1,4 @@
-import { Button, Paper, Typography } from '@material-ui/core';
+import { Box, Button, Paper, Typography } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { SelectedItem, SelectedItemProps } from '../SelectedItem';
 import { useCertificateActionContentEffects } from './CertificateActionContent.effects';
@@ -36,6 +36,7 @@ export const CertificateActionContent: TCertificateActionContent = ({
     handleItemEnergyAmountChange,
     handleSubmit,
     totalVolume,
+    bulkActionsRestrictionsText,
   } = useCertificateActionContentEffects(
     selectedIds,
     selectedItems,
@@ -69,13 +70,22 @@ export const CertificateActionContent: TCertificateActionContent = ({
       {children}
       <Button
         fullWidth
-        disabled={selectedIds.length === 0 || buttonDisabled}
+        disabled={
+          selectedIds.length === 0 || selectedIds.length > 1 || buttonDisabled
+        }
         color="primary"
         variant="contained"
         onClick={handleSubmit}
       >
         {`${buttonText} ${selectedIds.length} Certificate(s)`}
       </Button>
+      {selectedIds.length > 1 && (
+        <Box mt={2}>
+          <Typography align="center" color="textSecondary">
+            {bulkActionsRestrictionsText}
+          </Typography>
+        </Box>
+      )}
     </Paper>
   );
 };
