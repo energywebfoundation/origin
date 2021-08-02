@@ -68,7 +68,7 @@
         "ethers": "5.3.1",
         "moment": "2.29.1",
         "moment-range": "4.0.2",
-        "pg": "8.6.0",
+        "pg": "8.7.1",
         "precise-proofs-js": "1.2.0",
         "rxjs": "6.6.7",
         "swagger-ui-express": "4.1.6",
