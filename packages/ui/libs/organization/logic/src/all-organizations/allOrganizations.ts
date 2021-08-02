@@ -1,5 +1,5 @@
 import { OrganizationStatus } from '@energyweb/origin-backend-core';
-import { Countries } from '@energyweb/origin-ui-utils';
+import { Countries } from '@energyweb/utils-general';
 import { useTranslation } from 'react-i18next';
 import { TFormatAllOrgs, TUseAllOrganizationsTableLogic } from './types';
 

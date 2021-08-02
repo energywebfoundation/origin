@@ -49,18 +49,22 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
     {
       name: 'name',
       label: t('organization.register.orgInfoName'),
+      required: true,
     },
     {
       name: 'address',
       label: t('organization.register.orgInfoAddress'),
+      required: true,
     },
     {
       name: 'zipCode',
       label: t('organization.register.orgInfoZipCode'),
+      required: true,
     },
     {
       name: 'city',
       label: t('organization.register.orgInfoCity'),
+      required: true,
     },
     {
       name: 'country',
@@ -68,20 +72,24 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
+      required: true,
     },
     {
       name: 'businessType',
       label: t('organization.register.orgInfoBusinessType'),
       select: true,
       options: BUSINESS_LEGAL_TYPE_OPTIONS,
+      required: true,
     },
     {
       name: 'tradeRegistryCompanyNumber',
       label: t('organization.register.orgInfoTradeRegistryCompanyNumber'),
+      required: true,
     },
     {
       name: 'vatNumber',
       label: t('organization.register.orgInfoVatNumber'),
+      required: true,
     },
   ],
   buttonText: t('general.buttons.nextStep'),
