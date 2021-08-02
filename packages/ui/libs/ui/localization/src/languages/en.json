@@ -471,7 +471,8 @@
         "selectCertificate": "Select Certificate",
         "totalVolume": "Total Volume",
         "viewButton": "View",
-        "noCertificates": "You don't have any certificates in the inbox"
+        "noCertificates": "You don't have any certificates in the inbox",
+        "bulkActionsRestrictionsText": "Bulk certificate actions are currently unavailable. Please, select single certificate to continue"
       },
       "detailView": {
         "certificateId": "Certificate ID",
