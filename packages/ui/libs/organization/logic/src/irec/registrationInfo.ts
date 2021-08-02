@@ -31,7 +31,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       .required()
       .label(t('organization.registerIRec.IRECAccountType')),
     headquarterCountry: yup
-      .string()
+      .array()
       .required()
       .label(t('organization.registerIRec.orgHeadquartersCountry')),
     registrationYear: yup
@@ -80,6 +80,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       label: t('organization.registerIRec.IRECAccountType'),
       select: true,
       options: createIRecAccountTypeOptions(t),
+      required: true,
     },
     {
       name: 'headquarterCountry',
@@ -87,24 +88,29 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
+      required: true,
     },
     {
       name: 'registrationYear',
       label: t('organization.registerIRec.yearOfregisterIRec'),
+      required: true,
     },
     {
       name: 'employeesNumber',
       label: t('organization.registerIRec.numberOfEmployees'),
       select: true,
       options: NUMBER_OF_EMPLOYEES_OPTIONS,
+      required: true,
     },
     {
       name: 'shareholders',
       label: t('organization.registerIRec.shareholderNames'),
+      required: true,
     },
     {
       name: 'website',
       label: t('organization.registerIRec.orgWebsite'),
+      required: true,
     },
     {
       name: 'activeCountries',
@@ -114,22 +120,27 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       autocomplete: true,
       multiple: true,
       maxValues: 3,
+      required: true,
     },
     {
       name: 'mainBusiness',
       label: t('organization.registerIRec.mainBusiness'),
+      required: true,
     },
     {
       name: 'ceoName',
       label: t('organization.registerIRec.ceoName'),
+      required: true,
     },
     {
       name: 'ceoPassportNumber',
       label: t('organization.registerIRec.ceoPassport'),
+      required: true,
     },
     {
       name: 'balanceSheetTotal',
       label: t('organization.registerIRec.balanceSheetTotal'),
+      required: true,
     },
   ],
   buttonText: t('general.buttons.nextStep'),

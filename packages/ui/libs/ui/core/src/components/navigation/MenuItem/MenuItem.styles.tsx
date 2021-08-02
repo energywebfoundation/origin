@@ -2,6 +2,13 @@ import { LightenColor } from '@energyweb/origin-ui-theme';
 import { makeStyles } from '@material-ui/core';
 
 export const useStyles = makeStyles((theme) => ({
+  selected: {
+    backgroundColor: LightenColor(
+      theme.palette.background.paper,
+      3,
+      theme.palette.mode
+    ),
+  },
   listItem: {
     padding: 0,
   },
@@ -11,12 +18,12 @@ export const useStyles = makeStyles((theme) => ({
     padding: '10px 20px',
     width: '100%',
     margin: '0',
-    color: LightenColor(theme.palette?.text.secondary, 5, theme.palette?.mode),
+    color: LightenColor(theme.palette.text.secondary, 5, theme.palette.mode),
     '&:hover': {
       backgroundColor: LightenColor(
-        theme.palette?.background.paper,
+        theme.palette.background.paper,
         5,
-        theme.palette?.mode
+        theme.palette.mode
       ),
     },
   },

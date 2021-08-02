@@ -44,7 +44,7 @@ export const useUpdateUserAccountPasswordFormConfig: TUseUpdateUserAccountPasswo
       ],
       buttonWrapperProps: { justifyContent: 'flex-start' },
       initialValues: INITIAL_FORM_VALUES,
-      inputsVariant: 'filled',
+      inputsVariant: 'filled' as any,
       validationSchema: Yup.object().shape({
         oldPassword: Yup.string()
           .label(t('user.profile.currentPassword'))

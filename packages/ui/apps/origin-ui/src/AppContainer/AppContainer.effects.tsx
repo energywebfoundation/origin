@@ -14,13 +14,16 @@ import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
 import { useActiveMenuTab } from '../components';
 import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
-import { useInvitationControllerGetInvitations } from '@energyweb/origin-organization-irec-api-react-query-client';
+import {
+  useInvitationControllerGetInvitations,
+  useRegistrationControllerGetRegistrations,
+} from '@energyweb/origin-organization-irec-api-react-query-client';
 
 export const useAppContainerEffects = () => {
   useAxiosInterceptors();
 
   const { t } = useTranslation();
-  const { isAuthenticated, user, logout } = useUser();
+  const { isAuthenticated, user, logout, userLoading } = useUser();
 
   const topbarButtons = useTopbarButtonList(isAuthenticated, logout);
   const {
@@ -31,9 +34,15 @@ export const useAppContainerEffects = () => {
     isExchangeTabActive,
     isCertificateTabActive,
   } = useActiveMenuTab();
-  const { data: userInvitations } = useInvitationControllerGetInvitations({
-    enabled: isAuthenticated,
-  });
+  const { data: userInvitations, isLoading: areInvitationsLoading } =
+    useInvitationControllerGetInvitations({
+      enabled: isAuthenticated,
+    });
+  const { data: iRecOrg, isLoading: isIRecOrgLoading } =
+    useRegistrationControllerGetRegistrations({
+      enabled: isAuthenticated && Boolean(user?.organization?.id),
+    });
+
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsDeviceManagerOrAdmin = isRole(
@@ -64,7 +73,8 @@ export const useAppContainerEffects = () => {
         : !!userInvitations && userInvitations.length > 0,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
-    showRegisterIRec: true,
+    showRegisterIRec:
+      userHasOrg && userIsOrgAdmin && iRecOrg && iRecOrg.length === 0,
     showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
   });
   const deviceMenu = getDeviceMenu({
@@ -73,10 +83,11 @@ export const useAppContainerEffects = () => {
     showSection: true,
     showAllDevices: true,
     showMapView: true,
-    showMyDevices: userIsDeviceManagerOrAdmin,
+    showMyDevices: userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
     showPendingDevices: userIsIssuer,
-    showRegisterDevice: userIsDeviceManagerOrAdmin,
-    showDeviceImport: userIsDeviceManagerOrAdmin,
+    showRegisterDevice:
+      userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
+    showDeviceImport: userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
   });
   const certificateMenu = getCertificateMenu({
     t,
@@ -94,11 +105,11 @@ export const useAppContainerEffects = () => {
     showSection: true,
     showViewMarket: true,
     showAllBundles: true,
-    showCreateBundle: true,
-    showMyTrades: true,
-    showSupply: true,
-    showMyBundles: true,
-    showMyOrders: true,
+    showCreateBundle: userIsActive && userHasOrg,
+    showMyBundles: userIsActive && userHasOrg,
+    showMyTrades: userIsActive && userHasOrg,
+    showMyOrders: userIsActive && userHasOrg,
+    showSupply: userIsActive && userHasOrg,
   });
   const accountMenu = getAccountMenu({
     t,
@@ -111,8 +122,8 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isAdminTabAcive,
     showSection: userIsAdminOrSupport,
-    showClaims: true,
-    showUsers: true,
+    showClaims: userIsAdminOrSupport,
+    showUsers: userIsAdminOrSupport,
   });
 
   const menuSections = [
@@ -124,10 +135,13 @@ export const useAppContainerEffects = () => {
     adminMenu,
   ];
 
+  const isLoading = userLoading || areInvitationsLoading || isIRecOrgLoading;
+
   return {
     topbarButtons,
     isAuthenticated,
     menuSections,
     user,
+    isLoading,
   };
 };

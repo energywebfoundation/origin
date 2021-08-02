@@ -11,8 +11,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
-export const useApiMyBundles = () => {
-  const { data, isLoading } = useBundleControllerGetMyBundles();
+export const useApiMyBundles = (enabled?: boolean) => {
+  const { data, isLoading } = useBundleControllerGetMyBundles({ enabled });
 
   const myBundles = data?.filter((bundle) => !bundle.isCancelled) || [];
 

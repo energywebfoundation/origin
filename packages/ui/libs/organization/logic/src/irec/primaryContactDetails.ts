@@ -60,14 +60,17 @@ export const createPrimaryContactDetailsForm: TCreatePrimaryContactDetailsForms 
       {
         name: 'primaryContactOrganizationName',
         label: t('organization.registerIRec.primaryContactOrgName'),
+        required: true,
       },
       {
         name: 'primaryContactOrganizationAddress',
         label: t('organization.registerIRec.primaryContactOrgAddress'),
+        required: true,
       },
       {
         name: 'primaryContactOrganizationPostalCode',
         label: t('organization.registerIRec.primaryContactOrgPostalCode'),
+        required: true,
       },
       {
         name: 'primaryContactOrganizationCountry',
@@ -75,6 +78,7 @@ export const createPrimaryContactDetailsForm: TCreatePrimaryContactDetailsForms 
         select: true,
         autocomplete: true,
         options: COUNTRY_OPTIONS_ISO,
+        required: true,
       },
       {
         name: 'subsidiaries',
@@ -83,18 +87,22 @@ export const createPrimaryContactDetailsForm: TCreatePrimaryContactDetailsForms 
       {
         name: 'primaryContactName',
         label: t('organization.registerIRec.primaryContactName'),
+        required: true,
       },
       {
         name: 'primaryContactEmail',
         label: t('organization.registerIRec.primaryContactEmail'),
+        required: true,
       },
       {
         name: 'primaryContactPhoneNumber',
         label: t('organization.registerIRec.primaryContactPhoneNumber'),
+        required: true,
       },
       {
         name: 'primaryContactFax',
         label: t('organization.registerIRec.primaryContactFax'),
+        required: true,
       },
     ],
     buttonText: t('general.buttons.nextStep'),

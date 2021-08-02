@@ -47,26 +47,32 @@ export const createLeadUserDetailsForm: TCreateLeadUserDetailsForm = (t) => ({
       label: t('organization.registerIRec.leadUserTitle'),
       select: true,
       options: TITLE_OPTIONS,
+      required: true,
     },
     {
       name: 'leadUserFirstName',
       label: t('organization.registerIRec.leadUserFirstName'),
+      required: true,
     },
     {
       name: 'leadUserLastName',
       label: t('organization.registerIRec.leadUserLastName'),
+      required: true,
     },
     {
       name: 'leadUserEmail',
       label: t('organization.registerIRec.leadUserEmail'),
+      required: true,
     },
     {
       name: 'leadUserPhoneNumber',
       label: t('organization.registerIRec.leadUserPhoneNumber'),
+      required: true,
     },
     {
       name: 'leadUserFax',
       label: t('organization.registerIRec.leadUserFax'),
+      required: true,
     },
   ],
   buttonText: t('general.buttons.submit'),

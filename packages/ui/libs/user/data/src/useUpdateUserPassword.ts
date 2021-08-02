@@ -1,7 +1,4 @@
-import {
-  UpdatePasswordDTO,
-  useUserControllerUpdateOwnPassword,
-} from '@energyweb/origin-backend-react-query-client';
+import { useUserControllerUpdateOwnPassword } from '@energyweb/origin-backend-react-query-client';
 import {
   NotificationTypeEnum,
   showNotification,
@@ -10,6 +7,12 @@ import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useUser } from './useUser';
 
+export type TUpdateUserPasswordFormValues = {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordConfirm: string;
+};
+
 export const useApiUpdateUserAccountPassword = () => {
   const { t } = useTranslation();
   const { logout } = useUser();
@@ -17,7 +20,7 @@ export const useApiUpdateUserAccountPassword = () => {
   const { mutate, isLoading, error, isError, isSuccess, status } =
     useUserControllerUpdateOwnPassword();
 
-  const submitHandler = (values: UpdatePasswordDTO) => {
+  const submitHandler = (values: TUpdateUserPasswordFormValues) => {
     mutate(
       { data: values },
       {

@@ -20,6 +20,7 @@ export const getExchangeMenu: TGetExchangeMenu = ({
   isOpen,
   showSection,
   showViewMarket,
+  showAllBundles,
   showCreateBundle,
   showMyTrades,
   showSupply,
@@ -34,7 +35,7 @@ export const getExchangeMenu: TGetExchangeMenu = ({
     {
       url: 'all-bundles',
       label: t('navigation.exchange.allBundles'),
-      show: showCreateBundle,
+      show: showAllBundles,
     },
     {
       url: 'create-bundle',

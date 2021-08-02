@@ -6,7 +6,6 @@ import { FormSelect } from '../FormSelect';
 import { isEmpty } from 'lodash';
 import { BaseTextFieldProps } from '@material-ui/core';
 import { FormDatePicker } from '../FormDatePicker';
-import { HierarchicalSelect } from '../HierarchicalSelect';
 
 export interface SingleColumnFormProps<FormValuesType> {
   fields: GenericFormField[];
@@ -51,17 +50,6 @@ export const SingleColumnForm: TSingleColumnForm = ({
             <FormDatePicker
               disabled={editDisabled || field.frozen}
               key={field.label}
-              field={field}
-              control={control}
-              errorExists={!isEmpty(errors[field.name])}
-              errorText={errors[field.name]?.message ?? ''}
-              variant={inputsVariant}
-            />
-          )) ||
-          (field.hierarchical && (
-            <HierarchicalSelect
-              key={field.label}
-              disabled={editDisabled || field.frozen}
               field={field}
               control={control}
               errorExists={!isEmpty(errors[field.name])}

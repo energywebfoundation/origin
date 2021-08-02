@@ -1,6 +1,5 @@
 import {
   getUserControllerMeQueryKey,
-  UpdateUserProfileDTO,
   UserDTO,
   useUserControllerUpdateOwnProfile,
 } from '@energyweb/origin-backend-react-query-client';
@@ -9,8 +8,17 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { AxiosError } from 'axios';
+import { UseFormReset } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+
+export type TUpdateUserDataFormValues = {
+  firstName: UserDTO['firstName'];
+  lastName: UserDTO['lastName'];
+  telephone: UserDTO['telephone'];
+  status: UserDTO['status'];
+  kycStatus: UserDTO['kycStatus'];
+};
 
 export const useApiUpdateUserAccountData = () => {
   const { t } = useTranslation();
@@ -22,8 +30,8 @@ export const useApiUpdateUserAccountData = () => {
   const userQueryKey = getUserControllerMeQueryKey();
 
   const submitHandler = (
-    values: Omit<UpdateUserProfileDTO, 'email'>,
-    resetForm: any
+    values: TUpdateUserDataFormValues,
+    resetForm: UseFormReset<TUpdateUserDataFormValues>
   ) => {
     const user: UserDTO = queryClient.getQueryData(userQueryKey);
     const { email } = user;

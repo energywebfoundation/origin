@@ -50,18 +50,22 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
     {
       name: 'signatoryFullName',
       label: t('organization.register.signatoryName'),
+      required: true,
     },
     {
       name: 'signatoryAddress',
       label: t('organization.register.signatoryAddress'),
+      required: true,
     },
     {
       name: 'signatoryZipCode',
       label: t('organization.register.signatoryZipCode'),
+      required: true,
     },
     {
       name: 'signatoryCity',
       label: t('organization.register.signatoryCity'),
+      required: true,
     },
     {
       name: 'signatoryCountry',
@@ -69,14 +73,17 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
       select: true,
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
+      required: true,
     },
     {
       name: 'signatoryEmail',
       label: t('organization.register.signatoryEmail'),
+      required: true,
     },
     {
       name: 'signatoryPhoneNumber',
       label: t('organization.register.signatoryPhoneNumber'),
+      required: true,
     },
   ],
   buttonText: t('general.buttons.nextStep'),

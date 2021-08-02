@@ -1,9 +1,4 @@
-// @should use import from @energyweb/utils-general
-export enum IRECBusinessLegalStatus {
-  RegisteredIncorporatedBody = 1,
-  PublicSectorEntity = 2,
-  PrivateIndividual = 3,
-}
+import { IRECBusinessLegalStatus } from '@energyweb/utils-general';
 
 export const IRECBusinessLegalStatusLabelsMap = {
   [IRECBusinessLegalStatus.RegisteredIncorporatedBody]:
