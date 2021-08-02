@@ -8,8 +8,6 @@ export const AppContainer = () => {
   const { topbarButtons, menuSections, user, isAuthenticated, isLoading } =
     useAppContainerEffects();
 
-  if (isLoading) return <></>;
-
   return (
     <>
       <OriginGlobalStyles />
