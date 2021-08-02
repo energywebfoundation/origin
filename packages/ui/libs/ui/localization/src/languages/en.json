@@ -906,6 +906,13 @@
       },
       "notifications": {
         "unknownError": "Unknown error"
+      },
+      "titles": {
+        "dr": "Dr",
+        "mr": "Mr",
+        "mrs": "Mrs",
+        "ms": "Ms",
+        "other": "Other"
       }
     },
     "notifications": {
