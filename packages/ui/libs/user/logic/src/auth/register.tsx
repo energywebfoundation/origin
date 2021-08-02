@@ -20,12 +20,16 @@ const INITIAL_FORM_VALUES: TUserSignInFormValues = {
   password: '',
 };
 
-const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
+const TITLES = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'];
 
 export const useUserSignInFormConfig = (
   formSubmitHandler: GenericFormProps<TUserSignInFormValues>['submitHandler']
 ): GenericFormProps<TUserSignInFormValues> => {
   const { t } = useTranslation();
+  const TITLE_OPTIONS = TITLES.map((title) => ({
+    label: t(`general.titles.${title.toLowerCase()}`),
+    value: title,
+  }));
   return {
     buttonText: t('general.buttons.register'),
     fields: [
@@ -33,28 +37,40 @@ export const useUserSignInFormConfig = (
         label: t('user.register.title'),
         name: 'title',
         select: true,
-        options: TITLE_OPTIONS.map((opt) => ({ label: opt, value: opt })),
+        options: TITLE_OPTIONS,
+        required: true,
+        additionalInputProps: {
+          valueToOpen: 'Other',
+          name: 'titleInput',
+          label: t('user.register.title'),
+          required: true,
+        },
       },
       {
         label: t('user.register.firstName'),
         name: 'firstName',
+        required: true,
       },
       {
         label: t('user.register.lastName'),
         name: 'lastName',
+        required: true,
       },
       {
         label: t('user.register.email'),
         name: 'email',
+        required: true,
       },
       {
         label: t('user.register.telephone'),
         name: 'telephone',
+        required: true,
       },
       {
         type: 'password',
         label: t('user.register.password'),
         name: 'password',
+        required: true,
       },
     ],
     twoColumns: true,
