@@ -1,5 +1,6 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { Control, Controller, useWatch } from 'react-hook-form';
+import { UseFormRegister } from 'react-hook-form';
 import { GenericFormField } from '../../../containers';
 import { SelectAutocomplete } from '../SelectAutocomplete';
 import { SelectRegular } from '../SelectRegular';
@@ -12,8 +13,9 @@ export type FormSelectOption = {
 export interface FormSelectProps<FormValuesType> {
   field: GenericFormField;
   control: Control<FormValuesType>;
-  errorExists: boolean;
-  errorText: string;
+  register?: UseFormRegister<FormValuesType>;
+  errorExists?: boolean;
+  errorText?: string;
   variant?: 'standard' | 'outlined' | 'filled';
 }
 
@@ -27,6 +29,7 @@ export const FormSelect: TFormSelect = ({
   errorExists,
   errorText,
   variant,
+  register,
 }) => {
   const watchedValue = useWatch({
     name: field.dependentOn as any,
@@ -54,10 +57,11 @@ export const FormSelect: TFormSelect = ({
             field={field}
             errorExists={errorExists}
             errorText={errorText}
-            value={value as any}
+            value={value as FormSelectOption['value']}
             onChange={onChange}
             variant={variant}
             textFieldProps={field.textFieldProps}
+            register={register}
           />
         );
       }}
