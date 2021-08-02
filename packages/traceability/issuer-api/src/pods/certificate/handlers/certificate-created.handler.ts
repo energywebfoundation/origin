@@ -13,6 +13,7 @@ import { CertificateCreatedEvent } from '../events/certificate-created-event';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate.entity';
 import { CertificatePersistedEvent } from '../events/certificate-persisted.event';
+import { SyncCertificateEvent } from '../events/sync-certificate-event';
 
 @EventsHandler(CertificateCreatedEvent)
 export class CertificateCreatedHandler implements IEventHandler<CertificateCreatedEvent> {
@@ -36,6 +37,9 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
         );
 
         if (existingCertificate) {
+            // Re-sync the certificate to sync any eventual changes
+            this.eventBus.publish(new SyncCertificateEvent(id));
+
             return ResponseFailure(
                 `Certificate with id ${id} already exists in the DB.`,
                 HttpStatus.CONFLICT
