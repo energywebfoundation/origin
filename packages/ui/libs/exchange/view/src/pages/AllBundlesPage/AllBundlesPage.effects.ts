@@ -16,12 +16,12 @@ import {
 } from '../../context';
 
 export const useAllBundlesPageEffects = () => {
+  const user = useCachedUser();
   const { allBundles, isLoading: areAllBundlesLoading } = useApiAllBundles();
-  const { myBundles, isLoading: areMyBundlesLoading } = useApiMyBundles();
+  const { myBundles, isLoading: areMyBundlesLoading } = useApiMyBundles(!!user);
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllDeviceFuelTypes();
-  const user = useCachedUser();
 
   const dispatchModals = useExchangeModalsDispatch();
 
