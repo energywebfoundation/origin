@@ -22,7 +22,7 @@ export const TextWithPendingDot: FC<TextWithPendingDotProps> = memo(
     return (
       <div className={classes.blockWrapper}>
         <div>
-          <Typography noWrap variant={variant} {...typographyProps}>
+          <Typography variant={variant} {...typographyProps}>
             {textContent}
           </Typography>
         </div>

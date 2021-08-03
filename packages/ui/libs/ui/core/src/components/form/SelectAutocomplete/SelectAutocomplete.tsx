@@ -48,7 +48,7 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
       getOptionSelected={(option, value) => option.value === value.value}
       getOptionDisabled={() => disabled}
       disabled={disabled}
-      value={value}
+      value={value !== undefined ? value : []}
       renderInput={(params) => (
         <TextField
           {...params}
