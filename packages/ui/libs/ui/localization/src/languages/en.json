@@ -900,7 +900,8 @@
         "decline": "Decline",
         "accept": "Accept",
         "no": "No",
-        "yes": "Yes"
+        "yes": "Yes",
+        "back": "Back"
       },
       "input": {
         "editAmount": "Edit amount"
