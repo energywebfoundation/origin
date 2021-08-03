@@ -1,3 +1,4 @@
+import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import { TFormatDevicesData, TUseLogicPendingDevices } from './types';
 
@@ -18,7 +19,7 @@ const formatDevicesData: TFormatDevicesData = ({
     deviceType:
       allDeviceTypes?.find((type) => type.code === device.deviceType).name ||
       '',
-    capacity: device.capacity,
+    capacity: PowerFormatter.format(device.capacity),
     status: device.status,
     certified: 0,
     toBeCertified: 0,
@@ -35,6 +36,7 @@ export const useLogicPendingDevices: TUseLogicPendingDevices = ({
 }) => {
   const { t } = useTranslation();
   return {
+    tableTitle: t('device.pending.tableTitle'),
     header: {
       owner: t('device.pending.owner'),
       facilityName: t('device.pending.facilityName'),
