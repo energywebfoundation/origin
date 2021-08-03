@@ -41,8 +41,8 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       .required()
       .label(t('device.register.registrationDate')),
     capacity: yup.string().required().label(t('device.register.capacity')),
+    smartMeterId: yup.string().required().label(externalDeviceId),
     description: yup.string(),
-    smartMeterId: yup.string(),
   }),
   fields: [
     {
@@ -92,16 +92,17 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       required: true,
     },
     {
+      name: 'smartMeterId',
+      label: externalDeviceId,
+      required: true,
+    },
+    {
       name: 'description',
       label: t('device.register.description'),
       textFieldProps: {
         multiline: true,
         rows: 3,
       },
-    },
-    {
-      name: 'smartMeterId',
-      label: externalDeviceId,
     },
   ],
   buttonText: t('general.buttons.nextStep'),
