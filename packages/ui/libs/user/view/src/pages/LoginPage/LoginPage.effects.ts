@@ -1,12 +1,26 @@
-import { useUserLogInFormConfig } from '@energyweb/origin-ui-user-logic';
+import {
+  useUserLogInFormConfig,
+  TUserLoginFormValues,
+  INITIAL_FORM_VALUES,
+} from '@energyweb/origin-ui-user-logic';
 import { useUserLogin } from '@energyweb/origin-ui-user-data';
 import { useNavigate } from 'react-router';
 import { UserModalsActionsEnum, useUserModalsDispatch } from '../../context';
 import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
+import { useState } from 'react';
 
 export const useLogInPageEffects = () => {
   const navigate = useNavigate();
   const dispatchModals = useUserModalsDispatch();
+
+  const [formValues, setFormValues] =
+    useState<TUserLoginFormValues>(INITIAL_FORM_VALUES);
+
+  const onWatchHandler = (values: string[]) => {
+    const [username, password] = values;
+
+    setFormValues({ username, password });
+  };
 
   const openRegisterOrgModal = () => {
     dispatchModals({
@@ -37,7 +51,15 @@ export const useLogInPageEffects = () => {
     openInvitationModal,
     openExchangeAddressModal
   );
-  const formConfig = useUserLogInFormConfig(submitHandler);
+  const formConfig = useUserLogInFormConfig(submitHandler, onWatchHandler);
+
+  const buttonDisabled = !formConfig.validationSchema.isValidSync(formValues);
+
+  const formProps = {
+    ...formConfig,
+    buttonDisabled,
+    controlSubmitButton: true,
+  };
 
   const navigateToResetPassword = () => {
     navigate('/auth/reset-password');
@@ -47,5 +69,5 @@ export const useLogInPageEffects = () => {
     navigate('/auth/register');
   };
 
-  return { formConfig, navigateToResetPassword, navigateToRegister };
+  return { formProps, navigateToResetPassword, navigateToRegister };
 };

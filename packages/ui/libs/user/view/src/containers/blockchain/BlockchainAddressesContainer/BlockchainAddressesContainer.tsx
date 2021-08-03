@@ -4,15 +4,8 @@ import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { UserExchangeDepositAddress } from '../UserExchangeDepositAddress';
 import { OrganizationBlockchainAddress } from '../OrganizationBlockchainAddress';
-import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 
-interface BlockchainAddressesContainerProps {
-  userAccountData: UserDTO;
-}
-
-export const BlockchainAddressesContainer = ({
-  userAccountData,
-}: BlockchainAddressesContainerProps) => {
+export const BlockchainAddressesContainer = () => {
   const { t } = useTranslation();
   return (
     <>

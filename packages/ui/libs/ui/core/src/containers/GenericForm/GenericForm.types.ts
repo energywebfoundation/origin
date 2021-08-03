@@ -64,6 +64,7 @@ export interface GenericFormProps<FormValuesType> {
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
   inputsToWatch?: Path<FormValuesType>[];
+  controlSubmitButton?: boolean;
   onWatchHandler?: (watchedValues: unknown[]) => void;
 }
 

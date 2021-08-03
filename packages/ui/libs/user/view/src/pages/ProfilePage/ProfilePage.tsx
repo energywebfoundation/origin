@@ -38,7 +38,7 @@ export const ProfilePage = () => {
         </Grid>
         <Grid xs={12} item>
           <Paper classes={{ root: classes.paper }}>
-            <BlockchainAddressesContainer userAccountData={user} />
+            <BlockchainAddressesContainer />
           </Paper>
         </Grid>
       </Grid>

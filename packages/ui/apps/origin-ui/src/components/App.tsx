@@ -5,6 +5,7 @@ import {
   TMenuSection,
   TopBarButtonData,
 } from '@energyweb/origin-ui-core';
+import { LoginApp } from '@energyweb/origin-ui-user-view';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { initializeI18N } from '@energyweb/origin-ui-utils';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
@@ -34,14 +35,19 @@ export const App: FC<AppProps> = ({
   const { orgData, userData } = useUserAndOrgData(user);
 
   return (
-    <MainLayout
-      isAuthenticated={isAuthenticated}
-      topbarButtons={topbarButtons}
-      menuSections={menuSections}
-      userData={userData}
-      orgData={orgData}
-    >
-      <Routes>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <MainLayout
+            isAuthenticated={isAuthenticated}
+            topbarButtons={topbarButtons}
+            menuSections={menuSections}
+            userData={userData}
+            orgData={orgData}
+          />
+        }
+      >
         <Route path="device/*" element={<DeviceApp />} />
         <Route path="exchange/*" element={<ExchangeApp />} />
         <Route path="certificate/*" element={<CertificateApp />} />
@@ -51,8 +57,9 @@ export const App: FC<AppProps> = ({
         <Route path="admin/*" element={<AdminApp />} />
 
         <Route element={<Navigate to="device/all" />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </MainLayout>
+      </Route>
+      <Route path="/login" element={<LoginApp />} />
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
   );
 };

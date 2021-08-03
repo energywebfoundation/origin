@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useUpdateUserEmailEffects } from './UpdateUserEmail.effects';
@@ -10,17 +10,19 @@ export interface UpdateUserEmailProps {
   userAccountData: UserDTO;
 }
 
-export const UpdateUserEmail: FC<UpdateUserEmailProps> = ({
-  userAccountData,
-}) => {
-  const { t } = useTranslation();
+export const UpdateUserEmail: FC<UpdateUserEmailProps> = memo(
+  ({ userAccountData }) => {
+    const { t } = useTranslation();
 
-  const { formProps } = useUpdateUserEmailEffects(userAccountData);
+    const { formProps } = useUpdateUserEmailEffects(userAccountData);
 
-  return (
-    <>
-      <Typography variant="h5">{t('user.profile.changeEmailTitle')}</Typography>
-      <GenericForm {...formProps} />
-    </>
-  );
-};
+    return (
+      <>
+        <Typography variant="h5">
+          {t('user.profile.changeEmailTitle')}
+        </Typography>
+        <GenericForm {...formProps} />
+      </>
+    );
+  }
+);
