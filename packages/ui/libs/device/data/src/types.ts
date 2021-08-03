@@ -1,5 +1,6 @@
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { FormSelectOption } from '@energyweb/origin-ui-core';
 
 export type ComposedDevice = {
   id: string;
@@ -37,17 +38,17 @@ export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;
 
 export type TRegisterDeviceFormValues = {
   facilityName: string;
-  fuelType: string[];
-  deviceType: string[];
+  fuelType: FormSelectOption[];
+  deviceType: FormSelectOption[];
   commissioningDate: string;
   registrationDate: string;
   capacity: string;
   gridOperator: string;
   description: string;
   smartMeterId: string;
-  countryCode: string[];
-  region: string;
-  subregion: string;
+  countryCode: FormSelectOption[];
+  region: FormSelectOption[];
+  subregion: FormSelectOption[];
   postalCode: string;
   address: string;
   latitude: string;

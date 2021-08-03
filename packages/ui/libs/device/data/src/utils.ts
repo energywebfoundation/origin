@@ -60,9 +60,9 @@ export function decomposeForIRec(
 ): IRecCreateDeviceDTO {
   const iRecCreateDevice: IRecCreateDeviceDTO = {
     name: newDevice.facilityName,
-    deviceType: newDevice.deviceType[0],
-    fuelType: newDevice.fuelType[0],
-    countryCode: newDevice.countryCode[0],
+    deviceType: newDevice.deviceType[0].value.toString(),
+    fuelType: newDevice.fuelType[0].value.toString(),
+    countryCode: newDevice.countryCode[0].value.toString(),
     capacity: PowerFormatter.getBaseValueFromValueInDisplayUnit(
       parseFloat(newDevice.capacity)
     ),
@@ -75,8 +75,8 @@ export function decomposeForIRec(
     timezone: 'Asia/Bangkok',
     gridOperator: newDevice.gridOperator,
     postalCode: organization.zipCode,
-    region: newDevice.region,
-    subregion: newDevice.subregion,
+    region: newDevice.region[0].value.toString(),
+    subregion: newDevice.subregion[0].value.toString(),
   };
 
   return iRecCreateDevice;

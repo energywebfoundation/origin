@@ -4,7 +4,7 @@ import {
   useDeviceRegistryControllerGet,
 } from '@energyweb/origin-device-registry-api-react-query-client';
 import { useDeviceControllerGet } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { composePublicDevices } from './utils';
+import { composePublicDevices } from '../utils';
 
 const useCertifiedAmountForDevice = (
   id: OriginDeviceDTO['externalRegistryId']

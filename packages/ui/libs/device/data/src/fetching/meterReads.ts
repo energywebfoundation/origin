@@ -3,7 +3,7 @@ import {
   Aggregate,
 } from '@energyweb/origin-energy-api-react-query-client';
 import dayjs from 'dayjs';
-import { generateRandomMockEnergyBlocks } from './mock';
+import { generateRandomMockEnergyBlocks } from '../mock';
 
 export enum ReadingsWindowEnum {
   Day = '1d',
