@@ -1,5 +1,6 @@
 import React from 'react';
 import { FC } from 'react';
+import { Outlet } from 'react-router-dom';
 import {
   NavBar,
   OrgNavData,
@@ -43,7 +44,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
         userData={userData}
         orgData={orgData}
       />
-      <PageWrapper>{children}</PageWrapper>
+      <PageWrapper>{<Outlet />}</PageWrapper>
     </>
   );
 };
