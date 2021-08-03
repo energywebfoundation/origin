@@ -1,4 +1,4 @@
-import { Table, Typography, TableContainer, Box } from '@material-ui/core';
+import { Table, Typography } from '@material-ui/core';
 import React, { useCallback } from 'react';
 import { TTableComponent } from './TableComponent.types';
 import {

@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import {
   Tooltip,
   Typography,
@@ -16,24 +16,28 @@ export interface TextWithPendingDotProps {
   typographyProps?: TypographyProps;
 }
 
-export const TextWithPendingDot: FC<TextWithPendingDotProps> = memo(
-  ({ textContent, pending = false, tooltipText, variant, typographyProps }) => {
-    const classes = useStyles();
-    return (
-      <div className={classes.blockWrapper}>
-        <div>
-          <Typography variant={variant} {...typographyProps}>
-            {textContent}
-          </Typography>
-        </div>
-        {pending && (
-          <Tooltip title={tooltipText}>
-            <div className={classes.dotWrapper}>
-              <Dot />
-            </div>
-          </Tooltip>
-        )}
+export const TextWithPendingDot: FC<TextWithPendingDotProps> = ({
+  textContent,
+  pending = false,
+  tooltipText,
+  variant,
+  typographyProps,
+}) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.blockWrapper}>
+      <div>
+        <Typography variant={variant} {...typographyProps}>
+          {textContent}
+        </Typography>
       </div>
-    );
-  }
-);
+      {pending && (
+        <Tooltip title={tooltipText}>
+          <div className={classes.dotWrapper}>
+            <Dot />
+          </div>
+        </Tooltip>
+      )}
+    </div>
+  );
+};

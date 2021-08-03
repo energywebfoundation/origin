@@ -31,7 +31,7 @@ export const SelectRegular: TSelectRegular = ({
   textFieldProps,
 }) => {
   const additionalInputRegistration =
-    field?.additionalInputProps?.name &&
+    field.additionalInputProps?.name &&
     register(field.additionalInputProps.name as any);
   return (
     <>
@@ -57,9 +57,9 @@ export const SelectRegular: TSelectRegular = ({
           </MenuItem>
         ))}
       </TextField>
-      {!isEmpty(field?.additionalInputProps) &&
-        !!field?.additionalInputProps?.valueToOpen &&
-        field?.additionalInputProps?.valueToOpen === value && (
+      {!isEmpty(field.additionalInputProps) &&
+        !!field.additionalInputProps?.valueToOpen &&
+        field.additionalInputProps?.valueToOpen === value && (
           <TextField
             fullWidth
             variant={variant ?? 'standard'}
