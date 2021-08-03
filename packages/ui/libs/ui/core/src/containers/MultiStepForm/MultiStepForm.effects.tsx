@@ -6,12 +6,14 @@ import { MultiStepFormProps } from './MultiStepForm';
 
 type TUseMultiStepEffectsArgs<Union, Merged> = Pick<
   MultiStepFormProps<Union, Merged>,
-  'forms' | 'submitHandler'
+  'forms' | 'submitHandler' | 'backButtonText' | 'backButtonProps'
 >;
 
 export const useMultiStepFormEffects = <Union, Merged>({
   forms,
   submitHandler,
+  backButtonText,
+  backButtonProps,
 }: TUseMultiStepEffectsArgs<Union, Merged>) => {
   const [activeStep, setActiveStep] = useState(0);
   const [store, setStore] = useState<Merged>(null);
@@ -24,6 +26,13 @@ export const useMultiStepFormEffects = <Union, Merged>({
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setStore({ ...store, ...values });
+  };
+
+  const backButtonHandler = (): void => {
+    if (activeStep === 0) {
+      return;
+    }
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const getCurrentForm = (step: number) => {
@@ -39,6 +48,16 @@ export const useMultiStepFormEffects = <Union, Merged>({
       <GenericForm
         partOfMultiForm={step > 0 ? true : false}
         submitHandler={nextButtonHandler}
+        secondaryButtons={[
+          {
+            label: backButtonText,
+            onClick: backButtonHandler,
+            disabled: activeStep === 0,
+            variant: 'contained',
+            style: { marginRight: 10 },
+            ...backButtonProps,
+          },
+        ]}
         {...props}
       />
     );
