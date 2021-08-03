@@ -360,6 +360,7 @@
         }
       },
       "pending": {
+        "tableTitle": "Pending Devices",
         "owner": "Owner",
         "facilityName": "Facility Name",
         "location": "Location",
