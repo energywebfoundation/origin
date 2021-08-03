@@ -9,14 +9,24 @@ export const formatDemands: TFormatDemands = ({
   actions,
 }) => {
   return demands?.map((demand) => {
-    const fuelCode = demand.product.deviceType[0].split(';')[0];
-    const { mainType } = getMainFuelType(fuelCode, allFuelTypes);
+    const fuelCodes =
+      demand.product.deviceType &&
+      demand.product.deviceType.map((type) => type.split(';')[0]);
+    const fuelTypes =
+      fuelCodes && fuelCodes.length > 0
+        ? fuelCodes
+            .map((code) => {
+              const { mainType } = getMainFuelType(code, allFuelTypes);
+              return mainType;
+            })
+            .join(', ')
+        : '-';
 
     return {
       id: demand.id,
       volume: EnergyFormatter.format(demand.volumePerPeriod, true),
       price: demand.price / 100,
-      fuelType: mainType,
+      fuelType: fuelTypes,
       period: demand.periodTimeFrame,
       generationStart: formatDate(demand.start),
       generationEnd: formatDate(demand.end),
@@ -37,6 +47,7 @@ export const useDemandsTableLogic: TUseDemandsTableLogic = ({
   const { t } = useTranslation();
   return {
     tableTitle: t('exchange.myOrders.demands'),
+    tableTitleProps: { gutterBottom: false, variant: 'h5' },
     header: {
       volume: t('exchange.myOrders.volume'),
       price: t('exchange.myOrders.price'),

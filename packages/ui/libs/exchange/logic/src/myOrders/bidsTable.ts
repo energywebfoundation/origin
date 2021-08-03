@@ -61,6 +61,7 @@ export const useMyOrdersBidsTableLogic: TUseBidsTableLogic = ({
   const { t } = useTranslation();
   return {
     tableTitle: t('exchange.myOrders.bids'),
+    tableTitleProps: { gutterBottom: false, variant: 'h5' },
     header: {
       volume: t('exchange.myOrders.volume'),
       price: t('exchange.myOrders.price'),

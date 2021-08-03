@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useStyles } from './ListItemContent.styles';
 
@@ -18,6 +18,8 @@ export const ListItemContent: React.FC<ListItemContentProps> = ({
   certificationDateText,
 }) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <div className={classes.wrapper}>
@@ -30,10 +32,15 @@ export const ListItemContent: React.FC<ListItemContentProps> = ({
           </div>
         </div>
         <div className={classes.dateBlock}>
-          <Typography color="textSecondary">
+          <Typography
+            align={mobileView ? 'center' : undefined}
+            color="textSecondary"
+          >
             {certificationDateTitle}
           </Typography>
-          <Typography>{certificationDateText}</Typography>
+          <Typography align={mobileView ? 'center' : undefined}>
+            {certificationDateText}
+          </Typography>
         </div>
       </div>
     </div>

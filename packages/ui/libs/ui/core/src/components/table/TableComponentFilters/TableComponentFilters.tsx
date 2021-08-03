@@ -1,24 +1,34 @@
 import React, { useState, FC, memo } from 'react';
-import { Button, Box, Typography, Paper, Grid } from '@material-ui/core';
+import {
+  Button,
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  useTheme,
+  useMediaQuery,
+} from '@material-ui/core';
 import { FilterList } from '@material-ui/icons';
-import { useStyles } from './TableFilters.styles';
+import { useStyles } from './TableComponentFilters.styles';
 import { CloseButton } from '../../buttons';
 import { TableFilter } from '../../../containers/TableComponent';
 
-interface TableFiltersProps {
+interface TableComponentFiltersProps {
   filters: TableFilter[];
   setFilters: (newValues: TableFilter[]) => void;
 }
 
-export const TableFilters: FC<TableFiltersProps> = memo(
+export const TableComponentFilters: FC<TableComponentFiltersProps> = memo(
   ({ filters, setFilters }) => {
     const classes = useStyles();
     const [showFilters, setShowFilters] = useState(false);
 
     const firstSliceRange = Math.ceil(filters.length / 2);
-
     const firstColumn = filters.slice(0, firstSliceRange);
     const secondColumn = filters.slice(firstSliceRange, filters.length);
+
+    const theme = useTheme();
+    const mobileView = useMediaQuery(theme.breakpoints.down('md'));
 
     return (
       <Box mb={1}>
@@ -51,7 +61,7 @@ export const TableFilters: FC<TableFiltersProps> = memo(
                   };
                   return (
                     <div
-                      className={classes.filter}
+                      className={!mobileView ? classes.filter : undefined}
                       key={`table-filter-${name}`}
                     >
                       <Filter

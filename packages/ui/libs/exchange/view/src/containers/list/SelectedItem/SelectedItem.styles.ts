@@ -17,10 +17,17 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    [theme.breakpoints.down('sm')]: {
+      display: 'block',
+    },
   },
   item: {
     display: 'flex',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'space-between',
+      margin: '5px 0',
+    },
   },
   icon: {
     width: 30,
@@ -31,11 +38,18 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     margin: 10,
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+    },
   },
   editField: {
     marginRight: 15,
   },
   editButton: {
     marginRight: 15,
+    [theme.breakpoints.down('sm')]: {
+      marginTop: 10,
+      marginRight: 0,
+    },
   },
 }));

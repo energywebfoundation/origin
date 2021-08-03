@@ -10,7 +10,6 @@ export const useStyles = makeStyles((theme) => ({
     bottom: 'calc(50% - 14px)',
     left: 0,
     right: 0,
-    maxHeight: 30,
   },
   speedDialButton: {
     width: '28px',

@@ -31,34 +31,36 @@ export const TableComponentActions: TTableComponentActions = ({
   }
 
   return (
-    <TableCell className={classes.wrapper}>
-      <SpeedDial
-        FabProps={{ className: classes.speedDialButton }}
-        ariaLabel={`speed-dial-${id}`}
-        icon={<SpeedDialIcon icon={<MoreHoriz />} />}
-        onClose={() => setOpen(false)}
-        onMouseOver={() => setOpen(true)}
-        onClick={(event) => handleMobileOpen(event)}
-        open={open}
-        className={classes.speedDial}
-      >
-        {actions.map((action) => (
-          <SpeedDialAction
-            tooltipOpen
-            key={action.name + id}
-            icon={action.icon}
-            tooltipTitle={action.name}
-            onClick={(event: SyntheticEvent) => {
-              event.stopPropagation();
-              action.onClick(id);
-            }}
-            classes={{
-              fab: classes.speedDialActionButton,
-              staticTooltipLabel: classes.speedDialActionTooltip,
-            }}
-          />
-        ))}
-      </SpeedDial>
+    <TableCell>
+      <div className={classes.wrapper}>
+        <SpeedDial
+          FabProps={{ className: classes.speedDialButton }}
+          ariaLabel={`speed-dial-${id}`}
+          icon={<SpeedDialIcon icon={<MoreHoriz />} />}
+          onClose={() => setOpen(false)}
+          onMouseOver={() => setOpen(true)}
+          onClick={(event) => handleMobileOpen(event)}
+          open={open}
+          className={classes.speedDial}
+        >
+          {actions.map((action) => (
+            <SpeedDialAction
+              tooltipOpen
+              key={action.name + id}
+              icon={action.icon}
+              tooltipTitle={action.name}
+              onClick={(event: SyntheticEvent) => {
+                event.stopPropagation();
+                action.onClick(id);
+              }}
+              classes={{
+                fab: classes.speedDialActionButton,
+                staticTooltipLabel: classes.speedDialActionTooltip,
+              }}
+            />
+          ))}
+        </SpeedDial>
+      </div>
     </TableCell>
   );
 };
