@@ -29,7 +29,7 @@ export const ProfilePage = () => {
         <UpdateUserPassword />
       </Paper>
       <Paper classes={{ root: classes.paper }}>
-        <BlockchainAddressesContainer userAccountData={user} />
+        <BlockchainAddressesContainer />
       </Paper>
     </Box>
   );

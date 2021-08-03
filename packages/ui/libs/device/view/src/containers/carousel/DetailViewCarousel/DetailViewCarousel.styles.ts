@@ -39,4 +39,8 @@ export const useStyles = makeStyles((theme) => ({
       left: 180,
     },
   },
+  mapContainer: {
+    width: '100%',
+    height: '100%',
+  },
 }));

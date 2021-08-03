@@ -26,8 +26,23 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
     fontSize: styleConfig.FONT_SIZE,
   },
   components: {
+    MuiInputBase: {
+      styleOverrides: {
+        input: {
+          '&:-webkit-autofill': {
+            WebkitBoxShadow: `0 0 0 100px ${styleConfig.INPUT_AUTOFILL_COLOR} inset`,
+            WebkitTextFillColor: styleConfig.SIMPLE_TEXT_COLOR,
+          },
+        },
+      },
+    },
     MuiFilledInput: {
       styleOverrides: {
+        input: {
+          '&:-webkit-autofill': {
+            WebkitBoxShadow: `0 0 0 100px ${styleConfig.INPUT_AUTOFILL_COLOR} inset`,
+          },
+        },
         root: {
           backgroundColor: LightenColor(
             styleConfig.MAIN_BACKGROUND_COLOR,

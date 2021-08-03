@@ -23,7 +23,7 @@ export const useTopbarButtonList = (
       label: t('navigation.topbar.login'),
       show: !isAuthenticated,
       onClick: () => {
-        navigate('/auth/login');
+        navigate('/login');
       },
       Icon: AccountCircle,
     },

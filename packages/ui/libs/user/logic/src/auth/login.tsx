@@ -8,13 +8,14 @@ export type TUserLoginFormValues = {
   password: string;
 };
 
-const INITIAL_FORM_VALUES: TUserLoginFormValues = {
+export const INITIAL_FORM_VALUES: TUserLoginFormValues = {
   username: '',
   password: '',
 };
 
 export const useUserLogInFormConfig = (
-  formSubmitHandler: (values: UnpackNestedValue<TUserLoginFormValues>) => void
+  formSubmitHandler: (values: UnpackNestedValue<TUserLoginFormValues>) => void,
+  onWatchHandler: (values: any) => void
 ): GenericFormProps<TUserLoginFormValues> => {
   const { t } = useTranslation();
 
@@ -32,6 +33,8 @@ export const useUserLogInFormConfig = (
         name: 'password',
       },
     ],
+    onWatchHandler,
+    inputsToWatch: ['username', 'password'],
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
