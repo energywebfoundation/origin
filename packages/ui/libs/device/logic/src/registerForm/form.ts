@@ -7,6 +7,7 @@ import { createDeviceImagesForm } from './deviceImagesForm';
 export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = ({
   allFuelTypes,
   allDeviceTypes,
+  allRegions,
   externalDeviceId,
 }) => {
   const { t } = useTranslation();
@@ -14,8 +15,9 @@ export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = ({
     heading: t('device.register.formTitle'),
     forms: [
       createDeviceInfoForm(t, allFuelTypes, allDeviceTypes, externalDeviceId),
-      createDeviceLocationForm(t),
+      createDeviceLocationForm(t, allRegions),
       createDeviceImagesForm(t),
     ],
+    backButtonText: t('general.buttons.back'),
   };
 };

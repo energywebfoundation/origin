@@ -1,20 +1,6 @@
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { FormSelectOption } from '@energyweb/origin-ui-core';
-import { fuelToDeviceTypesMatching } from '../utils';
-
-export const prepareFuelTypesOptions = (
-  allFuelTypes: CodeNameDTO[]
-): FormSelectOption[] => {
-  if (!allFuelTypes) {
-    return [];
-  }
-
-  const options: FormSelectOption[] = allFuelTypes.map((type) => ({
-    value: type.code,
-    label: type.name,
-  }));
-  return options;
-};
+import { fuelToDeviceTypesMatching } from './fuelToDeviceTypesMatching';
 
 export const prepareDeviceTypesOptions = (
   allDeviceTypes: CodeNameDTO[]

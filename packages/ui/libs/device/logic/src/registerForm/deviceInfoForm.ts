@@ -1,9 +1,9 @@
 import * as yup from 'yup';
-import { gridOperatorOptions } from '../utils';
 import {
   prepareDeviceTypesOptions,
   prepareFuelTypesOptions,
-} from './prepareOptions';
+  gridOperatorOptions,
+} from '../utils';
 import { TCreateDeviceInfoForm } from './types';
 
 export const createDeviceInfoForm: TCreateDeviceInfoForm = (
@@ -55,8 +55,8 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       label: t('device.register.fuelType'),
       select: true,
       autocomplete: true,
-      options: prepareFuelTypesOptions(allFuelTypes),
       required: true,
+      options: prepareFuelTypesOptions(allFuelTypes),
     },
     {
       name: 'deviceType',

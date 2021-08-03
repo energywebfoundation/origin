@@ -1,23 +1,27 @@
 import * as yup from 'yup';
 import { COUNTRY_OPTIONS_ISO } from '@energyweb/origin-ui-utils';
 import { TCreateDeviceLocationForm } from './types';
+import { prepareRegionsOption, prepareSubregionOptions } from '../utils';
 
-export const createDeviceLocationForm: TCreateDeviceLocationForm = (t) => ({
+export const createDeviceLocationForm: TCreateDeviceLocationForm = (
+  t,
+  allRegions
+) => ({
   formTitle: t('device.register.deviceLocationFormTitle'),
   inputsVariant: 'filled',
   initialValues: {
     countryCode: [],
-    region: '',
-    subregion: '',
+    region: [],
+    subregion: [],
     postalCode: '',
     address: '',
     latitude: '',
     longitude: '',
   },
   validationSchema: yup.object().shape({
-    countryCode: yup.string().required().label(t('device.register.country')),
-    region: yup.string().required().label(t('device.register.region')),
-    subregion: yup.string().required().label(t('device.register.subregion')),
+    countryCode: yup.array().required().label(t('device.register.country')),
+    region: yup.array().required().label(t('device.register.region')),
+    subregion: yup.array().required().label(t('device.register.subregion')),
     postalCode: yup.string().required().label(t('device.register.postalCode')),
     address: yup.string().required().label(t('device.register.address')),
     latitude: yup.string().required().label(t('device.register.latitude')),
@@ -36,11 +40,18 @@ export const createDeviceLocationForm: TCreateDeviceLocationForm = (t) => ({
       name: 'region',
       label: t('device.register.region'),
       required: true,
+      select: true,
+      autocomplete: true,
+      options: prepareRegionsOption(allRegions),
     },
     {
       name: 'subregion',
       label: t('device.register.subregion'),
+      select: true,
       required: true,
+      autocomplete: true,
+      dependentOn: 'region',
+      dependentOptionsCallback: prepareSubregionOptions(allRegions),
     },
     {
       name: 'postalCode',

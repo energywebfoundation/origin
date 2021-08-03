@@ -3,6 +3,7 @@ import {
   useAllDeviceTypes,
   useAllDeviceFuelTypes,
   useApiRegisterDevice,
+  useApiRegionsConfiguration,
 } from '@energyweb/origin-ui-device-data';
 import { DeviceImagesUpload } from '../../containers';
 
@@ -11,10 +12,13 @@ export const useRegisterPageEffects = () => {
     useAllDeviceFuelTypes();
   const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
     useAllDeviceTypes();
+  const { allRegions, isLoading: areRegionsLoading } =
+    useApiRegionsConfiguration();
 
   const formsLogic = useRegisterDeviceFormLogic({
     allFuelTypes,
     allDeviceTypes,
+    allRegions,
     externalDeviceId: process.env.NX_SMART_METER_ID,
   });
 
@@ -34,7 +38,8 @@ export const useRegisterPageEffects = () => {
     forms: formsWithImagesUpload,
     submitHandler,
   };
-  const isLoading = areFuelTypesLoading || areDeviceTypesLoading;
+  const isLoading =
+    areFuelTypesLoading || areDeviceTypesLoading || areRegionsLoading;
 
   return { isLoading, formProps };
 };

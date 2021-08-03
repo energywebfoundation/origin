@@ -11,3 +11,7 @@ export * from './getTimeUnitOnWindow';
 export * from './TimeUnitPluralEnum';
 export * from './fuelToDeviceTypesMatching';
 export * from './gridOperatorOptions';
+export * from './prepareRegionsOptions';
+export * from './prepareSubregionOptions';
+export * from './prepareFuelTypeOptions';
+export * from './prepareDeviceTypeOptions';
