@@ -10,7 +10,7 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { useUser } from './useUser';
+import { useUser } from '../fetching';
 import { useQueryClient } from 'react-query';
 import { userApiErrorHandler } from './errorHandler';
 import { useWeb3React } from '@web3-react/core';

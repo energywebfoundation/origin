@@ -11,7 +11,7 @@ import {
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
-import { useUser } from './useUser';
+import { useUser } from '../fetching';
 
 export const useApiUpdateUserAccountEmail = () => {
   const { mutate, isLoading, error, isError, isSuccess, status } =

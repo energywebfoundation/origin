@@ -8,9 +8,8 @@ import {
   getAccountControllerGetAccountQueryKey,
   useAccountControllerCreate,
 } from '@energyweb/exchange-react-query-client';
-import { useUser } from './useUser';
-import { pollExchangeAddress } from './pollExchangeAddress';
 import { useQueryClient } from 'react-query';
+import { useUser, pollExchangeAddress } from '../fetching';
 import { userApiErrorHandler } from './errorHandler';
 
 export const useApiCreateExchangeBlockchainAddress = (
