@@ -2,7 +2,7 @@ import { DisabledFormViewProps } from '@energyweb/origin-ui-core';
 import { RegistrationDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { TFunction } from 'i18next';
 import { Countries } from '@energyweb/utils-general';
-import { iRecAccountTypeFormat } from '../utils';
+import { IRECAccountType, iRecAccountTypeFormat } from '../utils';
 
 type TOrganizationViewLogic = (
   t: TFunction,
@@ -18,7 +18,10 @@ export const getIRecOrganizationViewLogic: TOrganizationViewLogic = (
     data: [
       {
         label: t('organization.view.iRec.accountTypeLabel'),
-        value: iRecAccountTypeFormat(t, iRecOrganization.accountType),
+        value: iRecAccountTypeFormat(
+          t,
+          iRecOrganization.accountType as unknown as IRECAccountType
+        ),
       },
       {
         label: t('organization.view.iRec.orgHeadquartersCountry'),

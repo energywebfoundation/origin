@@ -1,4 +1,7 @@
-import { FileUpload } from '@energyweb/origin-ui-core';
+import {
+  FileUpload,
+  GenericFormSecondaryButton,
+} from '@energyweb/origin-ui-core';
 import { DocsUploadFormValues } from '@energyweb/origin-ui-organization-logic';
 import { Box, Button, Divider } from '@material-ui/core';
 import React, { FC } from 'react';
@@ -7,10 +10,12 @@ import { useStyles } from './RegisterOrgDocs.styles';
 
 interface RegisterOrgDocsProps {
   submitHandler: (values: DocsUploadFormValues) => void;
+  secondaryButtons?: GenericFormSecondaryButton[];
 }
 
 export const RegisterOrgDocs: FC<RegisterOrgDocsProps> = ({
   submitHandler,
+  secondaryButtons,
 }) => {
   const {
     values,
@@ -41,6 +46,12 @@ export const RegisterOrgDocs: FC<RegisterOrgDocsProps> = ({
         onChange={onSignatoryIdChange}
       />
       <Box mt={1} display="flex" justifyContent="flex-end">
+        {secondaryButtons &&
+          secondaryButtons.map((button) => (
+            <Button key={`secondary-button-${button.label}`} {...button}>
+              {button.label}
+            </Button>
+          ))}
         <Button
           color="primary"
           name="submit"

@@ -1,5 +1,10 @@
-import { IRECAccountType } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { TFunction } from 'i18next';
+
+export enum IRECAccountType {
+  Registrant = 0,
+  Participant = 1,
+  Both = 2,
+}
 
 export const iRecAccountTypeFormat = (t: TFunction, type: IRECAccountType) => {
   switch (type) {
