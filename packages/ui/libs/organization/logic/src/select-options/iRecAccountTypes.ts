@@ -1,5 +1,5 @@
+import { IRECAccountType } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { TFunction } from 'i18next';
-import { IRECAccountType } from '../utils';
 
 export const createIRecAccountTypeOptions = (t: TFunction) => [
   {

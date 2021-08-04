@@ -1,4 +1,4 @@
-import { IRECAccountType } from '../utils';
+import { IRECAccountType } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
   FormSelectOption,
   MultiStepFormItem,

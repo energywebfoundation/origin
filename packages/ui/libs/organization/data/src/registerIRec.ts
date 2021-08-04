@@ -1,6 +1,5 @@
 import {
   getRegistrationControllerGetRegistrationsQueryKey,
-  IRECAccountType,
   NewRegistrationDTO,
   useRegistrationControllerRegister,
 } from '@energyweb/origin-organization-irec-api-react-query-client';
@@ -32,7 +31,7 @@ export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
         values.primaryContactOrganizationCountry
           .map((option) => option.value)[0]
           .toString(),
-      accountType: values.accountType as unknown as IRECAccountType,
+      accountType: values.accountType,
       registrationYear: Number(values.registrationYear),
       activeCountries: values.activeCountries.map((i) => i?.value as string),
     };
