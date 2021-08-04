@@ -15,6 +15,7 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
+    RedeemTransactionResult,
     TransactionResult,
     TransactionType
 } from '@energyweb/issuer-irec-api-wrapper';
@@ -328,6 +329,20 @@ export class IrecMockService implements IIrecService {
             transactionType: TransactionType.Transfer,
             sender: 'sender-trade-acc',
             recipient: 'recepient-trade-acc'
+        };
+    }
+
+    async redeem(user: UserIdentifier, assetId: string): Promise<RedeemTransactionResult> {
+        return {
+            code: 'TESTACC-2020-0903-1232-34',
+            transactionType: TransactionType.Redemption,
+            volume: 1000,
+            notes: '',
+            time: new Date(),
+            sender: 'TPOTRADE1',
+            recipient: 'TRUPOWER',
+            verificationKey: 'S4ELosCw',
+            encryptedKey: 'S4ELosCw'
         };
     }
 

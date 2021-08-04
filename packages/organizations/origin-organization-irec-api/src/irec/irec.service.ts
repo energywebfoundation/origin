@@ -24,6 +24,7 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
+    RedeemTransactionResult,
     ReservationItem,
     TransactionResult
 } from '@energyweb/issuer-irec-api-wrapper';
@@ -39,6 +40,15 @@ export interface ICreateBeneficiary {
     name: string;
     countryCode: string;
     location: string;
+}
+
+export interface IClaimData {
+    beneficiary: string;
+    location: string;
+    countryCode: string;
+    periodStartDate: string;
+    periodEndDate: string;
+    purpose: string;
 }
 
 export interface IIrecService {
@@ -102,6 +112,12 @@ export interface IIrecService {
         toUser: UserIdentifier,
         assetId: string
     ): Promise<TransactionResult>;
+
+    redeem(
+        user: UserIdentifier,
+        assetId: string,
+        claimData: IClaimData
+    ): Promise<RedeemTransactionResult>;
 
     approveDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 
@@ -315,6 +331,41 @@ export class IrecService implements IIrecService {
             volume: transferItem.amount,
             items: [transferItem],
             notes: ''
+        });
+    }
+
+    async redeem(
+        user: UserIdentifier,
+        assetId: string,
+        claimData: IClaimData
+    ): Promise<RedeemTransactionResult> {
+        const userClient = await this.getIrecClient(user);
+        const userConnectionInfo = await this.getConnectionInfo(user);
+
+        const userTradeAccount = await this.getTradeAccountCode(user);
+
+        const items = await userClient.account.getItems(userTradeAccount);
+        const item = items.find((i) => i.asset === assetId);
+
+        if (!item) {
+            throw new NotFoundException('IREC item not found');
+        }
+
+        const claimItem = new ReservationItem();
+        claimItem.code = item.code;
+        claimItem.amount = item.volume;
+
+        return userClient.redeem({
+            sender: userTradeAccount,
+            recipient: userTradeAccount,
+            approver: userConnectionInfo.userName,
+            volume: claimItem.amount,
+            items: [claimItem],
+            notes: '',
+            beneficiary: Number(claimData.beneficiary),
+            start: new Date(claimData.periodStartDate),
+            end: new Date(claimData.periodEndDate),
+            purpose: ''
         });
     }
 
