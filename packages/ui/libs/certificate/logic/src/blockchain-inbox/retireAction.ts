@@ -1,3 +1,4 @@
+import { SelectRegularProps } from '@energyweb/origin-ui-core';
 import { Dayjs } from 'dayjs';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -44,7 +45,7 @@ export const useBeneficiaryFormLogic: TUseBeneficiaryFormLogic = ({
 }) => {
   const { t } = useTranslation();
 
-  const selectorProps = {
+  const selectorProps: Omit<SelectRegularProps, 'value'> = {
     field: {
       name: 'beneficiaries',
       label: t('certificate.blockchainInbox.selectBeneficiaries'),

@@ -155,6 +155,7 @@
         }
       },
       "members": {
+        "tableTitle": "Organization members",
         "firstName": "First name",
         "lastName": "Last name",
         "email": "Email",
@@ -359,6 +360,7 @@
         }
       },
       "pending": {
+        "tableTitle": "Pending Devices",
         "owner": "Owner",
         "facilityName": "Facility Name",
         "location": "Location",
@@ -471,7 +473,8 @@
         "selectCertificate": "Select Certificate",
         "totalVolume": "Total Volume",
         "viewButton": "View",
-        "noCertificates": "You don't have any certificates in the inbox"
+        "noCertificates": "You don't have any certificates in the inbox",
+        "bulkActionsRestrictionsText": "Bulk certificate actions are currently unavailable. Please, select single certificate to continue"
       },
       "detailView": {
         "certificateId": "Certificate ID",
@@ -898,13 +901,21 @@
         "decline": "Decline",
         "accept": "Accept",
         "no": "No",
-        "yes": "Yes"
+        "yes": "Yes",
+        "back": "Back"
       },
       "input": {
         "editAmount": "Edit amount"
       },
       "notifications": {
         "unknownError": "Unknown error"
+      },
+      "titles": {
+        "dr": "Dr",
+        "mr": "Mr",
+        "mrs": "Mrs",
+        "ms": "Ms",
+        "other": "Other"
       }
     },
     "notifications": {

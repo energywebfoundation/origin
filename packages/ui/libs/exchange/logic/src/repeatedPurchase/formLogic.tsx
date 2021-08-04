@@ -3,9 +3,15 @@ import * as yup from 'yup';
 import { periodTypeOptions } from '../utils';
 import React from 'react';
 import { TimeFrame } from '@energyweb/utils-general';
+import { TextFieldProps } from '@material-ui/core';
 
-export const useRepeatedPurchaseFormLogic = () => {
+export const useRepeatedPurchaseFormLogic = (mobileView: boolean) => {
   const { t } = useTranslation();
+
+  const fieldProps: TextFieldProps = {
+    variant: 'filled' as any,
+    margin: mobileView ? ('none' as any) : ('normal' as any),
+  };
 
   return {
     initialValues: {
@@ -34,7 +40,7 @@ export const useRepeatedPurchaseFormLogic = () => {
         name: 'period',
         options: periodTypeOptions(t, true),
         label: t('exchange.viewMarket.period'),
-        textFieldProps: { variant: 'filled' as any },
+        textFieldProps: fieldProps,
       },
       volume: {
         name: 'volume',
@@ -46,12 +52,12 @@ export const useRepeatedPurchaseFormLogic = () => {
       startDate: {
         name: 'startDate',
         label: t('exchange.viewMarket.demandStartDate'),
-        textFieldProps: { variant: 'filled' as any },
+        textFieldProps: fieldProps,
       },
       endDate: {
         name: 'endDate',
         label: t('exchange.viewMarket.demandEndDate'),
-        textFieldProps: { variant: 'filled' as any },
+        textFieldProps: fieldProps,
       },
       totalVolume: {
         name: 'totalVolume',

@@ -1,50 +1,76 @@
 import { TextFieldProps, MenuItem, TextField } from '@material-ui/core';
-import React, { FC } from 'react';
+import React, { PropsWithChildren, ReactElement } from 'react';
+import { UseFormRegister } from 'react-hook-form';
+import { isEmpty } from 'lodash';
 import { GenericFormField } from '../../../containers';
 import { FormSelectOption } from '../FormSelect';
 
-export interface SelectRegularProps {
+export interface SelectRegularProps<FormValuesType = any> {
   field: GenericFormField;
-  errorExists?: boolean;
-  errorText?: string;
   value: FormSelectOption['value'];
   onChange: (...event: any[]) => void;
+  register?: UseFormRegister<FormValuesType>;
+  errorExists?: boolean;
+  errorText?: string;
   variant?: 'standard' | 'outlined' | 'filled';
   textFieldProps?: TextFieldProps;
 }
 
-export const SelectRegular: FC<SelectRegularProps> = ({
+export type TSelectRegular = <FormValuesType>(
+  props: PropsWithChildren<SelectRegularProps<FormValuesType>>
+) => ReactElement;
+
+export const SelectRegular: TSelectRegular = ({
   field,
   errorExists = false,
   errorText = '',
   variant,
   value,
+  register,
   onChange,
   textFieldProps,
 }) => {
+  const additionalInputRegistration =
+    field.additionalInputProps?.name &&
+    register(field.additionalInputProps.name as any);
   return (
-    <TextField
-      disabled={field.frozen}
-      select
-      name={field.name}
-      label={field.label}
-      type={field.name}
-      error={errorExists}
-      helperText={errorText}
-      fullWidth
-      margin="normal"
-      variant={variant ?? 'standard'}
-      value={value ?? ''}
-      defaultValue={value}
-      onChange={onChange}
-      required={field.required}
-      {...textFieldProps}
-    >
-      {field.options.map((option) => (
-        <MenuItem key={option.label} value={option.value}>
-          {option.label}
-        </MenuItem>
-      ))}
-    </TextField>
+    <>
+      <TextField
+        select
+        fullWidth
+        name={field.name}
+        label={field.label}
+        type={field.name}
+        error={errorExists}
+        helperText={errorText}
+        margin="normal"
+        variant={variant ?? 'standard'}
+        value={value ?? ''}
+        defaultValue={value}
+        onChange={onChange}
+        required={field.required}
+        {...textFieldProps}
+      >
+        {field.options.map((option) => (
+          <MenuItem key={option.label} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
+      {!isEmpty(field.additionalInputProps) &&
+        !!field.additionalInputProps?.valueToOpen &&
+        field.additionalInputProps?.valueToOpen === value && (
+          <TextField
+            fullWidth
+            variant={variant ?? 'standard'}
+            label={field.additionalInputProps?.label}
+            name={additionalInputRegistration?.name}
+            inputRef={additionalInputRegistration?.ref}
+            onChange={additionalInputRegistration?.onChange}
+            onBlur={additionalInputRegistration?.onBlur}
+            {...textFieldProps}
+          />
+        )}
+    </>
   );
 };

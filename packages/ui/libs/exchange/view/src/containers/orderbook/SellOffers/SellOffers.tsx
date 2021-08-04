@@ -10,9 +10,9 @@ interface SellOffersProps {
 }
 
 export const SellOffers: FC<SellOffersProps> = ({ asks, isLoading }) => {
-  const tableProps = useSellOffersEffects(asks, isLoading);
+  const { tableProps, mobileView } = useSellOffersEffects(asks, isLoading);
   return (
-    <Box p={4}>
+    <Box py={mobileView ? 2 : 4} px={mobileView ? 0 : 4}>
       <TableComponent {...tableProps} />
     </Box>
   );

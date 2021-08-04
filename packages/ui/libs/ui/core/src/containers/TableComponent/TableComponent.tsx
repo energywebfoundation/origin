@@ -5,7 +5,7 @@ import {
   TableComponentHeader,
   TableComponentBody,
   TableComponentFooter,
-  TableFilters,
+  TableComponentFilters,
 } from '../../components/table';
 import { usePaginateData } from './usePaginateData';
 import { useStyles } from './TableComponent.styles';
@@ -42,9 +42,9 @@ export const TableComponent: TTableComponent = ({
         </Typography>
       )}
       {tableFilters && tableFilters.length > 0 && (
-        <TableFilters filters={filters} setFilters={setFilters} />
+        <TableComponentFilters filters={filters} setFilters={setFilters} />
       )}
-      <Table size="small" aria-label="a dense table">
+      <Table aria-label="generic_table">
         <TableComponentHeader headerData={header} />
         <TableComponentBody
           rowData={paginatedData}

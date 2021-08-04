@@ -13,5 +13,6 @@ export const useRegisterIRecFormLogic: TUseRegisterIRecFormLogic = () => {
       createPrimaryContactDetailsForm(t),
       createLeadUserDetailsForm(t),
     ],
+    backButtonText: t('general.buttons.back'),
   };
 };

@@ -1,10 +1,8 @@
-import { Typography, TypographyVariant } from '@material-ui/core';
+import { Typography, TypographyVariant, ButtonProps } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement, FC } from 'react';
 import { StepReport } from '../../components/form';
 import { GenericFormProps } from '../GenericForm';
 import { useMultiStepFormEffects } from './MultiStepForm.effects';
-
-type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export type MultiStepFormItem<FormValuesType> = Omit<
   GenericFormProps<FormValuesType>,
@@ -18,6 +16,8 @@ export interface MultiStepFormProps<FormValuesUnion, FormValuesMerged> {
   heading: string;
   headingVariant?: TypographyVariant;
   forms: MultiStepFormItem<FormValuesUnion>[];
+  backButtonText: string;
+  backButtonProps?: ButtonProps;
   submitHandler: (values: FormValuesMerged) => void;
 }
 
@@ -32,12 +32,12 @@ export const MultiStepForm: TMultiStepForm = ({
   headingVariant,
   forms,
   submitHandler,
+  backButtonText,
+  backButtonProps,
 }) => {
-  const {
-    stepperLabels,
-    activeStep,
-    getCurrentForm,
-  } = useMultiStepFormEffects({ forms, submitHandler });
+  const { stepperLabels, activeStep, getCurrentForm } = useMultiStepFormEffects(
+    { forms, submitHandler, backButtonText, backButtonProps }
+  );
   return (
     <>
       <Typography variant={headingVariant ?? 'h5'}>{heading}</Typography>

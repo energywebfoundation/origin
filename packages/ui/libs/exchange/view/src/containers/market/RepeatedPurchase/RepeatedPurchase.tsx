@@ -26,6 +26,7 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
     dirtyFields,
     totalVolume,
     totalPrice,
+    mobileView,
   } = useRepeatedPurchaseEffects(filters);
   const { period, volume, startDate, endDate, price } = fields;
 
@@ -43,7 +44,7 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
         <div className={classes.item}>
           <FormInput
             variant="filled"
-            margin="normal"
+            margin={mobileView ? 'none' : 'normal'}
             field={volume}
             isDirty={dirtyFields[volume.name]}
             register={register}

@@ -17,6 +17,11 @@ export const useSelectAutocompleteEffects = (
       : value;
 
     onChange(slicedValues);
+
+    if (!field.multiple) {
+      return setTextValue(' ');
+    }
+
     setTextValue('');
   };
 

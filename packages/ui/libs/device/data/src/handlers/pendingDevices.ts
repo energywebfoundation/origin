@@ -1,19 +1,9 @@
 import {
   DeviceDTO,
   UpdateDeviceDTO,
-  DeviceState,
   useDeviceControllerUpdateDevice,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { useApiAllDevices } from './allDevices';
-import { ComposedPublicDevice } from './types';
-
-export const useApiPendingDevices = () => {
-  const { allDevices, isLoading } = useApiAllDevices();
-  const pendingDevices = allDevices?.filter(
-    (device) => device.status === DeviceState.Inprogress
-  );
-  return { pendingDevices, isLoading };
-};
+import { ComposedPublicDevice } from '../types';
 
 export const useApiHandlersForPendingDevices = (
   pendingDevices: ComposedPublicDevice[]

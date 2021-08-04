@@ -1,7 +1,14 @@
 import { Box } from '@material-ui/core';
 import React, { FC } from 'react';
-import { DesktopTopBar, TopBarButtonData } from '../DesktopTopBar';
+import { DesktopTopBar } from '../DesktopTopBar';
 import { MobileTopBar } from '../MobileTopBar';
+
+export type TopBarButtonData = {
+  label: string;
+  Icon: FC<any>;
+  onClick: () => void;
+  show: boolean;
+};
 
 export interface TopBarProps {
   isAuthenticated: boolean;
@@ -16,7 +23,7 @@ export const TopBar: FC<TopBarProps> = ({ buttons, onMobileNavOpen }) => {
         <DesktopTopBar buttons={buttons} />
       </Box>
       <Box sx={{ display: { lg: 'none', xs: 'block' } }}>
-        <MobileTopBar onMobileNavOpen={onMobileNavOpen} />
+        <MobileTopBar buttons={buttons} onMobileNavOpen={onMobileNavOpen} />
       </Box>
     </>
   );

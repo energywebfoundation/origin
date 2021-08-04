@@ -1,10 +1,10 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
+import { Control, DeepMap, FieldError, UseFormRegister } from 'react-hook-form';
+import { BaseTextFieldProps } from '@material-ui/core';
+import { isEmpty } from 'lodash';
 import { GenericFormField } from '../../../containers';
 import { FormInput, FormInputProps } from '../FormInput';
-import { Control, DeepMap, FieldError, UseFormRegister } from 'react-hook-form';
 import { FormSelect } from '../FormSelect';
-import { isEmpty } from 'lodash';
-import { BaseTextFieldProps } from '@material-ui/core';
 import { FormDatePicker } from '../FormDatePicker';
 
 export interface SingleColumnFormProps<FormValuesType> {
@@ -44,11 +44,12 @@ export const SingleColumnForm: TSingleColumnForm = ({
               errorExists={!isEmpty(errors[field.name])}
               errorText={errors[field.name]?.message ?? ''}
               variant={inputsVariant}
+              register={register}
             />
           )) ||
           (field.datePicker && (
             <FormDatePicker
-              disabled={editDisabled || field.frozen}
+              disabled={editDisabled}
               key={field.label}
               field={field}
               control={control}
@@ -60,7 +61,7 @@ export const SingleColumnForm: TSingleColumnForm = ({
             <FormInput
               key={field.label}
               field={field}
-              disabled={editDisabled || field.frozen}
+              disabled={editDisabled}
               register={register}
               errorExists={!isEmpty(errors[field.name])}
               errorText={errors[field.name]?.message ?? ''}

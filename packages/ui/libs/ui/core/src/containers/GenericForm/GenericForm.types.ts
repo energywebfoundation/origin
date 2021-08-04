@@ -20,8 +20,13 @@ export type GenericFormField = {
   label: string;
   type?: 'text' | 'password';
   required?: boolean;
-  frozen?: boolean;
   select?: boolean;
+  additionalInputProps?: {
+    valueToOpen: FormSelectOption['value'];
+    name: string;
+    label: string;
+    required: boolean;
+  };
   options?: FormSelectOption[];
   autocomplete?: boolean;
   multiple?: boolean;

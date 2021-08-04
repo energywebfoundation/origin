@@ -9,4 +9,11 @@ export const useStyles = makeStyles({
   list: {
     padding: 0,
   },
+  logo: {
+    margin: '20px',
+    width: 120,
+  },
+  userAndOrg: {
+    margin: '0 10px 20px 20px',
+  },
 });

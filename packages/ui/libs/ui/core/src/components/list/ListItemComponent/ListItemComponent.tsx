@@ -32,8 +32,9 @@ export const ListItemComponent: TListItemsContainer = ({
   return (
     <ListItem className={classes.listItem} {...listItemProps}>
       {checkboxes && (
-        <ListItemIcon>
+        <ListItemIcon classes={{ root: classes.listItemIcon }}>
           <Checkbox
+            classes={{ root: classes.checkbox }}
             color="primary"
             checked={itemChecked}
             onChange={() => handleItemCheck(id)}

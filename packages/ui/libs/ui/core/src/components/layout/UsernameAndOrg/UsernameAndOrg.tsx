@@ -37,6 +37,7 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
             textContent={orgName}
             pending={orgPending}
             tooltipText={orgTooltip}
+            typographyProps={{ color: 'textSecondary' }}
           />
         </Box>
         <Box flexGrow={1} />

@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 
-export const useStyles = makeStyles({
+export const useStyles = makeStyles((theme) => ({
   gridContainer: {
     paddingTop: 20,
     paddingBottom: 20,
@@ -10,6 +10,10 @@ export const useStyles = makeStyles({
     marginTop: 10,
     display: 'flex',
     alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      alignItems: 'flex-start',
+      flexDirection: 'column-reverse',
+    },
   },
   field: {
     width: '100%',
@@ -20,5 +24,9 @@ export const useStyles = makeStyles({
   },
   iconPopover: {
     marginLeft: 20,
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 0,
+      marginBottom: 10,
+    },
   },
-});
+}));

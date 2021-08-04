@@ -5,10 +5,8 @@ import { useAppContainerEffects } from './AppContainer.effects';
 import { NotificationsCenter } from '@energyweb/origin-ui-core';
 
 export const AppContainer = () => {
-  const { topbarButtons, menuSections, user, isAuthenticated, isLoading } =
+  const { topbarButtons, menuSections, user, isAuthenticated } =
     useAppContainerEffects();
-
-  if (isLoading) return <></>;
 
   return (
     <>

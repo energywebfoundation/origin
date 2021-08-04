@@ -2,11 +2,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRepeatedPurchaseFormLogic } from '@energyweb/origin-ui-exchange-logic';
 import { useApiCreateDemandHandler } from '@energyweb/origin-ui-exchange-data';
-import { MarketFiltersState } from '../../../pages';
 import { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { calculateDemandTotalVolume } from '@energyweb/origin-ui-exchange-data';
 import { TimeFrame } from '@energyweb/utils-general';
+import { useMediaQuery, useTheme } from '@material-ui/core';
+import { MarketFiltersState } from '../../../pages';
 
 type DemandFormValues = {
   period: TimeFrame;
@@ -17,8 +18,10 @@ type DemandFormValues = {
 };
 
 export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
   const { initialValues, validationSchema, fields, buttons } =
-    useRepeatedPurchaseFormLogic();
+    useRepeatedPurchaseFormLogic(mobileView);
 
   const { register, control, formState, handleSubmit, watch, reset } =
     useForm<DemandFormValues>({
@@ -70,5 +73,6 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
     dirtyFields,
     totalVolume,
     totalPrice,
+    mobileView,
   };
 };

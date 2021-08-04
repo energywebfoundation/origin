@@ -10,4 +10,10 @@ export const useStyles = makeStyles((theme) => ({
   popoverTextBlock: {
     padding: '10px',
   },
+  popoverPaper: {
+    width: '30%',
+    [theme.breakpoints.down('md')]: {
+      width: '60%',
+    },
+  },
 }));

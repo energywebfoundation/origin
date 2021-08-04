@@ -1,4 +1,4 @@
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography, useTheme, useMediaQuery } from '@material-ui/core';
 import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStyles } from './ListItemContent.styles';
@@ -28,6 +28,8 @@ export const ListItemContent: TListItemContent = ({
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleViewNavigate = () => {
     navigate(`/certificate/detail-view/${certificateId}`);
@@ -40,7 +42,7 @@ export const ListItemContent: TListItemContent = ({
         <div>
           <div>
             <Typography color="textSecondary">{fuelType}</Typography>
-            <Typography gutterBottom>{energy}</Typography>
+            <Typography gutterBottom={!mobileView}>{energy}</Typography>
           </div>
           <div>
             <Typography color="textSecondary">{generationTimeTitle}</Typography>

@@ -1,5 +1,7 @@
+import { ConfigurationDTORegions } from '@energyweb/origin-backend-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import {
+  FormSelectOption,
   MultiStepFormItem,
   MultiStepFormProps,
 } from '@energyweb/origin-ui-core';
@@ -25,15 +27,16 @@ export type TCreateDeviceInfoForm = (
 
 export type DeviceLocationFormValues = {
   countryCode: string[];
-  region: string;
-  subregion: string;
+  region: FormSelectOption[];
+  subregion: FormSelectOption[];
   postalCode: string;
   address: string;
   latitude: string;
   longitude: string;
 };
 export type TCreateDeviceLocationForm = (
-  t: TFunction
+  t: TFunction,
+  allRegions: ConfigurationDTORegions
 ) => MultiStepFormItem<DeviceLocationFormValues>;
 
 export type DeviceImagesFormValues = {
@@ -54,6 +57,7 @@ export type FormMergedType = DeviceInfoFormValues &
 export type TUseRegisterDeviceFormArgs = {
   allFuelTypes: CodeNameDTO[];
   allDeviceTypes: CodeNameDTO[];
+  allRegions: ConfigurationDTORegions;
   externalDeviceId: string;
 };
 export type TUseRegisterDeviceFormLogic = (

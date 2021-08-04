@@ -9,8 +9,8 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { TRegisterDeviceFormValues } from './types';
-import { decomposeForIRec, decomposeForOrigin } from './utils';
+import { TRegisterDeviceFormValues } from '../types';
+import { decomposeForIRec, decomposeForOrigin } from '../utils';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';

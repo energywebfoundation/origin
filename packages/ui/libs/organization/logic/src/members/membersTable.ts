@@ -27,6 +27,8 @@ export const useMembersTableLogic: TUseMembersTableLogic = ({
 }) => {
   const { t } = useTranslation();
   return {
+    tableTitle: t('organization.members.tableTitle'),
+    tableTitleProps: { variant: 'h5' },
     header: {
       firstName: t('organization.members.firstName'),
       lastName: t('organization.members.lastName'),

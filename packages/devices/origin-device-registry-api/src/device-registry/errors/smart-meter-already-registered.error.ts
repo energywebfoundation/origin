@@ -1,5 +1,5 @@
 export class SmartMeterAlreadyUsedError extends Error {
-    constructor(externalRegistryId: string) {
-        super(`Device ${externalRegistryId} is already registered`);
+    constructor(smartMeterId: string) {
+        super(`Device's smartMeteId (${smartMeterId}) is already registered`);
     }
 }

@@ -1,9 +1,9 @@
 import * as yup from 'yup';
-import { gridOperatorOptions } from '../utils';
 import {
   prepareDeviceTypesOptions,
   prepareFuelTypesOptions,
-} from './prepareOptions';
+  gridOperatorOptions,
+} from '../utils';
 import { TCreateDeviceInfoForm } from './types';
 
 export const createDeviceInfoForm: TCreateDeviceInfoForm = (
@@ -41,8 +41,8 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       .required()
       .label(t('device.register.registrationDate')),
     capacity: yup.string().required().label(t('device.register.capacity')),
+    smartMeterId: yup.string().required().label(externalDeviceId),
     description: yup.string(),
-    smartMeterId: yup.string(),
   }),
   fields: [
     {
@@ -55,8 +55,8 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       label: t('device.register.fuelType'),
       select: true,
       autocomplete: true,
-      options: prepareFuelTypesOptions(allFuelTypes),
       required: true,
+      options: prepareFuelTypesOptions(allFuelTypes),
     },
     {
       name: 'deviceType',
@@ -92,16 +92,17 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       required: true,
     },
     {
+      name: 'smartMeterId',
+      label: externalDeviceId,
+      required: true,
+    },
+    {
       name: 'description',
       label: t('device.register.description'),
       textFieldProps: {
         multiline: true,
         rows: 3,
       },
-    },
-    {
-      name: 'smartMeterId',
-      label: externalDeviceId,
     },
   ],
   buttonText: t('general.buttons.nextStep'),

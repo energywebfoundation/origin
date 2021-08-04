@@ -81,6 +81,9 @@ export const useCertificateActionContentEffects = <Id>(
 
   const selectCertificateText = t('certificate.inbox.selectCertificate');
   const totalVolumeText = t('certificate.inbox.totalVolume');
+  const bulkActionsRestrictionsText = t(
+    'certificate.inbox.bulkActionsRestrictionsText'
+  );
   const totalVolume = energyAmounts.reduce(
     (total, current) => (total += parseInt(current.amount)),
     0
@@ -99,5 +102,6 @@ export const useCertificateActionContentEffects = <Id>(
     getEnergyAmountForItem,
     handleItemEnergyAmountChange,
     handleSubmit,
+    bulkActionsRestrictionsText,
   };
 };

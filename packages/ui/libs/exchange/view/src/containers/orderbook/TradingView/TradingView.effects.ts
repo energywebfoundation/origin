@@ -6,6 +6,7 @@ import {
   useAsksTableLogic,
   useBidsTableLogic,
 } from '@energyweb/origin-ui-exchange-logic';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { TradingViewProps } from './TradingView';
 import { useStyles } from './TradingView.styles';
@@ -45,6 +46,9 @@ export const useTradingViewEffects = ({
     t('exchange.viewMarket.popover.bidsFurtherInstructions'),
   ];
 
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('md'));
+
   return {
     asksTableProps,
     bidsTableProps,
@@ -52,5 +56,6 @@ export const useTradingViewEffects = ({
     popoverTextAsks,
     bidsTitle,
     popoverTextBids,
+    mobileView,
   };
 };

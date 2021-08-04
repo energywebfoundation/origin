@@ -16,4 +16,14 @@ export const useStyles = makeStyles((theme) => ({
   list: {
     padding: 0,
   },
+  checkbox: {
+    [theme.breakpoints.down('sm')]: {
+      padding: 0,
+    },
+  },
+  listItemIcon: {
+    [theme.breakpoints.down('sm')]: {
+      minWidth: 30,
+    },
+  },
 }));

@@ -1,12 +1,7 @@
 import React, { FC, memo } from 'react';
 import { Box, Button, Toolbar } from '@material-ui/core';
 import { useStyles } from './DesktopTopBar.styles';
-
-export type TopBarButtonData = {
-  label: string;
-  onClick?: () => void;
-  show?: boolean;
-};
+import { TopBarButtonData } from '../TopBar';
 
 export interface DesktopTopBarProps {
   buttons: TopBarButtonData[];
