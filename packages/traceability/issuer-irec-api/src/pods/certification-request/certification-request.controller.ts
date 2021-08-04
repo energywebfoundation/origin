@@ -19,6 +19,7 @@ import {
     ExceptionInterceptor,
     Roles,
     RolesGuard,
+    SuccessResponseDTO,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
@@ -27,7 +28,6 @@ import {
     GetAllCertificationRequestsQuery,
     GetCertificationRequestByCertificateQuery,
     GetCertificationRequestQuery,
-    SuccessResponseDTO,
     ValidateCertificationRequestCommand
 } from '@energyweb/issuer-api';
 import {
