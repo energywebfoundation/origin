@@ -1,10 +1,13 @@
+import React, { FC } from 'react';
 import { DateFormatEnum } from '@energyweb/origin-ui-utils';
-import { TextField, TextFieldProps } from '@material-ui/core';
+import { Box, TextField, TextFieldProps } from '@material-ui/core';
 import { DatePicker, LocalizationProvider } from '@material-ui/lab';
 import AdapterDayJs from '@material-ui/lab/AdapterDayjs';
 import { Dayjs } from 'dayjs';
-import React, { FC } from 'react';
 import { GenericFormField } from '../../../containers';
+import { ClearButton } from '../../buttons';
+import { useStyles } from './MaterialDatepicker.styles';
+import { useMaterialDatepickerEffects } from './MaterialDatepicker.effects';
 
 export interface MaterialDatepickerProps {
   value: any;
@@ -25,13 +28,54 @@ export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
   variant,
   field,
 }) => {
+  const classes = useStyles();
+  const {
+    open,
+    clearValue,
+    handlePickerOpen,
+    handlePickerClose,
+    adornmentPosition,
+  } = useMaterialDatepickerEffects({ onChange });
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayJs}>
       <DatePicker
+        clearable
+        reduceAnimations
+        disableMaskedInput
+        showToolbar={false}
+        open={open}
         disabled={disabled}
         onChange={onChange}
         value={value}
-        inputFormat={DateFormatEnum.DATE_FORMAT_DMY}
+        className={classes.root}
+        inputFormat={DateFormatEnum.DATE_FORMAT_MDY}
+        onClose={handlePickerClose}
+        InputProps={{
+          onClick: handlePickerOpen,
+          classes: {
+            root: classes.input,
+          },
+          endAdornment: (
+            <Box className={classes.clearButtonWrapper}>
+              {value && (
+                <ClearButton
+                  onClick={clearValue}
+                  className={classes.clearButton}
+                />
+              )}
+            </Box>
+          ),
+        }}
+        PopperProps={{
+          className: classes.popper,
+        }}
+        DialogProps={{
+          className: classes.dialog,
+        }}
+        InputAdornmentProps={{
+          position: adornmentPosition,
+        }}
         renderInput={(props) => (
           <TextField
             {...props}
