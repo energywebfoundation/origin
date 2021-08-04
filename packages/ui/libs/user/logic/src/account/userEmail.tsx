@@ -17,6 +17,7 @@ export const useUpdateUserAccountEmailFormConfig = (
       {
         label: t('user.profile.email'),
         name: 'email',
+        required: true,
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },

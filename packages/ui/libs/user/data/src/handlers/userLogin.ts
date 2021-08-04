@@ -23,7 +23,7 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { setAuthenticationToken } from '@energyweb/origin-ui-shared-state';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';
@@ -86,6 +86,8 @@ export const useUserLogin = (
             user?.organization.status === OrganizationStatus.Active &&
             user.status === UserStatus.Active &&
             !isRole(user, Role.Issuer) &&
+            !isRole(user, Role.Admin) &&
+            !isRole(user, Role.SupportAgent) &&
             !exchangeAddress
           ) {
             openExchangeAddressModal();
@@ -94,8 +96,7 @@ export const useUserLogin = (
 
           navigate('/');
         },
-        onError: (error: AxiosError) => {
-          console.error(error);
+        onError: () => {
           showNotification(
             t('user.login.notifications.loginError'),
             NotificationTypeEnum.Error

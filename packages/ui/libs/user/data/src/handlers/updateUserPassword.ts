@@ -1,10 +1,16 @@
-import { useUserControllerUpdateOwnPassword } from '@energyweb/origin-backend-react-query-client';
+import {
+  getUserControllerMeQueryKey,
+  UserDTO,
+  UserStatus,
+  useUserControllerUpdateOwnPassword,
+} from '@energyweb/origin-backend-react-query-client';
 import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from 'react-query';
 import { useUser } from '../fetching';
 
 export type TUpdateUserPasswordFormValues = {
@@ -16,11 +22,22 @@ export type TUpdateUserPasswordFormValues = {
 export const useApiUpdateUserAccountPassword = () => {
   const { t } = useTranslation();
   const { logout } = useUser();
+  const queryClient = useQueryClient();
+  const userQueryKey = getUserControllerMeQueryKey();
 
-  const { mutate, isLoading, error, isError, isSuccess, status } =
-    useUserControllerUpdateOwnPassword();
+  const { mutate } = useUserControllerUpdateOwnPassword();
 
   const submitHandler = (values: TUpdateUserPasswordFormValues) => {
+    const user: UserDTO = queryClient.getQueryData(userQueryKey);
+    const { status } = user;
+    if (status !== UserStatus.Active) {
+      return showNotification(
+        t('user.profile.notifications.onlyActiveUserCan', {
+          status: user.status,
+        }),
+        NotificationTypeEnum.Error
+      );
+    }
     mutate(
       { data: values },
       {
@@ -43,11 +60,6 @@ export const useApiUpdateUserAccountPassword = () => {
   };
 
   return {
-    status,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
     submitHandler,
   };
 };

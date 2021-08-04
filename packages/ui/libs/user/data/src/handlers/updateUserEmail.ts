@@ -2,6 +2,7 @@ import {
   getUserControllerMeQueryKey,
   UpdateUserProfileDTO,
   UserDTO,
+  UserStatus,
   useUserControllerUpdateOwnProfile,
 } from '@energyweb/origin-backend-react-query-client';
 import {
@@ -14,8 +15,7 @@ import { useQueryClient } from 'react-query';
 import { useUser } from '../fetching';
 
 export const useApiUpdateUserAccountEmail = () => {
-  const { mutate, isLoading, error, isError, isSuccess, status } =
-    useUserControllerUpdateOwnProfile();
+  const { mutate } = useUserControllerUpdateOwnProfile();
   const { logout } = useUser();
 
   const { t } = useTranslation();
@@ -27,8 +27,17 @@ export const useApiUpdateUserAccountEmail = () => {
     resetForm: any
   ) => {
     const user: UserDTO = queryClient.getQueryData(userQueryKey);
-    const { firstName, lastName, telephone } = user;
+    const { firstName, lastName, telephone, status } = user;
     const restUserProps = { firstName, lastName, telephone };
+
+    if (status !== UserStatus.Active) {
+      return showNotification(
+        t('user.profile.notifications.onlyActiveUserCan', {
+          status: user.status,
+        }),
+        NotificationTypeEnum.Error
+      );
+    }
 
     return mutate(
       { data: { ...values, ...restUserProps } },
@@ -53,11 +62,6 @@ export const useApiUpdateUserAccountEmail = () => {
   };
 
   return {
-    status,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
     submitHandler,
   };
 };

@@ -6,7 +6,6 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 
 type TRegisterUserFormValues = {
@@ -44,8 +43,7 @@ export const useApiRegisterUser = (showRegisteredModal: () => void) => {
           ),
             showRegisteredModal();
         },
-        onError: (error: AxiosError) => {
-          console.log(error);
+        onError: () => {
           showNotification(
             t('user.register.notifications.registerError'),
             NotificationTypeEnum.Error
