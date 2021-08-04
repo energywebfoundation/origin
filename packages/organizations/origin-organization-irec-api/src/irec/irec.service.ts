@@ -112,7 +112,7 @@ export interface IIrecService {
 
     transferCertificate(
         fromUser: UserIdentifier,
-        toUser: UserIdentifier,
+        toTradeAccount: string,
         assetId: string
     ): Promise<TransactionResult>;
 
@@ -339,14 +339,12 @@ export class IrecService implements IIrecService {
 
     async transferCertificate(
         fromUser: UserIdentifier,
-        toUser: UserIdentifier,
+        toTradeAccount: string,
         assetId: string
     ): Promise<TransactionResult> {
         const fromUserClient = await this.getIrecClient(fromUser);
         const fromUserConnectionInfo = await this.getConnectionInfo(fromUser);
-
         const fromUserTradeAccount = await this.getTradeAccountCode(fromUser);
-        const toUserTradeAccount = await this.getTradeAccountCode(toUser);
 
         const items = await fromUserClient.account.getItems(fromUserTradeAccount);
         const item = items.find((i) => i.asset === assetId);
@@ -361,11 +359,11 @@ export class IrecService implements IIrecService {
 
         return fromUserClient.transfer({
             sender: fromUserTradeAccount,
-            recipient: toUserTradeAccount,
+            recipient: toTradeAccount,
             approver: fromUserConnectionInfo.userName,
             volume: transferItem.amount,
             items: [transferItem],
-            notes: ''
+            notes: 'Transfer certificate from origin to third-party organization'
         });
     }
 
