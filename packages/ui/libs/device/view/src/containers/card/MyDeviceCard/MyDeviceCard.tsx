@@ -34,6 +34,7 @@ export const MyDeviceCard: React.FC<MyDeviceCardProps> = ({
       imageUrl={imageUrl}
       fallbackIcon={fallbackIcon}
       fallbackIconProps={{ className: classes.fallbackIcon }}
+      fallbackIconWrapperProps={{ className: classes.fallbackIconWrapper }}
       header={<MyDeviceCardHeader {...cardHeaderProps} />}
       content={
         <MyDeviceCardContent deviceId={device.id} {...cardContentProps} />

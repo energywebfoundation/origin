@@ -46,7 +46,7 @@ export const CardWithImage: FC<CardWithImageProps> = ({
           <FallbackIcon
             icon={fallbackIcon}
             hoverText={hoverText}
-            {...fallbackIconProps}
+            iconProps={fallbackIconProps}
           />
         )}
       </CardActionArea>

@@ -14,10 +14,6 @@ export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
   const { t } = useTranslation();
 
   const { mainType, restType } = useMainFuelType(device.fuelType, allTypes);
-  const deviceIconSelected = getEnergyTypeImage(
-    mainType.toLowerCase() as EnergyTypeEnum,
-    true
-  );
   const deviceIconRegular = getEnergyTypeImage(
     mainType.toLowerCase() as EnergyTypeEnum
   );
@@ -51,7 +47,7 @@ export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
   return {
     // This is impossible to get properly due to way we handle files
     imageUrl: '',
-    fallbackIcon: deviceIconSelected,
+    fallbackIcon: deviceIconRegular,
     cardHeaderProps,
     cardContentProps,
   };
