@@ -105,7 +105,7 @@ dependencies:
   '@types/passport': 1.0.7
   '@types/passport-jwt': 3.0.6
   '@types/passport-local': 1.0.34
-  '@types/pg': 7.14.11
+  '@types/pg': 8.6.1
   '@types/qs': 6.9.7
   '@types/react': 17.0.15
   '@types/react-dom': 17.0.9
@@ -179,7 +179,7 @@ dependencies:
   jsonschema: 1.4.0
   lodash: 4.17.21
   mandrill-nodemailer-transport: 1.2.1_nodemailer@6.6.3
-  mini-css-extract-plugin: 1.6.2_webpack@5.47.1
+  mini-css-extract-plugin: 2.1.0_webpack@5.47.1
   mocha: 9.0.3
   moment: 2.29.1
   moment-range: 4.0.2_moment@2.29.1
@@ -192,7 +192,7 @@ dependencies:
   passport-jwt: 4.0.0
   passport-local: 1.0.0
   path-browserify: 1.0.1
-  pg: 8.6.0
+  pg: 8.7.1
   polly-js: 1.8.2
   precise-proofs-js: 1.2.0
   prettier: 2.3.2
@@ -8535,14 +8535,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==
-  /@types/pg/7.14.11:
+  /@types/pg/8.6.1:
     dependencies:
-      '@types/node': 14.17.5
+      '@types/node': 14.17.7
       pg-protocol: 1.5.0
       pg-types: 2.2.0
     dev: false
     resolution:
-      integrity: sha512-EnZkZ1OMw9DvNfQkn2MTJrwKmhJYDEs5ujWrPfvseWNoI95N8B4HzU/Ltrq5ZfYxDX/Zg8mTzwr6UAyTjjFvXA==
+      integrity: sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==
   /@types/prettier/1.19.1:
     dev: false
     resolution:
@@ -22496,19 +22496,17 @@ packages:
       react: ^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     resolution:
       integrity: sha512-YWCYEmd5CQeHGSAKrYvXgmzzkrvssZcuuQDDeqkT+PziKGMgE+0MCCtcKbROzocGBG1meBLl2FotlRwf4gAzbQ==
-  /mini-css-extract-plugin/1.6.2_webpack@5.47.1:
+  /mini-css-extract-plugin/2.1.0_webpack@5.47.1:
     dependencies:
-      loader-utils: 2.0.0
       schema-utils: 3.1.0
       webpack: 5.47.1_webpack-cli@4.7.2
-      webpack-sources: 1.4.3
     dev: false
     engines:
-      node: '>= 10.13.0'
+      node: '>= 12.13.0'
     peerDependencies:
-      webpack: ^4.4.0 || ^5.0.0
+      webpack: ^5.0.0
     resolution:
-      integrity: sha512-WhDvO3SjGm40oV5y26GjMJYjd2UMqrLAGKy5YS2/3QKJy2F7jgynuHTir/tgUUOiNQu5saXHdc8reo7YuhhT4Q==
+      integrity: sha512-SV1GgjMcfqy6hW07rAniUbQE4qS3inh3v4rZEUySkPRWy3vMbS3jUCjMOvNI4lUnDlQYJEmuUqKktTCNY5koFQ==
   /minimalistic-assert/1.0.1:
     dev: false
     resolution:
@@ -24592,14 +24590,14 @@ packages:
       node: '>=4.0.0'
     resolution:
       integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==
-  /pg-pool/3.3.0_pg@8.6.0:
+  /pg-pool/3.4.1_pg@8.7.1:
     dependencies:
-      pg: 8.6.0
+      pg: 8.7.1
     dev: false
     peerDependencies:
       pg: '>=8.0'
     resolution:
-      integrity: sha512-0O5huCql8/D6PIRFAlmccjphLYWC+JIzvUhSzXSpGaf+tjTZc4nn+Lr7mLXBbFJfvwbP0ywDv73EiaBsxn7zdg==
+      integrity: sha512-TVHxR/gf3MeJRvchgNHxsYsTCHQ+4wm3VIHSS19z8NC0+gioEhq1okDY1sm/TYbfoP6JLFx01s0ShvZ3puP/iQ==
   /pg-protocol/1.5.0:
     dev: false
     resolution:
@@ -24616,12 +24614,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==
-  /pg/8.6.0:
+  /pg/8.7.1:
     dependencies:
       buffer-writer: 2.0.0
       packet-reader: 1.0.0
       pg-connection-string: 2.5.0
-      pg-pool: 3.3.0_pg@8.6.0
+      pg-pool: 3.4.1_pg@8.7.1
       pg-protocol: 1.5.0
       pg-types: 2.2.0
       pgpass: 1.0.4
@@ -24634,7 +24632,7 @@ packages:
       pg-native:
         optional: true
     resolution:
-      integrity: sha512-qNS9u61lqljTDFvmk/N66EeGq3n6Ujzj0FFyNMGQr6XuEv4tgNTXvJQTfJdcvGit5p5/DWPu+wj920hAJFI+QQ==
+      integrity: sha512-7bdYcv7V6U3KAtWjpQJJBww0UEsWuh4yQ/EjNf2HeO/NnvKjpvhEIe/A/TleP6wtmSKnUnghs5A9jUoK6iDdkA==
   /pgpass/1.0.4:
     dependencies:
       split2: 3.2.2
@@ -33923,7 +33921,7 @@ packages:
       jest: 27.0.6_ts-node@9.1.1
       mocha: 9.0.3
       moment: 2.29.1
-      pg: 8.6.0
+      pg: 8.7.1
       polly-js: 1.8.2
       prettier: 2.3.2
       reflect-metadata: 0.1.13
@@ -33940,7 +33938,7 @@ packages:
       swagger-ui-express: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-jekMIWOsl12zFv/0YKVYKRAgY1/gFwFXRps7megewl22fUy+2z5ANCxXQ5kiNs1yDd4nJZqeTMK32YfcWMKvag==
+      integrity: sha512-m5DbHl/GF2UDK48aRSL6gf+2d5aBkcGud4mLXrduuA9lmn1TIoPAEDcyeCAGNUXZTom9fhgf2/S4VMbH9YLh8Q==
       tarball: file:projects/exchange-irec.tgz
     version: 0.0.0
   file:projects/exchange-token-account.tgz_react@17.0.2:
@@ -34052,7 +34050,7 @@ packages:
       mocha: 9.0.3
       moment: 2.29.1
       moment-range: 4.0.2_moment@2.29.1
-      pg: 8.6.0
+      pg: 8.7.1
       polly-js: 1.8.2
       prettier: 2.3.2
       reflect-metadata: 0.1.13
@@ -34071,7 +34069,7 @@ packages:
       passport: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-2C21taglwCXRjT+7wnwX6P9tRkcqcH3+9MfK08HLLQlmOfWo7ivKIEGxIGxDum8hKC5V12w9xUOsD01LZ8o0zw==
+      integrity: sha512-XkVGzObR+WnCTdhT7WZ7rcIFBlM+zL4oA0FYgfvWFeh8OmWnQlENtrOIDupE9e0ZmauKn1Ki5yJuPOrjd8qb2Q==
       tarball: file:projects/exchange.tgz
     version: 0.0.0
   file:projects/issuer-api-client.tgz_22c1a38c599279d324ff82b55ef0a6c8:
@@ -34134,7 +34132,7 @@ packages:
       mocha: 9.0.3
       moment: 2.29.1
       moment-range: 4.0.2_moment@2.29.1
-      pg: 8.6.0
+      pg: 8.7.1
       polly-js: 1.8.2
       precise-proofs-js: 1.2.0
       prettier: 2.3.2
@@ -34155,7 +34153,7 @@ packages:
       reflect-metadata: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-8QrxMmS5vi0k+BKZ8q64TKPYC3byDAkTXcYlRcRyl891EHKXrRinhLVv4dy1OsIZX1765ZU5E+f9Lz2vhF9zmg==
+      integrity: sha512-D3vYZXCzRSHWaLgrQf+tWgSb4AyuBMQWLzZhXjQRYss5ONg67wI2bv4Vvu6DXnHJuLKtrR7G7zlkx+6ZBn9Y0Q==
       tarball: file:projects/issuer-api.tgz
     version: 0.0.0
   file:projects/issuer-irec-api-client.tgz_22c1a38c599279d324ff82b55ef0a6c8:
@@ -34244,7 +34242,7 @@ packages:
       mocha: 9.0.3
       moment: 2.29.1
       moment-range: 4.0.2_moment@2.29.1
-      pg: 8.6.0
+      pg: 8.7.1
       polly-js: 1.8.2
       precise-proofs-js: 1.2.0
       prettier: 2.3.2
@@ -34264,7 +34262,7 @@ packages:
       reflect-metadata: '*'
       webpack-cli: '*'
     resolution:
-      integrity: sha512-mjNt+fiQiJ2Au5eJ3GRS0ZrbabInjixhp/J/HVtTdx1Pn7gqjCPLuaO5XETUoqDIJTMUd1Ir+HdC28SsjZnwkA==
+      integrity: sha512-SOBlanVqYbP2isNPXFXrgsFH/jrEN6m2YRE/1UuTTYAPg2OYrN42A9A1eS2GeUBMKinwwbQxaL3Xoldy+GuIOA==
       tarball: file:projects/issuer-irec-api.tgz
     version: 0.0.0
   file:projects/issuer.tgz_react@17.0.2:
@@ -34327,12 +34325,12 @@ packages:
     dependencies:
       '@types/mocha': 9.0.0
       '@types/node': 14.17.7
-      '@types/pg': 7.14.11
+      '@types/pg': 8.6.1
       commander: 6.2.1
       dotenv: 10.0.0
       ethers: 5.3.1
       mocha: 9.0.3
-      pg: 8.6.0
+      pg: 8.7.1
       typescript: 4.3.5
       winston: 3.3.3
       winston-transport: 4.4.0
@@ -34341,19 +34339,19 @@ packages:
     dev: false
     name: '@rush-temp/migrations-irec'
     resolution:
-      integrity: sha512-9SUpLq2IociIKkqX0F6HT9eVaL9U/rl1aQCyjQygVda6ehTTiQDoKVWzr2dQLqVR4gLX59ZIUcpMI8LrQFdgmA==
+      integrity: sha512-cOdk1Mu1025RdyyqmKLt/G4kN+PRzU0vyS4qzki041Sr4D9ETwZRairZuxeWGUOs8Frg9nEMBT5AmMhcTAYnPg==
       tarball: file:projects/migrations-irec.tgz
     version: 0.0.0
   file:projects/migrations.tgz:
     dependencies:
       '@types/mocha': 9.0.0
       '@types/node': 14.17.7
-      '@types/pg': 7.14.11
+      '@types/pg': 8.6.1
       commander: 6.2.1
       dotenv: 10.0.0
       ethers: 5.3.1
       mocha: 9.0.3
-      pg: 8.6.0
+      pg: 8.7.1
       typescript: 4.3.5
       winston: 3.3.3
       winston-transport: 4.4.0
@@ -34362,7 +34360,7 @@ packages:
     dev: false
     name: '@rush-temp/migrations'
     resolution:
-      integrity: sha512-aEK/HdpA9H1ZlMEFOBSMUoS+q1NBu2N0qVvTHGDbfu2sJbcGAvnW/1yFjWt1oTisxXG7Wy5lcChPXNKept6XRQ==
+      integrity: sha512-RERkTcBZiZr5FuNI13dtSmMzB6+Zcsgw4MyX+jUGZqg3CvuB47clS2Cs4yHCS5C8zXX7SUMSR8L2oXYZFQltvA==
       tarball: file:projects/migrations.tgz
     version: 0.0.0
   file:projects/origin-backend-app.tgz_e9a0056c9039ca88033f500fb274c193:
@@ -35139,7 +35137,7 @@ packages:
       https-browserify: 1.0.0
       i18next: 20.3.5
       i18next-icu: 1.4.2
-      mini-css-extract-plugin: 1.6.2_webpack@5.47.1
+      mini-css-extract-plugin: 2.1.0_webpack@5.47.1
       moment: 2.29.1
       node-sass: 6.0.1
       os-browserify: 0.3.0
@@ -35180,7 +35178,7 @@ packages:
       '@types/jest': '*'
       jest: '*'
     resolution:
-      integrity: sha512-PcMzkxw/Z4F0p4gn8TgU629D4tdZrV30Gm7IvUI4OOfsHkuoBmMXn54D/QSWw/0huW0tV89YnKpkliI/rQVv0A==
+      integrity: sha512-/mchSPkdSWp14rw+wD1ScDUGi5fmDLjW8dh0if5Du4X/SibosAjvmJioD9zsIMZhRYfbHREb8/jSMHYG+Br6DQ==
       tarball: file:projects/origin-ui.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -35392,7 +35390,7 @@ specifiers:
   '@types/passport': 1.0.7
   '@types/passport-jwt': 3.0.6
   '@types/passport-local': 1.0.34
-  '@types/pg': 7.14.11
+  '@types/pg': 8.6.1
   '@types/qs': 6.9.7
   '@types/react': 17.0.15
   '@types/react-dom': 17.0.9
@@ -35466,7 +35464,7 @@ specifiers:
   jsonschema: 1.4.0
   lodash: ^4.17.21
   mandrill-nodemailer-transport: 1.2.1
-  mini-css-extract-plugin: 1.6.2
+  mini-css-extract-plugin: 2.1.0
   mocha: 9.0.3
   moment: 2.29.1
   moment-range: 4.0.2
@@ -35479,7 +35477,7 @@ specifiers:
   passport-jwt: 4.0.0
   passport-local: 1.0.0
   path-browserify: 1.0.1
-  pg: 8.6.0
+  pg: 8.7.1
   polly-js: 1.8.2
   precise-proofs-js: 1.2.0
   prettier: 2.3.2
