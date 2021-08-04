@@ -41,6 +41,7 @@ export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
             helperText={errorText ?? ''}
             variant={variant}
             label={field.label}
+            required={field.required}
             {...field.textFieldProps}
           />
         )}

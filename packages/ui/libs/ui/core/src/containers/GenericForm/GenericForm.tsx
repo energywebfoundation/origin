@@ -26,7 +26,7 @@ export const GenericForm: TGenericForm = memo(
     inputsToWatch,
     onWatchHandler,
     buttonDisabled,
-    controlSubmitButton,
+    validationMode,
   }) => {
     const {
       control,
@@ -43,7 +43,7 @@ export const GenericForm: TGenericForm = memo(
       inputsToWatch,
       onWatchHandler,
       buttonDisabled,
-      controlSubmitButton,
+      validationMode,
     });
 
     return (

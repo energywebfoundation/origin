@@ -18,7 +18,7 @@ type GenericFormEffectsProps<FormValuesType> = Pick<
   | 'inputsToWatch'
   | 'onWatchHandler'
   | 'buttonDisabled'
-  | 'controlSubmitButton'
+  | 'validationMode'
 >;
 
 type GenericFormEffectsReturnType<FormValuesType> = {
@@ -42,10 +42,10 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   inputsToWatch,
   onWatchHandler,
   buttonDisabled,
-  controlSubmitButton,
+  validationMode,
 }) => {
   const { control, register, handleSubmit, formState, reset, watch } = useForm({
-    mode: 'onBlur',
+    mode: !!validationMode ? validationMode : 'onBlur',
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
@@ -53,6 +53,7 @@ export const useGenericFormEffects: TGenericFormEffects = ({
 
   const watchedFields =
     inputsToWatch && inputsToWatch.length > 0 ? watch(inputsToWatch) : [];
+
   useEffect(() => {
     onWatchHandler && onWatchHandler(watchedFields);
   }, [JSON.stringify(watchedFields)]);
@@ -63,11 +64,8 @@ export const useGenericFormEffects: TGenericFormEffects = ({
 
   const nextForm =
     initialValues && Object.keys(initialValues)[0] in dirtyFields;
-  const submitButtonDisabled = controlSubmitButton
-    ? buttonDisabled
-    : buttonDisabled || partOfMultiForm
-    ? !(nextForm && isValid)
-    : !isValid || !isDirty;
+  const submitButtonDisabled =
+    buttonDisabled || partOfMultiForm ? !(nextForm && isValid) : !isDirty;
 
   return {
     control,
