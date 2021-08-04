@@ -375,6 +375,10 @@
         "reject": "Reject"
       },
       "my": {
+        "noDeviceTitle": "Currently you don't have any devices in Origin.",
+        "noDeviceDescription": "You can add new devices to Origin by either registering a new one or importing already existing device from I-REC registry.",
+        "registerDevice": "Register Device",
+        "importDevice": "Import Device",
         "requestCertificates": {
           "formTitle": "Request Certificates for",
           "fromTime": "From",
