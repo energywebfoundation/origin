@@ -1,50 +1,58 @@
-import {
-  IUser,
-  OrganizationStatus,
-  UserStatus,
-} from '@energyweb/origin-backend-core';
+import { useTranslation } from 'react-i18next';
+import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
+import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
+import { useAccountControllerGetAccount } from '@energyweb/exchange-react-query-client';
 import { defaultRequirementList } from '../defaultRequirementList';
-import { IPermission, IPermissionRule, Requirement } from './../../types';
+import {
+  IPermissionRule,
+  IPermissionReturnType,
+  Requirement,
+} from './../../types';
 
-export function usePermissions(
-  user: IUser,
-  config = defaultRequirementList,
-  exchangeDepositAddress: string,
-  t: (translationKey: string) => string
-): { canAccessPage: IPermission } {
+export const usePermissions = (
+  config = defaultRequirementList
+): IPermissionReturnType => {
+  const { t } = useTranslation();
+
+  const { data: userData, isLoading: userLoading } = useUserControllerMe();
+  const { data: account, isLoading: exchangeAddressLoading } =
+    useAccountControllerGetAccount();
+
+  const exchangeDepositAddress = account?.address || '';
+  const user = userData || null;
+  const loading = userLoading || exchangeAddressLoading;
+
   const predicateList: Record<Requirement, IPermissionRule> = {
     [Requirement.IsLoggedIn]: {
-      label: t('general.feedback.haveToBeLoggedInUser'),
+      label: t('general.requirements.haveToBeLoggedInUser'),
       passing: Boolean(user),
     },
     [Requirement.IsActiveUser]: {
-      label: t('general.feedback.hasToBeActiveUser'),
+      label: t('general.requirements.hasToBeActiveUser'),
       passing: user?.status === UserStatus.Active,
     },
     [Requirement.IsPartOfApprovedOrg]: {
-      label: t('general.feedback.userHasToBePartOfApprovedOrganization'),
+      label: t('general.requirements.userHasToBePartOfApprovedOrganization'),
       passing:
         Boolean(user?.organization) &&
         user?.organization?.status === OrganizationStatus.Active,
     },
     [Requirement.HasExchangeDepositAddress]: {
-      label: t('general.feedback.organizationHasToHaveExchangeDeposit'),
+      label: t('general.requirements.organizationHasToHaveExchangeDeposit'),
       passing: Boolean(exchangeDepositAddress),
     },
-    [Requirement.HasUserBlockchainAddress]: {
-      label: t('general.feedback.userHasToHaveBlockchainAccount'),
+    [Requirement.HasOrganizationBlockchainAddress]: {
+      label: t('general.requirements.organizationHasToHaveBlockchainAccount'),
       passing: Boolean(user?.organization?.blockchainAccountAddress),
     },
   };
 
-  const canAccessPage: IPermission = {
-    value: false,
-    rules: config.map((requirement) => predicateList[requirement]),
-  };
-
-  canAccessPage.value = canAccessPage.rules.every((r) => r.passing);
+  const accessRules = config.map((requirement) => predicateList[requirement]);
+  const canAccessPage = accessRules.every((r) => r.passing);
 
   return {
     canAccessPage,
+    accessRules,
+    loading,
   };
-}
+};

@@ -18,9 +18,10 @@ export interface IPermissionRule {
   passing: boolean;
 }
 
-export interface IPermission {
-  value: boolean;
-  rules: IPermissionRule[];
+export interface IPermissionReturnType {
+  canAccessPage: boolean;
+  loading: boolean;
+  accessRules: IPermissionRule[];
 }
 
 export enum Requirement {
@@ -28,7 +29,7 @@ export enum Requirement {
   IsActiveUser,
   IsPartOfApprovedOrg,
   HasExchangeDepositAddress,
-  HasUserBlockchainAddress,
+  HasOrganizationBlockchainAddress,
 }
 
 export type RequirementList = Requirement[];
