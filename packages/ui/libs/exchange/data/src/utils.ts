@@ -9,6 +9,8 @@ import {
   Filter,
   ProductFilterDTO,
 } from '@energyweb/exchange-irec-react-query-client';
+import { FormSelectOption } from '@energyweb/origin-ui-core';
+import { Dayjs } from 'dayjs';
 
 export type ComposedDevice = {
   id: string;
@@ -115,4 +117,14 @@ export const getProductFilterConfig = ({
     generationFrom: generationDateStart ?? undefined,
     generationTo: generationDateEnd ?? undefined,
   };
+};
+
+export type MarketFiltersState = {
+  fuelType: FormSelectOption[];
+  deviceType: FormSelectOption[];
+  regions: FormSelectOption[];
+  subregions: FormSelectOption[];
+  gridOperator: FormSelectOption[];
+  generationFrom: Dayjs;
+  generationTo: Dayjs;
 };

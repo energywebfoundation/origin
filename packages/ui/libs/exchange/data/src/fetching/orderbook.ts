@@ -8,7 +8,11 @@ import { UserStatus } from '@energyweb/origin-backend-core';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { useEffect, useState } from 'react';
 import { isEqual } from 'lodash';
-import { getProductFilterConfig, OrderBookFilters } from '../utils';
+import {
+  getProductFilterConfig,
+  MarketFiltersState,
+  OrderBookFilters,
+} from '../utils';
 
 export type TOrdersTotalVolume = {
   totalAsks: number;
@@ -52,7 +56,7 @@ const INITIAL_ORDERBOOK_STATE = {
 };
 
 export const useApiOrderbookPoll = (
-  marketFilters: OrderBookFilters,
+  marketFiltersState: MarketFiltersState,
   user: UserDTO
 ) => {
   const [orderBookData, setOrderBookData] = useState<TOrderBookData>(
@@ -60,7 +64,21 @@ export const useApiOrderbookPoll = (
   );
 
   const getAndSetData = async () => {
-    const productFilters = getProductFilterConfig(marketFilters);
+    const filters: OrderBookFilters = {
+      deviceType: marketFiltersState.deviceType.map((type) =>
+        type.value.toString()
+      ),
+      gridOperator: marketFiltersState.gridOperator.map((type) =>
+        type.value.toString()
+      ),
+      location: marketFiltersState.subregions.map((subregion) =>
+        subregion.value.toString()
+      ),
+      generationDateStart: marketFiltersState.generationFrom?.toISOString(),
+      generationDateEnd: marketFiltersState.generationTo?.toISOString(),
+    };
+
+    const productFilters = getProductFilterConfig(filters);
     const userIsActive = user && user.status == UserStatus.Active;
     const orders = userIsActive
       ? await orderBookControllerGetByProduct(productFilters)
@@ -83,11 +101,11 @@ export const useApiOrderbookPoll = (
       clearInterval(intervalRef);
     };
   }, [
-    marketFilters.deviceType,
-    marketFilters.gridOperator,
-    marketFilters.location,
-    marketFilters.generationDateStart,
-    marketFilters.generationDateEnd,
+    marketFiltersState.deviceType,
+    marketFiltersState.gridOperator,
+    marketFiltersState.subregions,
+    marketFiltersState.generationFrom,
+    marketFiltersState.generationTo,
   ]);
 
   const isLoading =

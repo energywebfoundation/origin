@@ -7,8 +7,16 @@ import { useStyles } from './ViewMarketPage.styles';
 
 export const ViewMarketPage: FC = () => {
   const classes = useStyles();
-  const { state, dispatch, formActionsProps, formTitle, tablesActionsProps } =
-    useViewMarketPageEffects();
+  const {
+    state,
+    dispatch,
+    formActionsProps,
+    formTitle,
+    tablesActionsProps,
+    isLoading,
+  } = useViewMarketPageEffects();
+
+  if (isLoading) return <></>;
 
   return (
     <Box width="100%" mr={3}>
