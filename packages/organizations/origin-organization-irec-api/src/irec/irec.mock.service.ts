@@ -278,6 +278,14 @@ export class IrecMockService implements IIrecService {
         };
     }
 
+    async rejectIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void> {
+        const issueRequest = await this.getIssueRequest(user, issueRequestCode);
+        if (!issueRequest) {
+            throw new NotFoundException(`Issue request (id=${issueRequestCode}) not found`);
+        }
+        issueRequest.status = IssuanceStatus.Rejected;
+    }
+
     async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
         return [
             {

@@ -181,6 +181,13 @@ describe('Certification Request tests', () => {
             .expect((res) => {
                 expect(res.body.success).to.be.true;
             });
+
+        const { body } = await request(app.getHttpServer())
+            .get(`/irec/certification-request/${certificationRequestId}`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect(HttpStatus.OK);
+
+        expect(body.revoked).to.equal(true);
     });
 
     it('should fail to revoke a revoked certification request', async () => {

@@ -11,6 +11,7 @@ import { GetCertificationRequestHandler } from './get-certification-request.hand
 import { GetAllCertificationRequestsHandler } from './get-all-certification-requests.handler';
 import { GetCertificationRequestByCertificateHandler } from './get-certification-request-by-certificate.handler';
 import { ApproveIrecCertificationRequestHandler } from './approve-irec-certification-request.handler';
+import { RevokeIrecCertificationRequestHandler } from './revoke-irec-certification-request.handler';
 
 export {
     ApproveCertificationRequestHandler,
@@ -22,6 +23,7 @@ export {
     GetCertificationRequestHandler,
     GetCertificationRequestByCertificateHandler,
     RevokeCertificationRequestHandler,
+    RevokeIrecCertificationRequestHandler,
     ValidateCertificationRequestHandler
 };
 
@@ -35,5 +37,6 @@ export const Handlers = [
     GetCertificationRequestHandler,
     GetCertificationRequestByCertificateHandler,
     RevokeCertificationRequestHandler,
+    RevokeIrecCertificationRequestHandler,
     ValidateCertificationRequestHandler
 ];
