@@ -53,7 +53,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     /// @dev Uses the OpenZeppelin `initializer` for upgradeability.
     /// @dev `_registry` cannot be the zero address.
     function initialize(uint256 _certificateTopic, address _registry) public initializer {
-        require(_registry != address(0), "Issuer::initialize: Cannot use address 0x0 as registry address.");
+        require(_registry != address(0), "Cannot use address 0x0");
 
         certificateTopic = _certificateTopic;
 
@@ -65,8 +65,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 	/// @notice Attaches a private issuance contract to this issuance contract.
     /// @dev `_privateIssuer` cannot be the zero address.
     function setPrivateIssuer(address _privateIssuer) public onlyOwner {
-        require(_privateIssuer != address(0), "Issuer::setPrivateIssuer: Cannot use address 0x0 as the private issuer address.");
-        require(privateIssuer == address(0), "Issuer::setPrivateIssuer: private issuance contract already set.");
+        require(_privateIssuer != address(0), "Cannot use address 0x0");
+        require(privateIssuer == address(0), "Private issuer already set");
 
         privateIssuer = _privateIssuer;
     }
@@ -126,9 +126,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     function revokeRequest(uint256 _requestId) external {
         CertificationRequest storage request = _certificationRequests[_requestId];
 
-        require(_msgSender() == request.owner || _msgSender() == OwnableUpgradeable.owner(), "Issuer::revokeRequest: Only the request creator can revoke the request.");
-        require(!request.revoked, "Issuer::revokeRequest: Already revoked");
-        require(!request.approved, "Issuer::revokeRequest: You can't revoke approved requests");
+        require(_msgSender() == request.owner || _msgSender() == OwnableUpgradeable.owner(), "Unauthorized revoke request");
+        require(!request.revoked, "Already revoked");
+        require(!request.approved, "Can't revoke approved requests");
 
         request.revoked = true;
 
@@ -136,7 +136,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function revokeCertificate(uint256 _certificateId) external onlyOwner {
-        require(!_revokedCertificates[_certificateId], "Issuer::revokeCertificate: Already revoked");
+        require(!_revokedCertificates[_certificateId], "Already revoked");
         _revokedCertificates[_certificateId] = true;
 
         emit CertificateRevoked(_certificateId);
@@ -146,8 +146,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         uint256 _requestId,
         uint256 _value
     ) public returns (uint256) {
-        require(_msgSender() == owner() || _msgSender() == privateIssuer, "Issuer::approveCertificationRequest: caller is not the owner or private issuer contract");
-        require(_requestNotApprovedOrRevoked(_requestId), "Issuer::approveCertificationRequest: request already approved or revoked");
+        require(_msgSender() == owner() || _msgSender() == privateIssuer, "caller not owner or issuer");
+        require(_requestNotApprovedOrRevoked(_requestId), "already approved or revoked");
 
         CertificationRequest storage request = _certificationRequests[_requestId];
         request.approved = true;
@@ -171,11 +171,11 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         uint256[] memory _requestIds,
         uint256[] memory _values
     ) public returns (uint256[] memory) {
-        require(_msgSender() == owner() || _msgSender() == privateIssuer, "Issuer::approveCertificationRequestBatch: caller is not the owner or private issuer contract");
-        require(_requestIds.length == _values.length, "Issuer::approveCertificationRequestBatch: _requestIds and _values arrays have to be the same length");
+        require(_msgSender() == owner() || _msgSender() == privateIssuer, "caller not owner or issuer");
+        require(_requestIds.length == _values.length, "Arrays not same length");
 
 		for (uint256 i = 0; i < _requestIds.length; i++) {
-            require(_requestNotApprovedOrRevoked(_requestIds[i]), "Issuer::approveCertificationRequestBatch: request already approved or revoked");
+            require(_requestNotApprovedOrRevoked(_requestIds[i]), "already approved or revoked");
 		}
 
         address[] memory owners = new address[](_requestIds.length);
@@ -222,8 +222,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     /// @notice Directly issue a batch of certificates without going through the request/approve procedure manually.
     function issueBatch(address[] memory _to, uint256[] memory _values, bytes[] memory _data) public onlyOwner returns (uint256[] memory) {
-        require(_to.length == _values.length, "Issuer::issueBatch: _to and _values arrays have to be the same length");
-        require(_values.length == _data.length, "Issuer::issueBatch: _values and _data arrays have to be the same length");
+        require(_to.length == _values.length, "Arrays not same length");
+        require(_values.length == _data.length, "Arrays not same length");
     
         uint256[] memory requestIds = requestCertificationForBatch(_data, _to);
 
@@ -247,7 +247,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     /// @dev Used by other contracts to validate the token.
     /// @dev `_requestId` has to be an existing ID.
     function isRequestValid(uint256 _requestId) external view returns (bool) {
-        require(_requestId <= _latestCertificationRequestId, "Issuer::isRequestValid: certification request ID out of bounds");
+        require(_requestId <= _latestCertificationRequestId, "cert request ID out of bounds");
 
         CertificationRequest memory request = _certificationRequests[_requestId];
         uint256 certificateId = _requestToCertificate[_requestId];
