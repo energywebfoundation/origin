@@ -3,6 +3,7 @@ import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-re
 import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import {
+  GenericFormProps,
   ItemsListWithActionsProps,
   ListAction,
   MaterialDatepickerProps,
@@ -10,6 +11,7 @@ import {
   TItemsListWithActionsContainers,
 } from '@energyweb/origin-ui-core';
 import { TextFieldProps } from '@material-ui/core';
+import { Dayjs } from 'dayjs';
 import React, { FC } from 'react';
 
 export interface ListItemContentProps<Id> {
@@ -87,23 +89,21 @@ export type TUseRetireActionLogic = <Id>(
 
 type TUseBeneficiaryFormLogicArgs = {
   allBeneficiaries: BeneficiaryDTO[];
-  setSelectedBeneficiary: (
-    newValue: BeneficiaryDTO['irecBeneficiaryId']
-  ) => void;
-  startDate: string;
-  setStartDate: (newValue: string) => void;
-  endDate: string;
-  setEndDate: (newValue: string) => void;
-  purpose: string;
-  setPurpose: (newValue: string) => void;
 };
 
-export type TUseBeneficiaryFormLogic = (args: TUseBeneficiaryFormLogicArgs) => {
-  selectorProps: Omit<SelectRegularProps, 'value'>;
-  startPickerProps: MaterialDatepickerProps;
-  endPickerProps: MaterialDatepickerProps;
-  purposeInputProps: TextFieldProps;
+export type BeneficiaryFormValues = {
+  beneficiary: BeneficiaryDTO['irecBeneficiaryId'];
+  startDate: Dayjs;
+  endDate: Dayjs;
+  purpose: string;
 };
+
+export type TUseBeneficiaryFormLogic = (
+  args: TUseBeneficiaryFormLogicArgs
+) => Pick<
+  GenericFormProps<BeneficiaryFormValues>,
+  'initialValues' | 'validationSchema' | 'fields'
+>;
 
 type TUseBlockchainTransferActionLogicArgs<Id> = {
   selectedIds: Id[];

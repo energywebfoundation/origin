@@ -1,12 +1,14 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const useSelectedItemEffects = <Id>(
   id: Id,
+  editMode: boolean,
+  setEditMode: (newValue: boolean) => void,
+  amount: string,
   onAmountChange: (id: Id, amount: string) => void
 ) => {
-  const [editMode, setEditMode] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(amount);
   const { t } = useTranslation();
 
   const openEditMode = () => {
@@ -28,9 +30,22 @@ export const useSelectedItemEffects = <Id>(
     closeEditMode();
   };
 
+  useEffect(() => {
+    if (amount !== inputValue) {
+      setInputValue(amount);
+    }
+  }, [amount]);
+
   const saveText = t('general.buttons.save');
   const cancelText = t('general.buttons.cancel');
   const editInputLabel = t('general.input.editAmount');
+
+  const buttonDisabled =
+    inputValue === amount ||
+    isNaN(Number(inputValue)) ||
+    !inputValue ||
+    Number(inputValue) < 1 ||
+    Number(inputValue) > Number(amount);
 
   return {
     editMode,
@@ -42,5 +57,6 @@ export const useSelectedItemEffects = <Id>(
     saveText,
     cancelText,
     editInputLabel,
+    buttonDisabled,
   };
 };

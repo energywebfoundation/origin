@@ -2,6 +2,8 @@ import { SelectRegularProps } from '@energyweb/origin-ui-core';
 import { Dayjs } from 'dayjs';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { prepareBeneficiariesOptions } from '../utils';
 import { formatSelectedBlockchainItems } from './formatSelectedBlockchain';
 import {
   SelectedItem,
@@ -35,66 +37,69 @@ export const useRetireActionLogic: TUseRetireActionLogic = <Id>({
 
 export const useBeneficiaryFormLogic: TUseBeneficiaryFormLogic = ({
   allBeneficiaries,
-  setSelectedBeneficiary,
-  startDate,
-  setStartDate,
-  endDate,
-  setEndDate,
-  purpose,
-  setPurpose,
 }) => {
   const { t } = useTranslation();
-
-  const selectorProps: Omit<SelectRegularProps, 'value'> = {
-    field: {
-      name: 'beneficiaries',
-      label: t('certificate.blockchainInbox.selectBeneficiaries'),
-      options: allBeneficiaries?.map((beneficiary) => ({
-        label: `
-        ${t('certificate.blockchainInbox.beneficiaryId')} ${
-          beneficiary.irecBeneficiaryId
+  return {
+    initialValues: {
+      beneficiary: null,
+      startDate: '',
+      endDate: '',
+      purpose: '',
+    },
+    validationSchema: yup.object({
+      beneficiary: yup
+        .number()
+        .required()
+        .label(t('certificate.blockchainInbox.beneficiary')),
+      startDate: yup
+        .string()
+        .required()
+        .label(t('certificate.blockchainInbox.startDate')),
+      endDate: yup
+        .string()
+        .required()
+        .label(t('certificate.blockchainInbox.endDate')),
+      purpose: yup
+        .string()
+        .required()
+        .label(t('certificate.blockchainInbox.purpose')),
+    }),
+    fields: [
+      {
+        name: 'beneficiary',
+        label: t('certificate.blockchainInbox.selectBeneficiary'),
+        select: true,
+        options: prepareBeneficiariesOptions(allBeneficiaries, t),
+        textFieldProps: {
+          variant: 'filled' as any,
         },
-        ${t('certificate.blockchainInbox.beneficiaryName')} ${
-          beneficiary.organization.name
-        }
-        `,
-        value: beneficiary.irecBeneficiaryId,
-      })),
-    },
-    errorExists: false,
-    errorText: '',
-    onChange: (event) => setSelectedBeneficiary(event.target.value),
+      },
+      {
+        name: 'startDate',
+        label: t('certificate.blockchainInbox.startDate'),
+        datePicker: true,
+        textFieldProps: {
+          variant: 'filled' as any,
+          margin: 'none',
+        },
+      },
+      {
+        name: 'endDate',
+        label: t('certificate.blockchainInbox.endDate'),
+        datePicker: true,
+        textFieldProps: {
+          variant: 'filled' as any,
+          margin: 'none',
+        },
+      },
+      {
+        name: 'purpose',
+        label: t('certificate.blockchainInbox.purpose'),
+        textFieldProps: {
+          variant: 'filled' as any,
+          margin: 'none',
+        },
+      },
+    ],
   };
-
-  const startPickerProps = {
-    field: {
-      name: 'startDate',
-      label: t('certificate.blockchainInbox.startDate'),
-      textFieldProps: { variant: 'filled' as any },
-    },
-    value: startDate,
-    onChange: (event: Dayjs) => setStartDate(event.toISOString()),
-  };
-
-  const endPickerProps = {
-    field: {
-      name: 'endDate',
-      label: t('certificate.blockchainInbox.endDate'),
-      textFieldProps: { variant: 'filled' as any },
-    },
-    value: endDate,
-    onChange: (event: Dayjs) => setEndDate(event.toISOString()),
-  };
-
-  const purposeInputProps = {
-    value: purpose,
-    onChange: (event: ChangeEvent<HTMLInputElement>) =>
-      setPurpose(event.target.value),
-    multiline: true,
-    fullWidth: true,
-    label: t('certificate.blockchainInbox.purpose'),
-    variant: 'filled' as any,
-  };
-
-  return { selectorProps, startPickerProps, endPickerProps, purposeInputProps };
 };

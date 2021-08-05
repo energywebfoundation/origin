@@ -8,9 +8,11 @@ import {
 import {
   useBeneficiaryFormLogic,
   useRetireActionLogic,
+  BeneficiaryFormValues,
 } from '@energyweb/origin-ui-certificate-logic';
-import { useMemo, useState } from 'react';
-import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
+import { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 export const useRetireActionEffects = <Id>(
   selectedIds: Id[],
@@ -20,33 +22,27 @@ export const useRetireActionEffects = <Id>(
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
 
-  const [selectedBeneficiaryId, setSelectedBeneficiaryId] =
-    useState<BeneficiaryDTO['irecBeneficiaryId']>();
   const { platformBeneficiaries, isLoading: areBeneficiariesLoading } =
     usePlatformBeneficiaries();
 
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [purpose, setPurpose] = useState('');
+  const { initialValues, fields, validationSchema } = useBeneficiaryFormLogic({
+    allBeneficiaries: platformBeneficiaries,
+  });
 
-  const { selectorProps, startPickerProps, endPickerProps, purposeInputProps } =
-    useBeneficiaryFormLogic({
-      allBeneficiaries: platformBeneficiaries,
-      setSelectedBeneficiary: setSelectedBeneficiaryId,
-      startDate,
-      setStartDate,
-      endDate,
-      setEndDate,
-      purpose,
-      setPurpose,
+  const { register, control, watch, formState } =
+    useForm<BeneficiaryFormValues>({
+      defaultValues: initialValues,
+      mode: 'onChange',
+      resolver: yupResolver(validationSchema),
     });
+  const { isValid, isDirty, errors } = formState;
+
+  const { beneficiary, startDate, endDate, purpose } = watch();
 
   const selectedBeneficiary = useMemo(
     () =>
-      platformBeneficiaries?.find(
-        (beneficiary) => beneficiary.irecBeneficiaryId === selectedBeneficiaryId
-      ),
-    [platformBeneficiaries, selectedBeneficiaryId]
+      platformBeneficiaries?.find((b) => b.irecBeneficiaryId === beneficiary),
+    [platformBeneficiaries, beneficiary]
   );
 
   const { retireHandler, isLoading: isHandlerLoading } =
@@ -66,18 +62,16 @@ export const useRetireActionEffects = <Id>(
   });
 
   const isLoading = areBeneficiariesLoading || isHandlerLoading;
-  const buttonDisabled =
-    !selectedBeneficiaryId || !startDate || !endDate || !purpose;
+  const buttonDisabled = !isDirty || !isValid;
 
   return {
     ...actionLogic,
     retireHandler,
     isLoading,
-    selectorProps,
-    startPickerProps,
-    endPickerProps,
-    purposeInputProps,
-    selectedBeneficiaryId,
     buttonDisabled,
+    fields,
+    register,
+    control,
+    errors,
   };
 };
