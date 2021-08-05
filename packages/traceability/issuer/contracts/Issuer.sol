@@ -32,7 +32,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     mapping(uint256 => CertificationRequest) private _certificationRequests;
 
     // Mapping from request ID to certificate ID
-    mapping(uint256 => uint256) private requestToCertificate;
+    mapping(uint256 => uint256) private _requestToCertificate;
 
     // Incrementing nonce, used for generating certification request IDs
     uint256 private _latestCertificationRequestId;
@@ -159,7 +159,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             request.data
         );
 
-        requestToCertificate[_requestId] = certificateId;
+        _requestToCertificate[_requestId] = certificateId;
 
         emit CertificationRequestApproved(request.owner, _requestId, certificateId);
 
@@ -201,7 +201,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         );
 
         for (uint256 i = 0; i < _requestIds.length; i++) {
-            requestToCertificate[_requestIds[i]] = certificateIds[i];
+            _requestToCertificate[_requestIds[i]] = certificateIds[i];
         }
 
         emit CertificationRequestBatchApproved(owners, _requestIds, certificateIds);
@@ -249,7 +249,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         require(_requestId <= _latestCertificationRequestId, "Issuer::isRequestValid: certification request ID out of bounds");
 
         CertificationRequest memory request = _certificationRequests[_requestId];
-        uint256 certificateId = requestToCertificate[_requestId];
+        uint256 certificateId = _requestToCertificate[_requestId];
 
         return request.approved
             && !request.revoked
