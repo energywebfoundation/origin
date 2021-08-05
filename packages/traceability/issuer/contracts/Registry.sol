@@ -19,7 +19,9 @@ contract Registry is ERC1155, ERC1888 {
 	// Incrementing nonce, used for generating certificate IDs
     uint256 private _latestCertificateId;
 
-	constructor(string memory _uri) ERC1155(_uri) {}
+	constructor(string memory _uri) ERC1155(_uri) {
+		// Trigger ERC1155 constructor
+	}
 
 	/// @notice See {IERC1888-issue}.
     /// @dev `_to` cannot be the zero address.

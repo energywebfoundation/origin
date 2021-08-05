@@ -299,7 +299,9 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         return id;
 	}
 
-	function _authorizeUpgrade(address) internal override onlyOwner {}
+	function _authorizeUpgrade(address) internal override onlyOwner {
+		// Allow only owner to authorize a smart contract upgrade
+	}
 
 	/*
 		Info

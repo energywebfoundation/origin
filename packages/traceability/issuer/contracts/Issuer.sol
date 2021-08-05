@@ -285,5 +285,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     
     /// @notice Needed for OpenZeppelin contract upgradeability.
     /// @dev Allow only to the owner of the contract.
-	function _authorizeUpgrade(address) internal override onlyOwner {}
+	function _authorizeUpgrade(address) internal override onlyOwner {
+        // Allow only owner to authorize a smart contract upgrade
+    }
 }
