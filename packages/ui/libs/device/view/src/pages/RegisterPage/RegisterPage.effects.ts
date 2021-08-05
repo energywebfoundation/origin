@@ -5,9 +5,11 @@ import {
   useApiRegisterDevice,
   useApiRegionsConfiguration,
 } from '@energyweb/origin-ui-device-data';
+import { usePermissions } from '@energyweb/origin-ui-utils';
 import { DeviceImagesUpload } from '../../containers';
 
 export const useRegisterPageEffects = () => {
+  const { canAccessPage } = usePermissions();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllDeviceFuelTypes();
   const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
@@ -41,5 +43,5 @@ export const useRegisterPageEffects = () => {
   const isLoading =
     areFuelTypesLoading || areDeviceTypesLoading || areRegionsLoading;
 
-  return { isLoading, formProps };
+  return { isLoading, formProps, canAccessPage };
 };

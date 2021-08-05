@@ -1,10 +1,12 @@
 import { Skeleton } from '@material-ui/core';
 import React, { FC } from 'react';
 import { MyDeviceCardsList } from '../../containers';
+import { Requirements } from '@energyweb/origin-ui-core';
 import { useMyDevicePageEffects } from './MyDevicesPage.effects';
 
 export const MyDevicesPage: FC = () => {
-  const { myDevices, allDeviceTypes, isLoading } = useMyDevicePageEffects();
+  const { myDevices, allDeviceTypes, isLoading, canAccessPage } =
+    useMyDevicePageEffects();
 
   if (isLoading) {
     return (
@@ -14,6 +16,10 @@ export const MyDevicesPage: FC = () => {
         <Skeleton width={1000} height={140} />
       </div>
     );
+  }
+
+  if (!canAccessPage) {
+    return <Requirements />;
   }
 
   return (

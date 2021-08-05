@@ -1,15 +1,19 @@
-import { MultiStepForm } from '@energyweb/origin-ui-core';
-import { Paper, CircularProgress } from '@material-ui/core';
 import React from 'react';
+import { MultiStepForm, Requirements } from '@energyweb/origin-ui-core';
+import { Paper, CircularProgress } from '@material-ui/core';
 import { useRegisterPageEffects } from './RegisterPage.effects';
 import { useStyles } from './RegisterPage.styles';
 
 export const RegisterPage: React.FC = () => {
-  const { formProps, isLoading } = useRegisterPageEffects();
+  const { formProps, isLoading, canAccessPage } = useRegisterPageEffects();
   const classes = useStyles();
 
   if (isLoading) {
     return <CircularProgress />;
+  }
+
+  if (!canAccessPage) {
+    return <Requirements />;
   }
 
   return (
