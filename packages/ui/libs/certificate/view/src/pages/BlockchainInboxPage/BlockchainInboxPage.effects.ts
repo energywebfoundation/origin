@@ -5,6 +5,7 @@ import {
 } from '@energyweb/origin-ui-certificate-data';
 import { useBlockchainInboxLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
+import { Requirement, usePermissions } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import {
   ListItemContent,
@@ -16,6 +17,15 @@ import {
 
 export const useBlockchainInboxPageEffects = () => {
   const { t } = useTranslation();
+
+  const pageRequirements = [
+    Requirement.IsLoggedIn,
+    Requirement.IsActiveUser,
+    Requirement.IsPartOfApprovedOrg,
+    Requirement.HasOrganizationBlockchainAddress,
+  ];
+
+  const { canAccessPage } = usePermissions(pageRequirements);
 
   const { blockchainCertificates, isLoading: areCertificatesLoading } =
     useAllBlockchainCertificates();
@@ -52,5 +62,11 @@ export const useBlockchainInboxPageEffects = () => {
 
   const noCertificatesText = t('certificate.inbox.noCertificates');
 
-  return { isLoading, listProps, noCertificatesText };
+  return {
+    isLoading,
+    listProps,
+    noCertificatesText,
+    pageRequirements,
+    canAccessPage,
+  };
 };

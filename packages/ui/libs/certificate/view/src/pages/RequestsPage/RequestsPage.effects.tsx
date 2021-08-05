@@ -5,8 +5,10 @@ import {
   useExchangeAddress,
 } from '@energyweb/origin-ui-certificate-data';
 import { useLogicCertificateRequests } from '@energyweb/origin-ui-certificate-logic';
+import { usePermissions } from '@energyweb/origin-ui-utils';
 
 export const useRequestsPageEffects = () => {
+  const { canAccessPage } = usePermissions();
   const { myDevices: devices, isLoading: areDevicesLoading } =
     useApiMyDevices();
 
@@ -35,5 +37,6 @@ export const useRequestsPageEffects = () => {
 
   return {
     tableData,
+    canAccessPage,
   };
 };

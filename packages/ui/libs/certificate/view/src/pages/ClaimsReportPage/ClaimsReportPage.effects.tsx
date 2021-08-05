@@ -4,8 +4,10 @@ import {
 } from '@energyweb/origin-ui-certificate-data';
 import { useLogicClaimsReport } from '@energyweb/origin-ui-certificate-logic';
 import { useApiAllDevices } from '@energyweb/origin-ui-device-data';
+import { usePermissions } from '@energyweb/origin-ui-utils';
 
 export const useClaimsReportPageEffects = () => {
+  const { canAccessPage } = usePermissions();
   const {
     claimedCertificates,
     blockchainCertificates,
@@ -30,5 +32,6 @@ export const useClaimsReportPageEffects = () => {
 
   return {
     tableData,
+    canAccessPage,
   };
 };
