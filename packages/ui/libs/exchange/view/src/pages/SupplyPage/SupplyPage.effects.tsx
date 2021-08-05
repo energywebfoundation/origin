@@ -9,6 +9,7 @@ import {
   useLogicSupply,
   createDeviceWithSupply,
 } from '@energyweb/origin-ui-exchange-logic';
+import { usePermissions } from '@energyweb/origin-ui-utils';
 import {
   useExchangeModalsDispatch,
   ExchangeModalsActionsEnum,
@@ -21,6 +22,7 @@ export const useSupplyPageEffects = () => {
 
   const dispatchModals = useExchangeModalsDispatch();
 
+  const { canAccessPage } = usePermissions();
   const { myDevices: devices, isLoading: areDevicesLoading } =
     useApiMyDevices();
 
@@ -92,5 +94,6 @@ export const useSupplyPageEffects = () => {
 
   return {
     tableData,
+    canAccessPage,
   };
 };

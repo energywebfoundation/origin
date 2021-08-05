@@ -6,6 +6,7 @@ import {
   useApiOrderbookPoll,
   useCachedUser,
 } from '@energyweb/origin-ui-exchange-data';
+import { usePermissions } from '@energyweb/origin-ui-utils';
 import {
   OneTimePurchase,
   RepeatedPurchase,
@@ -58,6 +59,7 @@ export const useViewMarketPageEffects = () => {
   };
   const user = useCachedUser();
 
+  const { canAccessPage } = usePermissions();
   const { orderBookData, isLoading } = useApiOrderbookPoll(filters, user);
 
   const oneTimePurchase: ListAction = {
@@ -93,5 +95,12 @@ export const useViewMarketPageEffects = () => {
 
   const formTitle = t('exchange.viewMarket.market');
 
-  return { state, dispatch, formActionsProps, formTitle, tablesActionsProps };
+  return {
+    state,
+    dispatch,
+    formActionsProps,
+    formTitle,
+    tablesActionsProps,
+    canAccessPage,
+  };
 };

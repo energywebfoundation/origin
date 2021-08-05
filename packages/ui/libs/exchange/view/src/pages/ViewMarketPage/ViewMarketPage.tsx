@@ -1,14 +1,24 @@
-import { ListActionsBlock } from '@energyweb/origin-ui-core';
-import { Box, Paper, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
+import { ListActionsBlock, Requirements } from '@energyweb/origin-ui-core';
+import { Box, Paper, Typography } from '@material-ui/core';
 import { MarketFilters } from '../../containers';
 import { useViewMarketPageEffects } from './ViewMarketPage.effects';
 import { useStyles } from './ViewMarketPage.styles';
 
 export const ViewMarketPage: FC = () => {
   const classes = useStyles();
-  const { state, dispatch, formActionsProps, formTitle, tablesActionsProps } =
-    useViewMarketPageEffects();
+  const {
+    state,
+    dispatch,
+    formActionsProps,
+    formTitle,
+    tablesActionsProps,
+    canAccessPage,
+  } = useViewMarketPageEffects();
+
+  if (!canAccessPage) {
+    return <Requirements />;
+  }
 
   return (
     <Box width="100%" mr={3}>
