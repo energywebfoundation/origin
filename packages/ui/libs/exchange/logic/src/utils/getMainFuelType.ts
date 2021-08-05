@@ -8,7 +8,6 @@ export const getMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
   try {
     const decodedType = allTypes.find((type) => type.code === fuelType).name;
     const splitValue = decodedType.split(':');
-
     const mainType = splitValue[0];
     const restType = splitValue.length > 1 ? splitValue.slice(1).join() : '';
 

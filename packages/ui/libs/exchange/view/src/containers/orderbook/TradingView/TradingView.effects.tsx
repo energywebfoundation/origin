@@ -8,8 +8,10 @@ import {
 } from '@energyweb/origin-ui-exchange-logic';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import React from 'react';
 import { TradingViewProps } from './TradingView';
 import { useStyles } from './TradingView.styles';
+import { MultipleDeviceIcons } from '../MultipleDeviceIcons';
 
 export const useTradingViewEffects = ({
   orderBookData,
@@ -19,6 +21,8 @@ export const useTradingViewEffects = ({
   const allFuelTypes = useCachedAllFuelTypes();
   const user = useCachedUser();
   const classes = useStyles();
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('md'));
 
   const asksTableProps = useAsksTableLogic({
     asks: orderBookData.asks,
@@ -27,13 +31,23 @@ export const useTradingViewEffects = ({
     user,
     className: classes.owned,
   });
-  const bidsTableProps = useBidsTableLogic({
+
+  const bidsTableLogic = useBidsTableLogic({
     bids: orderBookData.bids,
     isLoading,
     allFuelTypes,
     user,
     className: classes.owned,
   });
+  const bidsTableProps = {
+    ...bidsTableLogic,
+    data: bidsTableLogic.data.map((row) => {
+      return {
+        ...row,
+        fuelType: <MultipleDeviceIcons iconsData={row.fuelType} id={row.id} />,
+      };
+    }),
+  };
 
   const asksTitle = t('exchange.viewMarket.asks');
   const popoverTextAsks = [
@@ -45,9 +59,6 @@ export const useTradingViewEffects = ({
     t('exchange.viewMarket.popover.bidsDescription'),
     t('exchange.viewMarket.popover.bidsFurtherInstructions'),
   ];
-
-  const theme = useTheme();
-  const mobileView = useMediaQuery(theme.breakpoints.down('md'));
 
   return {
     asksTableProps,
