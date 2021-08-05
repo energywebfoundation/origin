@@ -18,7 +18,7 @@ export interface FormInputProps<FormValues> extends BaseTextFieldProps {
   register: UseFormRegister<FormValues>;
   errorExists: boolean;
   errorText: string;
-  isDirty: boolean;
+  isDirty?: boolean;
   disabled?: boolean;
   variant?: 'standard' | 'outlined' | 'filled';
 }
