@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import {
   MainLayout,
   PageNotFound,
@@ -26,40 +26,41 @@ export interface AppProps {
 
 initializeI18N(getOriginLanguage());
 
-export const App: FC<AppProps> = ({
-  isAuthenticated,
-  user,
-  menuSections,
-  topbarButtons,
-}) => {
-  const { orgData, userData } = useUserAndOrgData(user);
+const App: FC<AppProps> = memo(
+  ({ isAuthenticated, user, menuSections, topbarButtons }) => {
+    const { orgData, userData } = useUserAndOrgData(user);
 
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <MainLayout
-            isAuthenticated={isAuthenticated}
-            topbarButtons={topbarButtons}
-            menuSections={menuSections}
-            userData={userData}
-            orgData={orgData}
-          />
-        }
-      >
-        <Route path="device/*" element={<DeviceApp />} />
-        <Route path="exchange/*" element={<ExchangeApp />} />
-        <Route path="certificate/*" element={<CertificateApp />} />
-        <Route path="organization/*" element={<OrganizationApp />} />
-        <Route path="auth/*" element={<AuthApp />} />
-        <Route path="account/*" element={<AccountApp />} />
-        <Route path="admin/*" element={<AdminApp />} />
+    return (
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <MainLayout
+              isAuthenticated={isAuthenticated}
+              topbarButtons={topbarButtons}
+              menuSections={menuSections}
+              userData={userData}
+              orgData={orgData}
+            />
+          }
+        >
+          <Route path="device/*" element={<DeviceApp />} />
+          <Route path="exchange/*" element={<ExchangeApp />} />
+          <Route path="certificate/*" element={<CertificateApp />} />
+          <Route path="organization/*" element={<OrganizationApp />} />
+          <Route path="auth/*" element={<AuthApp />} />
+          <Route path="account/*" element={<AccountApp />} />
+          <Route path="admin/*" element={<AdminApp />} />
 
-        <Route element={<Navigate to="device/all" />} />
-      </Route>
-      <Route path="/login" element={<LoginApp />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
-  );
-};
+          <Route element={<Navigate to="device/all" />} />
+        </Route>
+        <Route path="/login" element={<LoginApp />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    );
+  }
+);
+
+App.displayName = 'App';
+
+export default App;

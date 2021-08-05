@@ -3,7 +3,7 @@ import {
   formatDate,
   PowerFormatter,
 } from '@energyweb/origin-ui-utils';
-import { Button } from '@material-ui/core';
+import { Button, useTheme, Tooltip } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -19,16 +19,21 @@ export const formatAsks: TFormatAsks = ({
   allFuelTypes,
   user,
   onBuyClick,
+  primaryColor,
 }) => {
   return asks?.map((ask) => {
     const fuelCode = ask.product.deviceType[0].split(';')[0];
     const { mainType } = getMainFuelType(fuelCode, allFuelTypes);
-    const Icon = getEnergyTypeImage(mainType as EnergyTypeEnum, true);
+    const Icon = getEnergyTypeImage(mainType as EnergyTypeEnum);
     const buyText = t('exchange.viewMarket.buy');
 
     return {
       id: ask.id,
-      fuelType: <Icon style={{ width: 20 }} />,
+      fuelType: (
+        <Tooltip title={mainType}>
+          <Icon style={{ width: 20, fill: primaryColor }} />
+        </Tooltip>
+      ),
       volume: PowerFormatter.format(parseInt(ask.volume)),
       price: ask.price / 100,
       gridOperator: ask.product.gridOperator[0],
@@ -53,6 +58,8 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
   onBuyClick,
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const primaryColor = theme.palette.primary.main;
   return {
     header: {
       fuelType: t('exchange.viewMarket.type'),
@@ -65,6 +72,8 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
     },
     getCustomRowClassName: getOwnedOrderStyles(asks, user?.id, className),
     loading: isLoading,
-    data: formatAsks({ t, asks, user, allFuelTypes, onBuyClick }) ?? [],
+    data:
+      formatAsks({ t, asks, user, allFuelTypes, onBuyClick, primaryColor }) ??
+      [],
   };
 };

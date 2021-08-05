@@ -26,6 +26,8 @@ export const ExchangeTransferAction: TExchangeTransferAction = ({
     recipientAddress,
     handleAddressChange,
     buttonDisabled,
+    errorExists,
+    errorText,
   } = useExchangeTransferActionPropsEffects(selectedIds, resetIds);
 
   return (
@@ -46,6 +48,8 @@ export const ExchangeTransferAction: TExchangeTransferAction = ({
         margin="none"
         onChange={handleAddressChange}
         value={recipientAddress}
+        error={errorExists}
+        helperText={errorExists ? errorText : ''}
       />
     </CertificateActionContent>
   );

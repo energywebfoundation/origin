@@ -6,11 +6,13 @@ import {
 } from '@energyweb/origin-ui-certificate-data';
 import { useBlockchainTransferActionLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const useBlockchainTransferActionEffects = <Id>(
   selectedIds: Id[],
   resetIds: () => void
 ) => {
+  const { t } = useTranslation();
   const [recipientAddress, setRecipientAddress] = useState('');
 
   const handleAddressChange = (
@@ -33,7 +35,9 @@ export const useBlockchainTransferActionEffects = <Id>(
     allFuelTypes,
   });
 
-  const buttonDisabled = !recipientAddress;
+  const buttonDisabled = !recipientAddress || recipientAddress.length !== 42;
+  const errorExists = !!recipientAddress && recipientAddress.length !== 42;
+  const errorText = t('certificate.inbox.enterValidAddress');
 
   return {
     ...actionLogic,
@@ -42,5 +46,7 @@ export const useBlockchainTransferActionEffects = <Id>(
     transferHandler,
     isLoading,
     buttonDisabled,
+    errorExists,
+    errorText,
   };
 };

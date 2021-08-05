@@ -1,11 +1,9 @@
 import React, { useReducer, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
-import {
-  OrderBookFilters,
-  useApiOrderbookPoll,
-  useCachedUser,
-} from '@energyweb/origin-ui-exchange-data';
+import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
+import { useApiOrderbookPoll } from '@energyweb/origin-ui-exchange-data';
 import {
   OneTimePurchase,
   RepeatedPurchase,
@@ -19,7 +17,6 @@ import {
   MarketFilterActionEnum,
   MarketFiltersState,
 } from './ViewMarketPage.reducer';
-import { useLocation } from 'react-router-dom';
 
 export const useViewMarketPageEffects = () => {
   const [state, dispatch] = useReducer(filtersReducer, initialFiltersState);
@@ -49,16 +46,12 @@ export const useViewMarketPageEffects = () => {
     }
   }, [locationState]);
 
-  const filters: OrderBookFilters = {
-    deviceType: state.deviceType.map((type) => type.value.toString()),
-    gridOperator: state.gridOperator.map((type) => type.value.toString()),
-    location: state.subregions.map((subregion) => subregion.value.toString()),
-    generationDateStart: state.generationFrom?.toISOString(),
-    generationDateEnd: state.generationTo?.toISOString(),
-  };
-  const user = useCachedUser();
-
-  const { orderBookData, isLoading } = useApiOrderbookPoll(filters, user);
+  const { data: user, isLoading: isUserLoading } = useUserControllerMe();
+  const { orderBookData, isLoading: isOrderbookLoading } = useApiOrderbookPoll(
+    state,
+    user
+  );
+  const isLoading = isUserLoading || isOrderbookLoading;
 
   const oneTimePurchase: ListAction = {
     name: t('exchange.viewMarket.oneTimePurchase'),
@@ -93,5 +86,12 @@ export const useViewMarketPageEffects = () => {
 
   const formTitle = t('exchange.viewMarket.market');
 
-  return { state, dispatch, formActionsProps, formTitle, tablesActionsProps };
+  return {
+    state,
+    dispatch,
+    formActionsProps,
+    formTitle,
+    tablesActionsProps,
+    isLoading,
+  };
 };

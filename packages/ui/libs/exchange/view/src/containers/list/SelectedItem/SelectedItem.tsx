@@ -11,6 +11,8 @@ export interface SelectedItemProps<Id> {
   energy: string;
   generationTime: string;
   amount: string;
+  editMode: boolean;
+  setEditMode: (newValue: boolean) => void;
   onAmountChange: (id: Id, amount: string) => void;
 }
 
@@ -25,11 +27,12 @@ export const SelectedItem: TSelectedItem = ({
   generationTime,
   amount,
   onAmountChange,
+  editMode,
+  setEditMode,
 }) => {
   const classes = useStyles();
 
   const {
-    editMode,
     openEditMode,
     closeEditMode,
     saveText,
@@ -38,7 +41,8 @@ export const SelectedItem: TSelectedItem = ({
     handleSave,
     handleInputChange,
     editInputLabel,
-  } = useSelectedItemEffects(id, onAmountChange);
+    buttonDisabled,
+  } = useSelectedItemEffects(id, amount, onAmountChange, editMode, setEditMode);
 
   return (
     <div className={classes.block}>
@@ -83,6 +87,7 @@ export const SelectedItem: TSelectedItem = ({
             onClick={handleSave}
             className={classes.editButton}
             variant="contained"
+            disabled={buttonDisabled}
           >
             {saveText}
           </Button>

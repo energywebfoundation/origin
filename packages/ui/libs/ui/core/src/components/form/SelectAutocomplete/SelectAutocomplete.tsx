@@ -33,7 +33,7 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
   className,
 }) => {
   const { options, textValue, setTextValue, changeHandler } =
-    useSelectAutocompleteEffects(onChange, value, dependentValue, field);
+    useSelectAutocompleteEffects(onChange, dependentValue, field);
   const classes = useStyles();
 
   return (
@@ -52,7 +52,7 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
       renderInput={(params) => (
         <TextField
           {...params}
-          required={field.required}
+          required={field.required && !(value?.length > 0)}
           label={field.label}
           onChange={(event) => setTextValue(event.target.value)}
           helperText={errorText}

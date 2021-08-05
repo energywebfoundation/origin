@@ -4,7 +4,6 @@ import { FormSelectOption } from '../FormSelect';
 
 export const useSelectAutocompleteEffects = (
   onChange: (...event: any[]) => void,
-  value: FormSelectOption[],
   dependentValue: FormSelectOption[],
   field: GenericFormField
 ) => {
@@ -17,10 +16,6 @@ export const useSelectAutocompleteEffects = (
       : value;
 
     onChange(slicedValues);
-
-    if (!field.multiple) {
-      return setTextValue(' ');
-    }
 
     setTextValue('');
   };

@@ -1,9 +1,11 @@
 import {
   ListActionComponentProps,
-  MaterialDatepicker,
-  SelectRegular,
+  FormSelect,
+  FormDatePicker,
+  FormInput,
 } from '@energyweb/origin-ui-core';
-import { CircularProgress, Grid, TextField } from '@material-ui/core';
+import { CircularProgress, Grid, Box } from '@material-ui/core';
+import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useRetireActionEffects } from './RetireAction.effects';
@@ -23,12 +25,11 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
     selectedItems,
     retireHandler,
     isLoading,
-    selectedBeneficiaryId,
     buttonDisabled,
-    selectorProps,
-    startPickerProps,
-    endPickerProps,
-    purposeInputProps,
+    fields,
+    register,
+    control,
+    errors,
   } = useRetireActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
@@ -42,20 +43,38 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
       submitHandler={retireHandler}
       buttonDisabled={buttonDisabled}
     >
-      <SelectRegular
-        textFieldProps={{ margin: 'none', variant: 'filled' }}
-        value={selectedBeneficiaryId}
-        {...selectorProps}
+      <FormSelect
+        control={control}
+        field={fields[0]}
+        errorExists={!isEmpty(errors[fields[0].name])}
+        errorText={errors[fields[0].name]?.message ?? ''}
       />
       <Grid container spacing={1} className={classes.mb}>
         <Grid item xs={6}>
-          <MaterialDatepicker {...startPickerProps} />
+          <FormDatePicker
+            control={control}
+            field={fields[1]}
+            errorExists={!isEmpty(errors[fields[1].name])}
+            errorText={errors[fields[1].name]?.message ?? ''}
+          />
         </Grid>
         <Grid item xs={6}>
-          <MaterialDatepicker {...endPickerProps} />
+          <FormDatePicker
+            control={control}
+            field={fields[2]}
+            errorExists={!isEmpty(errors[fields[2].name])}
+            errorText={errors[fields[2].name]?.message ?? ''}
+          />
         </Grid>
       </Grid>
-      <TextField className={classes.mb} {...purposeInputProps} />
+      <Box mb={2}>
+        <FormInput
+          register={register}
+          field={fields[3]}
+          errorExists={!isEmpty(errors[fields[3].name])}
+          errorText={errors[fields[3].name]?.message ?? ''}
+        />
+      </Box>
     </CertificateActionContent>
   );
 };

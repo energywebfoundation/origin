@@ -12,6 +12,7 @@ import {
   Path,
   UnpackNestedValue,
   UseFormReset,
+  ValidationMode,
 } from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
@@ -69,8 +70,8 @@ export interface GenericFormProps<FormValuesType> {
   partOfMultiForm?: boolean;
   twoColumns?: boolean;
   inputsToWatch?: Path<FormValuesType>[];
-  controlSubmitButton?: boolean;
   onWatchHandler?: (watchedValues: unknown[]) => void;
+  validationMode?: keyof ValidationMode;
 }
 
 export type TGenericForm = <FormValuesType>(

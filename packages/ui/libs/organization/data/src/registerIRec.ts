@@ -23,8 +23,6 @@ export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
   return (values: IRecRegisterFormMergedType) => {
     const formattedData: NewRegistrationDTO = {
       ...values,
-      // @should be changed on backend and migrated
-      // from int to string because of auto-gen client/enum issues
       headquarterCountry: values.headquarterCountry
         .map((option) => option.value)[0]
         .toString(),
@@ -32,9 +30,15 @@ export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
         values.primaryContactOrganizationCountry
           .map((option) => option.value)[0]
           .toString(),
+      // @should be changed on backend and migrated
+      // from int to string because of auto-gen client/enum issues
       accountType: values.accountType as unknown as IRECAccountType,
       registrationYear: Number(values.registrationYear),
       activeCountries: values.activeCountries.map((i) => i?.value as string),
+      leadUserTitle:
+        values.leadUserTitle === 'Other'
+          ? values.leadUserTitleInput
+          : values.leadUserTitle,
     };
     mutate(
       { data: formattedData },

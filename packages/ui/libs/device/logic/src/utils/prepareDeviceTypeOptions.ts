@@ -6,7 +6,9 @@ export const prepareDeviceTypesOptions = (
   allDeviceTypes: CodeNameDTO[]
 ): ((selected: FormSelectOption[]) => FormSelectOption[]) => {
   return (selectedFuelOption: FormSelectOption[]) => {
-    const selectedValue = selectedFuelOption[0]?.value;
+    const selectedValue = selectedFuelOption
+      ? selectedFuelOption[0]?.value
+      : '';
 
     const availableTypesForSelectedFuel: string[] =
       fuelToDeviceTypesMatching[selectedValue];

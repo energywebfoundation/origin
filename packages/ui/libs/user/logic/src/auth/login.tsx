@@ -14,8 +14,7 @@ export const INITIAL_FORM_VALUES: TUserLoginFormValues = {
 };
 
 export const useUserLogInFormConfig = (
-  formSubmitHandler: (values: UnpackNestedValue<TUserLoginFormValues>) => void,
-  onWatchHandler: (values: any) => void
+  formSubmitHandler: (values: UnpackNestedValue<TUserLoginFormValues>) => void
 ): GenericFormProps<TUserLoginFormValues> => {
   const { t } = useTranslation();
 
@@ -33,11 +32,10 @@ export const useUserLogInFormConfig = (
         name: 'password',
       },
     ],
-    onWatchHandler,
-    inputsToWatch: ['username', 'password'],
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
+    validationMode: 'onTouched',
     inputsVariant: 'filled',
     validationSchema: Yup.object().shape({
       username: Yup.string().email().label(t('user.login.email')).required(),

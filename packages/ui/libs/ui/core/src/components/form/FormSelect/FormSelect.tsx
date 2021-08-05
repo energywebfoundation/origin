@@ -13,9 +13,9 @@ export type FormSelectOption = {
 export interface FormSelectProps<FormValuesType> {
   field: GenericFormField;
   control: Control<FormValuesType>;
+  errorExists: boolean;
+  errorText: string;
   register?: UseFormRegister<FormValuesType>;
-  errorExists?: boolean;
-  errorText?: string;
   variant?: 'standard' | 'outlined' | 'filled';
 }
 

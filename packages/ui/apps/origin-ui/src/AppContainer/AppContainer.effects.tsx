@@ -12,8 +12,7 @@ import {
 
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
-import { useActiveMenuTab } from '../components';
-import { useAxiosInterceptors } from '@energyweb/origin-ui-react-query-providers';
+import { useActiveMenuTab, useAxiosInterceptors } from '../hooks';
 import {
   useInvitationControllerGetInvitations,
   useRegistrationControllerGetRegistrations,

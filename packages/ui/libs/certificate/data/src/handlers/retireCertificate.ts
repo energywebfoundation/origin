@@ -9,6 +9,7 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
+import { Dayjs } from 'dayjs';
 import { BigNumber } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
@@ -17,8 +18,8 @@ import { useGetBlockchainCertificateHandler } from '../fetching';
 export const useRetireCertificateHandler = (
   selectedBeneficiary: BeneficiaryDTO,
   resetList: () => void,
-  startDate: string,
-  endDate: string,
+  startDate: Dayjs,
+  endDate: Dayjs,
   purpose: string
 ) => {
   const { t } = useTranslation();
@@ -41,8 +42,8 @@ export const useRetireCertificateHandler = (
         beneficiary: selectedBeneficiary.organization.name,
         location: selectedBeneficiary.organization.address,
         countryCode: selectedBeneficiary.organization.country,
-        periodStartDate: startDate,
-        periodEndDate: endDate,
+        periodStartDate: startDate.toISOString(),
+        periodEndDate: endDate.toISOString(),
         purpose,
       };
       const transaction = await onChainCertificate.claim(

@@ -17,7 +17,8 @@ export interface HorizontalCardProps {
   content: React.ReactNode;
   imageUrl?: string;
   fallbackIcon?: FallbackIconProps['icon'];
-  fallbackIconProps?: FallbackIconProps['wrapperProps'];
+  fallbackIconProps?: FallbackIconProps['iconProps'];
+  fallbackIconWrapperProps?: FallbackIconProps['wrapperProps'];
   cardHeaderProps?: CardContentProps;
   cardContentProps?: CardContentProps;
 }
@@ -30,6 +31,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   imageUrl,
   fallbackIcon,
   fallbackIconProps,
+  fallbackIconWrapperProps,
   cardHeaderProps,
   cardContentProps,
 }) => {
@@ -42,7 +44,11 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
         <CardMedia image={imageUrl} className={classes.image} />
       ) : fallbackIcon ? (
         <CardMedia className={classes.image}>
-          <FallbackIcon icon={fallbackIcon} wrapperProps={fallbackIconProps} />
+          <FallbackIcon
+            icon={fallbackIcon}
+            iconProps={fallbackIconProps}
+            wrapperProps={fallbackIconWrapperProps}
+          />
         </CardMedia>
       ) : null}
       <Box className={classes.contentWrapper}>

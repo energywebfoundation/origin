@@ -41,7 +41,22 @@ export const useMultiStepFormEffects = <Union, Merged>({
     if (props.customStep && props.component) {
       const CustomForm = props.component;
 
-      return <CustomForm submitHandler={nextButtonHandler} {...props} />;
+      return (
+        <CustomForm
+          submitHandler={nextButtonHandler}
+          secondaryButtons={[
+            {
+              label: backButtonText,
+              onClick: backButtonHandler,
+              disabled: activeStep === 0,
+              variant: 'contained',
+              style: { marginRight: 10 },
+              ...backButtonProps,
+            },
+          ]}
+          {...props}
+        />
+      );
     }
 
     return (

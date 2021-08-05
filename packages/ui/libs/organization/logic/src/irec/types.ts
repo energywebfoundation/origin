@@ -1,10 +1,10 @@
-import { IRECAccountType } from '../utils';
 import {
   FormSelectOption,
   MultiStepFormItem,
   MultiStepFormProps,
 } from '@energyweb/origin-ui-core';
 import { TFunction } from 'i18next';
+import { IRECAccountType } from '../utils';
 
 export type IRecRegistrationInfoForm = {
   accountType: IRECAccountType;

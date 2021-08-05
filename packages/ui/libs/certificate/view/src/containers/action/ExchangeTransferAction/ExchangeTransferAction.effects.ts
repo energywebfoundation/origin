@@ -6,11 +6,13 @@ import {
 } from '@energyweb/origin-ui-certificate-data';
 import { useExchangeTransferActionLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const useExchangeTransferActionPropsEffects = <Id>(
   selectedIds: Id[],
   resetIds: () => void
 ) => {
+  const { t } = useTranslation();
   const [recipientAddress, setRecipientAddress] = useState('');
 
   const handleAddressChange = (
@@ -35,7 +37,9 @@ export const useExchangeTransferActionPropsEffects = <Id>(
     allFuelTypes,
   });
 
-  const buttonDisabled = !recipientAddress;
+  const buttonDisabled = !recipientAddress || recipientAddress.length !== 42;
+  const errorExists = !!recipientAddress && recipientAddress.length !== 42;
+  const errorText = t('certificate.inbox.enterValidAddress');
 
   return {
     ...actionLogic,
@@ -43,5 +47,7 @@ export const useExchangeTransferActionPropsEffects = <Id>(
     handleAddressChange,
     transferHandler,
     buttonDisabled,
+    errorExists,
+    errorText,
   };
 };

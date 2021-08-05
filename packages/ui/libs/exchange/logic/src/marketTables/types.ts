@@ -18,6 +18,7 @@ export type TUseSellOffersTableArgs = {
 export type TFormatAsks = (
   props: Omit<TUseSellOffersTableArgs, 'isLoading' | 'className'> & {
     t: TFunction<'translation'>;
+    primaryColor: string;
   }
 ) => TableRowData<OrderBookOrderDTO['id']>[];
 export type TUseSellOffersTableLogic = (
