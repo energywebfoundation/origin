@@ -904,6 +904,14 @@
         "yes": "Yes",
         "back": "Back"
       },
+      "requirements": {
+        "requirementsTitle": "To access this page, you need to fulfill following criteria",
+        "haveToBeLoggedInUser": "You need to be a logged in user.",
+        "hasToBeActiveUser": "User has to be approved by the platform admin.",
+        "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
+        "organizationHasToHaveExchangeDeposit": "The organization has to have a blockchain exchange deposit address attached to the account.",
+        "organizationHasToHaveBlockchainAccount": "Your organization has to have a blockchain account attached."
+      },
       "input": {
         "editAmount": "Edit amount"
       },
