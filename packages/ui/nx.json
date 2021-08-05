@@ -1,18 +1,13 @@
 {
   "implicitDependencies": {
     "workspace.json": "*",
-    "package.json": {
-      "dependencies": "*",
-      "devDependencies": "*"
-    },
+    "package.json": { "dependencies": "*", "devDependencies": "*" },
     "tsconfig.base.json": "*",
     "tslint.json": "*",
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
-  "affected": {
-    "defaultBase": "chore/origin-ui-v2"
-  },
+  "affected": { "defaultBase": "chore/origin-ui-v2" },
   "npmScope": "ui-packages",
   "tasksRunnerOptions": {
     "default": {
@@ -29,88 +24,31 @@
     }
   },
   "projects": {
-    "origin-ui": {
-      "tags": []
-    },
-    "origin-ui-e2e": {
-      "tags": [],
-      "implicitDependencies": ["origin-ui"]
-    },
-    "ui-core": {
-      "tags": []
-    },
-    "ui-utils": {
-      "tags": []
-    },
-    "ui-localization": {
-      "tags": []
-    },
-    "ui-theme": {
-      "tags": []
-    },
-    "ui-assets": {
-      "tags": []
-    },
-    "exchange-view": {
-      "tags": []
-    },
-    "exchange-logic": {
-      "tags": []
-    },
-    "certificate-view": {
-      "tags": []
-    },
-    "certificate-logic": {
-      "tags": []
-    },
-    "user-view": {
-      "tags": []
-    },
-    "user-logic": {
-      "tags": []
-    },
-    "device-logic": {
-      "tags": []
-    },
-    "device-view": {
-      "tags": []
-    },
-    "ui-core-e2e": {
-      "tags": [],
-      "implicitDependencies": ["ui-core"]
-    },
-    "ui-shared-state": {
-      "tags": []
-    },
-    "organization-view": {
-      "tags": []
-    },
-    "organization-data": {
-      "tags": []
-    },
-    "organization-logic": {
-      "tags": []
-    },
-    "ui-api-clients": {
-      "tags": []
-    },
-    "device-data": {
-      "tags": []
-    },
-    "ui-providers": {
-      "tags": []
-    },
-    "certificate-data": {
-      "tags": []
-    },
-    "ui-blockchain": {
-      "tags": []
-    },
-    "user-data": {
-      "tags": []
-    },
-    "exchange-data": {
-      "tags": []
-    }
+    "origin-ui": { "tags": [] },
+    "origin-ui-e2e": { "tags": [], "implicitDependencies": ["origin-ui"] },
+    "ui-core": { "tags": [] },
+    "ui-utils": { "tags": [] },
+    "ui-localization": { "tags": [] },
+    "ui-theme": { "tags": [] },
+    "ui-assets": { "tags": [] },
+    "exchange-view": { "tags": [] },
+    "exchange-logic": { "tags": [] },
+    "certificate-view": { "tags": [] },
+    "certificate-logic": { "tags": [] },
+    "user-view": { "tags": [] },
+    "user-logic": { "tags": [] },
+    "device-logic": { "tags": [] },
+    "device-view": { "tags": [] },
+    "ui-core-e2e": { "tags": [], "implicitDependencies": ["ui-core"] },
+    "ui-shared-state": { "tags": [] },
+    "organization-view": { "tags": [] },
+    "organization-data": { "tags": [] },
+    "organization-logic": { "tags": [] },
+    "ui-api-clients": { "tags": [] },
+    "device-data": { "tags": [] },
+    "certificate-data": { "tags": [] },
+    "ui-blockchain": { "tags": [] },
+    "user-data": { "tags": [] },
+    "exchange-data": { "tags": [] }
   }
 }

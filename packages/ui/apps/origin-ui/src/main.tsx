@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ErrorFallback } from '@energyweb/origin-ui-core';
 import { ErrorBoundary } from 'react-error-boundary';
 import { getLibrary } from '@energyweb/origin-ui-blockchain';
-import { OriginQueryClientProvider } from '@energyweb/origin-ui-react-query-providers';
+import { OriginQueryClientProvider } from './components';
 import { AppContainer } from './AppContainer';
 import { Web3ReactProvider } from '@web3-react/core';
 

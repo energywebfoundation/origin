@@ -4,7 +4,7 @@ import {
   ComposedDevice,
 } from '@energyweb/origin-ui-device-data';
 
-export const useMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
+export const getMainFuelType = (fuelType: string, allTypes: CodeNameDTO[]) => {
   if (!fuelType || !allTypes) {
     return { mainType: '', restType: '' };
   }

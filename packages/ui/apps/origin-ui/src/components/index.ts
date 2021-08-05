@@ -1,2 +1,2 @@
-export * from './useActiveMenuTab';
 export * from './OriginGlobalStyles';
+export * from './OriginQueryClientProvider';
