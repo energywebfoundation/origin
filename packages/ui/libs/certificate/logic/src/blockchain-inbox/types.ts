@@ -6,11 +6,8 @@ import {
   GenericFormProps,
   ItemsListWithActionsProps,
   ListAction,
-  MaterialDatepickerProps,
-  SelectRegularProps,
   TItemsListWithActionsContainers,
 } from '@energyweb/origin-ui-core';
-import { TextFieldProps } from '@material-ui/core';
 import { Dayjs } from 'dayjs';
 import React, { FC } from 'react';
 

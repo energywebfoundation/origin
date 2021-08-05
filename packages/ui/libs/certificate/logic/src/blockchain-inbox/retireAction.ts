@@ -1,6 +1,3 @@
-import { SelectRegularProps } from '@energyweb/origin-ui-core';
-import { Dayjs } from 'dayjs';
-import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { prepareBeneficiariesOptions } from '../utils';
