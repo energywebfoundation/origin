@@ -1,9 +1,9 @@
 {
     "name": "@energyweb/issuer-irec-api-react-query-client",
-    "version": "0.1.0",
-    "description": "React Query Client library interacting with the Exchange",
-    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/exchange#readme",
-    "author": "EnergyWeb",
+    "version": "0.0.1",
+    "description": "React Query Client library interacting with the Issuer IREC API",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/issuer-irec-api#readme",
+    "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",
     "license": "GPL-3.0-or-later",
     "main": "dist/js/index.js",
     "repository": {

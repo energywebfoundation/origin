@@ -1,9 +1,9 @@
 {
     "name": "@energyweb/origin-backend-react-query-client",
-    "version": "0.1.0",
-    "description": "React Query Client library interacting with the Exchange",
-    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/exchange#readme",
-    "author": "EnergyWeb",
+    "version": "0.0.1",
+    "description": "React Query Client library interacting with the Origin Backend",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/origin-backend#readme",
+    "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",
     "license": "GPL-3.0-or-later",
     "main": "dist/js/index.js",
     "repository": {
