@@ -60,12 +60,6 @@ See {IERC1888-safeBatchTransferAndClaimFrom}.
 `_to` and `_from` cannot be the zero addresses.
 `_from` has to have a balance above 0.
 
-### `getCertificate(uint256 _id) → address issuer, uint256 topic, bytes validityCall, bytes data` (public)
-
-See {IERC1888-getCertificate}.
-
-
-
 ### `claimedBalanceOf(address _owner, uint256 _id) → uint256` (external)
 
 See {IERC1888-claimedBalanceOf}.
@@ -75,6 +69,12 @@ See {IERC1888-claimedBalanceOf}.
 ### `claimedBalanceOfBatch(address[] _owners, uint256[] _ids) → uint256[]` (external)
 
 See {IERC1888-claimedBalanceOfBatch}.
+
+
+
+### `getCertificate(uint256 _id) → address issuer, uint256 topic, bytes validityCall, bytes data` (public)
+
+See {IERC1888-getCertificate}.
 
 
 

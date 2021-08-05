@@ -10,14 +10,6 @@ import "./Registry.sol";
 /// @title Issuer contract
 /// @notice Used to manage the request/approve workflow for issuing ERC-1888 certificates.
 contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
-    event CertificationRequested(address indexed _owner, uint256 indexed _id);
-    event CertificationRequestedBatch(address[] indexed _owners, uint256[] indexed _id);
-    event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
-    event CertificationRequestBatchApproved(address[] indexed _owners, uint256[] indexed _ids, uint256[] indexed _certificateIds);
-    event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
-
-    event CertificateRevoked(uint256 indexed _certificateId);
-    event CertificateVolumeMinted(address indexed _owner, uint256 indexed _certificateId, uint256 indexed _volume);
 
     // Certificate topic - check ERC-1888 topic description
     uint256 public certificateTopic;
@@ -47,6 +39,15 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
         bool revoked;
         address sender;  // User that triggered the request creation
     }
+
+    event CertificationRequested(address indexed _owner, uint256 indexed _id);
+    event CertificationRequestedBatch(address[] indexed _owners, uint256[] indexed _id);
+    event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
+    event CertificationRequestBatchApproved(address[] indexed _owners, uint256[] indexed _ids, uint256[] indexed _certificateIds);
+    event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
+
+    event CertificateRevoked(uint256 indexed _certificateId);
+    event CertificateVolumeMinted(address indexed _owner, uint256 indexed _certificateId, uint256 indexed _volume);
 
 	/// @notice Contructor.
     /// @dev Uses the OpenZeppelin `initializer` for upgradeability.

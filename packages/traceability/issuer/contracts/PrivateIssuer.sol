@@ -18,12 +18,6 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     // ERC-1888 contract to issue certificates to
 	Registry public registry;
 
-	event PrivateCertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
-	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
-	event MigrateToPublicRequested(address indexed _owner, uint256 indexed _id);
-	event PrivateTransferRequested(address indexed _owner, uint256 indexed _certificateId);
-	event CertificateMigratedToPublic(uint256 indexed _certificateId, address indexed _owner, uint256 indexed _amount);
-
 	// Storage for RequestStateChange
 	mapping(uint256 => RequestStateChange) private _requestMigrateToPublicStorage;
 
@@ -58,6 +52,12 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 		bool left;
 		bytes32 hash;
 	}
+	
+	event PrivateCertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
+	event CommitmentUpdated(address indexed _owner, uint256 indexed _id, bytes32 _commitment);
+	event MigrateToPublicRequested(address indexed _owner, uint256 indexed _id);
+	event PrivateTransferRequested(address indexed _owner, uint256 indexed _certificateId);
+	event CertificateMigratedToPublic(uint256 indexed _certificateId, address indexed _owner, uint256 indexed _amount);
 	
     /// @notice Constructor.
     /// @dev Uses the OpenZeppelin `initializer` for upgradeability.

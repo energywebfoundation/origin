@@ -195,14 +195,6 @@ contract Registry is ERC1155, ERC1888 {
 		emit ClaimBatch(_from, _to, topics, _ids, _values, _claimData);
 	}
 
-	/// @notice See {IERC1888-getCertificate}.
-	function getCertificate(uint256 _id) public view override returns (address issuer, uint256 topic, bytes memory validityCall, bytes memory data) {
-		require(_id <= _latestCertificateId, "Registry::getCertificate: _id out of bounds");
-
-		Certificate memory certificate = certificateStorage[_id];
-		return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
-	}
-
 	/// @notice See {IERC1888-claimedBalanceOf}.
 	function claimedBalanceOf(address _owner, uint256 _id) external override view returns (uint256) {
 		return claimedBalances[_id][_owner];
@@ -219,6 +211,14 @@ contract Registry is ERC1155, ERC1888 {
         }
 
         return batchClaimBalances;
+	}
+
+	/// @notice See {IERC1888-getCertificate}.
+	function getCertificate(uint256 _id) public view override returns (address issuer, uint256 topic, bytes memory validityCall, bytes memory data) {
+		require(_id <= _latestCertificateId, "Registry::getCertificate: _id out of bounds");
+
+		Certificate memory certificate = certificateStorage[_id];
+		return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
 	}
 
 	/// @notice Burn certificates after they've been claimed, and increase the claimed balance.
