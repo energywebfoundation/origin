@@ -140,7 +140,7 @@ contract PrivateIssuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
         _requestPrivateTransferStorage[_certificateId] = PrivateTransferRequest({
 			owner: address(0x0),
-			hash: ''
+			hash: ""
 		});
 
 		_updateCommitment(_certificateId, _previousCommitment, _commitment);
