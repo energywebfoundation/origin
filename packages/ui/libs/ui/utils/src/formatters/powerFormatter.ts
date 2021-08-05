@@ -1,5 +1,5 @@
 import { Unit } from '@energyweb/utils-general';
-import { toBN } from '../convert';
+import { BigNumber } from 'ethers';
 
 export class PowerFormatter {
   static readonly displayUnit: string = 'MW';
@@ -15,7 +15,7 @@ export class PowerFormatter {
   static getBaseValueFromValueInDisplayUnit(
     valueInDisplayUnit: number
   ): number {
-    return toBN(valueInDisplayUnit)
+    return BigNumber.from(valueInDisplayUnit)
       .mul(Unit[PowerFormatter.displayUnit])
       .toNumber();
   }

@@ -32,7 +32,7 @@ export const createPrimaryContactDetailsForm: TCreatePrimaryContactDetailsForms 
         .required()
         .label(t('organization.registerIRec.primaryContactOrgPostalCode')),
       primaryContactOrganizationCountry: yup
-        .string()
+        .array()
         .required()
         .label(t('organization.registerIRec.primaryContactOrgCountry')),
       subsidiaries: yup

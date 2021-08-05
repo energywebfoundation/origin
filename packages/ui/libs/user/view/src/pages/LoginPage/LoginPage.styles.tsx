@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: '100%',
     top: '50%',
-    right: '10%',
+    right: '5%',
     transform: 'translateY(-50%)',
     opacity: 0.9,
     maxWidth: '450px',

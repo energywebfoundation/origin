@@ -17,7 +17,7 @@ export const useUserRegisteredEffects = () => {
       type: UserModalsActionsEnum.SHOW_USER_REGISTERED,
       payload: false,
     });
-    navigate('/auth/login');
+    navigate('/login');
   };
 
   const { title, text, buttons } = useUserRegisteredModalLogic(closeModal);

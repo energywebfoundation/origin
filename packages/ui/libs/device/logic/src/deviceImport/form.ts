@@ -23,6 +23,7 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
     validationSchema: yup.object({
       smartMeterId: yup
         .string()
+        .required()
         .label(process.env.NX_SMART_METER_ID || 'Smart meter ID'),
       timezone: yup.string().required().label(t('device.import.timezone')),
       gridOperator: yup
@@ -38,6 +39,7 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
       {
         name: 'smartMeterId',
         label: process.env.NX_SMART_METER_ID || 'Smart meter ID',
+        required: true,
       },
       {
         name: 'timezone',

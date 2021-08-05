@@ -1,9 +1,8 @@
 import { DisabledFormViewProps } from '@energyweb/origin-ui-core';
 import { RegistrationDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { TFunction } from 'i18next';
-import { IRECAccountType } from '@energyweb/origin-ui-utils';
 import { Countries } from '@energyweb/utils-general';
-import { iRecAccountTypeFormat } from '../utils';
+import { IRECAccountType, iRecAccountTypeFormat } from '../utils';
 
 type TOrganizationViewLogic = (
   t: TFunction,

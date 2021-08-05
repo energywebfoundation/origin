@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { App, OriginGlobalStyles } from '../components';
+import App from '../components/App';
+import { OriginGlobalStyles } from '../components';
 import { useAppContainerEffects } from './AppContainer.effects';
 import { NotificationsCenter } from '@energyweb/origin-ui-core';
 

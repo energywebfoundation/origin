@@ -9,7 +9,10 @@ export interface CertificateActionContentProps<Id> {
   buttonText: string;
   selectedIds: Id[];
   submitHandler: (id: Id, amount: string) => void | Promise<void>;
-  selectedItems: Omit<SelectedItemProps<Id>, 'amount' | 'onAmountChange'>[];
+  selectedItems: Omit<
+    SelectedItemProps<Id>,
+    'amount' | 'onAmountChange' | 'editMode' | 'setEditMode'
+  >[];
   buttonDisabled?: boolean;
   setTotalAmount?: (newValue: number) => void;
 }
@@ -37,6 +40,8 @@ export const CertificateActionContent: TCertificateActionContent = ({
     handleSubmit,
     totalVolume,
     bulkActionsRestrictionsText,
+    editMode,
+    setEditMode,
   } = useCertificateActionContentEffects(
     selectedIds,
     selectedItems,
@@ -52,6 +57,8 @@ export const CertificateActionContent: TCertificateActionContent = ({
       {selectedIds.length > 0 ? (
         selectedItems.map((item) => (
           <SelectedItem
+            editMode={editMode}
+            setEditMode={setEditMode}
             amount={getEnergyAmountForItem(item.id)}
             onAmountChange={handleItemEnergyAmountChange}
             key={`selected-item-${item.id}`}
@@ -71,7 +78,10 @@ export const CertificateActionContent: TCertificateActionContent = ({
       <Button
         fullWidth
         disabled={
-          selectedIds.length === 0 || selectedIds.length > 1 || buttonDisabled
+          selectedIds.length === 0 ||
+          selectedIds.length > 1 ||
+          buttonDisabled ||
+          editMode
         }
         color="primary"
         variant="contained"

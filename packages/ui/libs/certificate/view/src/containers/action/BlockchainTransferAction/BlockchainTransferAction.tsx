@@ -27,6 +27,8 @@ export const BlockchainTransferAction: TBlockchainTransferAction = ({
     handleAddressChange,
     isLoading,
     buttonDisabled,
+    errorExists,
+    errorText,
   } = useBlockchainTransferActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
@@ -49,6 +51,8 @@ export const BlockchainTransferAction: TBlockchainTransferAction = ({
         margin="none"
         onChange={handleAddressChange}
         value={recipientAddress}
+        error={errorExists}
+        helperText={errorExists ? errorText : ''}
       />
     </CertificateActionContent>
   );

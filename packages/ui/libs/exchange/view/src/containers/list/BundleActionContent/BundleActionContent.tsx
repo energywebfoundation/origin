@@ -12,7 +12,10 @@ export interface BundleActionContentProps<Id> {
   buttonText: string;
   selectedIds: Id[];
   submitHandler: (energyAmounts: EnergyAmounts<Id>[]) => void | Promise<void>;
-  selectedItems: Omit<SelectedItemProps<Id>, 'amount' | 'onAmountChange'>[];
+  selectedItems: Omit<
+    SelectedItemProps<Id>,
+    'amount' | 'onAmountChange' | 'editMode' | 'setEditMode'
+  >[];
   buttonDisabled?: boolean;
   setTotalAmount?: (newValue: number) => void;
 }
@@ -39,6 +42,8 @@ export const BundleActionContent: TBundleActionContent = ({
     handleItemEnergyAmountChange,
     handleSubmit,
     totalVolume,
+    editMode,
+    setEditMode,
   } = useBundleActionContentEffects(
     selectedIds,
     selectedItems,
@@ -54,6 +59,8 @@ export const BundleActionContent: TBundleActionContent = ({
       {selectedIds.length > 0 ? (
         selectedItems.map((item) => (
           <SelectedItem
+            editMode={editMode}
+            setEditMode={setEditMode}
             amount={getEnergyAmountForItem(item.id)}
             onAmountChange={handleItemEnergyAmountChange}
             key={`selected-item-${item.id}`}
@@ -72,7 +79,7 @@ export const BundleActionContent: TBundleActionContent = ({
       {children}
       <Button
         fullWidth
-        disabled={selectedIds.length < 2 || buttonDisabled}
+        disabled={selectedIds.length < 2 || buttonDisabled || editMode}
         color="primary"
         variant="contained"
         onClick={handleSubmit}

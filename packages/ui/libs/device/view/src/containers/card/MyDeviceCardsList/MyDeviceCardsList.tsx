@@ -10,6 +10,7 @@ import { MyDeviceCard } from '../MyDeviceCard';
 
 import { useMyDeviceCardsListEffects } from './MyDeviceCardsList.effects';
 import { useStyles } from './MyDevicesCardsList.styles';
+import { NoDevicesOwnedCard } from '../NoDevicesOwnedCard';
 
 export interface MyDeviceCardsListProps {
   devices: ComposedDevice[];
@@ -27,6 +28,10 @@ export const MyDeviceCardsList: React.FC<MyDeviceCardsListProps> = ({
   const listContentClass = `${classes.content} ${
     !!selected && classes.contentShift
   }`;
+
+  if (devices.length === 0) {
+    return <NoDevicesOwnedCard />;
+  }
 
   return (
     <Grid container className={classes.wrapper}>

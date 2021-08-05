@@ -5,7 +5,7 @@ export enum EnergyTypeEnum {
   MARINE_TIDAL = 'marine tidal',
   MARINE_WAVE = 'marine wave',
   MARINE_CURRENT = 'marine current',
-  MARINE_VERTICAL = 'marine vertical presure',
+  MARINE_VERTICAL = 'marine vertical pressure',
   RENEWABLE_HEAT = 'renewable heat',
   BIOMASS_SOLID = 'biomass solid',
   BIOMASS_LIQUID = 'biomass liquid',

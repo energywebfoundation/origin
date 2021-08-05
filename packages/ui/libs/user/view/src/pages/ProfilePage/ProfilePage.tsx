@@ -18,7 +18,7 @@ export const ProfilePage = () => {
   }
 
   return (
-    <Box>
+    <Box px={2} width="100%">
       <Paper classes={{ root: classes.paper }}>
         <UpdateUserData userAccountData={user} />
       </Paper>

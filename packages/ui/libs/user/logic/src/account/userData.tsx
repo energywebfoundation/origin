@@ -29,14 +29,17 @@ export const useUpdateUserAccountDataFormConfig = (
       {
         label: t('user.profile.firstName'),
         name: 'firstName',
+        required: true,
       },
       {
         label: t('user.profile.lastName'),
         name: 'lastName',
+        required: true,
       },
       {
         label: t('user.profile.telephone'),
         name: 'telephone',
+        required: true,
       },
       {
         label: t('user.profile.status'),
@@ -56,7 +59,10 @@ export const useUpdateUserAccountDataFormConfig = (
     validationSchema: Yup.object().shape({
       firstName: Yup.string().label(t('user.profile.firstName')).required(),
       lastName: Yup.string().label(t('user.profile.lastName')).required(),
-      telephone: Yup.string().label(t('user.profile.telephone')).required(),
+      telephone: Yup.string()
+        .min(10)
+        .label(t('user.profile.telephone'))
+        .required(),
     }),
   };
 };

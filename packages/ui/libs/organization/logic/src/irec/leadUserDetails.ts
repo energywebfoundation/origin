@@ -46,8 +46,14 @@ export const createLeadUserDetailsForm: TCreateLeadUserDetailsForm = (t) => ({
       name: 'leadUserTitle',
       label: t('organization.registerIRec.leadUserTitle'),
       select: true,
-      options: TITLE_OPTIONS,
       required: true,
+      options: TITLE_OPTIONS,
+      additionalInputProps: {
+        valueToOpen: 'Other',
+        name: 'leadUserTitleInput',
+        label: t('organization.registerIRec.leadUserTitle'),
+        required: true,
+      },
     },
     {
       name: 'leadUserFirstName',

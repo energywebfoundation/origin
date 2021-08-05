@@ -8,13 +8,14 @@ export interface FallbackIconProps {
     HTMLDivElement
   >;
   hoverText?: string;
+  iconProps?: React.SVGProps<SVGSVGElement>;
 }
 
 export const FallbackIcon: FC<FallbackIconProps> = ({
   icon: Icon,
   wrapperProps,
   hoverText,
-  ...iconProps
+  iconProps,
 }) => {
   const classes = useStyles();
   return (

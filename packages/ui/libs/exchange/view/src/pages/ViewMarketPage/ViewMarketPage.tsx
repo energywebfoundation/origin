@@ -13,8 +13,11 @@ export const ViewMarketPage: FC = () => {
     formActionsProps,
     formTitle,
     tablesActionsProps,
+    isLoading,
     canAccessPage,
   } = useViewMarketPageEffects();
+
+  if (isLoading) return <></>;
 
   if (!canAccessPage) {
     return <Requirements />;

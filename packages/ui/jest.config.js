@@ -23,7 +23,6 @@ module.exports = {
     '<rootDir>/libs/organization/logic',
     '<rootDir>/libs/ui/api-clients',
     '<rootDir>/libs/device/data',
-    '<rootDir>/libs/ui/providers',
     '<rootDir>/libs/ui/blockchain',
   ],
 };

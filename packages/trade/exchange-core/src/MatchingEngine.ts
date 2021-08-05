@@ -59,7 +59,7 @@ export class MatchingEngine<TProduct, TProductFilter> {
     }
 
     public submitOrder(order: IMatchableOrder<TProduct, TProductFilter>): void {
-        this.logger.debug(`Submitting order: ${prettyJSON(order)}`);
+        this.logger.debug(`Submitting order: ${order.id}`);
         this.pendingActions = this.pendingActions.concat({
             kind: ActionKind.AddOrder,
             value: order.clone()
@@ -227,7 +227,6 @@ export class MatchingEngine<TProduct, TProductFilter> {
     private match() {
         this.logger.debug(`Triggering match`);
         const { bids, asks } = this.orderBook();
-        this.logger.debug(`Order book view: asks: ${prettyJSON(asks)} bids: ${prettyJSON(bids)}`);
         const executed = this.generateTrades(asks, bids);
         this.logger.debug(
             `Executed trades: ${prettyJSON(

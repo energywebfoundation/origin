@@ -14,6 +14,7 @@ export const useBundleActionContentEffects = <Id>(
   setTotalAmount?: BundleActionContentProps<Id>['setTotalAmount']
 ) => {
   const { t } = useTranslation();
+  const [editMode, setEditMode] = useState(false);
   const [energyAmounts, setEnergyAmounts] = useState<EnergyAmounts<Id>[]>([]);
 
   const addOrRemoveEnergyOnCheck = (
@@ -94,6 +95,8 @@ export const useBundleActionContentEffects = <Id>(
   }, [totalVolume]);
 
   return {
+    editMode,
+    setEditMode,
     selectCertificateText,
     totalVolumeText,
     totalVolume,

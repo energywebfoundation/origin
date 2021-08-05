@@ -3,8 +3,8 @@ import {
   formatDate,
   PowerFormatter,
 } from '@energyweb/origin-ui-utils';
-import { Typography } from '@material-ui/core';
 import React from 'react';
+import { uniqBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import {
   getEnergyTypeImage,
@@ -15,22 +15,29 @@ import { TFormatBids, TUseBuyOffersTableLogic } from './types';
 
 export const formatBids: TFormatBids = ({ bids, allFuelTypes }) => {
   return bids?.map((bid) => {
-    let Icon: React.FC<React.SVGProps<SVGSVGElement> & { title?: string }> =
-      null;
+    let Icons: {
+      label: string;
+      icon: React.FC<React.SVGProps<SVGSVGElement> & { title?: string }>;
+    }[] = null;
 
     if (!!bid.product.deviceType) {
-      const fuelCode = bid.product.deviceType[0].split(';')[0];
-      const { mainType } = getMainFuelType(fuelCode, allFuelTypes);
-      Icon = getEnergyTypeImage(mainType as EnergyTypeEnum, true);
+      const fuelCodes = bid.product.deviceType.map(
+        (deviceType) => deviceType.split(';')[0]
+      );
+      const fuelTypeIcons = fuelCodes.map((fuelCode) => {
+        const { mainType } = getMainFuelType(fuelCode, allFuelTypes);
+        return {
+          label: mainType,
+          icon: getEnergyTypeImage(mainType as EnergyTypeEnum),
+        };
+      });
+      const uniqueIcons = uniqBy(fuelTypeIcons, 'label');
+      Icons = uniqueIcons;
     }
 
     return {
       id: bid.id,
-      fuelType: Icon ? (
-        <Icon style={{ width: 20 }} />
-      ) : (
-        <Typography color="primary">ANY</Typography>
-      ),
+      fuelType: Icons,
       volume: PowerFormatter.format(parseInt(bid.volume)),
       price: bid.price / 100,
       gridOperator: bid.product.gridOperator

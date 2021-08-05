@@ -115,12 +115,12 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
     {
       name: 'activeCountries',
       label: t('organization.registerIRec.activeCountries'),
-      select: true,
       options: COUNTRY_OPTIONS_ISO,
+      select: true,
       autocomplete: true,
       multiple: true,
-      maxValues: 3,
       required: true,
+      maxValues: 3,
     },
     {
       name: 'mainBusiness',
