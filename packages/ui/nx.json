@@ -39,7 +39,6 @@
     "user-logic": { "tags": [] },
     "device-logic": { "tags": [] },
     "device-view": { "tags": [] },
-    "ui-core-e2e": { "tags": [], "implicitDependencies": ["ui-core"] },
     "ui-shared-state": { "tags": [] },
     "organization-view": { "tags": [] },
     "organization-data": { "tags": [] },
