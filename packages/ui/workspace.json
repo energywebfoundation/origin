@@ -122,7 +122,15 @@
             "tsConfig": "libs/ui/core/tsconfig.lib.json",
             "project": "libs/ui/core/package.json",
             "entryFile": "libs/ui/core/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -176,7 +184,15 @@
             "tsConfig": "libs/ui/utils/tsconfig.lib.json",
             "project": "libs/ui/utils/package.json",
             "entryFile": "libs/ui/utils/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -211,7 +227,15 @@
             "tsConfig": "libs/ui/localization/tsconfig.lib.json",
             "project": "libs/ui/localization/package.json",
             "entryFile": "libs/ui/localization/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -246,7 +270,14 @@
             "tsConfig": "libs/ui/theme/tsconfig.lib.json",
             "project": "libs/ui/theme/package.json",
             "entryFile": "libs/ui/theme/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -281,7 +312,14 @@
             "tsConfig": "libs/ui/assets/tsconfig.lib.json",
             "project": "libs/ui/assets/package.json",
             "entryFile": "libs/ui/assets/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -316,7 +354,14 @@
             "tsConfig": "libs/exchange/view/tsconfig.lib.json",
             "project": "libs/exchange/view/package.json",
             "entryFile": "libs/exchange/view/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -351,7 +396,14 @@
             "tsConfig": "libs/exchange/logic/tsconfig.lib.json",
             "project": "libs/exchange/logic/package.json",
             "entryFile": "libs/exchange/logic/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -386,7 +438,14 @@
             "tsConfig": "libs/certificate/view/tsconfig.lib.json",
             "project": "libs/certificate/view/package.json",
             "entryFile": "libs/certificate/view/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -421,7 +480,14 @@
             "tsConfig": "libs/certificate/logic/tsconfig.lib.json",
             "project": "libs/certificate/logic/package.json",
             "entryFile": "libs/certificate/logic/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -456,7 +522,14 @@
             "tsConfig": "libs/user/view/tsconfig.lib.json",
             "project": "libs/user/view/package.json",
             "entryFile": "libs/user/view/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -491,7 +564,14 @@
             "tsConfig": "libs/user/logic/tsconfig.lib.json",
             "project": "libs/user/logic/package.json",
             "entryFile": "libs/user/logic/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -526,7 +606,14 @@
             "tsConfig": "libs/device/logic/tsconfig.lib.json",
             "project": "libs/device/logic/package.json",
             "entryFile": "libs/device/logic/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -561,7 +648,14 @@
             "tsConfig": "libs/device/view/tsconfig.lib.json",
             "project": "libs/device/view/package.json",
             "entryFile": "libs/device/view/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -596,7 +690,14 @@
             "tsConfig": "libs/ui/shared-state/tsconfig.lib.json",
             "project": "libs/ui/shared-state/package.json",
             "entryFile": "libs/ui/shared-state/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -634,8 +735,11 @@
             "external": [
               "react",
               "react-dom",
+              "react-is",
               "@emotion/styled",
-              "@emotion/react"
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
             ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
@@ -674,8 +778,11 @@
             "external": [
               "react",
               "react-dom",
+              "react-is",
               "@emotion/styled",
-              "@emotion/react"
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
             ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
@@ -714,8 +821,11 @@
             "external": [
               "react",
               "react-dom",
+              "react-is",
               "@emotion/styled",
-              "@emotion/react"
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
             ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
@@ -786,7 +896,15 @@
             "tsConfig": "libs/certificate/data/tsconfig.lib.json",
             "project": "libs/certificate/data/package.json",
             "entryFile": "libs/certificate/data/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -824,8 +942,11 @@
             "external": [
               "react",
               "react-dom",
+              "react-is",
               "@emotion/styled",
-              "@emotion/react"
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
             ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
@@ -861,7 +982,15 @@
             "tsConfig": "libs/user/data/tsconfig.lib.json",
             "project": "libs/user/data/package.json",
             "entryFile": "libs/user/data/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
@@ -896,7 +1025,15 @@
             "tsConfig": "libs/exchange/data/tsconfig.lib.json",
             "project": "libs/exchange/data/package.json",
             "entryFile": "libs/exchange/data/src/index.ts",
-            "external": ["react", "react-dom", "react-is", "@emotion/styled"],
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
             "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
