@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import {
   Paper,
-  CircularProgress,
   Typography,
   List,
   ListItem,
@@ -13,21 +12,15 @@ import { IPermissionRule } from '@energyweb/origin-ui-utils';
 import { useStyles } from './Requirements.styles';
 
 export interface RequirementsProps {
-  accessRules: IPermissionRule[];
+  rules: IPermissionRule[];
   title: string;
-  loading: boolean;
 }
 
 export const Requirements: FC<RequirementsProps> = ({
-  accessRules,
+  rules,
   title,
-  loading,
 }): JSX.Element => {
   const classes = useStyles();
-
-  if (loading) {
-    return <CircularProgress />;
-  }
 
   return (
     <Paper className={classes?.container}>
@@ -35,7 +28,7 @@ export const Requirements: FC<RequirementsProps> = ({
         {title}
       </Typography>
       <List>
-        {accessRules?.map((rule) => (
+        {rules?.map((rule) => (
           <ListItem key={rule.label} role={undefined} dense>
             <ListItemIcon>
               <Checkbox
