@@ -5,10 +5,11 @@ import { DemandsTable, BidsTable, AsksTable } from '../../containers';
 import { useMyOrdersPageEffects } from './MyOrdersPage.effects';
 
 export const MyOrdersPage = () => {
-  const { bids, asks, isLoading, permissions } = useMyOrdersPageEffects();
+  const { bids, asks, isLoading, canAccessPage, requirementsProps } =
+    useMyOrdersPageEffects();
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return (

@@ -14,13 +14,14 @@ export const ViewMarketPage: FC = () => {
     formTitle,
     tablesActionsProps,
     isLoading,
-    permissions,
+    canAccessPage,
+    requirementsProps,
   } = useViewMarketPageEffects();
 
   if (isLoading) return <></>;
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return (

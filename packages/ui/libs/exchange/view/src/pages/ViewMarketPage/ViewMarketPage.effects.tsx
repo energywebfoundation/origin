@@ -4,8 +4,9 @@ import { useLocation } from 'react-router-dom';
 import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
 import {
   useApiOrderbookPoll,
-  useApiPermissions,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-exchange-data';
+import { usePermissionsLogic } from '@energyweb/origin-ui-exchange-logic';
 import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
 import {
   OneTimePurchase,
@@ -49,13 +50,20 @@ export const useViewMarketPageEffects = () => {
     }
   }, [locationState]);
 
-  const { permissions } = useApiPermissions();
   const { data: user, isLoading: isUserLoading } = useUserControllerMe();
   const { orderBookData, isLoading: isOrderbookLoading } = useApiOrderbookPoll(
     state,
     user
   );
-  const isLoading = isUserLoading || isOrderbookLoading;
+  const { exchangeDepositAddress, isLoading: userAndAccountLoading } =
+    useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
+
+  const isLoading =
+    isUserLoading || isOrderbookLoading || userAndAccountLoading;
 
   const oneTimePurchase: ListAction = {
     name: t('exchange.viewMarket.oneTimePurchase'),
@@ -96,7 +104,8 @@ export const useViewMarketPageEffects = () => {
     formActionsProps,
     formTitle,
     tablesActionsProps,
-    permissions,
+    canAccessPage,
+    requirementsProps,
     isLoading,
   };
 };

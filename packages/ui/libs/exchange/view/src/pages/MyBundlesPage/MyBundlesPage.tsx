@@ -4,11 +4,12 @@ import { useMyBundlesPageEffects } from './MyBundlesPage.effects';
 import { useStyles } from './MyBundlesPage.styles';
 
 export const MyBundlesPage: FC = () => {
-  const { tableData, permissions } = useMyBundlesPageEffects();
+  const { tableData, canAccessPage, requirementsProps } =
+    useMyBundlesPageEffects();
   const classes = useStyles();
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return (

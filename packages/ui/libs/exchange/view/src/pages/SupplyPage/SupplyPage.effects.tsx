@@ -4,11 +4,12 @@ import {
   useAllDeviceFuelTypes,
   useAllSupply,
   ComposedPublicDevice,
-  useApiPermissions,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-exchange-data';
 import {
   useLogicSupply,
   createDeviceWithSupply,
+  usePermissionsLogic,
 } from '@energyweb/origin-ui-exchange-logic';
 import {
   useExchangeModalsDispatch,
@@ -22,7 +23,15 @@ export const useSupplyPageEffects = () => {
 
   const dispatchModals = useExchangeModalsDispatch();
 
-  const { permissions } = useApiPermissions();
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
   const { myDevices: devices, isLoading: areDevicesLoading } =
     useApiMyDevices();
 
@@ -82,7 +91,11 @@ export const useSupplyPageEffects = () => {
     },
   ];
 
-  const loading = isFuelTypesloading || areDevicesLoading || areSuppliesLoading;
+  const loading =
+    isFuelTypesloading ||
+    areDevicesLoading ||
+    areSuppliesLoading ||
+    userAndAccountLoading;
 
   const tableData = useLogicSupply({
     devices,
@@ -94,6 +107,7 @@ export const useSupplyPageEffects = () => {
 
   return {
     tableData,
-    permissions,
+    canAccessPage,
+    requirementsProps,
   };
 };

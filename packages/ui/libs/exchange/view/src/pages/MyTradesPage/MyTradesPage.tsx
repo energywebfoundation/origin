@@ -3,10 +3,11 @@ import { TableComponent, Requirements } from '@energyweb/origin-ui-core';
 import { useMyTradesPageEffects } from './MyTradesPage.effects';
 
 export const MyTradesPage: FC = () => {
-  const { tableData, permissions } = useMyTradesPageEffects();
+  const { tableData, canAccessPage, requirementsProps } =
+    useMyTradesPageEffects();
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return <TableComponent {...tableData} />;

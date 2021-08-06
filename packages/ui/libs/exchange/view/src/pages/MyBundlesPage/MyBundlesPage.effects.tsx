@@ -5,9 +5,12 @@ import {
   useApiAllDevices,
   useApiMyBundles,
   useApiRemoveBundleHandler,
-  useApiPermissions,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-exchange-data';
-import { useMyBundlesTablesLogic } from '@energyweb/origin-ui-exchange-logic';
+import {
+  useMyBundlesTablesLogic,
+  usePermissionsLogic,
+} from '@energyweb/origin-ui-exchange-logic';
 import { Cancel } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import {
@@ -17,7 +20,15 @@ import {
 
 export const useMyBundlesPageEffects = () => {
   const { t } = useTranslation();
-  const { permissions } = useApiPermissions();
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
   const { myBundles, isLoading: areBundlesLoading } = useApiMyBundles();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
@@ -47,7 +58,10 @@ export const useMyBundlesPageEffects = () => {
   ];
 
   const isLoading =
-    areBundlesLoading || areDevicesLoading || areFuelTypesLoading;
+    areBundlesLoading ||
+    areDevicesLoading ||
+    areFuelTypesLoading ||
+    userAndAccountLoading;
   const tableData = useMyBundlesTablesLogic({
     myBundles,
     allDevices,
@@ -59,6 +73,7 @@ export const useMyBundlesPageEffects = () => {
 
   return {
     tableData,
-    permissions,
+    canAccessPage,
+    requirementsProps,
   };
 };
