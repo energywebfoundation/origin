@@ -43,7 +43,6 @@
     "organization-view": { "tags": [] },
     "organization-data": { "tags": [] },
     "organization-logic": { "tags": [] },
-    "ui-api-clients": { "tags": [] },
     "device-data": { "tags": [] },
     "certificate-data": { "tags": [] },
     "ui-blockchain": { "tags": [] },

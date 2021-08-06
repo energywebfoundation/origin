@@ -738,27 +738,6 @@
         }
       }
     },
-    "ui-api-clients": {
-      "root": "libs/ui/api-clients",
-      "sourceRoot": "libs/ui/api-clients/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/ui/api-clients/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/ui/api-clients"],
-          "options": {
-            "jestConfig": "libs/ui/api-clients/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "device-data": {
       "root": "libs/device/data",
       "sourceRoot": "libs/device/data/src",

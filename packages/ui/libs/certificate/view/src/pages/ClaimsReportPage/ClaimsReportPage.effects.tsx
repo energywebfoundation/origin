@@ -3,7 +3,7 @@ import {
   useClaimedCertificates,
 } from '@energyweb/origin-ui-certificate-data';
 import { useLogicClaimsReport } from '@energyweb/origin-ui-certificate-logic';
-import { useApiAllDevices } from '@energyweb/origin-ui-device-data';
+import { useApiAllDevices } from '@energyweb/origin-ui-certificate-data';
 
 export const useClaimsReportPageEffects = () => {
   const {
