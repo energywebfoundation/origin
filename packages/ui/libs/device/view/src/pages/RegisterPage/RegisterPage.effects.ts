@@ -4,12 +4,22 @@ import {
   useAllDeviceFuelTypes,
   useApiRegisterDevice,
   useApiRegionsConfiguration,
-  useApiPermissions,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-device-data';
+import { usePermissionsLogic } from '@energyweb/origin-ui-device-logic';
 import { DeviceImagesUpload } from '../../containers';
 
 export const useRegisterPageEffects = () => {
-  const { permissions } = useApiPermissions();
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
+
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllDeviceFuelTypes();
   const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
@@ -41,7 +51,10 @@ export const useRegisterPageEffects = () => {
     submitHandler,
   };
   const isLoading =
-    areFuelTypesLoading || areDeviceTypesLoading || areRegionsLoading;
+    areFuelTypesLoading ||
+    areDeviceTypesLoading ||
+    areRegionsLoading ||
+    userAndAccountLoading;
 
-  return { isLoading, formProps, permissions };
+  return { isLoading, formProps, canAccessPage, requirementsProps };
 };

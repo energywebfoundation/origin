@@ -5,8 +5,13 @@ import { Requirements } from '@energyweb/origin-ui-core';
 import { useMyDevicePageEffects } from './MyDevicesPage.effects';
 
 export const MyDevicesPage: FC = () => {
-  const { myDevices, allDeviceTypes, isLoading, permissions } =
-    useMyDevicePageEffects();
+  const {
+    myDevices,
+    allDeviceTypes,
+    isLoading,
+    canAccessPage,
+    requirementsProps,
+  } = useMyDevicePageEffects();
 
   if (isLoading) {
     return (
@@ -18,8 +23,8 @@ export const MyDevicesPage: FC = () => {
     );
   }
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return (

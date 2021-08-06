@@ -5,15 +5,16 @@ import { useRegisterPageEffects } from './RegisterPage.effects';
 import { useStyles } from './RegisterPage.styles';
 
 export const RegisterPage: React.FC = () => {
-  const { formProps, isLoading, permissions } = useRegisterPageEffects();
+  const { formProps, isLoading, canAccessPage, requirementsProps } =
+    useRegisterPageEffects();
   const classes = useStyles();
 
   if (isLoading) {
     return <CircularProgress />;
   }
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return (
