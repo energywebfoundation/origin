@@ -4,13 +4,13 @@ import { CircularProgress, Typography } from '@material-ui/core';
 import { useCreateBundlePageEffects } from './CreateBundlePage.effects';
 
 export const CreateBundlePage = () => {
-  const { isLoading, listProps, noCertificatesText, canAccessPage } =
+  const { isLoading, listProps, noCertificatesText, permissions } =
     useCreateBundlePageEffects();
 
   if (isLoading) return <CircularProgress />;
 
-  if (!canAccessPage) {
-    return <Requirements />;
+  if (!permissions.canAccessPage) {
+    return <Requirements {...permissions} />;
   }
 
   return (

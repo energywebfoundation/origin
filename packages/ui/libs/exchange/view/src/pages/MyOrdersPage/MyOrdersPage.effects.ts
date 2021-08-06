@@ -1,9 +1,11 @@
-import { useApiBidsAndAsks } from '@energyweb/origin-ui-exchange-data';
-import { usePermissions } from '@energyweb/origin-ui-utils';
+import {
+  useApiBidsAndAsks,
+  useApiPermissions,
+} from '@energyweb/origin-ui-exchange-data';
 
 export const useMyOrdersPageEffects = () => {
-  const { canAccessPage } = usePermissions();
+  const { permissions } = useApiPermissions();
   const { bids, asks, isLoading } = useApiBidsAndAsks();
 
-  return { bids, asks, isLoading, canAccessPage };
+  return { bids, asks, isLoading, permissions };
 };

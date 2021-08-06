@@ -2,8 +2,10 @@ import React, { useReducer, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
-import { useApiOrderbookPoll } from '@energyweb/origin-ui-exchange-data';
-import { usePermissions } from '@energyweb/origin-ui-utils';
+import {
+  useApiOrderbookPoll,
+  useApiPermissions,
+} from '@energyweb/origin-ui-exchange-data';
 import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
 import {
   OneTimePurchase,
@@ -47,7 +49,7 @@ export const useViewMarketPageEffects = () => {
     }
   }, [locationState]);
 
-  const { canAccessPage } = usePermissions();
+  const { permissions } = useApiPermissions();
   const { data: user, isLoading: isUserLoading } = useUserControllerMe();
   const { orderBookData, isLoading: isOrderbookLoading } = useApiOrderbookPoll(
     state,
@@ -94,7 +96,7 @@ export const useViewMarketPageEffects = () => {
     formActionsProps,
     formTitle,
     tablesActionsProps,
-    canAccessPage,
+    permissions,
     isLoading,
   };
 };

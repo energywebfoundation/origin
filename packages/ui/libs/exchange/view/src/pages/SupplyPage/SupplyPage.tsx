@@ -3,10 +3,10 @@ import { TableComponent, Requirements } from '@energyweb/origin-ui-core';
 import { useSupplyPageEffects } from './SupplyPage.effects';
 
 export const SupplyPage: FC = () => {
-  const { tableData, canAccessPage } = useSupplyPageEffects();
+  const { tableData, permissions } = useSupplyPageEffects();
 
-  if (!canAccessPage) {
-    return <Requirements />;
+  if (!permissions.canAccessPage) {
+    return <Requirements {...permissions} />;
   }
 
   return <TableComponent {...tableData} />;

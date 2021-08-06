@@ -5,9 +5,9 @@ import {
   useApiAllDevices,
   useApiMyBundles,
   useApiRemoveBundleHandler,
+  useApiPermissions,
 } from '@energyweb/origin-ui-exchange-data';
 import { useMyBundlesTablesLogic } from '@energyweb/origin-ui-exchange-logic';
-import { usePermissions } from '@energyweb/origin-ui-utils';
 import { Cancel } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import {
@@ -17,7 +17,7 @@ import {
 
 export const useMyBundlesPageEffects = () => {
   const { t } = useTranslation();
-  const { canAccessPage } = usePermissions();
+  const { permissions } = useApiPermissions();
   const { myBundles, isLoading: areBundlesLoading } = useApiMyBundles();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
@@ -59,6 +59,6 @@ export const useMyBundlesPageEffects = () => {
 
   return {
     tableData,
-    canAccessPage,
+    permissions,
   };
 };

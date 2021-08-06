@@ -2,10 +2,10 @@ import {
   useAllDeviceFuelTypes,
   useApiAllDevices,
   useApiAllExchangeCertificates,
+  useApiPermissions,
 } from '@energyweb/origin-ui-exchange-data';
 import { useCreateBundleLogic } from '@energyweb/origin-ui-exchange-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
-import { usePermissions } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import {
   ListItemContent,
@@ -16,7 +16,7 @@ import {
 export const useCreateBundlePageEffects = () => {
   const { t } = useTranslation();
 
-  const { canAccessPage } = usePermissions();
+  const { permissions } = useApiPermissions();
   const { exchangeCertificates, isLoading: areCertificatesLoading } =
     useApiAllExchangeCertificates();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
@@ -44,5 +44,5 @@ export const useCreateBundlePageEffects = () => {
 
   const noCertificatesText = t('exchange.createBundle.noCertificates');
 
-  return { isLoading, listProps, noCertificatesText, canAccessPage };
+  return { isLoading, listProps, noCertificatesText, permissions };
 };
