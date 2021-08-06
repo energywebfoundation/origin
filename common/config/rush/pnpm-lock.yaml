@@ -99,6 +99,7 @@ dependencies:
   '@storybook/addon-essentials': 6.3.4_cf6cb5553c1a1bdc59f91685ead18fb8
   '@storybook/addon-knobs': 6.3.0_react-dom@17.0.2+react@17.0.2
   '@storybook/react': 6.3.4_5faf9f60b4c085d8c57373bcb6077219
+  '@svgr/rollup': 5.5.0
   '@svgr/webpack': 5.5.0
   '@testing-library/jest-dom': 5.14.1
   '@testing-library/react': 11.1.2_react-dom@17.0.2+react@17.0.2
@@ -240,7 +241,7 @@ dependencies:
   ts-node: 9.1.1_typescript@4.3.5
   ts-sinon: 2.0.1
   tsconfig-paths-webpack-plugin: 3.5.1
-  tslib: 2.0.0
+  tslib: 2.3.0
   typechain: 5.1.2_typescript@4.3.5
   typedoc: 0.21.5_typescript@4.3.5
   typedoc-plugin-markdown: 3.10.4_typedoc@0.21.5
@@ -9216,6 +9217,21 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-r5swKk46GuQl4RrVejVwpeeJaydoxkdwkM1mBKOgJLBUJPGaLci6ylg/IjhrRsREKDkr4kbMWdgOtbXEh0fyLQ==
+  /@svgr/rollup/5.5.0:
+    dependencies:
+      '@babel/core': 7.14.8
+      '@babel/plugin-transform-react-constant-elements': 7.14.5_@babel+core@7.14.8
+      '@babel/preset-env': 7.14.8_@babel+core@7.14.8
+      '@babel/preset-react': 7.14.5_@babel+core@7.14.8
+      '@svgr/core': 5.5.0
+      '@svgr/plugin-jsx': 5.5.0
+      '@svgr/plugin-svgo': 5.5.0
+      rollup-pluginutils: 2.8.2
+    dev: false
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-EiZmH2VTr+Xzyb6Ga8XtGa9MEbiU3WQnB5vHmqhwAUqibU3uwuwr7MN+QwIh/gtBk1ucMim8BCfcRTlLVREM8A==
   /@svgr/webpack/5.5.0:
     dependencies:
       '@babel/core': 7.14.8
@@ -33765,10 +33781,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
-  /tslib/2.0.0:
-    dev: false
-    resolution:
-      integrity: sha512-lTqkx847PI7xEDYJntxZH89L2/aXInsyF2luSafe/+0fHOMjlBNXdH6th7f70qxLDhul7KZK0zC8V5ZIyHl0/g==
   /tslib/2.0.1:
     dev: false
     optional: true
@@ -33782,6 +33794,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
+  /tslib/2.3.0:
+    dev: false
+    resolution:
+      integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
   /tsort/0.0.1:
     dev: false
     resolution:
@@ -39149,6 +39165,7 @@ packages:
       '@storybook/addon-essentials': 6.3.4_cf6cb5553c1a1bdc59f91685ead18fb8
       '@storybook/addon-knobs': 6.3.0_react-dom@17.0.2+react@17.0.2
       '@storybook/react': 6.3.4_5faf9f60b4c085d8c57373bcb6077219
+      '@svgr/rollup': 5.5.0
       '@svgr/webpack': 5.5.0
       '@testing-library/jest-dom': 5.14.1
       '@testing-library/react': 11.1.2_react-dom@17.0.2+react@17.0.2
@@ -39211,7 +39228,7 @@ packages:
       ts-jest: 26.4.0_jest@27.0.6+typescript@4.3.5
       ts-node: 9.1.1_typescript@4.3.5
       tsconfig-paths-webpack-plugin: 3.5.1
-      tslib: 2.0.0
+      tslib: 2.3.0
       typescript: 4.3.5
       url-loader: 3.0.0_webpack@4.42.0
       webpack: 4.42.0
@@ -39223,7 +39240,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-pZTbtw81G3kmX/jOXxquDCktSCJYubTHh/e6cPHyO37+SCgb0sUuQuyUgaNyc9yY3A3+JLKCIThHgUMP4Z+j9w==
+      integrity: sha512-/xz5cuo/YJ7gaImOk+xI/j98N5LFoHRfIUEaQasGkmdVPtadOsXvvYCKMQQSp3BECTjAyJOI/WEJJVvvwlQ+Yw==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -39401,7 +39418,8 @@ specifiers:
   '@storybook/addon-essentials': ^6.2.9
   '@storybook/addon-knobs': ^6.2.9
   '@storybook/react': ^6.2.9
-  '@svgr/webpack': ^5.4.0
+  '@svgr/rollup': 5.5.0
+  '@svgr/webpack': 5.5.0
   '@testing-library/jest-dom': ^5.11.10
   '@testing-library/react': 11.1.2
   '@typechain/ethers-v5': 7.0.1
@@ -39542,7 +39560,7 @@ specifiers:
   ts-node: 9.1.1
   ts-sinon: 2.0.1
   tsconfig-paths-webpack-plugin: 3.5.1
-  tslib: 2.0.0
+  tslib: 2.3.0
   typechain: 5.1.2
   typedoc: 0.21.5
   typedoc-plugin-markdown: 3.10.4

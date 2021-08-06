@@ -76,7 +76,7 @@
     "@web3-react/injected-connector": "6.0.7",
     "@ethersproject/providers": "5.3.1",
     "chart.js": "3.3.2",
-    "tslib": "2.0.0",
+    "tslib": "2.3.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {
@@ -98,7 +98,8 @@
     "@storybook/addon-essentials": "^6.2.9",
     "@storybook/addon-knobs": "^6.2.9",
     "@storybook/react": "^6.2.9",
-    "@svgr/webpack": "^5.4.0",
+    "@svgr/webpack": "5.5.0",
+    "@svgr/rollup": "5.5.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "11.1.2",
     "@types/jest": "26.0.24",

@@ -34,7 +34,7 @@
             ],
             "styles": [],
             "scripts": [],
-            "webpackConfig": "webpack/webpack.config.js"
+            "webpackConfig": "webpack.config.js"
           },
           "configurations": {
             "production": {
@@ -65,7 +65,7 @@
           "executor": "@nrwl/web:dev-server",
           "options": {
             "buildTarget": "origin-ui:build",
-            "webpackConfig": "webpack/webpack.config.js"
+            "webpackConfig": "webpack.config.js"
           },
           "configurations": {
             "production": { "buildTarget": "origin-ui:build:production" }
@@ -321,7 +321,7 @@
               "react/jsx-dev-runtime"
             ],
             "babelConfig": "@nrwl/react/plugins/bundle-babel",
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "rollupConfig": "rollup.config.js",
             "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
           }
         },
