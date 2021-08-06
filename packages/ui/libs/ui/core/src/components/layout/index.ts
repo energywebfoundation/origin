@@ -10,4 +10,3 @@ export * from './ResponsiveSidebar';
 export * from './BlockTintedBottom';
 export * from './PageNotFound';
 export * from './Requirements';
-export * from './PermissionsFeedback';
