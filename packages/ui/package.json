@@ -5,7 +5,7 @@
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
-    "build": "yarn config-env && nx build",
+    "build": "yarn config-env && nx run ui-utils:build && nx run ui-theme:build && nx run ui-assets:build && nx run ui-localization:build && nx run ui-shared-state:build && nx run ui-core:build && nx run ui-blockchain:build && nx build",
     "config-env": "bash env.sh",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
