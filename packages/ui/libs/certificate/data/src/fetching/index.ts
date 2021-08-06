@@ -12,4 +12,4 @@ export * from './exchangeAddress';
 export * from './certificateDetailedData';
 export * from './deviceCertifiedAmount';
 export * from './deviceById';
-export * from './permissions';
+export * from './userAndAccount';

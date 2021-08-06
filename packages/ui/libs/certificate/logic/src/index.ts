@@ -6,3 +6,4 @@ export * from './blockchain-inbox';
 export * from './detail-view';
 export * from './device-details';
 export * from './pending';
+export * from './permissions';
