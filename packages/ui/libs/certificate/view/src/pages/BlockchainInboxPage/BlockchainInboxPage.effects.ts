@@ -2,11 +2,13 @@ import {
   useAllFuelTypes,
   useAllBlockchainCertificates,
   useApiAllDevices,
-  useApiPermissions,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
-import { useBlockchainInboxLogic } from '@energyweb/origin-ui-certificate-logic';
+import {
+  useBlockchainInboxLogic,
+  useBlockchainInboxPermissionsLogic,
+} from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
-import { Requirement } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import {
   ListItemContent,
@@ -19,14 +21,16 @@ import {
 export const useBlockchainInboxPageEffects = () => {
   const { t } = useTranslation();
 
-  const pageRequirements = [
-    Requirement.IsLoggedIn,
-    Requirement.IsActiveUser,
-    Requirement.IsPartOfApprovedOrg,
-    Requirement.HasOrganizationBlockchainAddress,
-  ];
-
-  const { permissions } = useApiPermissions(pageRequirements);
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } =
+    useBlockchainInboxPermissionsLogic({
+      user,
+      exchangeDepositAddress,
+    });
 
   const { blockchainCertificates, isLoading: areCertificatesLoading } =
     useAllBlockchainCertificates();
@@ -35,7 +39,10 @@ export const useBlockchainInboxPageEffects = () => {
     useAllFuelTypes();
 
   const isLoading =
-    areCertificatesLoading || areDevicesLoading || areFuelTypesLoading;
+    areCertificatesLoading ||
+    areDevicesLoading ||
+    areFuelTypesLoading ||
+    userAndAccountLoading;
 
   const actions: ListAction[] = [
     {
@@ -67,7 +74,7 @@ export const useBlockchainInboxPageEffects = () => {
     isLoading,
     listProps,
     noCertificatesText,
-    pageRequirements,
-    permissions,
+    canAccessPage,
+    requirementsProps,
   };
 };

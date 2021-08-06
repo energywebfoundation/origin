@@ -4,13 +4,18 @@ import { CircularProgress, Typography } from '@material-ui/core';
 import { useExchangeInboxPageEffects } from './ExchangeInboxPage.effects';
 
 export const ExchangeInboxPage: FC = () => {
-  const { isLoading, listProps, noCertificatesText, permissions } =
-    useExchangeInboxPageEffects();
+  const {
+    isLoading,
+    listProps,
+    noCertificatesText,
+    canAccessPage,
+    requirementsProps,
+  } = useExchangeInboxPageEffects();
 
   if (isLoading) return <CircularProgress />;
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return (

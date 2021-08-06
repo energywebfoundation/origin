@@ -3,12 +3,24 @@ import {
   useApiMyDevices,
   useAllFuelTypes,
   useExchangeAddress,
-  useApiPermissions,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
-import { useLogicCertificateRequests } from '@energyweb/origin-ui-certificate-logic';
+import {
+  useLogicCertificateRequests,
+  usePermissionsLogic,
+} from '@energyweb/origin-ui-certificate-logic';
 
 export const useRequestsPageEffects = () => {
-  const { permissions } = useApiPermissions();
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
+
   const { myDevices: devices, isLoading: areDevicesLoading } =
     useApiMyDevices();
 
@@ -25,7 +37,8 @@ export const useRequestsPageEffects = () => {
     isFuelTypesloading ||
     areDevicesLoading ||
     allRequestsLoading ||
-    isExchangeAddressLoading;
+    isExchangeAddressLoading ||
+    userAndAccountLoading;
 
   const tableData = useLogicCertificateRequests({
     devices,
@@ -37,6 +50,7 @@ export const useRequestsPageEffects = () => {
 
   return {
     tableData,
-    permissions,
+    canAccessPage,
+    requirementsProps,
   };
 };

@@ -6,13 +6,18 @@ import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import { useBlockchainInboxPageEffects } from './BlockchainInboxPage.effects';
 
 const Component: FC = () => {
-  const { isLoading, listProps, noCertificatesText, permissions } =
-    useBlockchainInboxPageEffects();
+  const {
+    isLoading,
+    listProps,
+    noCertificatesText,
+    canAccessPage,
+    requirementsProps,
+  } = useBlockchainInboxPageEffects();
 
   if (isLoading) return <CircularProgress />;
 
-  if (!permissions.canAccessPage) {
-    return <Requirements {...permissions} />;
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
   }
 
   return (
