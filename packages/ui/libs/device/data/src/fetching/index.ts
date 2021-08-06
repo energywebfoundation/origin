@@ -6,4 +6,4 @@ export * from './meterReads';
 export * from './myDevices';
 export * from './pendingDevices';
 export * from './regionsConfig';
-export * from './permissions';
+export * from './userAndAccount';
