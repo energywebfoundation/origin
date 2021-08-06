@@ -8,7 +8,7 @@ import {
   useSupplyControllerRemove,
   getSupplyControllerFindAllQueryKey,
 } from '@energyweb/exchange-react-query-client';
-import { IDeviceWithSupply } from '@energyweb/origin-ui-exchange-logic';
+import { IDeviceWithSupply } from '../types';
 
 export const useApiRemoveSupplyHandler = () => {
   const { t } = useTranslation();
