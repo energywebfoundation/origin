@@ -5,6 +5,3 @@ export * from './blockchainCertificates';
 export * from './exchangeAddress';
 export * from './pollExchangeAddress';
 export * from './user';
-export * from './userAccountBalance';
-export * from './userAccountData';
-export * from './userBlockchainProperties';
