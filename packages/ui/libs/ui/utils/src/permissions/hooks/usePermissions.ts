@@ -1,26 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import { OrganizationStatus, UserStatus } from '@energyweb/origin-backend-core';
-import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
-import { useAccountControllerGetAccount } from '@energyweb/exchange-react-query-client';
 import { defaultRequirementList } from '../defaultRequirementList';
 import {
+  TUsePermissions,
   IPermissionRule,
   IPermissionReturnType,
   Requirement,
 } from './../../types';
 
-export const usePermissions = (
-  config = defaultRequirementList
-): IPermissionReturnType => {
+export const usePermissions = ({
+  user,
+  exchangeDepositAddress,
+  loading,
+  config = defaultRequirementList,
+}: TUsePermissions): IPermissionReturnType => {
   const { t } = useTranslation();
-
-  const { data: userData, isLoading: userLoading } = useUserControllerMe();
-  const { data: account, isLoading: exchangeAddressLoading } =
-    useAccountControllerGetAccount();
-
-  const exchangeDepositAddress = account?.address || '';
-  const user = userData || null;
-  const loading = userLoading || exchangeAddressLoading;
 
   const predicateList: Record<Requirement, IPermissionRule> = {
     [Requirement.IsLoggedIn]: {
@@ -47,6 +41,7 @@ export const usePermissions = (
     },
   };
 
+  const title = t('general.requirements.requirementsTitle');
   const accessRules = config.map((requirement) => predicateList[requirement]);
   const canAccessPage = accessRules.every((r) => r.passing);
 
@@ -54,5 +49,6 @@ export const usePermissions = (
     canAccessPage,
     accessRules,
     loading,
+    title,
   };
 };
