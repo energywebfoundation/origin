@@ -2,8 +2,12 @@ import {
   useAllFuelTypes,
   useApiAllDevices,
   useApiAllExchangeCertificates,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
-import { useExchangeInboxLogic } from '@energyweb/origin-ui-certificate-logic';
+import {
+  useExchangeInboxLogic,
+  usePermissionsLogic,
+} from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import {
@@ -17,6 +21,16 @@ import {
 export const useExchangeInboxPageEffects = () => {
   const { t } = useTranslation();
 
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
+
   const { exchangeCertificates, isLoading: areCertificatesLoading } =
     useApiAllExchangeCertificates();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
@@ -24,7 +38,10 @@ export const useExchangeInboxPageEffects = () => {
     useAllFuelTypes();
 
   const isLoading =
-    areCertificatesLoading || areDevicesLoading || areFuelTypesLoading;
+    areCertificatesLoading ||
+    areDevicesLoading ||
+    areFuelTypesLoading ||
+    userAndAccountLoading;
 
   const actions: ListAction[] = [
     {
@@ -52,5 +69,11 @@ export const useExchangeInboxPageEffects = () => {
 
   const noCertificatesText = t('certificate.inbox.noCertificates');
 
-  return { isLoading, listProps, noCertificatesText };
+  return {
+    isLoading,
+    listProps,
+    noCertificatesText,
+    canAccessPage,
+    requirementsProps,
+  };
 };

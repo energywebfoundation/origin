@@ -1,11 +1,25 @@
 import {
   useAllFuelTypes,
   useClaimedCertificates,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
-import { useLogicClaimsReport } from '@energyweb/origin-ui-certificate-logic';
+import {
+  useLogicClaimsReport,
+  usePermissionsLogic,
+} from '@energyweb/origin-ui-certificate-logic';
 import { useApiAllDevices } from '@energyweb/origin-ui-device-data';
 
 export const useClaimsReportPageEffects = () => {
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
+
   const {
     claimedCertificates,
     blockchainCertificates,
@@ -18,7 +32,11 @@ export const useClaimsReportPageEffects = () => {
   const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
     useAllFuelTypes();
 
-  const loading = areClaimedLoading || isFuelTypesloading || areDevicesLoading;
+  const loading =
+    areClaimedLoading ||
+    isFuelTypesloading ||
+    areDevicesLoading ||
+    userAndAccountLoading;
 
   const tableData = useLogicClaimsReport({
     devices,
@@ -30,5 +48,7 @@ export const useClaimsReportPageEffects = () => {
 
   return {
     tableData,
+    canAccessPage,
+    requirementsProps,
   };
 };

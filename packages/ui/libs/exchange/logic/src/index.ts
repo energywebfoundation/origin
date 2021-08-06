@@ -12,3 +12,4 @@ export * from './oneTimePurchase';
 export * from './repeatedPurchase';
 export * from './marketTables';
 export * from './myOrders';
+export * from './permissions';

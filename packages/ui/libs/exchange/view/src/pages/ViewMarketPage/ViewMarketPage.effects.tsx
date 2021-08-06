@@ -2,8 +2,12 @@ import React, { useReducer, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
+import {
+  useApiOrderbookPoll,
+  useApiUserAndAccount,
+} from '@energyweb/origin-ui-exchange-data';
+import { usePermissionsLogic } from '@energyweb/origin-ui-exchange-logic';
 import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
-import { useApiOrderbookPoll } from '@energyweb/origin-ui-exchange-data';
 import {
   OneTimePurchase,
   RepeatedPurchase,
@@ -51,7 +55,15 @@ export const useViewMarketPageEffects = () => {
     state,
     user
   );
-  const isLoading = isUserLoading || isOrderbookLoading;
+  const { exchangeDepositAddress, isLoading: userAndAccountLoading } =
+    useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
+
+  const isLoading =
+    isUserLoading || isOrderbookLoading || userAndAccountLoading;
 
   const oneTimePurchase: ListAction = {
     name: t('exchange.viewMarket.oneTimePurchase'),
@@ -92,6 +104,8 @@ export const useViewMarketPageEffects = () => {
     formActionsProps,
     formTitle,
     tablesActionsProps,
+    canAccessPage,
+    requirementsProps,
     isLoading,
   };
 };

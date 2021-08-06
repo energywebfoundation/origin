@@ -12,23 +12,3 @@ export enum EnergyTypeEnum {
   BIOGAS = 'biogas',
   CO_FIRED_WITH_FOSSIL = 'co-fired with fossil',
 }
-
-export interface IPermissionRule {
-  label: string;
-  passing: boolean;
-}
-
-export interface IPermission {
-  value: boolean;
-  rules: IPermissionRule[];
-}
-
-export enum Requirement {
-  IsLoggedIn,
-  IsActiveUser,
-  IsPartOfApprovedOrg,
-  HasExchangeDepositAddress,
-  HasUserBlockchainAddress,
-}
-
-export type RequirementList = Requirement[];
