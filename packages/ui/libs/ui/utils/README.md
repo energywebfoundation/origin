@@ -1,7 +1,14 @@
-# ui-utils
-
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test ui-utils` to execute the unit tests via [Jest](https://jestjs.io).
+<h1 align="center">
+  <br>
+  <a href="https://www.energyweb.org/">
+    <img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150" />
+  </a>
+  <br>
+  EnergyWeb Origin
+  <br>
+    <h2 align="center">Origin UI Utils</h2>
+    <p align="center">
+      UI general utils library for building Origin marketplace user interface
+    </p>
+  <br>
+</h1>
