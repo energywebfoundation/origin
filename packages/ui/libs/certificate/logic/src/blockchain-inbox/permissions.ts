@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import {
   usePermissionsLogic,
   TUsePermissions,
@@ -10,8 +9,6 @@ import {
 export const useBlockchainInboxPermissionsLogic = (
   props: TUsePermissions
 ): IPermissionReturnType => {
-  const { t } = useTranslation();
-
   const requirementList: RequirementList = [
     Requirement.IsLoggedIn,
     Requirement.IsActiveUser,
