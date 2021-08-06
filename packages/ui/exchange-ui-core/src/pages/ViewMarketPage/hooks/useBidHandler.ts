@@ -68,8 +68,7 @@ export async function bidHandler({
                         ? undefined
                         : values.location?.map((l) => `${country};${l}`)
                 },
-                boundToGenerationTime: false,
-                excludeEnd: false
+                boundToGenerationTime: false
             })
         );
     }
