@@ -3,10 +3,10 @@ import { TableComponent, Requirements } from '@energyweb/origin-ui-core';
 import { useClaimsReportPageEffects } from './ClaimsReportPage.effects';
 
 export const ClaimsReportPage: FC = () => {
-  const { tableData, canAccessPage } = useClaimsReportPageEffects();
+  const { tableData, permissions } = useClaimsReportPageEffects();
 
-  if (!canAccessPage) {
-    return <Requirements />;
+  if (!permissions.canAccessPage) {
+    return <Requirements {...permissions} />;
   }
 
   return <TableComponent {...tableData} />;

@@ -2,10 +2,10 @@ import {
   useAllFuelTypes,
   useApiAllDevices,
   useApiAllExchangeCertificates,
+  useApiPermissions,
 } from '@energyweb/origin-ui-certificate-data';
 import { useExchangeInboxLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
-import { usePermissions } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import {
   ListItemContent,
@@ -18,7 +18,7 @@ import {
 export const useExchangeInboxPageEffects = () => {
   const { t } = useTranslation();
 
-  const { canAccessPage } = usePermissions();
+  const { permissions } = useApiPermissions();
 
   const { exchangeCertificates, isLoading: areCertificatesLoading } =
     useApiAllExchangeCertificates();
@@ -55,5 +55,5 @@ export const useExchangeInboxPageEffects = () => {
 
   const noCertificatesText = t('certificate.inbox.noCertificates');
 
-  return { isLoading, listProps, noCertificatesText, canAccessPage };
+  return { isLoading, listProps, noCertificatesText, permissions };
 };

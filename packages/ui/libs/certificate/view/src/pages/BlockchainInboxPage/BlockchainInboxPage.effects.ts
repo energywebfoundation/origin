@@ -2,10 +2,11 @@ import {
   useAllFuelTypes,
   useAllBlockchainCertificates,
   useApiAllDevices,
+  useApiPermissions,
 } from '@energyweb/origin-ui-certificate-data';
 import { useBlockchainInboxLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ListAction } from '@energyweb/origin-ui-core';
-import { Requirement, usePermissions } from '@energyweb/origin-ui-utils';
+import { Requirement } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';
 import {
   ListItemContent,
@@ -25,7 +26,7 @@ export const useBlockchainInboxPageEffects = () => {
     Requirement.HasOrganizationBlockchainAddress,
   ];
 
-  const { canAccessPage } = usePermissions(pageRequirements);
+  const { permissions } = useApiPermissions(pageRequirements);
 
   const { blockchainCertificates, isLoading: areCertificatesLoading } =
     useAllBlockchainCertificates();
@@ -67,6 +68,6 @@ export const useBlockchainInboxPageEffects = () => {
     listProps,
     noCertificatesText,
     pageRequirements,
-    canAccessPage,
+    permissions,
   };
 };
