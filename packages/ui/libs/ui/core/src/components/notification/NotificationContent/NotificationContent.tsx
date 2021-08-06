@@ -1,6 +1,5 @@
 import { CheckCircle, Info, Cancel, Warning } from '@material-ui/icons';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { NotificationTypeEnum } from '../showNotification';
 import { useStyles } from './NotificationContent.styles';
 
@@ -20,15 +19,13 @@ export const NotificationContent: FC<NotificationContentProps> = ({
   message,
   type,
 }) => {
-  // not sure if want to keep i18 here in core package
-  const { t } = useTranslation();
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
       {toastIcons[type]}
       <div className={classes.textWrapper}>
         <span className={classes.title}>
-          {t(`notifications.title.${type}`)}
+          {type.charAt(0).toUpperCase() + type.slice(1)}
         </span>
         <span>{message}</span>
       </div>
