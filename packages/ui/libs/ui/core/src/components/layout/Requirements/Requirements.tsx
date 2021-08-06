@@ -8,8 +8,12 @@ import {
   Checkbox,
   ListItemText,
 } from '@material-ui/core';
-import { IPermissionRule } from '@energyweb/origin-ui-utils';
 import { useStyles } from './Requirements.styles';
+
+interface IPermissionRule {
+  label: string;
+  passing: boolean;
+}
 
 export interface RequirementsProps {
   rules: IPermissionRule[];
