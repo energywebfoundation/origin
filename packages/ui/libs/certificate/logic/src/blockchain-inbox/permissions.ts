@@ -4,7 +4,7 @@ import {
   IPermissionReturnType,
   RequirementList,
   Requirement,
-} from '@energyweb/origin-ui-certificate-logic';
+} from '../permissions';
 
 export const useBlockchainInboxPermissionsLogic = (
   props: TUsePermissions
