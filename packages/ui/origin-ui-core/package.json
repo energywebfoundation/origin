@@ -75,7 +75,7 @@
         "@vmw/queue-for-redux-saga": "0.3.1"
     },
     "devDependencies": {
-        "@babel/core": "7.14.8",
+        "@babel/core": "7.15.0",
         "@storybook/addon-actions": "6.3.6",
         "@storybook/addon-essentials": "6.3.6",
         "@storybook/addon-links": "6.3.6",
