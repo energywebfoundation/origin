@@ -19,7 +19,7 @@
     "build:device-ui": "nx run device-data:build --buildableProjectDepsInPackageJsonType=dependencies && nx run device-logic:build --buildableProjectDepsInPackageJsonType=dependencies && nx run device-view:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:exchange-ui": "nx run exchange-data:build --buildableProjectDepsInPackageJsonType=dependencies && nx run exchange-logic:build --buildableProjectDepsInPackageJsonType=dependencies && nx run exchange-view:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:all-packages": "yarn build:ui-utils && yarn build:ui-theme && yarn build:ui-assets && yarn build:ui-localization && yarn build:ui-shared-state && yarn build:ui-core && yarn build:ui-blockchain && yarn build:user-ui && yarn build:organization-ui && yarn build:certificate-ui && yarn build:device-ui && yarn build:exchange-ui",
-    "build": "yarn config-env && yarn build:all-packages && nx build",
+    "build": "yarn config-env && nx build",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
