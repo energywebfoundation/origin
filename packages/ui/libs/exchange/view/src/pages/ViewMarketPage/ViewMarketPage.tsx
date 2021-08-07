@@ -18,7 +18,7 @@ export const ViewMarketPage: FC = () => {
     requirementsProps,
   } = useViewMarketPageEffects();
 
-  if (isLoading) return <></>;
+  if (isLoading) return null;
 
   if (!canAccessPage) {
     return <Requirements {...requirementsProps} />;

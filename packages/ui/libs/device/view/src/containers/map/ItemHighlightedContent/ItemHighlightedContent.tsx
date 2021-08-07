@@ -4,9 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useStyles } from './ItemHighlightedContent.styles';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
 
-export interface ItemHighlightedContentProps extends ComposedPublicDevice {}
-
-export const ItemHighlightedContent: FC<ItemHighlightedContentProps> = ({
+export const ItemHighlightedContent: FC<ComposedPublicDevice> = ({
   name,
   ownerId,
   id,

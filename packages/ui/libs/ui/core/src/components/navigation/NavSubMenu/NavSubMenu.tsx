@@ -32,7 +32,7 @@ export const NavSubMenu: FC<NavSubMenuProps> = memo(
                 />
               );
             }
-            return;
+            return null;
           })}
         </List>
       </Collapse>

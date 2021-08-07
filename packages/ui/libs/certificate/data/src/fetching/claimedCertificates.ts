@@ -4,7 +4,7 @@ import { useAllBlockchainCertificates } from './blockchainCertificates';
 export const useClaimedCertificates = () => {
   const { blockchainCertificates, isLoading } = useAllBlockchainCertificates();
 
-  let claimedCertificates: CertificateDTO['myClaims'] = [];
+  const claimedCertificates: CertificateDTO['myClaims'] = [];
 
   blockchainCertificates?.forEach(
     (certificate) =>

@@ -9,7 +9,7 @@ export interface DeviceImagesCarouselProps {
   images: ComposedPublicDevice['imageIds'];
   allFuelTypes: CodeNameDTO[];
   fuelType: ComposedPublicDevice['fuelType'];
-  itemProps: React.ImgHTMLAttributes<HTMLImageElement>;
+  itemProps: React.SVGAttributes<HTMLOrSVGElement>;
   carouselMode: CarouselModeEnum;
   handleModeChange: (
     event: React.MouseEvent<HTMLElement>,
@@ -30,12 +30,7 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
 
   return (
     <>
-      {false ? (
-        <img src={images[0]} {...itemProps} />
-      ) : (
-        // @ts-ignore
-        <FallbackIcon {...itemProps} />
-      )}
+      <FallbackIcon {...itemProps} />
       <CarouselControls
         deviceName={deviceName}
         carouselMode={carouselMode}

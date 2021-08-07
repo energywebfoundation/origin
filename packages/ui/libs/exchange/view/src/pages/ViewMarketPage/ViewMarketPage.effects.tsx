@@ -29,7 +29,7 @@ export const useViewMarketPageEffects = () => {
   const locationState = location.state as MarketFiltersState;
 
   useEffect(() => {
-    if (!!locationState) {
+    if (locationState) {
       dispatch({
         type: MarketFilterActionEnum.SET_MARKET_FILTERS_STATE,
         payload: {

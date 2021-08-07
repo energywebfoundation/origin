@@ -62,7 +62,7 @@ export const formatBidsForTradingView: TFormatBidsForTradingView = ({
       icon: React.FC<React.SVGProps<SVGSVGElement> & { title?: string }>;
     }[] = null;
 
-    if (!!bid.product.deviceType) {
+    if (bid.product.deviceType) {
       const fuelCodes = bid.product.deviceType.map(
         (deviceType) => deviceType.split(';')[0]
       );

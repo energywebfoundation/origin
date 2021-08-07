@@ -35,7 +35,7 @@ export const DemandPeriodFilter: FC<PeriodFilterProps> = ({
       onChange={handleChange}
       textFieldProps={{
         margin: 'dense',
-        InputProps: !!value
+        InputProps: value
           ? {
               endAdornment: (
                 <InputAdornment position="end" style={{ marginRight: 15 }}>

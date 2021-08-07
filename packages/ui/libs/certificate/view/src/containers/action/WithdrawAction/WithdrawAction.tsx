@@ -3,7 +3,7 @@ import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useWithdrawActionEffects } from './WithdrawAction.effects';
 
-interface WithdrawActionProps<Id> extends ListActionComponentProps<Id> {}
+type WithdrawActionProps<Id> = ListActionComponentProps<Id>;
 
 export type TWithdrawAction = <Id>(
   props: PropsWithChildren<WithdrawActionProps<Id>>

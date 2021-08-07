@@ -1,7 +1,8 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
 import { useForm } from 'react-hook-form';
-import { DoubleColumnForm, DoubleColumnFormProps } from './DoubleColumnForm';
+import { SingleColumnFormProps } from '../SingleColumnForm';
+import { DoubleColumnForm } from './DoubleColumnForm';
 
 export default {
   title: 'Form / DoubleColumnForm',
@@ -13,7 +14,7 @@ export default {
   },
 } as Meta;
 
-export const Default = (args: Pick<DoubleColumnFormProps, 'fields'>) => {
+export const Default = (args: Pick<SingleColumnFormProps<any>, 'fields'>) => {
   const { register, control, formState } = useForm({
     defaultValues: {
       test_one: '',

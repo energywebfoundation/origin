@@ -35,7 +35,7 @@ export const FormSelect: TFormSelect = ({
     name: field.dependentOn as any,
     control,
   });
-  const dependentValue = !!field.dependentOn ? watchedValue : undefined;
+  const dependentValue = field.dependentOn ? watchedValue : undefined;
 
   return (
     <Controller

@@ -55,22 +55,20 @@ export const SelectedItem: TSelectedItem = ({
           </div>
         </div>
         <div className={classes.item}>
-          <>
-            <Typography style={{ marginRight: 10 }}>{amount} MWh</Typography>
-            {!editMode ? (
-              <IconButton onClick={openEditMode}>
-                <Edit color="primary" />
-              </IconButton>
-            ) : (
-              <Button
-                className={classes.item}
-                onClick={closeEditMode}
-                color="inherit"
-              >
-                {cancelText}
-              </Button>
-            )}
-          </>
+          <Typography style={{ marginRight: 10 }}>{amount} MWh</Typography>
+          {!editMode ? (
+            <IconButton onClick={openEditMode}>
+              <Edit color="primary" />
+            </IconButton>
+          ) : (
+            <Button
+              className={classes.item}
+              onClick={closeEditMode}
+              color="inherit"
+            >
+              {cancelText}
+            </Button>
+          )}
         </div>
       </div>
       {editMode ? (

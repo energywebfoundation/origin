@@ -5,8 +5,7 @@ import { CertificateActionContent } from '../../list';
 import { useExchangeTransferActionPropsEffects } from './ExchangeTransferAction.effects';
 import { useStyles } from './ExchangeTransferAction.styles';
 
-interface ExchangeTransferActionProps<Id>
-  extends ListActionComponentProps<Id> {}
+type ExchangeTransferActionProps<Id> = ListActionComponentProps<Id>;
 
 export type TExchangeTransferAction = <Id>(
   props: PropsWithChildren<ExchangeTransferActionProps<Id>>

@@ -16,9 +16,8 @@ const formatRequestsData: TFormatPendingCertificatesData = ({
   actions,
   allFuelTypes,
   downloadFileHandler,
+  t,
 }) => {
-  const { t } = useTranslation();
-
   return requests.length > 0 && devices.length > 0
     ? requests.map((request) => {
         const status = request?.approved
@@ -99,6 +98,7 @@ export const usePendingCertificatesLogic: TUsePendingCertificatesLogic = ({
       actions,
       allFuelTypes,
       downloadFileHandler,
+      t,
     }),
   };
 };

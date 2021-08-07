@@ -16,9 +16,8 @@ const formatRequestsData: TFormatCertificateRequestsData = ({
   allFuelTypes,
   exchangeAddress,
   downloadFileHandler,
+  t,
 }) => {
-  const { t } = useTranslation();
-
   const onlyOwnedRequests =
     requests.length > 0 && devices.length > 0
       ? requests.filter((request) => request.owner === exchangeAddress)
@@ -99,6 +98,7 @@ export const useCertificateRequestsLogic: TUseLogicCertificateRequests = ({
       requests,
       allFuelTypes,
       downloadFileHandler,
+      t,
     }),
   };
 };
