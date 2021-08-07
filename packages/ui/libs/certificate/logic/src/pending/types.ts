@@ -13,6 +13,7 @@ export type TUsePendingCertificatesLogicArgs = {
   allFuelTypes: CodeNameDTO[];
   actions: TableActionData<FullCertificationRequestDTO['id']>[];
   loading: boolean;
+  downloadFileHandler: (id: string, name: string) => Promise<void>;
 };
 
 export type TFormatPendingCertificatesReturnData = TableRowData<

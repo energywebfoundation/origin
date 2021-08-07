@@ -9,6 +9,7 @@ export type TUseLogicCertificateRequestsArgs = {
   allFuelTypes: CodeNameDTO[];
   exchangeAddress: string;
   loading: boolean;
+  downloadFileHandler: (id: string, name: string) => Promise<void>;
 };
 
 export type TFormatCertificateRequestsReturnData = TableRowData<

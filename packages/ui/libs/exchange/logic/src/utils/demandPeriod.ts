@@ -1,7 +1,7 @@
 import { TimeFrame } from '@energyweb/utils-general';
 import { TFunction } from 'i18next';
 
-interface IPeriodOption {
+export interface IPeriodOption {
   value: TimeFrame;
   label: string;
 }

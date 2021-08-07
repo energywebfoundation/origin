@@ -1,3 +1,9 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
+import {
+  CertificateDTO,
+  CertificateEvent,
+  FullCertificationRequestDTO,
+} from '@energyweb/issuer-irec-api-react-query-client';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
 import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 
@@ -36,3 +42,10 @@ export type ComposedDevice = {
 };
 
 export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;
+
+export type DetailedCertificate = {
+  blockchainPart: CertificateDTO;
+  exchangePart: AccountAssetDTO;
+  events: CertificateEvent[];
+  requestPart: FullCertificationRequestDTO;
+};

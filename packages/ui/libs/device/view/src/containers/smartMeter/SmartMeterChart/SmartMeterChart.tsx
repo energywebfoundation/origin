@@ -1,5 +1,5 @@
 import { CircularProgress, Typography } from '@material-ui/core';
-import { ButtonsGroupWithArrows } from 'libs/ui/core/src/components/buttons';
+import { ButtonsGroupWithArrows } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { useSmartMeterChartsEffects } from './SmartMeterChart.effects';

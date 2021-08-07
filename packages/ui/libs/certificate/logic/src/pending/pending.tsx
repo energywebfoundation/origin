@@ -5,7 +5,6 @@ import {
   EnergyFormatter,
   formatDate,
 } from '@energyweb/origin-ui-utils';
-import { downloadFileHandler } from '@energyweb/origin-ui-certificate-data';
 import {
   TFormatPendingCertificatesData,
   TUsePendingCertificatesLogic,
@@ -16,6 +15,7 @@ const formatRequestsData: TFormatPendingCertificatesData = ({
   requests,
   actions,
   allFuelTypes,
+  downloadFileHandler,
 }) => {
   const { t } = useTranslation();
 
@@ -63,12 +63,13 @@ const formatRequestsData: TFormatPendingCertificatesData = ({
     : [];
 };
 
-export const usePendingCertificatsLogic: TUsePendingCertificatesLogic = ({
+export const usePendingCertificatesLogic: TUsePendingCertificatesLogic = ({
   devices,
   requests,
   allFuelTypes,
   actions,
   loading,
+  downloadFileHandler,
 }) => {
   const { t } = useTranslation();
   return {
@@ -97,6 +98,7 @@ export const usePendingCertificatsLogic: TUsePendingCertificatesLogic = ({
       requests,
       actions,
       allFuelTypes,
+      downloadFileHandler,
     }),
   };
 };

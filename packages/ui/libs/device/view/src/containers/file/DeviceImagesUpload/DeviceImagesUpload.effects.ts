@@ -1,6 +1,6 @@
 import { UploadedFile } from '@energyweb/origin-ui-core';
 import { fileUploadHandler } from '@energyweb/origin-ui-device-data';
-import { DeviceImagesFormValues } from 'libs/device/logic/src/registerForm/types';
+import { DeviceImagesFormValues } from '@energyweb/origin-ui-device-logic';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

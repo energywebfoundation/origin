@@ -6,10 +6,10 @@ import {
   DetailViewCard,
   DetailViewCarousel,
   DeviceLocationData,
+  SmartMeterBlock,
 } from '../../containers';
 import { useDetailViewPageEffects } from './DetailViewPage.effects';
 import { useStyles } from './DetailViewPage.styles';
-import { SmartMeterBlock } from '../../containers/smartMeter/SmartMeterBlock';
 
 export const DetailViewPage: FC = () => {
   const classes = useStyles();

@@ -6,8 +6,9 @@ import {
   useApiHandlersForPendingRequests,
   useApiAllDevices,
   useAllFuelTypes,
+  downloadFileHandler,
 } from '@energyweb/origin-ui-certificate-data';
-import { usePendingCertificatsLogic } from '@energyweb/origin-ui-certificate-logic';
+import { usePendingCertificatesLogic } from '@energyweb/origin-ui-certificate-logic';
 
 export const usePendingPageEffects = () => {
   const { t } = useTranslation();
@@ -38,12 +39,13 @@ export const usePendingPageEffects = () => {
     },
   ];
 
-  const tableData = usePendingCertificatsLogic({
+  const tableData = usePendingCertificatesLogic({
     devices,
     requests,
     actions,
     loading,
     allFuelTypes,
+    downloadFileHandler,
   });
 
   return {

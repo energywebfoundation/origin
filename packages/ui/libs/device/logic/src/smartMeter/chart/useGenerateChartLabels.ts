@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
 import { TimeUnitPluralEnum } from '../../utils';
 import { TUseGenerateChartLabelsArgs } from '../types';
+
+dayjs.extend(timezone);
 
 export const useGenerateChartLabels = ({
   start,
