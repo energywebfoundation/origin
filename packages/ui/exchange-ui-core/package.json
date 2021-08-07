@@ -56,7 +56,7 @@
         "@energyweb/device-registry": "8.0.1"
     },
     "devDependencies": {
-        "@types/lodash": "4.14.171",
+        "@types/lodash": "4.14.172",
         "typescript": "4.3.5",
         "@types/react": "17.0.15",
         "@types/react-redux": "7.1.18",
