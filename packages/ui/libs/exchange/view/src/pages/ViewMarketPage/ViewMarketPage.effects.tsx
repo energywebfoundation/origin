@@ -20,7 +20,7 @@ import {
   filtersReducer,
   MarketFilterActionEnum,
   MarketFiltersState,
-} from './ViewMarketPage.reducer';
+} from '../../reducer';
 
 export const useViewMarketPageEffects = () => {
   const [state, dispatch] = useReducer(filtersReducer, initialFiltersState);

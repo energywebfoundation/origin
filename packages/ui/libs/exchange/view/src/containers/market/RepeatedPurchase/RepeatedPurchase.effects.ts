@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { calculateDemandTotalVolume } from '@energyweb/origin-ui-exchange-data';
 import { TimeFrame } from '@energyweb/utils-general';
 import { useMediaQuery, useTheme } from '@material-ui/core';
-import { MarketFiltersState } from '../../../pages';
+import { MarketFiltersState } from '../../../reducer';
 
 type DemandFormValues = {
   period: TimeFrame;

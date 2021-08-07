@@ -6,7 +6,7 @@ import {
   MarketFilterActionEnum,
   MarketFiltersActions,
   MarketFiltersState,
-} from '../../../pages';
+} from '../../../reducer';
 import { Dayjs } from 'dayjs';
 import { Dispatch } from 'react';
 import { useMediaQuery, useTheme } from '@material-ui/core';
