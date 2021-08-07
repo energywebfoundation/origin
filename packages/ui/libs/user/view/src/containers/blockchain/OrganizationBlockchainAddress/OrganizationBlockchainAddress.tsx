@@ -13,6 +13,7 @@ import { Info } from '@material-ui/icons';
 import { useStyles } from './OrganizationBlockchainAddress.styles';
 
 const Component: FC = () => {
+  const classes = useStyles();
   const {
     submitHandler,
     isLoading,
@@ -26,8 +27,6 @@ const Component: FC = () => {
   if (isLoading) {
     return <CircularProgress />;
   }
-
-  const classes = useStyles();
 
   return (
     <Grid item md={8} xs={12}>

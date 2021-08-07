@@ -12,7 +12,7 @@ export const useCertificateBlockchainEventsLogic = (
   const { t } = useTranslation();
 
   const transformAddress = (address: string) => {
-    if (!!address) {
+    if (address) {
       switch (utils.getAddress(address)) {
         case process.env.NX_EXCHANGE_WALLET_PUB:
           return t('certificate.detailView.events.exchangeWallet');

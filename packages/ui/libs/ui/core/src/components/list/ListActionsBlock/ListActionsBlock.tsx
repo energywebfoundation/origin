@@ -13,13 +13,13 @@ export type ListActionComponentProps<ItemId> = {
   resetIds?: () => void;
 };
 
-export type ListAction<ItemId = {}> = {
+export type ListAction<ItemId = unknown> = {
   name: string;
   content?: ReactNode;
   component?: React.FC<ListActionComponentProps<ItemId>>;
 };
 
-export type ListActionsBlockProps<ItemId = {}> = {
+export type ListActionsBlockProps<ItemId = unknown> = {
   actions: ListAction<ItemId>[];
   selectedIds?: ItemId[];
   resetSelected?: () => void;
@@ -44,7 +44,7 @@ export const ListActionsBlock: TListActionsBlock = ({
   const { tabIndex, setTabIndex } = useListActionsBlockEffects();
 
   if (!actions[tabIndex]) {
-    return <></>;
+    return null;
   }
 
   const { content, component: Component } = actions[tabIndex];

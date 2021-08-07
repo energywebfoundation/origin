@@ -57,27 +57,25 @@ export const UploadChip: FC<UploadChipProps> = ({
   };
 
   return (
-    <>
-      <Chip
-        variant="outlined"
-        color="primary"
-        label={chipLabel}
-        icon={chipIcon}
-        deleteIcon={chipDeleteIcon}
-        clickable={uploadedFile.cancelled}
-        onClick={clickHandler}
-        onDelete={deleteHandler}
-        style={{
-          margin: 5,
-          background: `-webkit-linear-gradient(left, ${
-            uploadedFile.cancelled ? lightenBgColor : bgColorLight
-          } ${
-            uploadedFile.cancelled ? '100' : uploadedFile.uploadProgress
-          }%, rgba(255, 255, 255, 0) 0%)`,
-          cursor: uploadedFile.cancelled ? 'pointer' : 'default',
-        }}
-        key={index}
-      />
-    </>
+    <Chip
+      variant="outlined"
+      color="primary"
+      label={chipLabel}
+      icon={chipIcon}
+      deleteIcon={chipDeleteIcon}
+      clickable={uploadedFile.cancelled}
+      onClick={clickHandler}
+      onDelete={deleteHandler}
+      style={{
+        margin: 5,
+        background: `-webkit-linear-gradient(left, ${
+          uploadedFile.cancelled ? lightenBgColor : bgColorLight
+        } ${
+          uploadedFile.cancelled ? '100' : uploadedFile.uploadProgress
+        }%, rgba(255, 255, 255, 0) 0%)`,
+        cursor: uploadedFile.cancelled ? 'pointer' : 'default',
+      }}
+      key={index}
+    />
   );
 };

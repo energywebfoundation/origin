@@ -3,10 +3,11 @@ import {
   useApiMyDevices,
   useAllFuelTypes,
   useExchangeAddress,
+  downloadFileHandler,
   useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
 import {
-  useLogicCertificateRequests,
+  useCertificateRequestsLogic,
   usePermissionsLogic,
 } from '@energyweb/origin-ui-certificate-logic';
 
@@ -40,12 +41,13 @@ export const useRequestsPageEffects = () => {
     isExchangeAddressLoading ||
     userAndAccountLoading;
 
-  const tableData = useLogicCertificateRequests({
+  const tableData = useCertificateRequestsLogic({
     devices,
     requests,
     allFuelTypes,
     exchangeAddress,
     loading,
+    downloadFileHandler,
   });
 
   return {

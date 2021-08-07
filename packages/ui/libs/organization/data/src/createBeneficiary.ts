@@ -2,11 +2,17 @@ import { useTranslation } from 'react-i18next';
 import { UseFormReset } from 'react-hook-form';
 import { AxiosError } from 'axios';
 import { useBeneficiaryControllerCreateBeneficiary } from '@energyweb/origin-organization-irec-api-react-query-client';
-import { TCreateBeneficiaryFormValues } from '@energyweb/origin-ui-organization-logic';
 import {
+  FormSelectOption,
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
+
+export type TCreateBeneficiaryFormValues = {
+  name: string;
+  countryCode: FormSelectOption[];
+  location: string;
+};
 
 export const useCreateBeneficiaryHandler = () => {
   const { t } = useTranslation();

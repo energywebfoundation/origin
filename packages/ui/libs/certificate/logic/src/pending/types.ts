@@ -6,6 +6,7 @@ import {
   TableActionData,
 } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
+import { TFunction } from 'i18next';
 
 export type TUsePendingCertificatesLogicArgs = {
   devices: ComposedPublicDevice[];
@@ -13,6 +14,7 @@ export type TUsePendingCertificatesLogicArgs = {
   allFuelTypes: CodeNameDTO[];
   actions: TableActionData<FullCertificationRequestDTO['id']>[];
   loading: boolean;
+  downloadFileHandler: (id: string, name: string) => Promise<void>;
 };
 
 export type TFormatPendingCertificatesReturnData = TableRowData<
@@ -20,7 +22,7 @@ export type TFormatPendingCertificatesReturnData = TableRowData<
 >[];
 
 export type TFormatPendingCertificatesData = (
-  props: Omit<TUsePendingCertificatesLogicArgs, 'loading'>
+  props: Omit<TUsePendingCertificatesLogicArgs, 'loading'> & { t: TFunction }
 ) => TFormatPendingCertificatesReturnData;
 
 export type TUsePendingCertificatesLogic = (

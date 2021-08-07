@@ -9,7 +9,7 @@ describe('DoubleColumnForm', () => {
     const { baseElement } = render(<Default {...Default.args} />);
     expect(baseElement).toBeInTheDocument();
 
-    Default.args.fields.map((field) => {
+    Default.args.fields.forEach((field) => {
       expect(screen.getByText(field.label)).toBeInTheDocument();
     });
   });

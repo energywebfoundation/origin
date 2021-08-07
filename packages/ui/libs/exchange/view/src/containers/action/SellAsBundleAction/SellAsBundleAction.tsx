@@ -5,7 +5,7 @@ import { BundleActionContent } from '../../list';
 import { useSellActionEffects } from './SellAsBundleAction.effects';
 import { useStyles } from './SellAsBundleAction.styles';
 
-interface SellAsBundleActionProps<Id> extends ListActionComponentProps<Id> {}
+type SellAsBundleActionProps<Id> = ListActionComponentProps<Id>;
 
 export type TSellAsBundleAction = <Id>(
   props: PropsWithChildren<SellAsBundleActionProps<Id>>

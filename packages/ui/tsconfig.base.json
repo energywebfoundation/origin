@@ -4,6 +4,7 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
+    "downlevelIteration": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -24,11 +25,9 @@
       ],
       "@energyweb/origin-ui-theme": ["libs/ui/theme/src/index.ts"],
       "@energyweb/origin-ui-assets": ["libs/ui/assets/src/index.ts"],
+      "@energyweb/origin-ui-blockchain": ["libs/ui/blockchain/src/index.ts"],
       "@energyweb/origin-ui-shared-state": [
         "libs/ui/shared-state/src/index.ts"
-      ],
-      "@energyweb/origin-ui-react-query-providers": [
-        "libs/ui/providers/src/index.ts"
       ],
       "@energyweb/origin-ui-certificate-view": [
         "libs/certificate/view/src/index.ts"
@@ -58,8 +57,7 @@
       ],
       "@energyweb/origin-ui-user-view": ["libs/user/view/src/index.ts"],
       "@energyweb/origin-ui-user-logic": ["libs/user/logic/src/index.ts"],
-      "@energyweb/origin-ui-user-data": ["libs/user/data/src/index.ts"],
-      "@energyweb/origin-ui-blockchain": ["libs/ui/blockchain/src/index.ts"]
+      "@energyweb/origin-ui-user-data": ["libs/user/data/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

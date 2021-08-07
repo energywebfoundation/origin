@@ -11,7 +11,7 @@ import {
   useRegionsFilterLogic,
   useSubRegionsFilterLogic,
 } from '@energyweb/origin-ui-exchange-logic';
-import { MarketFilterActionEnum } from '../../../pages';
+import { MarketFilterActionEnum } from '../../../reducer';
 import { MarketFiltersProps } from './MarketFilters';
 
 export const useMarketFiltersEffects = ({

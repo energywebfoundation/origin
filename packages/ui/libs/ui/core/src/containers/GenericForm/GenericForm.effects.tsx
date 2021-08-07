@@ -7,7 +7,7 @@ import {
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GenericFormProps } from './GenericForm.types';
-import { BaseSyntheticEvent, useEffect } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 
 type GenericFormEffectsProps<FormValuesType> = Pick<
   GenericFormProps<FormValuesType>,
@@ -23,7 +23,7 @@ type GenericFormEffectsProps<FormValuesType> = Pick<
 
 type GenericFormEffectsReturnType<FormValuesType> = {
   register: UseFormRegister<FormValuesType>;
-  onSubmit: (e?: BaseSyntheticEvent<object, any, any>) => Promise<void>;
+  onSubmit: FormEventHandler<HTMLFormElement>;
   errors: DeepMap<FormValuesType, FieldError>;
   submitButtonDisabled: boolean;
   dirtyFields: DeepMap<FormValuesType, true>;
@@ -45,7 +45,7 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   validationMode,
 }) => {
   const { control, register, handleSubmit, formState, reset, watch } = useForm({
-    mode: !!validationMode ? validationMode : 'onBlur',
+    mode: validationMode ? validationMode : 'onBlur',
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
@@ -54,9 +54,11 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   const watchedFields =
     inputsToWatch && inputsToWatch.length > 0 ? watch(inputsToWatch) : [];
 
+  const stringifiedWatchedFields = JSON.stringify(watchedFields);
+
   useEffect(() => {
     onWatchHandler && onWatchHandler(watchedFields);
-  }, [JSON.stringify(watchedFields)]);
+  }, [stringifiedWatchedFields]);
 
   const onSubmit = handleSubmit(async (values) => {
     await submitHandler(values, reset);

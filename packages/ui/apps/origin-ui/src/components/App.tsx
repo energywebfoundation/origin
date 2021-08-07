@@ -7,7 +7,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { LoginApp } from '@energyweb/origin-ui-user-view';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { initializeI18N } from '@energyweb/origin-ui-utils';
+import { initializeI18N } from '@energyweb/origin-ui-localization';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 import { AuthApp, AdminApp, AccountApp } from '@energyweb/origin-ui-user-view';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';

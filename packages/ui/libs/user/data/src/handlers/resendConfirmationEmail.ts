@@ -25,7 +25,7 @@ export const useApiResendConfirmationEmail = () => {
             NotificationTypeEnum.Success
           );
         },
-        (reason) => {
+        () => {
           showNotification(
             t('user.feedback.confirmationEmailResentFailed'),
             NotificationTypeEnum.Error

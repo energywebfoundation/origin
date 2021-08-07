@@ -5,3 +5,4 @@ export * from './carousel';
 export * from './file';
 export * from './list';
 export * from './modal';
+export * from './smartMeter';

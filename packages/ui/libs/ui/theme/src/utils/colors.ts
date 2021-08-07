@@ -8,7 +8,7 @@ export function LightenColor(
 ): string {
   let formattedPercent = percent;
 
-  if (!!themeMode) {
+  if (themeMode) {
     formattedPercent = themeMode === 'dark' ? percent : -percent;
   }
 

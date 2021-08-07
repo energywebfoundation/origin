@@ -18,7 +18,7 @@ type TFormatClaims = (
 ) => TableRowData<CertificateDTO['id']>[];
 
 const formatClaims: TFormatClaims = ({ certificates, allDevices }) => {
-  let formattedClaims = [];
+  const formattedClaims = [];
 
   certificates?.forEach((certificate) =>
     certificate.claims?.forEach((claim) => {

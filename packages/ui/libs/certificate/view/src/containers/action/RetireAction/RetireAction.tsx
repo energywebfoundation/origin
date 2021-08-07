@@ -11,7 +11,7 @@ import { CertificateActionContent } from '../../list';
 import { useRetireActionEffects } from './RetireAction.effects';
 import { useStyles } from './RetireAction.styles';
 
-interface RetireActionProps<Id> extends ListActionComponentProps<Id> {}
+type RetireActionProps<Id> = ListActionComponentProps<Id>;
 
 export type TRetireAction = <Id>(
   props: PropsWithChildren<RetireActionProps<Id>>

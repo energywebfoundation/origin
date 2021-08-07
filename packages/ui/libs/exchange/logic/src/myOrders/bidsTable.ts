@@ -11,7 +11,7 @@ const formatBidsForMyOrders: TFormatBids = ({
 }) => {
   return bids?.map((bid) => {
     let fuelType = '-';
-    if (!!bid.product?.deviceType) {
+    if (bid.product?.deviceType) {
       const fuelCodes = new Set<string>();
       bid.product.deviceType.forEach((type) =>
         fuelCodes.add(type.split(';')[0])

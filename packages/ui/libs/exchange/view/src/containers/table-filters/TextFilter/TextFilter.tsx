@@ -30,7 +30,7 @@ const TextFilterComponent: FC<TextFilterProps> = ({
       onChange={handleChange}
       label={label}
       InputProps={{
-        endAdornment: !!value ? (
+        endAdornment: value ? (
           <InputAdornment position="end">
             <IconButton onClick={handleClear}>
               <Close />

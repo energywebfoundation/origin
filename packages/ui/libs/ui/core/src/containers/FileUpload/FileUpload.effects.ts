@@ -54,7 +54,7 @@ export const useFileUploadEffects = ({
   };
 
   useEffect(() => {
-    files.map((f) => {
+    files.forEach((f) => {
       const fileIndex = files.indexOf(f);
       const uploadedFile = state && state[fileIndex];
 

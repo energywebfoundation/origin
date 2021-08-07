@@ -11,10 +11,10 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import {
-  TUpdateSupplyFormValues,
   IDeviceWithSupply,
+  TUpdateSupplyFormValues,
   SupplyStatus,
-} from '@energyweb/origin-ui-exchange-logic';
+} from '../types';
 
 export const useApiUpdateSupplyHandler = (
   deviceWithSupply: IDeviceWithSupply,

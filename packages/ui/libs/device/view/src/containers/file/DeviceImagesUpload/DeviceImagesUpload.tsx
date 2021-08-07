@@ -3,7 +3,7 @@ import {
   GenericFormSecondaryButton,
 } from '@energyweb/origin-ui-core';
 import { Box, Button } from '@material-ui/core';
-import { DeviceImagesFormValues } from 'libs/device/logic/src/registerForm/types';
+import { DeviceImagesFormValues } from '@energyweb/origin-ui-device-logic';
 import React, { FC } from 'react';
 import { useDeviceImagesUploadEffects } from './DeviceImagesUpload.effects';
 

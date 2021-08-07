@@ -6,9 +6,8 @@ import {
   CardContent,
   CardContentProps,
 } from '@material-ui/core';
-import { FallbackIcon } from '@energyweb/origin-ui-core';
+import { FallbackIconProps, FallbackIcon } from '../../icons';
 import { useStyles } from './HorizontalCard.styles';
-import { FallbackIconProps } from '../../icons';
 
 export interface HorizontalCardProps {
   onClick: () => void;

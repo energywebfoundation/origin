@@ -8,7 +8,7 @@ export interface IDeviceModalsStore {
   };
 }
 
-interface IShowImportDeviceAction {
+export interface IShowImportDeviceAction {
   type: DeviceModalsActionsEnum.SHOW_IMPORT_DEVICE;
   payload: {
     open: boolean;

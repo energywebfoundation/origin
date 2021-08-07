@@ -33,7 +33,7 @@ export const useUpdateDemandEffects = () => {
   const [demandStatus, setDemandStatus] = useState<boolean>(initialStatus);
 
   useEffect(() => {
-    if (!!demand) {
+    if (demand) {
       const newStatus = demand.status === DemandStatus.ACTIVE;
       if (newStatus !== demandStatus) {
         setDemandStatus(newStatus);

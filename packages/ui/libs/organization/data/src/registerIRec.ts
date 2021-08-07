@@ -5,13 +5,53 @@ import {
   useRegistrationControllerRegister,
 } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
+  FormSelectOption,
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { IRecRegisterFormMergedType } from '@energyweb/origin-ui-organization-logic';
 import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+
+export type IRecRegistrationInfoForm = {
+  accountType: IRECAccountType;
+  headquarterCountry: FormSelectOption[];
+  registrationYear: string;
+  employeesNumber: string;
+  shareholders: string;
+  website: string;
+  activeCountries: FormSelectOption[];
+  mainBusiness: string;
+  ceoName: string;
+  ceoPassportNumber: string;
+  balanceSheetTotal: string;
+};
+
+export type PrimaryContactDetailsForms = {
+  primaryContactOrganizationName: string;
+  primaryContactOrganizationAddress: string;
+  primaryContactOrganizationPostalCode: string;
+  primaryContactOrganizationCountry: FormSelectOption[];
+  subsidiaries?: string;
+  primaryContactName: string;
+  primaryContactEmail: string;
+  primaryContactPhoneNumber: string;
+  primaryContactFax: string;
+};
+
+type LeadUserDetailsForms = {
+  leadUserTitle: string;
+  leadUserTitleInput?: string;
+  leadUserFirstName: string;
+  leadUserLastName: string;
+  leadUserEmail: string;
+  leadUserPhoneNumber: string;
+  leadUserFax: string;
+};
+
+export type IRecRegisterFormMergedType = IRecRegistrationInfoForm &
+  PrimaryContactDetailsForms &
+  LeadUserDetailsForms;
 
 export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
   const { mutate } = useRegistrationControllerRegister();

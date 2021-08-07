@@ -4,7 +4,7 @@ import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useDepositActionEffects } from './DepositAction.effects';
 
-interface DepositActionProps<Id> extends ListActionComponentProps<Id> {}
+type DepositActionProps<Id> = ListActionComponentProps<Id>;
 
 export type TDepositAction = <Id>(
   props: PropsWithChildren<DepositActionProps<Id>>

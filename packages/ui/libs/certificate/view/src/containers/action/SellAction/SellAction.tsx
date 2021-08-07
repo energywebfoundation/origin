@@ -5,7 +5,7 @@ import { CertificateActionContent } from '../../list';
 import { useSellActionEffects } from './SellAction.effects';
 import { useStyles } from './SellAction.styles';
 
-interface SellActionProps<Id> extends ListActionComponentProps<Id> {}
+type SellActionProps<Id> = ListActionComponentProps<Id>;
 
 export type TSellAction = <Id>(
   props: PropsWithChildren<SellActionProps<Id>>

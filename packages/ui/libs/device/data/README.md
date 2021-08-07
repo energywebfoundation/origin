@@ -1,7 +1,14 @@
-# device-data
-
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test device-data` to execute the unit tests via [Jest](https://jestjs.io).
+<h1 align="center">
+  <br>
+  <a href="https://www.energyweb.org/">
+    <img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150" />
+  </a>
+  <br>
+  EnergyWeb Origin
+  <br>
+    <h2 align="center">Origin-UI Device Data</h2>
+    <p align="center">
+      Data layer implementation for the Device part of Origin marketplace user interface
+    </p>
+  <br>
+</h1>

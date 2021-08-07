@@ -1,4 +1,4 @@
 import { xorWith, isEmpty, isEqual } from 'lodash';
 
-export const isArrayEqual = (arrayOne: any[], arrayTwo: any[]) =>
+export const isArrayEqual = <T>(arrayOne: T[], arrayTwo: T[]) =>
   isEmpty(xorWith(arrayOne, arrayTwo, isEqual));

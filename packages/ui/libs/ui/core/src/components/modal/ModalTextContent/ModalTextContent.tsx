@@ -13,7 +13,7 @@ export const ModalTextContent: FC<ModalTextContentProps> = ({
   textProps,
 }) => {
   return (
-    <>
+    <div>
       {typeof text === 'string' ? (
         <Typography {...textProps}>{text}</Typography>
       ) : (
@@ -23,6 +23,6 @@ export const ModalTextContent: FC<ModalTextContentProps> = ({
           </Typography>
         ))
       )}
-    </>
+    </div>
   );
 };

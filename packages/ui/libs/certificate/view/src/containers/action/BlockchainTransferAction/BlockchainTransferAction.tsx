@@ -5,8 +5,7 @@ import { CertificateActionContent } from '../../list';
 import { useBlockchainTransferActionEffects } from './BlockchainTransferAction.effects';
 import { useStyles } from './BlockchainTransferAction.styles';
 
-interface BlockchainTransferActionProps<Id>
-  extends ListActionComponentProps<Id> {}
+type BlockchainTransferActionProps<Id> = ListActionComponentProps<Id>;
 
 export type TBlockchainTransferAction = <Id>(
   props: PropsWithChildren<BlockchainTransferActionProps<Id>>

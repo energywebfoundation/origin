@@ -1,9 +1,9 @@
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
+import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import {
   getEnergyTypeImage,
   getMainFuelType,
-} from '@energyweb/origin-ui-device-logic';
+} from '@energyweb/origin-ui-certificate-logic';
 import { EnergyTypeEnum } from '@energyweb/origin-ui-utils';
 
 export const useDeviceImagesCarouselEffects = (

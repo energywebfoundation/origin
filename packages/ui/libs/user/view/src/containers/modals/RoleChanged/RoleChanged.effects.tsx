@@ -1,5 +1,5 @@
 import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
-import { getRoleChangedLogic } from '@energyweb/origin-ui-organization-logic';
+import { getRoleChangedLogic } from '@energyweb/origin-ui-user-logic';
 import { getAuthenticationToken } from '@energyweb/origin-ui-shared-state';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

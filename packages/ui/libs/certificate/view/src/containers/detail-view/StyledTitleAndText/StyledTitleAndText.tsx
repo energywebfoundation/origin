@@ -5,7 +5,7 @@ import {
 import { makeStyles } from '@material-ui/core';
 import React, { FC } from 'react';
 
-interface StyledTitleAndTextProps extends SmallTitleWithTextProps {}
+type StyledTitleAndTextProps = SmallTitleWithTextProps;
 
 const useStyles = makeStyles({
   blockItem: {

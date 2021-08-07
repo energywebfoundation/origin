@@ -1,5 +1,5 @@
 import { GenericFormProps } from '@energyweb/origin-ui-core';
-import { IDeviceWithSupply } from '@energyweb/origin-ui-exchange-logic';
+import { IDeviceWithSupply } from '../supply';
 
 export type TUpdateSupplyFormValues = {
   fuelType: string;

@@ -7,7 +7,7 @@ export const useDeviceByExternalRegistryId = (
 ) => {
   const { allDevices, isLoading } = useApiAllDevices();
 
-  const device: ComposedPublicDevice = !!id
+  const device: ComposedPublicDevice = id
     ? allDevices?.find((device) => device.externalRegistryId === id)
     : null;
 

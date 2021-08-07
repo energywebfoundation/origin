@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import { TotalAndButtons } from '../TotalAndButtons';
 import { useStyles } from './OneTimePurchase.styles';
 import { useOneTimePurchaseEffects } from './OneTimePurchase.effects';
-import { MarketFiltersActions, MarketFiltersState } from '../../../pages';
+import { MarketFiltersActions, MarketFiltersState } from '../../../reducer';
 
 interface OneTimePurchaseProps {
   filters: MarketFiltersState;

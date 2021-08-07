@@ -1,7 +1,14 @@
-# ui-theme
-
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test ui-theme` to execute the unit tests via [Jest](https://jestjs.io).
+<h1 align="center">
+  <br>
+  <a href="https://www.energyweb.org/">
+    <img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150" />
+  </a>
+  <br>
+  EnergyWeb Origin
+  <br>
+    <h2 align="center">Origin UI Theme</h2>
+    <p align="center">
+      Material-UI theme configuration and helper functions for styling components used for building Origin marketplace user interface
+    </p>
+  <br>
+</h1>

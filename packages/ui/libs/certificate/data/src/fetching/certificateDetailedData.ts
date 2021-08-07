@@ -1,20 +1,10 @@
-import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import {
-  CertificateDTO,
-  CertificateEvent,
-  FullCertificationRequestDTO,
   useCertificationRequestControllerGetByCertificate,
   useIrecCertificateControllerGet,
   useIrecCertificateControllerGetAllEvents,
 } from '@energyweb/issuer-irec-api-react-query-client';
+import { DetailedCertificate } from '../types';
 import { useApiAllExchangeCertificates } from './exchangeCertificates';
-
-export type DetailedCertificate = {
-  blockchainPart: CertificateDTO;
-  exchangePart: AccountAssetDTO;
-  events: CertificateEvent[];
-  requestPart: FullCertificationRequestDTO;
-};
 
 export const useCertificateDetailedData = (id: string) => {
   const { exchangeCertificates, isLoading: areExchangeCertificateLoading } =

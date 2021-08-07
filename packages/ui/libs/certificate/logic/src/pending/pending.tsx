@@ -5,7 +5,6 @@ import {
   EnergyFormatter,
   formatDate,
 } from '@energyweb/origin-ui-utils';
-import { downloadFileHandler } from '@energyweb/origin-ui-certificate-data';
 import {
   TFormatPendingCertificatesData,
   TUsePendingCertificatesLogic,
@@ -16,9 +15,9 @@ const formatRequestsData: TFormatPendingCertificatesData = ({
   requests,
   actions,
   allFuelTypes,
+  downloadFileHandler,
+  t,
 }) => {
-  const { t } = useTranslation();
-
   return requests.length > 0 && devices.length > 0
     ? requests.map((request) => {
         const status = request?.approved
@@ -63,12 +62,13 @@ const formatRequestsData: TFormatPendingCertificatesData = ({
     : [];
 };
 
-export const usePendingCertificatsLogic: TUsePendingCertificatesLogic = ({
+export const usePendingCertificatesLogic: TUsePendingCertificatesLogic = ({
   devices,
   requests,
   allFuelTypes,
   actions,
   loading,
+  downloadFileHandler,
 }) => {
   const { t } = useTranslation();
   return {
@@ -97,6 +97,8 @@ export const usePendingCertificatsLogic: TUsePendingCertificatesLogic = ({
       requests,
       actions,
       allFuelTypes,
+      downloadFileHandler,
+      t,
     }),
   };
 };

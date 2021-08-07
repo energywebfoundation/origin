@@ -46,7 +46,7 @@ export const useRepeatedPurchaseFormLogic = (mobileView: boolean) => {
         name: 'volume',
         label: t('exchange.viewMarket.volume'),
         endAdornment: {
-          element: <>{'MWh'}</>,
+          element: <div>{'MWh'}</div>,
         },
       },
       startDate: {
@@ -67,7 +67,7 @@ export const useRepeatedPurchaseFormLogic = (mobileView: boolean) => {
         name: 'price',
         label: t('exchange.viewMarket.price'),
         endAdornment: {
-          element: <>{'USD'}</>,
+          element: <div>{'USD'}</div>,
         },
       },
     },

@@ -25,8 +25,7 @@ export const reducer: TItemsListWithActionsReducer<any, any> = (
       return { ...state, allChecked: !state.allChecked };
 
     case ActionsEnum.CHECK_CONTAINER:
-      const containerChecked = state.containersChecked.includes(action.payload);
-      if (containerChecked) {
+      if (state.containersChecked.includes(action.payload)) {
         const newState = [...state.containersChecked].filter(
           (containerId) => containerId !== action.payload
         );

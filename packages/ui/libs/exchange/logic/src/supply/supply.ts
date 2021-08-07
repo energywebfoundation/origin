@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { SupplyDto } from '@energyweb/exchange-react-query-client';
-import { SupplyStatus } from '@energyweb/origin-ui-exchange-logic';
 import { TUseLogicSupply, TFormatSupplyData } from './types';
+import { SupplyStatus } from '../updateSupplyForm';
 
 const formatSupplyData: TFormatSupplyData = ({
   devices,

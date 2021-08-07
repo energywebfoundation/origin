@@ -34,7 +34,7 @@ export const DemandStatusFilter: FC<StatusFilterProps> = ({
       onChange={handleChange}
       textFieldProps={{
         margin: 'dense',
-        InputProps: !!value
+        InputProps: value
           ? {
               endAdornment: (
                 <InputAdornment position="end" style={{ marginRight: 15 }}>

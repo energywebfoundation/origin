@@ -3,11 +3,11 @@ import {
   useClaimedCertificates,
   useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
+import { useApiAllDevices } from '@energyweb/origin-ui-certificate-data';
 import {
   useLogicClaimsReport,
   usePermissionsLogic,
 } from '@energyweb/origin-ui-certificate-logic';
-import { useApiAllDevices } from '@energyweb/origin-ui-device-data';
 
 export const useClaimsReportPageEffects = () => {
   const {

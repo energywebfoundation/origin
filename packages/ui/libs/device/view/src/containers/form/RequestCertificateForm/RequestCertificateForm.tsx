@@ -21,7 +21,7 @@ export const RequestCertificateForm: FC<RequestCertificateFormProps> = ({
     useRequestCertificateFormEffects(device, closeForm);
 
   if (isLoading) {
-    return <></>;
+    return null;
   }
 
   return (

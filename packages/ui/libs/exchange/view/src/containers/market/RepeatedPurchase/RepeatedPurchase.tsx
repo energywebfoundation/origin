@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 import { TotalAndButtons } from '../TotalAndButtons';
 import { useStyles } from './RepeatedPurchase.styles';
 import { useRepeatedPurchaseEffects } from './RepeatedPurchase.effects';
-import { MarketFiltersState } from '../../../pages';
+import { MarketFiltersState } from '../../../reducer';
 
 interface RepeatedPurchaseProps {
   filters: MarketFiltersState;

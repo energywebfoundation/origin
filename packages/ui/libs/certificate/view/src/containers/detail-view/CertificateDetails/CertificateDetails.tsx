@@ -71,7 +71,7 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
                       className={classes.link}
                       href={`${blockExplorerUrl}/tx/${event.txHash}`}
                       target="_blank"
-                      rel="noopener"
+                      rel="noreferrer"
                     >
                       {event.txHash}
                     </a>

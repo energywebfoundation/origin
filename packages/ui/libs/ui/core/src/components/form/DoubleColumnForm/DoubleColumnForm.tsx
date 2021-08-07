@@ -4,9 +4,6 @@ import { SingleColumnForm, SingleColumnFormProps } from '../SingleColumnForm';
 import { useDoubleColumnFormEffects } from './DoubleColumnForm.effects';
 import { useStyles } from './DoubleColumnForm.styles';
 
-export interface DoubleColumnFormProps<FormValuesType>
-  extends SingleColumnFormProps<FormValuesType> {}
-
 export type TDoubleColumnForm = <FormValuesType>(
   props: PropsWithChildren<SingleColumnFormProps<FormValuesType>>
 ) => ReactElement;
