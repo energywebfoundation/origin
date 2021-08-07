@@ -1,8 +1,25 @@
-import { useApiMyTrades } from '@energyweb/origin-ui-exchange-data';
-import { useLogicMyTrades } from '@energyweb/origin-ui-exchange-logic';
+import {
+  useApiMyTrades,
+  useApiUserAndAccount,
+} from '@energyweb/origin-ui-exchange-data';
+import {
+  useLogicMyTrades,
+  usePermissionsLogic,
+} from '@energyweb/origin-ui-exchange-logic';
 
 export const useMyTradesPageEffects = () => {
-  const { myTrades: trades, isLoading: loading } = useApiMyTrades();
+  const {
+    user,
+    exchangeDepositAddress,
+    isLoading: userAndAccountLoading,
+  } = useApiUserAndAccount();
+  const { canAccessPage, requirementsProps } = usePermissionsLogic({
+    user,
+    exchangeDepositAddress,
+  });
+  const { myTrades: trades, isLoading: myTradesLoading } = useApiMyTrades();
+
+  const loading = myTradesLoading || userAndAccountLoading;
 
   const tableData = useLogicMyTrades({
     trades,
@@ -11,5 +28,7 @@ export const useMyTradesPageEffects = () => {
 
   return {
     tableData,
+    canAccessPage,
+    requirementsProps,
   };
 };
