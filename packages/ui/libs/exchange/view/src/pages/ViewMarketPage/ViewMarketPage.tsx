@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ListActionsBlock, Requirements } from '@energyweb/origin-ui-core';
+import { ListActionsBlock } from '@energyweb/origin-ui-core';
 import { Box, Paper, Typography } from '@material-ui/core';
 import { MarketFilters } from '../../containers';
 import { useViewMarketPageEffects } from './ViewMarketPage.effects';
@@ -14,15 +14,9 @@ export const ViewMarketPage: FC = () => {
     formTitle,
     tablesActionsProps,
     isLoading,
-    canAccessPage,
-    requirementsProps,
   } = useViewMarketPageEffects();
 
   if (isLoading) return null;
-
-  if (!canAccessPage) {
-    return <Requirements {...requirementsProps} />;
-  }
 
   return (
     <Box width="100%" mr={3}>
