@@ -21,7 +21,8 @@
         "blockchainInbox": "Blockchain Inbox",
         "claimsReport": "Claims report",
         "requests": "Requests",
-        "pending": "Pending"
+        "pending": "Pending",
+        "approved": "Approved"
       },
       "exchange": {
         "sectionTitle": "Exchange",
@@ -549,6 +550,19 @@
           "revokeSuccess": "Certificate revoked",
           "revokeError": "Error while revoking certificate"
         }
+      },
+      "approved": {
+        "tableTitle": "Approved certificates",
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "fuelType": "Fuel Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved"
       },
       "claimsReport": {
         "fuelType": "Fuel Type",
