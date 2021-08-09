@@ -932,6 +932,11 @@
         "other": "Other"
       }
     },
+    "error": {
+      "somethingWentWrong": "Something went wrong:",
+      "reloadPage": "Reload page",
+      "returnToHome": "Return to Home page"
+    },
     "notifications": {
       "title": {
         "success": "Success",
