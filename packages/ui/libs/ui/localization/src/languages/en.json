@@ -260,7 +260,7 @@
       "modals": {
         "roleChanged": {
           "title": "Successfully joined {organizationName}",
-          "text": "You have successfully joined {organizationName} of {ownerName}.",
+          "text": "You have successfully joined {organizationName} organization.",
           "asMemberYouCan": "As an Organization Member you can:",
           "canPlaceOrder": "Place orders on the exchange",
           "canBuyCertificates": "Directly buy {certificateType}",
