@@ -13,3 +13,4 @@ export * from './certificateDetailedData';
 export * from './deviceCertifiedAmount';
 export * from './deviceById';
 export * from './userAndAccount';
+export * from './approvedCertificates';

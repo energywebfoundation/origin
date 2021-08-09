@@ -1,3 +1,4 @@
+export * from './pendingCertificates';
 export * from './fileDownload';
 
 export * from './sellCertificate';
