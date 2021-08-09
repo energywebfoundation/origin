@@ -91,8 +91,7 @@ describe('Demand orders trading', () => {
         end: moment().add(2, 'month').toDate(),
         product: "{ deviceType: ['Solar'] }",
         volumePerPeriod: `${250 * MWh}`,
-        boundToGenerationTime: false,
-        excludeEnd: true
+        boundToGenerationTime: false
     };
 
     it('should trade the bid from the demand', async () => {
@@ -116,8 +115,7 @@ describe('Demand orders trading', () => {
             end: moment().add(1, 'month').toDate(),
             product: TestProduct,
             volumePerPeriod: `${250 * MWh}`,
-            boundToGenerationTime: false,
-            excludeEnd: true
+            boundToGenerationTime: false
         };
 
         const demand = await demandService.create(demandOwner, createDemand);
@@ -292,8 +290,7 @@ describe('Demand orders trading', () => {
             end: moment().add(2, 'month').toDate(),
             product: "{ deviceType: ['Solar'] }",
             volumePerPeriod: `${2.5 * MWh}`,
-            boundToGenerationTime: false,
-            excludeEnd: true
+            boundToGenerationTime: false
         };
 
         await request(app.getHttpServer())
