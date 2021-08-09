@@ -7,7 +7,6 @@ import {
     IsInt,
     IsPositive,
     IsBoolean,
-    IsOptional,
     IsNotEmpty
 } from 'class-validator';
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
@@ -50,9 +49,4 @@ export class CreateDemandDTO<TProduct> {
     @ApiProperty({ type: Boolean })
     @IsBoolean()
     public readonly boundToGenerationTime: boolean;
-
-    @ApiProperty({ type: Boolean })
-    @IsBoolean()
-    @IsOptional()
-    public readonly excludeEnd: boolean;
 }
