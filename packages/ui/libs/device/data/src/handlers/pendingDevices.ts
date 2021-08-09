@@ -1,47 +1,66 @@
+import { getDeviceRegistryControllerGetAllQueryKey } from '@energyweb/origin-device-registry-api-react-query-client';
 import {
   DeviceDTO,
-  UpdateDeviceDTO,
-  useDeviceControllerUpdateDevice,
+  useDeviceControllerUpdateDeviceStatus,
+  DeviceState,
+  getDeviceControllerGetAllQueryKey,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { ComposedPublicDevice } from '../types';
+import {
+  NotificationTypeEnum,
+  showNotification,
+} from '@energyweb/origin-ui-core';
+import { useTranslation } from 'react-i18next';
+import { useQueryClient } from 'react-query';
 
-export const useApiHandlersForPendingDevices = (
-  pendingDevices: ComposedPublicDevice[]
-) => {
-  const { mutate } = useDeviceControllerUpdateDevice();
-
-  const getRequestData = (
-    device: Omit<UpdateDeviceDTO, 'active'>,
-    active: boolean
-  ): UpdateDeviceDTO => ({
-    name: device.name,
-    deviceType: device.deviceType,
-    fuelType: device.fuelType,
-    countryCode: device.countryCode,
-    capacity: device.capacity,
-    commissioningDate: device.commissioningDate,
-    registrationDate: device.registrationDate,
-    address: device.address,
-    latitude: device.latitude,
-    longitude: device.longitude,
-    notes: device.notes,
-    active,
-  });
+export const useApiHandlersForPendingDevices = () => {
+  const { mutate } = useDeviceControllerUpdateDeviceStatus();
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const originDevicesQueryKey = getDeviceRegistryControllerGetAllQueryKey();
+  const iRecDevicesQueryKey = getDeviceControllerGetAllQueryKey();
 
   const approveHandler = (id: DeviceDTO['id']) => {
-    const deviceToUpdate = pendingDevices?.find(
-      (device) => device.externalRegistryId === id
+    mutate(
+      { id, data: { status: DeviceState.Approved } },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(originDevicesQueryKey);
+          queryClient.invalidateQueries(iRecDevicesQueryKey);
+          showNotification(
+            t('device.pending.notifications.approveSuccess'),
+            NotificationTypeEnum.Success
+          );
+        },
+        onError: () => {
+          showNotification(
+            t('device.pending.notifications.approveError'),
+            NotificationTypeEnum.Error
+          );
+        },
+      }
     );
-    const data = deviceToUpdate && getRequestData(deviceToUpdate, true);
-    mutate({ id, data });
   };
 
   const rejectHandler = (id: DeviceDTO['id']) => {
-    const deviceToUpdate = pendingDevices?.find(
-      (device) => device.externalRegistryId === id
+    mutate(
+      { id, data: { status: DeviceState.Rejected } },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(originDevicesQueryKey);
+          queryClient.invalidateQueries(iRecDevicesQueryKey);
+          showNotification(
+            t('device.pending.notifications.rejectSuccess'),
+            NotificationTypeEnum.Success
+          );
+        },
+        onError: () => {
+          showNotification(
+            t('device.pending.notifications.rejectError'),
+            NotificationTypeEnum.Error
+          );
+        },
+      }
     );
-    const data = deviceToUpdate && getRequestData(deviceToUpdate, false);
-    mutate({ id, data });
   };
 
   return { approveHandler, rejectHandler };

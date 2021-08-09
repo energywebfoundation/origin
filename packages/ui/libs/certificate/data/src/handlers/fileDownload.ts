@@ -1,13 +1,13 @@
-import { fileControllerDownload } from '@energyweb/origin-backend-react-query-client';
+import axios from 'axios';
 import { ApiDownloadFunction } from '../types';
 
-export const fileUDownloadHandler = async (id: string) => {
-  return await fileControllerDownload(id);
+export const fileDownloadHandler = async (id: string) => {
+  return await axios.get(`api/file/${id}`);
 };
 
 export const downloadFileHandler = async (id: string, name: string) => {
   try {
-    const downloadFunc: ApiDownloadFunction = fileUDownloadHandler;
+    const downloadFunc: ApiDownloadFunction = fileDownloadHandler;
     const response = await downloadFunc(id);
 
     if (response) {

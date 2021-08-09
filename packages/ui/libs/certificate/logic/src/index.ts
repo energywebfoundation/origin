@@ -8,3 +8,4 @@ export * from './device-details';
 export * from './pending';
 export * from './utils';
 export * from './permissions';
+export * from './approved';

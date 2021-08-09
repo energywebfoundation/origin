@@ -1,4 +1,5 @@
-export * from './fileUDownload';
+export * from './pendingCertificates';
+export * from './fileDownload';
 
 export * from './sellCertificate';
 export * from './withdrawCertificate';

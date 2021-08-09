@@ -9,6 +9,7 @@ type TGetCertificateMenuArgs = {
   showClaimsReport: boolean;
   showRequests: boolean;
   showPending: boolean;
+  showApproved: boolean;
 };
 
 type TGetCertificateMenu = (args?: TGetCertificateMenuArgs) => TMenuSection;
@@ -22,6 +23,7 @@ export const getCertificateMenu: TGetCertificateMenu = ({
   showClaimsReport,
   showRequests,
   showPending,
+  showApproved,
 }) => {
   const menuList = [
     {
@@ -48,6 +50,11 @@ export const getCertificateMenu: TGetCertificateMenu = ({
       url: 'pending',
       label: t('navigation.certificate.pending'),
       show: showPending,
+    },
+    {
+      url: 'approved',
+      label: t('navigation.certificate.approved'),
+      show: showApproved,
     },
   ];
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   useAllDeviceFuelTypes,
   useAllDeviceTypes,
@@ -6,7 +7,6 @@ import {
 } from '@energyweb/origin-ui-device-data';
 import { useLogicPendingDevices } from '@energyweb/origin-ui-device-logic';
 import { Check, Clear } from '@material-ui/icons';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const usePendingPageEffects = () => {
@@ -18,8 +18,7 @@ export const usePendingPageEffects = () => {
 
   const { pendingDevices: devices, isLoading: areDevicesLoading } =
     useApiPendingDevices();
-  const { approveHandler, rejectHandler } =
-    useApiHandlersForPendingDevices(devices);
+  const { approveHandler, rejectHandler } = useApiHandlersForPendingDevices();
 
   const actions = [
     {

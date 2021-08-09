@@ -7,25 +7,11 @@ import {
   useApiAllDevices,
   useAllFuelTypes,
   downloadFileHandler,
-  useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
-import {
-  usePendingCertificatesLogic,
-  usePermissionsLogic,
-} from '@energyweb/origin-ui-certificate-logic';
+import { usePendingCertificatesLogic } from '@energyweb/origin-ui-certificate-logic';
 
 export const usePendingPageEffects = () => {
   const { t } = useTranslation();
-
-  const {
-    user,
-    exchangeDepositAddress,
-    isLoading: userAndAccountLoading,
-  } = useApiUserAndAccount();
-  const { canAccessPage, requirementsProps } = usePermissionsLogic({
-    user,
-    exchangeDepositAddress,
-  });
 
   const { allDevices: devices, isLoading: areDevicesLoading } =
     useApiAllDevices();
@@ -38,11 +24,7 @@ export const usePendingPageEffects = () => {
 
   const { approveHandler, rejectHandler } = useApiHandlersForPendingRequests();
 
-  const loading =
-    isFuelTypesloading ||
-    areDevicesLoading ||
-    allRequestsLoading ||
-    userAndAccountLoading;
+  const loading = isFuelTypesloading || areDevicesLoading || allRequestsLoading;
 
   const actions = [
     {
@@ -68,7 +50,5 @@ export const usePendingPageEffects = () => {
 
   return {
     tableData,
-    canAccessPage,
-    requirementsProps,
   };
 };

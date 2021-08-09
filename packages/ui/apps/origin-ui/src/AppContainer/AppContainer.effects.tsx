@@ -97,6 +97,7 @@ export const useAppContainerEffects = () => {
     showClaimsReport: userIsActive && userHasOrg && !userIsIssuer,
     showRequests: userIsActive && userHasOrg && !userIsIssuer,
     showPending: userIsIssuer,
+    showApproved: userIsIssuer,
   });
   const exchangeMenu = getExchangeMenu({
     t,

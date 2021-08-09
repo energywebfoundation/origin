@@ -60,7 +60,6 @@ export const useApiCreateDemandHandler = (
             : undefined,
       },
       boundToGenerationTime: false,
-      excludeEnd: false,
     };
 
     mutate(

@@ -21,7 +21,8 @@
         "blockchainInbox": "Blockchain Inbox",
         "claimsReport": "Claims report",
         "requests": "Requests",
-        "pending": "Pending"
+        "pending": "Pending",
+        "approved": "Approved"
       },
       "exchange": {
         "sectionTitle": "Exchange",
@@ -260,7 +261,7 @@
       "modals": {
         "roleChanged": {
           "title": "Successfully joined {organizationName}",
-          "text": "You have successfully joined {organizationName} of {ownerName}.",
+          "text": "You have successfully joined {organizationName} organization.",
           "asMemberYouCan": "As an Organization Member you can:",
           "canPlaceOrder": "Place orders on the exchange",
           "canBuyCertificates": "Directly buy {certificateType}",
@@ -372,7 +373,13 @@
         "certifiedFor": "Certified for {yearToDisplay} (MWh)",
         "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
         "approve": "Approve",
-        "reject": "Reject"
+        "reject": "Reject",
+        "notifications": {
+          "approveSuccess": "Device has been successfully approved",
+          "approveError": "Error while approving device",
+          "rejectSuccess": "Device has been rejected",
+          "rejectError": "Error while rejecting device"
+        }
       },
       "my": {
         "noDeviceTitle": "Currently you don't have any devices in Origin.",
@@ -543,6 +550,19 @@
           "revokeSuccess": "Certificate revoked",
           "revokeError": "Error while revoking certificate"
         }
+      },
+      "approved": {
+        "tableTitle": "Approved certificates",
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "fuelType": "Fuel Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved"
       },
       "claimsReport": {
         "fuelType": "Fuel Type",
@@ -931,6 +951,11 @@
         "ms": "Ms",
         "other": "Other"
       }
+    },
+    "error": {
+      "somethingWentWrong": "Something went wrong:",
+      "reloadPage": "Reload page",
+      "returnToHome": "Return to Home page"
     },
     "notifications": {
       "title": {
