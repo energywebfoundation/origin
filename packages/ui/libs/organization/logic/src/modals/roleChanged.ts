@@ -6,7 +6,6 @@ export const getRoleChangedLogic: TRoleChangedLogic = ({
   closeModal,
   role,
   orgName,
-  ownerName,
   isIRecEnabled,
 }) => {
   const memberActions = (isMainRole: boolean) => ({
@@ -66,7 +65,6 @@ export const getRoleChangedLogic: TRoleChangedLogic = ({
     }),
     subtitle: t('organization.modals.roleChanged.text', {
       organizationName: orgName,
-      ownerName: ownerName,
     }),
     roleDescriptions,
     buttons: [{ label: 'Ok', onClick: closeModal }],

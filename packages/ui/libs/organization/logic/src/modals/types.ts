@@ -34,7 +34,6 @@ type RoleChangeLogicArgs = {
   closeModal: () => void;
   role: Role;
   orgName: string;
-  ownerName: string;
   isIRecEnabled: boolean;
 };
 
@@ -43,9 +42,10 @@ export type RoleDescription = {
   actions: string[];
 };
 
-export type TRoleChangedLogic = (
-  args: RoleChangeLogicArgs
-) => Omit<GenericModalProps, 'open' | 'icon' | 'text'> & {
+export type TRoleChangedLogic = (args: RoleChangeLogicArgs) => Omit<
+  GenericModalProps,
+  'open' | 'icon' | 'text'
+> & {
   subtitle: string;
   roleDescriptions: RoleDescription[];
 };

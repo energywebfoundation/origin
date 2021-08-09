@@ -20,8 +20,6 @@ export const useRoleChangedEffects = () => {
   const { data: user } = useUserControllerMe();
   const orgName = user?.organization?.name;
   const role = user?.rights;
-  // mocks
-  const ownerName = 'James Brown';
 
   const closeModal = () => {
     dispatchModals({
@@ -49,7 +47,6 @@ export const useRoleChangedEffects = () => {
     closeModal,
     role,
     orgName,
-    ownerName,
     isIRecEnabled,
   });
 
