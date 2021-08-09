@@ -42,7 +42,6 @@ export const useApiUpdateDemandHandler = (
       end: dayjs(values.endDate).toISOString(),
       product: demand.product,
       boundToGenerationTime: false,
-      excludeEnd: false,
     };
 
     mutate(

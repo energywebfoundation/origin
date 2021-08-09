@@ -29,7 +29,6 @@ export const calculateDemandTotalVolume = async (
       price: 1 * 100,
       product: {},
       boundToGenerationTime: false,
-      excludeEnd: false,
     });
     return PowerFormatter.format(Number(summary?.volume)).split(',').join('');
   }

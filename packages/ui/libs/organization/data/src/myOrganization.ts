@@ -16,6 +16,6 @@ export const useMyIRecOrganizationData = () => {
   return { iRecOrgLoading, iRecOrganization: !iRecOrgLoading && data[0] };
 };
 
-export const fileUDownloadHandler = async (id: string) => {
+export const fileDownloadHandler = async (id: string) => {
   return await axios.get(`api/file/${id}`);
 };

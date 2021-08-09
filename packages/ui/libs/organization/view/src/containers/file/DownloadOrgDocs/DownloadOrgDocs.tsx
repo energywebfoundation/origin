@@ -1,5 +1,5 @@
 import { DownloadableChip } from '@energyweb/origin-ui-core';
-import { fileUDownloadHandler } from '@energyweb/origin-ui-organization-data';
+import { fileDownloadHandler } from '@energyweb/origin-ui-organization-data';
 import React, { FC } from 'react';
 import { useStyles } from './DownloadOrgDocs.styles';
 
@@ -18,7 +18,7 @@ export const DownloadOrgDocs: FC<DownloadOrgDocsProps> = ({
       {documents.map((documentId, index) => (
         <DownloadableChip
           key={documentId}
-          downloadFunc={fileUDownloadHandler}
+          downloadFunc={fileDownloadHandler}
           documentId={documentId}
           name={blockTitle}
           label={`${

@@ -372,7 +372,13 @@
         "certifiedFor": "Certified for {yearToDisplay} (MWh)",
         "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
         "approve": "Approve",
-        "reject": "Reject"
+        "reject": "Reject",
+        "notifications": {
+          "approveSuccess": "Device has been successfully approved",
+          "approveError": "Error while approving device",
+          "rejectSuccess": "Device has been rejected",
+          "rejectError": "Error while rejecting device"
+        }
       },
       "my": {
         "noDeviceTitle": "Currently you don't have any devices in Origin.",
