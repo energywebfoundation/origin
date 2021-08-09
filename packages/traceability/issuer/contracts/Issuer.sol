@@ -80,6 +80,8 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function requestCertificationFor(bytes memory _data, address _owner) public returns (uint256) {
+        require(_owner != address(0), "Owner cannot be 0x0");
+
         uint256 id = ++_latestCertificationRequestId;
 
         _certificationRequests[id] = CertificationRequest({
@@ -97,6 +99,10 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
     function requestCertificationForBatch(bytes[] memory _data, address[] memory _owners) public returns (uint256[] memory) {
         uint256[] memory requestIds = new uint256[](_data.length);
+
+        for (uint256 i = 0; i < _data.length; i++) {
+            require(_owners[i] != address(0), "Owner cannot be 0x0");
+        }
 
         for (uint256 i = 0; i < _data.length; i++) {
             uint256 id = i + _latestCertificationRequestId + 1;
