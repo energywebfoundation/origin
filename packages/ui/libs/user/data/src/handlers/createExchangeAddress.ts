@@ -9,11 +9,13 @@ import {
   useAccountControllerCreate,
 } from '@energyweb/exchange-react-query-client';
 import { useQueryClient } from 'react-query';
+import { MutableRefObject } from 'react';
 import { useUser, pollExchangeAddress } from '../fetching';
 import { userApiErrorHandler } from './errorHandler';
 
 export const useApiCreateExchangeBlockchainAddress = (
-  setIsCreating: (value: boolean) => void
+  setIsCreating: (value: boolean) => void,
+  isMountedRef: MutableRefObject<boolean>
 ) => {
   const { mutateAsync, isLoading, error, isError, isSuccess, status } =
     useAccountControllerCreate();
@@ -47,8 +49,9 @@ export const useApiCreateExchangeBlockchainAddress = (
           t('user.profile.notifications.exchangeAddressSuccess'),
           NotificationTypeEnum.Success
         );
-
-        setIsCreating(false);
+        if (isMountedRef.current) {
+          setIsCreating(false);
+        }
       });
     } catch (error) {
       userApiErrorHandler(error, t);
