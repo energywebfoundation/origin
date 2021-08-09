@@ -15,8 +15,8 @@ contract TokenAccount is ReentrancyGuard, IERC1155Receiver, CommonConstants {
     }
 
     function onERC1155Received(
-        address operator,
-        address from,
+        address operator, // Needed for the interface, but unused because it's irrelevant for our use case
+        address from, // Needed for the interface, but unused because it's irrelevant for our use case
         uint256 id,
         uint256 value,
         bytes calldata data
@@ -27,8 +27,8 @@ contract TokenAccount is ReentrancyGuard, IERC1155Receiver, CommonConstants {
     }
 
     function onERC1155BatchReceived(
-        address operator,
-        address from,
+        address operator, // Needed for the interface, but unused because it's irrelevant for our use case
+        address from, // Needed for the interface, but unused because it's irrelevant for our use case
         uint256[] calldata ids,
         uint256[] calldata values,
         bytes calldata data
