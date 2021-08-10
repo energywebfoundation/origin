@@ -1,7 +1,7 @@
 import { Configuration, ProducingDevice } from '@energyweb/device-registry';
 import { AuthClient, Configuration as ClientConfiguration } from '@energyweb/origin-backend-client';
 import { IEnergyGenerated, ISmartMeterRead } from '@energyweb/origin-backend-core';
-import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { IrecDeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
 import parse from 'csv-parse/lib/sync';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
@@ -42,7 +42,7 @@ async function createBlockchainConfiguration() {
 
     const conf: Configuration.Entity = {
         logger,
-        deviceClient: new DeviceClient(clientConfiguration, backendUrl)
+        deviceClient: new IrecDeviceClient(clientConfiguration, backendUrl)
     };
 
     console.log(`[SIMULATOR-CONSUMER] Starting`);
