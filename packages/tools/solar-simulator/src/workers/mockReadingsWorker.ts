@@ -8,7 +8,7 @@ import { ProducingDevice, Configuration } from '@energyweb/device-registry';
 import { AuthClient, Configuration as ClientConfiguration } from '@energyweb/origin-backend-client';
 import { ISmartMeterRead } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
-import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { IrecDeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
 
 async function getProducingDeviceSmartMeterRead(
     deviceId: string,
@@ -79,7 +79,7 @@ const currentTime = moment.tz(device.timezone);
             format: Winston.format.combine(Winston.format.colorize(), Winston.format.simple()),
             transports: [new Winston.transports.Console({ level: 'silly' })]
         }),
-        deviceClient: new DeviceClient(clientConfiguration, backendUrl)
+        deviceClient: new IrecDeviceClient(clientConfiguration, backendUrl)
     };
 
     const MOCK_READINGS_MINUTES_INTERVAL =

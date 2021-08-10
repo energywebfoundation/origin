@@ -7,7 +7,7 @@ gzip_vary on;
 gzip_disable     "msie6";
 
 server {
-  listen *:80;
+    listen $PORT;
     location / {
         root   /usr/share/nginx/html;
         index  index.html index.htm;

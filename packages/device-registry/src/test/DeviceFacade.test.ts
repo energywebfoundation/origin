@@ -3,7 +3,7 @@
 import 'mocha';
 
 import { DeviceCreateData, DeviceStatus, ISmartMeterRead } from '@energyweb/origin-backend-core';
-import { DeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { IrecDeviceClient } from '@energyweb/origin-device-registry-irec-form-api-client';
 import { assert } from 'chai';
 import dotenv from 'dotenv';
 import { BigNumber } from 'ethers';
@@ -24,7 +24,7 @@ describe('Device Facade', () => {
     const smartMeterReads = new Map<string, ISmartMeterRead[]>();
 
     const conf: Configuration.Entity = {
-        deviceClient: {
+        IrecDeviceClient: {
             createDevice: async (deviceProperties: DeviceCreateData) => {
                 const device = {
                     id: deviceId,
@@ -50,7 +50,7 @@ describe('Device Facade', () => {
             getAllSmartMeterReadings: async (id: string) => {
                 return { data: smartMeterReads.get(id) ?? [] };
             }
-        } as Partial<DeviceClient>,
+        } as Partial<IrecDeviceClient>,
         logger
     } as Configuration.Entity;
 
