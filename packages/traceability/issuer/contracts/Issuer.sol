@@ -41,9 +41,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     event CertificationRequested(address indexed _owner, uint256 indexed _id);
-    event CertificationRequestedBatch(address[] indexed _owners, uint256[] indexed _id);
+    event CertificationRequestedBatch(address[] _owners, uint256[] _id);
     event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
-    event CertificationRequestBatchApproved(address[] indexed _owners, uint256[] indexed _ids, uint256[] indexed _certificateIds);
+    event CertificationRequestBatchApproved(address[] _owners, uint256[] _ids, uint256[] _certificateIds);
     event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
 
     event CertificateRevoked(uint256 indexed _certificateId);
