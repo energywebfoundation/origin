@@ -15,9 +15,7 @@ export const useGenerateChartLabels = ({
   let current = start;
 
   while (dayjs(current).isBefore(dayjs(end))) {
-    const formatted = dayjs(current)
-      .tz(process.env.REACT_APP_TIMEZONE_NAME, true)
-      .format(format);
+    const formatted = dayjs(current).tz(undefined, true).format(format);
 
     const date = dayjs(current)
       .add(multiplier, TimeUnitPluralEnum.minutes)

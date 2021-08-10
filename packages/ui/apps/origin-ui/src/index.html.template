@@ -8,13 +8,19 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Rajdhani"
     />
-
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="icon"
       type="image/x-icon"
       href="https://www.energyweb.org/wp-content/uploads/2019/04/cropped-ew-favicon-32x32.png"
     />
+    <script>
+      window.config = {
+        BACKEND_URL: '$BACKEND_URL',
+        BLOCKCHAIN_EXPLORER_URL: '$BLOCKCHAIN_EXPLORER_URL',
+        SUPPORTED_NETWORK_IDS: '$SUPPORTED_NETWORK_IDS',
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>
