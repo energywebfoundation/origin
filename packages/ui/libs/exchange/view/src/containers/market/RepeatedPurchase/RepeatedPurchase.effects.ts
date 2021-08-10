@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRepeatedPurchaseFormLogic } from '@energyweb/origin-ui-exchange-logic';
 import { useApiCreateDemandHandler } from '@energyweb/origin-ui-exchange-data';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { calculateDemandTotalVolume } from '@energyweb/origin-ui-exchange-data';
 import { TimeFrame } from '@energyweb/utils-general';
@@ -52,9 +52,13 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
     await createDemandHandler(values);
   });
 
-  const { isValid, errors, isDirty, dirtyFields } = formState;
+  const { isValid, errors, isDirty, dirtyFields, isSubmitting } = formState;
 
-  const buttonDisabled = !isValid || !isDirty;
+  const isValidDates =
+    dayjs(values.startDate).isValid() && dayjs(values.endDate).isValid();
+
+  const buttonDisabled = !isValid || !isDirty || !isValidDates || isSubmitting;
+
   const buttonWithState = buttons?.map((button) => ({
     ...button,
     onClick: onSubmit,

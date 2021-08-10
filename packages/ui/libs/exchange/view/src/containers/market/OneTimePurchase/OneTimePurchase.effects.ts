@@ -47,7 +47,18 @@ export const useOneTimePurchaseEffects = (
       resolver: yupResolver(validationSchema),
       defaultValues: initialValues,
     });
-  const createBidHandler = useApiCreateBidHandler(filters, reset);
+
+  const resetGenerationDates = () => {
+    handleGenerationFromChange(null);
+    handleGenerationToChange(null);
+  };
+
+  const resetForm = () => {
+    resetGenerationDates();
+    reset();
+  };
+
+  const createBidHandler = useApiCreateBidHandler(filters, resetForm);
 
   const onSubmit = handleSubmit(async (values) => {
     await createBidHandler(values);
@@ -56,9 +67,9 @@ export const useOneTimePurchaseEffects = (
   const { price, energy } = watch();
   const totalPrice = (price * energy).toFixed(2).toString();
 
-  const { isValid, errors, isDirty, dirtyFields } = formState;
+  const { isValid, errors, isDirty, dirtyFields, isSubmitting } = formState;
 
-  const buttonDisabled = !isValid || !isDirty;
+  const buttonDisabled = !isValid || !isDirty || isSubmitting;
   const buttonWithState = buttons?.map((button) => ({
     ...button,
     onClick: onSubmit,
