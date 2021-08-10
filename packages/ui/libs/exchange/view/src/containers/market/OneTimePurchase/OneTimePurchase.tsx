@@ -29,7 +29,7 @@ export const OneTimePurchase: FC<OneTimePurchaseProps> = ({
   } = useOneTimePurchaseEffects(filters, dispatch);
   const { generationFrom, generationTo, energy, price } = fields;
   return (
-    <div>
+    <div className={classes.wraper}>
       <div className={classes.block}>
         <div className={classes.item}>
           <MaterialDatepicker

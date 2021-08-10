@@ -47,7 +47,7 @@ export const MarketFilters: FC<MarketFiltersProps> = (props) => {
           {...gridOperatorAutocompleteProps}
         />
       </div>
-      <div>
+      <div className={classes.lastItem}>
         <SelectAutocomplete
           className={classes.singleItem}
           {...subRegionsAutocompleteProps}

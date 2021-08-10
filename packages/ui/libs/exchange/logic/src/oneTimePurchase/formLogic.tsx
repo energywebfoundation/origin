@@ -1,3 +1,4 @@
+import React from 'react';
 import { TextFieldProps } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -43,10 +44,16 @@ export const useOneTimePurchaseFormLogic = (mobileView: boolean) => {
       energy: {
         name: 'energy',
         label: t('exchange.viewMarket.energy'),
+        endAdornment: {
+          element: <>MWh</>,
+        },
       },
       price: {
         name: 'price',
         label: t('exchange.viewMarket.price'),
+        endAdornment: {
+          element: <>USD</>,
+        },
       },
     },
     buttons: [

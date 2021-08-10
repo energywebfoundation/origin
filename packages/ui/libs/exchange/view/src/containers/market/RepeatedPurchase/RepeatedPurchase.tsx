@@ -31,7 +31,7 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
   const { period, volume, startDate, endDate, price } = fields;
 
   return (
-    <div>
+    <div className={classes.wraper}>
       <div className={classes.block}>
         <div className={classes.item}>
           <FormSelect
