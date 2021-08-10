@@ -5,6 +5,9 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     maxWidth: '56px',
   },
+  cell: {
+    width: 56,
+  },
   speedDial: {
     position: 'absolute',
     bottom: 'calc(50% - 14px)',

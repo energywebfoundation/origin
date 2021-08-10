@@ -31,7 +31,7 @@ export const TableComponentActions: TTableComponentActions = ({
   }
 
   return (
-    <TableCell>
+    <TableCell className={classes.cell}>
       <div className={classes.wrapper}>
         <SpeedDial
           FabProps={{ className: classes.speedDialButton }}
