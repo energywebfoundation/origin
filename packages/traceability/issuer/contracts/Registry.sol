@@ -19,12 +19,14 @@ contract Registry is ERC1155, ERC1888 {
 	// Incrementing nonce, used for generating certificate IDs
     uint256 private _latestCertificateId;
 
-	constructor(string memory _uri) ERC1155(_uri) {}
+	constructor(string memory _uri) ERC1155(_uri) {
+		// Trigger ERC1155 constructor
+	}
 
 	/// @notice See {IERC1888-issue}.
     /// @dev `_to` cannot be the zero address.
 	function issue(address _to, bytes calldata _validityData, uint256 _topic, uint256 _value, bytes calldata _data) external override returns (uint256 id) {
-		require(_to != address(0x0), "Registry::issue: to must be non-zero.");
+		require(_to != address(0x0), "_to must be non-zero.");
 		
 		_validate(_msgSender(), _validityData);
 
@@ -45,9 +47,9 @@ contract Registry is ERC1155, ERC1888 {
     /// @dev `_to` cannot be the zero address.
     /// @dev `_data`, `_values` and `_validityData` must have the same length.
 	function batchIssue(address _to, bytes[] calldata _validityData, uint256[] calldata _topics, uint256[] calldata _values, bytes[] calldata _data) external override returns (uint256[] memory ids) {
-		require(_to != address(0x0), "Registry::batchIssue: to must be non-zero.");
-		require(_data.length == _values.length, "Registry::batchIssue: _data and _values arrays have to be the same length");
-		require(_values.length == _validityData.length, "Registry::batchIssue: _values and _validityData arrays have to be the same length");
+		require(_to != address(0x0), "_to must be non-zero.");
+		require(_data.length == _values.length, "Arrays not same length");
+		require(_values.length == _validityData.length, "Arrays not same length");
 
 		ids = new uint256[](_values.length);
 
@@ -77,10 +79,10 @@ contract Registry is ERC1155, ERC1888 {
     /// @dev `_to` cannot be the zero addresses.
     /// @dev `_to`, `_data`, `_values`, `_topics` and `_validityData` must have the same length.
 	function batchIssueMultiple(address[] calldata _to, bytes[] calldata _validityData, uint256[] calldata _topics, uint256[] calldata _values, bytes[] calldata _data) external returns (uint256[] memory ids) {
-		require(_to.length == _data.length, "Registry::batchIssueMultiple: _to and _issuanceData arrays have to be the same length");
-		require(_data.length == _values.length, "Registry::batchIssueMultiple: _issuanceData and _values arrays have to be the same length");
-		require(_values.length == _validityData.length, "Registry::batchIssueMultiple: _values and _validityData arrays have to be the same length");
-		require(_validityData.length == _topics.length, "Registry::batchIssueMultiple: _validityData and _topics arrays have to be the same length");
+		require(_to.length == _data.length, "Arrays not same length");
+		require(_data.length == _values.length, "Arrays not same length");
+		require(_values.length == _validityData.length, "Arrays not same length");
+		require(_validityData.length == _topics.length, "Arrays not same length");
 
 		ids = new uint256[](_values.length);
 
@@ -92,7 +94,7 @@ contract Registry is ERC1155, ERC1888 {
 		}
 			
 		for (uint256 i = 0; i < ids.length; i++) {
-			require(_to[i] != address(0x0), "Registry::batchIssueMultiple: to must be non-zero.");
+			require(_to[i] != address(0x0), "_to must be non-zero.");
 			ERC1155._mint(_to[i], ids[i], _values[i], _data[i]); // Check **
 
 			certificateStorage[ids[i]] = Certificate({
@@ -112,11 +114,11 @@ contract Registry is ERC1155, ERC1888 {
     /// @dev Allows batch issuing to an array of _to addresses.
     /// @dev `_to` cannot be the zero address.
 	function mint(uint256 _id, address _to, uint256 _quantity) external {
-		require(_to != address(0x0), "Registry::issue: to must be non-zero.");
-		require(_quantity > 0, "Registry::mint: _quantity must be higher than 0.");
+		require(_to != address(0x0), "_to must be non-zero.");
+		require(_quantity > 0, "_quantity must be above 0.");
 
 		Certificate memory cert = certificateStorage[_id];
-		require(_msgSender() == cert.issuer, "Registry::mint: only the original certificate issuer can mint more tokens");
+		require(_msgSender() == cert.issuer, "Not original issuer");
 
 		ERC1155._mint(_to, _id, _quantity, new bytes(0)); // Check **
 	}
@@ -136,11 +138,11 @@ contract Registry is ERC1155, ERC1888 {
 
 		_validate(cert.issuer,  cert.validityData);
 
-        require(_to != address(0x0), "Registry::safeTransferAndClaimFrom: _to must be non-zero.");
-		require(_from != address(0x0), "Registry::safeBatchTransferAndClaimFrom: _from address must be non-zero.");
+        require(_to != address(0x0), "_to must be non-zero.");
+		require(_from != address(0x0), "_from address must be non-zero.");
 
-        require(_from == _msgSender() || ERC1155.isApprovedForAll(_from, _msgSender()), "safeTransferAndClaimFrom: Need operator approval for 3rd party claims.");
-        require(ERC1155.balanceOf(_from, _id) >= _value, "Registry::safeTransferAndClaimFrom: _from balance has to be higher or equal _value");
+        require(_from == _msgSender() || ERC1155.isApprovedForAll(_from, _msgSender()), "No operator approval");
+        require(ERC1155.balanceOf(_from, _id) >= _value, "_from balance less than _value");
 
 		if (_from != _to) {
 			safeTransferFrom(_from, _to, _id, _value, _data);
@@ -162,19 +164,17 @@ contract Registry is ERC1155, ERC1888 {
 		bytes calldata _data,
 		bytes[] calldata _claimData
 	) external override {
+
+        require(_to != address(0x0), "_to address must be non-zero");
+		require(_from != address(0x0), "_from address must be non-zero");
+
+        require(_ids.length == _values.length, "Arrays not same length");
+		require(_values.length == _claimData.length, "Arrays not same length.");
+        require(_from == _msgSender() || ERC1155.isApprovedForAll(_from, _msgSender()), "No operator approval");
+
+		require(_ids.length > 0, "no certificates specified");
+
 		uint256 numberOfClaims = _ids.length;
-
-        require(_to != address(0x0), "Registry::safeBatchTransferAndClaimFrom: _to address must be non-zero.");
-		require(_from != address(0x0), "Registry::safeBatchTransferAndClaimFrom: _from address must be non-zero.");
-
-        require(_ids.length == _values.length, "Registry::safeBatchTransferAndClaimFrom: _ids and _values array length must match.");
-        require(_from == _msgSender() || ERC1155.isApprovedForAll(_from, _msgSender()), "Registry::safeBatchTransferAndClaimFrom: Need operator approval for 3rd party transfers.");
-
-		require(numberOfClaims > 0, "Registry::safeBatchTransferAndClaimFrom: at least one certificate has to be present.");
-		require(
-			_values.length == numberOfClaims && _claimData.length == numberOfClaims,
-			"Registry::safeBatchTransferAndClaimFrom: not all arrays are of the same length."
-		);
 
 		uint256[] memory topics = new uint256[](numberOfClaims);
 
@@ -195,14 +195,6 @@ contract Registry is ERC1155, ERC1888 {
 		emit ClaimBatch(_from, _to, topics, _ids, _values, _claimData);
 	}
 
-	/// @notice See {IERC1888-getCertificate}.
-	function getCertificate(uint256 _id) public view override returns (address issuer, uint256 topic, bytes memory validityCall, bytes memory data) {
-		require(_id <= _latestCertificateId, "Registry::getCertificate: _id out of bounds");
-
-		Certificate memory certificate = certificateStorage[_id];
-		return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
-	}
-
 	/// @notice See {IERC1888-claimedBalanceOf}.
 	function claimedBalanceOf(address _owner, uint256 _id) external override view returns (uint256) {
 		return claimedBalances[_id][_owner];
@@ -210,7 +202,7 @@ contract Registry is ERC1155, ERC1888 {
 
 	/// @notice See {IERC1888-claimedBalanceOfBatch}.
 	function claimedBalanceOfBatch(address[] calldata _owners, uint256[] calldata _ids) external override view returns (uint256[] memory) {
-        require(_owners.length == _ids.length, "Registry::ERC1155: _owners and ids length mismatch");
+        require(_owners.length == _ids.length, "owners and ids length mismatch");
 
         uint256[] memory batchClaimBalances = new uint256[](_owners.length);
 
@@ -219,6 +211,14 @@ contract Registry is ERC1155, ERC1888 {
         }
 
         return batchClaimBalances;
+	}
+
+	/// @notice See {IERC1888-getCertificate}.
+	function getCertificate(uint256 _id) public view override returns (address issuer, uint256 topic, bytes memory validityCall, bytes memory data) {
+		require(_id <= _latestCertificateId, "_id out of bounds");
+
+		Certificate memory certificate = certificateStorage[_id];
+		return (certificate.issuer, certificate.topic, certificate.validityData, certificate.data);
 	}
 
 	/// @notice Burn certificates after they've been claimed, and increase the claimed balance.
@@ -232,9 +232,6 @@ contract Registry is ERC1155, ERC1888 {
 	function _validate(address _verifier, bytes memory _validityData) internal view {
 		(bool success, bytes memory result) = _verifier.staticcall(_validityData);
 
-		require(
-			success && abi.decode(result, (bool)),
-			"Registry::_validate: Request/certificate invalid, please check with your issuer."
-		);
+		require(success && abi.decode(result, (bool)), "Request/certificate invalid");
 	}
 }
