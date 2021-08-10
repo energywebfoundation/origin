@@ -13,3 +13,4 @@ export * from './orderbook';
 export * from './allDemands';
 export * from './bidsAndAsks';
 export * from './userAndAccount';
+export * from './user';
