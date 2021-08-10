@@ -9,7 +9,6 @@ import {
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import dayjs, { Dayjs } from 'dayjs';
-import { UseFormReset } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 type MarketFilters = {
@@ -29,7 +28,7 @@ type BidFormValues = {
 
 export const useApiCreateBidHandler = (
   filters: MarketFilters,
-  reset: UseFormReset<BidFormValues>
+  resetForm: () => void
 ) => {
   const { t } = useTranslation();
   const { mutate } = useOrderControllerCreateBid();
@@ -71,7 +70,7 @@ export const useApiCreateBidHandler = (
             t('exchange.viewMarket.notifications.createBidSuccess'),
             NotificationTypeEnum.Success
           );
-          reset();
+          resetForm();
         },
         onError: () => {
           showNotification(
