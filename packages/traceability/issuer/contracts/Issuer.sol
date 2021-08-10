@@ -41,9 +41,9 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     }
 
     event CertificationRequested(address indexed _owner, uint256 indexed _id);
-    event CertificationRequestedBatch(address[] indexed _owners, uint256[] indexed _id);
+    event CertificationRequestedBatch(address indexed operator, address[] _owners, uint256[] _id);
     event CertificationRequestApproved(address indexed _owner, uint256 indexed _id, uint256 indexed _certificateId);
-    event CertificationRequestBatchApproved(address[] indexed _owners, uint256[] indexed _ids, uint256[] indexed _certificateIds);
+    event CertificationRequestBatchApproved(address indexed operator, address[] _owners, uint256[] _ids, uint256[] _certificateIds);
     event CertificationRequestRevoked(address indexed _owner, uint256 indexed _id);
 
     event CertificateRevoked(uint256 indexed _certificateId);
@@ -118,7 +118,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             requestIds[i] = id;
         }
 
-        emit CertificationRequestedBatch(_owners, requestIds);
+        emit CertificationRequestedBatch(_msgSender(), _owners, requestIds);
 
         _latestCertificationRequestId = requestIds[requestIds.length - 1];
 
@@ -211,7 +211,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
             _requestToCertificate[_requestIds[i]] = certificateIds[i];
         }
 
-        emit CertificationRequestBatchApproved(owners, _requestIds, certificateIds);
+        emit CertificationRequestBatchApproved(_msgSender(), owners, _requestIds, certificateIds);
 
         return certificateIds;
     }
