@@ -26,7 +26,7 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
     eventsData,
     blockhainTransactionsTitle,
   } = useCertificateDetailsEffects(certificate);
-  const blockExplorerUrl = process.env.NX_BLOCKCHAIN_EXPLORER_URL;
+  const blockExplorerUrl = (window as any).config.BLOCKCHAIN_EXPLORER_URL;
 
   if (isLoading) return <CircularProgress />;
 
