@@ -27,20 +27,38 @@ export const ViewMarketPage: FC = () => {
   return (
     <Box width="100%" mr={3}>
       <Paper className={classes.paper}>
-        <Typography variant="h5" gutterBottom style={{ marginLeft: 10 }}>
-          {formTitle}
-        </Typography>
-        <MarketFilters state={state} dispatch={dispatch} />
+        <Paper className={classes.filtersPaper}>
+          <Typography variant="h5" gutterBottom style={{ marginLeft: 10 }}>
+            {formTitle}
+          </Typography>
+          <MarketFilters state={state} dispatch={dispatch} />
+        </Paper>
+
+        <Paper className={classes.tabsPaper}>
+          <ListActionsBlock
+            tabsProps={{
+              variant: 'fullWidth',
+              className: classes.tabs,
+              classes: {
+                scroller: classes.scroller,
+              },
+            }}
+            {...formActionsProps}
+          />
+        </Paper>
+      </Paper>
+      <Paper className={classes.tabsPaper}>
         <ListActionsBlock
-          wrapperProps={{ className: classes.tabsWrapper }}
-          tabsProps={{ variant: 'fullWidth' }}
-          {...formActionsProps}
+          tabsProps={{
+            variant: 'fullWidth',
+            className: classes.tabs,
+            classes: {
+              scroller: classes.scroller,
+            },
+          }}
+          {...tablesActionsProps}
         />
       </Paper>
-      <ListActionsBlock
-        tabsProps={{ variant: 'fullWidth' }}
-        {...tablesActionsProps}
-      />
     </Box>
   );
 };

@@ -1,6 +1,10 @@
 import { makeStyles } from '@material-ui/core';
+import { LightenColor } from '@energyweb/origin-ui-theme';
 
 export const useStyles = makeStyles((theme) => ({
+  wraper: {
+    padding: '0 20px 20px 20px',
+  },
   block: {
     width: '100%',
     display: 'flex',
@@ -19,5 +23,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   divider: {
     margin: 10,
+    borderColor: LightenColor(theme.palette.background.paper, 6.8),
   },
 }));

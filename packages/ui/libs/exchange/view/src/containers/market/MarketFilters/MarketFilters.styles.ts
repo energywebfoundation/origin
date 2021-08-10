@@ -19,4 +19,7 @@ export const useStyles = makeStyles((theme) => ({
   singleItem: {
     margin: 10,
   },
+  lastItem: {
+    marginBottom: -10,
+  },
 }));
