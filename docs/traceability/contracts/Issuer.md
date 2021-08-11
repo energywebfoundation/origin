@@ -133,7 +133,7 @@ Allow only to the owner of the contract.
 
 
 
-### `CertificationRequestedBatch(address[] _owners, uint256[] _id)`
+### `CertificationRequestedBatch(address operator, address[] _owners, uint256[] _id)`
 
 
 
@@ -145,7 +145,7 @@ Allow only to the owner of the contract.
 
 
 
-### `CertificationRequestBatchApproved(address[] _owners, uint256[] _ids, uint256[] _certificateIds)`
+### `CertificationRequestBatchApproved(address operator, address[] _owners, uint256[] _ids, uint256[] _certificateIds)`
 
 
 

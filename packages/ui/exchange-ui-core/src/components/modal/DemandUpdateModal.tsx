@@ -102,8 +102,7 @@ export function DemandUpdateModal(props: IProps) {
                 start: moment(values.start).toISOString(),
                 end: moment(values.end).toISOString(),
                 product: values.product,
-                boundToGenerationTime: false,
-                excludeEnd: false
+                boundToGenerationTime: false
             })
         );
         formikActions.setSubmitting(false);

@@ -92,9 +92,9 @@ export class CreateIrecCertificationRequestHandler
             recipient: platformTradeAccount,
             start: new Date(request.fromTime),
             end: new Date(request.toTime),
-            production: Number(request.energy)
+            production: Number(request.energy),
+            files: fileIds
         });
-        await this.repository.update(request.id, { files: fileIds });
         await this.irecRepository.update(irecCertificationRequest.certificationRequestId, {
             irecIssueRequestId: irecIssue.code
         });
