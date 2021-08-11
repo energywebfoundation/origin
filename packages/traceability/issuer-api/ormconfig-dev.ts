@@ -1,5 +1,9 @@
 import { ConnectionOptions } from 'typeorm';
 
+// e2e and development variables required for migration
+process.env.DEPLOY_KEY = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
+process.env.WEB3 = 'http://localhost:8581';
+
 const getDBConnectionOptions = (): ConnectionOptions => {
     return process.env.DATABASE_URL
         ? {

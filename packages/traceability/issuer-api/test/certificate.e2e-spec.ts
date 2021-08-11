@@ -91,8 +91,6 @@ describe('Certificate tests', () => {
 
     after(async () => {
         await databaseService.truncate(CERTIFICATES_TABLE_NAME);
-
-        await databaseService.cleanUp();
         await app.close();
     });
 

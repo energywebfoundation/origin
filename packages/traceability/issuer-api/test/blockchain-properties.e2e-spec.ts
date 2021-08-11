@@ -18,7 +18,6 @@ describe('BlockchainProperties tests', () => {
     });
 
     after(async () => {
-        await databaseService.cleanUp();
         await app.close();
     });
 

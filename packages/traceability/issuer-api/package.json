@@ -26,8 +26,10 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
-        "test:e2e": "yarn typeorm:run && npx concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"npx wait-on tcp:8581 && yarn test:mocha\"",
+        "test:e2e": "npx concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"npx wait-on tcp:8581 && yarn typeorm:run && yarn test:mocha && yarn typeorm:drop\"",
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8581 -q",
+        "start:dev": "concurrently -n ganache,api \"yarn start-ganache\" \"yarn typeorm:run && nest start --debug --watch --preserveWatchOutput -p tsconfig.json\"",
+        "drop": "yarn typeorm:drop",
         "clean": "shx rm -rf dist dist-shakeable",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
@@ -79,7 +81,8 @@
         "mocha": "9.0.3",
         "chai": "4.3.0",
         "@types/chai": "4.2.15",
-        "ts-node": "9.1.1"
+        "ts-node": "9.1.1",
+        "concurrently": "6.2.1"
     },
     "jest": {
         "moduleFileExtensions": [

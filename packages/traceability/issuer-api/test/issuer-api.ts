@@ -28,28 +28,16 @@ export const deviceManager = {
     address: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8',
     privateKey: '0xd9bc30dc17023fbb68fe3002e0ff9107b241544fd6d60863081c55e383f1b5a3'
 };
-// ganache account 2
+// ganache account 0
 export const registryDeployer = {
-    address: '0x9442ED348b161af888e6cB999951aE8b961F7B4B',
-    privateKey: '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3'
+    address: '0xD173313A51f8fc37BcF67569b463abd89d81844f',
+    privateKey: '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5'
 };
 
 // ganache account 2
 export const otherDeviceManager = {
     address: '0xB00F0793d0ce69d7b07db16F92dC982cD6Bdf651',
     privateKey: '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e'
-};
-
-const deployRegistry = async () => {
-    return Contracts.migrateRegistry(provider, registryDeployer.privateKey);
-};
-
-const deployIssuer = async (registry: string) => {
-    return Contracts.migrateIssuer(provider, registryDeployer.privateKey, registry);
-};
-
-const deployPrivateIssuer = async (issuer: string) => {
-    return Contracts.migratePrivateIssuer(provider, registryDeployer.privateKey, issuer);
 };
 
 export enum TestUser {
@@ -129,12 +117,6 @@ export class StubValidateDeviceOwnershipQueryHandler
 }
 
 export const bootstrapTestInstance: any = async (handler: Type<any>) => {
-    const registry = await deployRegistry();
-    const issuer = await deployIssuer(registry.address);
-    const privateIssuer = await deployPrivateIssuer(issuer.address);
-
-    await issuer.setPrivateIssuer(privateIssuer.address);
-
     const moduleFixture = await Test.createTestingModule({
         imports: [
             TypeOrmModule.forRoot({
@@ -164,15 +146,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
     );
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
 
-    const blockchainProperties = await blockchainPropertiesService.create(
-        provider.network.chainId,
-        registry.address,
-        issuer.address,
-        web3,
-        registryDeployer.privateKey,
-        null,
-        privateIssuer.address
-    );
+    const blockchainProperties = await blockchainPropertiesService.get();
 
     await CertificateUtils.approveOperator(
         registryDeployer.address,
@@ -191,9 +165,6 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
 
     return {
         databaseService,
-        registry,
-        issuer,
-        privateIssuer,
         provider,
         app
     };
