@@ -69,6 +69,7 @@ contract RegistryExtended is Registry {
             require(_from[i] != address(0x0), "_from must be non-zero.");
             require(_to[i] != address(0x0), "_to must be non-zero.");
             require(_from[i] == _msgSender() || ERC1155.isApprovedForAll(_from[i], _msgSender()), "No operator approval");
+			require(ERC1155.balanceOf(_from[i], _ids[i]) >= _values[i], "Not enough balance to transfer");
 
             Certificate memory cert = certificateStorage[_ids[i]];
 
@@ -108,6 +109,7 @@ contract RegistryExtended is Registry {
             require(_from[i] != address(0x0), "_from must be non-zero.");
             require(_to[i] != address(0x0), "_to must be non-zero.");
             require(_from[i] == _msgSender() || ERC1155.isApprovedForAll(_from[i], _msgSender()), "No operator approval");
+			require(ERC1155.balanceOf(_from[i], _ids[i]) >= _values[i], "Not enough balance to claim");
 
             Certificate memory cert = certificateStorage[_ids[i]];
 
