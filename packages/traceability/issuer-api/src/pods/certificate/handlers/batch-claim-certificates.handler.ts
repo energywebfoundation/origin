@@ -8,7 +8,6 @@ import { HttpStatus } from '@nestjs/common';
 import { BatchClaimCertificatesCommand } from '../commands/batch-claim-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { TOTAL_AMOUNT } from '../types';
 
 @CommandHandler(BatchClaimCertificatesCommand)
 export class BatchClaimCertificatesHandler
@@ -20,59 +19,43 @@ export class BatchClaimCertificatesHandler
         private readonly blockchainPropertiesService: BlockchainPropertiesService
     ) {}
 
-    async execute({
-        certificateAmounts,
-        claimData,
-        forAddress
-    }: BatchClaimCertificatesCommand): Promise<ISuccessResponse> {
+    async execute({ claims }: BatchClaimCertificatesCommand): Promise<ISuccessResponse> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
-        const certificatesToClaim = await this.repository.findByIds(
-            certificateAmounts.map((cert) => cert.id),
-            { relations: ['blockchain'] }
-        );
+        for (const { id, amount, from } of claims) {
+            if (!amount) {
+                continue;
+            }
 
-        const notOwnedCertificates = certificatesToClaim
-            .filter(
-                (cert) =>
-                    !cert.owners[forAddress] ||
-                    BigNumber.from(cert.owners[forAddress] ?? 0).isZero()
-            )
-            .map((cert) => cert.id);
+            const cert = await this.repository.findOne(id);
 
-        if (notOwnedCertificates.length > 0) {
-            return ResponseFailure(
-                `Requested claiming of certificates, but you do not own certificates with IDs: ${notOwnedCertificates.join(
-                    ', '
-                )}`,
-                HttpStatus.FORBIDDEN
-            );
+            if (
+                !cert.owners[from] ||
+                BigNumber.from(cert.owners[from] ?? 0).isZero() ||
+                BigNumber.from(cert.owners[from] ?? 0).lt(amount)
+            ) {
+                return ResponseFailure(
+                    `Requested claiming of certificate ${id} with amount ${amount.toString()}, but you only own ${
+                        cert.owners[from] ?? 0
+                    }`,
+                    HttpStatus.FORBIDDEN
+                );
+            }
         }
-
-        const amounts = certificateAmounts.map((cert) =>
-            BigNumber.from(
-                cert.amount === TOTAL_AMOUNT
-                    ? certificatesToClaim.find((c) => c.id === cert.id).owners[forAddress]
-                    : cert.amount
-            )
-        );
 
         try {
             const batchClaimTx = await CertificateBatchOperations.claimCertificates(
-                certificateAmounts.map((cert) => cert.id),
-                claimData,
-                blockchainProperties.wrap(),
-                forAddress,
-                amounts
+                claims,
+                blockchainProperties.wrap()
             );
 
             const receipt = await batchClaimTx.wait();
 
             if (receipt.status === 0) {
                 throw new Error(
-                    `ClaimBatch tx ${
-                        receipt.transactionHash
-                    } on certificate with id ${certificatesToClaim.map((cert) => cert.id)} failed.`
+                    `ClaimBatch tx ${receipt.transactionHash} on certificate with id ${claims.map(
+                        (claim) => claim.id
+                    )} failed.`
                 );
             }
         } catch (error) {
