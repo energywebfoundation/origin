@@ -48,6 +48,7 @@ export const DetailViewCarousel: FC<DetailViewCarouselProps> = ({
             device={device}
             carouselMode={carouselMode}
             handleModeChange={handleModeChange}
+            mapContainerClassName={classes.mapContainer}
             itemProps={{ className: classes.item }}
           />
         )}

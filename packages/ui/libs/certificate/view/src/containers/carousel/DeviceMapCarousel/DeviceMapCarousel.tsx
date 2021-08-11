@@ -11,6 +11,7 @@ interface DeviceMapCarouselProps {
     mode: CarouselModeEnum
   ) => void;
   itemProps: React.HTMLAttributes<HTMLDivElement>;
+  mapContainerClassName?: string;
 }
 
 export const DeviceMapCarousel: FC<DeviceMapCarouselProps> = ({
@@ -18,12 +19,14 @@ export const DeviceMapCarousel: FC<DeviceMapCarouselProps> = ({
   itemProps,
   carouselMode,
   handleModeChange,
+  mapContainerClassName,
 }) => {
   return (
     <div {...itemProps}>
       <GenericMap
         apiKey={process.env.NX_GOOGLE_MAPS_API_KEY}
         allItems={[device]}
+        containerClassName={mapContainerClassName}
         mapProps={{
           options: {
             mapTypeControl: false,
