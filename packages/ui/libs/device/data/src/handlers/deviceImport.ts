@@ -67,39 +67,47 @@ export const useApiDeviceImportHandler = (
       subregion: values.subregion,
     };
 
-    mutateAsync({ data: importData }).then((createdIRecDevice) => {
-      const originDeviceData: NewDeviceDTO = {
-        externalRegistryId: createdIRecDevice.id,
-        smartMeterId: values.smartMeterId,
-        description: values.description,
-        externalDeviceIds: [],
-        imageIds: imageIds
-          .filter((img) => !img.removed)
-          .map((img) => img.uploadedName),
-      };
-      mutate(
-        { data: originDeviceData },
-        {
-          onSuccess: () => {
-            showNotification(
-              t('device.import.notifications.importSuccess'),
-              NotificationTypeEnum.Success
-            );
-            queryClient.invalidateQueries(devicesToImportQueryKey);
-            queryClient.invalidateQueries(myIRecDevicesQueryKey);
-            queryClient.invalidateQueries(myOriginDevicesQueryKey);
-            reset();
-            handleModalClose();
-          },
-          onError: (error: AxiosError) => {
-            console.error(error);
-            showNotification(
-              t('device.import.notifications.importError'),
-              NotificationTypeEnum.Error
-            );
-          },
-        }
-      );
-    });
+    mutateAsync({ data: importData })
+      .then((createdIRecDevice) => {
+        const originDeviceData: NewDeviceDTO = {
+          externalRegistryId: createdIRecDevice.id,
+          smartMeterId: values.smartMeterId,
+          description: values.description,
+          externalDeviceIds: [],
+          imageIds: imageIds
+            .filter((img) => !img.removed)
+            .map((img) => img.uploadedName),
+        };
+        mutate(
+          { data: originDeviceData },
+          {
+            onSuccess: () => {
+              showNotification(
+                t('device.import.notifications.importSuccess'),
+                NotificationTypeEnum.Success
+              );
+              queryClient.invalidateQueries(devicesToImportQueryKey);
+              queryClient.invalidateQueries(myIRecDevicesQueryKey);
+              queryClient.invalidateQueries(myOriginDevicesQueryKey);
+              reset();
+              handleModalClose();
+            },
+            onError: (error: AxiosError) => {
+              console.error(error);
+              showNotification(
+                t('device.import.notifications.importError'),
+                NotificationTypeEnum.Error
+              );
+            },
+          }
+        );
+      })
+      .catch((error: AxiosError) => {
+        console.error(error);
+        showNotification(
+          t('device.import.notifications.importError'),
+          NotificationTypeEnum.Error
+        );
+      });
   };
 };
