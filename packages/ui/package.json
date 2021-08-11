@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "nx": "nx",
-    "start": "./dev-env.sh && nx serve",
+    "start": "./dev-env.sh && nx serve --port=3000",
     "config-env": "bash env.sh",
     "build:ui-utils": "nx run ui-utils:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:ui-theme": "nx run ui-theme:build",
@@ -27,6 +27,7 @@
     "deploy:container:heroku:canary": "make push-heroku-canary",
     "deploy:container:heroku:canary-v2": "make push-heroku-canary-v2",
     "deploy:container:heroku:stable": "make push-heroku-stable",
+    "storybook": "nx run ui-core:storybook --port=6006",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",

@@ -105,7 +105,7 @@
             "commandKind": "global",
             "name": "storybook",
             "summary": "Launch storybook UI in origin-ui-core package",
-            "shellCommand": "cd packages/ui && rushx nx serve ui-core:storybook",
+            "shellCommand": "cd packages/ui && rushx storybook",
             "safeForSimultaneousRushProcesses": true
         }
         // {
