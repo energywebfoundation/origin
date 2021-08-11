@@ -20,6 +20,7 @@ export type GenericFormField = {
   name: string;
   label: string;
   type?: 'text' | 'password';
+  placeholder?: string;
   required?: boolean;
   select?: boolean;
   additionalInputProps?: {
