@@ -153,7 +153,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
                         countryCode: '',
                         periodStartDate: '',
                         periodEndDate: '',
-                        purpose: ''
+                        purpose: 'GHG Accounting'
                     },
                     BigNumber.from(transfer.amount)
                 );

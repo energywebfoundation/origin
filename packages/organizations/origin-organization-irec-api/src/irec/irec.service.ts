@@ -365,7 +365,7 @@ export class IrecService implements IIrecService {
             beneficiary: Number(claimData.beneficiary),
             start: new Date(claimData.periodStartDate),
             end: new Date(claimData.periodEndDate),
-            purpose: ''
+            purpose: claimData.purpose
         });
     }
 
