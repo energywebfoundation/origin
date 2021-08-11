@@ -76,7 +76,10 @@ export function* getBlockchainCertificate(id: number): any {
 
     const configuration: IBlockchainProperties = {
         web3,
-        registry: Contracts.factories.RegistryFactory.connect(blockchainProperties.registry, web3),
+        registry: Contracts.factories.RegistryExtendedFactory.connect(
+            blockchainProperties.registry,
+            web3
+        ),
         issuer: Contracts.factories.IssuerFactory.connect(blockchainProperties.issuer, web3),
         activeUser: web3.getSigner()
     };

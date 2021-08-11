@@ -22,17 +22,17 @@ Allows batch issuing to an array of _to addresses.
 
 ### `safeBatchTransferFromMultiple(address[] _from, address[] _to, uint256[] _ids, uint256[] _values, bytes[] _data)` (external)
 
+Similar to {ERC1155-safeBatchTransferFrom}, but not a part of the ERC-1155 standard.
 
 
-
+Allows batch transferring to/from an array of addresses.
 
 ### `safeBatchTransferAndClaimFromMultiple(address[] _from, address[] _to, uint256[] _ids, uint256[] _values, bytes[] _data, bytes[] _claimData)` (external)
 
-See {IERC1888-safeBatchTransferAndClaimFrom}.
+Similar to {IERC1888-safeBatchTransferAndClaimFrom}, but not a part of the ERC-1888 standard.
 
 
-`_to` and `_from` cannot be the zero addresses.
-`_from` has to have a balance above 0.
+Allows batch claiming to/from an array of addresses.
 
 
 ### `TransferBatchMultiple(address operator, address[] from, address[] to, uint256[] ids, uint256[] values)`
