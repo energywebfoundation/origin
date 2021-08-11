@@ -168,6 +168,11 @@ export const getAllCertificateEvents = async (
         'TransferBatch'
     );
 
+    const transferBatchMultipleEvents = await getEvent(
+        registry.filters.TransferBatchMultiple(null, null, null, null, null),
+        'TransferBatchMultiple'
+    );
+
     const claimSingleEvents = await getEvent(
         registry.filters.ClaimSingle(null, null, null, null, null, null),
         'ClaimSingle'
@@ -178,13 +183,20 @@ export const getAllCertificateEvents = async (
         'ClaimBatch'
     );
 
+    const claimBatchMultipleEvents = await getEvent(
+        registry.filters.ClaimBatchMultiple(null, null, null, null, null, null),
+        'ClaimBatchMultiple'
+    );
+
     return [
         ...issuanceSingleEvents,
         ...issuanceBatchEvents,
         ...transferSingleEvents,
         ...transferBatchEvents,
+        ...transferBatchMultipleEvents,
         ...claimSingleEvents,
-        ...claimBatchEvents
+        ...claimBatchEvents,
+        ...claimBatchMultipleEvents
     ];
 };
 
@@ -209,8 +221,20 @@ export const calculateOwnership = async (
         )
     ).filter((e) => e.ids.some((id: BigNumber) => id.eq(certificateId)));
 
+    const transferBatchMultipleEvents = (
+        await getEventsFromContract(
+            registry,
+            registry.filters.TransferBatchMultiple(null, null, null, null, null)
+        )
+    ).filter((e) => e.ids.some((id: BigNumber) => id.eq(certificateId)));
+
     const allHistoricOwners = [
-        ...new Set([...transferSingleEvents, ...transferBatchEvents].map((event) => event.to))
+        ...new Set([
+            ...[...transferSingleEvents, ...transferBatchEvents].map((event) => event.to),
+            ...transferBatchMultipleEvents
+                .map((event) => event.to)
+                .reduce((a, b) => a.concat(b), [])
+        ])
     ].filter((address) => address !== constants.AddressZero);
 
     const allHistoricOwnersBalances = await registry.balanceOfBatch(
@@ -246,8 +270,20 @@ export const calculateClaims = async (
         )
     ).filter((e) => e._ids.some((id: BigNumber) => id.eq(certificateId)));
 
+    const claimBatchMultipleEvents = (
+        await getEventsFromContract(
+            registry,
+            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null)
+        )
+    ).filter((e) => e._ids.some((id: BigNumber) => id.eq(certificateId)));
+
     const allHistoricClaimers = [
-        ...new Set([...claimSingleEvents, ...claimBatchEvents].map((event) => event._claimSubject))
+        ...new Set([
+            ...[...claimSingleEvents, ...claimBatchEvents].map((event) => event._claimSubject),
+            ...claimBatchMultipleEvents
+                .map((event) => event._claimSubject)
+                .reduce((a, b) => a.concat(b), [])
+        ])
     ].filter((address) => address !== constants.AddressZero);
 
     const allHistoricClaimersBalances = await registry.claimedBalanceOfBatch(
