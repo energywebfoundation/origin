@@ -29,6 +29,13 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
             { relations: ['blockchain'] }
         );
 
+        if (!certificate) {
+            return ResponseFailure(
+                `No certificate found with id ${certificateId}`,
+                HttpStatus.NOT_FOUND
+            );
+        }
+
         const cert = await new CertificateFacade(
             certificate.id,
             certificate.blockchain.wrap()

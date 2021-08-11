@@ -240,6 +240,7 @@ describe('Certificate tests', () => {
                 amount
             })
             .expect(HttpStatus.OK);
+
         await sleep(10000);
 
         await request(app.getHttpServer())
