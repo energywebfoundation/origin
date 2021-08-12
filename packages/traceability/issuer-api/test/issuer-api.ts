@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CertificateUtils, Contracts } from '@energyweb/issuer';
+import { CertificateUtils } from '@energyweb/issuer';
 import {
     IUser,
     OrganizationStatus,
