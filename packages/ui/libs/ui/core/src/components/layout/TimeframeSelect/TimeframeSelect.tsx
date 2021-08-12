@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import {
   Box,
   BoxProps,
@@ -20,6 +20,7 @@ export interface TimeframeSelectProps {
   containerProps?: GridProps;
   pickersContainerProps?: GridProps;
   dividerProps?: BoxProps;
+  customDivider?: ReactNode;
 }
 
 export const TimeframeSelect: FC<TimeframeSelectProps> = ({
@@ -32,6 +33,7 @@ export const TimeframeSelect: FC<TimeframeSelectProps> = ({
   containerProps,
   pickersContainerProps,
   dividerProps,
+  customDivider,
 }) => {
   const classes = useStyles();
 
@@ -63,7 +65,13 @@ export const TimeframeSelect: FC<TimeframeSelectProps> = ({
           {...pickersContainerProps}
         >
           <MaterialDatepicker {...fromPickerProps} />
-          <Box className={classes.divider} {...dividerProps}></Box>
+
+          {customDivider ? (
+            customDivider
+          ) : (
+            <Box className={classes.divider} {...dividerProps} />
+          )}
+
           <MaterialDatepicker {...toPickerProps} />
         </Grid>
       </Grid>

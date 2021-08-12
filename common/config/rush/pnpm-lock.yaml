@@ -128,6 +128,7 @@ dependencies:
   '@types/pg': 8.6.1
   '@types/qs': 6.9.7
   '@types/react': 17.0.1
+  '@types/react-beautiful-dnd': 13.1.0
   '@types/react-dom': 17.0.1
   '@types/react-is': 17.0.0
   '@types/react-router-dom': 5.1.7
@@ -210,6 +211,7 @@ dependencies:
   prettier: 2.3.2
   qs: 6.10.1
   react: 17.0.2
+  react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
   react-chartjs-2: 3.0.3_chart.js@3.3.2+react@17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-dropzone: 11.3.2_react@17.0.2
@@ -9960,6 +9962,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-MUc6zSmU3tEVnkQ78q0peeEjKWPUADMlC/t++2bI8WnAG2tvYRPIgHG8lWkXwqc8MsUF6Z2MOf+Mh5sazOmhiQ==
+  /@types/hoist-non-react-statics/3.3.1:
+    dependencies:
+      '@types/react': 17.0.1
+      hoist-non-react-statics: 3.3.2
+    dev: false
+    resolution:
+      integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
   /@types/html-minifier-terser/5.1.2:
     dev: false
     resolution:
@@ -10277,6 +10286,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-DF9utM6VjuIaY388R6XWWDs7CIDTH7on1k1yR+hqaL/T4/OqSCW5uij28APq9KI82CZf0/qtBJI+pjvXcOh0kQ==
+  /@types/react-beautiful-dnd/13.1.0:
+    dependencies:
+      '@types/react': 17.0.1
+    dev: false
+    resolution:
+      integrity: sha512-RZUwL3gSkA1m3m553ZZkDk89KBRABMWVE3LK7AoSohmx/APGt8U2GApCNj4pHdPwL/vxzZjwuqf3NtlWquuhVw==
   /@types/react-dom/17.0.1:
     dependencies:
       '@types/react': 17.0.1
@@ -10289,6 +10304,15 @@ packages:
     dev: false
     resolution:
       integrity: sha512-A0DQ1YWZ0RG2+PV7neAotNCIh8gZ3z7tQnDJyS2xRPDNtAtSPcJ9YyfMP8be36Ha0kQRzbZCrrTMznA4blqO5g==
+  /@types/react-redux/7.1.18:
+    dependencies:
+      '@types/hoist-non-react-statics': 3.3.1
+      '@types/react': 17.0.1
+      hoist-non-react-statics: 3.3.2
+      redux: 4.1.0
+    dev: false
+    resolution:
+      integrity: sha512-9iwAsPyJ9DLTRH+OFeIrm9cAbIj1i2ANL3sKQFATqnPWRbg+jEFXyZOKHiQK/N86pNRXbb4HRxAxo0SIX1XwzQ==
   /@types/react-router-dom/5.1.7:
     dependencies:
       '@types/history': 4.7.9
@@ -15619,6 +15643,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
+  /css-box-model/1.2.1:
+    dependencies:
+      tiny-invariant: 1.1.0
+    dev: false
+    resolution:
+      integrity: sha512-a7Vr4Q/kd/aw96bnJG332W9V9LkJO69JRcaCYDUqjp6/z0w6VcZjgAcTbgFxEPfBgdnAwlh3iwu+hLopa+flJw==
   /css-color-names/0.0.4:
     dev: false
     resolution:
@@ -29183,6 +29213,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
+  /raf-schd/4.0.3:
+    dev: false
+    resolution:
+      integrity: sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==
   /ramda/0.21.0:
     dev: false
     resolution:
@@ -29280,6 +29314,23 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==
+  /react-beautiful-dnd/13.1.0_react-dom@17.0.2+react@17.0.2:
+    dependencies:
+      '@babel/runtime': 7.14.8
+      css-box-model: 1.2.1
+      memoize-one: 5.2.1
+      raf-schd: 4.0.3
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-redux: 7.2.4_react-dom@17.0.2+react@17.0.2
+      redux: 4.1.0
+      use-memo-one: 1.1.2_react@17.0.2
+    dev: false
+    peerDependencies:
+      react: ^16.8.5 || ^17.0.0
+      react-dom: ^16.8.5 || ^17.0.0
+    resolution:
+      integrity: sha512-aGvblPZTJowOWUNiwd6tNfEpgkX5OxmpqxHKNW/4VmvZTNTbeiq7bA3bn5T+QSF2uibXB0D1DmJsb1aC/+3cUA==
   /react-chartjs-2/3.0.3_chart.js@3.3.2+react@17.0.2:
     dependencies:
       chart.js: 3.3.2
@@ -29561,6 +29612,28 @@ packages:
         optional: true
     resolution:
       integrity: sha512-F17OuiL7CS9HDbNt1vUN5Opk0Ua+r2y2liDGLlZh3mbdc3ANob0mgaWB6TOBdlyMewbgg+qf1keS2aCV1qVWOg==
+  /react-redux/7.2.4_react-dom@17.0.2+react@17.0.2:
+    dependencies:
+      '@babel/runtime': 7.14.8
+      '@types/react-redux': 7.1.18
+      hoist-non-react-statics: 3.3.2
+      loose-envify: 1.4.0
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-is: 16.13.1
+    dev: false
+    peerDependencies:
+      react: ^16.8.3 || ^17
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    resolution:
+      integrity: sha512-hOQ5eOSkEJEXdpIKbnRyl04LhaWabkDPV+Ix97wqQX3T3d2NQ8DUblNXXtNMavc7DpswyQM6xfaN4HQDKNY2JA==
   /react-refresh/0.8.3:
     dev: false
     engines:
@@ -34462,6 +34535,14 @@ packages:
         optional: true
     resolution:
       integrity: sha512-d2TEuG6nSLKQLAfW3By8mKr8HurOlTkul0sOpxbClIv4SQ4iOd7BYr7VIzdbktUCnv7dua/60xzd8igMU6jmyw==
+  /use-memo-one/1.1.2_react@17.0.2:
+    dependencies:
+      react: 17.0.2
+    dev: false
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+    resolution:
+      integrity: sha512-u2qFKtxLsia/r8qG0ZKkbytbztzRb317XCkT7yP8wxL0tZ/CzK2G+WWie5vWvpyeP7+YoPIwbJoIHJ4Ba4k0oQ==
   /use/3.1.1:
     dev: false
     engines:
@@ -39037,6 +39118,7 @@ packages:
       '@types/material-ui': 0.21.9
       '@types/node': 14.17.9
       '@types/react': 17.0.1
+      '@types/react-beautiful-dnd': 13.1.0
       '@types/react-dom': 17.0.1
       '@types/react-is': 17.0.0
       '@types/react-router-dom': 5.1.7
@@ -39073,6 +39155,7 @@ packages:
       lodash: 4.17.21
       prettier: 2.3.2
       react: 17.0.2
+      react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
       react-chartjs-2: 3.0.3_chart.js@3.3.2+react@17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-dropzone: 11.3.2_react@17.0.2
@@ -39103,7 +39186,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-5QRgyv/3hW1SqiHfhAz9uQh7kL5EIhHTTtbaRsAMfZe5Ej3+cg2/Hc+o/Xs7yQnjuZKvgXH59HhoAtOBhkcn5Q==
+      integrity: sha512-v76mRwfsZ+jczJ4VV6983C5KUsC2w4bgjYuIsYK/LevOMswsz1GkDu+6BHGLHVCA2ciUbyt8NdFaY82i1TC3SQ==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -39310,6 +39393,7 @@ specifiers:
   '@types/pg': 8.6.1
   '@types/qs': 6.9.7
   '@types/react': 17.0.1
+  '@types/react-beautiful-dnd': 13.1.0
   '@types/react-dom': 17.0.1
   '@types/react-is': 17.0.0
   '@types/react-router-dom': 5.1.7
@@ -39392,6 +39476,7 @@ specifiers:
   prettier: 2.3.2
   qs: 6.10.1
   react: 17.0.2
+  react-beautiful-dnd: 13.1.0
   react-chartjs-2: 3.0.3
   react-dom: 17.0.2
   react-dropzone: 11.3.2
