@@ -1,8 +1,32 @@
+import path from 'path';
+import fs from 'fs';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { providers } from 'ethers';
 import { Contracts as IssuerContracts, IContractsLookup } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 
+const getEnvFilePath = () => {
+    const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
+
+    let finalPath = null;
+
+    for (const pathToTest of pathsToTest) {
+        const resolvedPath = path.resolve(__dirname, pathToTest);
+
+        if (__dirname.includes('dist/js') && fs.existsSync(resolvedPath)) {
+            finalPath = resolvedPath;
+            break;
+        }
+    }
+
+    return finalPath;
+};
+
+const envPath = getEnvFilePath();
+
+if (envPath) {
+    require('dotenv').config({ path: envPath });
+}
 export class DeployContracts5555555555555 implements MigrationInterface {
     private deployKey: string;
     private web3: string;

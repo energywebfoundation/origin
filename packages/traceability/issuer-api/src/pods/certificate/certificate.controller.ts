@@ -18,13 +18,10 @@ import {
     UseInterceptors,
     HttpStatus,
     Query,
-    UsePipes,
-    ValidationPipe,
     NotFoundException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Role } from '@energyweb/origin-backend-core';
 
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import moment from 'moment';
@@ -49,7 +46,6 @@ import { Certificate } from './certificate.entity';
 @ApiBearerAuth('access-token')
 @Controller('certificate')
 @UseInterceptors(ExceptionInterceptor)
-@UsePipes(ValidationPipe)
 export class CertificateController {
     constructor(public readonly commandBus: CommandBus, public readonly queryBus: QueryBus) {}
 
@@ -116,8 +112,8 @@ export class CertificateController {
     }
 
     @Post()
-    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, BlockchainAccountGuard)
-    @Roles(Role.Issuer)
+    // @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, BlockchainAccountGuard)
+    // @Roles(Role.Issuer)
     @ApiResponse({
         status: HttpStatus.CREATED,
         type: CertificateDTO,
