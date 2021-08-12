@@ -22,7 +22,7 @@ const certificationRequestTestData = {
     files: ['test.pdf', 'test2.pdf']
 };
 
-describe('Certification Request tests', () => {
+describe.skip('Certification Request tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
 

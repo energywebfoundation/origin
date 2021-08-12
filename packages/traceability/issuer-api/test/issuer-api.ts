@@ -184,7 +184,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         blockchainProperties.wrap(otherDeviceManager.privateKey)
     );
 
-    app.useLogger(['log', 'error']);
+    app.useLogger(['log', 'error', 'debug', 'verbose']);
     app.enableCors();
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });

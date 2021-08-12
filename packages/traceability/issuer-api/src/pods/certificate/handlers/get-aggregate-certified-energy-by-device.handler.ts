@@ -7,7 +7,8 @@ import { Certificate } from '../certificate.entity';
 
 @QueryHandler(GetAggregateCertifiedEnergyByDeviceIdQuery)
 export class GetAggregateCertifiedEnergyDeviceIdHandler
-    implements IQueryHandler<GetAggregateCertifiedEnergyByDeviceIdQuery> {
+    implements IQueryHandler<GetAggregateCertifiedEnergyByDeviceIdQuery>
+{
     constructor(
         @InjectRepository(Certificate)
         private readonly repository: Repository<Certificate>

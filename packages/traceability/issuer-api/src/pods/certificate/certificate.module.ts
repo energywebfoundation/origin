@@ -8,11 +8,17 @@ import { BlockchainPropertiesModule } from '../blockchain';
 import { CertificateHandlers } from './handlers';
 import { OnChainCertificateWatcher } from './listeners';
 import { CertificateBatchController } from './certificate-batch.controller';
+import { TransactionLog } from './transaction-log.entity';
+import { TransactionLogService } from './transaction-log.service';
 
 @Module({
-    imports: [CqrsModule, TypeOrmModule.forFeature([Certificate]), BlockchainPropertiesModule],
+    imports: [
+        CqrsModule,
+        TypeOrmModule.forFeature([Certificate, TransactionLog]),
+        BlockchainPropertiesModule
+    ],
     controllers: [CertificateController, CertificateBatchController],
-    providers: [...CertificateHandlers, OnChainCertificateWatcher],
+    providers: [...CertificateHandlers, OnChainCertificateWatcher, TransactionLogService],
     exports: [...CertificateHandlers, OnChainCertificateWatcher]
 })
 export class CertificateModule {}

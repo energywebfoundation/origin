@@ -29,6 +29,6 @@ const config: ConnectionOptions = {
     cli: {
         migrationsDir: 'migrations'
     }
-};
+} as any;
 
 export = config;
