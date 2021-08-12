@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { Module } from '@nestjs/common';
-import { IssuerModule } from './issuer.module';
+import { AppModule } from './app.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { entities } from './index';
 
 @Module({
     imports: [
-        IssuerModule.register(),
+        AppModule,
         TypeOrmModule.forRoot({
             type: 'postgres',
             host: process.env.DB_HOST ?? 'localhost',
