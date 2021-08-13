@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "nx": "nx",
-    "start": "./dev-env.sh && nx serve",
+    "start": "./dev-env.sh && nx serve --port=3000",
     "config-env": "bash env.sh",
     "build:ui-utils": "nx run ui-utils:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:ui-theme": "nx run ui-theme:build",
@@ -27,6 +27,7 @@
     "deploy:container:heroku:canary": "make push-heroku-canary",
     "deploy:container:heroku:canary-v2": "make push-heroku-canary-v2",
     "deploy:container:heroku:stable": "make push-heroku-stable",
+    "storybook": "nx run ui-core:storybook --port=6006",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
@@ -95,6 +96,7 @@
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",
     "@ethersproject/providers": "5.3.1",
+    "react-beautiful-dnd": "13.1.0",
     "chart.js": "3.3.2",
     "tslib": "2.3.0",
     "yup": "0.32.9"
@@ -131,6 +133,7 @@
     "@types/react-is": "17.0.0",
     "@types/react-router-dom": "5.1.7",
     "@types/webpack": "4.41.21",
+    "@types/react-beautiful-dnd": "13.1.0",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",
     "babel-jest": "26.2.2",

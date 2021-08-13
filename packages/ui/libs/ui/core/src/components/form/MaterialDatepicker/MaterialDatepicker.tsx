@@ -1,7 +1,11 @@
 import React, { FC } from 'react';
 import { DateFormatEnum } from '@energyweb/origin-ui-utils';
 import { Box, TextField, TextFieldProps } from '@material-ui/core';
-import { DatePicker, LocalizationProvider } from '@material-ui/lab';
+import {
+  DatePicker,
+  DatePickerProps,
+  LocalizationProvider,
+} from '@material-ui/lab';
 import AdapterDayJs from '@material-ui/lab/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { GenericFormField } from '../../../containers';
@@ -17,6 +21,7 @@ export interface MaterialDatepickerProps {
   errorExists?: boolean;
   errorText?: string;
   variant?: TextFieldProps['variant'];
+  datePickerProps?: DatePickerProps;
 }
 
 export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
@@ -27,6 +32,7 @@ export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
   errorText,
   variant,
   field,
+  datePickerProps,
 }) => {
   const classes = useStyles();
   const {
@@ -86,9 +92,15 @@ export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
             variant={variant}
             label={field.label}
             required={field.required}
+            placeholder={field.placeholder || field.label}
+            inputProps={{
+              ...props.inputProps,
+              placeholder: field.placeholder || field.label,
+            }}
             {...field.textFieldProps}
           />
         )}
+        {...datePickerProps}
       />
     </LocalizationProvider>
   );
