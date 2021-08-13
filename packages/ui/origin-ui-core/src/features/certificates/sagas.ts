@@ -76,7 +76,10 @@ export function* getBlockchainCertificate(id: number): any {
 
     const configuration: IBlockchainProperties = {
         web3,
-        registry: Contracts.factories.RegistryFactory.connect(blockchainProperties.registry, web3),
+        registry: Contracts.factories.RegistryExtendedFactory.connect(
+            blockchainProperties.registry,
+            web3
+        ),
         issuer: Contracts.factories.IssuerFactory.connect(blockchainProperties.issuer, web3),
         activeUser: web3.getSigner()
     };
@@ -474,19 +477,14 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
         }
 
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
-        const { certificateAmounts, claimData } = action.payload;
+        const { claims } = action.payload;
 
         const i18n = getI18n();
 
         yield put(fromGeneralActions.setLoading(true));
 
         try {
-            yield apply(certificatesClient, certificatesClient.batchClaim, [
-                {
-                    certificateAmounts,
-                    claimData
-                }
-            ]);
+            yield apply(certificatesClient, certificatesClient.batchClaim, [claims]);
             yield put(reloadCertificates());
 
             showNotification(

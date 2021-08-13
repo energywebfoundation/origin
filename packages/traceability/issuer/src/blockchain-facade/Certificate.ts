@@ -346,6 +346,34 @@ export class Certificate implements ICertificate {
             }
         }
 
+        const claimBatchMultipleEvents = await getEventsFromContract(
+            registry,
+            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null)
+        );
+
+        for (const claimBatchMultipleEvent of claimBatchMultipleEvents) {
+            if (
+                claimBatchMultipleEvent._ids
+                    .map((idAsBN: BigNumber) => idAsBN.toNumber())
+                    .includes(this.id)
+            ) {
+                const { _ids, _claimData, _claimIssuer, _claimSubject, _topics, _values } =
+                    claimBatchMultipleEvent;
+                const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
+
+                const index = claimIds.indexOf(this.id);
+
+                claims.push({
+                    id: _ids[index].toNumber(),
+                    from: _claimIssuer[index],
+                    to: _claimSubject[index],
+                    topic: _topics[index]?.toString(),
+                    value: _values[index].toString(),
+                    claimData: decodeClaimData(_claimData[index])
+                });
+            }
+        }
+
         return claims;
     }
 

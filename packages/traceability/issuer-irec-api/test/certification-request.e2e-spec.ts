@@ -127,7 +127,7 @@ describe('Certification Request tests', () => {
             .send(certificationRequestTestData);
 
         // need to wait for item to be picked up from the queue and deployed
-        await sleep(3000);
+        await sleep(5000);
 
         const {
             body: { success }

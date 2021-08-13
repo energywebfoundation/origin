@@ -1,7 +1,6 @@
 import { Certificate, IClaimData } from '@energyweb/issuer';
 import {
     BlockchainPropertiesClient,
-    CertificateAmountDTO,
     CertificatesClient,
     CertificationRequestsClient
 } from '@energyweb/issuer-api-client';
@@ -137,8 +136,7 @@ export type TRequestClaimCertificateAction = typeof requestClaimCertificate;
 export interface IRequestClaimCertificateBulkAction {
     type: CertificatesActions.requestClaimCertificateBulk;
     payload: {
-        certificateAmounts: CertificateAmountDTO[];
-        claimData: IClaimData;
+        claims;
     };
 }
 

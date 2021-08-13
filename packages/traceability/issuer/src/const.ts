@@ -1,3 +1,3 @@
 export enum CertificateTopic {
-    IREC = 1234
+    IREC = 1
 }

@@ -107,11 +107,12 @@ export function ClaimModal(props: IProps) {
 
         const action = isBulkClaim
             ? requestClaimCertificateBulk({
-                  certificateAmounts: certificateIds.map((id) => ({
-                      id,
-                      amount: 'TOTAL'
-                  })),
-                  claimData
+                  claims: [
+                      certificateIds.map((id) => ({
+                          id,
+                          claimData
+                      }))
+                  ]
               })
             : requestClaimCertificate({
                   certificateId: certificateIds[0],
