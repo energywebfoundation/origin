@@ -4,7 +4,7 @@ import { CertificateTopic } from './const';
 
 import { factories } from './contracts';
 import { Issuer } from './ethers/Issuer';
-import { Registry } from './ethers/Registry';
+import { RegistryExtended } from './ethers/RegistryExtended';
 import { PrivateIssuer } from './ethers/PrivateIssuer';
 
 export async function migratePrivateIssuer(
@@ -51,14 +51,14 @@ export async function migrateRegistry(
     provider: ethers.providers.FallbackProvider,
     deployKey: string,
     uri: string = ''
-): Promise<Registry> {
+): Promise<RegistryExtended> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
-    const registryContract = await new factories.RegistryFactory(wallet).deploy(uri);
+    const registryContract = await new factories.RegistryExtendedFactory(wallet).deploy(uri);
     await registryContract.deployed();
 
-    console.log(`Registry created at ${registryContract.address}`);
+    console.log(`RegistryExtended.sol deployed at ${registryContract.address}`);
 
     return registryContract;
 }
