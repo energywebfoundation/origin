@@ -11,6 +11,7 @@ import { IssueCertificateHandler } from './issue-certificate.handler';
 import { NewTransactionProcessedHandler } from './new-transaction-processed.handler';
 import { SyncCertificateHandler } from './sync-certificate.handler';
 import { TransferCertificateHandler } from './transfer-certificate.handler';
+import { GetCertificatesWithLogsHandler } from './get-certificates-with-logs.handler';
 
 export const CertificateHandlers = [
     BatchClaimCertificatesHandler,
@@ -25,5 +26,6 @@ export const CertificateHandlers = [
     IssueCertificateHandler,
     SyncCertificateHandler,
     TransferCertificateHandler,
-    NewTransactionProcessedHandler
+    NewTransactionProcessedHandler,
+    GetCertificatesWithLogsHandler
 ];

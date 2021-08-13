@@ -7,7 +7,7 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { bootstrapTestInstance, TestUser } from './issuer-api';
 import { BlockchainPropertiesDTO } from '../src/pods/blockchain/blockchain-properties.dto';
 
-describe.skip('BlockchainProperties tests', () => {
+describe('BlockchainProperties tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
 

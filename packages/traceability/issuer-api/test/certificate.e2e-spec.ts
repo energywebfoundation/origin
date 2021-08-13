@@ -86,13 +86,13 @@ describe('Certificate tests', () => {
     });
 
     afterEach(async () => {
-        // await databaseService.truncate(CERTIFICATES_TABLE_NAME);
+        await databaseService.truncate(CERTIFICATES_TABLE_NAME);
     });
 
     after(async () => {
-        // await databaseService.truncate(CERTIFICATES_TABLE_NAME);
+        await databaseService.truncate(CERTIFICATES_TABLE_NAME);
 
-        // await databaseService.cleanUp();
+        await databaseService.cleanUp();
         await app.close();
     });
 
@@ -439,7 +439,7 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.OK);
     });
 
-    it.only('should batch transfer certificates partially', async () => {
+    it('should batch transfer certificates partially', async () => {
         const { id: certificateId1 } = await createCertificate();
         const { id: certificateId2 } = await createCertificate();
 

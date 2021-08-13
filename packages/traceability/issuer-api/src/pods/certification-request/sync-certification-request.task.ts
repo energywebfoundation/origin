@@ -18,7 +18,6 @@ export class SyncCertificationRequestsTask {
         private readonly repository: Repository<CertificationRequest>,
         @InjectRepository(Certificate)
         private readonly certificateRepository: Repository<Certificate>,
-        private readonly blockchainPropertiesService: BlockchainPropertiesService,
         private readonly commandBus: CommandBus,
         private readonly eventBus: EventBus
     ) {}

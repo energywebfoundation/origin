@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { BigNumber, constants } from 'ethers';
 import { IBlockchainEvent } from '@energyweb/issuer';
 import { NewTransactionProcessedData } from './events/new-transaction-processed.event';
@@ -37,6 +37,14 @@ export class TransactionLogService {
         );
 
         await Promise.all(savePromises);
+    }
+
+    public async findByCertificateIds(certificateIds: number[]): Promise<TransactionLog[]> {
+        return await this.repository.find({
+            where: {
+                certificateId: In(certificateIds),
+            }
+        })
     }
 
     private async saveTransaction({
