@@ -61,7 +61,7 @@
         "@types/supertest": "2.0.11",
         "@types/superagent": "4.1.12",
         "superagent-use": "0.1.0",
-        "supertest": "6.1.4",
+        "supertest": "6.1.5",
         "supertest-capture-error": "1.0.0",
         "ts-node": "9.1.1",
         "@types/mocha": "9.0.0",
