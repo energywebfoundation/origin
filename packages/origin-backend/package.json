@@ -92,7 +92,7 @@
         "jest": "27.0.6",
         "nodemailer": "6.6.3",
         "polly-js": "1.8.2",
-        "supertest": "6.1.4",
+        "supertest": "6.1.5",
         "@types/mocha": "9.0.0",
         "mocha": "9.0.3",
         "shx": "0.3.3",
