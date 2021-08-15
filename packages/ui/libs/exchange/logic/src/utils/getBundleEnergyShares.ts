@@ -1,12 +1,16 @@
 import {
   BundlePublicDTO,
   Bundle,
+  BundlePublicItemDTO,
+  BundleItem,
 } from '@energyweb/exchange-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { BigNumber } from 'ethers';
 import { getMainFuelType } from './getMainFuelType';
+
+type TBundleItem = BundlePublicItemDTO | BundleItem;
 
 export const getBundleEnergyShares = (
   bundle: BundlePublicDTO | Bundle,
@@ -16,6 +20,7 @@ export const getBundleEnergyShares = (
   if (!bundle || !allFuelTypes || !allDevices) {
     return {};
   }
+  // @ts-ignore
   const energy = bundle.items.reduce(
     (grouped: any, item: any) => {
       const device = allDevices.find(
@@ -30,7 +35,6 @@ export const getBundleEnergyShares = (
       return grouped;
     },
     {
-      // @ts-ignore
       [EnergyTypeEnum.SOLAR]: BigNumber.from(0),
       [EnergyTypeEnum.WIND]: BigNumber.from(0),
       [EnergyTypeEnum.HYDRO]: BigNumber.from(0),

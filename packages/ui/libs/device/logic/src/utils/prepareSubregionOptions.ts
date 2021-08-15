@@ -1,8 +1,7 @@
-import { ConfigurationDTORegions } from '@energyweb/origin-backend-react-query-client';
 import { FormSelectOption } from '@energyweb/origin-ui-core';
 
 export const prepareSubregionOptions = (
-  allRegions: ConfigurationDTORegions
+  allRegions: Record<string, string[]>
 ): ((selected: FormSelectOption[]) => FormSelectOption[]) => {
   return (selectedRegion: FormSelectOption[]) => {
     if (!selectedRegion) {

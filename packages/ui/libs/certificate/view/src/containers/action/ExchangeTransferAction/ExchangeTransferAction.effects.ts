@@ -1,3 +1,4 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import {
   useCachedAllFuelTypes,
   useCachedAllDevices,
@@ -8,8 +9,8 @@ import { useExchangeTransferActionLogic } from '@energyweb/origin-ui-certificate
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const useExchangeTransferActionPropsEffects = <Id>(
-  selectedIds: Id[],
+export const useExchangeTransferActionPropsEffects = (
+  selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
   const { t } = useTranslation();

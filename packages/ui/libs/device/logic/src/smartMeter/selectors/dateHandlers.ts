@@ -14,14 +14,26 @@ export const setDateBasedOnWindow = ({
   setEndDate(dayjs().endOf(unit).toDate());
 };
 
-const createDecrementFunc = (window, start, end, setStart, setEnd) => {
+const createDecrementFunc = (
+  window: ReadingsWindowEnum,
+  start: Date,
+  end: Date,
+  setStart: (value: Date) => void,
+  setEnd: (value: Date) => void
+) => {
   const unit = getTimeUnitOnWindow(window);
   return () => {
     setStart(dayjs(start).subtract(1, unit).toDate());
     setEnd(dayjs(end).subtract(1, unit).toDate());
   };
 };
-const createIncrementFunc = (window, start, end, setStart, setEnd) => {
+const createIncrementFunc = (
+  window: ReadingsWindowEnum,
+  start: Date,
+  end: Date,
+  setStart: (value: Date) => void,
+  setEnd: (value: Date) => void
+) => {
   const unit = getTimeUnitOnWindow(window);
   return () => {
     setStart(dayjs(start).add(1, unit).toDate());

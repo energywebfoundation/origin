@@ -17,8 +17,8 @@ export const DemandPeriodFilter: FC<PeriodFilterProps> = ({
   handleFilterChange,
 }) => {
   const { t } = useTranslation();
-  const handleChange = (event) => {
-    handleFilterChange(event.target.value);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleFilterChange(event.target.value as TimeFrame);
   };
   const handleClear = () => {
     handleFilterChange(undefined);

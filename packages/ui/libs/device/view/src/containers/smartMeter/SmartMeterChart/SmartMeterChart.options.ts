@@ -11,7 +11,7 @@ export const smartMeterChartOptions = {
   },
   tooltips: {
     callbacks: {
-      label: (tooltipItem, data) => {
+      label: (tooltipItem: any, data: any) => {
         const tooltipValue =
           data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 

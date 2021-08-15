@@ -53,6 +53,6 @@ export type FormMergedType = OrganizationInfoFormValues &
   DocsUploadFormValues;
 
 export type TUseRegisterOrganizationFormLogic = () => Omit<
-  MultiStepFormProps<FormUnionType, FormMergedType>,
+  MultiStepFormProps<FormMergedType>,
   'submitHandler'
 >;

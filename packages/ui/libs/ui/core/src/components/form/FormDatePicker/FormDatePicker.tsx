@@ -4,7 +4,7 @@ import { GenericFormField } from '../../../containers';
 import { MaterialDatepicker } from '../MaterialDatepicker';
 
 export interface FormDatePickerProps<FormValuesType> {
-  field: GenericFormField;
+  field: GenericFormField<FormValuesType>;
   control: Control<FormValuesType>;
   errorExists: boolean;
   errorText: string;

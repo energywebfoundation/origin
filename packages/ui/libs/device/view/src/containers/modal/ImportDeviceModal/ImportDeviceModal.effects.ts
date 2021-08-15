@@ -19,7 +19,8 @@ export const useImportDeviceModalEffects = () => {
 
   const { importDevice } = useDeviceModalsStore();
   const [imageIds, setImageIds] = useState<UploadedFile[]>([]);
-  const onDeviceImageChange = (newValues) => setImageIds(newValues);
+  const onDeviceImageChange = (newValues: UploadedFile[]) =>
+    setImageIds(newValues);
 
   const dispatchModals = useDeviceModalsDispatch();
   const isOpen = importDevice?.open;

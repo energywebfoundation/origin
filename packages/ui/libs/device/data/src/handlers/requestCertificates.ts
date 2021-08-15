@@ -11,11 +11,12 @@ import {
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
+import { UnpackNestedValue } from 'react-hook-form';
 
 type FormValuesTypes = {
-  fromTime: string;
-  toTime: string;
-  energy: string;
+  fromTime?: string;
+  toTime?: string;
+  energy?: string;
 };
 
 type TUseRequestCertificatesHandlerArgs = {
@@ -37,7 +38,7 @@ export const useRequestCertificatesHandler = ({
 
   const { mutate } = useCertificationRequestControllerCreate();
 
-  const requestHandler = (values: FormValuesTypes) => {
+  const requestHandler = (values: UnpackNestedValue<FormValuesTypes>) => {
     const parsedEnergy = isNaN(Number(values.energy))
       ? 0
       : Number(values.energy);

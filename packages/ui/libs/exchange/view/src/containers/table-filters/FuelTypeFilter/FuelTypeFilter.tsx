@@ -4,7 +4,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useCachedAllFuelTypes } from '@energyweb/origin-ui-exchange-data';
 import { prepareFuelTypesOptions } from '@energyweb/origin-ui-exchange-logic';
-import React, { FC } from 'react';
+import React, { FC, SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface FuelTypeFilterProps {
@@ -18,8 +18,8 @@ export const FuelTypeFilter: FC<FuelTypeFilterProps> = ({
 }) => {
   const { t } = useTranslation();
   const allTypes = useCachedAllFuelTypes();
-  const handleChange = (event) => {
-    handleFilterChange(event);
+  const handleChange = (event: SyntheticEvent, value: FormSelectOption[]) => {
+    handleFilterChange(value);
   };
   return (
     <SelectAutocomplete

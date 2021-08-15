@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react';
+import { FC } from 'react';
 import { deviceModalsInitialState, deviceModalsReducer } from './reducer';
 import { IDeviceModalsStore, TDeviceModalsAction } from './types';
 
@@ -6,7 +7,7 @@ const DeviceModalsStore = createContext<IDeviceModalsStore>(null);
 const DeviceModalsDispatch =
   createContext<React.Dispatch<TDeviceModalsAction>>(null);
 
-export const DeviceModalsProvider = ({ children }) => {
+export const DeviceModalsProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(
     deviceModalsReducer,
     deviceModalsInitialState

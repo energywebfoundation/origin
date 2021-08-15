@@ -64,6 +64,6 @@ export type IRecRegisterFormMergedType = IRecRegistrationInfoForm &
   LeadUserDetailsForms;
 
 export type TUseRegisterIRecFormLogic = () => Omit<
-  MultiStepFormProps<IRecRegisterFormUnionType, IRecRegisterFormMergedType>,
+  MultiStepFormProps<IRecRegisterFormMergedType>,
   'submitHandler'
 >;

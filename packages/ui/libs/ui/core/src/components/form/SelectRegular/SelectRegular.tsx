@@ -6,9 +6,9 @@ import { GenericFormField } from '../../../containers';
 import { FormSelectOption } from '../FormSelect';
 
 export interface SelectRegularProps<FormValuesType = any> {
-  field: GenericFormField;
+  field: GenericFormField<FormValuesType>;
   value: FormSelectOption['value'];
-  onChange: (...event: any[]) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   register?: UseFormRegister<FormValuesType>;
   errorExists?: boolean;
   errorText?: string;
@@ -38,9 +38,9 @@ export const SelectRegular: TSelectRegular = ({
       <TextField
         select
         fullWidth
-        name={field.name}
+        name={`${field.name}`}
         label={field.label}
-        type={field.name}
+        type={`${field.name}`}
         error={errorExists}
         helperText={errorText}
         margin="normal"

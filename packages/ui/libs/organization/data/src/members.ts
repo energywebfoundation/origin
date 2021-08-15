@@ -11,7 +11,6 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
@@ -19,10 +18,8 @@ export const useOrganizationMembersData = () => {
   const { data: user, isLoading: isUserLoading } = useUserControllerMe();
   const organizationId = user?.organization?.id;
 
-  const {
-    isLoading: isMembersLoading,
-    data: members,
-  } = useOrganizationControllerGetUsers(organizationId);
+  const { isLoading: isMembersLoading, data: members } =
+    useOrganizationControllerGetUsers(organizationId);
 
   return { isLoading: isUserLoading || isMembersLoading, members };
 };
@@ -35,9 +32,8 @@ export const useOrganizationMemberRemove = () => {
   const { mutate } = useOrganizationControllerRemoveMember();
 
   const queryClient = useQueryClient();
-  const orgMembersKey = getOrganizationControllerGetUsersQueryKey(
-    organizationId
-  );
+  const orgMembersKey =
+    getOrganizationControllerGetUsersQueryKey(organizationId);
 
   const removeHandler = (userToDeleteId: UserDTO['id']) => {
     if (userToDeleteId === user?.id) {
@@ -99,7 +95,7 @@ export const useOrganizationMemberRoleUpdate = () => {
           );
           queryClient.invalidateQueries(membersKey);
         },
-        onError: (error: AxiosError) => {
+        onError: (error: any) => {
           console.error(error);
           if (error?.response?.data?.message) {
             showNotification(

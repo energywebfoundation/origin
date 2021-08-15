@@ -3,17 +3,20 @@ import {
   setOriginLanguage,
 } from '@energyweb/origin-ui-shared-state';
 import { useSettingsPageLogic } from '@energyweb/origin-ui-user-logic';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 export const useSettingsPageEffects = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [language, setLanguage] = useState(getOriginLanguage());
 
-  const handleNotificationsChange = (event) => {
-    setNotificationsEnabled(event.target.checked);
+  const handleNotificationsChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => {
+    setNotificationsEnabled(checked);
   };
 
-  const handleLanguageChange = (event) => {
+  const handleLanguageChange = (event: any) => {
     setLanguage(event.target.value);
   };
 

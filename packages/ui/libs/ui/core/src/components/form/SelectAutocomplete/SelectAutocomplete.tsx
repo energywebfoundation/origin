@@ -5,9 +5,9 @@ import { useStyles } from './SelectAutocomplete.styles';
 import { GenericFormField } from '../../../containers/GenericForm';
 import { FormSelectOption } from '../FormSelect';
 
-export interface SelectAutocompleteProps {
+export interface SelectAutocompleteProps<FormValuesType = any> {
   value: FormSelectOption[];
-  field: GenericFormField;
+  field: GenericFormField<FormValuesType>;
   onChange: (...event: any[]) => void;
   errorExists?: boolean;
   errorText?: string;
@@ -17,8 +17,8 @@ export interface SelectAutocompleteProps {
   className?: string;
 }
 
-export type TSelectAutocomplete = (
-  props: PropsWithChildren<SelectAutocompleteProps>
+export type TSelectAutocomplete = <FormValuesType>(
+  props: PropsWithChildren<SelectAutocompleteProps<FormValuesType>>
 ) => ReactElement;
 
 export const SelectAutocomplete: TSelectAutocomplete = ({

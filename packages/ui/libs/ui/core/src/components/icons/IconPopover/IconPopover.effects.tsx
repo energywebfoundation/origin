@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, SyntheticEvent } from 'react';
 
 const mapTextWithLineBreaks = (popoverTextList: string[]) =>
   popoverTextList.map((text) => (
@@ -13,7 +13,7 @@ export const useIconPopoverEffects = () => {
   const [anchorElRef, setAnchorElRef] = useState(null);
   const open = Boolean(anchorElRef);
 
-  const handleClick = (event) => {
+  const handleClick = (event: SyntheticEvent) => {
     if (event.currentTarget === anchorElRef) {
       setAnchorElRef(null);
     } else {
@@ -27,7 +27,7 @@ export const useIconPopoverEffects = () => {
   const getClickableId = (open: boolean) =>
     open ? 'simple-popover' : undefined;
 
-  const handlePopoverOpen = (event) => {
+  const handlePopoverOpen = (event: SyntheticEvent) => {
     setAnchorElRef(event.currentTarget);
   };
 

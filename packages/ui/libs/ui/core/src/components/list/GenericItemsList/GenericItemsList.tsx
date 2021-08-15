@@ -48,12 +48,16 @@ export const GenericItemsList: TGenericItemsList = ({
   const classes = useStyles();
   const [page, setPage] = useState(1);
 
-  function paginate(allItems, itemsPerPage, currentPage) {
+  const paginate = <ContainerId, ItemId>(
+    allItems: ListItemsContainerProps<ContainerId, ItemId>[],
+    itemsPerPage: number,
+    currentPage: number
+  ) => {
     return allItems.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     );
-  }
+  };
 
   const formattedItems = pagination
     ? paginate(listContainers, pageSize, page)

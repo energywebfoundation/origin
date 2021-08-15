@@ -1,12 +1,15 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useWithdrawActionEffects } from './WithdrawAction.effects';
 
-type WithdrawActionProps<Id> = ListActionComponentProps<Id>;
+type WithdrawActionProps = ListActionComponentProps<
+  AccountAssetDTO['asset']['id']
+>;
 
-export type TWithdrawAction = <Id>(
-  props: PropsWithChildren<WithdrawActionProps<Id>>
+export type TWithdrawAction = (
+  props: PropsWithChildren<WithdrawActionProps>
 ) => ReactElement;
 
 export const WithdrawAction: TWithdrawAction = ({ selectedIds, resetIds }) => {

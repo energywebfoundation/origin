@@ -12,7 +12,10 @@ export const BUSINESS_LEGAL_TYPE_OPTIONS = [
     .filter((k) => !isNaN(Number(k)))
     .map((item) => ({
       value: item,
-      label: IRECBusinessLegalStatusLabelsMap[item],
+      label:
+        IRECBusinessLegalStatusLabelsMap[
+          item as unknown as keyof typeof IRECBusinessLegalStatusLabelsMap
+        ],
     })),
   {
     value: 'Other',

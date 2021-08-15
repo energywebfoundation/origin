@@ -61,7 +61,7 @@ type TUseDepositActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseDepositActionLogic = <Id>(
+export type TUseDepositActionLogic<Id> = (
   args: TUseDepositActionLogicArgs<Id>
 ) => {
   title: string;
@@ -76,7 +76,7 @@ type TUseRetireActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseRetireActionLogic = <Id>(
+export type TUseRetireActionLogic<Id> = (
   args: TUseRetireActionLogicArgs<Id>
 ) => {
   title: string;
@@ -109,7 +109,7 @@ type TUseBlockchainTransferActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseBlockchainTransferActionLogic = <Id>(
+export type TUseBlockchainTransferActionLogic<Id> = (
   args: TUseBlockchainTransferActionLogicArgs<Id>
 ) => {
   title: string;

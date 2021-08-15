@@ -1,3 +1,4 @@
+import { FormEventHandler, useEffect } from 'react';
 import {
   DeepMap,
   FieldError,
@@ -7,7 +8,6 @@ import {
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GenericFormProps } from './GenericForm.types';
-import { FormEventHandler, useEffect } from 'react';
 
 type GenericFormEffectsProps<FormValuesType> = Pick<
   GenericFormProps<FormValuesType>,

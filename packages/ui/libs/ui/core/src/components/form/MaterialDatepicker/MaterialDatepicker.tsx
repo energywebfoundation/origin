@@ -9,10 +9,10 @@ import { ClearButton } from '../../buttons';
 import { useStyles } from './MaterialDatepicker.styles';
 import { useMaterialDatepickerEffects } from './MaterialDatepicker.effects';
 
-export interface MaterialDatepickerProps {
+export interface MaterialDatepickerProps<FormValuesType = any> {
   value: any;
   onChange: (event: Dayjs) => void;
-  field: GenericFormField;
+  field: GenericFormField<FormValuesType>;
   disabled?: boolean;
   errorExists?: boolean;
   errorText?: string;

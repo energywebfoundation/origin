@@ -9,7 +9,6 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
@@ -87,7 +86,7 @@ export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
           openRegisteredModal();
           queryClient.invalidateQueries(iRecOrgKey);
         },
-        onError: (error: AxiosError) => {
+        onError: (error: any) => {
           console.warn('Error while registering an organization', error);
 
           if (error?.response?.status === 401) {

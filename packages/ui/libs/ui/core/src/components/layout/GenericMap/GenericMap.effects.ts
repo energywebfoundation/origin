@@ -1,5 +1,12 @@
 import { useState } from 'react';
 
+type Bounds = {
+  east: number;
+  north: number;
+  south: number;
+  west: number;
+};
+
 export const useGenericMapEffects = (items: any[]) => {
   const [map, setMap] = useState(null);
   const [itemHighlighted, setItemHighllighted] = useState(null);
@@ -12,7 +19,7 @@ export const useGenericMapEffects = (items: any[]) => {
       return;
     }
 
-    const bounds = {
+    const bounds: Bounds = {
       east: null,
       north: null,
       south: null,

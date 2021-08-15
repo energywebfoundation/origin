@@ -25,8 +25,10 @@ export const useRegisterOrgDocsEffects = () => {
   const signatoryIdTHeading = t('organization.register.signatoryIdDocsHeading');
 
   const uploadFunction = fileUploadHandler;
-  const onCompanyProofsChange = (newValues) => setCompanyProofs(newValues);
-  const onSignatoryIdChange = (newValues) => setSignatoryId(newValues);
+  const onCompanyProofsChange = (newValues: UploadedFile[]) =>
+    setCompanyProofs(newValues);
+  const onSignatoryIdChange = (newValues: UploadedFile[]) =>
+    setSignatoryId(newValues);
 
   const buttonDisabled = companyProofs.length < 1 || signatoryId.length < 1;
   const buttonText = t('general.buttons.submit');

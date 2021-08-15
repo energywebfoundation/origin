@@ -1,3 +1,4 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import {
   useCachedExchangeCertificates,
   useCachedAllFuelTypes,
@@ -7,8 +8,8 @@ import {
 import { useSellAsBundleActionLogic } from '@energyweb/origin-ui-exchange-logic';
 import { ChangeEvent, useState } from 'react';
 
-export const useSellActionEffects = <Id>(
-  selectedIds: Id[],
+export const useSellActionEffects = (
+  selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
   const [totalAmount, setTotalAmount] = useState<number>();

@@ -1,5 +1,6 @@
 import {
   CreateDemandDTO,
+  TimeFrame,
   useDemandControllerCreate,
 } from '@energyweb/exchange-irec-react-query-client';
 import {
@@ -8,7 +9,6 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
-import { TimeFrame } from '@energyweb/utils-general';
 import { Dayjs } from 'dayjs';
 import { UseFormReset } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';

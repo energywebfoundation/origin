@@ -1,3 +1,4 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { TextField, Typography } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
@@ -5,10 +6,10 @@ import { CertificateActionContent } from '../../list';
 import { useSellActionEffects } from './SellAction.effects';
 import { useStyles } from './SellAction.styles';
 
-type SellActionProps<Id> = ListActionComponentProps<Id>;
+type SellActionProps = ListActionComponentProps<AccountAssetDTO['asset']['id']>;
 
-export type TSellAction = <Id>(
-  props: PropsWithChildren<SellActionProps<Id>>
+export type TSellAction = (
+  props: PropsWithChildren<SellActionProps>
 ) => ReactElement;
 
 export const SellAction: TSellAction = ({ selectedIds, resetIds }) => {

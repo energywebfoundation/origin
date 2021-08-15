@@ -1,5 +1,5 @@
 import { Box, Button, Popover, Tooltip, Typography } from '@material-ui/core';
-import React, { FC, useState } from 'react';
+import React, { FC, SyntheticEvent, useState } from 'react';
 import { useStyles } from './MultipleDeviceIcons.styles';
 
 interface MultipleDeviceIconsProps {
@@ -17,7 +17,7 @@ export const MultipleDeviceIcons: FC<MultipleDeviceIconsProps> = ({
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
+  const handleClick = (event: SyntheticEvent) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -59,7 +59,6 @@ export const MultipleDeviceIcons: FC<MultipleDeviceIconsProps> = ({
         {`+${iconsData.length - 3}`}
       </Button>
       <Popover
-        // id={id}
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}

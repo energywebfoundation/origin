@@ -41,18 +41,13 @@ export const useChangeMemberRoleEffects = () => {
     });
   };
 
-  const {
-    title,
-    errorExists,
-    errorText,
-    field,
-    buttons,
-  } = useChangeMemberRoleLogic({
-    userToUpdate,
-    changeRoleHandler,
-    closeModal,
-    buttonDisabled: role === userToUpdate?.rights,
-  });
+  const { title, errorExists, errorText, field, buttons } =
+    useChangeMemberRoleLogic({
+      userToUpdate,
+      changeRoleHandler,
+      closeModal,
+      buttonDisabled: role === userToUpdate?.rights,
+    });
 
   const dialogProps: GenericModalProps['dialogProps'] = {
     maxWidth: 'sm',
@@ -67,7 +62,7 @@ export const useChangeMemberRoleEffects = () => {
 
   const selectProps: SelectRegularProps = {
     value: role,
-    onChange: (event) => setRole(event.target.value),
+    onChange: (event) => setRole(event.target.value as unknown as Role),
     errorExists,
     errorText,
     field,

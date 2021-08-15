@@ -8,7 +8,7 @@ import { FormSelect } from '../FormSelect';
 import { FormDatePicker } from '../FormDatePicker';
 
 export interface SingleColumnFormProps<FormValuesType> {
-  fields: GenericFormField[];
+  fields: GenericFormField<FormValuesType>[];
   control: Control<FormValuesType>;
   register: UseFormRegister<FormValuesType>;
   errors: DeepMap<FormValuesType, FieldError>;
@@ -42,7 +42,7 @@ export const SingleColumnForm: TSingleColumnForm = ({
               field={field}
               control={control}
               errorExists={!isEmpty(errors[field.name])}
-              errorText={errors[field.name]?.message ?? ''}
+              errorText={(errors[field.name] as any)?.message ?? ''}
               variant={inputsVariant}
               register={register}
             />
@@ -54,7 +54,7 @@ export const SingleColumnForm: TSingleColumnForm = ({
               field={field}
               control={control}
               errorExists={!isEmpty(errors[field.name])}
-              errorText={errors[field.name]?.message ?? ''}
+              errorText={(errors[field.name] as any)?.message ?? ''}
               variant={inputsVariant}
             />
           )) || (
@@ -64,8 +64,8 @@ export const SingleColumnForm: TSingleColumnForm = ({
               disabled={editDisabled}
               register={register}
               errorExists={!isEmpty(errors[field.name])}
-              errorText={errors[field.name]?.message ?? ''}
-              isDirty={dirtyFields[field.name]}
+              errorText={(errors[field.name] as any)?.message ?? ''}
+              isDirty={!!dirtyFields[field.name]}
               variant={inputsVariant}
               {...formInputsProps}
             />

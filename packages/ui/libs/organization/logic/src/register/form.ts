@@ -1,8 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { TUseRegisterOrganizationFormLogic } from './types';
 import { createOrgInfoForm } from './orgInfoForm';
 import { createSignatoryInfoForm } from './signatoryInfoForm';
 import { createDocsUploadForm } from './docsUpload';
-import { useTranslation } from 'react-i18next';
 
 export const useRegisterOrganizationFormLogic: TUseRegisterOrganizationFormLogic =
   () => {

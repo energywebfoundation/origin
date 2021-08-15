@@ -27,7 +27,8 @@ export const useRequestCertificateFormEffects = (
   };
 
   const uploadText = t('file.upload.dropOrClick');
-  const onDeviceFilesChange = (newValues) => setFiles(newValues);
+  const onDeviceFilesChange = (newValues: UploadedFile[]) =>
+    setFiles(newValues);
   const fileUploadProps: FileUploadProps = {
     dropzoneText: uploadText,
     apiUploadFunction: fileUploadHandler,

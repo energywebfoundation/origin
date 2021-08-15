@@ -10,10 +10,9 @@ import {
 import { Dayjs } from 'dayjs';
 import { Dispatch } from 'react';
 import { useMediaQuery, useTheme } from '@material-ui/core';
+import { MarketButton } from '../TotalAndButtons';
 
 type BidFormValues = {
-  generationFrom: Dayjs;
-  generationTo: Dayjs;
   energy: number;
   price: number;
 };
@@ -70,7 +69,7 @@ export const useOneTimePurchaseEffects = (
   const { isValid, errors, isDirty, dirtyFields, isSubmitting } = formState;
 
   const buttonDisabled = !isValid || !isDirty || isSubmitting;
-  const buttonWithState = buttons?.map((button) => ({
+  const buttonWithState: MarketButton[] = buttons?.map((button) => ({
     ...button,
     onClick: onSubmit,
     buttonProps: {

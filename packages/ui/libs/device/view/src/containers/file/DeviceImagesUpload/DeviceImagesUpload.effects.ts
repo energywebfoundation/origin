@@ -18,7 +18,8 @@ export const useDeviceImagesUploadEffects = () => {
   const deviceImagesHeading = t('device.register.deviceImagesFormTitle');
 
   const uploadFunction = fileUploadHandler;
-  const onDeviceImageChange = (newValues) => setImageIds(newValues);
+  const onDeviceImageChange = (newValues: UploadedFile[]) =>
+    setImageIds(newValues);
 
   const buttonDisabled = imageIds.length < 1;
   const buttonText = t('general.buttons.submit');

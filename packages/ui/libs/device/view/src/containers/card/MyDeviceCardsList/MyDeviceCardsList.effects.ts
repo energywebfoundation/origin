@@ -2,9 +2,9 @@ import { ComposedDevice } from '@energyweb/origin-ui-device-data';
 import { useState } from 'react';
 
 export const useMyDeviceCardsListEffects = (devices: ComposedDevice[]) => {
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<ComposedDevice['id']>(null);
 
-  const handleSelect = (id) => {
+  const handleSelect = (id: ComposedDevice['id']) => {
     if (id === selected) {
       setSelected(null);
     } else {

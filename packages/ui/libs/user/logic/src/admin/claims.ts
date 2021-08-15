@@ -11,14 +11,24 @@ type TUseClaimsTableLogicArgs = {
 };
 type TUseClaimsTableLogic = (
   args: TUseClaimsTableLogicArgs
-) => TableComponentProps<CertificateDTO['id']>;
+) => TableComponentProps<string>;
 
 type TFormatClaims = (
   args: Omit<TUseClaimsTableLogicArgs, 'isLoading'>
-) => TableRowData<CertificateDTO['id']>[];
+) => TableRowData<string>[];
+
+type FormattedClaim = {
+  id: string;
+  certificateId: CertificateDTO['id'];
+  deviceName: string;
+  energy: string;
+  beneficiary: string;
+  fromDate: string;
+  toDate: string;
+};
 
 const formatClaims: TFormatClaims = ({ certificates, allDevices }) => {
-  const formattedClaims = [];
+  const formattedClaims: FormattedClaim[] = [];
 
   certificates?.forEach((certificate) =>
     certificate.claims?.forEach((claim) => {

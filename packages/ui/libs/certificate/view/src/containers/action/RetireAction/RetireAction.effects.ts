@@ -13,9 +13,10 @@ import {
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 
-export const useRetireActionEffects = <Id>(
-  selectedIds: Id[],
+export const useRetireActionEffects = (
+  selectedIds: CertificateDTO['id'][],
   resetIds: () => void
 ) => {
   const blockchainCertificates = useCachedBlockchainCertificates();

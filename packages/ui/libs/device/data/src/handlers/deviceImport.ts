@@ -92,7 +92,7 @@ export const useApiDeviceImportHandler = (
               reset();
               handleModalClose();
             },
-            onError: (error: AxiosError) => {
+            onError: (error: any) => {
               console.error(error);
               showNotification(
                 t('device.import.notifications.importError'),
