@@ -1,13 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRepeatedPurchaseFormLogic } from '@energyweb/origin-ui-exchange-logic';
+import { TimeFrame } from '@energyweb/exchange-irec-react-query-client';
 import { useApiCreateDemandHandler } from '@energyweb/origin-ui-exchange-data';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { calculateDemandTotalVolume } from '@energyweb/origin-ui-exchange-data';
-import { TimeFrame } from '@energyweb/utils-general';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 import { MarketFiltersState } from '../../../reducer';
+import { MarketButton } from '../TotalAndButtons';
 
 type DemandFormValues = {
   period: TimeFrame;
@@ -59,7 +60,7 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
 
   const buttonDisabled = !isValid || !isDirty || !isValidDates || isSubmitting;
 
-  const buttonWithState = buttons?.map((button) => ({
+  const buttonWithState: MarketButton[] = buttons?.map((button) => ({
     ...button,
     onClick: onSubmit,
     buttonProps: {

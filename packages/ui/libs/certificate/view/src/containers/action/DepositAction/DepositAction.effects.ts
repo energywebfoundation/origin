@@ -1,3 +1,4 @@
+import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import {
   useCachedBlockchainCertificates,
   useCachedAllFuelTypes,
@@ -6,8 +7,8 @@ import {
 } from '@energyweb/origin-ui-certificate-data';
 import { useDepositActionLogic } from '@energyweb/origin-ui-certificate-logic';
 
-export const useDepositActionEffects = <Id>(
-  selectedIds: Id[],
+export const useDepositActionEffects = (
+  selectedIds: CertificateDTO['id'][],
   resetIds: () => void
 ) => {
   const blockchainCertificates = useCachedBlockchainCertificates();

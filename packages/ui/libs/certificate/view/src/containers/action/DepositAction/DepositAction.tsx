@@ -1,13 +1,14 @@
+import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { CircularProgress } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useDepositActionEffects } from './DepositAction.effects';
 
-type DepositActionProps<Id> = ListActionComponentProps<Id>;
+type DepositActionProps = ListActionComponentProps<CertificateDTO['id']>;
 
-export type TDepositAction = <Id>(
-  props: PropsWithChildren<DepositActionProps<Id>>
+export type TDepositAction = (
+  props: PropsWithChildren<DepositActionProps>
 ) => ReactElement;
 
 export const DepositAction: TDepositAction = ({ selectedIds, resetIds }) => {

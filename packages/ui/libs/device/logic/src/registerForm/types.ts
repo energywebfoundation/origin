@@ -62,4 +62,4 @@ export type TUseRegisterDeviceFormArgs = {
 };
 export type TUseRegisterDeviceFormLogic = (
   args: TUseRegisterDeviceFormArgs
-) => Omit<MultiStepFormProps<FormUnionType, FormMergedType>, 'submitHandler'>;
+) => Omit<MultiStepFormProps<FormMergedType>, 'submitHandler'>;

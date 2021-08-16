@@ -2,8 +2,11 @@ import React from 'react';
 import { TextFieldProps } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { TUseOneTimePurchaseFormLogic } from './types';
 
-export const useOneTimePurchaseFormLogic = (mobileView: boolean) => {
+export const useOneTimePurchaseFormLogic: TUseOneTimePurchaseFormLogic = (
+  mobileView: boolean
+) => {
   const { t } = useTranslation();
   const datepickerProps: TextFieldProps = {
     variant: 'filled' as any,
@@ -11,8 +14,6 @@ export const useOneTimePurchaseFormLogic = (mobileView: boolean) => {
   };
   return {
     initialValues: {
-      generationFrom: null,
-      generationTo: null,
       energy: null,
       price: null,
     },

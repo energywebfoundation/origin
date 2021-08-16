@@ -2,24 +2,24 @@ import {
   useOrganizationControllerGetInvitationsForOrganization,
   useInvitationControllerInvite,
   useUserControllerMe,
+  InviteDTO,
 } from '@energyweb/origin-backend-react-query-client';
 import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
+import { UseFormReset } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 export const useOrganizationInviteHandler = () => {
   const { t } = useTranslation();
 
   const { data: user, isLoading: isUserLoading } = useUserControllerMe();
-  const {
-    data: alreadySentInvitations,
-    isLoading: isInvitationsLoading,
-  } = useOrganizationControllerGetInvitationsForOrganization(
-    user?.organization?.id,
-    { enabled: Boolean(user?.organization?.id) }
-  );
+  const { data: alreadySentInvitations, isLoading: isInvitationsLoading } =
+    useOrganizationControllerGetInvitationsForOrganization(
+      user?.organization?.id,
+      { enabled: Boolean(user?.organization?.id) }
+    );
 
   const { mutate } = useInvitationControllerInvite({
     onSuccess: () => {
@@ -37,7 +37,7 @@ export const useOrganizationInviteHandler = () => {
     },
   });
 
-  const submitHandler = (values, reset) => {
+  const submitHandler = (values: InviteDTO, reset: UseFormReset<InviteDTO>) => {
     const alreadySent = alreadySentInvitations.some(
       (invitation) => invitation.email === values.email
     );

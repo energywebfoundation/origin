@@ -11,7 +11,9 @@ export const prepareDeviceTypesOptions = (
       : '';
 
     const availableTypesForSelectedFuel: string[] =
-      fuelToDeviceTypesMatching[selectedValue];
+      fuelToDeviceTypesMatching[
+        selectedValue as keyof typeof fuelToDeviceTypesMatching
+      ];
     const filteredDeviceTypes = allDeviceTypes?.filter((type) =>
       availableTypesForSelectedFuel?.some(
         (available) => available === type.code

@@ -13,13 +13,13 @@ export type ListActionComponentProps<ItemId> = {
   resetIds?: () => void;
 };
 
-export type ListAction<ItemId = unknown> = {
+export type ListAction<ItemId = any> = {
   name: string;
   content?: ReactNode;
   component?: React.FC<ListActionComponentProps<ItemId>>;
 };
 
-export type ListActionsBlockProps<ItemId = unknown> = {
+export type ListActionsBlockProps<ItemId = any> = {
   actions: ListAction<ItemId>[];
   selectedIds?: ItemId[];
   resetSelected?: () => void;

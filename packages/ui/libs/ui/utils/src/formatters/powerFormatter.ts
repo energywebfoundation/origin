@@ -16,13 +16,13 @@ export class PowerFormatter {
     valueInDisplayUnit: number
   ): number {
     return BigNumber.from(valueInDisplayUnit)
-      .mul(Unit[PowerFormatter.displayUnit])
+      .mul(Unit[PowerFormatter.displayUnit as keyof typeof Unit])
       .toNumber();
   }
 
   static format(powerInWatt: number, includeDisplayUnit?: boolean): string {
     return `${PowerFormatter.formatter.format(
-      powerInWatt / Unit[PowerFormatter.displayUnit]
+      powerInWatt / Unit[PowerFormatter.displayUnit as keyof typeof Unit]
     )}${includeDisplayUnit ? ' ' + PowerFormatter.displayUnit : ''}`;
   }
 }

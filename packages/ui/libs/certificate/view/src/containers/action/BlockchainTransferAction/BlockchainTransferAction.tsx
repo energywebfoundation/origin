@@ -1,3 +1,4 @@
+import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { CircularProgress, TextField } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
@@ -5,10 +6,12 @@ import { CertificateActionContent } from '../../list';
 import { useBlockchainTransferActionEffects } from './BlockchainTransferAction.effects';
 import { useStyles } from './BlockchainTransferAction.styles';
 
-type BlockchainTransferActionProps<Id> = ListActionComponentProps<Id>;
+type BlockchainTransferActionProps = ListActionComponentProps<
+  CertificateDTO['id']
+>;
 
 export type TBlockchainTransferAction = <Id>(
-  props: PropsWithChildren<BlockchainTransferActionProps<Id>>
+  props: PropsWithChildren<BlockchainTransferActionProps>
 ) => ReactElement;
 
 export const BlockchainTransferAction: TBlockchainTransferAction = ({

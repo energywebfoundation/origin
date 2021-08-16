@@ -1,8 +1,7 @@
-import { ConfigurationDTORegions } from '@energyweb/origin-backend-react-query-client';
 import { FormSelectOption } from '@energyweb/origin-ui-core';
 
 export const prepareSubRegionsOptions = (
-  allRegions: ConfigurationDTORegions,
+  allRegions: Record<string, string[]>,
   country: string,
   selectedRegionsOptions: FormSelectOption[]
 ) => {
@@ -11,7 +10,7 @@ export const prepareSubRegionsOptions = (
   );
 
   const subregionsOption = selectedRegionsValues?.flatMap((region) => {
-    const matchingSubregions = allRegions[region];
+    const matchingSubregions: string[] = allRegions[region];
     const options: FormSelectOption[] = matchingSubregions?.map(
       (subregion) => ({
         label: `${region} - ${subregion}`,

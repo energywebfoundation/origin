@@ -13,7 +13,7 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
     signatoryCity: '',
     signatoryCountry: [],
     signatoryEmail: '',
-    signatoryPhoneNumber: '',
+    signatoryTelephone: '',
   },
   validationSchema: yup.object().shape({
     signatoryFullName: yup
@@ -41,7 +41,7 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
       .email()
       .required()
       .label(t('organization.register.signatoryEmail')),
-    signatoryPhoneNumber: yup
+    signatoryTelephone: yup
       .string()
       .required()
       .label(t('organization.register.signatoryTelephone')),
@@ -81,7 +81,7 @@ export const createSignatoryInfoForm: TCreateSignatoryInfoForm = (t) => ({
       required: true,
     },
     {
-      name: 'signatoryPhoneNumber',
+      name: 'signatoryTelephone',
       label: t('organization.register.signatoryPhoneNumber'),
       required: true,
     },

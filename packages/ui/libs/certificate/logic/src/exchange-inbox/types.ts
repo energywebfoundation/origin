@@ -58,7 +58,7 @@ type TUseSellActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseSellActionLogic = <Id>(args: TUseSellActionLogicArgs<Id>) => {
+export type TUseSellActionLogic<Id> = (args: TUseSellActionLogicArgs<Id>) => {
   title: string;
   buttonText: string;
   priceInputLabel: string;
@@ -73,7 +73,7 @@ type TUseWithdrawActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseWithdrawActionLogic = <Id>(
+export type TUseWithdrawActionLogic<Id> = (
   args: TUseWithdrawActionLogicArgs<Id>
 ) => {
   title: string;
@@ -99,7 +99,7 @@ type TUseExchangeTransferActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseExchangeTransferActionLogic = <Id>(
+export type TUseExchangeTransferActionLogic<Id> = (
   args: TUseExchangeTransferActionLogicArgs<Id>
 ) => {
   title: string;

@@ -13,7 +13,7 @@ import { useStyles } from './GenericMap.styles';
 export interface GenericMapProps {
   apiKey: string;
   allItems: any[];
-  infoWindowContent?: FC;
+  infoWindowContent?: FC<any>;
   containerClassName?: string;
   mapProps?: GoogleMapProps;
 }

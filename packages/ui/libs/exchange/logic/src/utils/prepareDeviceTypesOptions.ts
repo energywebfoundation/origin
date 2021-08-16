@@ -12,7 +12,10 @@ export const prepareDeviceTypesOptions = (
     );
 
     const mergedOptions = selectedFuelValues.flatMap((fuelType) => {
-      const matchingDeviceTypes = fuelToDeviceTypesMatching[fuelType];
+      const matchingDeviceTypes =
+        fuelToDeviceTypesMatching[
+          fuelType as keyof typeof fuelToDeviceTypesMatching
+        ];
       return matchingDeviceTypes.map(
         (deviceType) => `${fuelType};${deviceType}`
       );

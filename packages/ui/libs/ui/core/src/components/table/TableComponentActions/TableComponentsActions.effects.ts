@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, SyntheticEvent } from 'react';
 import { useTheme, useMediaQuery } from '@material-ui/core';
 
 export const useTableActionsEffects = () => {
@@ -6,7 +6,7 @@ export const useTableActionsEffects = () => {
   const theme = useTheme();
   const mobileView = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const handleMobileOpen = (event) => {
+  const handleMobileOpen = (event: SyntheticEvent) => {
     if (mobileView) {
       event.stopPropagation();
       return setOpen(true);

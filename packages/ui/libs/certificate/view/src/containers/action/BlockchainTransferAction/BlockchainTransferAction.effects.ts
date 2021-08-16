@@ -1,3 +1,4 @@
+import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import {
   useCachedAllFuelTypes,
   useCachedAllDevices,
@@ -8,8 +9,8 @@ import { useBlockchainTransferActionLogic } from '@energyweb/origin-ui-certifica
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const useBlockchainTransferActionEffects = <Id>(
-  selectedIds: Id[],
+export const useBlockchainTransferActionEffects = (
+  selectedIds: CertificateDTO['id'][],
   resetIds: () => void
 ) => {
   const { t } = useTranslation();

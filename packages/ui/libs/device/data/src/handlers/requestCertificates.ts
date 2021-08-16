@@ -11,6 +11,7 @@ import {
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
+import { UnpackNestedValue } from 'react-hook-form';
 
 type FormValuesTypes = {
   fromTime: string;
@@ -37,7 +38,7 @@ export const useRequestCertificatesHandler = ({
 
   const { mutate } = useCertificationRequestControllerCreate();
 
-  const requestHandler = (values: FormValuesTypes) => {
+  const requestHandler = (values: UnpackNestedValue<FormValuesTypes>) => {
     const parsedEnergy = isNaN(Number(values.energy))
       ? 0
       : Number(values.energy);
@@ -56,8 +57,8 @@ export const useRequestCertificatesHandler = ({
       energy: energyInBaseUnit.toString(),
       to: !isLoading && address,
       deviceId: deviceId,
-      fromTime: dayjs(values.fromTime).unix(),
-      toTime: dayjs(values.toTime).unix(),
+      fromTime: dayjs(values.fromTime).startOf('day').unix(),
+      toTime: dayjs(values.toTime).endOf('day').unix(),
       files: files.map((f) => f.uploadedName),
       isPrivate: false,
     };
@@ -71,7 +72,15 @@ export const useRequestCertificatesHandler = ({
           );
           closeForm();
         },
-        onError: () => {
+        onError: (error: any) => {
+          if (error.response.status === 409) {
+            showNotification(
+              t('device.my.notifications.certificateRequestAlreadyExists'),
+              NotificationTypeEnum.Error
+            );
+            return;
+          }
+
           showNotification(
             t('device.my.notifications.certificateRequestError'),
             NotificationTypeEnum.Error

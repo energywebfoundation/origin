@@ -12,19 +12,17 @@ export type MultiStepFormItem<FormValuesType> = Omit<
   component?: FC<any>;
 };
 
-export interface MultiStepFormProps<FormValuesUnion, FormValuesMerged> {
+export interface MultiStepFormProps<FormValuesMerged> {
   heading: string;
   headingVariant?: TypographyVariant;
-  forms: MultiStepFormItem<FormValuesUnion>[];
+  forms: MultiStepFormItem<any>[];
   backButtonText: string;
   backButtonProps?: ButtonProps;
   submitHandler: (values: FormValuesMerged) => void;
 }
 
-export type TMultiStepForm = <FormValuesUnion, FormValuesMerged>(
-  props: PropsWithChildren<
-    MultiStepFormProps<FormValuesUnion, FormValuesMerged>
-  >
+export type TMultiStepForm = <FormValuesMerged>(
+  props: PropsWithChildren<MultiStepFormProps<FormValuesMerged>>
 ) => ReactElement;
 
 export const MultiStepForm: TMultiStepForm = ({

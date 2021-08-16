@@ -1,9 +1,9 @@
 import { IRECBusinessLegalStatusLabelsMap } from '@energyweb/utils-general';
 
 export const formatOrganizationBusinessType = (
-  businessType: number | string
+  businessType: string
 ): string => {
-  return isNaN(Number(businessType))
-    ? businessType
-    : IRECBusinessLegalStatusLabelsMap[businessType];
+  return IRECBusinessLegalStatusLabelsMap[
+    businessType as unknown as keyof typeof IRECBusinessLegalStatusLabelsMap
+  ];
 };

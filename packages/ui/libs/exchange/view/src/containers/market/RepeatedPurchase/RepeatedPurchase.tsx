@@ -37,7 +37,7 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
           <FormSelect
             control={control}
             errorExists={!isEmpty(errors[period.name])}
-            errorText={errors[period.name]?.message ?? ''}
+            errorText={(errors[period.name] as any)?.message ?? ''}
             field={period}
           />
         </div>
@@ -46,10 +46,10 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
             variant="filled"
             margin={mobileView ? 'none' : 'normal'}
             field={volume}
-            isDirty={dirtyFields[volume.name]}
+            isDirty={!!dirtyFields[volume.name]}
             register={register}
             errorExists={!isEmpty(errors[volume.name])}
-            errorText={errors[volume.name]?.message ?? ''}
+            errorText={(errors[volume.name] as any)?.message ?? ''}
           />
         </div>
       </div>
@@ -58,7 +58,7 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
           <FormDatePicker
             control={control}
             errorExists={!isEmpty(errors[startDate.name])}
-            errorText={errors[startDate.name]?.message ?? ''}
+            errorText={(errors[startDate.name] as any)?.message ?? ''}
             field={startDate}
           />
         </div>
@@ -66,7 +66,7 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
           <FormDatePicker
             control={control}
             errorExists={!isEmpty(errors[endDate.name])}
-            errorText={errors[endDate.name]?.message ?? ''}
+            errorText={(errors[endDate.name] as any)?.message ?? ''}
             field={endDate}
           />
         </div>
@@ -93,10 +93,10 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
             variant="filled"
             margin="none"
             field={price}
-            isDirty={dirtyFields[price.name]}
+            isDirty={!!dirtyFields[price.name]}
             register={register}
             errorExists={!isEmpty(errors[price.name])}
-            errorText={errors[price.name]?.message ?? ''}
+            errorText={(errors[price.name] as any)?.message ?? ''}
           />
         </div>
       </div>

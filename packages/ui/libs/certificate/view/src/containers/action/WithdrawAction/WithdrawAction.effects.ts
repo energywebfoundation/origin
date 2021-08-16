@@ -1,3 +1,4 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import {
   useCachedExchangeCertificates,
   useCachedAllFuelTypes,
@@ -7,8 +8,8 @@ import {
 } from '@energyweb/origin-ui-certificate-data';
 import { useWithdrawActionLogic } from '@energyweb/origin-ui-certificate-logic';
 
-export const useWithdrawActionEffects = <Id>(
-  selectedIds: Id[],
+export const useWithdrawActionEffects = (
+  selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
   const exchangeCertificates = useCachedExchangeCertificates();

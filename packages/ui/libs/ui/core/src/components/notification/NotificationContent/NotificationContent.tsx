@@ -22,7 +22,7 @@ export const NotificationContent: FC<NotificationContentProps> = ({
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
-      {toastIcons[type]}
+      {toastIcons[type as keyof typeof toastIcons]}
       <div className={classes.textWrapper}>
         <span className={classes.title}>
           {type.charAt(0).toUpperCase() + type.slice(1)}

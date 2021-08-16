@@ -1,3 +1,4 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { TextField } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
@@ -5,10 +6,12 @@ import { CertificateActionContent } from '../../list';
 import { useExchangeTransferActionPropsEffects } from './ExchangeTransferAction.effects';
 import { useStyles } from './ExchangeTransferAction.styles';
 
-type ExchangeTransferActionProps<Id> = ListActionComponentProps<Id>;
+type ExchangeTransferActionProps = ListActionComponentProps<
+  AccountAssetDTO['asset']['id']
+>;
 
-export type TExchangeTransferAction = <Id>(
-  props: PropsWithChildren<ExchangeTransferActionProps<Id>>
+export type TExchangeTransferAction = (
+  props: PropsWithChildren<ExchangeTransferActionProps>
 ) => ReactElement;
 
 export const ExchangeTransferAction: TExchangeTransferAction = ({

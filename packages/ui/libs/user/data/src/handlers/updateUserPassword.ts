@@ -8,7 +8,6 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useUser } from '../fetching';
@@ -48,7 +47,7 @@ export const useApiUpdateUserAccountPassword = () => {
           );
           logout();
         },
-        onError: (error: AxiosError) => {
+        onError: (error) => {
           console.error(error);
           showNotification(
             t('user.profile.notifications.userPasswordUpdateError'),

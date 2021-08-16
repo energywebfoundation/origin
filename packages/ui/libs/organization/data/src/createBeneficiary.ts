@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { UseFormReset } from 'react-hook-form';
-import { AxiosError } from 'axios';
 import { useBeneficiaryControllerCreateBeneficiary } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
   FormSelectOption,
@@ -39,7 +38,7 @@ export const useCreateBeneficiaryHandler = () => {
           );
           reset();
         },
-        onError: (error: AxiosError) => {
+        onError: (error) => {
           console.log(error);
           showNotification(
             t(

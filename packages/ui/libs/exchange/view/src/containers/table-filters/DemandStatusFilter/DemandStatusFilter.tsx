@@ -16,7 +16,7 @@ export const DemandStatusFilter: FC<StatusFilterProps> = ({
   handleFilterChange,
 }) => {
   const { t } = useTranslation();
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     handleFilterChange(event.target.value);
   };
   const handleClear = () => {

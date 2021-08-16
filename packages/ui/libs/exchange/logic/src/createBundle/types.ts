@@ -62,7 +62,7 @@ type TUseSellAsBundleActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseSellAsBundleActionLogic = <Id>(
+export type TUseSellAsBundleActionLogic<Id> = (
   args: TUseSellAsBundleActionLogicArgs<Id>
 ) => {
   title: string;

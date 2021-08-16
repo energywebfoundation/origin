@@ -54,7 +54,7 @@ export const useItemsListWithActionsEffects: TUseItemsListWithActionsEffects =
     ) => {
       const itemsIds = items.map((item) => item.id);
 
-      return (id) => {
+      return (id: ItemId) => {
         const itemChecked = state.itemsChecked.includes(id);
         const stateWithThisItemChecked = [...state.itemsChecked, id];
         const stateWithoutThisItem = state.itemsChecked.filter(

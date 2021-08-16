@@ -1,3 +1,4 @@
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { TextField, Typography } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
@@ -5,10 +6,12 @@ import { BundleActionContent } from '../../list';
 import { useSellActionEffects } from './SellAsBundleAction.effects';
 import { useStyles } from './SellAsBundleAction.styles';
 
-type SellAsBundleActionProps<Id> = ListActionComponentProps<Id>;
+type SellAsBundleActionProps = ListActionComponentProps<
+  AccountAssetDTO['asset']['id']
+>;
 
-export type TSellAsBundleAction = <Id>(
-  props: PropsWithChildren<SellAsBundleActionProps<Id>>
+export type TSellAsBundleAction = (
+  props: PropsWithChildren<SellAsBundleActionProps>
 ) => ReactElement;
 
 export const SellAsBundleAction: TSellAsBundleAction = ({

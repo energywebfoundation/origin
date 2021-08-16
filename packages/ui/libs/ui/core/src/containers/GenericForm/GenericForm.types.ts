@@ -16,8 +16,8 @@ import {
 } from 'react-hook-form';
 import { DatePickerProps } from '@material-ui/lab';
 
-export type GenericFormField = {
-  name: string;
+export type GenericFormField<FormValuesType> = {
+  name: keyof FormValuesType;
   label: string;
   type?: 'text' | 'password';
   placeholder?: string;
@@ -57,7 +57,7 @@ export interface GenericFormProps<FormValuesType> {
   ) => void;
   validationSchema: yup.AnyObjectSchema;
   initialValues: UnpackNestedValue<DeepPartial<FormValuesType>>;
-  fields: GenericFormField[];
+  fields: GenericFormField<FormValuesType>[];
   buttonText: string;
   buttonFullWidth?: boolean;
   buttonWrapperProps?: BoxProps;

@@ -14,7 +14,7 @@ const TextFilterComponent: FC<TextFilterProps> = ({
   handleFilterChange,
   label,
 }) => {
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleFilterChange(event.target.value);
   };
   const handleClear = () => {

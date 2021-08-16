@@ -4,17 +4,17 @@ import {
   BaseTextFieldProps,
   TextField,
 } from '@material-ui/core';
-import { GenericFormField } from '../../../containers';
 import { UseFormRegister } from 'react-hook-form';
+import { GenericFormField } from '../../../containers';
 
-export type FormInputField = Omit<
-  GenericFormField,
+export type FormInputField<FormValuesType> = Omit<
+  GenericFormField<FormValuesType>,
   'options' | 'select' | 'autocomplete' | 'multiple' | 'maxValues'
 > &
-  BaseTextFieldProps;
+  Omit<BaseTextFieldProps, 'name'>;
 
 export interface FormInputProps<FormValues> extends BaseTextFieldProps {
-  field: FormInputField;
+  field: FormInputField<FormValues>;
   register: UseFormRegister<FormValues>;
   errorExists: boolean;
   errorText: string;

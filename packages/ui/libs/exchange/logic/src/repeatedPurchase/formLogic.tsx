@@ -4,8 +4,11 @@ import { periodTypeOptions } from '../utils';
 import React from 'react';
 import { TimeFrame } from '@energyweb/utils-general';
 import { TextFieldProps } from '@material-ui/core';
+import { TUseRepeatedPurchaseFormLogic } from './types';
 
-export const useRepeatedPurchaseFormLogic = (mobileView: boolean) => {
+export const useRepeatedPurchaseFormLogic: TUseRepeatedPurchaseFormLogic = (
+  mobileView: boolean
+) => {
   const { t } = useTranslation();
 
   const fieldProps: TextFieldProps = {

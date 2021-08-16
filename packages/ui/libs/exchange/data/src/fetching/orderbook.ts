@@ -47,7 +47,7 @@ const getOrdersTotalVolume = async (
 };
 
 const REFRESH_INTERVAL_MS = 5000;
-const INITIAL_ORDERBOOK_STATE = {
+const INITIAL_ORDERBOOK_STATE: TOrderBookData = {
   asks: [],
   bids: [],
   lastTradedPrice: null,
