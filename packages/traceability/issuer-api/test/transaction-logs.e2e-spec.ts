@@ -67,23 +67,34 @@ describe('Transaction logs tests', () => {
     const expectLogs = (certificate: CertificateWithLogs) => {
         const logs = certificate.transactionLogs;
         expect(logs).to.have.length(4); /** @NOTE claim causes Transfer + Claim  */
-        expect(logs[0].transactionType).to.be.eq(BlockchainEventType.IssuanceSingle);
-        expect(logs[1].transactionType).to.be.eq(BlockchainEventType.TransferSingle);
-        expect(logs[2].transactionType).to.be.eq(
-            BlockchainEventType.TransferSingle
-        ); /** @NOTE this is caused by Claim */
-        expect(logs[3].transactionType).to.be.eq(BlockchainEventType.ClaimSingle);
+
+        expect(
+            logs.filter((l) => l.transactionType === BlockchainEventType.IssuanceSingle)
+        ).to.have.length(1);
+        expect(
+            logs.filter((l) => l.transactionType === BlockchainEventType.TransferSingle)
+        ).to.have.length(2);
+        expect(
+            logs.filter((l) => l.transactionType === BlockchainEventType.ClaimSingle)
+        ).to.have.length(1);
     };
 
     const expectBatchLogs = (certificate: CertificateWithLogs) => {
         const logs = certificate.transactionLogs;
         expect(logs).to.have.length(4); /** @NOTE claim causes Transfer + Claim  */
-        expect(logs[0].transactionType).to.be.eq(BlockchainEventType.IssuanceBatch);
-        expect(logs[1].transactionType).to.be.eq(BlockchainEventType.TransferBatch);
-        expect(logs[2].transactionType).to.be.eq(
-            BlockchainEventType.TransferSingle
-        ); /** @NOTE this is caused by Claim */
-        expect(logs[3].transactionType).to.be.eq(BlockchainEventType.ClaimBatch);
+
+        expect(
+            logs.filter((l) => l.transactionType === BlockchainEventType.IssuanceBatch)
+        ).to.have.length(1);
+        expect(
+            logs.filter((l) => l.transactionType === BlockchainEventType.TransferBatch)
+        ).to.have.length(1);
+        expect(
+            logs.filter((l) => l.transactionType === BlockchainEventType.TransferSingle)
+        ).to.have.length(1);
+        expect(
+            logs.filter((l) => l.transactionType === BlockchainEventType.ClaimBatch)
+        ).to.have.length(1);
     };
 
     before(async () => {
