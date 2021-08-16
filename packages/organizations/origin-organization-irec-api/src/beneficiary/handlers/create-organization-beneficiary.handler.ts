@@ -27,11 +27,14 @@ export class CreateOrganizationBeneficiaryHandler
     }: CreateOrganizationBeneficiaryCommand): Promise<BeneficiaryDTO> {
         const platformAdmin = await this.userService.getPlatformAdmin();
 
-        const irecBeneficiary = await this.irecService.createBeneficiary(platformAdmin.id, {
-            name: organization.name,
-            countryCode: organization.country,
-            location: `${organization.city}. ${organization.address}`
-        });
+        const irecBeneficiary = await this.irecService.createBeneficiary(
+            platformAdmin.organization.id,
+            {
+                name: organization.name,
+                countryCode: organization.country,
+                location: `${organization.city}. ${organization.address}`
+            }
+        );
 
         const beneficiary = this.repository.create({
             irecBeneficiaryId: irecBeneficiary.id,

@@ -15,6 +15,7 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
+    Organisation,
     TransactionResult,
     TransactionType
 } from '@energyweb/issuer-irec-api-wrapper';
@@ -351,6 +352,22 @@ export class IrecMockService implements IIrecService {
 
         device.status = DeviceState.Rejected;
         return device;
+    }
+
+    async getUserOrganization(user: UserIdentifier): Promise<Organisation> {
+        return {
+            code: 'REGORG001',
+            name: 'Registrant Organisation 1',
+            address: '10 Dorchester Road',
+            primaryContact: 'John Doe',
+            telephone: '0114 2002002',
+            email: 'example@test.com',
+            regNum: '123 456 789',
+            vatNum: '987 654 321',
+            regAddress: '10 Dorchester Road',
+            country: 'GB',
+            roles: ['registrant']
+        };
     }
 }
 

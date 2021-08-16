@@ -32,7 +32,7 @@ export class ApproveIrecCertificationRequestHandler
         });
 
         const issueRequest = await this.irecService.getIssueRequest(
-            platformAdmin.id,
+            platformAdmin.organization.id,
             irecIssueRequestId
         );
 
@@ -53,12 +53,17 @@ export class ApproveIrecCertificationRequestHandler
         }
 
         if (issueRequest.status === IssuanceStatus.InProgress) {
-            await this.irecService.verifyIssueRequest(platformAdmin.id, irecIssueRequestId);
+            await this.irecService.verifyIssueRequest(
+                platformAdmin.organization.id,
+                irecIssueRequestId
+            );
         }
 
-        const issueAccountCode = await this.irecService.getIssueAccountCode(platformAdmin.id);
+        const issueAccountCode = await this.irecService.getIssueAccountCode(
+            platformAdmin.organization.id
+        );
         const transaction = await this.irecService.approveIssueRequest(
-            platformAdmin.id,
+            platformAdmin.organization.id,
             irecIssueRequestId,
             issueAccountCode
         );

@@ -50,14 +50,17 @@ export class DeviceService {
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
-        const tradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
+        const tradeAccount = await this.irecService.getTradeAccountCode(
+            platformAdmin.organization.id
+        );
+        const participantTradeAccount = await this.irecService.getTradeAccountCode(user);
+        const issuerOrg = await this.irecService.getUserOrganization(platformAdmin.organization.id);
+
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
             defaultAccount: tradeAccount,
-            registrantOrganization: this.configService.get<string>(
-                'IREC_PARTICIPANT_TRADE_ACCOUNT'
-            ),
-            issuer: this.configService.get<string>('IREC_ISSUER_ORGANIZATION_CODE'),
+            registrantOrganization: participantTradeAccount,
+            issuer: issuerOrg.code,
             active: true
         };
 
@@ -117,7 +120,7 @@ export class DeviceService {
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.approveDevice(platformAdmin.id, device.code);
+        await this.irecService.approveDevice(platformAdmin.organization.id, device.code);
         await this.repository.update(id, { status: DeviceState.Approved });
         device.status = DeviceState.Approved;
 
@@ -134,7 +137,7 @@ export class DeviceService {
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.rejectDevice(platformAdmin.id, device.code);
+        await this.irecService.rejectDevice(platformAdmin.organization.id, device.code);
         await this.repository.update(id, { status: DeviceState.Rejected });
         device.status = DeviceState.Rejected;
 

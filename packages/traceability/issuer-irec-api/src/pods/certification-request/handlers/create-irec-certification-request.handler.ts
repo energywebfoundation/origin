@@ -85,8 +85,10 @@ export class CreateIrecCertificationRequestHandler
         }
 
         const irecDevice = await this.deviceService.findOne(request.deviceId);
-        const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
-        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
+        const platformTradeAccount = await this.irecService.getTradeAccountCode(
+            platformAdmin.organization.id
+        );
+        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.organization.id, {
             device: request.deviceId,
             fuelType: irecDevice.fuelType,
             recipient: platformTradeAccount,

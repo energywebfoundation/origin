@@ -83,7 +83,7 @@ Swagger endpoint can be found at
 
 It's possible to handle events emitted by `@energyweb/exchange` in the `@energyweb/origin-backend-app` project. This feature allows 3rd party developers to implement custom event handling logic, additional to existing core event handlers.
 
-Currently supported event is `BulkTradeExecutedEvent` which is emitted whenever new trade in the matching engine occurs.
+Currently, supported event is `BulkTradeExecutedEvent` which is emitted whenever new trade in the matching engine occurs.
 
 In order to register custom event handler for this event please follow these steps:
 
