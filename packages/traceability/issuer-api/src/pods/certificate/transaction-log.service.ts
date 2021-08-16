@@ -11,6 +11,7 @@ interface ISaveParams {
     certificateId: number;
     transactionHash: string;
     transactionType: BlockchainEventType;
+    transactionTimestamp: Date;
 }
 
 @Injectable()
@@ -32,7 +33,10 @@ export class TransactionLogService {
             this.saveTransaction({
                 certificateId,
                 transactionType,
-                transactionHash: event.transactionHash
+                transactionHash: event.transactionHash,
+                transactionTimestamp: event.timestamp
+                    ? new Date(event.timestamp * 1000)
+                    : new Date()
             })
         );
 
@@ -42,20 +46,22 @@ export class TransactionLogService {
     public async findByCertificateIds(certificateIds: number[]): Promise<TransactionLog[]> {
         return await this.repository.find({
             where: {
-                certificateId: In(certificateIds),
+                certificateId: In(certificateIds)
             }
-        })
+        });
     }
 
     private async saveTransaction({
         certificateId,
         transactionHash,
-        transactionType
+        transactionType,
+        transactionTimestamp
     }: ISaveParams): Promise<void> {
         const entity = this.repository.create({
             certificateId,
             transactionHash,
-            transactionType
+            transactionType,
+            transactionTimestamp
         });
 
         await this.repository.save(entity);

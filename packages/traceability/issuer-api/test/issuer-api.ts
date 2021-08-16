@@ -10,7 +10,7 @@ import {
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { CanActivate, ExecutionContext, Type } from '@nestjs/common';
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { IQueryHandler, QueryHandler, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -163,6 +163,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         BlockchainPropertiesService
     );
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
+    const queryBus = await app.resolve<QueryBus>(QueryBus);
 
     const blockchainProperties = await blockchainPropertiesService.create(
         provider.network.chainId,
@@ -195,6 +196,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         issuer,
         privateIssuer,
         provider,
-        app
+        app,
+        queryBus
     };
 };

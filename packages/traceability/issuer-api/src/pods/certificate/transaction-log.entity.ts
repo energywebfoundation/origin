@@ -1,10 +1,4 @@
-import {
-    Column,
-    Entity,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { BlockchainEventType } from './types';
 
 export const TRANSACTION_LOG_TABLE_NAME = 'transaction_log';
@@ -23,9 +17,6 @@ export class TransactionLog {
     @Column({ type: 'text' })
     transactionType: BlockchainEventType;
 
-    @CreateDateColumn({ type: 'timestamptz' })
-    createdAt: Date;
-
-    @UpdateDateColumn({ type: 'timestamptz' })
-    updatedAt: Date;
+    @Column({ type: 'timestamptz' })
+    transactionTimestamp: Date;
 }
