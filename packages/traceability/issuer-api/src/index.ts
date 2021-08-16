@@ -10,7 +10,7 @@ export * from './utils';
 export * from './types';
 
 export { BlockchainPropertiesService } from './pods/blockchain/blockchain-properties.service';
-export { AppModule, providers } from './app.module';
+export { IssuerModule, providers } from './issuer.module';
 
 export const entities = [Certificate, CertificationRequest, BlockchainProperties, TransactionLog];
 

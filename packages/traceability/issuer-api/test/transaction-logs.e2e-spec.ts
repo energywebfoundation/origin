@@ -64,27 +64,6 @@ describe('Transaction logs tests', () => {
         return body;
     };
 
-    const getCertificates = async (user: TestUser): Promise<CertificateDTO[]> => {
-        const { body } = await request(app.getHttpServer())
-            .get(`/certificate`)
-            .set({ 'test-user': user })
-            .expect(HttpStatus.OK);
-
-        return body;
-    };
-
-    const getCertificate = async (
-        id: CertificateDTO['id'],
-        user: TestUser
-    ): Promise<CertificateDTO> => {
-        const { body } = await request(app.getHttpServer())
-            .get(`/certificate/${id}`)
-            .set({ 'test-user': user })
-            .expect(HttpStatus.OK);
-
-        return body;
-    };
-
     const expectLogs = (certificate: CertificateWithLogs) => {
         const logs = certificate.transactionLogs;
         expect(logs).to.have.length(4); /** @NOTE claim causes Transfer + Claim  */

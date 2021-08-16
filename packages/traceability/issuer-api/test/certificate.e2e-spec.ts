@@ -41,7 +41,7 @@ const claimData: IClaimData = {
 const getUserBlockchainAddress = (user: TestUser) =>
     testUsers.get(user).organization.blockchainAccountAddress;
 
-describe.skip('Certificate tests', () => {
+describe('Certificate tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
 

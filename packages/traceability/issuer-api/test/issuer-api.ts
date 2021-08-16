@@ -17,7 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
 import { entities } from '../src';
-import { AppModule } from '../src/app.module';
+import { IssuerModule } from '../src/issuer.module';
 import { BlockchainPropertiesService } from '../src/pods/blockchain/blockchain-properties.service';
 
 const web3 = 'http://localhost:8581';
@@ -132,6 +132,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
     const privateIssuer = await deployPrivateIssuer(issuer.address);
+    const issuerModule = IssuerModule.register({ enableTransactionLogging: true });
 
     await issuer.setPrivateIssuer(privateIssuer.address);
 
@@ -148,7 +149,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
                 logging: ['info'],
                 keepConnectionAlive: true
             }),
-            AppModule,
+            issuerModule,
             handler ?? StubValidateDeviceOwnershipQueryHandler
         ],
         providers: [DatabaseService]
@@ -188,7 +189,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
     app.useLogger(['log', 'error', 'debug', 'verbose']);
     app.enableCors();
 
-    useContainer(app.select(AppModule), { fallbackOnErrors: true });
+    useContainer(app.select(issuerModule), { fallbackOnErrors: true });
 
     return {
         databaseService,
