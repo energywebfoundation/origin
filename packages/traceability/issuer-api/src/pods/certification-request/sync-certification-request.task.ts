@@ -3,7 +3,6 @@ import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BlockchainPropertiesService } from '../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate/certificate.entity';
 import { CertificateCreatedEvent } from '../certificate/events/certificate-created-event';
 import { CertificationRequest } from './certification-request.entity';
