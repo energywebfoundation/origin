@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Index } from 'typeorm';
 import { BlockchainEventType } from './types';
 
 export const TRANSACTION_LOG_TABLE_NAME = 'transaction_log';
@@ -8,6 +8,7 @@ export class TransactionLog {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Index()
     @Column({ type: 'int4' })
     certificateId: number;
 
