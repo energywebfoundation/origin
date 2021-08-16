@@ -25,7 +25,8 @@ export const CertificateHandlers = [
     GetCertificateHandler,
     IssueCertificateHandler,
     SyncCertificateHandler,
-    TransferCertificateHandler,
-    NewTransactionProcessedHandler,
-    GetCertificatesWithLogsHandler
+    TransferCertificateHandler
 ];
+
+/** Because of irec-issuer-api using handlers above, and we don't want to migrate it yet to transaction logs */
+export const InternalHandlers = [NewTransactionProcessedHandler, GetCertificatesWithLogsHandler];

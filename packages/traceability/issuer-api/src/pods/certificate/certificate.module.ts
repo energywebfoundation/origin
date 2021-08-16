@@ -5,7 +5,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { Certificate } from './certificate.entity';
 import { CertificateController } from './certificate.controller';
 import { BlockchainPropertiesModule } from '../blockchain';
-import { CertificateHandlers } from './handlers';
+import { CertificateHandlers, InternalHandlers } from './handlers';
 import { OnChainCertificateWatcher } from './listeners';
 import { CertificateBatchController } from './certificate-batch.controller';
 import { TransactionLog } from './transaction-log.entity';
@@ -18,7 +18,12 @@ import { TransactionLogService } from './transaction-log.service';
         BlockchainPropertiesModule
     ],
     controllers: [CertificateController, CertificateBatchController],
-    providers: [...CertificateHandlers, OnChainCertificateWatcher, TransactionLogService],
+    providers: [
+        ...CertificateHandlers,
+        ...InternalHandlers,
+        OnChainCertificateWatcher,
+        TransactionLogService
+    ],
     exports: [...CertificateHandlers, OnChainCertificateWatcher]
 })
 export class CertificateModule {}
