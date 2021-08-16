@@ -35,7 +35,8 @@ export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUn
 export class IssuerModule {
     static register(originalOptions: Partial<IssuerModuleOptions> = {}): DynamicModule {
         const defaultOptions: IssuerModuleOptions = {
-            enableTransactionLogging: false
+            enableTransactionLogging: false,
+            enableCertificationRequest: true
         };
 
         const options = Object.assign(defaultOptions, originalOptions);
@@ -50,7 +51,7 @@ export class IssuerModule {
                 ScheduleModule.forRoot(),
                 CertificateModule,
                 BlockchainPropertiesModule,
-                CertificationRequestModule
+                ...(options.enableCertificationRequest ? [CertificationRequestModule] : [])
             ],
             providers: [
                 ...providers,
