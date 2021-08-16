@@ -14,9 +14,9 @@ import { EnergyFormatter } from '@energyweb/origin-ui-utils';
 import { UnpackNestedValue } from 'react-hook-form';
 
 type FormValuesTypes = {
-  fromTime?: string;
-  toTime?: string;
-  energy?: string;
+  fromTime: string;
+  toTime: string;
+  energy: string;
 };
 
 type TUseRequestCertificatesHandlerArgs = {
@@ -57,8 +57,8 @@ export const useRequestCertificatesHandler = ({
       energy: energyInBaseUnit.toString(),
       to: !isLoading && address,
       deviceId: deviceId,
-      fromTime: dayjs(values.fromTime).unix(),
-      toTime: dayjs(values.toTime).unix(),
+      fromTime: dayjs(values.fromTime).startOf('day').unix(),
+      toTime: dayjs(values.toTime).endOf('day').unix(),
       files: files.map((f) => f.uploadedName),
       isPrivate: false,
     };
@@ -72,7 +72,15 @@ export const useRequestCertificatesHandler = ({
           );
           closeForm();
         },
-        onError: () => {
+        onError: (error: any) => {
+          if (error.response.status === 409) {
+            showNotification(
+              t('device.my.notifications.certificateRequestAlreadyExists'),
+              NotificationTypeEnum.Error
+            );
+            return;
+          }
+
           showNotification(
             t('device.my.notifications.certificateRequestError'),
             NotificationTypeEnum.Error
