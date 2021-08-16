@@ -1,9 +1,7 @@
 import {
-    BlockchainProperties,
     BlockchainPropertiesModule,
-    Certificate,
     CertificateModule,
-    CertificationRequest
+    entities as issuerEntities
 } from '@energyweb/issuer-api';
 import { entities as OriginBackendEntities } from '@energyweb/origin-backend';
 import { entities as OrganizationEntities } from '@energyweb/origin-organization-irec-api';
@@ -28,12 +26,6 @@ export const usedEntities = [
     ...DeviceEntities,
     ...DeviceRegistryEntities
 ];
-export const entities = [
-    Certificate,
-    CertificationRequest,
-    IrecCertificationRequest,
-    BlockchainProperties,
-    ...usedEntities
-];
+export const entities = [IrecCertificationRequest, ...issuerEntities, ...usedEntities];
 
 export const modules = [CertificateModule, CertificationRequestModule, BlockchainPropertiesModule];

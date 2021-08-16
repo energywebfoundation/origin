@@ -11,7 +11,7 @@ import {
     FileModule,
     UserModule
 } from '@energyweb/origin-backend';
-import { CertificateModule, BlockchainPropertiesModule } from '@energyweb/issuer-api';
+import { IssuerModule } from '@energyweb/issuer-api';
 import { CertificationRequestModule } from './pods/certification-request';
 
 export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUnitsOfEnergy];
@@ -43,8 +43,7 @@ const getEnvFilePath = () => {
         OriginBackendModule,
         UserModule,
         FileModule,
-        CertificateModule,
-        BlockchainPropertiesModule,
+        IssuerModule.register({ enableCertificationRequest: false }),
         CertificationRequestModule
     ],
     providers
