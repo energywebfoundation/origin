@@ -395,7 +395,8 @@
         "notifications": {
           "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates.",
           "certificateRequestSuccess": "Certificate has been successfully requested",
-          "certificateRequestError": "Error while requesting certificate"
+          "certificateRequestError": "Error while requesting certificate",
+          "certificateRequestAlreadyExists": "There is already a certificate requested for that time period"
         }
       },
       "map": {
