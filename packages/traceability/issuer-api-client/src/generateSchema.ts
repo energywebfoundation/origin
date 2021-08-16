@@ -2,7 +2,7 @@ import fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { entities, AppModule } from '@energyweb/issuer-api';
+import { entities, IssuerModule } from '@energyweb/issuer-api';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Yaml = require('json-to-pretty-yaml');
@@ -20,7 +20,7 @@ export const generateSchema = async () => {
                 entities,
                 logging: ['info']
             }),
-            AppModule
+            IssuerModule.register()
         ]
     }).compile();
 
