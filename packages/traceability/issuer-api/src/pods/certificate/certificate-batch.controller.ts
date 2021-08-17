@@ -4,7 +4,8 @@ import {
     BlockchainAccountDecorator,
     ExceptionInterceptor,
     Roles,
-    RolesGuard
+    RolesGuard,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -24,7 +25,6 @@ import { BigNumber } from 'ethers';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { BatchClaimCertificatesCommand } from './commands/batch-claim-certificates.command';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { BatchIssueCertificateDTO } from './commands/batch-issue-certificates.dto';
 import { BatchIssueCertificatesCommand } from './commands/batch-issue-certificates.command';
 import { BatchTransferCertificatesCommand } from './commands/batch-transfer-certificates.command';
