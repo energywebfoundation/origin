@@ -24,6 +24,7 @@ import {
     IssuanceStatus,
     Issue,
     IssueWithStatus,
+    Organisation,
     RedeemTransactionResult,
     ReservationItem,
     TransactionResult
@@ -122,6 +123,8 @@ export interface IIrecService {
     approveDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 
     rejectDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
+
+    getUserOrganization(user: UserIdentifier): Promise<Organisation>;
 }
 
 @Injectable()
@@ -395,5 +398,10 @@ export class IrecService implements IIrecService {
         await irecClient.device.reject(code);
         device.status = DeviceState.Rejected;
         return device;
+    }
+
+    async getUserOrganization(user: UserIdentifier): Promise<Organisation> {
+        const irecClient = await this.getIrecClient(user);
+        return irecClient.organisation.get();
     }
 }

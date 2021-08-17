@@ -29,7 +29,7 @@ export class CreateLocalBeneficiaryHandler
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         const irecBeneficiary = await this.irecService.createBeneficiary(
-            platformAdmin.id,
+            platformAdmin.organization.id,
             beneficiary
         );
 
