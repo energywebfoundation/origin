@@ -53,6 +53,12 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         );
 
         this.provider.on(
+            this.registry.filters.TransferBatchMultiple(null, null, null, null, null),
+            (event: providers.Log) =>
+                this.processEvent(BlockchainEventType.TransferBatchMultiple, event)
+        );
+
+        this.provider.on(
             this.registry.filters.ClaimSingle(null, null, null, null, null, null),
             (event: providers.Log) => this.processEvent(BlockchainEventType.ClaimSingle, event)
         );
@@ -60,6 +66,12 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         this.provider.on(
             this.registry.filters.ClaimBatch(null, null, null, null, null, null),
             (event: providers.Log) => this.processEvent(BlockchainEventType.ClaimBatch, event)
+        );
+
+        this.provider.on(
+            this.registry.filters.ClaimBatchMultiple(null, null, null, null, null, null),
+            (event: providers.Log) =>
+                this.processEvent(BlockchainEventType.ClaimBatchMultiple, event)
         );
     }
 
@@ -107,6 +119,7 @@ export class OnChainCertificateWatcher implements OnModuleInit {
                 break;
 
             case BlockchainEventType.TransferBatch:
+            case BlockchainEventType.TransferBatchMultiple:
                 if (event.from === constants.AddressZero) {
                     this.logger.debug(
                         `Skipping TransferBatch handler for certificates ${event.ids
@@ -128,6 +141,7 @@ export class OnChainCertificateWatcher implements OnModuleInit {
                 break;
 
             case BlockchainEventType.ClaimBatch:
+            case BlockchainEventType.ClaimBatchMultiple:
                 event._ids.forEach((id: any) => {
                     logEvent(BlockchainEventType.ClaimBatch, [id.toNumber()]);
                     this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));

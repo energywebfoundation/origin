@@ -65,36 +65,21 @@ describe('Transaction logs tests', () => {
     };
 
     const expectLogs = (certificate: CertificateWithLogs) => {
-        const logs = certificate.transactionLogs;
-        expect(logs).to.have.length(4); /** @NOTE claim causes Transfer + Claim  */
+        const transactionTypes = certificate.transactionLogs.map((l) => l.transactionType);
+        expect(transactionTypes).to.have.length(3);
 
-        expect(
-            logs.filter((l) => l.transactionType === BlockchainEventType.IssuanceSingle)
-        ).to.have.length(1);
-        expect(
-            logs.filter((l) => l.transactionType === BlockchainEventType.TransferSingle)
-        ).to.have.length(2);
-        expect(
-            logs.filter((l) => l.transactionType === BlockchainEventType.ClaimSingle)
-        ).to.have.length(1);
+        expect(transactionTypes).to.include(BlockchainEventType.IssuanceSingle);
+        expect(transactionTypes).to.include(BlockchainEventType.TransferSingle);
+        expect(transactionTypes).to.include(BlockchainEventType.ClaimSingle);
     };
 
     const expectBatchLogs = (certificate: CertificateWithLogs) => {
-        const logs = certificate.transactionLogs;
-        expect(logs).to.have.length(4); /** @NOTE claim causes Transfer + Claim  */
+        const transactionTypes = certificate.transactionLogs.map((l) => l.transactionType);
+        expect(transactionTypes).to.have.length(3);
 
-        expect(
-            logs.filter((l) => l.transactionType === BlockchainEventType.IssuanceBatch)
-        ).to.have.length(1);
-        expect(
-            logs.filter((l) => l.transactionType === BlockchainEventType.TransferBatch)
-        ).to.have.length(1);
-        expect(
-            logs.filter((l) => l.transactionType === BlockchainEventType.TransferSingle)
-        ).to.have.length(1);
-        expect(
-            logs.filter((l) => l.transactionType === BlockchainEventType.ClaimBatch)
-        ).to.have.length(1);
+        expect(transactionTypes).to.include(BlockchainEventType.IssuanceBatch);
+        expect(transactionTypes).to.include(BlockchainEventType.TransferBatchMultiple);
+        expect(transactionTypes).to.include(BlockchainEventType.ClaimBatchMultiple);
     };
 
     before(async () => {
@@ -160,13 +145,18 @@ describe('Transaction logs tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate-batch/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                certificateAmounts: [
-                    { id: ids[0], amount: certificateTestData.energy },
-                    { id: ids[1], amount: certificateTestData.energy }
-                ],
-                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
-            })
+            .send([
+                {
+                    id: ids[0],
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: certificateTestData.energy
+                },
+                {
+                    id: ids[1],
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: certificateTestData.energy
+                }
+            ])
             .expect(HttpStatus.OK);
 
         await sleep(10000);
@@ -174,13 +164,10 @@ describe('Transaction logs tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate-batch/claim`)
             .set({ 'test-user': TestUser.OtherOrganizationDeviceManager })
-            .send({
-                claimData,
-                certificateAmounts: [
-                    { id: ids[0], amount: certificateTestData.energy },
-                    { id: ids[1], amount: certificateTestData.energy }
-                ]
-            })
+            .send([
+                { id: ids[0], claimData, amount: certificateTestData.energy },
+                { id: ids[1], claimData, amount: certificateTestData.energy }
+            ])
             .expect(HttpStatus.OK);
 
         await sleep(10000);

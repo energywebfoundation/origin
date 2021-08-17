@@ -4,5 +4,7 @@ export enum BlockchainEventType {
     TransferSingle = 'TransferSingle',
     TransferBatch = 'TransferBatch',
     ClaimSingle = 'ClaimSingle',
-    ClaimBatch = 'ClaimBatch'
+    ClaimBatch = 'ClaimBatch',
+    TransferBatchMultiple = 'TransferBatchMultiple',
+    ClaimBatchMultiple = 'ClaimBatchMultiple'
 }
