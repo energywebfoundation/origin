@@ -8,7 +8,6 @@ import { HttpStatus } from '@nestjs/common';
 import { BatchTransferCertificatesCommand } from '../commands/batch-transfer-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { TOTAL_AMOUNT } from '../types';
 
 @CommandHandler(BatchTransferCertificatesCommand)
 export class BatchTransferCertificatesHandler
@@ -20,50 +19,34 @@ export class BatchTransferCertificatesHandler
         private readonly blockchainPropertiesService: BlockchainPropertiesService
     ) {}
 
-    async execute({
-        certificateAmounts,
-        to,
-        forAddress
-    }: BatchTransferCertificatesCommand): Promise<ISuccessResponse> {
+    async execute({ transfers }: BatchTransferCertificatesCommand): Promise<ISuccessResponse> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
-        const certificatesToTransfer = await this.repository.findByIds(
-            certificateAmounts.map((cert) => cert.id),
-            { relations: ['blockchain'] }
-        );
+        for (const { id, amount, from } of transfers) {
+            if (!amount) {
+                continue;
+            }
 
-        const notOwnedCertificates = certificatesToTransfer
-            .filter(
-                (cert) =>
-                    !cert.owners[forAddress] ||
-                    BigNumber.from(cert.owners[forAddress] ?? 0).isZero()
-            )
-            .map((cert) => cert.id);
+            const cert = await this.repository.findOne(id);
 
-        if (notOwnedCertificates.length > 0) {
-            return ResponseFailure(
-                `Requested transferring of certificates, but you do not own certificates with IDs: ${notOwnedCertificates.join(
-                    ', '
-                )}`,
-                HttpStatus.FORBIDDEN
-            );
+            if (
+                !cert.owners[from] ||
+                BigNumber.from(cert.owners[from] ?? 0).isZero() ||
+                BigNumber.from(cert.owners[from] ?? 0).lt(amount)
+            ) {
+                return ResponseFailure(
+                    `Requested transferring of certificate ${id} with amount ${amount.toString()}, but you only own ${
+                        cert.owners[from] ?? 0
+                    }`,
+                    HttpStatus.FORBIDDEN
+                );
+            }
         }
-
-        const amounts = certificateAmounts.map((cert) =>
-            BigNumber.from(
-                cert.amount === TOTAL_AMOUNT
-                    ? certificatesToTransfer.find((c) => c.id === cert.id).owners[forAddress]
-                    : cert.amount
-            )
-        );
 
         try {
             const batchTransferTx = await CertificateBatchOperations.transferCertificates(
-                certificateAmounts.map((cert) => cert.id),
-                to,
-                blockchainProperties.wrap(),
-                forAddress,
-                amounts
+                transfers,
+                blockchainProperties.wrap()
             );
 
             const receipt = await batchTransferTx.wait();
@@ -72,9 +55,7 @@ export class BatchTransferCertificatesHandler
                 throw new Error(
                     `ClaimBatch tx ${
                         receipt.transactionHash
-                    } on certificate with id ${certificatesToTransfer.map(
-                        (cert) => cert.id
-                    )} failed.`
+                    } on certificate with id ${transfers.map((transfer) => transfer.id)} failed.`
                 );
             }
         } catch (error) {

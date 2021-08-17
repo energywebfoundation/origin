@@ -1,9 +1,5 @@
-import { CertificateAmount } from '../types';
+import { CertificateBatchOperations } from '@energyweb/issuer';
 
 export class BatchTransferCertificatesCommand {
-    constructor(
-        public readonly certificateAmounts: CertificateAmount[],
-        public readonly to: string,
-        public readonly forAddress: string
-    ) {}
+    constructor(public readonly transfers: CertificateBatchOperations.BatchCertificateTransfer[]) {}
 }

@@ -313,13 +313,10 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate-batch/claim`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                claimData,
-                certificateAmounts: [
-                    { id: certificateId1, amount: 'TOTAL' },
-                    { id: certificateId2, amount: certificateTestData.energy }
-                ]
-            })
+            .send([
+                { id: certificateId1, claimData },
+                { id: certificateId2, claimData, amount: certificateTestData.energy }
+            ])
             .expect(HttpStatus.OK);
 
         await sleep(10000);
@@ -372,13 +369,10 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate-batch/claim`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                claimData,
-                certificateAmounts: [
-                    { id: certificateId1, amount: halfAmount },
-                    { id: certificateId2, amount: halfAmount }
-                ]
-            })
+            .send([
+                { id: certificateId1, claimData, amount: halfAmount },
+                { id: certificateId2, claimData, amount: halfAmount }
+            ])
             .expect(HttpStatus.OK);
 
         await sleep(10000);
@@ -415,13 +409,10 @@ describe('Certificate tests', () => {
         } = await request(app.getHttpServer())
             .put(`/certificate-batch/claim`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                claimData,
-                certificateAmounts: [
-                    { id: certificateId1, amount: certificateTestData.energy },
-                    { id: certificateId2, amount: certificateTestData.energy }
-                ]
-            })
+            .send([
+                { id: certificateId1, claimData, amount: certificateTestData.energy },
+                { id: certificateId2, claimData, amount: certificateTestData.energy }
+            ])
             .expect(HttpStatus.FORBIDDEN);
 
         expect(message).to.include(certificateId2.toString());
@@ -434,13 +425,17 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate-batch/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                certificateAmounts: [
-                    { id: certificateId1, amount: 'TOTAL' },
-                    { id: certificateId2, amount: certificateTestData.energy }
-                ],
-                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
-            })
+            .send([
+                {
+                    id: certificateId1,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
+                },
+                {
+                    id: certificateId2,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: certificateTestData.energy
+                }
+            ])
             .expect(HttpStatus.OK);
     });
 
@@ -453,13 +448,18 @@ describe('Certificate tests', () => {
         await request(app.getHttpServer())
             .put(`/certificate-batch/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                certificateAmounts: [
-                    { id: certificateId1, amount: halfAmount },
-                    { id: certificateId2, amount: halfAmount }
-                ],
-                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
-            })
+            .send([
+                {
+                    id: certificateId1,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: halfAmount
+                },
+                {
+                    id: certificateId2,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: halfAmount
+                }
+            ])
             .expect(HttpStatus.OK);
 
         await sleep(10000);
@@ -504,13 +504,18 @@ describe('Certificate tests', () => {
         } = await request(app.getHttpServer())
             .put(`/certificate-batch/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .send({
-                certificateAmounts: [
-                    { id: certificateId1, amount: certificateTestData.energy },
-                    { id: certificateId2, amount: certificateTestData.energy }
-                ],
-                to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager)
-            })
+            .send([
+                {
+                    id: certificateId1,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: certificateTestData.energy
+                },
+                {
+                    id: certificateId2,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: certificateTestData.energy
+                }
+            ])
             .expect(HttpStatus.FORBIDDEN);
 
         expect(message).to.include(certificateId2.toString());

@@ -5,7 +5,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import "./Registry.sol";
+import "./RegistryExtended.sol";
 
 /// @title Issuer contract
 /// @notice Used to manage the request/approve workflow for issuing ERC-1888 certificates.
@@ -15,7 +15,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     uint256 public certificateTopic;
 
     // ERC-1888 contract to issue certificates to
-    Registry public registry;
+    RegistryExtended public registry;
 
     // Optional: Private Issuance contract
     address public privateIssuer;
@@ -57,7 +57,7 @@ contract Issuer is Initializable, OwnableUpgradeable, UUPSUpgradeable {
 
         certificateTopic = _certificateTopic;
 
-        registry = Registry(_registry);
+        registry = RegistryExtended(_registry);
         OwnableUpgradeable.__Ownable_init();
         UUPSUpgradeable.__UUPSUpgradeable_init();
     }

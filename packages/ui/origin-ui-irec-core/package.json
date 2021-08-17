@@ -36,7 +36,7 @@
         "formik": "2.2.9",
         "formik-material-ui": "3.0.1",
         "history": "4.10.1",
-        "i18next": "20.3.5",
+        "i18next": "20.4.0",
         "moment": "2.29.1",
         "react": "17.0.2",
         "react-dom": "17.0.2",
@@ -50,7 +50,7 @@
     },
     "devDependencies": {
         "typescript": "4.3.5",
-        "@types/react": "17.0.16",
+        "@types/react": "17.0.18",
         "@types/react-redux": "7.1.18",
         "@types/react-router-dom": "5.1.8",
         "@types/yup": "0.29.13",

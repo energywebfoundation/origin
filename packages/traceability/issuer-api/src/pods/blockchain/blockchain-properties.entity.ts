@@ -51,7 +51,7 @@ export class BlockchainProperties extends ExtendedBaseEntity {
 
         return {
             web3,
-            registry: Contracts.factories.RegistryFactory.connect(this.registry, signer),
+            registry: Contracts.factories.RegistryExtendedFactory.connect(this.registry, signer),
             issuer: Contracts.factories.IssuerFactory.connect(this.issuer, signer),
             privateIssuer: this.privateIssuer
                 ? Contracts.factories.PrivateIssuerFactory.connect(this.privateIssuer, signer)

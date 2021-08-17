@@ -9,6 +9,18 @@ export interface CertificateInfoInBatch extends IData {
     amount: BigNumber;
 }
 
+export type BatchCertificateTransfer = {
+    id: number;
+    to: string;
+    from?: string;
+    amount?: BigNumber;
+};
+
+export type BatchCertificateClaim = Omit<BatchCertificateTransfer, 'to'> & {
+    claimData: IClaimData;
+    to?: string;
+};
+
 export async function issueCertificates(
     certificateInfo: CertificateInfoInBatch[],
     blockchainProperties: IBlockchainProperties
@@ -51,67 +63,69 @@ export async function issueCertificates(
 }
 
 export async function transferCertificates(
-    certificateIds: number[],
-    to: string,
-    blockchainProperties: IBlockchainProperties,
-    from?: string,
-    values?: BigNumber[]
+    certificateBatch: BatchCertificateTransfer[],
+    blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
-    const certificatesPromises = certificateIds.map((certId) =>
-        new Certificate(certId, blockchainProperties).sync()
+    const certificatesPromises = certificateBatch.map((cert) =>
+        new Certificate(cert.id, blockchainProperties).sync()
     );
 
     const { registry, activeUser } = blockchainProperties;
     const registryWithSigner = registry.connect(activeUser);
 
     const activeUserAddress = await activeUser.getAddress();
-    const fromAddress = from ?? activeUserAddress;
 
     const certificates = await Promise.all(certificatesPromises);
 
-    const transferTx = await registryWithSigner.safeBatchTransferFrom(
-        fromAddress,
-        to,
-        certificateIds,
-        values ?? certificates.map((cert) => BigNumber.from(cert.owners[fromAddress] ?? 0)),
-        utils.randomBytes(32) // TO-DO: replace with proper data
+    const transferTx = await registryWithSigner.safeBatchTransferFromMultiple(
+        certificateBatch.map((cert) => cert.from ?? activeUserAddress),
+        certificateBatch.map((cert) => cert.to),
+        certificateBatch.map((cert) => cert.id),
+        certificateBatch.map(
+            (cert) =>
+                cert.amount ??
+                BigNumber.from(
+                    certificates.find((certificate) => certificate.id === cert.id).owners[
+                        cert.from ?? activeUserAddress
+                    ] ?? 0
+                )
+        ),
+        certificateBatch.map(() => utils.randomBytes(32)) // TO-DO: replace with proper data
     );
-
-    await transferTx.wait();
 
     return transferTx;
 }
 
 export async function claimCertificates(
-    certificateIds: number[],
-    claimData: IClaimData,
-    blockchainProperties: IBlockchainProperties,
-    forAddress?: string,
-    values?: BigNumber[]
+    certificateBatch: BatchCertificateClaim[],
+    blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
-    const certificatesPromises = certificateIds.map((certId) =>
-        new Certificate(certId, blockchainProperties).sync()
+    const certificatesPromises = certificateBatch.map((cert) =>
+        new Certificate(cert.id, blockchainProperties).sync()
     );
     const certificates = await Promise.all(certificatesPromises);
 
     const { activeUser, registry } = blockchainProperties;
-    const claimer = forAddress ?? (await activeUser.getAddress());
-
-    const encodedClaimData = encodeClaimData(claimData);
-    const data = utils.randomBytes(32);
+    const activeUserAddress = await activeUser.getAddress();
 
     const registryWithSigner = registry.connect(activeUser);
 
-    const claimTx = await registryWithSigner.safeBatchTransferAndClaimFrom(
-        claimer,
-        claimer,
-        certificateIds,
-        values ?? certificates.map((cert) => BigNumber.from(cert.owners[claimer] ?? 0)),
-        data,
-        certificates.map(() => encodedClaimData)
+    const claimTx = await registryWithSigner.safeBatchTransferAndClaimFromMultiple(
+        certificateBatch.map((cert) => cert.from ?? activeUserAddress),
+        certificateBatch.map((cert) => cert.to ?? cert.from ?? activeUserAddress),
+        certificateBatch.map((cert) => cert.id),
+        certificateBatch.map(
+            (cert) =>
+                cert.amount ??
+                BigNumber.from(
+                    certificates.find((certificate) => certificate.id === cert.id).owners[
+                        cert.from ?? activeUserAddress
+                    ] ?? 0
+                )
+        ),
+        certificateBatch.map(() => utils.randomBytes(32)), // TO-DO: replace with proper data
+        certificateBatch.map((cert) => encodeClaimData(cert.claimData))
     );
-
-    await claimTx.wait();
 
     return claimTx;
 }

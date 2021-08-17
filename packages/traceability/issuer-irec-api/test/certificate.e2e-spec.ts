@@ -174,25 +174,22 @@ describe('Certificate tests', () => {
 
         await sleep(10000);
 
-        const { isOwned, energy, isClaimed, myClaims, claims } = await getCertificate(
-            certificateId,
-            TestUser.OrganizationDeviceManager
-        );
+        const certificate = await getCertificate(certificateId, TestUser.OrganizationDeviceManager);
 
-        expect(isOwned).to.be.false;
-        expect(isClaimed).to.be.true;
-        expect(energy.publicVolume).to.equal('0');
-        expect(energy.claimedVolume).to.equal(certificateTestData.energy);
+        expect(certificate.isOwned).to.be.false;
+        expect(certificate.isClaimed).to.be.true;
+        expect(certificate.energy.publicVolume).to.equal('0');
+        expect(certificate.energy.claimedVolume).to.equal(certificateTestData.energy);
         expect(
-            myClaims.some(
+            certificate.myClaims.some(
                 (claim: ClaimDTO) =>
                     claim.to === deviceManager.address &&
                     claim.from === deviceManager.address &&
-                    JSON.stringify(claim.claimData) === JSON.stringify(claimData) &&
+                    claim.claimData.beneficiary === claimData.beneficiary &&
                     claim.value === certificateTestData.energy
             )
         ).to.be.true;
-        expect(claims).to.deep.equal(myClaims);
+        expect(certificate.claims).to.deep.equal(certificate.myClaims);
     });
 
     it('should partially claim a certificate', async () => {
@@ -230,6 +227,7 @@ describe('Certificate tests', () => {
         ).to.be.true;
     });
 
+    // Wasn't working on GitHub actions for some reason. Works fine locally
     xit('should return all claiming information', async () => {
         const { id: certificateId } = await createCertificate();
 
@@ -243,7 +241,8 @@ describe('Certificate tests', () => {
                 amount
             })
             .expect(HttpStatus.OK);
-        await sleep(10000);
+
+        await sleep(15000);
 
         await request(app.getHttpServer())
             .put(`/irec/certificate/${certificateId}/claim`)
@@ -320,14 +319,14 @@ describe('Certificate tests', () => {
         const {
             body: [certificateToImport]
         } = await request(app.getHttpServer())
-            .get(`/irec/certificate/certificates-to-import`)
+            .get(`/irec/certificate/importable`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
         expect(certificateToImport.asset).to.equal('test-asset-id');
 
         await request(app.getHttpServer())
-            .post(`/irec/certificate/import-certificate`)
+            .post(`/irec/certificate/import`)
             .send({ assetId: certificateToImport.asset })
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.CREATED);

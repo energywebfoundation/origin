@@ -4,7 +4,8 @@ import {
     BlockchainAccountDecorator,
     ExceptionInterceptor,
     Roles,
-    RolesGuard
+    RolesGuard,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -20,16 +21,16 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus } from '@nestjs/cqrs';
 import { Role } from '@energyweb/origin-backend-core';
-
+import { BigNumber } from 'ethers';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { BatchClaimCertificatesCommand } from './commands/batch-claim-certificates.command';
-import { BatchClaimCertificatesDTO } from './commands/batch-claim-certificates.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { BatchIssueCertificateDTO } from './commands/batch-issue-certificates.dto';
 import { BatchIssueCertificatesCommand } from './commands/batch-issue-certificates.command';
-import { BatchTransferCertificatesDTO } from './commands/batch-transfer-certificates.dto';
 import { BatchTransferCertificatesCommand } from './commands/batch-transfer-certificates.command';
 import { CertificateIdsDTO } from './dto/certificate-ids.dto';
+import { BatchCertificateTransferDTO } from './dto/batch-certificate-transfer.dto';
+import { BatchCertificateClaimDTO } from './dto/batch-certificate-claim.dto';
 
 @ApiTags('certificates')
 @ApiBearerAuth('access-token')
@@ -56,7 +57,7 @@ export class CertificateBatchController {
 
     @Put('transfer')
     @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
-    @ApiBody({ type: BatchTransferCertificatesDTO })
+    @ApiBody({ type: [BatchCertificateTransferDTO] })
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
@@ -64,16 +65,22 @@ export class CertificateBatchController {
     })
     public async batchTransfer(
         @BlockchainAccountDecorator() blockchainAddress: string,
-        @Body() { certificateAmounts, to }: BatchTransferCertificatesDTO
+        @Body() transfers: [BatchCertificateTransferDTO]
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
-            new BatchTransferCertificatesCommand(certificateAmounts, to, blockchainAddress)
+            new BatchTransferCertificatesCommand(
+                transfers.map((transfer) => ({
+                    ...transfer,
+                    amount: transfer.amount ? BigNumber.from(transfer.amount) : undefined,
+                    from: transfer.from ?? blockchainAddress
+                }))
+            )
         );
     }
 
     @Put('claim')
     @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
-    @ApiBody({ type: BatchClaimCertificatesDTO })
+    @ApiBody({ type: [BatchCertificateClaimDTO] })
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
@@ -81,10 +88,17 @@ export class CertificateBatchController {
     })
     public async batchClaim(
         @BlockchainAccountDecorator() blockchainAddress: string,
-        @Body() { certificateAmounts, claimData }: BatchClaimCertificatesDTO
+        @Body() claims: BatchCertificateClaimDTO[]
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
-            new BatchClaimCertificatesCommand(certificateAmounts, claimData, blockchainAddress)
+            new BatchClaimCertificatesCommand(
+                claims.map((claim) => ({
+                    ...claim,
+                    amount: claim.amount ? BigNumber.from(claim.amount) : undefined,
+                    from: claim.from ?? blockchainAddress,
+                    to: claim.to ?? blockchainAddress
+                }))
+            )
         );
     }
 }
