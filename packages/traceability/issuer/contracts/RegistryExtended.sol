@@ -120,7 +120,9 @@ contract RegistryExtended is Registry {
 			Certificate memory cert = certificateStorage[_ids[i]];
 			topics[i] = cert.topic;
 
-            safeTransferFrom(_from[i], _to[i], _ids[i], _values[i], _data[i]);
+			if (_from[i] != _to[i]) {
+            	_safeTransferFrom(_from[i], _to[i], _ids[i], _values[i], _data[i]);
+			}
 
 			_burn(_to[i], _ids[i], _values[i]);
 		}
