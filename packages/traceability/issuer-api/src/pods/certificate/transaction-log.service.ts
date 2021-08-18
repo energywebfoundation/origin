@@ -48,7 +48,7 @@ export class TransactionLogService {
     public async findByCertificateIds(certificateIds: number[]): Promise<TransactionLog[]> {
         const logs = await this.repository.find({
             where: {
-                certificateId: In(certificateIds)
+                certificateId: In(certificateIds.map((id) => String(id)))
             }
         });
 
@@ -62,19 +62,13 @@ export class TransactionLogService {
         transactionTimestamp
     }: ISaveParams): Promise<void> {
         const entity = this.repository.create({
-            certificateId,
+            certificateId: String(certificateId),
             transactionHash,
             transactionType,
             transactionTimestamp
         });
 
-        const errors = await validate(entity);
-
-        if (errors.length > 0) {
-            throw new Error(`Transaction save failed: ${errors.join(', ')}`);
-        } else {
-            await this.repository.save(entity);
-        }
+        await this.repository.save(entity);
     }
 
     private extractEventCertificateIds(

@@ -13,7 +13,7 @@ export class GetCertificatesWithLogsHandler implements IQueryHandler<GetCertific
     constructor(
         @InjectRepository(Certificate)
         private readonly certificateRepository: Repository<Certificate>,
-        private readonly logService: TransactionLogService,
+        private readonly logService: TransactionLogService
     ) {}
 
     public async execute({
@@ -39,11 +39,11 @@ export class GetCertificatesWithLogsHandler implements IQueryHandler<GetCertific
             }
         });
 
-        const logs = await this.logService.findByCertificateIds(certificates.map(c => c.id));
+        const logs = await this.logService.findByCertificateIds(certificates.map((c) => c.id));
 
-        return certificates.map(c => ({
+        return certificates.map((c) => ({
             ...c,
-            transactionLogs: logs.filter(l => l.certificateId === c.id),
-        }))
+            transactionLogs: logs.filter((l) => l.certificateId === String(c.id))
+        }));
     }
 }
