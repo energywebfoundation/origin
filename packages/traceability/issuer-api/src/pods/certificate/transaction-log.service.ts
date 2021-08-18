@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { BigNumber, constants } from 'ethers';
 import { IBlockchainEvent } from '@energyweb/issuer';
-import { validate } from 'class-validator';
 import { NewTransactionProcessedData } from './events/new-transaction-processed.event';
 import { TransactionLog } from './transaction-log.entity';
 import { BlockchainEventType } from './types';
