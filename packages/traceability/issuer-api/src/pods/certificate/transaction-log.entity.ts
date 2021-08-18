@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, Index } from 'typeorm';
 import { BlockchainEventType } from './types';
+import { Min } from 'class-validator';
 
 export const TRANSACTION_LOG_TABLE_NAME = 'transaction_log';
 
@@ -10,6 +11,7 @@ export class TransactionLog {
 
     @Index()
     @Column({ type: 'bigint' })
+    @Min(1)
     certificateId: number;
 
     @Column({ type: 'text' })
