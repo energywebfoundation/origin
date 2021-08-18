@@ -9,7 +9,7 @@ export class TransactionLog {
     id: number;
 
     @Index()
-    @Column({ type: 'int4' })
+    @Column({ type: 'bigint' })
     certificateId: number;
 
     @Column({ type: 'text' })
