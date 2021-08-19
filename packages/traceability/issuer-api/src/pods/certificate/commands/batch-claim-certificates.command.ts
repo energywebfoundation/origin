@@ -1,10 +1,5 @@
-import { IClaimData } from '@energyweb/issuer';
-import { CertificateAmount } from '../types';
+import { CertificateBatchOperations } from '@energyweb/issuer';
 
 export class BatchClaimCertificatesCommand {
-    constructor(
-        public readonly certificateAmounts: CertificateAmount[],
-        public readonly claimData: IClaimData,
-        public readonly forAddress: string
-    ) {}
+    constructor(public readonly claims: CertificateBatchOperations.BatchCertificateClaim[]) {}
 }

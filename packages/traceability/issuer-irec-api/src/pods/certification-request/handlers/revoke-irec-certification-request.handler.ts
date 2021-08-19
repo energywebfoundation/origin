@@ -32,7 +32,7 @@ export class RevokeIrecCertificationRequestHandler
         });
 
         const issueRequest = await this.irecService.getIssueRequest(
-            platformAdmin.id,
+            platformAdmin.organization.id,
             irecIssueRequestId
         );
 
@@ -44,7 +44,10 @@ export class RevokeIrecCertificationRequestHandler
             );
         }
 
-        await this.irecService.rejectIssueRequest(platformAdmin.id, irecIssueRequestId);
+        await this.irecService.rejectIssueRequest(
+            platformAdmin.organization.id,
+            irecIssueRequestId
+        );
         return this.commandBus.execute(new RevokeCertificationRequestCommand(id));
     }
 }

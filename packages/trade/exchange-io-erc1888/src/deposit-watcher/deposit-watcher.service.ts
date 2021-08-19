@@ -18,7 +18,7 @@ import {
 export class DepositWatcherService implements OnModuleInit {
     private readonly logger = new Logger(DepositWatcherService.name);
 
-    private tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
+    private tokenInterface = new ethers.utils.Interface(Contracts.RegistryExtendedJSON.abi);
 
     private walletAddress: string;
 
@@ -57,7 +57,7 @@ export class DepositWatcherService implements OnModuleInit {
 
         this.registry = new Contract(
             this.registryAddress,
-            Contracts.RegistryJSON.abi,
+            Contracts.RegistryExtendedJSON.abi,
             this.provider
         );
 

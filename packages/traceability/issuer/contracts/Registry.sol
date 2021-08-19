@@ -4,7 +4,6 @@ pragma solidity 0.8.4;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "./ERC1888/IERC1888.sol";
 
-
 /// @title Implementation of the Transferable Certificate standard ERC-1888.
 /// @dev Also complies to ERC-1155: https://eips.ethereum.org/EIPS/eip-1155.
 /// @dev ** Data set to 0 because there is no meaningful check yet to be done on the data
@@ -17,7 +16,7 @@ contract Registry is ERC1155, ERC1888 {
 	mapping(uint256 => mapping(address => uint256)) public claimedBalances;
 
 	// Incrementing nonce, used for generating certificate IDs
-    uint256 private _latestCertificateId;
+    uint256 internal _latestCertificateId;
 
 	constructor(string memory _uri) ERC1155(_uri) {
 		// Trigger ERC1155 constructor
@@ -70,42 +69,6 @@ contract Registry is ERC1155, ERC1888 {
 				data: _data[i]
 			});
 		}
-
-		emit IssuanceBatch(operator, _topics, ids, _values);
-	}
-
-	/// @notice Similar to {IERC1888-batchIssue}, but not a part of the ERC-1888 standard.
-    /// @dev Allows batch issuing to an array of _to addresses.
-    /// @dev `_to` cannot be the zero addresses.
-    /// @dev `_to`, `_data`, `_values`, `_topics` and `_validityData` must have the same length.
-	function batchIssueMultiple(address[] calldata _to, bytes[] calldata _validityData, uint256[] calldata _topics, uint256[] calldata _values, bytes[] calldata _data) external returns (uint256[] memory ids) {
-		require(_to.length == _data.length, "Arrays not same length");
-		require(_data.length == _values.length, "Arrays not same length");
-		require(_values.length == _validityData.length, "Arrays not same length");
-		require(_validityData.length == _topics.length, "Arrays not same length");
-
-		ids = new uint256[](_values.length);
-
-		address operator = _msgSender();
-
-		for (uint256 i = 0; i < _values.length; i++) {
-			ids[i] = i + _latestCertificateId + 1;
-			_validate(operator, _validityData[i]);
-		}
-			
-		for (uint256 i = 0; i < ids.length; i++) {
-			require(_to[i] != address(0x0), "_to must be non-zero.");
-			ERC1155._mint(_to[i], ids[i], _values[i], _data[i]); // Check **
-
-			certificateStorage[ids[i]] = Certificate({
-				topic: _topics[i],
-				issuer: operator,
-				validityData: _validityData[i],
-				data: _data[i]
-			});
-		}
-
-		_latestCertificateId = ids[ids.length - 1];
 
 		emit IssuanceBatch(operator, _topics, ids, _values);
 	}

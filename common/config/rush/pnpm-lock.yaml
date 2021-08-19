@@ -48,7 +48,7 @@ dependencies:
   '@openzeppelin/cli': 2.8.2
   '@openzeppelin/contracts': 4.2.0
   '@openzeppelin/contracts-upgradeable': 4.2.0
-  '@openzeppelin/truffle-upgrades': 1.8.0_truffle@5.4.5
+  '@openzeppelin/truffle-upgrades': 1.8.1_truffle@5.4.6
   '@openzeppelin/upgrades': 2.8.0
   '@react-google-maps/api': 2.1.1_react-dom@17.0.2+react@17.0.2
   '@rush-temp/device-registry': file:projects/device-registry.tgz
@@ -113,7 +113,6 @@ dependencies:
   '@types/dotenv': 6.1.1
   '@types/eth-sig-util': 2.1.1
   '@types/express': 4.17.13
-  '@types/jest': 26.0.24
   '@types/jsonwebtoken': 8.5.4
   '@types/lodash': 4.14.168
   '@types/material-ui': 0.21.9
@@ -199,7 +198,7 @@ dependencies:
   moment: 2.29.1
   moment-range: 4.0.2_moment@2.29.1
   moment-timezone: 0.5.33
-  multer: 1.4.2
+  multer: 1.4.3
   nodemailer: 6.6.3
   orval: 5.0.0-alpha.9
   passport: 0.4.1
@@ -233,11 +232,10 @@ dependencies:
   solc-0.8: /solc/0.8.4
   solidity-docgen: 0.5.13
   superagent-use: 0.1.0
-  supertest: 6.1.4
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6_express@4.17.1
   test-react-hooks: 2.0.4_react-dom@17.0.2+react@17.0.2
-  truffle: 5.4.5_@types+node@14.17.9+react@17.0.2
+  truffle: 5.4.6_@types+node@14.17.9+react@17.0.2
   truffle-typings: 1.0.8
   ts-jest: 26.4.0_jest@27.0.6+typescript@4.3.5
   ts-node: 9.1.1_typescript@4.3.5
@@ -256,7 +254,7 @@ dependencies:
   webpack-bundle-analyzer: 4.4.1
   winston: 3.3.3
   winston-transport: 4.4.0
-  write-json-file: 4.3.0
+  write-json-file: 5.0.0
   yaeti: 1.0.2
   yup: 0.32.9
 lockfileVersion: 5.2
@@ -4403,7 +4401,7 @@ packages:
       ganache-cli: 6.12.2
       solc: 0.4.26
       testrpc: 0.0.1
-      web3-utils: 1.4.0
+      web3-utils: 1.5.1
     deprecated: Please use @ensdomains/ens-contracts
     dev: false
     resolution:
@@ -6863,6 +6861,7 @@ packages:
     resolution:
       integrity: sha512-utE1FkYM/gyCXUqw3zKYYS0YZ3DfkAnzsCx4T48cNnSDTCeWS+u3yt0FMDFjwSiQSaLrzpiSff/FaxJQvRlYow==
   /@nodefactory/filsnap-adapter/0.2.2:
+    deprecated: Package is deprecated in favour of @chainsafe/filsnap-adapter
     dev: false
     optional: true
     resolution:
@@ -7398,23 +7397,23 @@ packages:
     dev: false
     resolution:
       integrity: sha512-leqEwfs8GlrPDrVcVc8Hv6LJ62ZzR0RgjwQNCkpT6H5jW9RB8YdR0a3inHoricSvw+sKI1b1hOqsCtPPZNnhng==
-  /@openzeppelin/truffle-upgrades/1.8.0_truffle@5.4.5:
+  /@openzeppelin/truffle-upgrades/1.8.1_truffle@5.4.6:
     dependencies:
       '@openzeppelin/upgrades-core': 1.8.0
-      '@truffle/contract': 4.3.25
+      '@truffle/contract': 4.3.30
       solidity-ast: 0.4.26
-      truffle: 5.4.5_@types+node@14.17.9+react@17.0.2
+      truffle: 5.4.6_@types+node@14.17.9+react@17.0.2
     dev: false
     hasBin: true
     peerDependencies:
       truffle: ^5.1.35
     resolution:
-      integrity: sha512-r8++PttYI9CoBW65GygpYvxKrMeO9NThP4KLWlZuKHqzwjqh1rweoEZA7Cbsgguz8HZI/ivdue4m+bv45CBcLA==
+      integrity: sha512-+xTjTDjQimGjHhhi4zz2XFC8Na93q8zjZ9UpUIf11ycsQW4jbU+xctFkQj9j2GTC3XJWVbh3RYIozwR0c1Lw2w==
   /@openzeppelin/upgrades-core/1.8.0:
     dependencies:
       bn.js: 5.2.0
       cbor: 7.0.6
-      chalk: 4.1.1
+      chalk: 4.1.2
       compare-versions: 3.6.0
       debug: 4.3.2
       ethereumjs-util: 7.1.0
@@ -9354,14 +9353,14 @@ packages:
       node: '>= 6'
     resolution:
       integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
-  /@truffle/abi-utils/0.2.3:
+  /@truffle/abi-utils/0.2.4:
     dependencies:
       change-case: 3.0.2
       faker: 5.5.3
       fast-check: 2.17.0
     dev: false
     resolution:
-      integrity: sha512-ihh0AGMZQRei578YFgRZDCdXauVJIOuCGQ5tDrWi61ZGa62nmyp/kbGNBtRgukQ8c2VApRpqgQmoFve6FJxYag==
+      integrity: sha512-ICr5Sger6r5uj2G5GN9Zp9OQDCaCqe2ZyAEyvavDoFB+jX0zZFUCfDnv5jllGRhgzdYJ3mec2390mjUyz9jSZA==
   /@truffle/blockchain-utils/0.0.31:
     dev: false
     resolution:
@@ -9372,25 +9371,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-BLNDjFLhDHCJjmdVSTObEgQDT3QFi1Yif20fDHt53kwjRH6T+MGcvaW8b9Yk8r3qpeFAYJrT2yEi02JBTr/hNg==
-  /@truffle/codec/0.11.5:
+  /@truffle/codec/0.11.10:
     dependencies:
-      big.js: 5.2.2
-      bn.js: 5.2.0
-      cbor: 5.2.0
-      debug: 4.3.2
-      lodash.clonedeep: 4.5.0
-      lodash.escaperegexp: 4.1.2
-      lodash.partition: 4.6.0
-      lodash.sum: 4.0.2
-      semver: 7.3.5
-      utf8: 3.0.0
-      web3-utils: 1.4.0
-    dev: false
-    resolution:
-      integrity: sha512-fxAbFwH4N6irwDGPBKCja48xNm5C45NtGH+QyHK1jb6gvzOq7wQrk2Fa2doLnFU3myKDP55PtSq5eH7WMRPVjQ==
-  /@truffle/codec/0.11.9:
-    dependencies:
-      '@truffle/compile-common': 0.7.15
+      '@truffle/abi-utils': 0.2.4
+      '@truffle/compile-common': 0.7.16
       big.js: 5.2.2
       bn.js: 5.2.0
       cbor: 5.2.0
@@ -9404,22 +9388,22 @@ packages:
       web3-utils: 1.5.1
     dev: false
     resolution:
-      integrity: sha512-xMsa3GbKz3VjGGO0eUGPgySP4xwv5TMxgi8/6EXtIXOlKtxyrHXvvvyUcdBrI04OUuJWyOvinMo7cn87Ua6X7g==
-  /@truffle/compile-common/0.7.15:
+      integrity: sha512-GOHikPpu/YmzdbCeOQyGdRbzMND2SAiTW+ZuzwCF/7yDs8OjugijMBL3xR4uRwneefI3zkf/m31SeEqRn1LbGw==
+  /@truffle/compile-common/0.7.16:
     dependencies:
       '@truffle/contract-sources': 0.1.12
       '@truffle/error': 0.0.14
-      '@truffle/expect': 0.0.17
+      '@truffle/expect': 0.0.18
       colors: 1.4.0
       debug: 4.3.2
     dev: false
     resolution:
-      integrity: sha512-/BhSgdvwIIpB0kXRkce1Mv+BVemPp/X9ZnhbDtvSavQh3hvAZCdZCI/GHr7NxkNirq7rWiHZowOwYdxL8TRynw==
-  /@truffle/config/1.3.3:
+      integrity: sha512-LsP7SKPU/0hJ3cjM1wxCqBi8BJEVweY/ifipT/9TPOMSXo1vW5PL25P5R8fGHLqRD2bCsTPBfSvQkFB9XXXWjQ==
+  /@truffle/config/1.3.4:
     dependencies:
       '@truffle/error': 0.0.14
       '@truffle/events': 0.0.13
-      '@truffle/provider': 0.2.36
+      '@truffle/provider': 0.2.37
       configstore: 4.0.0
       find-up: 2.1.0
       lodash.assignin: 4.2.0
@@ -9429,15 +9413,14 @@ packages:
     dev: false
     optional: true
     resolution:
-      integrity: sha512-jmoez2c4CGnRfmXSjX6UMDgnLmVcg9/DFcnc/j0mHCTWORvaM5yIfcKDh5mnQmoCZamM0ECRzYXNi0TlsKXWAA==
-  /@truffle/contract-schema/3.4.1:
+      integrity: sha512-8GnA/C1msLny6/SZB21yuW1P/wdO3T4LFK0BYhodzurqjpFMkw+esVaXobmJULdpvYHYhF5ATE+x3Q6iCKuN4w==
+  /@truffle/contract-schema/3.4.3:
     dependencies:
       ajv: 6.12.6
-      crypto-js: 3.3.0
       debug: 4.3.2
     dev: false
     resolution:
-      integrity: sha512-2gvu6gxJtbbI67H2Bwh2rBuej+1uCV3z4zKFzQZP00hjNoL+QfybrmBcOVB88PflBeEB+oUXuwQfDoKX3TXlnQ==
+      integrity: sha512-pgaTgF4CKIpkqVYZVr2qGTxZZQOkNCWOXW9VQpKvLd4G0SNF2Y1gyhrFbBhoOUtYlbbSty+IEFFHsoAqpqlvpQ==
   /@truffle/contract-sources/0.1.12:
     dependencies:
       debug: 4.3.2
@@ -9445,38 +9428,38 @@ packages:
     dev: false
     resolution:
       integrity: sha512-7OH8P+N4n2LewbNiVpuleshPqj8G7n9Qkd5ot79sZ/R6xIRyXF05iBtg3/IbjIzOeQCrCE9aYUHNe2go9RuM0g==
-  /@truffle/contract/4.3.25:
+  /@truffle/contract/4.3.30:
     dependencies:
       '@ensdomains/ensjs': 2.0.1
       '@truffle/blockchain-utils': 0.0.31
-      '@truffle/contract-schema': 3.4.1
-      '@truffle/debug-utils': 5.1.5
+      '@truffle/contract-schema': 3.4.3
+      '@truffle/debug-utils': 5.1.10
       '@truffle/error': 0.0.14
-      '@truffle/interface-adapter': 0.5.2
+      '@truffle/interface-adapter': 0.5.4
       bignumber.js: 7.2.1
       ethers: 4.0.49
-      web3: 1.4.0
-      web3-core-helpers: 1.4.0
-      web3-core-promievent: 1.4.0
-      web3-eth-abi: 1.4.0
-      web3-utils: 1.4.0
+      web3: 1.5.1
+      web3-core-helpers: 1.5.1
+      web3-core-promievent: 1.5.1
+      web3-eth-abi: 1.5.1
+      web3-utils: 1.5.1
     dev: false
     resolution:
-      integrity: sha512-RFtuB6CP7WpVHMYsEisWoRDtds8IoU05YhMnvkHsOQz04puoUz1YB1fxShH7P9pesDUqQZ+1+WFcUJrUrgb2JA==
-  /@truffle/db-loader/0.0.4_@types+node@14.17.9+react@17.0.2:
+      integrity: sha512-gf+Mptv/11XiYUcMSnje1LFju56rBnDzZXS/kHpGwZpodEXzraEBmKXU4l4gXFNWSz+2bt02650OwgYnpX+QPQ==
+  /@truffle/db-loader/0.0.5_@types+node@14.17.9+react@17.0.2:
     dev: false
     optionalDependencies:
-      '@truffle/db': 0.5.25_@types+node@14.17.9+react@17.0.2
+      '@truffle/db': 0.5.26_@types+node@14.17.9+react@17.0.2
     peerDependencies:
       '@types/node': '*'
       react: '*'
     resolution:
-      integrity: sha512-SkgW4lKAs7EjUQACMV5wzb+NJOyuo2xDdHwra1DobWEjl1jsvaHTPj8RrkGodOSYH1lU4aNHJ4VLIS2zzndMIg==
-  /@truffle/db/0.5.25_@types+node@14.17.9+react@17.0.2:
+      integrity: sha512-GYqqRAePWErik2Aewc6TrtfVR7Pm5S2DnNKIdQXlNBOakDw1CC/BBOOvTO5CCe+1XB9j8nVR3rbpfZ/1uxtgtg==
+  /@truffle/db/0.5.26_@types+node@14.17.9+react@17.0.2:
     dependencies:
-      '@truffle/abi-utils': 0.2.3
+      '@truffle/abi-utils': 0.2.4
       '@truffle/code-utils': 1.2.29
-      '@truffle/config': 1.3.3
+      '@truffle/config': 1.3.4
       apollo-server: 2.25.2_graphql@15.5.1
       debug: 4.3.2
       fs-extra: 9.1.0
@@ -9499,24 +9482,23 @@ packages:
       '@types/node': '*'
       react: '*'
     resolution:
-      integrity: sha512-LuKYB51iUi9z8X6+joeFqdTnA3cwiiIFRvu9fcgA5EhSjCM7y3aD9bUBQblOrae7fYt/7T4InU/Ezbrga67FjA==
-  /@truffle/debug-utils/5.1.5:
+      integrity: sha512-v0ogUDn43imZ25FYybLyrCq5RF909oXoVFam53ywNJJCNARWRdFYG26TXkURWROIh/0jYvpNUGESW5zmfFHSMA==
+  /@truffle/debug-utils/5.1.10:
     dependencies:
-      '@truffle/codec': 0.11.5
+      '@truffle/codec': 0.11.10
       '@trufflesuite/chromafi': 2.2.2
       bn.js: 5.2.0
       chalk: 2.4.2
       debug: 4.3.2
-      highlight.js: 10.7.3
-      highlightjs-solidity: 1.2.0
+      highlightjs-solidity: 1.2.2
     dev: false
     resolution:
-      integrity: sha512-BwFFuOya+ZxCT9E1H2+it2v/DVyPBkJe4i7OPSOZVnKQUg1tIJtmgdJf168bcLwKwe7I2fwRhMh29jgP5j3OhQ==
-  /@truffle/debugger/9.1.10:
+      integrity: sha512-KYs8WgH1XBobGO1evlCMdbmSWEP5U9gyQKov9myTx9sESQmB2qPu9ynww5nTbcajtvmeinuq19xjqVKMvBAS4g==
+  /@truffle/debugger/9.1.11:
     dependencies:
-      '@truffle/abi-utils': 0.2.3
-      '@truffle/codec': 0.11.9
-      '@truffle/source-map-utils': 1.3.53
+      '@truffle/abi-utils': 0.2.4
+      '@truffle/codec': 0.11.10
+      '@truffle/source-map-utils': 1.3.54
       bn.js: 5.2.0
       debug: 4.3.2
       json-pointer: 0.6.1
@@ -9534,7 +9516,7 @@ packages:
       web3-eth-abi: 1.5.1
     dev: false
     resolution:
-      integrity: sha512-gP2nX/LU/UhjsTxr/FnFCvAWxb396tP06zNwzAkdngN0/SWmFQhWjVQ92MX+9qKOnK7FxULAT76JHwsutlhUCQ==
+      integrity: sha512-+oJoXnJALoVA6xK01iDdFx4BZ12AnDKuI9PsA/juhdQsnzg8ulC3FiJLlEeeU/uElQMYuZsdfYYE/rIJDyi2BQ==
   /@truffle/error/0.0.14:
     dev: false
     resolution:
@@ -9551,25 +9533,16 @@ packages:
     optional: true
     resolution:
       integrity: sha512-y2Odd8OV7GqEqPhP2sD4tSocBYXCgx0kfyYNl7ltpkK1E2Z3yknh453GeA0yzrIbcFQAAYfU4OIhE4RIUt5ISA==
-  /@truffle/expect/0.0.17:
+  /@truffle/expect/0.0.18:
     dev: false
     resolution:
-      integrity: sha512-XxtRZHt3Ke3x9TtUUz9PB8C9EDC5nVn6K/QWLlpsyENLWHWHhReZ0YmABzX+r0sQGsDfpgo06dkh4Mk0VOjSdg==
-  /@truffle/interface-adapter/0.5.2:
-    dependencies:
-      bn.js: 5.2.0
-      ethers: 4.0.49
-      web3: 1.4.0
-    dev: false
-    resolution:
-      integrity: sha512-wZert/wvHMg70SWWJODtD+YXATP56xL//Gw5egMrDrE8cfXMmlYmacroLFWSzh1JHlDEh+dev35kUp9ORx0now==
+      integrity: sha512-ZcYladRCgwn3bbhK3jIORVHcUOBk/MXsUxjfzcw+uD+0H1Kodsvcw1AAIaqd5tlyFhdOb7YkOcH0kUES7F8d1A==
   /@truffle/interface-adapter/0.5.4:
     dependencies:
       bn.js: 5.2.0
       ethers: 4.0.49
       web3: 1.5.1
     dev: false
-    optional: true
     resolution:
       integrity: sha512-4wlaYWrt6eBMoWWtyljeDQU+MwCfWyXu14L/jAYiTjiW/uhkY3kp8QWVR5fkntBq2rJXjjeDNj8Ez+VWO4+8sw==
   /@truffle/preserve-fs/0.2.4:
@@ -9618,7 +9591,7 @@ packages:
     optional: true
     resolution:
       integrity: sha512-rMJQr/uvBIpT23uGM9RLqZKwIIR2CyeggVOTuN2UHHljSsxHWcvRCkNZCj/AA3wH3GSOQzCrbYBcs0d/RF6E1A==
-  /@truffle/provider/0.2.36:
+  /@truffle/provider/0.2.37:
     dependencies:
       '@truffle/error': 0.0.14
       '@truffle/interface-adapter': 0.5.4
@@ -9626,18 +9599,18 @@ packages:
     dev: false
     optional: true
     resolution:
-      integrity: sha512-A9UzX7WXM1cOl/uKqcXV/UzsoqDEgkPW/4ql6n6CwhY1U+Q8XiCJYFo9kW99aYNsy7TGVVan6Ihn1Zx/xCmpcA==
-  /@truffle/source-map-utils/1.3.53:
+      integrity: sha512-Iv2MGdYMUf1juujwFn7fGmYXvpD6y8XYMDdhO7LrjOObPP3Zl4skfFb3vNeC9Ay38EwTzm7dwGXZL4fXcA/Xkg==
+  /@truffle/source-map-utils/1.3.54:
     dependencies:
       '@truffle/code-utils': 1.2.29
-      '@truffle/codec': 0.11.9
+      '@truffle/codec': 0.11.10
       debug: 4.3.2
       json-pointer: 0.6.1
       node-interval-tree: 1.3.3
       web3-utils: 1.5.1
     dev: false
     resolution:
-      integrity: sha512-ir+6z6A8txKAsFY8ssvuAlOWUNJbR7K93K833cyaeBaLRlu1zD1lfJ4BV/CKRsGcjyfOfDhv9BoOklrvBRR/uQ==
+      integrity: sha512-Jqho5WKLD2Y5QKNPPXkj0JsCWp7uAhoVWG3wT43SPvNiXlXX31vi2mo58lELCUHY5aXJxzkeJUcslKo7eT389A==
   /@trufflesuite/chromafi/2.2.2:
     dependencies:
       ansi-mark: 1.0.4
@@ -10010,6 +9983,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-E/X5Vib8BWqZNRlDxj9vYXhsDwPYbPINqKF9BsnSoon4RQ0D9moEuLD8txgyypFLH7J4+Lho9Nr/c8H0Fi+17w==
+  /@types/jest/27.0.1:
+    dependencies:
+      jest-diff: 27.0.6
+      pretty-format: 27.0.6
+    dev: false
+    resolution:
+      integrity: sha512-HTLpVXHrY69556ozYkcq47TtQJXpcWAWfkoqz+ZGz2JnmZhzlRjprCIyFnetSy8gpDWwTTGBcRVv1J1I1vBrHw==
   /@types/js-cookie/2.2.7:
     dev: false
     resolution:
@@ -15627,10 +15607,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==
-  /crypto-js/3.3.0:
-    dev: false
-    resolution:
-      integrity: sha512-DIT51nX0dCfKltpRiXV+/TVZq+Qq2NgF4644+K7Ttnla7zEzqc+kjJyiB96BHNyUTBxyjzRcZYpUdZa+QAqi6Q==
   /crypto-random-string/1.0.0:
     dev: false
     engines:
@@ -16469,12 +16445,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-OHHMCmoALow+Wzz38zYmRnXwa50=
-  /detect-indent/6.1.0:
+  /detect-indent/7.0.0:
     dev: false
     engines:
-      node: '>=8'
+      node: '>=12.20'
     resolution:
-      integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==
+      integrity: sha512-/6kJlmVv6RDFPqaHC/ZDcU8bblYcoph2dUQ3kB47QqhkUEqXe3VZPELK9BaEMrC73qu+wn0AQ7iSteceN+yuMw==
   /detect-libc/1.0.3:
     dev: false
     engines:
@@ -20581,10 +20557,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
-  /highlightjs-solidity/1.2.0:
+  /highlightjs-solidity/1.2.2:
     dev: false
     resolution:
-      integrity: sha512-KXYcVzBRof3CBWHsxGffsSEAJF0YsPaOk1jgIYv2xSzrBSxkfNUJFXrlE2oZEWvYQKbPqLe4qprJyNbSDV+LZA==
+      integrity: sha512-+cZ+1+nAO5Pi6c70TKuMcPmwqLECxiYhnQc1MxdXckK94zyWFMNZADzu98ECNlf5xCRdNh+XKp+eklmRU+Dniw==
   /history/5.0.0:
     dependencies:
       '@babel/runtime': 7.14.8
@@ -21513,6 +21489,7 @@ packages:
       multicodec: 3.1.0
       multihashing-async: 2.1.2
       uint8arrays: 2.1.7
+    deprecated: This module has been superseded by @ipld/dag-cbor and multiformats
     dev: false
     engines:
       node: '>=6.0.0'
@@ -21531,6 +21508,7 @@ packages:
       run: 1.4.0
       stable: 0.1.8
       uint8arrays: 1.1.0
+    deprecated: This module has been superseded by @ipld/dag-pb and multiformats
     dev: false
     engines:
       node: '>=6.0.0'
@@ -21543,6 +21521,7 @@ packages:
       cids: 1.1.7
       multicodec: 2.1.3
       multihashing-async: 2.1.2
+    deprecated: This module has been superseded by the multiformats module
     dev: false
     optional: true
     resolution:
@@ -22062,6 +22041,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==
+  /is-plain-obj/4.0.0:
+    dev: false
+    engines:
+      node: '>=12'
+    resolution:
+      integrity: sha512-NXRbBtUdBioI73y/HmOhogw/U5msYPC9DAtGkJXeFcFWSFZw0mCUsPxk/snTuJHzNKA8kLBK4rH97RMB1BfCXw==
   /is-plain-object/2.0.4:
     dependencies:
       isobject: 3.0.1
@@ -25558,6 +25543,21 @@ packages:
       node: '>= 0.10.0'
     resolution:
       integrity: sha512-xY8pX7V+ybyUpbYMxtjM9KAiD9ixtg5/JkeKUTD6xilfDv0vzzOFcCp4Ljb1UU3tSOM3VTZtKo63OmzOrGi3Cg==
+  /multer/1.4.3:
+    dependencies:
+      append-field: 1.0.0
+      busboy: 0.2.14
+      concat-stream: 1.6.2
+      mkdirp: 0.5.5
+      object-assign: 4.1.1
+      on-finished: 2.3.0
+      type-is: 1.6.18
+      xtend: 4.0.2
+    dev: false
+    engines:
+      node: '>= 0.10.0'
+    resolution:
+      integrity: sha512-np0YLKncuZoTzufbkM6wEKp68EhWJXcU6fq6QqrSwkckd2LlMgd1UqhUJLj6NS/5sZ8dE8LYDWslsltJznnXlg==
   /multiaddr-to-uri/6.0.0:
     dependencies:
       multiaddr: 8.1.2
@@ -25597,6 +25597,7 @@ packages:
     dependencies:
       '@multiformats/base-x': 4.0.1
       web-encoding: 1.1.5
+    deprecated: This module has been superseded by the multiformats module
     dev: false
     engines:
       node: '>=10.0.0'
@@ -25607,6 +25608,7 @@ packages:
   /multibase/4.0.4:
     dependencies:
       '@multiformats/base-x': 4.0.1
+    deprecated: This module has been superseded by the multiformats module
     dev: false
     engines:
       node: '>=12.0.0'
@@ -25701,6 +25703,7 @@ packages:
       multihashes: 4.0.2
       murmurhash3js-revisited: 3.0.0
       uint8arrays: 2.1.7
+    deprecated: This module has been superseded by the multiformats module
     dev: false
     engines:
       node: '>=12.0.0'
@@ -28896,6 +28899,7 @@ packages:
       signed-varint: 2.0.1
       uint8arrays: 2.1.7
       varint: 5.0.2
+    deprecated: This module is no longer maintained
     dev: false
     optional: true
     resolution:
@@ -31773,14 +31777,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-RBttTTRnmPG05J6JIK37oOVD+a0=
-  /sort-keys/4.2.0:
+  /sort-keys/5.0.0:
     dependencies:
-      is-plain-obj: 2.1.0
+      is-plain-obj: 4.0.0
     dev: false
     engines:
-      node: '>=8'
+      node: '>=12'
     resolution:
-      integrity: sha512-aUYIEU/UviqPgc8mHR6IW1EGxkAXpeRETYcrzg8cLAvUPZcpAlleSXHV2mY7G12GphSH6Gzv+4MMVSSkbdteHg==
+      integrity: sha512-Pdz01AvCAottHTPQGzndktFNdbRA75BgOfeT1hH+AMnJFv8lynkPi42rfeEhpx1saTEI3YNMWxfqu0sFD1G8pw==
   /source-list-map/2.0.1:
     dev: false
     resolution:
@@ -32591,6 +32595,15 @@ packages:
       node: '>=6.0.0'
     resolution:
       integrity: sha512-giC9Zm+Bf1CZP09ciPdUyl+XlMAu6rbch79KYiYKOGcbK2R1wH8h+APul1i/3wN6RF1XfWOIF+8X1ga+7SBrug==
+  /supertest/6.1.5:
+    dependencies:
+      methods: 1.1.2
+      superagent: 6.1.0
+    dev: false
+    engines:
+      node: '>=6.0.0'
+    resolution:
+      integrity: sha512-Is3pFB2TxSFPohDS2tIM8h2JOMvUQwbJ9TvTfsWAm89ZZv1CF4VTLAsQz+5+5S1wOgaMqFqSpFriU15L3e2AXQ==
   /supports-color/2.0.0:
     dev: false
     engines:
@@ -33525,17 +33538,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-75yFYNt0ws1TTehrGxhOqH3tutvBCAs+RG2SrhVIqQvU72kLAb4ercl32dES8yKbXBVHjzv3OXNg5gsbak+3Dg==
-  /truffle/5.4.5_@types+node@14.17.9+react@17.0.2:
+  /truffle/5.4.6_@types+node@14.17.9+react@17.0.2:
     dependencies:
-      '@truffle/db-loader': 0.0.4_@types+node@14.17.9+react@17.0.2
-      '@truffle/debugger': 9.1.10
+      '@truffle/db-loader': 0.0.5_@types+node@14.17.9+react@17.0.2
+      '@truffle/debugger': 9.1.11
       app-module-path: 2.2.0
       mocha: 8.1.2
       original-require: 1.0.1
     dev: false
     hasBin: true
     optionalDependencies:
-      '@truffle/db': 0.5.25_@types+node@14.17.9+react@17.0.2
+      '@truffle/db': 0.5.26_@types+node@14.17.9+react@17.0.2
       '@truffle/preserve-fs': 0.2.4
       '@truffle/preserve-to-buckets': 0.2.4
       '@truffle/preserve-to-filecoin': 0.2.4
@@ -33545,7 +33558,7 @@ packages:
       react: '*'
     requiresBuild: true
     resolution:
-      integrity: sha512-pLiz9PM5yt8L7oPvhrd1+gw69+pWLJae+K/yTj9FrOFFsTakb2pEx8r0iS8VjH9rGQ1xssIlVSBaHV+6ub+ehQ==
+      integrity: sha512-y1d7bNS1TmtKinzTbHaI+h1L9WX1/E9+G81uIB1lMoYGDs+gL1KvSHt50wpMcwMoSan9Nn7h2vMxmyQmyfD84A==
   /ts-dedent/2.1.1:
     dev: false
     engines:
@@ -36950,19 +36963,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-AvHcyZ5JnSfq3ioSyjrBkH9yW4m7Ayk8/9My/DD9onKeu/94fwrMocemO2QAJFAlnnDN+ZDS+ZjAR5ua1/PV/Q==
-  /write-json-file/4.3.0:
+  /write-json-file/5.0.0:
     dependencies:
-      detect-indent: 6.1.0
-      graceful-fs: 4.2.6
-      is-plain-obj: 2.1.0
-      make-dir: 3.1.0
-      sort-keys: 4.2.0
+      detect-indent: 7.0.0
+      is-plain-obj: 4.0.0
+      sort-keys: 5.0.0
       write-file-atomic: 3.0.3
     dev: false
     engines:
-      node: '>=8.3'
+      node: ^12.20.0 || ^14.13.1 || >=16.0.0
     resolution:
-      integrity: sha512-PxiShnxf0IlnQuMYOPPhPkhExoCQuTUNPOa/2JWCYTmBquU9njyyDuwRKN26IZBlp4yn1nt+Agh2HOOBl+55HQ==
+      integrity: sha512-ddSsCLa4aQ3kI21BthINo4q905/wfhvQ3JL3774AcRjBaiQmfn5v4rw77jQ7T6CmAit9VOQO+FsLyPkwxoB1fw==
   /write-stream/0.4.3:
     dependencies:
       readable-stream: 0.0.4
@@ -37649,7 +37660,7 @@ packages:
       polly-js: 1.8.2
       prettier: 2.3.2
       rxjs: 6.6.7
-      supertest: 6.1.4
+      supertest: 6.1.5
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
       typescript: 4.3.5
@@ -37664,7 +37675,7 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-Wmtg7PCwbx3RnRE61vOQcQ+dRP4DDRVn3N6Ovomk1O2x62z0OvoGzsKra0gSNTmRz2WEeyS6BctrsxfJs8Y+MQ==
+      integrity: sha512-+RRlH/4+PNWgm+Ryoy7HwI2rRBnPRGqN6cPpnEjoxFlaX4jG2DH8BJOWmIlV/1V0Fhwi6Alt7uZjdBOtg4WygA==
       tarball: file:projects/exchange-io-erc1888.tgz
     version: 0.0.0
   file:projects/exchange-irec-client.tgz_22c1a38c599279d324ff82b55ef0a6c8:
@@ -37748,7 +37759,7 @@ packages:
       '@nestjs/typeorm': 7.1.5_770ecc3e0a72b32465b4dc73ad110208
       '@types/chai': 4.2.15
       '@types/express': 4.17.13
-      '@types/jest': 26.0.24
+      '@types/jest': 27.0.1
       '@types/mocha': 9.0.0
       '@types/node': 14.17.9
       '@types/superagent': 4.1.12
@@ -37765,7 +37776,7 @@ packages:
       prettier: 2.3.2
       reflect-metadata: 0.1.13
       rxjs: 6.6.7
-      supertest: 6.1.4
+      supertest: 6.1.5
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
       typescript: 4.3.5
@@ -37778,7 +37789,7 @@ packages:
       passport: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-Ji4l9g2d3ocGn1jVDpT9YChRDXQg1n5bXvbTqrLI+qY4twhY/CbJSyrgcp8OxgzpLKgBMhC6VCHBOlGCdly+jw==
+      integrity: sha512-CcEPjmBP+VPl93+dwH8063HOYHt9frwNnIfTFRRwRRseWvKqbp/lYgQ8SbXVzGO7M49lxFYrxrG2X3bKip4SJg==
       tarball: file:projects/exchange-irec.tgz
     version: 0.0.0
   file:projects/exchange-react-query-client.tgz_ce489a627d58dc6ad1e18d99e7d87ffe:
@@ -37832,7 +37843,7 @@ packages:
       ethers: 5.3.1
       mocha: 9.0.3
       solc: 0.8.4
-      truffle: 5.4.5_@types+node@14.17.9+react@17.0.2
+      truffle: 5.4.6_@types+node@14.17.9+react@17.0.2
       truffle-typings: 1.0.8
       typechain: 5.1.2_typescript@4.3.5
       typescript: 4.3.5
@@ -37842,7 +37853,7 @@ packages:
     peerDependencies:
       react: '*'
     resolution:
-      integrity: sha512-uzJsDf6MTo4mMfKnkEt5UG/axvKdaOBarm1vcn0/KyOdC7TRJzcF22NCfo1Z7/4iw10zYVHsp57Zmvl/0bZ2TQ==
+      integrity: sha512-k3sP5dZMv/0r8wHBIk5N0lXxd/3ep9rULHFXYTMYbg15L5N/9RYe5zTox/0l93gtKCC7xChKsQ9CfjGLgmVC4Q==
       tarball: file:projects/exchange-token-account.tgz
     version: 0.0.0
   file:projects/exchange.tgz_4b9e71779303fd8f563f2e6697ed22f3:
@@ -37863,7 +37874,7 @@ packages:
       '@types/bn.js': 5.1.0
       '@types/chai': 4.2.15
       '@types/express': 4.17.13
-      '@types/jest': 26.0.24
+      '@types/jest': 27.0.1
       '@types/mocha': 9.0.0
       '@types/node': 14.17.9
       '@types/superagent': 4.1.12
@@ -37885,7 +37896,7 @@ packages:
       prettier: 2.3.2
       reflect-metadata: 0.1.13
       rxjs: 6.6.7
-      supertest: 6.1.4
+      supertest: 6.1.5
       swagger-ui-express: 4.1.6_express@4.17.1
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -37900,7 +37911,7 @@ packages:
       express: '*'
       passport: '*'
     resolution:
-      integrity: sha512-vhgZwKcfhH86VcSyPvBiUtOJXz5q8Pxd9lLGHWDdqWnmOJsnF6GP5M9CSSGY4gKg9XeRGJwYTlhdlxRQRWPD+Q==
+      integrity: sha512-lPowYsM17Z9IUQslc0SSfSeqziFxOVqXXtzmFUX7zMdRePN8y9lQEWV4FzKzDAqdMDiu5c5ZE/yO2kfVkcprag==
       tarball: file:projects/exchange.tgz
     version: 0.0.0
   file:projects/issuer-api-client.tgz_22c1a38c599279d324ff82b55ef0a6c8:
@@ -37949,7 +37960,7 @@ packages:
       '@nestjs/typeorm': 7.1.5_770ecc3e0a72b32465b4dc73ad110208
       '@types/chai': 4.2.15
       '@types/express': 4.17.13
-      '@types/jest': 26.0.24
+      '@types/jest': 27.0.1
       '@types/mocha': 9.0.0
       '@types/node': 14.17.9
       '@types/superagent': 4.1.12
@@ -37968,7 +37979,7 @@ packages:
       precise-proofs-js: 1.2.0
       prettier: 2.3.2
       rxjs: 6.6.7
-      supertest: 6.1.4
+      supertest: 6.1.5
       swagger-ui-express: 4.1.6_express@4.17.1
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -37985,7 +37996,7 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-E+mHnBZ6+vXdAK4uXQelMXmZs86/DfJyWJNMxh9qdqQM3mfHx2puWCbuhfFIHzGM3v6rU0FQ3CRbBLKCb0UMIQ==
+      integrity: sha512-mE6mhXq1qMnrXWhve+CQA2oKHe0vkNyQQxks/J7UQANYAkhzV8AQPmo+sO7Y/Vgt6vtT7MDRFgfdFwe3Kb+KFw==
       tarball: file:projects/issuer-api.tgz
     version: 0.0.0
   file:projects/issuer-irec-api-client.tgz_22c1a38c599279d324ff82b55ef0a6c8:
@@ -38114,7 +38125,7 @@ packages:
       precise-proofs-js: 1.2.0
       prettier: 2.3.2
       rxjs: 6.6.7
-      supertest: 6.1.4
+      supertest: 6.1.5
       swagger-ui-express: 4.1.6_express@4.17.1
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -38128,7 +38139,7 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-QmQ4/z6mIgRbJ+o0hSpIf4XHJ7fYI9JszugYJZngaZH4ZKA2Yigvc2H1SxiQgnd3toaKrC4PeYavAypqmCECig==
+      integrity: sha512-dPMwOUvGwgOT6BcttdsYsCY4P6EwJiDR/bMgHIj4UVb0PBgk3FDdT5DzXQnGv/DMZ1M65MfEPJWS3dgIrSJcVw==
       tarball: file:projects/issuer-irec-api.tgz
     version: 0.0.0
   file:projects/issuer.tgz_react@17.0.2:
@@ -38140,7 +38151,7 @@ packages:
       '@ethersproject/wallet': 5.3.0
       '@openzeppelin/contracts': 4.2.0
       '@openzeppelin/contracts-upgradeable': 4.2.0
-      '@openzeppelin/truffle-upgrades': 1.8.0_truffle@5.4.5
+      '@openzeppelin/truffle-upgrades': 1.8.1_truffle@5.4.6
       '@typechain/ethers-v5': 7.0.1_7a70be86a4e304bc68839b2450d47c3c
       '@types/chai': 4.2.15
       '@types/dotenv': 6.1.1
@@ -38159,7 +38170,7 @@ packages:
       solc: 0.8.4
       solc-0.8: /solc/0.8.4
       solidity-docgen: 0.5.13
-      truffle: 5.4.5_@types+node@14.17.9+react@17.0.2
+      truffle: 5.4.6_@types+node@14.17.9+react@17.0.2
       truffle-typings: 1.0.8
       ts-node: 9.1.1_typescript@4.3.5
       typechain: 5.1.2_typescript@4.3.5
@@ -38172,7 +38183,7 @@ packages:
     peerDependencies:
       react: '*'
     resolution:
-      integrity: sha512-JrIbYagsnLhXO0wswlFB91d+1xY9Trc68FD3MsOgrDOfsC5Wx4/7y35IWNdsZWfOCvivUIw3bSX9WLuG6uT37w==
+      integrity: sha512-PaUHPaRBtRpR+JX5W4XCg2lgzfVwuB5sMaqn6YxwkjifXpNjaK+8WanZ/rJ2hlAyp84MdniNQxJHuIHMnUs1ig==
       tarball: file:projects/issuer.tgz
     version: 0.0.0
   file:projects/migrations-irec.tgz:
@@ -38188,12 +38199,12 @@ packages:
       typescript: 4.3.5
       winston: 3.3.3
       winston-transport: 4.4.0
-      write-json-file: 4.3.0
+      write-json-file: 5.0.0
       yaeti: 1.0.2
     dev: false
     name: '@rush-temp/migrations-irec'
     resolution:
-      integrity: sha512-DPmzUDQ34XaH0arGfVIq8rBrshWxWc1EJ6d/Z7qOSRkDq3GSuFxIlGwyM6XbFHslpkLJf+HtPRQC7xqM/SXSLQ==
+      integrity: sha512-w6WXxXIY6IhV4HDEwE9RNYtmVBaNkhVSExQ9avTpQ9qbe5TsphjYx08xIg4srVTMmPGYhMig6rxOo+eqVQVp9g==
       tarball: file:projects/migrations-irec.tgz
     version: 0.0.0
   file:projects/migrations.tgz:
@@ -38209,12 +38220,12 @@ packages:
       typescript: 4.3.5
       winston: 3.3.3
       winston-transport: 4.4.0
-      write-json-file: 4.3.0
+      write-json-file: 5.0.0
       yaeti: 1.0.2
     dev: false
     name: '@rush-temp/migrations'
     resolution:
-      integrity: sha512-mZORALAznAPk/a1n1FcVzJAHXqGEJ4tigc9uN90LUZD+g6q5eIbb1v9xeqoU6j55xTfy569gCTZSKIgOZ72MhQ==
+      integrity: sha512-kCVPN+MaHIV85X3aqc5efLAyUCiibAvb0kqObgbpvikM33pMpUf/Esx/gGB5fYSg/FJI9C36rt01BEtrTQsP+w==
       tarball: file:projects/migrations.tgz
     version: 0.0.0
   file:projects/origin-backend-app.tgz_2ec670c7726c27eee7dd016c1b8bea59:
@@ -38241,7 +38252,7 @@ packages:
       mocha: 9.0.3
       moment: 2.29.1
       superagent-use: 0.1.0
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       swagger-ui-express: 4.1.6_express@4.17.1
       ts-node: 9.1.1_typescript@4.3.5
@@ -38259,7 +38270,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-83YQOzKohbxCMEADjgG9gAkRU6qAJcTSQPWJY8dq2UyWZu5rrklCQWDEzC40Gbv95A8vugVkrUUZQPJAPqsHkQ==
+      integrity: sha512-/TfBQHJJCNq65P33rLCVksi/+RUU7viKnCjqhZTo9TfpCmXYhPaevYjYhTkk0wDavS5hRJU2JrK2lASiN1dbHw==
       tarball: file:projects/origin-backend-app.tgz
     version: 0.0.0
   file:projects/origin-backend-client.tgz_eaf87e0947fdab859a3c08ad55f342e7:
@@ -38330,7 +38341,7 @@ packages:
       ganache-core: 2.13.2
       mandrill-nodemailer-transport: 1.2.1_nodemailer@6.6.3
       mocha: 9.0.3
-      supertest: 6.1.4
+      supertest: 6.1.5
       swagger-ui-express: 4.1.6_express@4.17.1
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -38347,7 +38358,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-UpfqEQy664xC7ciI+7B5aqfCQBtUuvrCX5sR8MVIk44QgmNbyRWwGwjuqYi1IgfttDsXUQMcC4sGSHU4UV7vvA==
+      integrity: sha512-GEq3WXkPNTtF4bjWFJr0msUJ3BTX0IQsxRetjeNYUZSHWYyIDrUbyXhR0zZdUrmSD0qiqInNY0bpa1wl6o+i0A==
       tarball: file:projects/origin-backend-irec-app.tgz
     version: 0.0.0
   file:projects/origin-backend-react-query-client.tgz_23b845acb0ca1b4ee998229fe5f638e6:
@@ -38433,7 +38444,7 @@ packages:
       '@types/chai': 4.2.15
       '@types/cors': 2.8.12
       '@types/express': 4.17.13
-      '@types/jest': 26.0.24
+      '@types/jest': 27.0.1
       '@types/jsonwebtoken': 8.5.4
       '@types/mocha': 9.0.0
       '@types/multer': 1.4.7
@@ -38458,7 +38469,7 @@ packages:
       jest: 27.0.6_ts-node@9.1.1
       mocha: 9.0.3
       moment: 2.29.1
-      multer: 1.4.2
+      multer: 1.4.3
       nodemailer: 6.6.3
       passport: 0.4.1
       passport-jwt: 4.0.0
@@ -38467,7 +38478,7 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 6.6.7
       shx: 0.3.3
-      supertest: 6.1.4
+      supertest: 6.1.5
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
       typescript: 4.3.5
@@ -38478,7 +38489,7 @@ packages:
     peerDependencies:
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-GFTADNpttJDDhgBwhZ3K6xqN9hAkDtNwgNhiNbMvyFz5LxGbUyaOUCdVYGphTooFBuavYMFmrd8xIBR9O6AfUA==
+      integrity: sha512-DVTcyJpaaHIpcDNIfC+WE+dJTsIosO1xAeSpri+zxC67wGIC1CTTSaY4CovJ/PKdYssS1/EoAs3NQaD4gGZuNQ==
       tarball: file:projects/origin-backend.tgz
     version: 0.0.0
   file:projects/origin-device-registry-api-client.tgz_6d82c70597cba5ebb4cc33a41b4183a3:
@@ -38581,7 +38592,7 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 6.6.7
       superagent-use: 0.1.0
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       ts-node: 9.1.1_typescript@4.3.5
       ts-sinon: 2.0.1
@@ -38595,7 +38606,7 @@ packages:
       passport: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-1Lsod1Pv4yIX/aKdpLqEV89nf/hYCgTauxSIFPOCIZUYCH8sf8Hi/DV6h+yJyvtXaK30vuLmbi9xbhpd6BEcuA==
+      integrity: sha512-Bo0N6hfHuJMLG7IYNGUrlUwKS9ZHw4f62Vhm1KtcNCCJQ7zH86BVwHUwKnH1NdDrpgDrvjgVeWwhZF3OWjdd9A==
       tarball: file:projects/origin-device-registry-api.tgz
     version: 0.0.0
   file:projects/origin-device-registry-irec-form-api-client.tgz_6d82c70597cba5ebb4cc33a41b4183a3:
@@ -38697,7 +38708,7 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 6.6.7
       superagent-use: 0.1.0
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -38711,7 +38722,7 @@ packages:
       passport: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-Di5J15nDgzHygW6cE/hdIdR4NPgOEenLRclIkftrkisOFEJ9Si8LiINsS+Om+jMJEWCfRPQn7pfZpYA6Ns4mqQ==
+      integrity: sha512-GTL7b18ULOeHZUy2keHPegIMWuBEiresd2cN4Vv8CaPdBUuRldGTLsjp6o/hz5RCnT9vq4OE2ASSUDlNY4B0gg==
       tarball: file:projects/origin-device-registry-irec-form-api.tgz
     version: 0.0.0
   file:projects/origin-device-registry-irec-local-api-client.tgz_6d82c70597cba5ebb4cc33a41b4183a3:
@@ -38813,7 +38824,7 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 6.6.7
       superagent-use: 0.1.0
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -38826,7 +38837,7 @@ packages:
       passport: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-7e0XnTV0lFv+2PyTjLxPvFgD+JIcAwzROhGuWMejHPzNQif2pXvRhzc2lFjjC5MK29d3v8VkVdjpf0dn197Kew==
+      integrity: sha512-Pl0RBvyvFzAvkHA9NDWTcxfjkvcLev0KlM+vC0Ovb3ZywAivLvUH6DGpx/Zh29nv4duKqo0cFF23sHj1yMRbFA==
       tarball: file:projects/origin-device-registry-irec-local-api.tgz
     version: 0.0.0
   file:projects/origin-energy-api-client.tgz_6d82c70597cba5ebb4cc33a41b4183a3:
@@ -38918,7 +38929,7 @@ packages:
       mocha: 9.0.3
       prettier: 2.3.2
       superagent-use: 0.1.0
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       ts-node: 9.1.1_typescript@4.3.5
       typescript: 4.3.5
@@ -38934,7 +38945,7 @@ packages:
       rxjs: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-Bs7xFYIayAXTS7hshV5fb98ZrfPHiAzeWjG17Jrxsw74WrZ6i0tfl2JywZTmj1LhoKNHsy/RuYhALBjK0EEqyA==
+      integrity: sha512-rp6Tb29fXU0ckHcyIfH6sy2iyWMmYUP9Yfspg3GEkotIoPNRMRhyOD1+LyljOW1D3lxKRI96fe67FujmloQrdw==
       tarball: file:projects/origin-energy-api.tgz
     version: 0.0.0
   file:projects/origin-organization-irec-api-client.tgz_0e4f96336142d761ba0e9c9a2c5de231:
@@ -38952,7 +38963,7 @@ packages:
       json-to-pretty-yaml: 1.2.2
       mocha: 9.0.3
       prettier: 2.3.2
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -38968,7 +38979,7 @@ packages:
       rxjs: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-0WyZ06CM01LI69vnxhZjuc0hoCYpnldzHoNrLxB+gtGH1n77aH+tv/FMLjA6qSmiTB8ZCUiJXQHNyw/QUkfmow==
+      integrity: sha512-90gw3/2rXWk1wkQdmhr6Q1QwD3rGTPqsTU3Ijim+UHY7nEpDA1NBafTiEdaDgWkHfi8uT6PYUZWyfvg0niDJIw==
       tarball: file:projects/origin-organization-irec-api-client.tgz
     version: 0.0.0
   file:projects/origin-organization-irec-api-react-query-client.tgz_026513236ae845a4833f73ea1392cbaa:
@@ -39035,7 +39046,7 @@ packages:
       reflect-metadata: 0.1.13
       rxjs: 6.6.7
       superagent-use: 0.1.0
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -39048,7 +39059,7 @@ packages:
       passport: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-KE6BtMOwpmqUYXd5xwM+QqXlz5ItiUcPOqILy34E3xrQcripVxpKZ7Du55jThuYnta02H2aWHQEzadCyn4tYGQ==
+      integrity: sha512-v8b9McWn1aWAGA4KONKeImeBV/oQiXPaM6DMCvovVVntZlWkgb88r3n6OnQxezUnbMUT+DX8zydvgiYhhQz/vw==
       tarball: file:projects/origin-organization-irec-api.tgz
     version: 0.0.0
   file:projects/solar-simulator.tgz:
@@ -39313,7 +39324,7 @@ specifiers:
   '@openzeppelin/cli': 2.8.2
   '@openzeppelin/contracts': 4.2.0
   '@openzeppelin/contracts-upgradeable': 4.2.0
-  '@openzeppelin/truffle-upgrades': 1.8.0
+  '@openzeppelin/truffle-upgrades': 1.8.1
   '@openzeppelin/upgrades': 2.8.0
   '@react-google-maps/api': 2.1.1
   '@rush-temp/device-registry': file:./projects/device-registry.tgz
@@ -39378,7 +39389,6 @@ specifiers:
   '@types/dotenv': 6.1.1
   '@types/eth-sig-util': 2.1.1
   '@types/express': 4.17.13
-  '@types/jest': 26.0.24
   '@types/jsonwebtoken': 8.5.4
   '@types/lodash': 4.14.168
   '@types/material-ui': ^0.21.8
@@ -39464,7 +39474,7 @@ specifiers:
   moment: 2.29.1
   moment-range: 4.0.2
   moment-timezone: 0.5.33
-  multer: 1.4.2
+  multer: 1.4.3
   nodemailer: 6.6.3
   orval: 5.0.0-alpha.9
   passport: 0.4.1
@@ -39498,11 +39508,10 @@ specifiers:
   solc-0.8: npm:solc@0.8.4
   solidity-docgen: 0.5.13
   superagent-use: 0.1.0
-  supertest: 6.1.4
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6
   test-react-hooks: 2.0.4
-  truffle: 5.4.5
+  truffle: 5.4.6
   truffle-typings: 1.0.8
   ts-jest: 26.4.0
   ts-node: 9.1.1
@@ -39521,6 +39530,6 @@ specifiers:
   webpack-bundle-analyzer: 4.4.1
   winston: 3.3.3
   winston-transport: 4.4.0
-  write-json-file: 4.3.0
+  write-json-file: 5.0.0
   yaeti: 1.0.2
   yup: 0.32.9
