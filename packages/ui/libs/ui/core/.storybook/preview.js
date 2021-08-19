@@ -1,13 +1,27 @@
-import { addDecorator } from '@storybook/react';
-import { withKnobs } from '@storybook/addon-knobs';
 import { MemoryRouter } from 'react-router';
-import { OriginThemeProvider } from '@energyweb/origin-ui-theme';
+import {
+  OriginThemeProvider,
+  makeOriginUiConfig,
+} from '@energyweb/origin-ui-theme';
+import { ThemeProvider as EmotionThemeProvider } from 'emotion-theming';
 
-addDecorator(withKnobs);
-addDecorator((story) => (
-  <MemoryRouter initialEntries={['/']}>{story()}</MemoryRouter>
-));
-addDecorator((story) => <OriginThemeProvider>{story()}</OriginThemeProvider>);
+const uiConfiguration = makeOriginUiConfig();
+
+const themeDecorator = (Story, context) => (
+  <EmotionThemeProvider theme={uiConfiguration.materialTheme}>
+    <OriginThemeProvider>
+      <Story {...context} />
+    </OriginThemeProvider>
+  </EmotionThemeProvider>
+);
+
+const routerDecorator = (Story) => (
+  <MemoryRouter initialEntries={['/']}>
+    <Story />
+  </MemoryRouter>
+);
+
+export const decorators = [themeDecorator, routerDecorator];
 
 export const parameters = {
   backgrounds: {
