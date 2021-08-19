@@ -4,7 +4,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useCachedAllFuelTypes } from '@energyweb/origin-ui-exchange-data';
 import { prepareFuelTypesOptions } from '@energyweb/origin-ui-exchange-logic';
-import React, { FC, SyntheticEvent } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface FuelTypeFilterProps {

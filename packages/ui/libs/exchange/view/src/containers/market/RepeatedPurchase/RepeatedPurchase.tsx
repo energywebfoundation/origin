@@ -26,7 +26,6 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
     dirtyFields,
     totalVolume,
     totalPrice,
-    mobileView,
   } = useRepeatedPurchaseEffects(filters);
   const { period, volume, startDate, endDate, price } = fields;
 
