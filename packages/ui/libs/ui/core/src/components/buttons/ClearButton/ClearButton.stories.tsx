@@ -8,21 +8,20 @@ import {
   ArgsTable,
   PRIMARY_STORY,
 } from '@storybook/addon-docs';
-import { CloseButton, CloseButtonProps } from './CloseButton';
+import { IconButtonProps } from '@material-ui/core';
+import { ClearButton } from './ClearButton';
 
 const description = `
-  Component used as default close button for modals, sidebars or mobile menus.
+  Component used for endAdornment in FormInputs or DatePickers. <br/>
+  Props are equal to
+  <a target="_blank" href="https://next.material-ui.com/api/icon-button/#main-content">
+    IconButton
+  </a> component props from Material-UI.
 `;
 
 export default {
-  title: 'Buttons / CloseButton',
-  component: CloseButton,
-  argTypes: {
-    onClose: {
-      type: { required: true },
-      description: `Close handler function of type: () => void`,
-    },
-  },
+  title: 'Buttons / ClearButton',
+  component: ClearButton,
   parameters: {
     docs: {
       page: () => (
@@ -37,9 +36,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story<CloseButtonProps> = (args) => <CloseButton {...args} />;
+const Template: Story<IconButtonProps> = (args) => <ClearButton {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {
-  onClose: () => alert('close button clicked'),
-};
+Default.args = {};
