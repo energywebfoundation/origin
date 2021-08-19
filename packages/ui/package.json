@@ -124,7 +124,7 @@
     "@svgr/rollup": "5.5.0",
     "@testing-library/jest-dom": "5.11.10",
     "@testing-library/react": "11.1.2",
-    "@types/jest": "26.0.24",
+    "@types/jest": "27.0.1",
     "@types/lodash": "4.14.168",
     "@types/material-ui": "^0.21.8",
     "@types/node": "14.17.9",

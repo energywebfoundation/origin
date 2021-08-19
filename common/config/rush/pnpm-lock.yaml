@@ -113,6 +113,7 @@ dependencies:
   '@types/dotenv': 6.1.1
   '@types/eth-sig-util': 2.1.1
   '@types/express': 4.17.13
+  '@types/jest': 27.0.1
   '@types/jsonwebtoken': 8.5.4
   '@types/lodash': 4.14.168
   '@types/material-ui': 0.21.9
@@ -232,6 +233,7 @@ dependencies:
   solc-0.8: /solc/0.8.4
   solidity-docgen: 0.5.13
   superagent-use: 0.1.0
+  supertest: 6.1.5
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6_express@4.17.1
   test-react-hooks: 2.0.4_react-dom@17.0.2+react@17.0.2
@@ -6013,9 +6015,9 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.3
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 14.17.5
+      '@types/node': 14.17.9
       '@types/yargs': 16.0.4
-      chalk: 4.1.1
+      chalk: 4.1.2
     dev: false
     engines:
       node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0
@@ -22598,7 +22600,7 @@ packages:
       integrity: sha512-6m+9Z3Gv9wN0WFVasqjCL/06+EFCMTqDEUl/b87HYK2rAPTyfz4ZIuSlPhY51PIQRWx5TaxeF1qmXKe9gfN3sA==
   /jest-diff/27.0.6:
     dependencies:
-      chalk: 4.1.1
+      chalk: 4.1.2
       diff-sequences: 27.0.6
       jest-get-type: 27.0.6
       pretty-format: 27.0.6
@@ -32586,15 +32588,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-/W7u/L8JbGkdP+BD+pq5FDnCoOCsW1+cYEtkDzmJUafgsTr5tJ4YpVCoQQUR3njYLkGA8HfhHFr0W/S6CP+PYg==
-  /supertest/6.1.4:
-    dependencies:
-      methods: 1.1.2
-      superagent: 6.1.0
-    dev: false
-    engines:
-      node: '>=6.0.0'
-    resolution:
-      integrity: sha512-giC9Zm+Bf1CZP09ciPdUyl+XlMAu6rbch79KYiYKOGcbK2R1wH8h+APul1i/3wN6RF1XfWOIF+8X1ga+7SBrug==
   /supertest/6.1.5:
     dependencies:
       methods: 1.1.2
@@ -38999,7 +38992,7 @@ packages:
       orval: 5.0.0-alpha.9
       prettier: 2.3.2
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
-      supertest: 6.1.4
+      supertest: 6.1.5
       supertest-capture-error: 1.0.0
       ts-node: 9.1.1_typescript@4.3.5
       typeorm: 0.2.34
@@ -39017,7 +39010,7 @@ packages:
       rxjs: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-ri32eX9+PRYLUH9/W0r7j5RygXVThtrwF5x9WFy5U94D4io386pbUzrurgAFAe0HGzbq4W7UYFCSkgaWyslsYQ==
+      integrity: sha512-Lr7KH7n44/ftii8EXzQwOAQ/uZSY8ztlBcNG8BrX8PRgPfrCqsp/BHR268auhK8CMgensCQHeb33WxyoIU1sdA==
       tarball: file:projects/origin-organization-irec-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-organization-irec-api.tgz_24fa6d6d9eca8d81e156392c6322c4c7:
@@ -39124,7 +39117,7 @@ packages:
       '@svgr/webpack': 5.5.0
       '@testing-library/jest-dom': 5.11.10
       '@testing-library/react': 11.1.2_react-dom@17.0.2+react@17.0.2
-      '@types/jest': 26.0.24
+      '@types/jest': 27.0.1
       '@types/lodash': 4.14.168
       '@types/material-ui': 0.21.9
       '@types/node': 14.17.9
@@ -39197,7 +39190,7 @@ packages:
     peerDependencies:
       moment: '*'
     resolution:
-      integrity: sha512-v76mRwfsZ+jczJ4VV6983C5KUsC2w4bgjYuIsYK/LevOMswsz1GkDu+6BHGLHVCA2ciUbyt8NdFaY82i1TC3SQ==
+      integrity: sha512-jsALFQhWPG5Zn1ATYbEO62Q4dYxCbYsNUIrceDoFl2QnOcMscl0j1PqQsdgExTZ1uFC/rzy7el+pDS/ic0A3oA==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -39389,6 +39382,7 @@ specifiers:
   '@types/dotenv': 6.1.1
   '@types/eth-sig-util': 2.1.1
   '@types/express': 4.17.13
+  '@types/jest': 27.0.1
   '@types/jsonwebtoken': 8.5.4
   '@types/lodash': 4.14.168
   '@types/material-ui': ^0.21.8
@@ -39508,6 +39502,7 @@ specifiers:
   solc-0.8: npm:solc@0.8.4
   solidity-docgen: 0.5.13
   superagent-use: 0.1.0
+  supertest: 6.1.5
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6
   test-react-hooks: 2.0.4
