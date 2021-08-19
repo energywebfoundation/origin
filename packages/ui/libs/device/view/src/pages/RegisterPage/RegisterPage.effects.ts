@@ -34,7 +34,7 @@ export const useRegisterPageEffects = () => {
     externalDeviceId: process.env.NX_SMART_METER_ID,
   });
 
-  const submitHandler = useApiRegisterDevice();
+  const { submitHandler, isMutating } = useApiRegisterDevice();
 
   const formsWithImagesUpload = formsLogic.forms.map((form) =>
     form.customStep
@@ -56,5 +56,5 @@ export const useRegisterPageEffects = () => {
     areRegionsLoading ||
     userAndAccountLoading;
 
-  return { isLoading, formProps, canAccessPage, requirementsProps };
+  return { isLoading, isMutating, formProps, canAccessPage, requirementsProps };
 };

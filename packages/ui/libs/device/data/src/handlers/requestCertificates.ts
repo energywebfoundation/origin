@@ -36,7 +36,8 @@ export const useRequestCertificatesHandler = ({
   });
   const address = data?.address;
 
-  const { mutate } = useCertificationRequestControllerCreate();
+  const { mutate, isLoading: isMutating } =
+    useCertificationRequestControllerCreate();
 
   const requestHandler = (values: UnpackNestedValue<FormValuesTypes>) => {
     const parsedEnergy = isNaN(Number(values.energy))
@@ -90,5 +91,5 @@ export const useRequestCertificatesHandler = ({
     );
   };
 
-  return { isLoading, requestHandler };
+  return { isLoading, isMutating, requestHandler };
 };

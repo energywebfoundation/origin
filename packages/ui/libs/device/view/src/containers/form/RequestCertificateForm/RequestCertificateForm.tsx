@@ -17,7 +17,7 @@ export const RequestCertificateForm: FC<RequestCertificateFormProps> = ({
   closeForm,
 }) => {
   const classes = useStyles();
-  const { formProps, fileUploadProps, isLoading, formTitle } =
+  const { formProps, fileUploadProps, isLoading, isMutating, formTitle } =
     useRequestCertificateFormEffects(device, closeForm);
 
   if (isLoading) {
@@ -28,7 +28,7 @@ export const RequestCertificateForm: FC<RequestCertificateFormProps> = ({
     <div className={classes.formWrapper}>
       <Typography variant="h5">{formTitle}</Typography>
       <Typography color="textSecondary">{device.name}</Typography>
-      <GenericForm {...formProps}>
+      <GenericForm loading={isMutating} {...formProps}>
         <FileUpload dropzoneClassName={classes.dropzone} {...fileUploadProps} />
       </GenericForm>
     </div>
