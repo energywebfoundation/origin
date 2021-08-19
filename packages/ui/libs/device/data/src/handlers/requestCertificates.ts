@@ -82,7 +82,9 @@ export const useRequestCertificatesHandler = ({
           }
 
           showNotification(
-            t('device.my.notifications.certificateRequestError'),
+            `${t('device.my.notifications.certificateRequestError')}: ${
+              error.response.data.message
+            }`,
             NotificationTypeEnum.Error
           );
         },
