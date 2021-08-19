@@ -20,7 +20,7 @@
     "build:exchange-ui": "nx run exchange-data:build --buildableProjectDepsInPackageJsonType=dependencies && nx run exchange-logic:build --buildableProjectDepsInPackageJsonType=dependencies && nx run exchange-view:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:all-packages": "yarn build:ui-utils && yarn build:ui-theme && yarn build:ui-assets && yarn build:ui-localization && yarn build:ui-shared-state && yarn build:ui-core && yarn build:ui-blockchain && yarn build:user-ui && yarn build:organization-ui && yarn build:certificate-ui && yarn build:device-ui && yarn build:exchange-ui",
     "build:origin-ui": "cp apps/origin-ui/src/index.html.template apps/origin-ui/src/index.html && nx build",
-    "build": "yarn config-env && ./dev-env.sh && yarn build:origin-ui",
+    "build": "yarn config-env && yarn build:origin-ui",
     "build:container:canary": "make build-canary",
     "build:container:canary-v2": "make build-canary-v2",
     "build:container:latest": "make build-latest",
