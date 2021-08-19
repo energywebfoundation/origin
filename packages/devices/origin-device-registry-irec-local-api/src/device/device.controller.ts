@@ -49,7 +49,7 @@ import {
     DeviceState
 } from './dto';
 
-@ApiTags('device')
+@ApiTags('irec-device')
 @ApiBearerAuth('access-token')
 @Controller('/irec/device-registry')
 @UseInterceptors(NullOrUndefinedResultInterceptor, ClassSerializerInterceptor)
