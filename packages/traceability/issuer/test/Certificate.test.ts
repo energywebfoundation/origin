@@ -291,11 +291,21 @@ describe('Certificate tests', () => {
         assert.equal(certificate.owners[deviceOwnerWallet.address], totalVolume.toString());
         assert.equal(certificate2.owners[deviceOwnerWallet.address], totalVolume.toString());
 
-        await CertificateBatchOperations.transferCertificates(
-            [certificate.id, certificate2.id],
-            traderWallet.address,
+        const tx = await CertificateBatchOperations.transferCertificates(
+            [
+                {
+                    id: certificate.id,
+                    to: traderWallet.address
+                },
+                {
+                    id: certificate2.id,
+                    to: traderWallet.address
+                }
+            ],
             blockchainProperties
         );
+
+        await tx.wait();
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
@@ -319,11 +329,15 @@ describe('Certificate tests', () => {
         assert.equal(certificate.claimers[deviceOwnerWallet.address], undefined);
         assert.equal(certificate2.claimers[deviceOwnerWallet.address], undefined);
 
-        await CertificateBatchOperations.claimCertificates(
-            [certificate.id, certificate2.id],
-            claimData,
+        const tx = await CertificateBatchOperations.claimCertificates(
+            [
+                { id: certificate.id, claimData },
+                { id: certificate2.id, claimData }
+            ],
             blockchainProperties
         );
+
+        await tx.wait();
 
         certificate = await certificate.sync();
         certificate2 = await certificate2.sync();
@@ -385,12 +399,15 @@ describe('Certificate tests', () => {
         let failed = false;
 
         try {
-            await CertificateBatchOperations.claimCertificates(
-                [certificate.id, certificate2.id],
-                claimData,
-                blockchainProperties,
-                deviceOwnerWallet.address
+            const tx = await CertificateBatchOperations.claimCertificates(
+                [
+                    { id: certificate.id, claimData, from: deviceOwnerWallet.address },
+                    { id: certificate2.id, claimData, from: deviceOwnerWallet.address }
+                ],
+                blockchainProperties
             );
+
+            await tx.wait();
         } catch (e) {
             failed = true;
         }

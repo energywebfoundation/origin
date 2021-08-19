@@ -3,7 +3,8 @@ import {
     RolesGuard,
     Roles,
     ExceptionInterceptor,
-    UserDecorator
+    UserDecorator,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -42,7 +43,6 @@ import {
     GetCertificationRequestByCertificateQuery
 } from './queries';
 import { CertificationRequestDTO } from './certification-request.dto';
-import { SuccessResponseDTO } from '../../utils';
 
 @ApiTags('certification-requests')
 @ApiBearerAuth('access-token')

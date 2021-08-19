@@ -24,7 +24,7 @@ import {
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { Registry } from '@energyweb/issuer/dist/js/src/ethers/Registry';
+import { RegistryExtended } from '@energyweb/issuer/dist/js/src/ethers/RegistryExtended';
 import { Issuer } from '@energyweb/issuer/dist/js/src/ethers/Issuer';
 import { ConfigService } from '@nestjs/config';
 import { Certificate } from '@energyweb/issuer';
@@ -53,7 +53,7 @@ describe('Deposits using deployed registry', () => {
 
     const user1Id = authenticatedUser.organization.id;
 
-    let registry: Registry;
+    let registry: RegistryExtended;
     let issuer: Issuer;
 
     let depositAddress: string;

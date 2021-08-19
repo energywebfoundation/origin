@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Inject } from '@nestjs/common';
+import { ForbiddenException, Inject } from '@nestjs/common';
 
 import {
     BlockchainPropertiesService,
@@ -12,6 +12,7 @@ import { FileService, UserService } from '@energyweb/origin-backend';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 import { LoggedInUser } from '@energyweb/origin-backend-core';
+import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
@@ -40,6 +41,11 @@ export class CreateIrecCertificationRequestHandler
     async execute(
         params: CreateIrecCertificationRequestCommand
     ): Promise<FullCertificationRequestDTO> {
+        const irecDevice = await this.deviceService.findOne(params.deviceId);
+        if (!irecDevice || irecDevice.status !== DeviceState.Approved) {
+            throw new ForbiddenException('IREC Device is not approved');
+        }
+
         const certificationRequest = await this.commandBus.execute(
             new CreateCertificationRequestCommand(
                 params.to,
@@ -85,8 +91,10 @@ export class CreateIrecCertificationRequestHandler
         }
 
         const irecDevice = await this.deviceService.findOne(request.deviceId);
-        const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
-        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
+        const platformTradeAccount = await this.irecService.getTradeAccountCode(
+            platformAdmin.organization.id
+        );
+        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.organization.id, {
             device: request.deviceId,
             fuelType: irecDevice.fuelType,
             recipient: platformTradeAccount,

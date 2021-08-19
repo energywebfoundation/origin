@@ -54,7 +54,10 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         this.blockchainProperties = {
             web3: provider,
-            registry: Contracts.factories.RegistryFactory.connect(registryAddress, this.wallet),
+            registry: Contracts.factories.RegistryExtendedFactory.connect(
+                registryAddress,
+                this.wallet
+            ),
             issuer: Contracts.factories.IssuerFactory.connect(issuerAddress, this.wallet),
             activeUser: this.wallet
         };
@@ -153,7 +156,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
                         countryCode: '',
                         periodStartDate: '',
                         periodEndDate: '',
-                        purpose: ''
+                        purpose: 'GHG Accounting'
                     },
                     BigNumber.from(transfer.amount)
                 );

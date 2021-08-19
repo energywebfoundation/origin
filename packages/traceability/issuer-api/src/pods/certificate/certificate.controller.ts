@@ -4,7 +4,8 @@ import {
     BlockchainAccountDecorator,
     ExceptionInterceptor,
     Roles,
-    RolesGuard
+    RolesGuard,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -41,7 +42,6 @@ import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggreg
 import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
 import { CertificateDTO } from './dto/certificate.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
 import { certificateToDto } from './utils';
 import { Certificate } from './certificate.entity';
 

@@ -3,7 +3,6 @@ import { entities as IrecOrganizationEntities } from '@energyweb/origin-organiza
 import { Device } from './device';
 
 export * from './device';
-export * from './utils';
 export * from './app.module';
 
 export const usedEntities = [...BackendEntities, ...IrecOrganizationEntities];
