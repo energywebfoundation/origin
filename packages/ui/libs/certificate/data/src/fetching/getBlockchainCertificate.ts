@@ -17,7 +17,7 @@ export const useGetBlockchainCertificateHandler = () => {
   const getBlockchainCertificate = async (id: number) => {
     const configuration: IBlockchainProperties = {
       web3,
-      registry: Contracts.factories.RegistryFactory.connect(
+      registry: Contracts.factories.RegistryExtendedFactory.connect(
         blockchainProperties?.registry,
         web3
       ),
