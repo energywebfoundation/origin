@@ -18,7 +18,7 @@ export const FuelTypeFilter: FC<FuelTypeFilterProps> = ({
 }) => {
   const { t } = useTranslation();
   const allTypes = useCachedAllFuelTypes();
-  const handleChange = (event: SyntheticEvent, value: FormSelectOption[]) => {
+  const handleChange = (value: FormSelectOption[]) => {
     handleFilterChange(value);
   };
   return (

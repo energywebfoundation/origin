@@ -44,7 +44,6 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
         <div className={classes.item}>
           <FormInput
             variant="filled"
-            margin={mobileView ? 'none' : 'normal'}
             field={volume}
             isDirty={!!dirtyFields[volume.name]}
             register={register}
@@ -91,7 +90,6 @@ export const RepeatedPurchase: FC<RepeatedPurchaseProps> = ({ filters }) => {
         <div className={classes.item}>
           <FormInput
             variant="filled"
-            margin="none"
             field={price}
             isDirty={!!dirtyFields[price.name]}
             register={register}

@@ -51,7 +51,6 @@ export const OneTimePurchase: FC<OneTimePurchaseProps> = ({
         <div className={classes.item}>
           <FormInput
             variant="filled"
-            margin="none"
             field={energy}
             isDirty={dirtyFields[energy.name]}
             register={register}
@@ -62,7 +61,6 @@ export const OneTimePurchase: FC<OneTimePurchaseProps> = ({
         <div className={classes.item}>
           <FormInput
             variant="filled"
-            margin="none"
             field={price}
             isDirty={dirtyFields[price.name]}
             register={register}
