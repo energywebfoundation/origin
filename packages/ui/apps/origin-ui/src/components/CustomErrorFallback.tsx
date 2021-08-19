@@ -14,13 +14,19 @@ export const CustomErrorFallback: FC<CustomErrorFallbackProps> = ({
   const title = t('error.somethingWentWrong');
   const reloadButton = t('error.reloadPage');
   const returnHomeButton = t('error.returnToHome');
+  const reloadHandler = () => window.location.reload();
+  const returnHomeHandler = () => window.location.replace('/');
 
   return (
     <ErrorFallback title={title} error={error}>
       <Box mt={2} display="flex" justifyContent="center">
-        <Button variant="contained">{reloadButton}</Button>
+        <Button variant="contained" onClick={reloadHandler}>
+          {reloadButton}
+        </Button>
         <Box ml={2}>
-          <Button variant="contained">{returnHomeButton}</Button>
+          <Button variant="contained" onClick={returnHomeHandler}>
+            {returnHomeButton}
+          </Button>
         </Box>
       </Box>
     </ErrorFallback>

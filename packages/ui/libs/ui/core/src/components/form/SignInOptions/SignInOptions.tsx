@@ -3,10 +3,11 @@ import { Checkbox, Grid, GridProps, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useStyles } from './SignInOptions.styles';
 
-export interface SignInOptionsProps extends GridProps {
+export interface SignInOptionsProps {
   remember: boolean;
   setRemember: (value: boolean) => void;
   forgotPassUrl: string;
+  wrapperProps?: GridProps;
 }
 
 export const SignInOptions: FC<SignInOptionsProps> = ({

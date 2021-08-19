@@ -1,38 +1,39 @@
 import React, { FC } from 'react';
 import { DateFormatEnum } from '@energyweb/origin-ui-utils';
 import { Box, TextField, TextFieldProps } from '@material-ui/core';
-import {
-  DatePicker,
-  DatePickerProps,
-  LocalizationProvider,
-} from '@material-ui/lab';
+import { DatePicker, LocalizationProvider } from '@material-ui/lab';
 import AdapterDayJs from '@material-ui/lab/AdapterDayjs';
 import { Dayjs } from 'dayjs';
-import { GenericFormField } from '../../../containers';
 import { ClearButton } from '../../buttons';
 import { useStyles } from './MaterialDatepicker.styles';
 import { useMaterialDatepickerEffects } from './MaterialDatepicker.effects';
 
+type DatePickerField<FormValuesType> = {
+  name: keyof FormValuesType;
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  textFieldProps?: TextFieldProps;
+};
+
 export interface MaterialDatepickerProps<FormValuesType = any> {
-  value: any;
-  onChange: (event: Dayjs) => void;
-  field: GenericFormField<FormValuesType>;
+  value: Dayjs;
+  onChange: (value: Dayjs) => void;
+  field: DatePickerField<FormValuesType>;
   disabled?: boolean;
   errorExists?: boolean;
   errorText?: string;
   variant?: TextFieldProps['variant'];
-  datePickerProps?: DatePickerProps;
 }
 
 export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
   value,
   onChange,
-  disabled,
-  errorExists,
-  errorText,
-  variant,
   field,
-  datePickerProps,
+  disabled = false,
+  errorExists = false,
+  errorText = '',
+  variant = 'outlined',
 }) => {
   const classes = useStyles();
   const {
@@ -100,7 +101,6 @@ export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
             {...field.textFieldProps}
           />
         )}
-        {...datePickerProps}
       />
     </LocalizationProvider>
   );

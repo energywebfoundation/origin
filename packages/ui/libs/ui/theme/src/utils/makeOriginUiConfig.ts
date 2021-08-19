@@ -46,7 +46,7 @@ export function createStyleConfig(
   };
 }
 
-const makeOriginUiConfig = (
+export const makeOriginUiConfig = (
   configuration: Partial<IOriginThemeConfiguration> = {}
 ) => {
   const DEFAULT_STYLE_CONFIG = createStyleConfig(variables);
@@ -80,5 +80,3 @@ const makeOriginUiConfig = (
   // setGlobalTimeLanguage(SupportedLanguagesEnum.en);
   return newConfiguration;
 };
-
-export default makeOriginUiConfig;

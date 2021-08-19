@@ -29,24 +29,24 @@ export const DemandPeriodFilter: FC<PeriodFilterProps> = ({
         name: 'periodFilter',
         label: t('exchange.myOrders.period'),
         options: periodTypeOptions(t, false),
+        textFieldProps: {
+          margin: 'dense',
+          InputProps: value
+            ? {
+                endAdornment: (
+                  <InputAdornment position="end" style={{ marginRight: 15 }}>
+                    <IconButton onClick={handleClear}>
+                      <Close />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }
+            : undefined,
+        },
       }}
       variant="filled"
       value={value}
       onChange={handleChange}
-      textFieldProps={{
-        margin: 'dense',
-        InputProps: value
-          ? {
-              endAdornment: (
-                <InputAdornment position="end" style={{ marginRight: 15 }}>
-                  <IconButton onClick={handleClear}>
-                    <Close />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }
-          : undefined,
-      }}
     />
   );
 };

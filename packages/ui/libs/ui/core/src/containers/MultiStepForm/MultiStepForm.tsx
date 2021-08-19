@@ -19,6 +19,7 @@ export interface MultiStepFormProps<FormValuesMerged> {
   backButtonText: string;
   backButtonProps?: ButtonProps;
   submitHandler: (values: FormValuesMerged) => void;
+  loading?: boolean;
 }
 
 export type TMultiStepForm = <FormValuesMerged>(
@@ -32,6 +33,7 @@ export const MultiStepForm: TMultiStepForm = ({
   submitHandler,
   backButtonText,
   backButtonProps,
+  loading,
 }) => {
   const { stepperLabels, activeStep, getCurrentForm } = useMultiStepFormEffects(
     { forms, submitHandler, backButtonText, backButtonProps }

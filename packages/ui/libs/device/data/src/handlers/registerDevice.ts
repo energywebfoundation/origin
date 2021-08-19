@@ -17,13 +17,14 @@ import { useNavigate } from 'react-router-dom';
 export const useApiRegisterDevice = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { mutate } = useOriginCreateDevice();
-  const { mutateAsync } = useIRecCreateDevice();
+  const { mutate, isLoading: isOriginMutating } = useOriginCreateDevice();
+  const { mutateAsync, isLoading: isIRecMutating } = useIRecCreateDevice();
   const userQueryKey = getUserControllerMeQueryKey();
   const queryClient = useQueryClient();
   const user: UserDTO = queryClient.getQueryData(userQueryKey);
+  const isMutating = isIRecMutating || isOriginMutating;
 
-  return (values: TRegisterDeviceFormValues) => {
+  const submitHandler = (values: TRegisterDeviceFormValues) => {
     const iRecCreateData = decomposeForIRec(values, user.organization);
     const originCreateData = decomposeForOrigin(values);
 
@@ -54,4 +55,6 @@ export const useApiRegisterDevice = () => {
       );
     });
   };
+
+  return { submitHandler, isMutating };
 };

@@ -6,7 +6,7 @@ import { MultiStepFormProps } from './MultiStepForm';
 
 type TUseMultiStepEffectsArgs<Merged> = Pick<
   MultiStepFormProps<Merged>,
-  'forms' | 'submitHandler' | 'backButtonText' | 'backButtonProps'
+  'forms' | 'submitHandler' | 'backButtonText' | 'backButtonProps' | 'loading'
 >;
 
 type TUseMultiStepEffects = <Merged>(
@@ -22,6 +22,7 @@ export const useMultiStepFormEffects: TUseMultiStepEffects = ({
   submitHandler,
   backButtonText,
   backButtonProps,
+  loading,
 }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [store, setStore] = useState<any>(null);
@@ -56,12 +57,13 @@ export const useMultiStepFormEffects: TUseMultiStepEffects = ({
             {
               label: backButtonText,
               onClick: backButtonHandler,
-              disabled: activeStep === 0,
+              disabled: activeStep === 0 || loading,
               variant: 'contained',
               style: { marginRight: 10 },
               ...backButtonProps,
             },
           ]}
+          loading={loading}
           {...props}
         />
       );
@@ -81,6 +83,7 @@ export const useMultiStepFormEffects: TUseMultiStepEffects = ({
             ...backButtonProps,
           },
         ]}
+        loading={loading}
         {...props}
       />
     );

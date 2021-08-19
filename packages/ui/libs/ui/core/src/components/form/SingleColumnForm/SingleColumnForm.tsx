@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { Control, DeepMap, FieldError, UseFormRegister } from 'react-hook-form';
-import { BaseTextFieldProps } from '@material-ui/core';
+import { TextFieldProps } from '@material-ui/core';
 import { isEmpty } from 'lodash';
 import { GenericFormField } from '../../../containers';
 import { FormInput, FormInputProps } from '../FormInput';
@@ -14,8 +14,8 @@ export interface SingleColumnFormProps<FormValuesType> {
   errors: DeepMap<FormValuesType, FieldError>;
   dirtyFields: DeepMap<FormValuesType, true>;
   inputsVariant?: FormInputProps<FormValuesType>['variant'];
-  formInputsProps?: BaseTextFieldProps;
-  editDisabled?: boolean;
+  formInputsProps?: TextFieldProps;
+  disabled?: boolean;
 }
 
 export type TSingleColumnForm = <FormValuesType>(
@@ -30,7 +30,7 @@ export const SingleColumnForm: TSingleColumnForm = ({
   dirtyFields,
   inputsVariant,
   formInputsProps,
-  editDisabled,
+  disabled,
 }) => {
   return (
     <>
@@ -44,12 +44,13 @@ export const SingleColumnForm: TSingleColumnForm = ({
               errorExists={!isEmpty(errors[field.name])}
               errorText={(errors[field.name] as any)?.message ?? ''}
               variant={inputsVariant}
+              disabled={disabled}
               register={register}
             />
           )) ||
           (field.datePicker && (
             <FormDatePicker
-              disabled={editDisabled}
+              disabled={disabled}
               key={field.label}
               field={field}
               control={control}
@@ -61,7 +62,7 @@ export const SingleColumnForm: TSingleColumnForm = ({
             <FormInput
               key={field.label}
               field={field}
-              disabled={editDisabled}
+              disabled={disabled}
               register={register}
               errorExists={!isEmpty(errors[field.name])}
               errorText={(errors[field.name] as any)?.message ?? ''}

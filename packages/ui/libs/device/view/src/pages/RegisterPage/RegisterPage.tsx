@@ -5,7 +5,7 @@ import { useRegisterPageEffects } from './RegisterPage.effects';
 import { useStyles } from './RegisterPage.styles';
 
 export const RegisterPage: React.FC = () => {
-  const { formProps, isLoading, canAccessPage, requirementsProps } =
+  const { formProps, isMutating, isLoading, canAccessPage, requirementsProps } =
     useRegisterPageEffects();
   const classes = useStyles();
 
@@ -19,7 +19,7 @@ export const RegisterPage: React.FC = () => {
 
   return (
     <Paper classes={{ root: classes.paper }}>
-      <MultiStepForm {...formProps} />
+      <MultiStepForm loading={isMutating} {...formProps} />
     </Paper>
   );
 };

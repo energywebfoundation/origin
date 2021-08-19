@@ -45,6 +45,7 @@ export const useOneTimePurchaseFormLogic: TUseOneTimePurchaseFormLogic = (
       energy: {
         name: 'energy',
         label: t('exchange.viewMarket.energy'),
+        textFieldProps: { margin: 'none' },
         endAdornment: {
           element: <>MWh</>,
         },
@@ -52,6 +53,7 @@ export const useOneTimePurchaseFormLogic: TUseOneTimePurchaseFormLogic = (
       price: {
         name: 'price',
         label: t('exchange.viewMarket.price'),
+        textFieldProps: { margin: 'none' },
         endAdornment: {
           element: <>USD</>,
         },

@@ -1,19 +1,36 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { TextField, Autocomplete, Chip } from '@material-ui/core';
+import {
+  TextField,
+  Autocomplete,
+  Chip,
+  TextFieldProps,
+} from '@material-ui/core';
 import { useSelectAutocompleteEffects } from './SelectAutocomplete.effects';
 import { useStyles } from './SelectAutocomplete.styles';
-import { GenericFormField } from '../../../containers/GenericForm';
 import { FormSelectOption } from '../FormSelect';
+
+export type SelectAutocompleteField<FormValuesType> = {
+  name: keyof FormValuesType;
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  options?: FormSelectOption[];
+  multiple?: boolean;
+  maxValues?: number;
+  textFieldProps?: TextFieldProps;
+  dependentOn?: string;
+  dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
+};
 
 export interface SelectAutocompleteProps<FormValuesType = any> {
   value: FormSelectOption[];
-  field: GenericFormField<FormValuesType>;
-  onChange: (...event: any[]) => void;
+  onChange: (newValue: FormSelectOption[]) => void;
+  field: SelectAutocompleteField<FormValuesType>;
   errorExists?: boolean;
   errorText?: string;
   variant?: 'standard' | 'outlined' | 'filled';
   disabled?: boolean;
-  dependentValue?: FormSelectOption[];
+  dependentValue?: any;
   className?: string;
 }
 
@@ -27,9 +44,9 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
   onChange,
   errorExists = false,
   errorText = '',
-  disabled,
-  variant,
-  dependentValue,
+  disabled = false,
+  variant = 'filled',
+  dependentValue = null,
   className,
 }) => {
   const { options, textValue, setTextValue, changeHandler } =
@@ -54,11 +71,12 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
           {...params}
           required={field.required && !(value?.length > 0)}
           label={field.label}
+          placeholder={field.placeholder}
           onChange={(event) => setTextValue(event.target.value)}
           helperText={errorText}
           inputProps={{ ...params.inputProps }}
           error={errorExists}
-          variant={variant ?? 'filled'}
+          variant={variant}
           fullWidth
           {...field.textFieldProps}
         />

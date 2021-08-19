@@ -1,7 +1,12 @@
 module.exports = {
   stories: [],
-  addons: ['@storybook/addon-knobs/register', '@storybook/addon-essentials'],
-  typescript: {
-    reactDocgen: 'none',
-  },
+  addons: [
+    '@storybook/addon-docs',
+    {
+      name: '@storybook/addon-essentials',
+      options: {
+        actions: false,
+      },
+    },
+  ],
 };

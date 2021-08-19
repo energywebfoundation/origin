@@ -19,7 +19,7 @@ import { DatePickerProps } from '@material-ui/lab';
 export type GenericFormField<FormValuesType> = {
   name: keyof FormValuesType;
   label: string;
-  type?: 'text' | 'password';
+  type?: 'text' | 'password' | 'number';
   placeholder?: string;
   required?: boolean;
   select?: boolean;
@@ -73,6 +73,7 @@ export interface GenericFormProps<FormValuesType> {
   inputsToWatch?: Path<FormValuesType>[];
   onWatchHandler?: (watchedValues: unknown[]) => void;
   validationMode?: keyof ValidationMode;
+  loading?: boolean;
 }
 
 export type TGenericForm = <FormValuesType>(

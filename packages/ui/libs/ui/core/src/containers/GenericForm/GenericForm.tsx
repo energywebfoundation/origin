@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, Typography, CircularProgress } from '@material-ui/core';
 import React, { memo } from 'react';
 import { DoubleColumnForm, SingleColumnForm } from '../../components';
 import { useGenericFormEffects } from './GenericForm.effects';
@@ -27,6 +27,7 @@ export const GenericForm: TGenericForm = memo(
     onWatchHandler,
     buttonDisabled,
     validationMode,
+    loading,
   }) => {
     const {
       control,
@@ -99,10 +100,15 @@ export const GenericForm: TGenericForm = memo(
             name="submit"
             size="large"
             variant="contained"
-            disabled={submitButtonDisabled}
+            disabled={submitButtonDisabled || loading}
             type="submit"
           >
             {buttonText}
+            {loading && (
+              <Box ml={2}>
+                <CircularProgress size={20} />
+              </Box>
+            )}
           </Button>
         </Box>
       </form>

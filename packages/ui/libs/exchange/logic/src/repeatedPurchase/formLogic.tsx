@@ -48,6 +48,7 @@ export const useRepeatedPurchaseFormLogic: TUseRepeatedPurchaseFormLogic = (
       volume: {
         name: 'volume',
         label: t('exchange.viewMarket.volume'),
+        textFieldProps: { margin: mobileView ? 'none' : 'normal' },
         endAdornment: {
           element: <div>{'MWh'}</div>,
         },
@@ -69,6 +70,7 @@ export const useRepeatedPurchaseFormLogic: TUseRepeatedPurchaseFormLogic = (
       price: {
         name: 'price',
         label: t('exchange.viewMarket.price'),
+        textFieldProps: { margin: 'none' },
         endAdornment: {
           element: <div>{'USD'}</div>,
         },

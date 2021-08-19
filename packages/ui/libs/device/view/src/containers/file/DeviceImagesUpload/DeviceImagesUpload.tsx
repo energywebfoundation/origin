@@ -2,7 +2,7 @@ import {
   FileUpload,
   GenericFormSecondaryButton,
 } from '@energyweb/origin-ui-core';
-import { Box, Button } from '@material-ui/core';
+import { Box, Button, CircularProgress } from '@material-ui/core';
 import { DeviceImagesFormValues } from '@energyweb/origin-ui-device-logic';
 import React, { FC } from 'react';
 import { useDeviceImagesUploadEffects } from './DeviceImagesUpload.effects';
@@ -10,11 +10,13 @@ import { useDeviceImagesUploadEffects } from './DeviceImagesUpload.effects';
 interface DeviceImagesUploadProps {
   submitHandler: (values: DeviceImagesFormValues) => void;
   secondaryButtons?: GenericFormSecondaryButton[];
+  loading?: boolean;
 }
 
 export const DeviceImagesUpload: FC<DeviceImagesUploadProps> = ({
   submitHandler,
   secondaryButtons,
+  loading,
 }) => {
   const {
     values,
@@ -46,10 +48,15 @@ export const DeviceImagesUpload: FC<DeviceImagesUploadProps> = ({
           name="submit"
           size="large"
           variant="contained"
-          disabled={buttonDisabled}
+          disabled={buttonDisabled || loading}
           onClick={() => submitHandler(values)}
         >
           {buttonText}
+          {loading && (
+            <Box ml={2}>
+              <CircularProgress size={20} />
+            </Box>
+          )}
         </Button>
       </Box>
     </Box>

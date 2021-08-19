@@ -16,11 +16,12 @@ export const useRequestCertificateFormEffects = (
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
   const formLogic = useRequestCertificatesLogic();
-  const { requestHandler, isLoading } = useRequestCertificatesHandler({
-    files,
-    deviceId: device.externalRegistryId,
-    closeForm,
-  });
+  const { requestHandler, isLoading, isMutating } =
+    useRequestCertificatesHandler({
+      files,
+      deviceId: device.externalRegistryId,
+      closeForm,
+    });
   const formProps = {
     ...formLogic,
     submitHandler: requestHandler,
@@ -37,5 +38,5 @@ export const useRequestCertificateFormEffects = (
 
   const formTitle = t('device.my.requestCertificates.formTitle');
 
-  return { formProps, fileUploadProps, isLoading, formTitle };
+  return { formProps, fileUploadProps, isMutating, isLoading, formTitle };
 };

@@ -28,24 +28,24 @@ export const DemandStatusFilter: FC<StatusFilterProps> = ({
         name: 'statusFilter',
         label: t('exchange.myOrders.status'),
         options: demandStatusOptions(t),
+        textFieldProps: {
+          margin: 'dense',
+          InputProps: value
+            ? {
+                endAdornment: (
+                  <InputAdornment position="end" style={{ marginRight: 15 }}>
+                    <IconButton onClick={handleClear}>
+                      <Close />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }
+            : undefined,
+        },
       }}
       variant="filled"
       value={value}
       onChange={handleChange}
-      textFieldProps={{
-        margin: 'dense',
-        InputProps: value
-          ? {
-              endAdornment: (
-                <InputAdornment position="end" style={{ marginRight: 15 }}>
-                  <IconButton onClick={handleClear}>
-                    <Close />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }
-          : undefined,
-      }}
     />
   );
 };
