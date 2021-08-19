@@ -1,15 +1,74 @@
+/* deepscan-disable */
 import React from 'react';
-import { Meta } from '@storybook/react';
+import { Meta, Story } from '@storybook/react';
+import {
+  Title,
+  Description,
+  Primary,
+  ArgsTable,
+  Stories,
+  PRIMARY_STORY,
+} from '@storybook/addon-docs';
 import { DisabledFormView, DisabledFormViewProps } from './DisabledFormView';
+
+const description = `
+  Component used for displaying data as Form-like component in 2 columns. <br/>
+  Built with <a target="_blank" href="https://next.material-ui.com/api/text-field/">TextField<a/> component from Material-UI. <br />
+  Has built-in responsive behaviour starting below 1280px screen width - becoming a single column form.
+`;
 
 export default {
   title: 'Form / DisabledFormView',
   component: DisabledFormView,
+  argTypes: {
+    data: {
+      type: { required: true },
+      description: 'Required prop for building component content',
+      table: {
+        type: {
+          summary: 'DisabledFormData[]',
+          detail: `{ label: string; value: string | number }`,
+        },
+      },
+    },
+    heading: {
+      description: 'Heading for form',
+    },
+    inputProps: {
+      description:
+        "Props supplied for each field <br /> <a target='_blank' href='https://next.material-ui.com/api/text-field/#props'>`TextFieldProps`</a>",
+      table: { type: false },
+    },
+    headingProps: {
+      description:
+        "Props supplied for form heading, which is built with Typography component <br /> <a target='_blank' href='https://next.material-ui.com/api/typography/#props'>`TypographyProps`</a>",
+      table: { type: false },
+    },
+    paperClass: {
+      description:
+        "Prop supplied to className prop of <a target='_blank' href='https://next.material-ui.com/api/paper/'>`Paper`</a> component wrapping the form",
+    },
+  },
+  parameters: {
+    docs: {
+      page: () => (
+        <>
+          <Title />
+          <Description>{description}</Description>
+          <Primary />
+          <ArgsTable story={PRIMARY_STORY} />
+          <Stories />
+        </>
+      ),
+    },
+  },
 } as Meta;
 
-export const Default = (args: DisabledFormViewProps) => {
-  return <DisabledFormView {...args} />;
-};
+const Template: Story<DisabledFormViewProps> = (args) => (
+  <DisabledFormView {...args} />
+);
+
+export const Default = Template.bind({});
 Default.args = {
   data: [
     { label: 'Title', value: 'Mr' },
@@ -21,9 +80,7 @@ Default.args = {
   ],
 };
 
-export const WithHeading = (args: DisabledFormViewProps) => {
-  return <DisabledFormView {...args} />;
-};
+export const WithHeading = Template.bind({});
 WithHeading.args = {
   data: [
     { label: 'Title', value: 'Mr' },
@@ -36,9 +93,7 @@ WithHeading.args = {
   heading: 'User Profile data',
 };
 
-export const WithInputProps = (args: DisabledFormViewProps) => {
-  return <DisabledFormView {...args} />;
-};
+export const WithInputProps = Template.bind({});
 WithInputProps.args = {
   data: [
     { label: 'Title', value: 'Mr' },
@@ -53,9 +108,7 @@ WithInputProps.args = {
   },
 };
 
-export const WithHeadingProps = (args: DisabledFormViewProps) => {
-  return <DisabledFormView {...args} />;
-};
+export const WithHeadingProps = Template.bind({});
 WithHeadingProps.args = {
   data: [
     { label: 'Title', value: 'Mr' },

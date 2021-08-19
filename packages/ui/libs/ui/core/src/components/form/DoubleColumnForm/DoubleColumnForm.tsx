@@ -16,6 +16,7 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
   dirtyFields,
   inputsVariant,
   formInputsProps,
+  disabled,
 }) => {
   const { firstColumn, secondColumn } = useDoubleColumnFormEffects(fields);
   const classes = useStyles();
@@ -30,6 +31,7 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
           dirtyFields={dirtyFields}
           inputsVariant={inputsVariant}
           formInputsProps={formInputsProps}
+          disabled={disabled}
         />
       </Grid>
       <Grid className={classes.secondColumn} item sm={12} lg={6}>
@@ -41,6 +43,7 @@ export const DoubleColumnForm: TDoubleColumnForm = ({
           dirtyFields={dirtyFields}
           inputsVariant={inputsVariant}
           formInputsProps={formInputsProps}
+          disabled={disabled}
         />
       </Grid>
     </Grid>

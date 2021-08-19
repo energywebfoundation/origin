@@ -1,19 +1,33 @@
-import { TextFieldProps, MenuItem, TextField } from '@material-ui/core';
+import { MenuItem, TextField, TextFieldProps } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { isEmpty } from 'lodash';
-import { GenericFormField } from '../../../containers';
 import { FormSelectOption } from '../FormSelect';
 
+export type SelectRegularField<FormValuesType> = {
+  name: keyof FormValuesType;
+  label: string;
+  options?: FormSelectOption[];
+  placeholder?: string;
+  required?: boolean;
+  additionalInputProps?: {
+    valueToOpen: FormSelectOption['value'];
+    name: string;
+    label: string;
+    required?: boolean;
+  };
+  textFieldProps?: TextFieldProps;
+};
+
 export interface SelectRegularProps<FormValuesType = any> {
-  field: GenericFormField<FormValuesType>;
-  value: FormSelectOption['value'];
+  field: SelectRegularField<FormValuesType>;
+  value: string | number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  register?: UseFormRegister<FormValuesType>;
   errorExists?: boolean;
   errorText?: string;
   variant?: 'standard' | 'outlined' | 'filled';
-  textFieldProps?: TextFieldProps;
+  register?: UseFormRegister<FormValuesType>;
+  disabled?: boolean;
 }
 
 export type TSelectRegular = <FormValuesType>(
@@ -22,17 +36,19 @@ export type TSelectRegular = <FormValuesType>(
 
 export const SelectRegular: TSelectRegular = ({
   field,
+  onChange,
   errorExists = false,
   errorText = '',
-  variant,
-  value,
-  register,
-  onChange,
-  textFieldProps,
+  variant = 'standard',
+  value = '',
+  disabled = false,
+  register = null,
 }) => {
   const additionalInputRegistration =
     field.additionalInputProps?.name &&
+    register &&
     register(field.additionalInputProps.name as any);
+  const options = field.options || [];
   return (
     <>
       <TextField
@@ -40,18 +56,18 @@ export const SelectRegular: TSelectRegular = ({
         fullWidth
         name={`${field.name}`}
         label={field.label}
-        type={`${field.name}`}
         error={errorExists}
         helperText={errorText}
         margin="normal"
-        variant={variant ?? 'standard'}
-        value={value ?? ''}
+        variant={variant}
+        value={value}
         defaultValue={value}
         onChange={onChange}
+        disabled={disabled}
         required={field.required}
-        {...textFieldProps}
+        {...field.textFieldProps}
       >
-        {field.options.map((option) => (
+        {options.map((option) => (
           <MenuItem key={option.label} value={option.value}>
             {option.label}
           </MenuItem>
@@ -62,13 +78,13 @@ export const SelectRegular: TSelectRegular = ({
         field.additionalInputProps?.valueToOpen === value && (
           <TextField
             fullWidth
-            variant={variant ?? 'standard'}
+            variant={variant}
             label={field.additionalInputProps?.label}
             name={additionalInputRegistration?.name}
             inputRef={additionalInputRegistration?.ref}
             onChange={additionalInputRegistration?.onChange}
             onBlur={additionalInputRegistration?.onBlur}
-            {...textFieldProps}
+            {...field.textFieldProps}
           />
         )}
     </>

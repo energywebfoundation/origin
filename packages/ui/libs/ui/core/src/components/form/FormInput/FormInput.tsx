@@ -1,23 +1,26 @@
-import React, { memo, PropsWithChildren, ReactElement } from 'react';
-import {
-  InputAdornment,
-  BaseTextFieldProps,
-  TextField,
-} from '@material-ui/core';
+import React, { memo, PropsWithChildren, ReactElement, ReactNode } from 'react';
+import { InputAdornment, TextField, TextFieldProps } from '@material-ui/core';
 import { UseFormRegister } from 'react-hook-form';
-import { GenericFormField } from '../../../containers';
 
-export type FormInputField<FormValuesType> = Omit<
-  GenericFormField<FormValuesType>,
-  'options' | 'select' | 'autocomplete' | 'multiple' | 'maxValues'
-> &
-  Omit<BaseTextFieldProps, 'name'>;
+export type FormInputField<FormValuesType> = {
+  name: keyof FormValuesType;
+  label: string;
+  type?: 'text' | 'password' | 'number';
+  placeholder?: string;
+  required?: boolean;
+  startAdornment?: ReactNode;
+  endAdornment?: {
+    element: ReactNode;
+    isValidCheck?: boolean;
+  };
+  textFieldProps?: TextFieldProps;
+};
 
-export interface FormInputProps<FormValues> extends BaseTextFieldProps {
+export interface FormInputProps<FormValues> {
   field: FormInputField<FormValues>;
   register: UseFormRegister<FormValues>;
-  errorExists: boolean;
-  errorText: string;
+  errorExists?: boolean;
+  errorText?: string;
   isDirty?: boolean;
   disabled?: boolean;
   variant?: 'standard' | 'outlined' | 'filled';
@@ -31,12 +34,11 @@ export const FormInput: TFormInput = memo(
   ({
     field,
     register,
-    errorExists,
-    errorText,
-    isDirty,
-    variant,
+    errorExists = false,
+    errorText = '',
+    isDirty = true,
+    variant = 'standard',
     disabled = false,
-    ...rest
   }) => {
     const { ref, name, onBlur, onChange } = register(field.name as any);
     const showEndAdornment = field.endAdornment?.isValidCheck
@@ -45,17 +47,17 @@ export const FormInput: TFormInput = memo(
 
     return (
       <TextField
+        fullWidth
+        margin="normal"
         name={name ?? ''}
         disabled={disabled}
         label={field.label ?? ''}
         type={field.type ?? 'text'}
         inputRef={ref}
-        error={errorExists ?? false}
-        helperText={errorText ?? ''}
-        fullWidth
-        margin="normal"
+        error={errorExists}
+        helperText={errorText}
         required={field.required}
-        variant={variant ?? 'standard'}
+        variant={variant}
         InputProps={{
           startAdornment: field.startAdornment && (
             <InputAdornment position="start">
@@ -71,7 +73,6 @@ export const FormInput: TFormInput = memo(
         onChange={onChange}
         onBlur={onBlur}
         {...field.textFieldProps}
-        {...rest}
       />
     );
   }
