@@ -27,6 +27,8 @@ const formatMyTradesData: TFormatMyTradesData = ({ t, trades }) => {
 export const useLogicMyTrades: TUseLogicMyTrades = ({ trades, loading }) => {
   const { t } = useTranslation();
   return {
+    tableTitle: t('exchange.myTrades.tableTitle'),
+    tableTitleProps: { variant: 'h5' },
     header: {
       date: t('exchange.myTrades.date'),
       side: t('exchange.myTrades.side'),
