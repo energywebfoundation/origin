@@ -19,6 +19,7 @@ type GenericFormEffectsProps<FormValuesType> = Pick<
   | 'onWatchHandler'
   | 'buttonDisabled'
   | 'validationMode'
+  | 'acceptInitialValues'
 >;
 
 type GenericFormEffectsReturnType<FormValuesType> = {
@@ -43,6 +44,7 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   onWatchHandler,
   buttonDisabled,
   validationMode,
+  acceptInitialValues,
 }) => {
   const { control, register, handleSubmit, formState, reset, watch } = useForm({
     mode: validationMode ? validationMode : 'onBlur',
@@ -67,7 +69,11 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   const nextForm =
     initialValues && Object.keys(initialValues)[0] in dirtyFields;
   const submitButtonDisabled =
-    buttonDisabled || partOfMultiForm ? !(nextForm && isValid) : !isDirty;
+    buttonDisabled || partOfMultiForm
+      ? !(nextForm && isValid)
+      : acceptInitialValues
+      ? false
+      : !isDirty;
 
   return {
     control,
