@@ -74,7 +74,7 @@ export const useRequestCertificatesHandler = ({
           closeForm();
         },
         onError: (error: any) => {
-          if (error.response.status === 409) {
+          if (error?.response?.status === 409) {
             showNotification(
               t('device.my.notifications.certificateRequestAlreadyExists'),
               NotificationTypeEnum.Error
