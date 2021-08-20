@@ -40,9 +40,11 @@ export const useApiRemoveDemandHandler = () => {
           queryClient.invalidateQueries(demandsQueryKey);
           closeModal();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('exchange.myOrders.notifications.demandRemoveError'),
+            `${t('exchange.myOrders.notifications.demandRemoveError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
           closeModal();

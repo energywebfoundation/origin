@@ -51,10 +51,11 @@ export const useApiUpdateSupplyHandler = (
             reset();
             handleModalClose();
           },
-          onError: (error) => {
-            console.log(error);
+          onError: (error: any) => {
             showNotification(
-              t('exchange.supply.notifications.updateSupplyError'),
+              `${t('exchange.supply.notifications.updateSupplyError')}:
+              ${error?.response?.data?.message || ''}
+              `,
               NotificationTypeEnum.Error
             );
           },
@@ -79,10 +80,11 @@ export const useApiUpdateSupplyHandler = (
             reset();
             handleModalClose();
           },
-          onError: (error) => {
-            console.log(error);
+          onError: (error: any) => {
             showNotification(
-              t('exchange.supply.notifications.createSupplyError'),
+              `${t('exchange.supply.notifications.createSupplyError')}:
+              ${error?.response?.data?.message || ''}
+              `,
               NotificationTypeEnum.Error
             );
           },

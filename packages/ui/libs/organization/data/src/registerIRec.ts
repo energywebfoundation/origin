@@ -87,19 +87,12 @@ export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
           queryClient.invalidateQueries(iRecOrgKey);
         },
         onError: (error: any) => {
-          console.warn('Error while registering an organization', error);
-
-          if (error?.response?.status === 401) {
-            showNotification(
-              t('organization.registerIRec.notifications.unauthorized'),
-              NotificationTypeEnum.Error
-            );
-          } else {
-            showNotification(
-              t('organization.registerIRec.notifications.registerError'),
-              NotificationTypeEnum.Error
-            );
-          }
+          showNotification(
+            `${t('organization.registerIRec.notifications.registerError')}:
+            ${error?.response?.data?.message || ''}
+            `,
+            NotificationTypeEnum.Error
+          );
         },
       }
     );

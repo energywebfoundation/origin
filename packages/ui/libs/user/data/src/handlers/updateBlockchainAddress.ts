@@ -65,6 +65,12 @@ export const useUpdateBlockchainAddress = (
                   NotificationTypeEnum.Success
                 );
               },
+              onError: (error: any) => {
+                showNotification(
+                  error?.response?.data?.message,
+                  NotificationTypeEnum.Error
+                );
+              },
             }
           );
         }

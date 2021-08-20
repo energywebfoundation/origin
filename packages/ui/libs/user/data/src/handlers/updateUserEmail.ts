@@ -49,10 +49,11 @@ export const useApiUpdateUserAccountEmail = () => {
             resetForm();
           logout();
         },
-        onError: (error) => {
-          console.error(error);
+        onError: (error: any) => {
           showNotification(
-            t('user.profile.notifications.userEmailUpdateError'),
+            `${t('user.profile.notifications.userEmailUpdateError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

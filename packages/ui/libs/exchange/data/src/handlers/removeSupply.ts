@@ -34,10 +34,11 @@ export const useApiRemoveSupplyHandler = () => {
             queryClient.invalidateQueries(allSupplyQueryKey);
             closeModal();
           },
-          onError: (error) => {
-            console.log(error);
+          onError: (error: any) => {
             showNotification(
-              t('exchange.supply.notifications.removeSupplyError'),
+              `${t('exchange.supply.notifications.removeSupplyError')}:
+              ${error?.response?.data?.message || ''}
+              `,
               NotificationTypeEnum.Error
             );
           },

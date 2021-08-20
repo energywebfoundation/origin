@@ -36,9 +36,11 @@ export const useOrgApproveHandler = () => {
           );
           queryClient.invalidateQueries(allOrgsQueryKey);
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('organization.all.notifications.approvedError'),
+            `${t('organization.all.notifications.approvedError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

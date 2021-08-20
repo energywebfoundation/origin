@@ -43,9 +43,11 @@ export const useExchangeTransferCertificateHandler = (
           queryClient.resetQueries(exchangeCertificatesQueryKey);
           resetList();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('certificate.exchangeInbox.notifications.transferError'),
+            `${t('certificate.exchangeInbox.notifications.transferError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

@@ -53,14 +53,7 @@ export const useOrganizationRegisterHandler = ({
           openRoleChangedModal();
         },
         onError: (error: any) => {
-          console.warn('Error while registering an organization', error);
-
-          if (error?.response?.status === 401) {
-            showNotification(
-              t('organization.register.notifications.unauthorized'),
-              NotificationTypeEnum.Error
-            );
-          } else if (error?.response?.status === 400) {
+          if (error?.response?.status === 400) {
             openAlreadyExistsModal();
             showNotification(
               error?.response?.data?.message,
@@ -68,7 +61,9 @@ export const useOrganizationRegisterHandler = ({
             );
           } else {
             showNotification(
-              t('organization.register.notifications.registeredFailure'),
+              `${t('organization.register.notifications.registeredFailure')}:
+              ${error?.response?.data?.message || ''}
+              `,
               NotificationTypeEnum.Error
             );
           }

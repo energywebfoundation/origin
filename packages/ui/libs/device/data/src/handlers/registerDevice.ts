@@ -45,9 +45,10 @@ export const useApiRegisterDevice = () => {
             navigate('/device/my');
           },
           onError: (error: any) => {
-            console.error(error);
             showNotification(
-              t('device.register.notifications.registerError'),
+              `${t('device.register.notifications.registerError')}:
+              ${error?.response?.data?.message || ''}
+              `,
               NotificationTypeEnum.Error
             );
           },

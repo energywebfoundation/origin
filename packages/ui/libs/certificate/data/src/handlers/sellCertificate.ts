@@ -50,9 +50,11 @@ export const useSellCertificateHandler = (
           queryClient.invalidateQueries(exchangeCertificatesQueryKey);
           resetList();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('certificate.exchangeInbox.notifications.sellError'),
+            `${t('certificate.exchangeInbox.notifications.sellError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

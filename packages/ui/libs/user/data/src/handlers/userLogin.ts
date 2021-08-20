@@ -23,7 +23,7 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { setAuthenticationToken } from '@energyweb/origin-ui-shared-state';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';

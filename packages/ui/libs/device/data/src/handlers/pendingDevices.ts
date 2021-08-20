@@ -31,9 +31,11 @@ export const useApiHandlersForPendingDevices = () => {
             NotificationTypeEnum.Success
           );
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('device.pending.notifications.approveError'),
+            `${t('device.pending.notifications.approveError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },
@@ -53,9 +55,11 @@ export const useApiHandlersForPendingDevices = () => {
             NotificationTypeEnum.Success
           );
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('device.pending.notifications.rejectError'),
+            `${t('device.pending.notifications.rejectError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },
