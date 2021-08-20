@@ -40,7 +40,7 @@ export const useApiRemoveBundleHandler = () => {
         onError: () => {
           showNotification(
             t('exchange.myBundles.notifications.removeError'),
-            NotificationTypeEnum.Success
+            NotificationTypeEnum.Error
           );
         },
       }

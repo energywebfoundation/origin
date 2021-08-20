@@ -37,7 +37,7 @@ export const useAdminUpdateUser = (id: string) => {
             `${t('admin.updateUser.notifications.userUpdateError')}:
             ${error?.response?.data?.message || ''}
             `,
-            NotificationTypeEnum.Success
+            NotificationTypeEnum.Error
           );
         },
       }

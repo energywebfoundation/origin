@@ -101,7 +101,7 @@ export const useOrganizationMemberRoleUpdate = () => {
             `${t('organization.members.notifications.roleChangeError')}:
             ${error?.response?.data?.message || ''}
             `,
-            NotificationTypeEnum.Success
+            NotificationTypeEnum.Error
           );
         },
       }
