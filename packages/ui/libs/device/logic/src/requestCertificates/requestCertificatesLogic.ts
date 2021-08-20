@@ -22,13 +22,8 @@ export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = () => {
         .required()
         .label(t('device.my.requestCertificates.toTime')),
       energy: yup
-        .string()
-        .matches(
-          /^\d+$/,
-          t('validation.positiveInt', {
-            field: t('device.my.requestCertificates.energy'),
-          })
-        )
+        .number()
+        .min(1)
         .required()
         .label(t('device.my.requestCertificates.energy')),
     }),
