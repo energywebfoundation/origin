@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTransactionPendingStore } from '../../../context';
 import { CertificateActionContentProps } from './CertificateActionContent';
 
 type EnergyAmounts<Id> = {
@@ -16,6 +17,7 @@ export const useCertificateActionContentEffects = <Id>(
   const { t } = useTranslation();
   const [editMode, setEditMode] = useState(false);
   const [energyAmounts, setEnergyAmounts] = useState<EnergyAmounts<Id>[]>([]);
+  const txPending = useTransactionPendingStore();
 
   const addOrRemoveEnergyOnCheck = (
     ids: Id[],
@@ -89,6 +91,7 @@ export const useCertificateActionContentEffects = <Id>(
     (total, current) => (total += parseInt(current.amount)),
     0
   );
+  const loadingText = t('certificate.inbox.transactionInProgress');
 
   useEffect(() => {
     if (setTotalAmount) {
@@ -106,5 +109,7 @@ export const useCertificateActionContentEffects = <Id>(
     handleItemEnergyAmountChange,
     handleSubmit,
     bulkActionsRestrictionsText,
+    loading: txPending,
+    loadingText,
   };
 };

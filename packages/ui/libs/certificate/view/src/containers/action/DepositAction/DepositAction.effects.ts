@@ -6,6 +6,7 @@ import {
   useDepositCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
 import { useDepositActionLogic } from '@energyweb/origin-ui-certificate-logic';
+import { useTransactionPendingDispatch } from '../../../context';
 
 export const useDepositActionEffects = (
   selectedIds: CertificateDTO['id'][],
@@ -14,8 +15,12 @@ export const useDepositActionEffects = (
   const blockchainCertificates = useCachedBlockchainCertificates();
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
+  const setTxPending = useTransactionPendingDispatch();
 
-  const { depositHandler, isLoading } = useDepositCertificateHandler(resetIds);
+  const { depositHandler, isLoading } = useDepositCertificateHandler(
+    resetIds,
+    setTxPending
+  );
 
   const actionLogic = useDepositActionLogic({
     selectedIds,

@@ -1,4 +1,10 @@
-import { Box, Button, Paper, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { SelectedItem, SelectedItemProps } from '../SelectedItem';
 import { useCertificateActionContentEffects } from './CertificateActionContent.effects';
@@ -42,6 +48,8 @@ export const CertificateActionContent: TCertificateActionContent = ({
     bulkActionsRestrictionsText,
     editMode,
     setEditMode,
+    loading,
+    loadingText,
   } = useCertificateActionContentEffects(
     selectedIds,
     selectedItems,
@@ -81,13 +89,23 @@ export const CertificateActionContent: TCertificateActionContent = ({
           selectedIds.length === 0 ||
           selectedIds.length > 1 ||
           buttonDisabled ||
-          editMode
+          editMode ||
+          loading
         }
         color="primary"
         variant="contained"
         onClick={handleSubmit}
       >
-        {`${buttonText} ${selectedIds.length} Certificate(s)`}
+        {!loading ? (
+          `${buttonText} ${selectedIds.length} Certificate(s)`
+        ) : (
+          <>
+            {loadingText}
+            <Box ml={2}>
+              <CircularProgress size={20} />
+            </Box>
+          </>
+        )}
       </Button>
       {selectedIds.length > 1 && (
         <Box mt={2}>

@@ -8,13 +8,15 @@ import {
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import { BigNumber } from 'ethers';
+import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useGetBlockchainCertificateHandler } from '../fetching';
 
 export const useBlockchainTransferCertificateHandler = (
   receiverAddress: string,
-  resetList: () => void
+  resetList: () => void,
+  setTxPending: Dispatch<SetStateAction<boolean>>
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -37,16 +39,19 @@ export const useBlockchainTransferCertificateHandler = (
         receiverAddress,
         formattedAmount
       );
+      setTxPending(true);
       const receipt = await transaction.wait();
       if (receipt.status === 0) {
         throw new Error('Transaction failed');
+      } else {
+        setTxPending(false);
+        showNotification(
+          t('certificate.blockchainInbox.notifications.transferSuccess'),
+          NotificationTypeEnum.Success
+        );
+        queryClient.resetQueries(blockchainCertificatesQueryKey);
+        resetList();
       }
-      showNotification(
-        t('certificate.blockchainInbox.notifications.transferSuccess'),
-        NotificationTypeEnum.Success
-      );
-      queryClient.resetQueries(blockchainCertificatesQueryKey);
-      resetList();
     } catch (error) {
       showNotification(
         t('certificate.blockchainInbox.notifications.transferError'),
