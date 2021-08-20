@@ -40,9 +40,11 @@ export const usePendingInvitationModalHandlers = (
             NotificationTypeEnum.Success
           );
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('user.modals.pendingInvitation.acceptError'),
+            `${t('user.modals.pendingInvitation.acceptError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },
@@ -64,9 +66,11 @@ export const usePendingInvitationModalHandlers = (
             NotificationTypeEnum.Success
           );
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('user.modals.pendingInvitation.declineError'),
+            `${t('user.modals.pendingInvitation.declineError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

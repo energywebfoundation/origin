@@ -25,10 +25,11 @@ export const useApiHandlersForPendingRequests = () => {
       );
       queryClient.invalidateQueries(certificationRequestsKey);
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (error: any) => {
       showNotification(
-        t('certificate.pending.notifications.approveError'),
+        `${t('certificate.pending.notifications.approveError')}:
+        ${error?.response?.data?.message || ''}
+        `,
         NotificationTypeEnum.Error
       );
     },
@@ -42,10 +43,11 @@ export const useApiHandlersForPendingRequests = () => {
       );
       queryClient.invalidateQueries(certificationRequestsKey);
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (error: any) => {
       showNotification(
-        t('organization.invitations.notifications.revokeError'),
+        `${t('organization.invitations.notifications.revokeError')}:
+        ${error?.response?.data?.message || ''}
+        `,
         NotificationTypeEnum.Error
       );
     },

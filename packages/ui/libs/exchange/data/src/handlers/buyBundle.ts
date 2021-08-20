@@ -46,9 +46,11 @@ export const useBuyBundleHandler = (
             NotificationTypeEnum.Success
           );
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('exchange.allBundles.notifications.bundleBuyError'),
+            `${t('exchange.allBundles.notifications.bundleBuyError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

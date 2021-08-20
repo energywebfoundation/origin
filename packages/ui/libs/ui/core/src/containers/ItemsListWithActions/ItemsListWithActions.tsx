@@ -18,6 +18,7 @@ export const ItemsListWithActions: TItemsListWithActions = ({
   actionsGridProps,
   emptyListComponent,
   actionsTabsProps,
+  disabled = false,
 }) => {
   const {
     allSelected,
@@ -38,6 +39,7 @@ export const ItemsListWithActions: TItemsListWithActions = ({
           selectAllHandler={selectAllHandler}
           listContainers={listContainers}
           checkboxes={checkboxes}
+          disabled={disabled}
           pagination={pagination}
           pageSize={pageSize}
           paginationProps={paginationProps}

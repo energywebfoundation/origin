@@ -8,6 +8,7 @@ import {
 import { useBlockchainTransferActionLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTransactionPendingDispatch } from '../../../context';
 
 export const useBlockchainTransferActionEffects = (
   selectedIds: CertificateDTO['id'][],
@@ -25,9 +26,14 @@ export const useBlockchainTransferActionEffects = (
   const blockchainCertificates = useCachedBlockchainCertificates();
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
+  const setTxPending = useTransactionPendingDispatch();
 
   const { transferHandler, isLoading } =
-    useBlockchainTransferCertificateHandler(recipientAddress, resetIds);
+    useBlockchainTransferCertificateHandler(
+      recipientAddress,
+      resetIds,
+      setTxPending
+    );
 
   const actionLogic = useBlockchainTransferActionLogic({
     selectedIds,

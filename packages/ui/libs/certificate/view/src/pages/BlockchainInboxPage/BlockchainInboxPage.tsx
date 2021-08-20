@@ -12,6 +12,7 @@ const Component: FC = () => {
     noCertificatesText,
     canAccessPage,
     requirementsProps,
+    txPending,
   } = useBlockchainInboxPageEffects();
 
   if (isLoading) return <CircularProgress />;
@@ -23,6 +24,7 @@ const Component: FC = () => {
   return (
     <ItemsListWithActions
       emptyListComponent={<Typography>{noCertificatesText}</Typography>}
+      disabled={txPending}
       {...listProps}
     />
   );

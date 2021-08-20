@@ -62,10 +62,11 @@ export const useReceivedInvitationsActions = (
           );
           openRoleChangedModal();
         },
-        onError: (error) => {
-          console.log(error);
+        onError: (error: any) => {
           showNotification(
-            t('organization.invitations.notifications.acceptedFailure'),
+            `${t('organization.invitations.notifications.acceptedFailure')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },
@@ -85,10 +86,11 @@ export const useReceivedInvitationsActions = (
             NotificationTypeEnum.Success
           );
         },
-        onError: (error) => {
-          console.log(error);
+        onError: (error: any) => {
           showNotification(
-            t('organization.invitations.notifications.rejectedFailure'),
+            `${t('organization.invitations.notifications.rejectedFailure')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

@@ -21,6 +21,7 @@ export interface ListItemsContainerProps<ContainerId, ItemId> {
   checkboxes?: boolean;
   containerListItemProps?: ListItemProps;
   itemListItemProps?: ListItemProps;
+  disabled?: boolean;
 }
 
 type TListItemsContainer = <ContainerId, ItemId>(
@@ -36,6 +37,7 @@ export const ListItemsContainer: TListItemsContainer = ({
   checkboxes,
   containerListItemProps,
   itemListItemProps,
+  disabled = false,
 }) => {
   const classes = useStyles();
   return (
@@ -47,6 +49,7 @@ export const ListItemsContainer: TListItemsContainer = ({
               classes={{ root: classes.checkbox }}
               color="primary"
               checked={isChecked}
+              disabled={disabled}
               onChange={() => handleContainerCheck(id)}
             />
           </ListItemIcon>
@@ -58,6 +61,7 @@ export const ListItemsContainer: TListItemsContainer = ({
           <ListItemComponent
             key={`container-${id}-item-${item.id}`}
             checkboxes={checkboxes}
+            disabled={disabled}
             listItemProps={itemListItemProps}
             {...item}
           />

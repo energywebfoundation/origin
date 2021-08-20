@@ -55,10 +55,11 @@ export const useApiUpdateUserAccountData = () => {
           queryClient.resetQueries(userQueryKey);
           resetForm();
         },
-        onError: (error) => {
-          console.error(error);
+        onError: (error: any) => {
           showNotification(
-            t('user.profile.notifications.userInfoUpdateError'),
+            `${t('user.profile.notifications.userInfoUpdateError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

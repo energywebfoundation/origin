@@ -46,9 +46,11 @@ export const useWithdrawCertificateHandler = (
           queryClient.invalidateQueries(exchangeCertificatesQueryKey);
           resetList();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('certificate.exchangeInbox.notifications.withdrawError'),
+            `${t('certificate.exchangeInbox.notifications.withdrawError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

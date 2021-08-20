@@ -30,9 +30,11 @@ export const useApiCancelOrderHandler = (orderSide: string) => {
           queryClient.invalidateQueries(ordersQueryKey);
           closeModal();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('exchange.myOrders.notifications.orderRemoveError'),
+            `${t('exchange.myOrders.notifications.orderRemoveError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
           closeModal();

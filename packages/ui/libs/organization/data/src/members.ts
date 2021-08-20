@@ -54,10 +54,11 @@ export const useOrganizationMemberRemove = () => {
           );
           queryClient.invalidateQueries(orgMembersKey);
         },
-        onError: (error) => {
-          console.error(error);
+        onError: (error: any) => {
           showNotification(
-            t('organization.members.notifications.removeError'),
+            `${t('organization.members.notifications.removeError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },
@@ -96,18 +97,12 @@ export const useOrganizationMemberRoleUpdate = () => {
           queryClient.invalidateQueries(membersKey);
         },
         onError: (error: any) => {
-          console.error(error);
-          if (error?.response?.data?.message) {
-            showNotification(
-              error?.response?.data?.message,
-              NotificationTypeEnum.Error
-            );
-          } else {
-            showNotification(
-              t('organization.members.notifications.roleChangeError'),
-              NotificationTypeEnum.Success
-            );
-          }
+          showNotification(
+            `${t('organization.members.notifications.roleChangeError')}:
+            ${error?.response?.data?.message || ''}
+            `,
+            NotificationTypeEnum.Error
+          );
         },
       }
     );

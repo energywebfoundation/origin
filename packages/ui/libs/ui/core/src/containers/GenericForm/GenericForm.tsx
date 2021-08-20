@@ -28,6 +28,7 @@ export const GenericForm: TGenericForm = memo(
     buttonDisabled,
     validationMode,
     loading,
+    acceptInitialValues,
   }) => {
     const {
       control,
@@ -45,6 +46,7 @@ export const GenericForm: TGenericForm = memo(
       onWatchHandler,
       buttonDisabled,
       validationMode,
+      acceptInitialValues,
     });
 
     return (

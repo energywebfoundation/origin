@@ -11,6 +11,7 @@ import {
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import { Dayjs } from 'dayjs';
 import { BigNumber } from 'ethers';
+import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useGetBlockchainCertificateHandler } from '../fetching';
@@ -20,7 +21,8 @@ export const useRetireCertificateHandler = (
   resetList: () => void,
   startDate: Dayjs,
   endDate: Dayjs,
-  purpose: string
+  purpose: string,
+  setTxPending: Dispatch<SetStateAction<boolean>>
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -50,16 +52,19 @@ export const useRetireCertificateHandler = (
         claimData,
         formattedAmount
       );
+      setTxPending(true);
       const receipt = await transaction.wait();
       if (receipt.status === 0) {
         throw new Error('Transaction failed');
+      } else {
+        setTxPending(false);
+        showNotification(
+          t('certificate.blockchainInbox.notifications.retireSuccess'),
+          NotificationTypeEnum.Success
+        );
+        queryClient.resetQueries(blockchainCertificatesQueryKey);
+        resetList();
       }
-      showNotification(
-        t('certificate.blockchainInbox.notifications.retireSuccess'),
-        NotificationTypeEnum.Success
-      );
-      queryClient.resetQueries(blockchainCertificatesQueryKey);
-      resetList();
     } catch (error) {
       showNotification(
         t('certificate.blockchainInbox.notifications.retireError'),

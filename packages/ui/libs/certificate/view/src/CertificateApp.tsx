@@ -1,6 +1,7 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { TransactionPendingProvider } from './context';
 import {
   BlockchainInboxPage,
   ExchangeInboxPage,
@@ -15,7 +16,14 @@ export const CertificateApp: FC = () => {
   return (
     <Routes>
       <Route path="exchange-inbox" element={<ExchangeInboxPage />} />
-      <Route path="blockchain-inbox" element={<BlockchainInboxPage />} />
+      <Route
+        path="blockchain-inbox"
+        element={
+          <TransactionPendingProvider>
+            <BlockchainInboxPage />
+          </TransactionPendingProvider>
+        }
+      />
       <Route path="claims-report" element={<ClaimsReportPage />} />
       <Route path="requests" element={<RequestsPage />} />
       <Route path="pending" element={<PendingPage />} />

@@ -93,9 +93,10 @@ export const useApiDeviceImportHandler = (
               handleModalClose();
             },
             onError: (error: any) => {
-              console.error(error);
               showNotification(
-                t('device.import.notifications.importError'),
+                `${t('device.import.notifications.importError')}:
+                ${error?.response?.data?.message || ''}
+                `,
                 NotificationTypeEnum.Error
               );
             },
@@ -103,9 +104,10 @@ export const useApiDeviceImportHandler = (
         );
       })
       .catch((error: AxiosError) => {
-        console.error(error);
         showNotification(
-          t('device.import.notifications.importError'),
+          `${t('device.import.notifications.importError')}:
+          ${error?.response?.data?.message || ''}
+          `,
           NotificationTypeEnum.Error
         );
       });

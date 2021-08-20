@@ -32,10 +32,12 @@ export const useAdminUpdateUser = (id: string) => {
           );
           navigate('/admin/users');
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('admin.updateUser.notifications.userUpdateError'),
-            NotificationTypeEnum.Success
+            `${t('admin.updateUser.notifications.userUpdateError')}:
+            ${error?.response?.data?.message || ''}
+            `,
+            NotificationTypeEnum.Error
           );
         },
       }

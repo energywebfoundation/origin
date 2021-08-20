@@ -49,9 +49,11 @@ export const useCreateBundleHandler = (
           queryClient.invalidateQueries(exchangeCertificatesQueryKey);
           resetList();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('exchange.createBundle.notifications.createError'),
+            `${t('exchange.createBundle.notifications.createError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

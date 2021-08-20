@@ -38,12 +38,11 @@ export const useCreateBeneficiaryHandler = () => {
           );
           reset();
         },
-        onError: (error) => {
-          console.log(error);
+        onError: (error: any) => {
           showNotification(
-            t(
+            `${t(
               'organization.createBeneficiary.notifications.createBeneficiaryError'
-            ),
+            )}: ${error?.response?.data?.message || ''}`,
             NotificationTypeEnum.Error
           );
         },

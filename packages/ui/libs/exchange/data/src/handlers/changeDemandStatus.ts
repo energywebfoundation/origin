@@ -32,10 +32,12 @@ export const useApiChangeDemandStatus = (closeModal: () => void) => {
               NotificationTypeEnum.Success
             );
           },
-          onError: () => {
+          onError: (error: any) => {
             closeModal();
             showNotification(
-              t('exchange.myOrders.notifications.demandPausedError'),
+              `${t('exchange.myOrders.notifications.demandPausedError')}:
+              ${error?.response?.data?.message || ''}
+              `,
               NotificationTypeEnum.Error
             );
           },
@@ -53,10 +55,12 @@ export const useApiChangeDemandStatus = (closeModal: () => void) => {
               NotificationTypeEnum.Success
             );
           },
-          onError: () => {
+          onError: (error: any) => {
             closeModal();
             showNotification(
-              t('exchange.myOrders.notifications.demandResumedError'),
+              `${t('exchange.myOrders.notifications.demandResumedError')}:
+              ${error?.response?.data?.message || ''}
+              `,
               NotificationTypeEnum.Error
             );
           },

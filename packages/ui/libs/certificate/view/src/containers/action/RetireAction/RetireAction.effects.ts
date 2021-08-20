@@ -14,6 +14,7 @@ import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
+import { useTransactionPendingDispatch } from '../../../context';
 
 export const useRetireActionEffects = (
   selectedIds: CertificateDTO['id'][],
@@ -22,6 +23,7 @@ export const useRetireActionEffects = (
   const blockchainCertificates = useCachedBlockchainCertificates();
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
+  const setTxPending = useTransactionPendingDispatch();
 
   const { platformBeneficiaries, isLoading: areBeneficiariesLoading } =
     usePlatformBeneficiaries();
@@ -52,7 +54,8 @@ export const useRetireActionEffects = (
       resetIds,
       startDate,
       endDate,
-      purpose
+      purpose,
+      setTxPending
     );
 
   const actionLogic = useRetireActionLogic({

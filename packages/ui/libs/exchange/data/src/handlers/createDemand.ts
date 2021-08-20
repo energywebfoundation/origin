@@ -72,9 +72,11 @@ export const useApiCreateDemandHandler = (
           );
           reset();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('exchange.viewMarket.notifications.createDemandError'),
+            `${t('exchange.viewMarket.notifications.createDemandError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

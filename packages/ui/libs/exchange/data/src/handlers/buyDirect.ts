@@ -41,9 +41,11 @@ export const useApiBuyDirectHandler = (
           );
           closeModal();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('exchange.viewMarket.notifications.buyDirectError'),
+            `${t('exchange.viewMarket.notifications.buyDirectError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
           closeModal();

@@ -72,9 +72,11 @@ export const useApiCreateBidHandler = (
           );
           resetForm();
         },
-        onError: () => {
+        onError: (error: any) => {
           showNotification(
-            t('exchange.viewMarket.notifications.createBidError'),
+            `${t('exchange.viewMarket.notifications.createBidError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

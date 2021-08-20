@@ -28,10 +28,11 @@ export const useOrganizationInviteHandler = () => {
         NotificationTypeEnum.Success
       );
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (error: any) => {
       showNotification(
-        t('organization.invite.notifications.unableToInvite'),
+        `${t('organization.invite.notifications.unableToInvite')}:
+        ${error?.response?.data?.message || ''}
+        `,
         NotificationTypeEnum.Error
       );
     },

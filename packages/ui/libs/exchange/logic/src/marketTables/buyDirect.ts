@@ -24,6 +24,8 @@ export const useBuyDirectFormLogic: TUseBuyDirectFormLogic = (
     formTitle: t('exchange.viewMarket.modals.buyDirect.title'),
     formTitleVariant: 'h5',
     initialValues: initialFormData,
+    validationMode: 'onChange',
+    acceptInitialValues: true,
     fields: [
       {
         name: 'volume',
@@ -41,7 +43,11 @@ export const useBuyDirectFormLogic: TUseBuyDirectFormLogic = (
     ],
     buttonText: t('exchange.viewMarket.modals.buyDirect.buy'),
     validationSchema: yup.object({
-      volume: yup.string().label(t('exchange.viewMarket.volume')),
+      volume: yup
+        .number()
+        .min(1)
+        .max(Number(PowerFormatter.format(parseInt(ask?.volume))))
+        .label(t('exchange.viewMarket.volume')),
     }),
   };
 };

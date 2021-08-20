@@ -55,10 +55,12 @@ export const useApiUpdateDemandHandler = (
             NotificationTypeEnum.Success
           );
         },
-        onError: () => {
+        onError: (error: any) => {
           closeModal();
           showNotification(
-            t('exchange.myOrders.notifications.demandUpdateError'),
+            `${t('exchange.myOrders.notifications.demandUpdateError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

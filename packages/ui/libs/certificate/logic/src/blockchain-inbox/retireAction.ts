@@ -35,7 +35,7 @@ export const useBeneficiaryFormLogic: TUseBeneficiaryFormLogic = ({
   const { t } = useTranslation();
   return {
     initialValues: {
-      beneficiary: null,
+      beneficiary: undefined,
       startDate: '',
       endDate: '',
       purpose: '',

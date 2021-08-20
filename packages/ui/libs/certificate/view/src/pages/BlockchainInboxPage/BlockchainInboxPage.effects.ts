@@ -17,9 +17,11 @@ import {
   RetireAction,
   BlockchainTransferAction,
 } from '../../containers';
+import { useTransactionPendingStore } from '../../context';
 
 export const useBlockchainInboxPageEffects = () => {
   const { t } = useTranslation();
+  const txPending = useTransactionPendingStore();
 
   const {
     user,
@@ -76,5 +78,6 @@ export const useBlockchainInboxPageEffects = () => {
     noCertificatesText,
     canAccessPage,
     requirementsProps,
+    txPending,
   };
 };

@@ -74,6 +74,7 @@ export interface GenericFormProps<FormValuesType> {
   onWatchHandler?: (watchedValues: unknown[]) => void;
   validationMode?: keyof ValidationMode;
   loading?: boolean;
+  acceptInitialValues?: boolean;
 }
 
 export type TGenericForm = <FormValuesType>(

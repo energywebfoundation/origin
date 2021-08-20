@@ -47,10 +47,11 @@ export const useApiUpdateUserAccountPassword = () => {
           );
           logout();
         },
-        onError: (error) => {
-          console.error(error);
+        onError: (error: any) => {
           showNotification(
-            t('user.profile.notifications.userPasswordUpdateError'),
+            `${t('user.profile.notifications.userPasswordUpdateError')}:
+            ${error?.response?.data?.message || ''}
+            `,
             NotificationTypeEnum.Error
           );
         },

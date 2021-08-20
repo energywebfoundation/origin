@@ -26,6 +26,7 @@ export interface GenericItemsListProps<ContainerId, ItemId> {
   pageSize?: number;
   paginationProps?: PaginationProps;
   emptyListComponent?: ReactNode;
+  disabled?: boolean;
 }
 
 export type TGenericItemsList = <ContainerId, ItemId>(
@@ -44,6 +45,7 @@ export const GenericItemsList: TGenericItemsList = ({
   pageSize = 5,
   paginationProps,
   emptyListComponent,
+  disabled = false,
 }) => {
   const classes = useStyles();
   const [page, setPage] = useState(1);
@@ -77,6 +79,7 @@ export const GenericItemsList: TGenericItemsList = ({
             color="primary"
             checked={allSelected}
             onChange={selectAllHandler}
+            disabled={disabled}
           />
           <Typography>{selectAllText || ''}</Typography>
         </div>
@@ -88,6 +91,7 @@ export const GenericItemsList: TGenericItemsList = ({
             <ListItemsContainer
               key={`container-${container.id}`}
               checkboxes={checkboxes}
+              disabled={disabled}
               {...container}
             />
           ))}

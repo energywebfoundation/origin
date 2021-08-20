@@ -9,6 +9,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import { BigNumber } from 'ethers';
+import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import {
@@ -16,7 +17,10 @@ import {
   useExchangeAddress,
 } from '../fetching';
 
-export const useDepositCertificateHandler = (resetList: () => void) => {
+export const useDepositCertificateHandler = (
+  resetList: () => void,
+  setTxPending: Dispatch<SetStateAction<boolean>>
+) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const blockchainCertificatesQueryKey =
@@ -52,16 +56,19 @@ export const useDepositCertificateHandler = (resetList: () => void) => {
         account.address,
         formattedAmount
       );
+      setTxPending(true);
       const receipt = await transaction.wait();
       if (receipt.status === 0) {
         throw new Error('Transaction failed');
+      } else {
+        setTxPending(false);
+        showNotification(
+          t('certificate.blockchainInbox.notifications.depositSuccess'),
+          NotificationTypeEnum.Success
+        );
+        queryClient.resetQueries(blockchainCertificatesQueryKey);
+        resetList();
       }
-      showNotification(
-        t('certificate.blockchainInbox.notifications.depositSuccess'),
-        NotificationTypeEnum.Success
-      );
-      queryClient.resetQueries(blockchainCertificatesQueryKey);
-      resetList();
     } catch (error) {
       showNotification(
         t('certificate.blockchainInbox.notifications.depositError'),

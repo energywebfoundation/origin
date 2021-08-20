@@ -10,12 +10,13 @@ export const useApiBidsAndAsks = () => {
   const bids = orders?.filter(
     (order) =>
       order.side === OrderSide.Bid &&
-      order.status === OrderStatus.Active &&
+      (order.status === OrderStatus.Active || OrderStatus.PartiallyFilled) &&
       !(order as any).demandId
   );
   const asks = orders?.filter(
     (order) =>
-      order.side === OrderSide.Ask && order.status === OrderStatus.Active
+      order.side === OrderSide.Ask &&
+      (order.status === OrderStatus.Active || OrderStatus.PartiallyFilled)
   );
 
   return { asks, bids, isLoading };
