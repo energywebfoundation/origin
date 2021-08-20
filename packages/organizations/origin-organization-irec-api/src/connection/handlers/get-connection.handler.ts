@@ -1,7 +1,9 @@
+import { Repository } from 'typeorm';
+import { BadRequestException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { Repository } from 'typeorm';
 import { Connection } from '../connection.entity';
 import { ConnectionDTO } from '../dto';
 import { RegistrationService } from '../../registration';
@@ -16,6 +18,9 @@ export class GetConnectionHandler implements ICommandHandler<GetConnectionComman
     ) {}
 
     async execute({ owner }: GetConnectionCommand): Promise<ConnectionDTO> {
+        if (!owner) {
+            throw new BadRequestException('Get IREC connection: owner is not specified');
+        }
         const ownerId =
             typeof owner === 'string' || typeof owner === 'number'
                 ? owner
