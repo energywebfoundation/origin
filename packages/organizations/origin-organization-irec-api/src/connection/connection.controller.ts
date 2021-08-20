@@ -15,7 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateConnectionDTO } from '../irec';
-import { ConnectionDTO } from './dto';
+import { ConnectionDTO, ShortConnectionDTO } from './dto';
 import { CreateConnectionCommand, GetConnectionCommand } from './commands';
 
 @ApiTags('irec-connection')
@@ -41,14 +41,23 @@ export class ConnectionController {
     }
 
     @Get()
-    @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.Admin)
+    @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [ConnectionDTO],
+        type: [ShortConnectionDTO],
         description: 'Get a IREC connection info'
     })
-    public async getMyConnection(@UserDecorator() user: ILoggedInUser): Promise<ConnectionDTO> {
-        return this.commandBus.execute(new GetConnectionCommand(user));
+    public async getMyConnection(
+        @UserDecorator() user: ILoggedInUser
+    ): Promise<ShortConnectionDTO> {
+        const connectionData: ConnectionDTO = await this.commandBus.execute(
+            new GetConnectionCommand(user)
+        );
+        return connectionData
+            ? {
+                  expiryDate: connectionData.expiryDate,
+                  registration: connectionData.registration
+              }
+            : null;
     }
 }

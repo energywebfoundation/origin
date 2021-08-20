@@ -6,10 +6,9 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 
 import { expect } from 'chai';
 import supertest from 'supertest';
+import { IRECAccountType, NewRegistrationDTO } from '../src';
 import { bootstrapTestInstance, TestUser } from './test.app';
-import { IRECAccountType } from '../src/registration/account-type.enum';
 import { request } from './request';
-import { NewRegistrationDTO } from '../src/registration/new-registration.dto';
 
 describe('I-REC Registration tests', () => {
     let app: INestApplication;
@@ -69,6 +68,12 @@ describe('I-REC Registration tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
 
+        const { body: connection0 } = await test
+            .get('/irec/connection')
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+        expect(connection0).to.deep.equal({});
+
         const { body: connection } = await test
             .post('/irec/connection')
             .send({
@@ -79,19 +84,18 @@ describe('I-REC Registration tests', () => {
             })
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
-
         expect(connection.registration.id).to.equal(registration.id);
         expect(connection.accessToken).to.be.a('string');
         expect(connection.refreshToken).to.be.a('string');
         expect(connection.expiryDate).to.be.a('string');
+
         const { body: connection2 } = await test
             .get('/irec/connection')
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.OK);
-
-        expect(connection.accessToken).to.equal(connection2.accessToken);
-        expect(connection.refreshToken).to.equal(connection2.refreshToken);
-        expect(String(connection.expiryDate)).to.equal(String(connection2.expiryDate));
-        expect(connection.registration.id).to.equal(connection2.registration.id);
+        expect(connection2.accessToken).to.be.undefined;
+        expect(connection2.refreshToken).to.be.undefined;
+        expect(String(connection2.expiryDate)).to.equal(String(connection.expiryDate));
+        expect(connection2.registration.id).to.equal(connection.registration.id);
     });
 });
