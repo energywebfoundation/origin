@@ -35,6 +35,7 @@ export interface ItemsListWithActionsProps<ContainerId, ItemId> {
   actionsGridProps?: GridProps;
   emptyListComponent?: ReactNode;
   actionsTabsProps?: TabsProps;
+  disabled?: boolean;
 }
 
 export type TItemsListWithActions = <ContainerId, ItemId>(
