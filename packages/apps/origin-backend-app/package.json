@@ -75,7 +75,7 @@
         "ts-node": "9.1.1",
         "ganache-core": "2.13.2",
         "superagent-use": "0.1.0",
-        "supertest": "6.1.5",
+        "supertest": "6.1.6",
         "supertest-capture-error": "1.0.0"
     },
     "files": [
