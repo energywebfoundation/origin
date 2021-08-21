@@ -76,7 +76,7 @@
         "@types/dotenv": "6.1.1",
         "@types/chai": "4.2.15",
         "chai": "4.3.0",
-        "@openzeppelin/contracts": "4.2.0",
+        "@openzeppelin/contracts": "4.3.0",
         "@openzeppelin/contracts-upgradeable": "4.2.0",
         "@openzeppelin/truffle-upgrades": "1.8.1",
         "shx": "0.3.3",
