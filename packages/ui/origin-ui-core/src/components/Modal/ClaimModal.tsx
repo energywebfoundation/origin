@@ -102,7 +102,7 @@ export function ClaimModal(props: IProps) {
             countryCode,
             periodStartDate,
             periodEndDate,
-            purpose: ''
+            purpose: 'GHG Accounting'
         };
 
         const action = isBulkClaim

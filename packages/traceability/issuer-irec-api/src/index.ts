@@ -12,7 +12,6 @@ import { CertificationRequestModule, IrecCertificationRequest } from './pods/cer
 
 export * from '@energyweb/issuer-api/dist/js/src/pods/blockchain';
 export * from '@energyweb/issuer-api/dist/js/src/pods/certification-request/certification-request.entity';
-export * from '@energyweb/issuer-api/dist/js/src/utils';
 export * from '@energyweb/issuer-api/dist/js/src/types';
 
 export { BlockchainPropertiesService } from '@energyweb/issuer-api/dist/js/src/pods/blockchain/blockchain-properties.service';

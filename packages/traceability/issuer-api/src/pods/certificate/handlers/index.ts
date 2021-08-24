@@ -13,6 +13,21 @@ import { SyncCertificateHandler } from './sync-certificate.handler';
 import { TransferCertificateHandler } from './transfer-certificate.handler';
 import { GetCertificatesWithLogsHandler } from './get-certificates-with-logs.handler';
 
+export {
+    BatchClaimCertificatesHandler,
+    BatchIssueCertificatesHandler,
+    BatchTransferCertificatesHandler,
+    CertificateCreatedHandler,
+    ClaimCertificateHandler,
+    GetAggregateCertifiedEnergyDeviceIdHandler,
+    GetAllCertificateEventsHandler,
+    GetAllCertificatesHandler,
+    GetCertificateHandler,
+    IssueCertificateHandler,
+    SyncCertificateHandler,
+    TransferCertificateHandler
+};
+
 export const CertificateHandlers = [
     BatchClaimCertificatesHandler,
     BatchIssueCertificatesHandler,

@@ -5,6 +5,7 @@ import {
     NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
+    SuccessResponseDTO,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
@@ -35,7 +36,6 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 
-import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
 import {
     CodeNameDTO,
@@ -49,7 +49,7 @@ import {
     DeviceState
 } from './dto';
 
-@ApiTags('device')
+@ApiTags('irec-device')
 @ApiBearerAuth('access-token')
 @Controller('/irec/device-registry')
 @UseInterceptors(NullOrUndefinedResultInterceptor, ClassSerializerInterceptor)

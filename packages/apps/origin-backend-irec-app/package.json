@@ -69,10 +69,10 @@
         "@types/cron": "1.7.3",
         "@nestjs/testing": "7.6.18",
         "ganache-core": "2.13.2",
-        "supertest": "6.1.5",
+        "supertest": "6.1.6",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.17.9",
-        "mocha": "9.0.3",
+        "@types/node": "14.17.11",
+        "mocha": "9.1.0",
         "@types/supertest": "2.0.11",
         "ts-node": "9.1.1"
     },

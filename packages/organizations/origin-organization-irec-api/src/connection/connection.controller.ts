@@ -27,7 +27,7 @@ export class ConnectionController {
 
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiBody({ type: CreateConnectionDTO })
     @ApiCreatedResponse({
         type: ConnectionDTO,
@@ -42,7 +42,7 @@ export class ConnectionController {
 
     @Get()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiResponse({
         status: HttpStatus.OK,
         type: [ConnectionDTO],

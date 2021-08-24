@@ -22,7 +22,7 @@ import { validate } from 'class-validator';
 import { FindConditions, Repository, FindManyOptions } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
-import { EmailConfirmationService } from '../email-confirmation/email-confirmation.service';
+import { EmailConfirmationService } from '../email-confirmation';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 import { UpdateUserDTO } from '../admin/dto/update-user.dto';
 
@@ -102,7 +102,11 @@ export class UserService {
     }
 
     async getPlatformAdmin() {
-        return this.findOne({ rights: Role.Admin });
+        const platformAdmin = await this.findOne({ rights: Role.Admin });
+        if (!platformAdmin || !platformAdmin.organization) {
+            throw new Error('Platform admin not found');
+        }
+        return platformAdmin;
     }
 
     async findByIds(

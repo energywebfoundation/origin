@@ -37,7 +37,7 @@ export function BlockchainInboxPage(): JSX.Element {
             countryCode: user?.organization?.country,
             periodStartDate: new Date().toISOString(),
             periodEndDate: new Date().toISOString(),
-            purpose: ''
+            purpose: 'GHG Accounting'
         });
     }, [user]);
 

@@ -43,14 +43,14 @@
         "pg": "8.7.1",
         "winston": "3.3.3",
         "winston-transport": "4.4.0",
-        "write-json-file": "4.3.0",
+        "write-json-file": "5.0.0",
         "yaeti": "1.0.2"
     },
     "devDependencies": {
         "typescript": "4.3.5",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.17.9",
-        "mocha": "9.0.3"
+        "@types/node": "14.17.11",
+        "mocha": "9.1.0"
     },
     "publishConfig": {
         "access": "public",

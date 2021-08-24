@@ -25,7 +25,7 @@ const config: ConnectionOptions = {
     entities,
     synchronize: false,
     migrationsRun: true,
-    migrations: ['migrations/*.ts'],
+    migrations: [`${__dirname}/migrations/*.js`],
     migrationsTableName: 'migrations_irec_issuer'
 };
 
