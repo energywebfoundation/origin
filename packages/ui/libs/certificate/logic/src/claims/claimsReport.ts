@@ -5,6 +5,7 @@ import {
   TFormatClaimsReportData,
   TFormatClaimsReportReturnData,
 } from './types';
+import { useNavigate } from 'react-router-dom';
 
 const formatClaimsReportData: TFormatClaimsReportData = ({
   devices,
@@ -50,6 +51,7 @@ export const useLogicClaimsReport: TUseLogicClaimsReport = ({
   loading,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   return {
     header: {
       fuelType: t('certificate.claimsReport.fuelType'),
@@ -70,5 +72,9 @@ export const useLogicClaimsReport: TUseLogicClaimsReport = ({
       claimedCertificates,
       allFuelTypes,
     }),
+    onRowClick: (id) => {
+      const certificateId = id.split(';')[0];
+      navigate(`/certificate/detail-view/${certificateId}`);
+    },
   };
 };
