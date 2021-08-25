@@ -11,6 +11,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface IUseOrganizationRegisterHandlerProps {
   openRoleChangedModal: () => void;
@@ -31,6 +32,7 @@ export const useOrganizationRegisterHandler = ({
 }: IUseOrganizationRegisterHandlerProps) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { mutate } = useOrganizationControllerRegister();
   const userKey = getUserControllerMeQueryKey();
@@ -45,6 +47,7 @@ export const useOrganizationRegisterHandler = ({
       { data: formattedValues },
       {
         onSuccess: () => {
+          navigate('/organization/my');
           showNotification(
             t('organization.register.notifications.registeredSuccess'),
             NotificationTypeEnum.Success

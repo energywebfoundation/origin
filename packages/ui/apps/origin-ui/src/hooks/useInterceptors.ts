@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-export const useAxiosInterceptors = () => {
+export const useAxiosDefaults = () => {
   const token = getAuthenticationToken();
 
   axios.defaults.baseURL = window.config.BACKEND_URL;

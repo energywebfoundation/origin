@@ -1,15 +1,15 @@
 import { TFunction } from 'i18next';
 import { TMenuSection } from '@energyweb/origin-ui-core';
 
-interface IGetAdminMenuFnArgs {
+export type TGetAdminMenuArgs = {
   t: TFunction;
   isOpen: boolean;
   showSection: boolean;
   showUsers: boolean;
   showClaims: boolean;
-}
+};
 
-type TUseAdminMenuFn = (args?: IGetAdminMenuFnArgs) => TMenuSection;
+type TUseAdminMenuFn = (args?: TGetAdminMenuArgs) => TMenuSection;
 
 export const getAdminMenu: TUseAdminMenuFn = ({
   t,

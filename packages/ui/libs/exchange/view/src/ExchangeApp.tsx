@@ -13,17 +13,46 @@ import {
   MyOrdersPage,
 } from './pages';
 
-export const ExchangeApp: FC = () => {
+export interface ExchangeAppProps {
+  routesConfig: {
+    showViewMarket: boolean;
+    showAllBundles: boolean;
+    showCreateBundle: boolean;
+    showMyTrades: boolean;
+    showSupply: boolean;
+    showMyBundles: boolean;
+    showMyOrders: boolean;
+  };
+}
+
+export const ExchangeApp: FC<ExchangeAppProps> = ({ routesConfig }) => {
+  const {
+    showViewMarket,
+    showAllBundles,
+    showCreateBundle,
+    showMyTrades,
+    showSupply,
+    showMyBundles,
+    showMyOrders,
+  } = routesConfig;
   return (
     <ExchangeModalsProvider>
       <Routes>
-        <Route path="/view-market" element={<ViewMarketPage />} />
-        <Route path="/all-bundles" element={<AllBundlesPage />} />
-        <Route path="/create-bundle" element={<CreateBundlePage />} />
-        <Route path="/my-bundles" element={<MyBundlesPage />} />
-        <Route path="/my-trades" element={<MyTradesPage />} />
-        <Route path="/supply" element={<SupplyPage />} />
-        <Route path="/my-orders" element={<MyOrdersPage />} />
+        {showViewMarket && (
+          <Route path="/view-market" element={<ViewMarketPage />} />
+        )}
+        {showAllBundles && (
+          <Route path="/all-bundles" element={<AllBundlesPage />} />
+        )}
+        {showCreateBundle && (
+          <Route path="/create-bundle" element={<CreateBundlePage />} />
+        )}
+        {showMyBundles && (
+          <Route path="/my-bundles" element={<MyBundlesPage />} />
+        )}
+        {showMyTrades && <Route path="/my-trades" element={<MyTradesPage />} />}
+        {showSupply && <Route path="/supply" element={<SupplyPage />} />}
+        {showMyOrders && <Route path="/my-orders" element={<MyOrdersPage />} />}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <ExchangeModals />

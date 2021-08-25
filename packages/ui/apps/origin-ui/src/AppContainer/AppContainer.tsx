@@ -1,12 +1,12 @@
 import React from 'react';
+import { NotificationsCenter } from '@energyweb/origin-ui-core';
 
 import App from '../components/App';
 import { OriginGlobalStyles } from '../components';
 import { useAppContainerEffects } from './AppContainer.effects';
-import { NotificationsCenter } from '@energyweb/origin-ui-core';
 
 export const AppContainer = () => {
-  const { topbarButtons, menuSections, user, isAuthenticated } =
+  const { topbarButtons, menuSections, user, isAuthenticated, routesConfig } =
     useAppContainerEffects();
 
   return (
@@ -18,6 +18,7 @@ export const AppContainer = () => {
         user={user}
         isAuthenticated={isAuthenticated}
         topbarButtons={topbarButtons}
+        routesConfig={routesConfig}
       />
     </>
   );

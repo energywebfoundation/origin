@@ -16,19 +16,29 @@ import { CertificateApp } from '@energyweb/origin-ui-certificate-view';
 import { ExchangeApp } from '@energyweb/origin-ui-exchange-view';
 import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
+import { RoutesConfig } from '../AppContainer';
 
 export interface AppProps {
   isAuthenticated: boolean;
   topbarButtons: TopBarButtonData[];
   user: UserDTO;
   menuSections: TMenuSection[];
+  routesConfig: RoutesConfig;
 }
 
 initializeI18N(getOriginLanguage());
 
 const App: FC<AppProps> = memo(
-  ({ isAuthenticated, user, menuSections, topbarButtons }) => {
+  ({ isAuthenticated, user, menuSections, topbarButtons, routesConfig }) => {
     const { orgData, userData } = useUserAndOrgData(user);
+    const {
+      accountRoutes,
+      adminRoutes,
+      orgRoutes,
+      certificateRoutes,
+      deviceRoutes,
+      exchangeRoutes,
+    } = routesConfig;
 
     return (
       <Routes>
@@ -44,13 +54,36 @@ const App: FC<AppProps> = memo(
             />
           }
         >
-          <Route path="device/*" element={<DeviceApp />} />
-          <Route path="exchange/*" element={<ExchangeApp />} />
-          <Route path="certificate/*" element={<CertificateApp />} />
-          <Route path="organization/*" element={<OrganizationApp />} />
-          <Route path="auth/*" element={<AuthApp />} />
-          <Route path="account/*" element={<AccountApp />} />
-          <Route path="admin/*" element={<AdminApp />} />
+          <Route
+            path="device/*"
+            element={<DeviceApp routesConfig={deviceRoutes} />}
+          />
+          <Route
+            path="exchange/*"
+            element={<ExchangeApp routesConfig={exchangeRoutes} />}
+          />
+          <Route
+            path="certificate/*"
+            element={<CertificateApp routesConfig={certificateRoutes} />}
+          />
+          <Route
+            path="organization/*"
+            element={<OrganizationApp routesConfig={orgRoutes} />}
+          />
+          <Route
+            path="account/*"
+            element={<AccountApp routesConfig={accountRoutes} />}
+          />
+          <Route
+            path="admin/*"
+            element={<AdminApp routesConfig={adminRoutes} />}
+          />
+          <Route
+            path="auth/*"
+            element={
+              <AuthApp routesConfig={{ showRegister: !isAuthenticated }} />
+            }
+          />
 
           <Route element={<Navigate to="device/all" />} />
         </Route>

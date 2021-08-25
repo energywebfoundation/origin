@@ -12,22 +12,48 @@ import {
   ApprovedPage,
 } from './pages';
 
-export const CertificateApp: FC = () => {
+export interface CertificateAppProps {
+  routesConfig: {
+    showExchangeInbox: boolean;
+    showBlockchainInbox: boolean;
+    showClaimsReport: boolean;
+    showRequests: boolean;
+    showPending: boolean;
+    showApproved: boolean;
+  };
+}
+
+export const CertificateApp: FC<CertificateAppProps> = ({ routesConfig }) => {
+  const {
+    showExchangeInbox,
+    showBlockchainInbox,
+    showClaimsReport,
+    showRequests,
+    showPending,
+    showApproved,
+  } = routesConfig;
+
   return (
     <Routes>
-      <Route path="exchange-inbox" element={<ExchangeInboxPage />} />
-      <Route
-        path="blockchain-inbox"
-        element={
-          <TransactionPendingProvider>
-            <BlockchainInboxPage />
-          </TransactionPendingProvider>
-        }
-      />
-      <Route path="claims-report" element={<ClaimsReportPage />} />
-      <Route path="requests" element={<RequestsPage />} />
-      <Route path="pending" element={<PendingPage />} />
-      <Route path="approved" element={<ApprovedPage />} />
+      {showExchangeInbox && (
+        <Route path="exchange-inbox" element={<ExchangeInboxPage />} />
+      )}
+      {showBlockchainInbox && (
+        <Route
+          path="blockchain-inbox"
+          element={
+            <TransactionPendingProvider>
+              <BlockchainInboxPage />
+            </TransactionPendingProvider>
+          }
+        />
+      )}
+      {showClaimsReport && (
+        <Route path="claims-report" element={<ClaimsReportPage />} />
+      )}
+      {showRequests && <Route path="requests" element={<RequestsPage />} />}
+      {showPending && <Route path="pending" element={<PendingPage />} />}
+      {showApproved && <Route path="approved" element={<ApprovedPage />} />}
       <Route path="detail-view/:id" element={<DetailViewPage />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>

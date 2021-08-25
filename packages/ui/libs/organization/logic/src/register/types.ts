@@ -26,7 +26,7 @@ export type SignatoryInfoFormValues = {
   signatoryCountry: FormSelectOption[];
   signatoryEmail: string;
   signatoryFullName: string;
-  signatoryTelephone: string;
+  signatoryPhoneNumber: string;
   signatoryZipCode: string;
 };
 

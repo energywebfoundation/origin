@@ -11,6 +11,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 export type IRecRegistrationInfoForm = {
   accountType: IRECAccountType;
@@ -55,6 +56,7 @@ export type IRecRegisterFormMergedType = IRecRegistrationInfoForm &
 export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
   const { mutate } = useRegistrationControllerRegister();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
   const iRecOrgKey = getRegistrationControllerGetRegistrationsQueryKey();
@@ -83,6 +85,7 @@ export const useIRecRegisterHandler = (openRegisteredModal: () => void) => {
       { data: formattedData },
       {
         onSuccess: () => {
+          navigate('/organization/my');
           openRegisteredModal();
           queryClient.invalidateQueries(iRecOrgKey);
         },
