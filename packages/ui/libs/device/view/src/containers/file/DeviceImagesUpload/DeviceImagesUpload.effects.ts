@@ -21,7 +21,6 @@ export const useDeviceImagesUploadEffects = () => {
   const onDeviceImageChange = (newValues: UploadedFile[]) =>
     setImageIds(newValues);
 
-  const buttonDisabled = imageIds.length < 1;
   const buttonText = t('general.buttons.submit');
 
   return {
@@ -30,7 +29,6 @@ export const useDeviceImagesUploadEffects = () => {
     uploadFunction,
     onDeviceImageChange,
     deviceImagesHeading,
-    buttonDisabled,
     buttonText,
   };
 };
