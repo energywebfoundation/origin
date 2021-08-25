@@ -1,2 +1,2 @@
 export * from './AppContainer';
-export { RoutesConfig } from './AppContainer.effects';
+export * from './AppContainer.effects';
