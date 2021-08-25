@@ -7,3 +7,5 @@ export * from './myDevices';
 export * from './pendingDevices';
 export * from './regionsConfig';
 export * from './userAndAccount';
+export * from './file';
+export * from './deviceImage';

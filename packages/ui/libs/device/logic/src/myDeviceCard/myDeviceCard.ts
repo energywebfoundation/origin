@@ -10,6 +10,7 @@ import { getMainFuelType, getEnergyTypeImage } from '../utils';
 export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
   device,
   allTypes,
+  imageUrl,
 }) => {
   const { t } = useTranslation();
 
@@ -45,8 +46,7 @@ export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
     };
 
   return {
-    // This is impossible to get properly due to way we handle files
-    imageUrl: '',
+    imageUrl,
     fallbackIcon: deviceIconRegular,
     cardHeaderProps,
     cardContentProps,

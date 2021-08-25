@@ -7,6 +7,7 @@ import {
 } from '@energyweb/origin-ui-certificate-data';
 import { useSellActionLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ChangeEvent, useState } from 'react';
+import { useTransactionPendingDispatch } from '../../../context';
 
 export const useSellActionEffects = (
   selectedIds: AccountAssetDTO['asset']['id'][],
@@ -14,6 +15,7 @@ export const useSellActionEffects = (
 ) => {
   const [totalAmount, setTotalAmount] = useState<number>();
   const [price, setPrice] = useState('');
+  const setTxPending = useTransactionPendingDispatch();
 
   const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPrice(event.target.value);
@@ -28,10 +30,11 @@ export const useSellActionEffects = (
     setPrice('');
   };
 
-  const sellHandler = useSellCertificateHandler(
+  const { sellHandler } = useSellCertificateHandler(
     price,
     exchangeCertificates,
-    resetAction
+    resetAction,
+    setTxPending
   );
 
   const actionLogic = useSellActionLogic({

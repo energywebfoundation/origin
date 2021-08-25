@@ -8,6 +8,7 @@ export const useStyles = makeStyles((theme) => ({
       opacity: 0.9,
       borderBottom: `1px solid ${theme.palette.primary.main}`,
       padding: theme.spacing(2),
+      fontFamily: theme.typography.fontFamily,
     },
   },
 }));
