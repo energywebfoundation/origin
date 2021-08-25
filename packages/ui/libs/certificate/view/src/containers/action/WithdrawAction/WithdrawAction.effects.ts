@@ -7,11 +7,13 @@ import {
   useWithdrawCertificateHandler,
 } from '@energyweb/origin-ui-certificate-data';
 import { useWithdrawActionLogic } from '@energyweb/origin-ui-certificate-logic';
+import { useTransactionPendingDispatch } from '../../../context';
 
 export const useWithdrawActionEffects = (
   selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
+  const setTxPending = useTransactionPendingDispatch();
   const exchangeCertificates = useCachedExchangeCertificates();
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
@@ -22,7 +24,8 @@ export const useWithdrawActionEffects = (
   const withdrawHandler = useWithdrawCertificateHandler(
     withdrawalAddress,
     exchangeCertificates,
-    resetIds
+    resetIds,
+    setTxPending
   );
 
   const actionLogic = useWithdrawActionLogic({

@@ -12,20 +12,23 @@ import {
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import dayjs from 'dayjs';
+import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useSellCertificateHandler = (
   price: string,
   exchangeCertificates: AccountAssetDTO[],
-  resetList: () => void
+  resetList: () => void,
+  setTxPending: Dispatch<SetStateAction<boolean>>
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const exchangeCertificatesQueryKey = getAccountBalanceControllerGetQueryKey();
   const { mutate } = useOrderControllerCreateAsk();
 
-  return <Id>(id: Id, amount: string) => {
+  const sellHandler = <Id>(id: Id, amount: string) => {
+    setTxPending(true);
     const assetId = exchangeCertificates.find(
       (cert) =>
         cert.asset.id === (id as unknown as AccountAssetDTO['asset']['id'])
@@ -58,7 +61,10 @@ export const useSellCertificateHandler = (
             NotificationTypeEnum.Error
           );
         },
+        onSettled: () => setTxPending(false),
       }
     );
   };
+
+  return { sellHandler };
 };

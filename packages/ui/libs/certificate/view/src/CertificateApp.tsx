@@ -36,7 +36,14 @@ export const CertificateApp: FC<CertificateAppProps> = ({ routesConfig }) => {
   return (
     <Routes>
       {showExchangeInbox && (
-        <Route path="exchange-inbox" element={<ExchangeInboxPage />} />
+        <Route
+          path="exchange-inbox"
+          element={
+            <TransactionPendingProvider>
+              <ExchangeInboxPage />
+            </TransactionPendingProvider>
+          }
+        />
       )}
       {showBlockchainInbox && (
         <Route

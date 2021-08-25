@@ -9,12 +9,14 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
+import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useExchangeTransferCertificateHandler = (
   receiverAddress: string,
-  resetList: () => void
+  resetList: () => void,
+  setTxPending: Dispatch<SetStateAction<boolean>>
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -22,6 +24,7 @@ export const useExchangeTransferCertificateHandler = (
   const { mutate } = useTransferControllerRequestSend();
 
   return <Id>(id: Id, amount: string) => {
+    setTxPending(true);
     const formattedAmount = PowerFormatter.getBaseValueFromValueInDisplayUnit(
       Number(amount)
     ).toString();
@@ -51,6 +54,7 @@ export const useExchangeTransferCertificateHandler = (
             NotificationTypeEnum.Error
           );
         },
+        onSettled: () => setTxPending(false),
       }
     );
   };
