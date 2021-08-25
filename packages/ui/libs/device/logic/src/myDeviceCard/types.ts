@@ -9,6 +9,7 @@ import { ComposedDevice } from '@energyweb/origin-ui-device-data';
 type TUseSpecsForMyDeviceCardArgs = {
   device: ComposedDevice;
   allTypes: CodeNameDTO[];
+  imageUrl: string;
 };
 
 export type TUseSpecsForMyDeviceCardReturnType = {
