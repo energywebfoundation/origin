@@ -3,11 +3,19 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router';
 import { SettingsPage, ProfilePage } from './pages';
 
-export const AccountApp: FC = () => {
+interface AccountAppProps {
+  routesConfig: {
+    showUserProfile: boolean;
+    showSettings: boolean;
+  };
+}
+
+export const AccountApp: FC<AccountAppProps> = ({ routesConfig }) => {
+  const { showUserProfile, showSettings } = routesConfig;
   return (
     <Routes>
-      <Route path="profile" element={<ProfilePage />} />
-      <Route path="settings" element={<SettingsPage />} />
+      {showUserProfile && <Route path="profile" element={<ProfilePage />} />}
+      {showSettings && <Route path="settings" element={<SettingsPage />} />}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

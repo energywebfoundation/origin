@@ -8,11 +8,13 @@ import {
 import { useExchangeTransferActionLogic } from '@energyweb/origin-ui-certificate-logic';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTransactionPendingDispatch } from '../../../context';
 
 export const useExchangeTransferActionPropsEffects = (
   selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
+  const setTxPending = useTransactionPendingDispatch();
   const { t } = useTranslation();
   const [recipientAddress, setRecipientAddress] = useState('');
 
@@ -28,7 +30,8 @@ export const useExchangeTransferActionPropsEffects = (
 
   const transferHandler = useExchangeTransferCertificateHandler(
     recipientAddress,
-    resetIds
+    resetIds,
+    setTxPending
   );
 
   const actionLogic = useExchangeTransferActionLogic({

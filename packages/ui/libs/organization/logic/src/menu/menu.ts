@@ -1,7 +1,7 @@
 import { TMenuSection, TModuleMenuItem } from '@energyweb/origin-ui-core';
 import { TFunction } from 'i18next';
 
-type TGetOrganizationMenuArgs = {
+export type TGetOrganizationMenuArgs = {
   t: TFunction;
   isOpen: boolean;
   showSection: boolean;

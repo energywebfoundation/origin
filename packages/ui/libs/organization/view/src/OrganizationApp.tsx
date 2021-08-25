@@ -14,18 +14,53 @@ import {
   CreateBeneficiaryPage,
 } from './pages';
 
-export const OrganizationApp: FC = () => {
+interface OrganizationAppProps {
+  routesConfig: {
+    showRegisterOrg: boolean;
+    showMyOrg: boolean;
+    showMembers: boolean;
+    showInvitations: boolean;
+    showInvite: boolean;
+    showAllOrgs: boolean;
+    showRegisterIRec: boolean;
+    showCreateBeneficiary: boolean;
+  };
+}
+
+export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
+  const {
+    showRegisterOrg,
+    showMyOrg,
+    showMembers,
+    showInvitations,
+    showInvite,
+    showAllOrgs,
+    showRegisterIRec,
+    showCreateBeneficiary,
+  } = routesConfig;
+
   return (
     <OrganizationModalsProvider>
       <Routes>
-        <Route path="my" element={<OrganizationViewPage />} />
-        <Route path="invitations" element={<InvitationsPage />} />
-        <Route path="invite" element={<InvitePage />} />
-        <Route path="members" element={<MembersPage />} />
-        <Route path="all" element={<AllOrganizationsPage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="register-irec" element={<RegisterIRecPage />} />
-        <Route path="create-beneficiary" element={<CreateBeneficiaryPage />} />
+        {showMyOrg && <Route path="my" element={<OrganizationViewPage />} />}
+        {showInvitations && (
+          <Route path="invitations" element={<InvitationsPage />} />
+        )}
+        {showInvite && <Route path="invite" element={<InvitePage />} />}
+        {showMembers && <Route path="members" element={<MembersPage />} />}
+        {showAllOrgs && <Route path="all" element={<AllOrganizationsPage />} />}
+        {showRegisterOrg && (
+          <Route path="register" element={<RegisterPage />} />
+        )}
+        {showRegisterIRec && (
+          <Route path="register-irec" element={<RegisterIRecPage />} />
+        )}
+        {showCreateBeneficiary && (
+          <Route
+            path="create-beneficiary"
+            element={<CreateBeneficiaryPage />}
+          />
+        )}
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>

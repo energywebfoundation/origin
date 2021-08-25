@@ -13,17 +13,44 @@ import {
   DeviceImportPage,
 } from './pages';
 
-export const DeviceApp: FC = () => {
+export interface DeviceAppProps {
+  routesConfig: {
+    showAllDevices: boolean;
+    showMapView: boolean;
+    showMyDevices: boolean;
+    showPendingDevices: boolean;
+    showRegisterDevice: boolean;
+    showDeviceImport: boolean;
+  };
+}
+
+export const DeviceApp: FC<DeviceAppProps> = ({ routesConfig }) => {
+  const {
+    showAllDevices,
+    showMapView,
+    showMyDevices,
+    showPendingDevices,
+    showRegisterDevice,
+    showDeviceImport,
+  } = routesConfig;
   return (
     <DeviceModalsProvider>
       <Routes>
-        <Route path="all" element={<AllDevicesPage />} />
-        <Route path="map" element={<MapViewPage />} />
-        <Route path="my" element={<MyDevicesPage />} />
-        <Route path="pending" element={<PendingPage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="detail-view/:id" element={<DetailViewPage />} />
-        <Route path="import" element={<DeviceImportPage />} />
+        {showAllDevices && <Route path="all" element={<AllDevicesPage />} />}
+        {showMapView && <Route path="map" element={<MapViewPage />} />}
+        {showMyDevices && <Route path="my" element={<MyDevicesPage />} />}
+        {showPendingDevices && (
+          <Route path="pending" element={<PendingPage />} />
+        )}
+        {showRegisterDevice && (
+          <Route path="register" element={<RegisterPage />} />
+        )}
+        {showAllDevices && (
+          <Route path="detail-view/:id" element={<DetailViewPage />} />
+        )}
+        {showDeviceImport && (
+          <Route path="import" element={<DeviceImportPage />} />
+        )}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <DeviceModalsCenter />

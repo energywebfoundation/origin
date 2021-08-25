@@ -24,7 +24,6 @@ export const DeviceImagesUpload: FC<DeviceImagesUploadProps> = ({
     uploadFunction,
     onDeviceImageChange,
     deviceImagesHeading,
-    buttonDisabled,
     buttonText,
   } = useDeviceImagesUploadEffects();
 
@@ -48,7 +47,7 @@ export const DeviceImagesUpload: FC<DeviceImagesUploadProps> = ({
           name="submit"
           size="large"
           variant="contained"
-          disabled={buttonDisabled || loading}
+          disabled={loading}
           onClick={() => submitHandler(values)}
         >
           {buttonText}

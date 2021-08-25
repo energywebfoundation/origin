@@ -1,6 +1,6 @@
 import { TMenuSection } from '@energyweb/origin-ui-core';
 
-type TGetExchangeMenuArgs = {
+export type TGetExchangeMenuArgs = {
   t: (tag: string) => string;
   isOpen: boolean;
   showSection: boolean;

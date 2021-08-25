@@ -9,13 +9,15 @@ import {
   NotificationTypeEnum,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
+import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useWithdrawCertificateHandler = (
   address: string,
   exchangeCertificates: AccountAssetDTO[],
-  resetList: () => void
+  resetList: () => void,
+  setTxPending: Dispatch<SetStateAction<boolean>>
 ) => {
   const { t } = useTranslation();
   const { mutate } = useTransferControllerRequestWithdrawal();
@@ -23,6 +25,7 @@ export const useWithdrawCertificateHandler = (
   const exchangeCertificatesQueryKey = getAccountBalanceControllerGetQueryKey();
 
   return <Id>(id: Id, amount: string) => {
+    setTxPending(true);
     const assetId = exchangeCertificates.find(
       (cert) =>
         cert.asset.id === (id as unknown as AccountAssetDTO['asset']['id'])
@@ -54,6 +57,7 @@ export const useWithdrawCertificateHandler = (
             NotificationTypeEnum.Error
           );
         },
+        onSettled: () => setTxPending(false),
       }
     );
   };

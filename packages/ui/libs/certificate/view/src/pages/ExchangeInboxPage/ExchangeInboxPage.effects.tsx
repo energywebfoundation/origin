@@ -17,9 +17,11 @@ import {
   WithdrawAction,
   ExchangeTransferAction,
 } from '../../containers';
+import { useTransactionPendingStore } from '../../context';
 
 export const useExchangeInboxPageEffects = () => {
   const { t } = useTranslation();
+  const txPending = useTransactionPendingStore();
 
   const {
     user,
@@ -75,5 +77,6 @@ export const useExchangeInboxPageEffects = () => {
     noCertificatesText,
     canAccessPage,
     requirementsProps,
+    txPending,
   };
 };

@@ -10,6 +10,7 @@ export const ExchangeInboxPage: FC = () => {
     noCertificatesText,
     canAccessPage,
     requirementsProps,
+    txPending,
   } = useExchangeInboxPageEffects();
 
   if (isLoading) return <CircularProgress />;
@@ -21,6 +22,7 @@ export const ExchangeInboxPage: FC = () => {
   return (
     <ItemsListWithActions
       emptyListComponent={<Typography>{noCertificatesText}</Typography>}
+      disabled={txPending}
       {...listProps}
     />
   );
