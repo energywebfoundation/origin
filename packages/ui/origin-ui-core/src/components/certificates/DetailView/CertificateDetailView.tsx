@@ -16,6 +16,7 @@ import { useOriginConfiguration } from '../../../utils/configuration';
 import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
 import { fromGeneralSelectors } from '../../../features';
 import { ClaimDataDTO } from '@energyweb/issuer-api-client';
+import moment from 'moment';
 
 interface IProps {
     id: number;
@@ -146,7 +147,7 @@ export function CertificateDetailView(props: IProps) {
                     requestor: transformAddress(request.owner),
                     amount: EnergyFormatter.format(request.energy, true)
                 }),
-                timestamp: request.created
+                timestamp: moment((request as any).createdAt).unix()
             });
         }
 
