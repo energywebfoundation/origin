@@ -8,7 +8,7 @@ import { RefreshAllTokensCommand } from '../commands';
 export class RefreshAllTokensTask {
     constructor(private readonly commandBus: CommandBus) {}
 
-    @Cron(CronExpression.EVERY_4_HOURS)
+    @Cron(CronExpression.EVERY_HOUR)
     async handleCron() {
         await this.commandBus.execute(new RefreshAllTokensCommand());
     }

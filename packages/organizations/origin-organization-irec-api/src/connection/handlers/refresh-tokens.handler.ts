@@ -15,8 +15,10 @@ export class RefreshTokensHandler implements ICommandHandler<RefreshTokensComman
     ) {}
 
     async execute({ user, accessTokens }: RefreshTokensCommand): Promise<void> {
-        const [irecConnection] = await this.commandBus.execute(new GetConnectionCommand(user));
+        const irecConnection = await this.commandBus.execute(new GetConnectionCommand(user));
 
-        await this.repository.update(irecConnection.id, accessTokens);
+        if (irecConnection) {
+            await this.repository.update(irecConnection.id, accessTokens);
+        }
     }
 }
