@@ -39,7 +39,9 @@ export const TableComponentActions: TTableComponentActions = ({
           icon={<SpeedDialIcon icon={<MoreHoriz />} />}
           onClose={() => setOpen(false)}
           onMouseOver={() => setOpen(true)}
-          onClick={(event) => handleMobileOpen(event)}
+          onClick={(event: React.SyntheticEvent<Element, Event>) =>
+            handleMobileOpen(event)
+          }
           open={open}
           className={classes.speedDial}
         >

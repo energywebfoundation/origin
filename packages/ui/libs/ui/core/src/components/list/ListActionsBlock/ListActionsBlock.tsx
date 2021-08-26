@@ -53,7 +53,7 @@ export const ListActionsBlock: TListActionsBlock = ({
       {actions.length >= 2 && (
         <Tabs
           value={tabIndex}
-          onChange={(ev, index) => {
+          onChange={(event: any, index: number) => {
             setTabIndex(index);
           }}
           indicatorColor="primary"

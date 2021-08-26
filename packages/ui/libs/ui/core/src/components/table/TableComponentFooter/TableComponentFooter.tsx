@@ -27,7 +27,7 @@ export const TableComponentFooter: FC<TableComponentFooterProps> = memo(
             rowsPerPage={pageSize}
             page={currentPage}
             showFirstButton={true}
-            onPageChange={(event, zeroIndexBasedPage) => {
+            onPageChange={(event: any, zeroIndexBasedPage: number) => {
               handlePageChange(zeroIndexBasedPage);
             }}
             rowsPerPageOptions={rowsPerPageOptions}
