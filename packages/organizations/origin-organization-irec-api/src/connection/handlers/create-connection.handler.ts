@@ -22,7 +22,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
     ) {}
 
     async execute({
-        user: { organizationId },
+        user: { ownerId, organizationId },
         credentials: { userName, password, clientId, clientSecret }
     }: CreateConnectionCommand): Promise<ConnectionDTO> {
         const loginResult = await this.irecService.login({
@@ -32,7 +32,9 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
             clientSecret
         });
 
-        const [registration] = await this.registrationService.find(String(organizationId));
+        const [registration] = await this.registrationService.find(
+            String(ownerId || organizationId)
+        );
         if (!registration) {
             throw new BadRequestException('IREC Registration not found');
         }

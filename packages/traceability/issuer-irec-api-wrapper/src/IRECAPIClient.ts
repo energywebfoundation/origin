@@ -53,6 +53,9 @@ export class IRECAPIClient extends EventEmitter {
 
         this.enableInterceptor();
         this.enableErrorHandler();
+        if (accessTokens) {
+            this.applyAccessToken(accessTokens.accessToken);
+        }
     }
 
     public async login(
@@ -509,9 +512,13 @@ export class IRECAPIClient extends EventEmitter {
             refreshToken
         };
 
+        this.applyAccessToken(accessToken);
+    }
+
+    private applyAccessToken(accessToken: string) {
         this.config = {
             headers: {
-                Authorization: `Bearer ${this.accessTokens.accessToken}`
+                Authorization: `Bearer ${accessToken}`
             }
         };
     }

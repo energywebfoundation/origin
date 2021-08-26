@@ -53,13 +53,12 @@ export class DeviceService {
         const tradeAccount = await this.irecService.getTradeAccountCode(
             platformAdmin.organization.id
         );
-        const participantTradeAccount = await this.irecService.getTradeAccountCode(user);
         const issuerOrg = await this.irecService.getUserOrganization(platformAdmin.organization.id);
 
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
             defaultAccount: tradeAccount,
-            registrantOrganization: participantTradeAccount,
+            registrantOrganization: tradeAccount,
             issuer: issuerOrg.code,
             active: true
         };

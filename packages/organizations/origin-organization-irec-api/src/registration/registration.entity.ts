@@ -12,7 +12,7 @@ export class Registration extends ExtendedBaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
+    @Column({ unique: true })
     owner: string;
 
     @Column()
