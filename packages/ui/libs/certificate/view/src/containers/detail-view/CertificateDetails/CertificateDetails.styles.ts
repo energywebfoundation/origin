@@ -31,4 +31,12 @@ export const useStyles = makeStyles((theme) => ({
       textDecoration: 'underline',
     },
   },
+  blockItem: {
+    padding: '18px 26px',
+  },
+  beneficiariesList: {
+    padding: 0,
+    margin: 0,
+    fontFamily: theme.typography.fontFamily,
+  },
 }));
