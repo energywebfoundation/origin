@@ -154,9 +154,8 @@ export function CertificateDetailView(props: IProps) {
             });
         }
 
-        const filteredEvents = resolvedEvents?.filter(
-            (event) => !!event.label || !!event.description
-        );
+        const filteredEvents =
+            resolvedEvents?.filter((event) => !!event.label || !!event.description) || [];
 
         setEvents(deduplicate(filteredEvents).sort((a, b) => a.timestamp - b.timestamp));
     }
