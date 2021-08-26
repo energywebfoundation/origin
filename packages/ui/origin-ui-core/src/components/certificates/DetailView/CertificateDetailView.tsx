@@ -101,9 +101,12 @@ export function CertificateDetailView(props: IProps) {
 
                     break;
                 case 'TransferSingle':
-                    if (event._from === '0x0000000000000000000000000000000000000000') {
+                    if (event.from === '0x0000000000000000000000000000000000000000') {
                         label = t('certificate.event.name.initialOwner');
                         description = transformAddress(event.to);
+                    } else if (event.to === '0x0000000000000000000000000000000000000000') {
+                        label = '';
+                        description = '';
                     } else {
                         label = t('certificate.event.name.changedOwnership');
                         description = t('certificate.event.description.transferred', {
@@ -151,7 +154,11 @@ export function CertificateDetailView(props: IProps) {
             });
         }
 
-        setEvents(deduplicate(resolvedEvents).sort((a, b) => a.timestamp - b.timestamp));
+        const filteredEvents = resolvedEvents?.filter(
+            (event) => !!event.label || !!event.description
+        );
+
+        setEvents(deduplicate(filteredEvents).sort((a, b) => a.timestamp - b.timestamp));
     }
 
     const [certificateData, setCertificateData] = useState<Array<TCertificateData[]>>([]);
