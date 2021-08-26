@@ -33,4 +33,14 @@ export class Connection extends ExtendedBaseEntity {
     @JoinColumn()
     @IsNotEmpty()
     registration: Registration;
+
+    @Column()
+    @IsNotEmpty()
+    @IsString()
+    clientId: string;
+
+    @Column()
+    @IsNotEmpty()
+    @IsString()
+    clientSecret: string;
 }

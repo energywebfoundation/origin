@@ -42,7 +42,9 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
         const connection = await this.repository.save({
             ...loginResult,
             userName,
-            registration
+            registration,
+            clientId,
+            clientSecret
         });
 
         this.eventBus.publish(new ConnectionCreatedEvent(connection, organizationId, registration));

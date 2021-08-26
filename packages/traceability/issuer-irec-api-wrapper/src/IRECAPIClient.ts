@@ -44,7 +44,12 @@ export class IRECAPIClient extends EventEmitter {
 
     private axiosInstance: AxiosInstance;
 
-    public constructor(private readonly endPointUrl: string, private accessTokens?: AccessTokens) {
+    public constructor(
+        private readonly endPointUrl: string,
+        private clientId: string,
+        private clientSecret: string,
+        private accessTokens?: AccessTokens
+    ) {
         super();
         this.axiosInstance = axios.create({
             baseURL: endPointUrl,
@@ -58,12 +63,7 @@ export class IRECAPIClient extends EventEmitter {
         }
     }
 
-    public async login(
-        userName: string,
-        password: string,
-        clientId: string,
-        clientSecret: string
-    ): Promise<AccessTokens> {
+    public async login(userName: string, password: string): Promise<AccessTokens> {
         const url = `${this.endPointUrl}/api/token`;
 
         this.disableInterceptor();
@@ -77,8 +77,8 @@ export class IRECAPIClient extends EventEmitter {
                 grant_type: 'password',
                 username: userName,
                 password,
-                client_id: clientId,
-                client_secret: clientSecret,
+                client_id: this.clientId,
+                client_secret: this.clientSecret,
                 scope: ''
             })
         );
@@ -535,7 +535,9 @@ export class IRECAPIClient extends EventEmitter {
             url,
             qs.stringify({
                 grant_type: 'refresh_token',
-                refresh_token: this.accessTokens.refreshToken
+                refresh_token: this.accessTokens.refreshToken,
+                client_id: this.clientId,
+                client_secret: this.clientSecret
             })
         );
         this.enableInterceptor();

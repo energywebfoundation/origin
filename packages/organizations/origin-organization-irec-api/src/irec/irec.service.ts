@@ -145,11 +145,16 @@ export class IrecService implements IIrecService {
             throw new ForbiddenException('User does not have an IREC connection');
         }
 
-        const client = new IRECAPIClient(this.configService.get<string>('IREC_API_URL'), {
-            accessToken: irecConnection.accessToken,
-            refreshToken: irecConnection.refreshToken,
-            expiryDate: irecConnection.expiryDate
-        });
+        const client = new IRECAPIClient(
+            this.configService.get<string>('IREC_API_URL'),
+            irecConnection.clientId,
+            irecConnection.clientSecret,
+            {
+                accessToken: irecConnection.accessToken,
+                refreshToken: irecConnection.refreshToken,
+                expiryDate: irecConnection.expiryDate
+            }
+        );
 
         client.on('tokensRefreshed', (accessToken: AccessTokens) => {
             this.commandBus.execute(new RefreshTokensCommand(user, accessToken));
@@ -164,9 +169,13 @@ export class IrecService implements IIrecService {
         clientId,
         clientSecret
     }: CreateConnectionDTO): Promise<AccessTokens> {
-        const client = new IRECAPIClient(this.configService.get<string>('IREC_API_URL'));
+        const client = new IRECAPIClient(
+            this.configService.get<string>('IREC_API_URL'),
+            clientId,
+            clientSecret
+        );
 
-        return client.login(userName, password, clientId, clientSecret);
+        return client.login(userName, password);
     }
 
     async createBeneficiary(
@@ -376,8 +385,9 @@ export class IrecService implements IIrecService {
         const irecClient = await this.getIrecClient(user);
         const device = await irecClient.device.get(code);
 
-        if (device.status !== DeviceState.InProgress) {
-            throw new Error('To approve IREC device its state have to be In-Progress');
+        const allowedStatuses: string[] = [DeviceState.InProgress, DeviceState.Submitted];
+        if (!allowedStatuses.includes(device.status)) {
+            throw new Error('To approve IREC device its state has to be In-Progress');
         }
 
         await irecClient.device.verify(code);

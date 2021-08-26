@@ -21,6 +21,12 @@ export class ConnectionDTO {
     @ApiProperty({ type: String })
     userName: string;
 
+    @ApiProperty({ type: String })
+    clientId: string;
+
+    @ApiProperty({ type: String })
+    clientSecret: string;
+
     public static wrap(connection: Connection): ConnectionDTO {
         return plainToClass(ConnectionDTO, connection);
     }
