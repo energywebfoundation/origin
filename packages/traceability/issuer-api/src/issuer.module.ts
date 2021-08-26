@@ -1,8 +1,7 @@
 import path from 'path';
 import fs from 'fs';
-import { Module, ValidationPipe, DynamicModule } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 
-import { APP_PIPE } from '@nestjs/core';
 import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
