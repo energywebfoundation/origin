@@ -25,6 +25,9 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
     isLoading,
     eventsData,
     blockhainTransactionsTitle,
+    claimedEnergy,
+    remainingEnergy,
+    claimBeneficiaries,
   } = useCertificateDetailsEffects(certificate);
   const blockExplorerUrl = (window as any).config.BLOCKCHAIN_EXPLORER_URL;
 
@@ -37,14 +40,34 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
           <Grid item md={4} xs={12}>
             <StyledTitleAndText {...certificateId} />
             <StyledTitleAndText {...certifiedEnergy} />
+            {certificate.blockchainPart.isClaimed && (
+              <StyledTitleAndText {...claimedEnergy} />
+            )}
           </Grid>
           <Grid item md={4} xs={12}>
             <StyledTitleAndText {...claimed} />
             <StyledTitleAndText {...creationDate} />
+            {certificate.blockchainPart.isClaimed && (
+              <StyledTitleAndText {...remainingEnergy} />
+            )}
           </Grid>
           <Grid item md={4} xs={12}>
             <StyledTitleAndText {...generationStartDate} />
             <StyledTitleAndText {...generationEndDate} />
+            {certificate.blockchainPart.isClaimed && (
+              <div className={classes.blockItem}>
+                <Typography color="textSecondary" margin="normal">
+                  {claimBeneficiaries?.title}
+                </Typography>
+                <ol className={classes.beneficiariesList}>
+                  {claimBeneficiaries?.listItems?.map((item) => (
+                    <li key={item}>
+                      <Typography>{item}</Typography>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
           </Grid>
         </Grid>
       </Paper>

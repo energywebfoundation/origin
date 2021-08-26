@@ -24,7 +24,7 @@ export const DeviceDetails: FC<DeviceDetailsProps> = ({ device }) => {
     <div className={classes.wrapper}>
       <DetailViewCarousel device={device} allFuelTypes={allTypes} />
       <DeviceLocationData {...locationProps} />
-      <DeviceDetailCard {...cardProps} />
+      <DeviceDetailCard deviceId={device.id} {...cardProps} />
     </div>
   );
 };

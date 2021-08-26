@@ -32,4 +32,7 @@ export const useStyles = makeStyles((theme) => ({
     margin: `${theme.spacing(2)} 0`,
   },
   specValue: {},
+  button: {
+    textTransform: 'none',
+  },
 }));
