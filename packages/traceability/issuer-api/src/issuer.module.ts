@@ -29,7 +29,7 @@ const getEnvFilePath = () => {
     return finalPath;
 };
 
-export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUnitsOfEnergy];
+export const providers = [IntUnitsOfEnergy];
 
 @Module({})
 export class IssuerModule {
