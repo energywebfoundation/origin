@@ -500,6 +500,9 @@
         "creationDate": "Creation Date",
         "generationStartDate": "Generation Start Date",
         "generationEndDate": "Generation End Date",
+        "claimedEnergy": "Claimed Energy (MWh)",
+        "remainingEnergy": "Remaining (unclaimed) Energy (MWh)",
+        "claimBeneficiaries": "Claim beneficiaries",
         "blockchainTransactions": "Blockchain Transactions",
         "events": {
           "exchangeWallet": "Exchange Wallet",
