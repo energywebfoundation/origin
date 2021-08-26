@@ -504,6 +504,7 @@
         "remainingEnergy": "Remaining (unclaimed) Energy (MWh)",
         "claimBeneficiaries": "Claim beneficiaries",
         "blockchainTransactions": "Blockchain Transactions",
+        "viewDevice": "View Device",
         "events": {
           "exchangeWallet": "Exchange Wallet",
           "exchangeDepositAddress": "Exchange Deposit Address",
