@@ -66,12 +66,14 @@ export class DeviceService {
 
         const irecDevice = await this.irecService.createDevice(user, {
             ...deviceData,
+            capacity: deviceData.capacity / 1e6,
             address: this.getAddressLine(newDevice)
         });
 
         const deviceToStore = new Device({
             ...deviceData,
             ...irecDevice,
+            capacity: deviceData.capacity,
             status: DeviceState.InProgress,
             ownerId: user.ownerId
         });
