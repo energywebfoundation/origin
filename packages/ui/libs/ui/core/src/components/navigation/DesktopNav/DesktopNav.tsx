@@ -1,5 +1,5 @@
 import { Drawer, List } from '@material-ui/core';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { TMenuSection, NavBarSection } from '../NavBarSection';
 import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';
 import { IconLink } from '../../icons';
@@ -10,18 +10,20 @@ export interface DesktopNavProps {
   userAndOrgData: UsernameAndOrgProps;
   isAuthenticated: boolean;
   menuSections: TMenuSection[];
+  icon?: ReactNode;
 }
 
 export const DesktopNav: FC<DesktopNavProps> = ({
   userAndOrgData,
   menuSections = [],
   isAuthenticated,
+  icon,
 }) => {
   const classes = useStyles();
   return (
     <Drawer anchor="left" open variant="permanent" className={classes.drawer}>
       <IconLink url="/">
-        <EnergyWebLogo className={classes.logo} />
+        {icon ? icon : <EnergyWebLogo className={classes.logo} />}
       </IconLink>
       {isAuthenticated && (
         <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />
