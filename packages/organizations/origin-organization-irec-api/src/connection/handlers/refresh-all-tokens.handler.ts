@@ -34,25 +34,24 @@ export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokens
 
         const results = await Promise.allSettled(
             expiredConnections.map(async (irecConnection) => {
+                const accessToken: AccessTokens = {
+                    accessToken: irecConnection.accessToken,
+                    refreshToken: irecConnection.refreshToken,
+                    expiryDate: irecConnection.expiryDate
+                };
                 const client = new IRECAPIClient(
                     irecApiUrl,
                     irecConnection.clientId,
                     irecConnection.clientSecret,
-                    {
-                        accessToken: irecConnection.accessToken,
-                        refreshToken: irecConnection.refreshToken,
-                        expiryDate: irecConnection.expiryDate
-                    }
+                    async (accessTokens: AccessTokens) => {
+                        await this.repository.update(irecConnection.id, accessTokens).catch(() => {
+                            this.logger.warn(
+                                `Unable to update IREC access tokens for registration ${irecConnection.registration}`
+                            );
+                        });
+                    },
+                    accessToken
                 );
-
-                client.on('tokensRefreshed', (accessToken: AccessTokens) => {
-                    this.repository.update(irecConnection.id, accessToken).catch(() => {
-                        this.logger.warn(
-                            `Unable to update IREC access tokens for registration ${irecConnection.registration}`
-                        );
-                    });
-                    client.removeAllListeners();
-                });
 
                 await client.organisation.get();
             })

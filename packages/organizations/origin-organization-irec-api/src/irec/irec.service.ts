@@ -145,22 +145,21 @@ export class IrecService implements IIrecService {
             throw new ForbiddenException('User does not have an IREC connection');
         }
 
-        const client = new IRECAPIClient(
+        const accessToken: AccessTokens = {
+            accessToken: irecConnection.accessToken,
+            refreshToken: irecConnection.refreshToken,
+            expiryDate: irecConnection.expiryDate
+        };
+
+        return new IRECAPIClient(
             this.configService.get<string>('IREC_API_URL'),
             irecConnection.clientId,
             irecConnection.clientSecret,
-            {
-                accessToken: irecConnection.accessToken,
-                refreshToken: irecConnection.refreshToken,
-                expiryDate: irecConnection.expiryDate
-            }
+            async (newTokens: AccessTokens) => {
+                await this.commandBus.execute(new RefreshTokensCommand(user, newTokens));
+            },
+            accessToken
         );
-
-        client.on('tokensRefreshed', (accessToken: AccessTokens) => {
-            this.commandBus.execute(new RefreshTokensCommand(user, accessToken));
-        });
-
-        return client;
     }
 
     async login({
