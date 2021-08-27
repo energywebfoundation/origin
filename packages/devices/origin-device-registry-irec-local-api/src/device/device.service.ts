@@ -58,7 +58,6 @@ export class DeviceService {
 
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
-            capacity: newDevice.capacity / 1e6,
             defaultAccount: tradeAccount,
             registrantOrganization: registrantOrg.code,
             issuer: issuerOrg.code,
