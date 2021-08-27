@@ -1,4 +1,7 @@
 dependencies:
+  '@angular-devkit/architect': 0.1202.3
+  '@angular-devkit/core': 12.2.3
+  '@angular-devkit/schematics': 12.2.3
   '@babel/core': 7.9.6
   '@babel/preset-env': 7.13.15_@babel+core@7.9.6
   '@babel/preset-react': 7.9.4_@babel+core@7.9.6
@@ -205,6 +208,7 @@ dependencies:
   moment-range: 4.0.2_moment@2.29.1
   moment-timezone: 0.5.33
   multer: 1.4.3
+  ngx-deploy-npm: 2.1.0_b0a449d200c9f1148187da6102a273a2
   nodemailer: 6.6.3
   orval: 5.0.0-alpha.9
   passport: 0.4.1
@@ -276,6 +280,17 @@ packages:
     optional: true
     resolution:
       integrity: sha512-4dmQ45yY0Dx24Qxp+zAsNLlMF6tteCyfVzgbulvSyC7tCyd3V8sW76sS0tHq8NpcbXfWTKasfyfzU1Kd86oKzw==
+  /@angular-devkit/architect/0.1202.3:
+    dependencies:
+      '@angular-devkit/core': 12.2.3
+      rxjs: 6.6.7
+    dev: false
+    engines:
+      node: ^12.14.1 || >=14.0.0
+      npm: ^6.11.0 || ^7.5.6
+      yarn: '>= 1.13.0'
+    resolution:
+      integrity: sha512-AwLdofKggAiv0hThYe0v3MWOl94XJdJlgq/MXnYU/Ma/IeJDLlRa9WJuajL9AB//x5G+uH06smD3E4Ni8mv2ag==
   /@angular-devkit/core/11.2.4:
     dependencies:
       ajv: 6.12.6
@@ -319,6 +334,21 @@ packages:
       yarn: '>= 1.13.0'
     resolution:
       integrity: sha512-zVSQV+8/vjUjsUKGlj8Kf5LioA6AXJTGI0yhHW9q1dFX4dPpbW63k0R1UoIB2wJ0F/AbYVgpnPGPe9BBm2fvZA==
+  /@angular-devkit/core/12.2.3:
+    dependencies:
+      ajv: 8.6.2
+      ajv-formats: 2.1.0
+      fast-json-stable-stringify: 2.1.0
+      magic-string: 0.25.7
+      rxjs: 6.6.7
+      source-map: 0.7.3
+    dev: false
+    engines:
+      node: ^12.14.1 || >=14.0.0
+      npm: ^6.11.0 || ^7.5.6
+      yarn: '>= 1.13.0'
+    resolution:
+      integrity: sha512-qt1hcX5zydGmCI9gEFcqTyJDcFEScSHPRqx0dlm61hCtBF75C2g7erSgb35zE3kZ7UE9UQY28JffFnwCj6uJhQ==
   /@angular-devkit/schematics-cli/0.1102.6:
     dependencies:
       '@angular-devkit/core': 11.2.6
@@ -372,6 +402,18 @@ packages:
       yarn: '>= 1.13.0'
     resolution:
       integrity: sha512-iW3XuDHScr3TXuunlEjF5O01zBpwpLgfr1oEny8PvseFGDlHK4Nj8zNIoIn3Yg936aiFO4GJAC/UXsT8g5vKxQ==
+  /@angular-devkit/schematics/12.2.3:
+    dependencies:
+      '@angular-devkit/core': 12.2.3
+      ora: 5.4.1
+      rxjs: 6.6.7
+    dev: false
+    engines:
+      node: ^12.14.1 || >=14.0.0
+      npm: ^6.11.0 || ^7.5.6
+      yarn: '>= 1.13.0'
+    resolution:
+      integrity: sha512-pbYOK8DK1V7YCzt8C3OckjQDGvCQqrLmg5kH+nLLAYOlkToRk3DBPIocuF9tCflNt6tEIkRJM4lPeDyy/z/GjQ==
   /@apidevtools/json-schema-ref-parser/9.0.9:
     dependencies:
       '@jsdevtools/ono': 7.1.3
@@ -11096,6 +11138,15 @@ packages:
         optional: true
     resolution:
       integrity: sha512-Brah4Uo5/U8v76c6euTwtjVFFaVishwnJrQBYpev1JRh4vjA1F4HY3UzQez41YUCszUCXKagG8v6eVRBHV1gkw==
+  /ajv-formats/2.1.0:
+    dependencies:
+      ajv: 8.6.2
+    dev: false
+    peerDependenciesMeta:
+      ajv:
+        optional: true
+    resolution:
+      integrity: sha512-USH2jBb+C/hIpwD2iRjp0pe0k+MvzG0mlSn/FIdCgQhUb9ALPRjt2KIQdfZDS9r0ZIeUAg7gOu9KL0PFqGqr5Q==
   /ajv-keywords/3.5.2_ajv@6.12.6:
     dependencies:
       ajv: 6.12.6
@@ -11140,6 +11191,15 @@ packages:
     dev: false
     resolution:
       integrity: sha512-WSNGFuyWd//XO8n/m/EaOlNLtO0yL8EXT/74LqT4khdhpZjP7lkj/kT5uwRmGitKEVp/Oj7ZUHeGfPtgHhQ5CA==
+  /ajv/8.6.2:
+    dependencies:
+      fast-deep-equal: 3.1.3
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
+      uri-js: 4.4.1
+    dev: false
+    resolution:
+      integrity: sha512-9807RlWAgT564wT+DjeyU5OFMPjmzxVobvDFmNAhY+5zD6A2ly3jDp6sgnfyDtlIQ+7H97oc/DGCzzfu9rjw9w==
   /align-text/0.1.4:
     dependencies:
       kind-of: 3.2.2
@@ -25741,6 +25801,18 @@ packages:
     dev: false
     resolution:
       integrity: sha1-yobR/ogoFpsBICCOPchCS524NCw=
+  /ngx-deploy-npm/2.1.0_b0a449d200c9f1148187da6102a273a2:
+    dependencies:
+      '@angular-devkit/architect': 0.1202.3
+      '@angular-devkit/core': 12.2.3
+      '@angular-devkit/schematics': 12.2.3
+    dev: false
+    peerDependencies:
+      '@angular-devkit/architect': '>= 0.900 < 0.1300'
+      '@angular-devkit/core': ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+      '@angular-devkit/schematics': ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+    resolution:
+      integrity: sha512-hmpH7RY1UMRfKjsPg0fnMzv6KoGtfgO9be4nvc6AussP9gkUDYnL79qRLPrnbZ9SjYdVM+S/d9rDE6AtdnXgzA==
   /nice-try/1.0.5:
     dev: false
     resolution:
@@ -39017,6 +39089,9 @@ packages:
     version: 0.0.0
   file:projects/ui-packages.tgz_moment@2.29.1+rxjs@6.6.7:
     dependencies:
+      '@angular-devkit/architect': 0.1202.3
+      '@angular-devkit/core': 12.2.3
+      '@angular-devkit/schematics': 12.2.3
       '@babel/core': 7.9.6
       '@babel/preset-env': 7.13.15_@babel+core@7.9.6
       '@babel/preset-react': 7.9.4_@babel+core@7.9.6
@@ -39094,6 +39169,7 @@ packages:
       jest-fetch-mock: 3.0.3
       jest-localstorage-mock: 2.4.9
       lodash: 4.17.21
+      ngx-deploy-npm: 2.1.0_b0a449d200c9f1148187da6102a273a2
       prettier: 2.3.2
       react: 17.0.2
       react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
@@ -39129,7 +39205,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-oNvXlEpPUhExnuNBOkvx0wPdiH0Ty72Q1s8YLhDuSjLoXZW5gKT9wU0dt4uNAjDG04D3HfYwBEqasWf1aV9lSw==
+      integrity: sha512-1o/stmM5p7WZOJ5fXxdoAPoPgMO6BWmWQ4rntwfZ3Ya+lEqiAtyQ1cvEX9nZ/i97txWefHBTpSKeOqN3CYWhBw==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -39207,6 +39283,9 @@ packages:
     version: 0.1.0
 registry: ''
 specifiers:
+  '@angular-devkit/architect': 0.1202.3
+  '@angular-devkit/core': 12.2.3
+  '@angular-devkit/schematics': 12.2.3
   '@babel/core': 7.9.6
   '@babel/preset-env': 7.13.15
   '@babel/preset-react': 7.9.4
@@ -39413,6 +39492,7 @@ specifiers:
   moment-range: 4.0.2
   moment-timezone: 0.5.33
   multer: 1.4.3
+  ngx-deploy-npm: 2.1.0
   nodemailer: 6.6.3
   orval: 5.0.0-alpha.9
   passport: 0.4.1

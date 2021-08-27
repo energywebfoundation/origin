@@ -70,6 +70,7 @@ module.exports = (config) => {
         'react-material-ui-carousel': 'reactMaterialUiCarousel',
         'react-toastify': 'reactToastify',
         'react-dropzone': 'reactDropzone',
+        'react-beautiful-dnd': 'reactBeautifulDnd',
       },
     },
     plugins: [...config.plugins, svgr()],
