@@ -42,9 +42,9 @@
         "rxjs": "6.6.7"
     },
     "devDependencies": {
-        "typescript": "4.3.5",
+        "typescript": "4.4.2",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.17.11",
+        "@types/node": "14.17.12",
         "mocha": "9.1.0",
         "@types/bn.js": "5.1.0",
         "@types/chai": "4.2.15",
