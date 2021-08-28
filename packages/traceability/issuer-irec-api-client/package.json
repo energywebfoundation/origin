@@ -26,7 +26,7 @@
         "axios": "0.21.1"
     },
     "devDependencies": {
-        "typescript": "4.3.5",
+        "typescript": "4.4.2",
         "@energyweb/issuer-irec-api": "0.1.0",
         "@nestjs/swagger": "4.8.2",
         "@nestjs/testing": "7.6.18",
