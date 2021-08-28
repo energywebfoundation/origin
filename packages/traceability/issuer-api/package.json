@@ -71,7 +71,7 @@
         "@types/superagent": "4.1.12",
         "@types/jest": "27.0.1",
         "eslint-plugin-jest": "24.4.0",
-        "jest": "27.0.6",
+        "jest": "27.1.0",
         "polly-js": "1.8.2",
         "prettier": "2.3.2",
         "supertest": "6.1.6",
