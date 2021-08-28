@@ -62,6 +62,7 @@ module.exports = (config) => {
         '@energyweb/origin-ui-exchange-data': 'originUiExchangeData',
         '@energyweb/origin-ui-exchange-logic': 'originUiExchangeLogic',
         '@material-ui/core': 'MUICore',
+        '@material-ui/core/styles': 'MUICoreStyles',
         '@material-ui/icons': 'MUIIcons',
         '@material-ui/lab': 'MUILab',
         '@react-google-maps/api': 'reactGoogleMapsApi',

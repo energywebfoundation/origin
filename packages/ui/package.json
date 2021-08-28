@@ -10,7 +10,7 @@
     "build:ui-theme": "nx run ui-theme:build",
     "build:ui-assets": "nx run ui-assets:build",
     "build:ui-localization": "nx run ui-localization:build",
-    "build:ui-shared-state": "nx run ui-shared-state:build --buildableProjectDepsInPackageJsonType=dependencies",
+    "build:ui-shared-state": "nx run ui-shared-state:build",
     "build:ui-core": "nx run ui-core:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:ui-blockchain": "nx run ui-blockchain:build",
     "build:user-ui": "nx run user-data:build --buildableProjectDepsInPackageJsonType=dependencies && nx run user-logic:build --buildableProjectDepsInPackageJsonType=dependencies && nx run user-view:build --buildableProjectDepsInPackageJsonType=dependencies",
