@@ -77,6 +77,5 @@ export const makeOriginUiConfig = (
     }
   }
 
-  // setGlobalTimeLanguage(SupportedLanguagesEnum.en);
   return newConfiguration;
 };
