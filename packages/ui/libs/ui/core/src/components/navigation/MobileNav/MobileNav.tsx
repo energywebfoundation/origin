@@ -1,6 +1,6 @@
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
 import { Drawer, List } from '@material-ui/core';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { CloseButton } from '../../buttons';
 import { IconLink } from '../../icons';
 import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';
@@ -13,6 +13,7 @@ export interface MobileNavProps {
   userAndOrgData: UsernameAndOrgProps;
   isAuthenticated: boolean;
   menuSections: TMenuSection[];
+  icon?: ReactNode;
 }
 
 export const MobileNav: FC<MobileNavProps> = ({
@@ -21,6 +22,7 @@ export const MobileNav: FC<MobileNavProps> = ({
   menuSections,
   isAuthenticated,
   userAndOrgData,
+  icon,
 }) => {
   const classes = useStyles();
   return (
@@ -32,7 +34,7 @@ export const MobileNav: FC<MobileNavProps> = ({
     >
       <CloseButton onClose={onClose} />
       <IconLink url="/">
-        <EnergyWebLogo className={classes.logo} />
+        {icon ? icon : <EnergyWebLogo className={classes.logo} />}
       </IconLink>
       {isAuthenticated && (
         <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />

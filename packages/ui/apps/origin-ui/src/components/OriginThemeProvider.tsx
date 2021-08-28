@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { makeOriginUiConfig } from '@energyweb/origin-ui-theme';
 import StyledEngineProvider from '@material-ui/core/StyledEngineProvider';
-import { makeOriginUiConfig } from '../utils/makeOriginUiConfig';
+import { ThemeProvider } from '@material-ui/core/styles';
+import React, { FC } from 'react';
 
 export const OriginThemeProvider: FC = ({ children }) => {
   const configuration = makeOriginUiConfig();

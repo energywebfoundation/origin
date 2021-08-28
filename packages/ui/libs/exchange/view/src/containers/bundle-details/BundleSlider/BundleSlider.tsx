@@ -27,13 +27,15 @@ export const BundleSlider: FC<BundleSliderProps> = ({
       <Slider
         defaultValue={[minPrice, maxPrice]}
         value={priceRange}
-        onChange={(event, value) => setPriceRange(value as number[])}
+        onChange={(event: any, value: number | number[]) =>
+          setPriceRange(value as number[])
+        }
         marks={marks}
         min={minPrice}
         max={maxPrice}
         step={priceStep}
         valueLabelDisplay="on"
-        valueLabelFormat={(label) => formatCurrencyComplete(label)}
+        valueLabelFormat={(label: number) => formatCurrencyComplete(label)}
         components={{ ValueLabel: SliderLabel }}
       />
     </Box>

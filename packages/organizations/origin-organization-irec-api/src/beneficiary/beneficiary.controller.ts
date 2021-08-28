@@ -75,7 +75,7 @@ export class BeneficiaryController {
 
     @Post('/company')
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiBody({ type: AddBeneficiaryDto })
     @ApiCreatedResponse({
         type: BeneficiaryDTO,
@@ -92,7 +92,12 @@ export class BeneficiaryController {
 
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.OrganizationDeviceManager, Role.OrganizationUser)
+    @Roles(
+        Role.OrganizationAdmin,
+        Role.OrganizationDeviceManager,
+        Role.OrganizationUser,
+        Role.Admin
+    )
     @ApiBody({ type: CreateBeneficiaryDto })
     @ApiCreatedResponse({
         type: BeneficiaryDTO,

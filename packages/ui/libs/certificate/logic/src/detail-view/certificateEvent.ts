@@ -3,7 +3,6 @@ import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import dayjs from 'dayjs';
 import { BigNumber, utils } from 'ethers';
 import { useTranslation } from 'react-i18next';
-import { uniqBy } from 'lodash';
 
 export const useCertificateBlockchainEventsLogic = (
   certificate: DetailedCertificate,
@@ -109,12 +108,10 @@ export const useCertificateBlockchainEventsLogic = (
     }),
     timestamp: dayjs((certificate.requestPart as any).createdAt).unix() * 1000,
   });
+  const filteredEvents =
+    jointEvents?.filter((event) => !!event.label || !!event.description) || [];
 
-  const filteredEvents = jointEvents?.filter(
-    (event) => !!event.label || !!event.description
-  );
-
-  const sortedEvents = uniqBy(filteredEvents, 'txHash')
+  const sortedEvents = filteredEvents
     .sort((a, b) => a.timestamp - b.timestamp)
     .reverse();
 

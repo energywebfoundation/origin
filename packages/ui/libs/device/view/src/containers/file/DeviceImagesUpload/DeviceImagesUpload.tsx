@@ -7,7 +7,7 @@ import { DeviceImagesFormValues } from '@energyweb/origin-ui-device-logic';
 import React, { FC } from 'react';
 import { useDeviceImagesUploadEffects } from './DeviceImagesUpload.effects';
 
-interface DeviceImagesUploadProps {
+export interface DeviceImagesUploadProps {
   submitHandler: (values: DeviceImagesFormValues) => void;
   secondaryButtons?: GenericFormSecondaryButton[];
   loading?: boolean;

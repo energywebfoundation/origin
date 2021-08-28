@@ -8,7 +8,7 @@ import React, { FC } from 'react';
 import { useRegisterOrgDocsEffects } from './RegisterOrgDocs.effects';
 import { useStyles } from './RegisterOrgDocs.styles';
 
-interface RegisterOrgDocsProps {
+export interface RegisterOrgDocsProps {
   submitHandler: (values: DocsUploadFormValues) => void;
   secondaryButtons?: GenericFormSecondaryButton[];
 }

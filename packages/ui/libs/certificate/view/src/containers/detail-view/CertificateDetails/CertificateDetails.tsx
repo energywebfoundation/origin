@@ -84,7 +84,7 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
           {eventsData.map((event) => (
             <SmallTitleWithText
               wrapperProps={{ className: classes.eventsItem }}
-              key={event.label + event.txHash}
+              key={event.label + event.description + event.txHash}
               titleElement={
                 <Typography color="textSecondary">
                   {formatDate(event.timestamp)}

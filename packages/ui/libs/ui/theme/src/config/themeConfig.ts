@@ -1,8 +1,8 @@
 import { createMuiTheme, Theme, ThemeOptions } from '@material-ui/core/styles';
-import { LightenColor } from '../utils/colors';
-import { variables } from './variables';
 import { enUS, plPL } from '@material-ui/core/locale';
+import { LightenColor } from '../utils/colors';
 import { IOriginStyleConfig } from '../utils/makeOriginUiConfig';
+import { variables } from './variables';
 
 const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
   palette: {
