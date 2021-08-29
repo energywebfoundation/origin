@@ -1,5 +1,5 @@
-import { Box } from '@material-ui/core';
-import React, { FC } from 'react';
+import { Box, BoxProps } from '@material-ui/core';
+import React, { FC, ReactNode } from 'react';
 import { UsernameAndOrgProps } from '../../layout';
 import { DesktopNav } from '../DesktopNav';
 import { MobileNav } from '../MobileNav';
@@ -21,6 +21,8 @@ export interface NavBarProps {
   onMobileClose: () => void;
   menuSections: TMenuSection[];
   isAuthenticated: boolean;
+  icon?: ReactNode;
+  iconWrapperProps?: BoxProps;
 }
 
 export const NavBar: FC<NavBarProps> = ({
@@ -30,6 +32,8 @@ export const NavBar: FC<NavBarProps> = ({
   userData,
   orgData,
   isAuthenticated,
+  icon,
+  iconWrapperProps,
 }) => {
   return (
     <>
@@ -40,6 +44,8 @@ export const NavBar: FC<NavBarProps> = ({
           isAuthenticated={isAuthenticated}
           userAndOrgData={{ ...userData, ...orgData }}
           menuSections={menuSections}
+          icon={icon}
+          iconWrapperProps={iconWrapperProps}
         />
       </Box>
       <Box sx={{ display: { lg: 'block', xs: 'none' } }}>
@@ -47,6 +53,8 @@ export const NavBar: FC<NavBarProps> = ({
           isAuthenticated={isAuthenticated}
           userAndOrgData={{ ...userData, ...orgData }}
           menuSections={menuSections}
+          icon={icon}
+          iconWrapperProps={iconWrapperProps}
         />
       </Box>
     </>

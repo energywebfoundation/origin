@@ -1,4 +1,5 @@
-import React from 'react';
+import { BoxProps } from '@material-ui/core';
+import React, { ReactNode } from 'react';
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
 import {
@@ -18,15 +19,18 @@ interface MainLayoutProps {
   userData: UserNavData;
   orgData: OrgNavData;
   isAuthenticated: boolean;
+  icon?: ReactNode;
+  iconWrapperProps?: BoxProps;
 }
 
 export const MainLayout: FC<MainLayoutProps> = ({
   topbarButtons,
-  children,
   menuSections,
   userData,
   orgData,
   isAuthenticated,
+  icon,
+  iconWrapperProps,
 }) => {
   const { mobileNavOpen, setMobileNavOpen } = useMainLayoutEffects();
   return (
@@ -43,8 +47,12 @@ export const MainLayout: FC<MainLayoutProps> = ({
         menuSections={menuSections}
         userData={userData}
         orgData={orgData}
+        icon={icon}
+        iconWrapperProps={iconWrapperProps}
       />
-      <PageWrapper>{<Outlet />}</PageWrapper>
+      <PageWrapper>
+        <Outlet />
+      </PageWrapper>
     </>
   );
 };

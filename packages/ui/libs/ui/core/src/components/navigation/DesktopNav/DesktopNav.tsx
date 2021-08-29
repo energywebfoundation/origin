@@ -1,4 +1,4 @@
-import { Drawer, List } from '@material-ui/core';
+import { BoxProps, Drawer, List } from '@material-ui/core';
 import React, { FC, ReactNode } from 'react';
 import { TMenuSection, NavBarSection } from '../NavBarSection';
 import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';
@@ -11,6 +11,7 @@ export interface DesktopNavProps {
   isAuthenticated: boolean;
   menuSections: TMenuSection[];
   icon?: ReactNode;
+  iconWrapperProps?: BoxProps;
 }
 
 export const DesktopNav: FC<DesktopNavProps> = ({
@@ -18,11 +19,12 @@ export const DesktopNav: FC<DesktopNavProps> = ({
   menuSections = [],
   isAuthenticated,
   icon,
+  iconWrapperProps,
 }) => {
   const classes = useStyles();
   return (
     <Drawer anchor="left" open variant="permanent" className={classes.drawer}>
-      <IconLink url="/">
+      <IconLink url="/" wrapperProps={iconWrapperProps}>
         {icon ? icon : <EnergyWebLogo className={classes.logo} />}
       </IconLink>
       {isAuthenticated && (
