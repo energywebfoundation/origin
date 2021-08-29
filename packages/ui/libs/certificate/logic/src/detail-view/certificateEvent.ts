@@ -6,14 +6,15 @@ import { useTranslation } from 'react-i18next';
 
 export const useCertificateBlockchainEventsLogic = (
   certificate: DetailedCertificate,
-  exchangeAddress: string
+  exchangeAddress: string,
+  exchangeWalletPublicKey: string
 ) => {
   const { t } = useTranslation();
 
   const transformAddress = (address: string) => {
     if (address) {
       switch (utils.getAddress(address)) {
-        case process.env.NX_EXCHANGE_WALLET_PUB:
+        case exchangeWalletPublicKey:
           return t('certificate.detailView.events.exchangeWallet');
         case exchangeAddress:
           return t('certificate.detailView.events.exchangeDepositAddress');
