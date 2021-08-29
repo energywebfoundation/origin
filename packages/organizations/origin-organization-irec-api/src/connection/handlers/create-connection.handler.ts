@@ -39,16 +39,39 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
             throw new BadRequestException('IREC Registration not found');
         }
 
-        const connection = await this.repository.save({
-            ...loginResult,
-            userName,
-            registration,
-            clientId,
-            clientSecret
+        const existingConnection = await this.repository.findOne({
+            where: { registration: registration.id }
         });
 
-        this.eventBus.publish(new ConnectionCreatedEvent(connection, organizationId, registration));
+        if (existingConnection) {
+            if (userName !== existingConnection.userName) {
+                throw new BadRequestException('IREC connection user name mismatch');
+            }
 
-        return ConnectionDTO.wrap(connection);
+            existingConnection.clientId = clientId;
+            existingConnection.clientSecret = clientSecret;
+            existingConnection.expiryDate = loginResult.expiryDate;
+            existingConnection.accessToken = loginResult.accessToken;
+            existingConnection.refreshToken = loginResult.refreshToken;
+            existingConnection.active = true;
+            existingConnection.attempts = 0;
+
+            await existingConnection.save();
+
+            return ConnectionDTO.wrap(existingConnection);
+        } else {
+            const connection = await this.repository.save({
+                ...loginResult,
+                userName,
+                registration,
+                clientId,
+                clientSecret
+            });
+
+            this.eventBus.publish(
+                new ConnectionCreatedEvent(connection, organizationId, registration)
+            );
+            return ConnectionDTO.wrap(connection);
+        }
     }
 }
