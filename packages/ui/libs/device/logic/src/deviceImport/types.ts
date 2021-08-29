@@ -11,5 +11,6 @@ type ImportDeviceFormValues = {
 };
 
 export type TUseImportDeviceFormLogic = (
-  handleClose: () => void
+  handleClose: () => void,
+  smartMeterId: string
 ) => Omit<GenericFormProps<ImportDeviceFormValues>, 'submitHandler'>;

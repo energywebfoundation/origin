@@ -8,8 +8,10 @@ import {
 } from '@energyweb/origin-ui-device-data';
 import { usePermissionsLogic } from '@energyweb/origin-ui-device-logic';
 import { DeviceImagesUpload } from '../../containers';
+import { useDeviceAppEnv } from '../../context';
 
 export const useRegisterPageEffects = () => {
+  const { smartMeterId } = useDeviceAppEnv();
   const {
     user,
     exchangeDepositAddress,
@@ -31,7 +33,7 @@ export const useRegisterPageEffects = () => {
     allFuelTypes,
     allDeviceTypes,
     allRegions,
-    externalDeviceId: process.env.NX_SMART_METER_ID,
+    externalDeviceId: smartMeterId,
   });
 
   const { submitHandler, isMutating } = useApiRegisterDevice();

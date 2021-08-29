@@ -8,12 +8,15 @@ import { useState } from 'react';
 import { UploadedFile } from '@energyweb/origin-ui-core';
 import {
   DeviceModalsActionsEnum,
+  useDeviceAppEnv,
   useDeviceModalsDispatch,
   useDeviceModalsStore,
 } from '../../../context';
 
 export const useImportDeviceModalEffects = () => {
   const { t } = useTranslation();
+  const { smartMeterId } = useDeviceAppEnv();
+
   const deviceImagesHeading = t('device.import.deviceImages');
   const uploadText = t('file.upload.dropOrClick');
 
@@ -34,7 +37,7 @@ export const useImportDeviceModalEffects = () => {
     });
   };
 
-  const formLogic = useImportDeviceFormLogic(handleModalClose);
+  const formLogic = useImportDeviceFormLogic(handleModalClose, smartMeterId);
   const submitHandler = useApiDeviceImportHandler(
     importDevice?.deviceToImport,
     imageIds,
