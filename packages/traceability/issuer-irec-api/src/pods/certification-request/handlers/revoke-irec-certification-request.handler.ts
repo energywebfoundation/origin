@@ -36,11 +36,15 @@ export class RevokeIrecCertificationRequestHandler
             irecIssueRequestId
         );
 
-        const allowedStatuses = [IssuanceStatus.InProgress, IssuanceStatus.Verified];
+        const allowedStatuses = [
+            IssuanceStatus.InProgress,
+            IssuanceStatus.Submitted,
+            IssuanceStatus.Verified
+        ];
 
         if (!allowedStatuses.includes(issueRequest.status)) {
             throw new BadRequestException(
-                `IREC issuance request have to be in IN-PROGRESS, or VERIFIED state, got ${issueRequest.status}`
+                `IREC issuance request have to be in In-progress, Submitted, or Verified state, got ${issueRequest.status}`
             );
         }
 

@@ -45,7 +45,7 @@ export class ApproveIrecCertificationRequestHandler
 
         if (!allowedStatuses.includes(issueRequest.status)) {
             throw new BadRequestException(
-                `IREC issuance request have to be in In-progress, Verified, or Approved state, got ${issueRequest.status}`
+                `IREC issuance request have to be in In-progress, Submitted, Verified, or Approved state, got ${issueRequest.status}`
             );
         }
 
