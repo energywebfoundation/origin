@@ -18,7 +18,7 @@ export class RefreshTokensHandler implements ICommandHandler<RefreshTokensComman
         const irecConnection = await this.commandBus.execute(new GetConnectionCommand(user));
 
         if (irecConnection) {
-            await this.repository.update(irecConnection.id, accessTokens);
+            await this.repository.update(irecConnection.id, { ...accessTokens, attempts: 0 });
         }
     }
 }

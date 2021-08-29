@@ -101,6 +101,7 @@ export class IrecMockService implements IIrecService {
             clientSecret: 'oauth client secret',
             expiryDate: new Date(),
             userName: 'irecUser',
+            active: true,
             registration: {
                 id: '123',
                 owner: '234',
