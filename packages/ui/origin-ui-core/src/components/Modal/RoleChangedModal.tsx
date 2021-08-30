@@ -19,15 +19,20 @@ import {
 import { Brightness1 } from '@material-ui/icons';
 import { Role, OrganizationInvitationStatus, isRole } from '@energyweb/origin-backend-core';
 import { OriginFeature } from '@energyweb/utils-general';
-import { getUserOffchain, getInvitations } from '../../features/users';
-import { useLinks } from '../../utils/routing';
 import { OriginConfigurationContext } from '../../PackageConfigurationProvider';
 import OrgAddedIcon from '../../../assets/icon-org-added.svg';
+import { fromUsersSelectors } from '../../features';
+import { useLinks } from '../../hooks';
+import {
+    useOrgModalsStore,
+    useOrgModalsDispatch,
+    OrganizationModalsActionsEnum
+} from '../../context';
 
 interface IProps {
     showModal?: boolean;
     setShowModal?: (showModal: boolean) => void;
-    setShowIRec?: (showModal: boolean) => void;
+    setShowIRec?: boolean;
     setShowBlockchainModal?: (showModal: boolean) => void;
 }
 
@@ -37,10 +42,12 @@ export const RoleChangedModal = ({
     setShowIRec,
     setShowBlockchainModal
 }: IProps) => {
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+
     const userRef = useRef(user);
     const history = useHistory();
-    const { getDefaultLink } = useLinks();
+    const { defaultPageUrl } = useLinks();
+
     const { t } = useTranslation();
     const {
         typography: { fontSizeMd },
@@ -48,22 +55,41 @@ export const RoleChangedModal = ({
             text: { primary }
         }
     } = useTheme();
-    const sender = useSelector(getInvitations).find(
+
+    const sender = useSelector(fromUsersSelectors.getInvitations).find(
         (invitation) => invitation.status === OrganizationInvitationStatus.Accepted
     )?.sender;
     const enabledFeatures = useContext(OriginConfigurationContext)?.enabledFeatures;
     const iRecEnabled = enabledFeatures?.includes(OriginFeature.IRec);
+
+    const modalsStore = useOrgModalsStore();
+    const openModal = Boolean(modalsStore?.roleChanged);
+    const dispatchModals = useOrgModalsDispatch();
 
     useEffect(() => {
         if (user?.organization && userRef.current) {
             const { rights: newRole } = user;
             const { rights: oldRole, organization: oldOrganization } = userRef.current;
             if (!oldOrganization || oldRole !== newRole) {
-                setShowModal(true);
+                const modalOpener = setShowModal ? () => setShowModal(true) : () => {};
+                modalOpener();
             }
         }
         userRef.current = user;
     }, [user]);
+
+    const closeThisModalFromContext = () => {
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_ROLE_CHANGED,
+            payload: false
+        });
+    };
+    const openRegisterThankModalFromContext = () => {
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_REGISTER_THANK_YOU,
+            payload: true
+        });
+    };
 
     const getAsRoleYouCan = (rights: Role) => {
         switch (rights) {
@@ -122,30 +148,41 @@ export const RoleChangedModal = ({
     };
 
     const closeRoleModal = () => {
-        setShowModal(false);
+        const modalCloser = setShowModal ? () => setShowModal(false) : closeThisModalFromContext;
+        modalCloser();
+
         if (setShowIRec && iRecEnabled) {
-            setShowIRec(true);
-        } else if (!user.blockchainAccountAddress) {
-            setShowBlockchainModal(true);
+            dispatchModals({
+                type: OrganizationModalsActionsEnum.SHOW_IREC_CONNECT_OR_REGISTER,
+                payload: true
+            });
+        } else if (!user.organization?.blockchainAccountAddress) {
+            const blockchainModalOpener = setShowBlockchainModal
+                ? () => setShowBlockchainModal(true)
+                : openRegisterThankModalFromContext;
+
+            blockchainModalOpener();
         } else {
-            history.push(getDefaultLink());
+            history.push(defaultPageUrl);
         }
 
         const { rights: newRole } = user;
         if (
             (!setShowIRec &&
                 newRole === Role.OrganizationAdmin &&
-                !user.blockchainAccountAddress) ||
+                !user.organization?.blockchainAccountAddress) ||
             (!setShowIRec &&
                 newRole === Role.OrganizationDeviceManager &&
-                !user.blockchainAccountAddress)
+                !user.organization?.blockchainAccountAddress)
         ) {
             setShowBlockchainModal(true);
         }
     };
 
+    const modalOpen = showModal ? showModal : openModal;
+
     return (
-        <Dialog open={showModal} onClose={() => closeRoleModal()} scroll="body">
+        <Dialog open={modalOpen} onClose={closeRoleModal} scroll="body">
             <DialogTitle style={{ paddingBottom: '0' }}>
                 <Grid container>
                     <Grid item xs={3}>
@@ -181,7 +218,7 @@ export const RoleChangedModal = ({
             </DialogTitle>
             <DialogContent style={{ paddingTop: 0 }}>
                 <Grid container>
-                    <Grid item xs={3}></Grid>
+                    <Grid item xs={3} />
                     <Grid item xs={9}>
                         <Box color="text.secondary" fontSize={fontSizeMd}>
                             <List dense style={{ paddingTop: 0 }}>
@@ -243,7 +280,7 @@ export const RoleChangedModal = ({
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <Button color="primary" variant="contained" onClick={() => closeRoleModal()}>
+                <Button color="primary" variant="contained" onClick={closeRoleModal}>
                     {t('general.responses.ok')}
                 </Button>
             </DialogActions>

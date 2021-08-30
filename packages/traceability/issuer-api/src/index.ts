@@ -1,12 +1,11 @@
-import { Certificate } from './pods/certificate/certificate.entity';
-import { CertificateModule } from './pods/certificate/certificate.module';
-import { BlockchainProperties } from './pods/blockchain/blockchain-properties.entity';
-import { BlockchainPropertiesModule } from './pods/blockchain/blockchain-properties.module';
+import { Certificate, CertificateModule } from './pods/certificate';
+import { BlockchainProperties, BlockchainPropertiesModule } from './pods/blockchain';
 import { CertificationRequest, CertificationRequestModule } from './pods/certification-request';
 
 export * from './pods/certificate';
 export * from './pods/certification-request';
 export * from './pods/blockchain';
+export * from './types';
 
 export { BlockchainPropertiesService } from './pods/blockchain/blockchain-properties.service';
 export { AppModule, providers } from './app.module';

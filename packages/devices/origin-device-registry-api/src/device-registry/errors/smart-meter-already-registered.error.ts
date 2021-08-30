@@ -1,5 +1,7 @@
-export class SmartMeterAlreadyUsedError extends Error {
-    constructor(externalRegistryId: string) {
-        super(`Device ${externalRegistryId} is already registered`);
+import { ConflictException } from '@nestjs/common';
+
+export class SmartMeterAlreadyUsedError extends ConflictException {
+    constructor(smartMeterId: string) {
+        super(`Device with smartMeterId ${smartMeterId} is already registered`);
     }
 }

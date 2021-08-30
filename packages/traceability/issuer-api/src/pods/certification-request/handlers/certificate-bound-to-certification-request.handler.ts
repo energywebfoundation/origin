@@ -9,7 +9,8 @@ import { Certificate } from '../../certificate/certificate.entity';
 
 @CommandHandler(CertificateBoundToCertificationRequestCommand)
 export class CertificateBoundToCertificationRequestHandler
-    implements ICommandHandler<CertificateBoundToCertificationRequestCommand> {
+    implements ICommandHandler<CertificateBoundToCertificationRequestCommand>
+{
     constructor(
         @InjectRepository(CertificationRequest)
         private readonly repository: Repository<CertificationRequest>,
@@ -31,7 +32,7 @@ export class CertificateBoundToCertificationRequestHandler
 
         const certificationRequest = await this.repository.findOne({
             where: {
-                issuedCertificateTokenId: certificate.tokenId
+                issuedCertificateId: certificate.id
             }
         });
 

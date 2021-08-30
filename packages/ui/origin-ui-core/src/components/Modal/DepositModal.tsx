@@ -13,11 +13,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { resyncCertificate, requestDepositCertificate } from '../../features/certificates';
 import { ICertificateViewItem } from '../../features/certificates/types';
-import { getEnvironment } from '../../features/general/selectors';
-import { getUserOffchain } from '../../features/users/selectors';
 import { EnergyFormatter, formatDate, countDecimals } from '../../utils';
-import { IEnvironment } from '../../features/general';
+import { fromGeneralSelectors, IEnvironment } from '../../features/general';
 import { IOriginDevice } from '../../types';
+import { fromUsersSelectors } from '../../features';
 
 interface IProps {
     certificate: ICertificateViewItem;
@@ -28,8 +27,8 @@ interface IProps {
 
 export function DepositModal(props: IProps) {
     const { certificate, callback, device, showModal } = props;
-    const user = useSelector(getUserOffchain);
-    const environment: IEnvironment = useSelector(getEnvironment);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const environment: IEnvironment = useSelector(fromGeneralSelectors.getEnvironment);
     const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
         Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
     );

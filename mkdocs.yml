@@ -1,25 +1,32 @@
 site_name: EW-Origin
 
 nav:
-  - Introduction: index.md
-  - Getting started: getting-started.md
-  - Architecture: architecture.md
-  - User guides:
-    - Onboarding: user-guide-onboarding.md
-  - SDK:
-    - Traceability: traceability.md
-    - Trade: trade.md
-    - Device Registry: device-registry.md
-    - Organizations: organizations.md
-  - Cookbook:
-    - How to deploy to Volta: volta-deployment.md
+    - Introduction: index.md
+    - Getting started: getting-started.md
+    - Architecture: architecture.md
+    - Packages: packages.md
+    - User guides:
+          - Onboarding: user-guide-onboarding.md
+          - Device Management: user-guide-device-management.md
+    - Configuration:
+          - UI: configuration-ui.md
+    - SDK:
+          - Traceability: traceability.md
+          - Trade: trade.md
+          - Device Registry: device-registry.md
+          - Organizations: organizations.md
+    - SDK Reference:
+          - '@energyweb/issuer-irec-api-wrapper': sdk-reference/issuer-irec-api-wrapper/modules.md
+    - Cookbook:
+          - How to deploy to Volta: volta-deployment.md
+          - Run with Docker: docker.md
 
-theme: readthedocs
+theme: material
 
 plugins:
-  - mermaid2
-  - search
-  - autolinks
+    - mermaid2
+    - search
+    - autolinks
 
 extra_javascript:
-  - https://unpkg.com/mermaid@8.8.4/dist/mermaid.min.js
+    - https://unpkg.com/mermaid@8.8.4/dist/mermaid.min.js

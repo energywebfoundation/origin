@@ -1,0 +1,10 @@
+output: mythx.json
+format: json
+
+analyze:
+    mode: standard
+    create-group: true
+    group-name: Smart contract analysis
+    solc: 0.8.4
+    targets:
+        - contracts

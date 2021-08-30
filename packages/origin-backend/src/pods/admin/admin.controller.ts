@@ -3,7 +3,8 @@ import {
     ActiveUserGuard,
     NullOrUndefinedResultInterceptor,
     Roles,
-    RolesGuard
+    RolesGuard,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -24,13 +25,18 @@ import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserDTO } from '../user/dto/user.dto';
 
 import { UserService } from '../user/user.service';
+import { OrganizationService } from '../organization/organization.service';
+import { UpdateBlockchainAccountDTO } from './dto/update-blockchain-account.dto';
 
 @ApiTags('admin')
 @ApiBearerAuth('access-token')
 @Controller('admin')
 @UseInterceptors(NullOrUndefinedResultInterceptor)
 export class AdminController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly organizationService: OrganizationService
+    ) {}
 
     @Get('users')
     @UseGuards(AuthGuard('jwt'), ActiveUserGuard, RolesGuard)
@@ -80,5 +86,24 @@ export class AdminController {
         @Body() body: UpdateUserDTO
     ): Promise<UserDTO> {
         return this.userService.update(id, body);
+    }
+
+    @Put('organization/:id/chain-address')
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
+    @Roles(Role.Admin)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: `Change the organization blockchain address`
+    })
+    public async updateBlockchainAddress(
+        @Param('id', new ParseIntPipe()) organizationId: number,
+        @Body() { address, signedMessage }: UpdateBlockchainAccountDTO
+    ): Promise<SuccessResponseDTO> {
+        return this.organizationService.updateBlockchainAddress(
+            organizationId,
+            address,
+            signedMessage
+        );
     }
 }

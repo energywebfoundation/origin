@@ -1,37 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { DeleteOutline, PermIdentityOutlined } from '@material-ui/icons';
-import {
-    IUser,
-    getRolesFromRights,
-    isRole,
-    Role,
-    UserStatus
-} from '@energyweb/origin-backend-core';
-import { getUserOffchain } from '../../features/users';
-import { setLoading, getBackendClient } from '../../features/general';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { roleNames } from '../../utils/organizationRoles';
+import { getRolesFromRights, isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { fromGeneralActions, fromGeneralSelectors } from '../../features';
+import { showNotification, NotificationTypeEnum, roleNames } from '../../utils';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
     usePaginatedLoader
 } from '../Table';
 import { IRecord } from '../admin/AdminUsersTable';
-import { ChangeRoleModal } from '../Modal';
+import { fromUsersSelectors } from '../../features';
+import { OrganizationModalsActionsEnum, useOrgModalsDispatch } from '../../context';
 
 export function OrganizationUsersTable() {
     const { t } = useTranslation();
+    const dispatchModals = useOrgModalsDispatch();
 
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const userOffchain = useSelector(getUserOffchain);
+    const organizationClient = useSelector(
+        fromGeneralSelectors.getBackendClient
+    )?.organizationClient;
+    const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
     const userIsActive = userOffchain && userOffchain.status === UserStatus.Active;
 
     const dispatch = useDispatch();
-
-    const [selectedUser, setSelectedUser] = useState<IUser>(null);
-    const [showUserRoleChangeModal, setShowUserRoleChangeModal] = useState(false);
 
     async function getPaginatedData({
         requestedPageSize,
@@ -51,7 +44,7 @@ export function OrganizationUsersTable() {
             if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${userOffchain.status}`,
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             }
         }
@@ -84,42 +77,43 @@ export function OrganizationUsersTable() {
         if (user.id === userOffchain.id) {
             showNotification(
                 `You can't remove yourself from organization.`,
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             return;
         }
 
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await organizationClient.removeMember(userOffchain.organization.id, user.id);
 
-            showNotification(`User removed.`, NotificationType.Success);
+            showNotification(`User removed.`, NotificationTypeEnum.Success);
 
             await loadPage(1);
         } catch (error) {
-            showNotification(`Could not remove user.`, NotificationType.Error);
+            showNotification(`Could not remove user.`, NotificationTypeEnum.Error);
             console.error(error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     }
 
     async function changeRole(rowIndex: number) {
-        const user = paginatedData[rowIndex]?.user;
+        const selectedUser = paginatedData[rowIndex]?.user;
 
         if (!isRole(userOffchain, Role.OrganizationAdmin)) {
-            showNotification(`Only the Admin can change user roles.`, NotificationType.Error);
+            showNotification(`Only the Admin can change user roles.`, NotificationTypeEnum.Error);
             return;
         }
 
-        setSelectedUser(user);
-        setShowUserRoleChangeModal(true);
-    }
-
-    async function changeRoleCallback() {
-        setShowUserRoleChangeModal(false);
-        await loadPage(1);
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_CHANGE_MEMBER_ORG_ROLE,
+            payload: {
+                open: true,
+                userToUpdate: selectedUser,
+                reloadCallback: async () => await loadPage(1)
+            }
+        });
     }
 
     const actions = [];
@@ -140,10 +134,10 @@ export function OrganizationUsersTable() {
     }
 
     const columns = [
-        { id: 'firstName', label: 'First name' },
-        { id: 'lastName', label: 'Last name' },
-        { id: 'email', label: 'Email' },
-        { id: 'role', label: 'Role' }
+        { id: 'firstName', label: t('user.properties.firstName') },
+        { id: 'lastName', label: t('user.properties.lastName') },
+        { id: 'email', label: t('user.properties.email') },
+        { id: 'role', label: t('user.properties.role') }
     ];
 
     const rows = paginatedData.map(({ user }) => {
@@ -166,12 +160,6 @@ export function OrganizationUsersTable() {
                 total={total}
                 pageSize={pageSize}
                 actions={actions}
-            />
-
-            <ChangeRoleModal
-                user={selectedUser}
-                showModal={showUserRoleChangeModal}
-                callback={changeRoleCallback}
             />
         </div>
     );

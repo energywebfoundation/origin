@@ -22,19 +22,13 @@ export class CreateDeviceDTO {
     @IsString()
     @IsNotEmpty()
     @Expose()
-    defaultAccount: string;
-
-    @ApiProperty({ type: String })
-    @IsString()
-    @IsNotEmpty()
-    @Expose()
     deviceType: string;
 
     @ApiProperty({ type: String })
     @IsString()
     @IsNotEmpty()
     @Expose()
-    fuel: string;
+    fuelType: string;
 
     @ApiProperty({ type: String })
     @IsString()
@@ -92,6 +86,22 @@ export class CreateDeviceDTO {
     @IsNotEmpty()
     @Expose()
     gridOperator: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    @Expose()
+    postalCode: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    @Expose()
+    region: string;
+
+    @ApiProperty({ type: String })
+    @IsString()
+    @IsOptional()
+    @Expose()
+    subregion: string;
 
     public static sanitize(device: CreateDeviceDTO): CreateDeviceDTO {
         return plainToClass(CreateDeviceDTO, device, { excludeExtraneousValues: true });

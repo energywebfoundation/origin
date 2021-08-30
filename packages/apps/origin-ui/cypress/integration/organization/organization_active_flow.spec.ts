@@ -58,7 +58,7 @@ describe('Organization with status Active and User status active flow', () => {
         cy.dataCy('blockchain-inbox').click();
         cy.url().should('include', 'blockchain-inbox');
         cy.contains('Blockchain inbox');
-        cy.contains('Deposit');
+        cy.contains('blockchain account attached');
 
         cy.dataCy('claims_report').click();
         cy.url().should('include', 'claims_report');
@@ -94,8 +94,8 @@ describe('Organization with status Active and User status active flow', () => {
         cy.contains('WIND');
         cy.contains('OTHER');
 
-        cy.dataCy('my_trades').click();
-        cy.url().should('include', 'my_trades');
+        cy.dataCy('my-trades').click();
+        cy.url().should('include', 'my-trades');
         cy.contains('Date');
         cy.contains('Side');
 

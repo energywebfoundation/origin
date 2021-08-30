@@ -26,10 +26,15 @@ export class BlockchainProperties extends ExtendedBaseEntity {
     platformOperatorPrivateKey: string;
 
     @Column({ nullable: true })
-    rpcNodeFallback: string;
+    rpcNodeFallback?: string;
+
+    @Column({ nullable: true })
+    privateIssuer?: string;
 
     wrap(signerOrPrivateKey?: Signer | string): IBlockchainProperties {
-        const web3 = getProviderWithFallback(this.rpcNode, this.rpcNodeFallback);
+        const web3 = getProviderWithFallback(
+            ...[this.rpcNode, this.rpcNodeFallback].filter((url) => !!url)
+        );
         const assure0x = (privateKey: string) =>
             privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
 
@@ -46,8 +51,11 @@ export class BlockchainProperties extends ExtendedBaseEntity {
 
         return {
             web3,
-            registry: Contracts.factories.RegistryFactory.connect(this.registry, signer ?? web3),
-            issuer: Contracts.factories.IssuerFactory.connect(this.issuer, signer ?? web3),
+            registry: Contracts.factories.RegistryExtendedFactory.connect(this.registry, signer),
+            issuer: Contracts.factories.IssuerFactory.connect(this.issuer, signer),
+            privateIssuer: this.privateIssuer
+                ? Contracts.factories.PrivateIssuerFactory.connect(this.privateIssuer, signer)
+                : null,
             activeUser: signer
         };
     }

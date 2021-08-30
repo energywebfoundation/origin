@@ -9,15 +9,15 @@ import {
     Role,
     isRole
 } from '@energyweb/origin-backend-core';
-import { getUserOffchain } from '../../features/users';
-import { setLoading, getBackendClient } from '../../features/general';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { useLinks } from '../../utils/routing';
+import { showNotification, NotificationTypeEnum } from '../../utils';
 import {
     TableMaterial,
     IPaginatedLoaderHooksFetchDataParameters,
-    usePaginatedLoader
+    usePaginatedLoader,
+    TableAction
 } from '../Table';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersSelectors } from '../../features';
+import { useLinks } from '../../hooks';
 
 interface IRecord {
     organization: IPublicOrganization;
@@ -35,14 +35,12 @@ function getOrganizationText(status: OrganizationStatus) {
     return 'Submitted';
 }
 
-export function OrganizationTable() {
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const user = useSelector(getUserOffchain);
-
-    const { getOrganizationViewLink } = useLinks();
-
+export const OrganizationTable = () => {
+    const organizationClient = useSelector(fromGeneralSelectors.getBackendClient)
+        ?.organizationClient;
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const { getOrganizationDetailsPageUrl } = useLinks();
     const history = useHistory();
-
     const dispatch = useDispatch();
 
     const hasApprovalRights = isRole(user, Role.Admin, Role.SupportAgent);
@@ -85,7 +83,7 @@ export function OrganizationTable() {
     function viewEntity(rowIndex: number) {
         const organizationId = paginatedData[rowIndex]?.organization?.id;
 
-        history.push(getOrganizationViewLink(organizationId.toString()));
+        history.push(getOrganizationDetailsPageUrl(organizationId.toString()));
     }
 
     async function approve(rowIndex: number) {
@@ -94,36 +92,40 @@ export function OrganizationTable() {
         if (organization.status !== OrganizationStatus.Submitted) {
             showNotification(
                 `You can only approve organization with status submitted.`,
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
 
             return;
         }
 
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await organizationClient.update(organization.id, {
                 status: OrganizationStatus.Active
             });
 
-            showNotification(`Organization approved.`, NotificationType.Success);
+            showNotification(`Organization approved.`, NotificationTypeEnum.Success);
 
             await loadPage(1);
         } catch (error) {
-            showNotification(`Could not approve organization.`, NotificationType.Error);
+            showNotification(`Could not approve organization.`, NotificationTypeEnum.Error);
             console.error(error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     }
 
-    const actions = hasApprovalRights
+    const actions: TableAction[] = hasApprovalRights
         ? [
-              {
-                  icon: <Check />,
-                  name: 'Approve',
-                  onClick: (index: string) => approve(parseInt(index, 10))
+              (row) => {
+                  return row.status === OrganizationStatus.Submitted
+                      ? {
+                            icon: <Check />,
+                            name: 'Approve',
+                            onClick: (index: string) => approve(parseInt(index, 10))
+                        }
+                      : null;
               }
           ]
         : [];
@@ -155,4 +157,4 @@ export function OrganizationTable() {
             handleRowClick={(index: string) => viewEntity(parseInt(index, 10))}
         />
     );
-}
+};

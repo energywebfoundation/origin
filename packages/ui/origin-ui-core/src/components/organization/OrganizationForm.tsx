@@ -17,19 +17,18 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { IFullOrganization, OrganizationPostData } from '@energyweb/origin-backend-core';
-import { setLoading, getBackendClient } from '../../features/general';
-import { setUserOffchain, getUserOffchain } from '../../features/users';
 import { useOriginConfiguration } from '../../utils/configuration';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../utils/notifications';
 import { LightenColor } from '../../utils/colors';
 import { Upload, IUploadedFile } from '../Documents';
 import { FormInput, FormCountrySelect, FormBusinessTypeSelect } from '../Form';
 import {
-    RoleChangedModal,
-    IRECConnectOrRegisterModal,
-    RegisterThankYouMessageModal,
-    OrganizationAlreadyExistsModal
-} from '../Modal';
+    fromGeneralActions,
+    fromGeneralSelectors,
+    fromUsersActions,
+    fromUsersSelectors
+} from '../../features';
+import { OrganizationModalsActionsEnum, useOrgModalsDispatch } from '../../context';
 
 interface IProps {
     entity: IFullOrganization;
@@ -96,23 +95,19 @@ const VALIDATION_SCHEMA = Yup.object({
     documentIds: Yup.array().label('Upload Company Proof')
 });
 
-export function OrganizationForm(props: IProps) {
+export const OrganizationForm = (props: IProps) => {
     const { entity, readOnly } = props;
-    const organizationClient = useSelector(getBackendClient)?.organizationClient;
-    const [
-        initialFormValuesFromExistingEntity,
-        setInitialFormValuesFromExistingEntity
-    ] = useState<IFormValues>(null);
+    const organizationClient = useSelector(
+        fromGeneralSelectors.getBackendClient
+    )?.organizationClient;
+    const [initialFormValuesFromExistingEntity, setInitialFormValuesFromExistingEntity] =
+        useState<IFormValues>(null);
     const [companyProofs, setCompanyProofs] = useState<IUploadedFile[]>([]);
     const [signatoryId, setSignatoryId] = useState<IUploadedFile[]>([]);
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const { t } = useTranslation();
     const dispatch = useDispatch();
-
-    const [showRoleModal, setShowRoleModal] = useState(false);
-    const [showIRecModal, setShowIRecModal] = useState(false);
-    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
-    const [showAlreadyExistsModal, setShowAlreadyExistsModal] = useState(false);
+    const dispatchModals = useOrgModalsDispatch();
 
     const useStyles = makeStyles(() =>
         createStyles({
@@ -147,7 +142,7 @@ export function OrganizationForm(props: IProps) {
             return;
         }
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             const formData: OrganizationPostData = {
@@ -163,26 +158,32 @@ export function OrganizationForm(props: IProps) {
             };
 
             const organization = (await organizationClient.register(formData)).data;
-            dispatch(setUserOffchain({ ...user, organization }));
+            dispatch(fromUsersActions.setUserOffchain({ ...user, organization }));
 
             if (organization) {
-                setShowRoleModal(true);
-                showNotification('Organization registered.', NotificationType.Success);
+                dispatchModals({
+                    type: OrganizationModalsActionsEnum.SHOW_ROLE_CHANGED,
+                    payload: true
+                });
+                showNotification('Organization registered.', NotificationTypeEnum.Success);
             }
         } catch (error) {
             console.warn('Error while registering an organization', error);
 
             if (error?.response?.status === 401) {
-                showNotification('Unauthorized.', NotificationType.Error);
+                showNotification('Unauthorized.', NotificationTypeEnum.Error);
             } else if (error?.response?.status === 400) {
-                setShowAlreadyExistsModal(true);
-                showNotification(error?.response?.data?.message, NotificationType.Error);
+                dispatchModals({
+                    type: OrganizationModalsActionsEnum.SHOW_ORGANIZATION_ALREADY_EXISTS,
+                    payload: true
+                });
+                showNotification(error?.response?.data?.message, NotificationTypeEnum.Error);
             } else {
-                showNotification('Organization could not be created.', NotificationType.Error);
+                showNotification('Organization could not be created.', NotificationTypeEnum.Error);
             }
         }
         formikActions.setSubmitting(false);
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     }
 
     let initialFormValues: IFormValues = null;
@@ -206,7 +207,7 @@ export function OrganizationForm(props: IProps) {
                 validateOnMount={true}
             >
                 {(formikProps) => {
-                    const { isValid, isSubmitting, values } = formikProps;
+                    const { isValid, isSubmitting, values, setFieldValue } = formikProps;
 
                     const fieldDisabled = isSubmitting || readOnly;
                     const buttonDisabled =
@@ -272,7 +273,9 @@ export function OrganizationForm(props: IProps) {
                                             <FormCountrySelect
                                                 label={t('organization.registration.country')}
                                                 data-cy="organization-country"
-                                                property="country"
+                                                onChange={(value) =>
+                                                    setFieldValue('country', value, true)
+                                                }
                                                 currentValue={values.country}
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -374,7 +377,9 @@ export function OrganizationForm(props: IProps) {
                                             <FormCountrySelect
                                                 label={t('organization.registration.country')}
                                                 data-cy="organization-signatory-country"
-                                                property="signatoryCountry"
+                                                onChange={(value) =>
+                                                    setFieldValue('signatoryCountry', value, true)
+                                                }
                                                 currentValue={values.signatoryCountry}
                                                 disabled={fieldDisabled}
                                                 className="mt-3"
@@ -439,25 +444,6 @@ export function OrganizationForm(props: IProps) {
                     );
                 }}
             </Formik>
-            <RoleChangedModal
-                showModal={showRoleModal}
-                setShowModal={setShowRoleModal}
-                setShowIRec={setShowIRecModal}
-                setShowBlockchainModal={setShowBlockchainModal}
-            />
-            <IRECConnectOrRegisterModal
-                showModal={showIRecModal}
-                setShowModal={setShowIRecModal}
-                setShowBlockchainModal={setShowBlockchainModal}
-            />
-            <RegisterThankYouMessageModal
-                showModal={showBlockchainModal}
-                setShowModal={setShowBlockchainModal}
-            />
-            <OrganizationAlreadyExistsModal
-                showModal={showAlreadyExistsModal}
-                setShowModal={setShowAlreadyExistsModal}
-            />
         </Paper>
     );
-}
+};

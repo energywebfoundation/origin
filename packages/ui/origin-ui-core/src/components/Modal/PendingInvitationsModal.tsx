@@ -8,11 +8,10 @@ import {
     OrganizationInvitationStatus,
     IOrganizationInvitation
 } from '@energyweb/origin-backend-core';
-import { setInvitations, refreshUserOffchain } from '../../features/users';
-import { getBackendClient, setLoading } from '../../features/general';
-import { useLinks } from '../../utils/routing';
 import { roleNames } from '../../utils/organizationRoles';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../utils/notifications';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersActions } from '../../features';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     showModal: boolean;
@@ -39,16 +38,16 @@ export const PendingInvitationsModal = (props: IProps) => {
     };
 
     const dispatch = useDispatch();
-    const invitationClient = useSelector(getBackendClient)?.invitationClient;
+    const invitationClient = useSelector(fromGeneralSelectors.getBackendClient)?.invitationClient;
     const { t } = useTranslation();
     const {
         typography: { fontSizeSm }
     } = useTheme();
     const history = useHistory();
-    const { getDefaultLink } = useLinks();
+    const { defaultPageUrl } = useLinks();
 
     const reject = async () => {
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await invitationClient.updateInvitation(
@@ -58,17 +57,17 @@ export const PendingInvitationsModal = (props: IProps) => {
 
             showNotification(
                 t('organization.invitations.notification.rejectedSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
             showNotification(
                 t('organization.invitations.notification.rejectedFailure'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             console.error(error);
         }
         dispatch(
-            setInvitations(
+            fromUsersActions.setInvitations(
                 invitations.map((inv) =>
                     inv.id === invitation.id
                         ? {
@@ -80,11 +79,11 @@ export const PendingInvitationsModal = (props: IProps) => {
             )
         );
         setShowModal(false);
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     };
 
     const accept = async () => {
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await invitationClient.updateInvitation(
@@ -101,24 +100,24 @@ export const PendingInvitationsModal = (props: IProps) => {
                 );
             showNotification(
                 t('organization.invitations.notification.acceptedSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
-            dispatch(refreshUserOffchain());
+            dispatch(fromUsersActions.refreshUserOffchain());
             setShowModal(false);
-            history.push(getDefaultLink());
+            history.push(defaultPageUrl);
         } catch (error) {
             showNotification(
                 t('organization.invitations.notification.acceptedFailure'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             console.error(error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     };
 
     const later = async () => {
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await invitationClient.updateInvitation(
@@ -127,17 +126,17 @@ export const PendingInvitationsModal = (props: IProps) => {
             );
             showNotification(
                 t('organization.invitations.notification.laterSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
             showNotification(
                 t('organization.invitations.notification.laterFailure'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             console.error(error);
         }
         dispatch(
-            setInvitations(
+            fromUsersActions.setInvitations(
                 invitations.map((inv) =>
                     inv.id === invitation.id
                         ? { ...invitation, status: OrganizationInvitationStatus.Viewed }
@@ -146,7 +145,7 @@ export const PendingInvitationsModal = (props: IProps) => {
             )
         );
         setShowModal(false);
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     };
 
     return (

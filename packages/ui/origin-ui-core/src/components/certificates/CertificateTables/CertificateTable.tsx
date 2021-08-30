@@ -4,17 +4,14 @@ import { Redirect } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BigNumber } from 'ethers';
 import { AssignmentTurnedIn, Publish, Undo, BusinessCenter } from '@material-ui/icons';
+import { getConfiguration } from '../../../features/configuration';
+import { getAllDevices, fetchAllDevices } from '../../../features/devices';
 import {
     getCertificates,
     ICertificateViewItem,
-    CertificateSource,
-    getConfiguration,
-    getEnvironment,
-    getBackendClient,
-    getAllDevices,
-    fetchAllDevices,
-    getUserOffchain
-} from '../../../features';
+    CertificateSource
+} from '../../../features/certificates';
+import { EnergyFormatter } from '../../../utils/EnergyFormatter';
 import { formatDate, moment } from '../../../utils/time';
 import {
     getDeviceLocationText,
@@ -23,10 +20,8 @@ import {
     getDeviceGridOperatorText,
     getDeviceColumns,
     getDeviceSpecificPropertiesSearchTitle,
-    NotificationType,
-    showNotification,
-    EnergyFormatter,
-    useLinks
+    NotificationTypeEnum,
+    showNotification
 } from '../../../utils';
 import { IOriginDevice } from '../../../types';
 import {
@@ -44,6 +39,8 @@ import {
     TableAction
 } from '../../Table';
 import { PublishForSaleModal, ClaimModal, WithdrawModal, DepositModal } from '../../Modal';
+import { fromGeneralSelectors, fromUsersSelectors } from '../../../features';
+import { useLinks } from '../../../hooks';
 
 interface IProps {
     certificates?: ICertificateViewItem[];
@@ -81,8 +78,8 @@ export function CertificateTable(props: IProps): JSX.Element {
     const certificates = useSelector(getCertificates);
     const configuration = useSelector(getConfiguration);
     const allDevices = useSelector(getAllDevices);
-    const environment = useSelector(getEnvironment);
-    const backendClient = useSelector(getBackendClient);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const deviceClient = backendClient?.deviceClient;
     const dispatch = useDispatch();
 
@@ -96,7 +93,7 @@ export function CertificateTable(props: IProps): JSX.Element {
     const hiddenColumns = props.hiddenColumns || [];
     const deviceTypeService = configuration?.deviceTypeService;
     const { t } = useTranslation();
-    const { getCertificateDetailLink } = useLinks();
+    const { getCertificateDetailsPageUrl } = useLinks();
 
     const [selectedCertificates, setSelectedCertificates] = useState<ICertificateViewItem[]>([]);
     const [detailViewForCertificateId, setDetailViewForCertificateId] = useState<number>(null);
@@ -106,8 +103,8 @@ export function CertificateTable(props: IProps): JSX.Element {
     const [withdrawModalVisibility, setWithdrawModalVisibility] = useState(false);
     const [depositModalVisibility, setDepositModalVisibility] = useState(false);
 
-    const user = useSelector(getUserOffchain);
-    const hasBlockchainAccount = Boolean(user.blockchainAccountAddress);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const hasBlockchainAccount = !!user?.organization?.blockchainAccountAddress;
 
     async function getPaginatedData({
         requestedPageSize,
@@ -159,14 +156,10 @@ export function CertificateTable(props: IProps): JSX.Element {
         };
     }
 
-    const {
-        loadPage,
-        paginatedData,
-        pageSize,
-        total
-    } = usePaginatedLoaderFiltered<IEnrichedCertificateData>({
-        getPaginatedData
-    });
+    const { loadPage, paginatedData, pageSize, total } =
+        usePaginatedLoaderFiltered<IEnrichedCertificateData>({
+            getPaginatedData
+        });
 
     useEffect(() => {
         loadPage(1);
@@ -174,7 +167,7 @@ export function CertificateTable(props: IProps): JSX.Element {
 
     async function claimCertificateBulk(selectedIndexes: string[]) {
         if (selectedIndexes.length === 0) {
-            showNotification(t('certificate.feedback.zeroSelected'), NotificationType.Error);
+            showNotification(t('certificate.feedback.zeroSelected'), NotificationTypeEnum.Error);
 
             return;
         }
@@ -184,7 +177,7 @@ export function CertificateTable(props: IProps): JSX.Element {
         if (selectedIndexes.length > CERTIFICATE_LIMIT) {
             showNotification(
                 t(`certificate.feedback.pleaseSelectLess`, { amount: CERTIFICATE_LIMIT }),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
 
             return;
@@ -221,7 +214,7 @@ export function CertificateTable(props: IProps): JSX.Element {
         if (certificate.source === CertificateSource.Exchange) {
             showNotification(
                 'Claiming certificate from the exchange is currently not supported',
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             return;
         }
@@ -232,7 +225,10 @@ export function CertificateTable(props: IProps): JSX.Element {
 
     async function withdraw(rowIndex: string) {
         if (!hasBlockchainAccount) {
-            showNotification(t('certificate.feedback.pleaseAddBlockchain'), NotificationType.Error);
+            showNotification(
+                t('certificate.feedback.pleaseAddBlockchain'),
+                NotificationTypeEnum.Error
+            );
         }
 
         const certificate = getCertificateFromRow(rowIndex);
@@ -421,7 +417,7 @@ export function CertificateTable(props: IProps): JSX.Element {
                         onClick: publishForSale
                     };
                 });
-                if (user.blockchainAccountAddress !== null) {
+                if (user.organization?.blockchainAccountAddress !== null) {
                     actions.push({
                         id: TableActionId.Withdraw,
                         name: t('certificate.actions.withdraw'),
@@ -444,59 +440,61 @@ export function CertificateTable(props: IProps): JSX.Element {
     const batchableActions = getBatchableActions();
     const actions = getActions();
 
-    const columns = ([
-        {
-            id: 'deviceType',
-            label: t('certificate.properties.deviceType'),
-            sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
-        },
-        {
-            id: 'commissioningDate',
-            label: t('device.properties.vintageCod'),
-            sortProperties: [
-                (record: IEnrichedCertificateData) => record?.producingDevice?.operationalSince
-            ]
-        },
-        ...getDeviceColumns(environment, t, [
-            (record: IEnrichedCertificateData) => record?.locationText,
-            (record: IEnrichedCertificateData) => record?.gridOperatorText
-        ]),
-        { id: 'compliance', label: t('certificate.properties.compliance') },
-        {
-            id: CERTIFICATION_DATE_COLUMN_ID,
-            label: t('certificate.properties.certificationDate'),
-            sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
-        },
-        {
-            id: 'energy',
-            label: `${t('certificate.properties.certifiedEnergy')} (${
-                EnergyFormatter.displayUnit
-            })`,
-            sortProperties: [
-                [
-                    (record: IEnrichedCertificateData) => {
-                        const owned = record?.certificate?.energy;
-                        if (!owned) return null;
-
-                        let energy;
-
-                        if (selectedState === SelectedState.Claimed) {
-                            energy = owned.claimedVolume;
-                        } else {
-                            energy = owned.publicVolume.add(owned.privateVolume);
-                        }
-
-                        return energy.toString();
-                    },
-                    (value: string) => value
+    const columns = (
+        [
+            {
+                id: 'deviceType',
+                label: t('certificate.properties.deviceType'),
+                sortProperties: [(record: IEnrichedCertificateData) => record?.deviceTypeLabel]
+            },
+            {
+                id: 'commissioningDate',
+                label: t('device.properties.vintageCod'),
+                sortProperties: [
+                    (record: IEnrichedCertificateData) => record?.producingDevice?.operationalSince
                 ]
-            ]
-        },
-        {
-            id: 'source',
-            label: `${t('certificate.properties.source')}`
-        }
-    ] as const).filter((column) => !hiddenColumns.includes(column.id));
+            },
+            ...getDeviceColumns(environment, t, [
+                (record: IEnrichedCertificateData) => record?.locationText,
+                (record: IEnrichedCertificateData) => record?.gridOperatorText
+            ]),
+            { id: 'compliance', label: t('certificate.properties.compliance') },
+            {
+                id: CERTIFICATION_DATE_COLUMN_ID,
+                label: t('certificate.properties.certificationDate'),
+                sortProperties: CERTIFICATION_DATE_COLUMN_SORT_PROPERTIES
+            },
+            {
+                id: 'energy',
+                label: `${t('certificate.properties.certifiedEnergy')} (${
+                    EnergyFormatter.displayUnit
+                })`,
+                sortProperties: [
+                    [
+                        (record: IEnrichedCertificateData) => {
+                            const owned = record?.certificate?.energy;
+                            if (!owned) return null;
+
+                            let energy;
+
+                            if (selectedState === SelectedState.Claimed) {
+                                energy = owned.claimedVolume;
+                            } else {
+                                energy = owned.publicVolume.add(owned.privateVolume);
+                            }
+
+                            return energy.toString();
+                        },
+                        (value: string) => value
+                    ]
+                ]
+            },
+            {
+                id: 'source',
+                label: `${t('certificate.properties.source')}`
+            }
+        ] as const
+    ).filter((column) => !hiddenColumns.includes(column.id));
     const rows = paginatedData.map((enrichedData) => {
         let deviceType = '';
         let commissioningDate = '';
@@ -536,7 +534,9 @@ export function CertificateTable(props: IProps): JSX.Element {
     });
 
     if (detailViewForCertificateId !== null) {
-        return <Redirect push={true} to={getCertificateDetailLink(detailViewForCertificateId)} />;
+        return (
+            <Redirect push={true} to={getCertificateDetailsPageUrl(detailViewForCertificateId)} />
+        );
     }
 
     const allowedActions = {

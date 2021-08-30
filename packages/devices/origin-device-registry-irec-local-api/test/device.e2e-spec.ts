@@ -21,18 +21,20 @@ describe('Device e2e tests', () => {
 
     const exampleDevice: CreateDeviceDTO = {
         name: 'Test solar device',
-        defaultAccount: 'MYTRADEACCOUNT001',
-        deviceType: 'ES100',
-        fuel: 'TC110',
+        deviceType: 'TC110',
+        fuelType: 'ES100',
         countryCode: 'TH',
-        capacity: 1000,
+        capacity: 1000000,
         commissioningDate: new Date('2020-01-01'),
         registrationDate: new Date('2020-01-02'),
         address: '1 Wind Farm Avenue, Thailand',
         latitude: '10',
         longitude: '10',
         gridOperator: 'OP',
-        timezone: 'Asia/Bangkok'
+        timezone: 'Asia/Bangkok',
+        postalCode: '12345',
+        region: 'Some place',
+        subregion: 'Another place'
     };
 
     before(async () => {
@@ -109,6 +111,23 @@ describe('Device e2e tests', () => {
         });
     });
 
+    it('should return my devices', async () => {
+        const { body: device } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(device.status).to.equal(DeviceState.InProgress);
+
+        const { body: myDevices } = await test
+            .get('/irec/device-registry/my-devices')
+            .set({ 'test-user': TestUser.OrganizationAdmin });
+
+        expect(myDevices).to.be.an('array');
+        expect(myDevices[0].id).to.equal(device.id);
+        expect(myDevices[0].code).to.equal(device.code);
+    });
+
     it('should update device data', async () => {
         const { body: device } = await test
             .post('/irec/device-registry')
@@ -145,9 +164,47 @@ describe('Device e2e tests', () => {
 
         const { body: createdDevice } = await test
             .post('/irec/device-registry/import-irec-device')
-            .send({ code: deviceToImport.code, timezone: 'some', gridOperator: 'some' })
+            .send({
+                code: deviceToImport.code,
+                timezone: 'some',
+                gridOperator: 'some',
+                country: 'TH',
+                postalCode: '12345',
+                region: 'Shire',
+                subregion: 'Hobbiton'
+            })
             .set({ 'test-user': TestUser.OrganizationAdmin });
 
         expect(createdDevice.id).to.be.a('string');
+    });
+
+    it('should pass reject/approve device flow', async () => {
+        const { body: newDevice } = await test
+            .post('/irec/device-registry')
+            .send(exampleDevice)
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.CREATED);
+        expect(newDevice.status).to.equal(DeviceState.InProgress);
+
+        const { body: rejectedDevice } = await test
+            .put(`/irec/device-registry/${newDevice.id}/status`)
+            .send({ status: DeviceState.Rejected })
+            .set({ 'test-user': TestUser.PlatformAdmin })
+            .expect(HttpStatus.OK);
+        expect(rejectedDevice.status).to.equal(DeviceState.Rejected);
+
+        const { body: updatedDevice } = await test
+            .put(`/irec/device-registry/device/${newDevice.id}`)
+            .send({ name: 'Changed Name' })
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+        expect(updatedDevice.status).to.equal(DeviceState.InProgress);
+
+        const { body: approvedDevice } = await test
+            .put(`/irec/device-registry/${newDevice.id}/status`)
+            .send({ status: DeviceState.Approved })
+            .set({ 'test-user': TestUser.PlatformAdmin })
+            .expect(HttpStatus.OK);
+        expect(approvedDevice.status).to.equal(DeviceState.Approved);
     });
 });

@@ -2,16 +2,16 @@ import { InboxPanel } from './InboxPanel';
 import {
     CertificateSource,
     requestDepositCertificate,
-    requestClaimCertificate,
-    getUserOffchain
+    requestClaimCertificate
 } from '../../features';
 import React, { useEffect, useState } from 'react';
 import { TabContent } from './Inbox/InboxTabContent';
-import { SelectedInboxList, IInboxCertificateData } from './Inbox';
+import { IInboxCertificateData, SelectedInboxList } from './Inbox';
 import { Checkbox } from '@material-ui/core';
 import { BeneficiaryForm } from './Inbox/BeneficiaryForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { fromUsersSelectors } from '../../features';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { makeStyles } from '@material-ui/styles';
 import { IClaimData } from '@energyweb/issuer';
@@ -25,18 +25,17 @@ export function BlockchainInboxPage(): JSX.Element {
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     useEffect(() => {
         setRetireForBeneficiary(false);
         setBeneficiaryFormData({
             beneficiary: user?.organization?.name,
-            address: user?.organization?.address,
-            zipCode: user?.organization?.zipCode,
-            region: null,
+            location: `${user?.organization?.address}, ${user?.organization?.zipCode}`,
             countryCode: user?.organization?.country,
-            fromDate: new Date().toISOString(),
-            toDate: new Date().toISOString()
+            periodStartDate: new Date().toISOString(),
+            periodEndDate: new Date().toISOString(),
+            purpose: 'GHG Accounting'
         });
     }, [user]);
 
@@ -88,7 +87,7 @@ export function BlockchainInboxPage(): JSX.Element {
         Requirement.IsLoggedIn,
         Requirement.IsActiveUser,
         Requirement.IsPartOfApprovedOrg,
-        Requirement.HasUserBlockchainAddress
+        Requirement.HasOrganizationBlockchainAddress
     ];
 
     const { canAccessPage } = usePermissions(pageRequirements);

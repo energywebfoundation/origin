@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - uses: styfle/cancel-workflow-action@0.8.0
+      - uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
 
@@ -55,11 +55,11 @@ jobs:
       # lerna doesn't work without additional fetch
       run: |
         git fetch origin master:master
-        yarn
+        node common/scripts/install-run-rush.js install
 
     - name: Build application
       run: |
-        yarn build
+        node common/scripts/install-run-rush.js build
 
     - name: Set creds to npm 
       run: |

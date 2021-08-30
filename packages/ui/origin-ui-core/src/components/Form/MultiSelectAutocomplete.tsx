@@ -95,6 +95,7 @@ export function MultiSelectAutocomplete(props: IOwnProps) {
                     <TextField
                         {...params}
                         required={requiredState}
+                        data-cy={label}
                         label={label}
                         onChange={(event) => setTextValue(event.target.value)}
                         helperText={

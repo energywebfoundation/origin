@@ -1,5 +1,6 @@
 export enum TransferDirection {
-    Deposit,
-    Withdrawal,
-    Claim
+    Deposit = 'Deposit',
+    Withdrawal = 'Withdrawal',
+    Claim = 'Claim',
+    Send = 'Send'
 }

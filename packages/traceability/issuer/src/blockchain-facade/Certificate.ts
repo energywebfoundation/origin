@@ -1,4 +1,11 @@
-import { Event as BlockchainEvent, ContractTransaction, ethers, BigNumber } from 'ethers';
+import {
+    Event as BlockchainEvent,
+    ContractTransaction,
+    ethers,
+    BigNumber,
+    utils,
+    providers
+} from 'ethers';
 
 import { Timestamp } from '@energyweb/utils-general';
 
@@ -8,7 +15,9 @@ import {
     decodeClaimData,
     IShareInCertificate,
     calculateOwnership,
-    calculateClaims
+    calculateClaims,
+    decodeData,
+    encodeData
 } from './CertificateUtils';
 import { IBlockchainProperties } from './BlockchainProperties';
 import { MAX_ENERGY_PER_CERTIFICATE } from './CertificationRequest';
@@ -19,32 +28,34 @@ import {
 } from '../utils/PreciseProofUtils';
 
 export interface IClaimData {
-    beneficiary?: string;
-    address?: string;
-    region?: string;
-    zipCode?: string;
-    countryCode?: string;
-    fromDate?: string;
-    toDate?: string;
+    beneficiary: string;
+    location: string;
+    countryCode: string;
+    periodStartDate: string;
+    periodEndDate: string;
+    purpose: string;
+}
+
+export interface IData {
+    deviceId: string;
+    generationStartTime: Timestamp;
+    generationEndTime: Timestamp;
+    metadata: string;
 }
 
 export interface IClaim {
     id: number;
     from: string;
     to: string;
-    topic: number;
-    value: number;
+    topic: string; // BigNumber string
+    value: string; // BigNumber string
     claimData: IClaimData;
 }
 
-export interface ICertificate {
+export interface ICertificate extends IData {
     id: number;
     issuer: string;
-    deviceId: string;
-    generationStartTime: number;
-    generationEndTime: number;
-    certificationRequestId: number;
-    creationTime: number;
+    creationTime: Timestamp;
     creationBlockHash: string;
     owners: IShareInCertificate;
     claimers: IShareInCertificate;
@@ -53,21 +64,19 @@ export interface ICertificate {
 export class Certificate implements ICertificate {
     public deviceId: string;
 
-    public generationStartTime: number;
+    public generationStartTime: Timestamp;
 
-    public generationEndTime: number;
+    public generationEndTime: Timestamp;
 
     public issuer: string;
 
-    public creationTime: number;
+    public creationTime: Timestamp;
 
     public creationBlockHash: string;
 
-    public certificationRequestId: number;
-
     public initialized = false;
 
-    public data: string;
+    public metadata: string;
 
     public owners: IShareInCertificate;
 
@@ -78,10 +87,11 @@ export class Certificate implements ICertificate {
     public static async create(
         to: string,
         value: BigNumber,
-        fromTime: Timestamp,
-        toTime: Timestamp,
+        generationStartTime: Timestamp,
+        generationEndTime: Timestamp,
         deviceId: string,
-        blockchainProperties: IBlockchainProperties
+        blockchainProperties: IBlockchainProperties,
+        metadata?: string
     ): Promise<Certificate> {
         if (value.gt(MAX_ENERGY_PER_CERTIFICATE)) {
             throw new Error(
@@ -89,22 +99,26 @@ export class Certificate implements ICertificate {
             );
         }
 
-        const newCertificate = new Certificate(null, blockchainProperties);
-
         const getIdFromEvents = (logs: BlockchainEvent[]): number =>
             Number(logs.find((log) => log.event === 'CertificationRequestApproved').topics[2]);
 
         const { issuer } = blockchainProperties;
         const issuerWithSigner = issuer.connect(blockchainProperties.activeUser);
 
-        const data = await issuer.encodeData(fromTime, toTime, deviceId);
+        const data = encodeData({
+            generationStartTime,
+            generationEndTime,
+            deviceId,
+            metadata: metadata ?? ''
+        });
 
         const properChecksumToAddress = ethers.utils.getAddress(to);
 
         const tx = await issuerWithSigner.issue(properChecksumToAddress, value, data);
-        const { events } = await tx.wait();
+        const { events, blockHash } = await tx.wait();
 
-        newCertificate.id = getIdFromEvents(events);
+        const newCertificate = new Certificate(getIdFromEvents(events), blockchainProperties);
+        newCertificate.creationBlockHash = blockHash;
 
         return newCertificate.sync();
     }
@@ -112,10 +126,11 @@ export class Certificate implements ICertificate {
     public static async createPrivate(
         to: string,
         value: BigNumber,
-        fromTime: Timestamp,
-        toTime: Timestamp,
+        generationStartTime: Timestamp,
+        generationEndTime: Timestamp,
         deviceId: string,
-        blockchainProperties: IBlockchainProperties
+        blockchainProperties: IBlockchainProperties,
+        metadata?: string
     ): Promise<{ certificate: Certificate; proof: IOwnershipCommitmentProofWithTx }> {
         if (value.gt(MAX_ENERGY_PER_CERTIFICATE)) {
             throw new Error(
@@ -123,15 +138,20 @@ export class Certificate implements ICertificate {
             );
         }
 
-        const newCertificate = new Certificate(null, blockchainProperties);
-
         const getIdFromEvents = (logs: BlockchainEvent[]): number =>
-            Number(logs.find((log) => log.event === 'CertificationRequestApproved').topics[2]);
+            Number(
+                logs.find((log) => log.event === 'PrivateCertificationRequestApproved').topics[2]
+            );
 
-        const { issuer } = blockchainProperties;
-        const issuerWithSigner = issuer.connect(blockchainProperties.activeUser);
+        const { privateIssuer } = blockchainProperties;
+        const privateIssuerWithSigner = privateIssuer.connect(blockchainProperties.activeUser);
 
-        const data = await issuer.encodeData(fromTime, toTime, deviceId);
+        const data = encodeData({
+            generationStartTime,
+            generationEndTime,
+            deviceId,
+            metadata: metadata ?? ''
+        });
 
         const properChecksumToAddress = ethers.utils.getAddress(to);
 
@@ -141,14 +161,15 @@ export class Certificate implements ICertificate {
 
         const commitmentProof = PreciseProofUtils.generateProofs(ownershipCommitment);
 
-        const tx = await issuerWithSigner.issuePrivate(
+        const tx = await privateIssuerWithSigner.issuePrivate(
             properChecksumToAddress,
             commitmentProof.rootHash,
             data
         );
-        const { events } = await tx.wait();
+        const { events, blockHash } = await tx.wait();
 
-        newCertificate.id = getIdFromEvents(events);
+        const newCertificate = new Certificate(getIdFromEvents(events), blockchainProperties);
+        newCertificate.creationBlockHash = blockHash;
 
         return {
             certificate: await newCertificate.sync(),
@@ -165,36 +186,23 @@ export class Certificate implements ICertificate {
         }
 
         const { registry } = this.blockchainProperties;
+
+        const issuanceBlock = this.creationBlockHash
+            ? await registry.provider.getBlock(this.creationBlockHash)
+            : await this.getIssuanceBlock();
+
         const certOnChain = await registry.getCertificate(this.id);
 
-        this.data = certOnChain.data;
+        const decodedData = decodeData(certOnChain.data);
 
-        const { issuer } = this.blockchainProperties;
+        this.generationStartTime = decodedData.generationStartTime;
+        this.generationEndTime = decodedData.generationEndTime;
+        this.deviceId = decodedData.deviceId;
+        this.metadata = decodedData.metadata;
 
-        const decodedData = await issuer.decodeData(this.data);
-
-        const allIssuanceLogs = await getEventsFromContract(
-            registry,
-            registry.filters.IssuanceSingle(null, null, null)
-        );
-        const issuanceLog = allIssuanceLogs.filter(
-            (event) => event._id.toString() === this.id.toString()
-        )[0];
-        const issuanceBlock = await registry.provider.getBlock(issuanceLog.blockHash);
-
-        this.generationStartTime = Number(decodedData['0']);
-        this.generationEndTime = Number(decodedData['1']);
-        this.deviceId = decodedData['2'];
         this.issuer = certOnChain.issuer;
         this.creationTime = Number(issuanceBlock.timestamp);
-        this.creationBlockHash = issuanceLog.blockHash;
-
-        const certificationRequestApprovedEvents = await getEventsFromContract(
-            issuer,
-            issuer.filters.CertificationRequestApproved(null, null, this.id)
-        );
-
-        this.certificationRequestId = certificationRequestApprovedEvents[0]._id;
+        this.creationBlockHash = issuanceBlock.hash;
 
         this.owners = await calculateOwnership(this.id, this.blockchainProperties);
         this.claimers = await calculateClaims(this.id, this.blockchainProperties);
@@ -222,14 +230,16 @@ export class Certificate implements ICertificate {
             throw new Error(`claim(): ${claimAddress} does not own a share in the certificate.`);
         }
 
+        const fromAddress = from ?? activeUserAddress;
+
         const encodedClaimData = encodeClaimData(claimData);
 
         return registryWithSigner.safeTransferAndClaimFrom(
-            from ?? activeUserAddress,
+            fromAddress,
             claimAddress,
             this.id,
             amount ?? ownedVolume,
-            this.data,
+            encodedClaimData, // TO-DO: Check the difference between data and claimData
             encodedClaimData
         );
     }
@@ -252,8 +262,17 @@ export class Certificate implements ICertificate {
             toAddress,
             this.id,
             amount ?? ownedVolume,
-            this.data
+            utils.defaultAbiCoder.encode([], []) // TO-DO: Store more meaningful transfer data?
         );
+    }
+
+    async mint(to: string, volume: BigNumber): Promise<ContractTransaction> {
+        const toAddress = ethers.utils.getAddress(to);
+
+        const { issuer } = this.blockchainProperties;
+        const issuerWithSigner = issuer.connect(this.blockchainProperties.activeUser);
+
+        return issuerWithSigner.mint(toAddress, this.id, volume);
     }
 
     async revoke(): Promise<ContractTransaction> {
@@ -293,8 +312,8 @@ export class Certificate implements ICertificate {
                     id: _id.toNumber(),
                     from: _claimIssuer,
                     to: _claimSubject,
-                    topic: _topic.toNumber(),
-                    value: _value.toNumber(),
+                    topic: _topic.toString(),
+                    value: _value.toString(),
                     claimData
                 });
             }
@@ -309,14 +328,8 @@ export class Certificate implements ICertificate {
             if (
                 claimBatchEvent._ids.map((idAsBN: BigNumber) => idAsBN.toNumber()).includes(this.id)
             ) {
-                const {
-                    _ids,
-                    _claimData,
-                    _claimIssuer,
-                    _claimSubject,
-                    _topics,
-                    _values
-                } = claimBatchEvent;
+                const { _ids, _claimData, _claimIssuer, _claimSubject, _topics, _values } =
+                    claimBatchEvent;
                 const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
 
                 const index = claimIds.indexOf(this.id);
@@ -326,13 +339,71 @@ export class Certificate implements ICertificate {
                     id: _ids[index].toNumber(),
                     from: _claimIssuer,
                     to: _claimSubject,
-                    topic: _topics[index]?.toNumber(),
-                    value: _values[index].toNumber(),
+                    topic: _topics[index]?.toString(),
+                    value: _values[index].toString(),
                     claimData
                 });
             }
         }
 
+        const claimBatchMultipleEvents = await getEventsFromContract(
+            registry,
+            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null)
+        );
+
+        for (const claimBatchMultipleEvent of claimBatchMultipleEvents) {
+            if (
+                claimBatchMultipleEvent._ids
+                    .map((idAsBN: BigNumber) => idAsBN.toNumber())
+                    .includes(this.id)
+            ) {
+                const { _ids, _claimData, _claimIssuer, _claimSubject, _topics, _values } =
+                    claimBatchMultipleEvent;
+                const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
+
+                const index = claimIds.indexOf(this.id);
+
+                claims.push({
+                    id: _ids[index].toNumber(),
+                    from: _claimIssuer[index],
+                    to: _claimSubject[index],
+                    topic: _topics[index]?.toString(),
+                    value: _values[index].toString(),
+                    claimData: decodeClaimData(_claimData[index])
+                });
+            }
+        }
+
         return claims;
+    }
+
+    private async getIssuanceBlock(): Promise<providers.Block> {
+        const { registry } = this.blockchainProperties;
+
+        const allIssuanceLogs = await getEventsFromContract(
+            registry,
+            registry.filters.IssuanceSingle(null, null, null)
+        );
+
+        let issuanceLog = allIssuanceLogs.find(
+            (event) => event._id.toString() === this.id.toString()
+        );
+
+        if (!issuanceLog) {
+            const allBatchIssuanceLogs = await getEventsFromContract(
+                registry,
+                registry.filters.IssuanceBatch(null, null, null, null)
+            );
+
+            issuanceLog = allBatchIssuanceLogs.find((event) =>
+                event._ids.map((id: BigNumber) => id.toString()).includes(this.id.toString())
+            );
+
+            if (!issuanceLog) {
+                throw new Error(`Unable to find the issuance event for Certificate ${this.id}`);
+            }
+        }
+
+        return registry.provider.getBlock(issuanceLog.blockHash);
     }
 }

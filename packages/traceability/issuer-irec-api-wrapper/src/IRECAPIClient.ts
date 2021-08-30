@@ -7,11 +7,11 @@ import { validateOrReject } from 'class-validator';
 import FormData from 'form-data';
 import { ReadStream } from 'fs';
 import qs from 'qs';
-import EventEmitter from 'events';
 
 import {
     Account,
     AccountBalance,
+    ApproveTransaction,
     RedeemTransaction,
     RedeemTransactionResult,
     Transaction,
@@ -22,8 +22,9 @@ import { Device, DeviceUpdateParams, DeviceCreateParams } from './Device';
 import { ApproveIssue, Issue, IssueWithStatus } from './Issue';
 import { Redemption, Transfer } from './Transfer';
 import { AccountItem, CodeName } from './Items';
-import { Fuel, FuelType } from './Fuel';
+import { FuelType, DeviceType } from './FuelType';
 import { Organisation } from './Organisation';
+import { Beneficiary, BeneficiaryCreateParams, BeneficiaryUpdateParams } from './Beneficiary';
 
 export type AccessTokens = {
     expiryDate: Date;
@@ -31,19 +32,20 @@ export type AccessTokens = {
     refreshToken: string;
 };
 
-export declare interface IRECAPIClient {
-    on(event: 'tokensRefreshed', listener: (accessTokens: AccessTokens) => void): this;
-}
-
-export class IRECAPIClient extends EventEmitter {
+export class IRECAPIClient {
     private config: AxiosRequestConfig;
 
     private interceptorId = NaN;
 
     private axiosInstance: AxiosInstance;
 
-    public constructor(private readonly endPointUrl: string, private accessTokens?: AccessTokens) {
-        super();
+    public constructor(
+        private readonly endPointUrl: string,
+        private clientId: string,
+        private clientSecret: string,
+        private onTokensRefreshed?: (accessTokens: AccessTokens) => any,
+        private accessTokens?: AccessTokens
+    ) {
         this.axiosInstance = axios.create({
             baseURL: endPointUrl,
             timeout: 30000
@@ -51,14 +53,12 @@ export class IRECAPIClient extends EventEmitter {
 
         this.enableInterceptor();
         this.enableErrorHandler();
+        if (accessTokens) {
+            this.applyAccessToken(accessTokens.accessToken);
+        }
     }
 
-    public async login(
-        userName: string,
-        password: string,
-        clientId: string,
-        clientSecret: string
-    ): Promise<AccessTokens> {
+    public async login(userName: string, password: string): Promise<AccessTokens> {
         const url = `${this.endPointUrl}/api/token`;
 
         this.disableInterceptor();
@@ -72,8 +72,8 @@ export class IRECAPIClient extends EventEmitter {
                 grant_type: 'password',
                 username: userName,
                 password,
-                client_id: clientId,
-                client_secret: clientSecret,
+                client_id: this.clientId,
+                client_secret: this.clientSecret,
                 scope: ''
             })
         );
@@ -180,18 +180,18 @@ export class IRECAPIClient extends EventEmitter {
         };
 
         return {
-            create: async (issue: Issue): Promise<string> => {
+            create: async (issue: Issue): Promise<IssueWithStatus> => {
                 const issueParams = issue instanceof Issue ? issue : plainToClass(Issue, issue);
                 await validateOrReject(issue);
 
                 const url = `${issueManagementUrl}/create`;
-                const response = await this.axiosInstance.post<{ code: string }>(
+                const response = await this.axiosInstance.post<IssueWithStatus>(
                     url,
                     classToPlain(issueParams),
                     this.config
                 );
 
-                return response.data.code;
+                return response.data;
             },
             update: async (code: string, issue: Issue): Promise<void> => {
                 await validateOrReject(issue, { skipMissingProperties: true });
@@ -222,12 +222,22 @@ export class IRECAPIClient extends EventEmitter {
             withdraw: async (code: string, notes?: string): Promise<void> => {
                 await setState(code, 'withdraw', notes);
             },
-            approve: async (code: string, approve: ApproveIssue): Promise<void> => {
+            approve: async (code: string, approve: ApproveIssue): Promise<ApproveTransaction> => {
+                const appr =
+                    approve instanceof ApproveIssue ? approve : plainToClass(ApproveIssue, approve);
+
                 await validateOrReject(approve);
 
                 const url = `${issueManagementUrl}/${code}/approve`;
 
-                await this.axiosInstance.put(url, classToPlain(approve), this.config);
+                const response = await this.axiosInstance.put<any>(
+                    url,
+                    classToPlain(appr),
+                    this.config
+                );
+
+                const asset = response.data.asset;
+                return plainToClass(ApproveTransaction, { ...response.data.transaction, asset });
             },
             getStatus: async (code: string): Promise<IssueWithStatus> => {
                 const url = `${issueManagementUrl}/${code}`;
@@ -239,15 +249,75 @@ export class IRECAPIClient extends EventEmitter {
         };
     }
 
+    public get beneficiary() {
+        const beneficiaryManagementUrl = `${this.endPointUrl}/api/irec/v1/beneficiaries`;
+
+        return {
+            create: async (params: BeneficiaryCreateParams): Promise<Beneficiary> => {
+                const beneficiaryParams =
+                    params instanceof BeneficiaryCreateParams
+                        ? params
+                        : plainToClass(BeneficiaryCreateParams, params);
+
+                await validateOrReject(beneficiaryParams);
+
+                const url = `${beneficiaryManagementUrl}/create`;
+                const response = await this.axiosInstance.post<unknown>(
+                    url,
+                    classToPlain(beneficiaryParams),
+                    this.config
+                );
+
+                return plainToClass(Beneficiary, response.data);
+            },
+            update: async (
+                id: string | number,
+                params: BeneficiaryUpdateParams
+            ): Promise<Beneficiary> => {
+                const beneficiaryParams =
+                    params instanceof BeneficiaryUpdateParams
+                        ? params
+                        : plainToClass(BeneficiaryUpdateParams, params);
+
+                await validateOrReject(beneficiaryParams);
+
+                const url = `${beneficiaryManagementUrl}/${id}`;
+
+                const response = await this.axiosInstance.put<unknown>(
+                    url,
+                    classToPlain(beneficiaryParams),
+                    this.config
+                );
+
+                return plainToClass(Beneficiary, response.data);
+            },
+            get: async (id: string | number): Promise<Beneficiary> => {
+                const url = `${beneficiaryManagementUrl}/${id}`;
+
+                const response = await this.axiosInstance.get<unknown>(url, this.config);
+
+                return plainToClass(Beneficiary, response.data);
+            },
+            getAll: async (): Promise<Beneficiary[]> => {
+                const response = await this.axiosInstance.get<unknown[]>(
+                    beneficiaryManagementUrl,
+                    this.config
+                );
+
+                return response.data.map((b) => plainToClass(Beneficiary, b));
+            }
+        };
+    }
+
     public get file() {
         const fileManagementUrl = `${this.endPointUrl}/api/irec/v1/file-management`;
 
         return {
-            upload: async (files: Blob[] | ReadStream[]): Promise<string[]> => {
+            upload: async (files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]> => {
                 const url = `${fileManagementUrl}/upload`;
 
                 const data = new FormData();
-                files.forEach((file: Blob | ReadStream) => data.append('files', file));
+                files.forEach((file: Buffer | Blob | ReadStream) => data.append('files', file));
 
                 const headers = data.getHeaders();
                 const response = await this.axiosInstance.post<{ file_uids: string[] }>(url, data, {
@@ -382,29 +452,31 @@ export class IRECAPIClient extends EventEmitter {
         const fuelUrl = `${this.endPointUrl}/api/irec/v1/fuels`;
 
         return {
-            getAll: async (): Promise<Fuel[]> => {
+            getFuelTypes: async (): Promise<FuelType[]> => {
                 const url = `${fuelUrl}/fuel`;
                 const response = await this.axiosInstance.get<unknown[]>(url, this.config);
 
-                return response.data.map((fuel) => plainToClass(Fuel, fuel));
+                return response.data.map((fuel) => plainToClass(FuelType, fuel));
             },
-            getAllTypes: async (): Promise<FuelType[]> => {
+            getDeviceTypes: async (): Promise<DeviceType[]> => {
                 const url = `${fuelUrl}/type`;
                 const response = await this.axiosInstance.get<unknown[]>(url, this.config);
 
-                return response.data.map((fuelType) => plainToClass(FuelType, fuelType));
+                return response.data.map((fuelType) => plainToClass(DeviceType, fuelType));
             }
         };
     }
 
     public async transfer(transfer: Transfer): Promise<TransactionResult> {
-        await validateOrReject(transfer);
+        const t = transfer instanceof Transfer ? transfer : plainToClass(Transfer, transfer);
 
-        const url = `${this.endPointUrl}/api/irec/transfer-management`;
+        await validateOrReject(t);
+
+        const url = `${this.endPointUrl}/api/irec/v1/transfer-management`;
 
         const response = await this.axiosInstance.post<{ transaction: any }>(
             url,
-            classToPlain(transfer),
+            classToPlain(t),
             this.config
         );
 
@@ -412,13 +484,16 @@ export class IRECAPIClient extends EventEmitter {
     }
 
     public async redeem(redemption: Redemption): Promise<RedeemTransactionResult> {
+        const r =
+            redemption instanceof Redemption ? redemption : plainToClass(Redemption, redemption);
+
         await validateOrReject(redemption);
 
-        const url = `${this.endPointUrl}/api/irec/redemption-management`;
+        const url = `${this.endPointUrl}/api/irec/v1/redemption-management`;
 
         const response = await this.axiosInstance.post<{ transaction: any }>(
             url,
-            classToPlain(redemption),
+            classToPlain(r),
             this.config
         );
 
@@ -432,9 +507,13 @@ export class IRECAPIClient extends EventEmitter {
             refreshToken
         };
 
+        this.applyAccessToken(accessToken);
+    }
+
+    private applyAccessToken(accessToken: string) {
         this.config = {
             headers: {
-                Authorization: `Bearer ${this.accessTokens.accessToken}`
+                Authorization: `Bearer ${accessToken}`
             }
         };
     }
@@ -451,7 +530,9 @@ export class IRECAPIClient extends EventEmitter {
             url,
             qs.stringify({
                 grant_type: 'refresh_token',
-                refresh_token: this.accessTokens.refreshToken
+                refresh_token: this.accessTokens.refreshToken,
+                client_id: this.clientId,
+                client_secret: this.clientSecret
             })
         );
         this.enableInterceptor();
@@ -461,7 +542,8 @@ export class IRECAPIClient extends EventEmitter {
             response.data.refresh_token,
             response.data.expires_in
         );
-        this.emit('tokensRefreshed', this.accessTokens);
+
+        await this.onTokensRefreshed(this.accessTokens);
 
         return this.accessTokens;
     }

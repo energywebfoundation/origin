@@ -7,10 +7,10 @@ import { OrderSide } from '@energyweb/exchange-irec-client';
 import {
     moment,
     formatCurrencyComplete,
-    getCurrencies,
     EnergyFormatter,
     DATE_FORMAT_INCLUDING_TIME,
-    LightenColor
+    LightenColor,
+    fromGeneralSelectors
 } from '@energyweb/origin-ui-core';
 import { getEnvironment } from '../../features/general';
 import { Order } from '../../utils/exchange';
@@ -48,7 +48,7 @@ export const OrderDetailsModal = (props: IOwnProps) => {
     const bgLighten = LightenColor(originBgColor, 2);
     const bgDarken = LightenColor(originBgColor, -2);
 
-    const currency = useSelector(getCurrencies)[0];
+    const currency = useSelector(fromGeneralSelectors.getCurrencies)[0];
     const deviceTypeFormatted = (deviceArr: string[]): string =>
         deviceArr.filter((type) => !type.includes(';')).join(', ');
     const primaryDeviceType = deviceType ? deviceTypeFormatted(deviceType) : anyOption;

@@ -1,7 +1,7 @@
 {
     "extends": ["config:base"],
     "schedule": ["every weekend"],
-    "ignoreDeps": ["solc", "@date-io/moment"],
+    "ignoreDeps": ["solc", "@date-io/moment", "@nestjs-modules/mailer"],
     "labels": ["dependencies"],
     "packageRules": [
         {
@@ -11,6 +11,19 @@
         {
             "packagePatterns": ["webpack", "-loader"],
             "groupName": "webpack"
+        },
+        {
+            "packagePatterns": ["ethers"],
+            "groupName": "ethers",
+            "enabled": false
+        },
+        {
+            "packagePatterns": ["nestjs"],
+            "groupName": "nestjs"
+        },
+        {
+            "packagePatterns": ["solc"],
+            "groupName": "solc"
         },
         {
             "packagePatterns": ["jest"],

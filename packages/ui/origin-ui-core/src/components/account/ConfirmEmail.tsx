@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import * as queryString from 'query-string';
 import { EmailConfirmationResponse } from '@energyweb/origin-backend-core';
-import { getBackendClient } from '../../features/general';
-import { getUserOffchain } from '../../features/users';
-import { showNotification, NotificationType } from '../../utils/notifications';
-import { useLinks } from '../../utils/routing';
+import { showNotification, NotificationTypeEnum } from '../../utils';
 
-export function ConfirmEmail(props: any) {
+import { fromGeneralSelectors, fromUsersSelectors } from '../../features';
+import { Location } from 'history';
+import { useLinks } from '../../hooks';
+
+interface IProps {
+    location: Location;
+}
+
+export const ConfirmEmail = memo((props: IProps) => {
     const { t } = useTranslation();
 
     const [confirmationState, setConfirmationState] = useState(null);
 
-    const userClient = useSelector(getBackendClient)?.userClient;
-    const user = useSelector(getUserOffchain);
+    const userClient = useSelector(fromGeneralSelectors.getBackendClient)?.userClient;
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     const history = useHistory();
-    const { getAccountLoginLink, getDefaultLink } = useLinks();
+    const { accountLoginPageUrl, defaultPageUrl } = useLinks();
 
     const { token } = queryString.parse(props.location.search);
 
@@ -33,9 +38,9 @@ export function ConfirmEmail(props: any) {
                 })
                 .then(() => {
                     if (!user) {
-                        history.push(getAccountLoginLink());
+                        history.push(accountLoginPageUrl);
                     } else {
-                        history.push(getDefaultLink());
+                        history.push(defaultPageUrl);
                     }
                 });
         }
@@ -61,8 +66,10 @@ export function ConfirmEmail(props: any) {
                 message !== null &&
                 showNotification(
                     t(`user.feedback.emailConfirmation.${message}`),
-                    NotificationType.Success
+                    NotificationTypeEnum.Success
                 )}
         </>
     );
-}
+});
+
+ConfirmEmail.displayName = 'ConfirmEmail';

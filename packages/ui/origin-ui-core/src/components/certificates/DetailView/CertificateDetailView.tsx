@@ -5,19 +5,18 @@ import { useTranslation } from 'react-i18next';
 import { utils } from 'ethers';
 import { makeStyles, createStyles, useTheme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { getEnvironment, getExchangeClient, getDeviceClient } from '../../../features/general';
 import {
     getCertificates,
     getCertificatesClient,
     getCertificationRequestsClient
 } from '../../../features/certificates';
-import { deduplicate } from '../../../utils/helper';
-import { formatDate } from '../../../utils/time';
-import { EnergyFormatter } from '../../../utils/EnergyFormatter';
-import { LightenColor } from '../../../utils/colors';
+import { deduplicate, formatDate, EnergyFormatter, LightenColor } from '../../../utils';
+
 import { useOriginConfiguration } from '../../../utils/configuration';
 import { DeviceDTO } from '@energyweb/origin-device-registry-irec-form-api-client';
+import { fromGeneralSelectors } from '../../../features';
 import { ClaimDataDTO } from '@energyweb/issuer-api-client';
+import moment from 'moment';
 
 interface IProps {
     id: number;
@@ -41,9 +40,9 @@ export function CertificateDetailView(props: IProps) {
     const { id } = props;
 
     const certificates = useSelector(getCertificates);
-    const environment = useSelector(getEnvironment);
-    const exchangeClient = useSelector(getExchangeClient);
-    const deviceClient = useSelector(getDeviceClient);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
+    const exchangeClient = useSelector(fromGeneralSelectors.getExchangeClient);
+    const deviceClient = useSelector(fromGeneralSelectors.getDeviceClient);
     const certificatesClient = useSelector(getCertificatesClient);
     const certificationRequestsClient = useSelector(getCertificationRequestsClient);
 
@@ -102,15 +101,18 @@ export function CertificateDetailView(props: IProps) {
 
                     break;
                 case 'TransferSingle':
-                    if (event._from === '0x0000000000000000000000000000000000000000') {
+                    if (event.from === '0x0000000000000000000000000000000000000000') {
                         label = t('certificate.event.name.initialOwner');
-                        description = transformAddress(event._to);
+                        description = transformAddress(event.to);
+                    } else if (event.to === '0x0000000000000000000000000000000000000000') {
+                        label = '';
+                        description = '';
                     } else {
                         label = t('certificate.event.name.changedOwnership');
                         description = t('certificate.event.description.transferred', {
-                            amount: EnergyFormatter.format(event._value, true),
-                            newOwner: transformAddress(event._to),
-                            oldOwner: transformAddress(event._from)
+                            amount: EnergyFormatter.format(event.value, true),
+                            newOwner: transformAddress(event.to),
+                            oldOwner: transformAddress(event.from)
                         });
                     }
                     break;
@@ -148,11 +150,14 @@ export function CertificateDetailView(props: IProps) {
                     requestor: transformAddress(request.owner),
                     amount: EnergyFormatter.format(request.energy, true)
                 }),
-                timestamp: request.created
+                timestamp: moment((request as any).createdAt).unix()
             });
         }
 
-        setEvents(deduplicate(resolvedEvents).sort((a, b) => a.timestamp - b.timestamp));
+        const filteredEvents =
+            resolvedEvents?.filter((event) => !!event.label || !!event.description) || [];
+
+        setEvents(deduplicate(filteredEvents).sort((a, b) => a.timestamp - b.timestamp));
     }
 
     const [certificateData, setCertificateData] = useState<Array<TCertificateData[]>>([]);
@@ -291,10 +296,12 @@ export function CertificateDetailView(props: IProps) {
 
                 if (uniqueClaims.length > 0) {
                     const fieldData = uniqueClaims.map((oneBeneficiary) => {
-                        const { fromDate, toDate } = oneBeneficiary;
+                        const { periodStartDate, periodEndDate } = oneBeneficiary;
 
-                        oneBeneficiary.fromDate = fromDate && `[From: ${formatDate(fromDate)}`;
-                        oneBeneficiary.toDate = toDate && `To: ${formatDate(toDate)}]`;
+                        oneBeneficiary.periodStartDate =
+                            periodStartDate && `[From: ${formatDate(periodStartDate)}`;
+                        oneBeneficiary.periodEndDate =
+                            periodEndDate && `To: ${formatDate(periodEndDate)}]`;
 
                         return Object.values(oneBeneficiary)
                             .filter((value) => value !== '')

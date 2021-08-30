@@ -1,5 +1,7 @@
-export class ExternalDeviceAlreadyUsedError extends Error {
+import { ConflictException } from '@nestjs/common';
+
+export class ExternalDeviceAlreadyUsedError extends ConflictException {
     constructor(externalRegistryId: string) {
-        super(`Device ${externalRegistryId} is already registered`);
+        super(`Device with externalRegistryId ${externalRegistryId} is already registered`);
     }
 }

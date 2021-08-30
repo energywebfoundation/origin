@@ -23,15 +23,13 @@ export async function calculateTotalVolume(
     if (parsedVolume > 0 && period && start && end) {
         const { data: summary } = await demandClient?.summary({
             price: 1 * 100,
-            volumePerPeriod: EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-                parsedVolume
-            ).toString(),
+            volumePerPeriod:
+                EnergyFormatter.getBaseValueFromValueInDisplayUnit(parsedVolume).toString(),
             periodTimeFrame: period,
             start: start.toISOString(),
             end: end.toISOString(),
             product: {},
-            boundToGenerationTime: false,
-            excludeEnd: false
+            boundToGenerationTime: false
         });
         return EnergyFormatter.format(Number(summary?.volume)).split(',').join('');
     } else {

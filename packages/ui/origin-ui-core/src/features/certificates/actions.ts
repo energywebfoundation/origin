@@ -136,8 +136,7 @@ export type TRequestClaimCertificateAction = typeof requestClaimCertificate;
 export interface IRequestClaimCertificateBulkAction {
     type: CertificatesActions.requestClaimCertificateBulk;
     payload: {
-        certificateIds: Certificate['id'][];
-        claimData: IClaimData;
+        claims;
     };
 }
 

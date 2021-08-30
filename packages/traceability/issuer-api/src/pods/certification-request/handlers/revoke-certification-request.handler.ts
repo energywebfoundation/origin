@@ -8,11 +8,11 @@ import { HttpStatus, Logger } from '@nestjs/common';
 import { RevokeCertificationRequestCommand } from '../commands/revoke-certification-request.command';
 import { CertificationRequest } from '../certification-request.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { CertificationRequestStatus } from '../certification-request-status.enum';
 
 @CommandHandler(RevokeCertificationRequestCommand)
 export class RevokeCertificationRequestHandler
-    implements ICommandHandler<RevokeCertificationRequestCommand> {
+    implements ICommandHandler<RevokeCertificationRequestCommand>
+{
     private readonly logger = new Logger(RevokeCertificationRequestHandler.name);
 
     constructor(
@@ -22,13 +22,8 @@ export class RevokeCertificationRequestHandler
     ) {}
 
     async execute({ id }: RevokeCertificationRequestCommand): Promise<ISuccessResponse> {
-        const { revoked, approved, status, requestId } = await this.repository.findOne(id);
+        const { revoked, approved } = await this.repository.findOne(id);
 
-        if (status !== CertificationRequestStatus.Executed) {
-            const msg = `Certificate #${id} has not been yet deployed`;
-            this.logger.debug(msg);
-            return ResponseFailure(msg, HttpStatus.BAD_REQUEST);
-        }
         if (revoked || approved) {
             const msg = `Certificate #${id} is still pending execution`;
             this.logger.debug(msg);
@@ -38,7 +33,7 @@ export class RevokeCertificationRequestHandler
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
         const certReq = await new CertificationRequestFacade(
-            requestId,
+            id,
             blockchainProperties.wrap()
         ).sync();
 

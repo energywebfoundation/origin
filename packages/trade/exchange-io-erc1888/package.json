@@ -24,7 +24,8 @@
         "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8590 -q",
         "test:e2e": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8590 && yarn test:mocha\"",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
-        "precommit": "lint-staged"
+        "precommit": "lint-staged",
+        "clean": "shx rm -rf dist"
     },
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
@@ -36,28 +37,38 @@
         "@energyweb/origin-backend-core": "8.0.1",
         "@energyweb/origin-backend-utils": "1.5.1",
         "@energyweb/utils-general": "11.0.2",
-        "@nestjs/common": "7.6.14",
-        "@nestjs/config": "0.6.3",
-        "@nestjs/core": "7.6.14",
+        "@nestjs/common": "7.6.18",
+        "@nestjs/config": "1.0.1",
+        "@nestjs/core": "7.6.18",
         "@nestjs/cqrs": "7.0.1",
-        "@nestjs/passport": "7.1.5",
+        "@nestjs/passport": "7.1.6",
         "@nestjs/typeorm": "7.1.5",
-        "ethers": "5.0.31",
+        "ethers": "5.3.1",
         "moment": "2.29.1",
-        "rxjs": "6.6.6"
+        "rxjs": "6.6.7"
     },
     "devDependencies": {
-        "@nestjs/cli": "7.5.6",
-        "@types/node": "12.20.6",
-        "@types/supertest": "2.0.10",
+        "typescript": "4.4.2",
+        "@nestjs/cli": "7.6.0",
+        "@types/node": "14.17.12",
+        "@types/supertest": "2.0.11",
+        "@types/superagent": "4.1.12",
         "class-validator": "0.13.1",
-        "eslint-plugin-jest": "24.3.2",
-        "jest": "26.6.3",
-        "polly-js": "1.8.1",
-        "prettier": "2.2.1",
-        "supertest": "6.1.3",
+        "eslint-plugin-jest": "24.4.0",
+        "jest": "27.1.0",
+        "polly-js": "1.8.2",
+        "prettier": "2.3.2",
+        "supertest": "6.1.6",
         "ts-node": "9.1.1",
-        "typeorm": "0.2.31"
+        "typeorm": "0.2.34",
+        "@types/mocha": "9.0.0",
+        "mocha": "9.1.1",
+        "@types/chai": "4.2.15",
+        "chai": "4.3.0",
+        "@ethersproject/providers": "5.3.1",
+        "@ethersproject/abstract-provider": "5.3.0",
+        "@ethersproject/contracts": "5.3.0",
+        "@ethersproject/abi": "5.3.1"
     },
     "publishConfig": {
         "access": "public",

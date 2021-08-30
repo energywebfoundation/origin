@@ -30,7 +30,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -51,7 +53,9 @@ VALUES (
         'GB',
         'issuer@mailinator.com',
         'Phone number',
-        'Active'
+        'Active',
+        '0xd173313a51f8fc37bcf67569b463abd89d81844f',
+        '0x09790e96275e023b965f6b267512b5267bcb18f5b5fdaaf46de899a0f91f2a8d006c7fbaebddf5ad36c116775c961aca3c32525b6dd1529bdee41eee5e9730a71c'
     );
 INSERT INTO public."platform_organization" (
         "createdAt",
@@ -72,7 +76,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -93,7 +99,9 @@ VALUES (
         'GB',
         'devicemanager@mailinator.com',
         'Phone number',
-        'Active'
+        'Active',
+        '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
+        '0xe6f70568571f331ae431bb4d3249aaf4a01c548ddd6e0a1fbefdd207cf31b13d419f43ff28cf011df17697eb7856c470e361b4239898f53613cacbcc589e5d6a1c'
     );
 INSERT INTO public."platform_organization" (
         "createdAt",
@@ -114,7 +122,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -135,7 +145,9 @@ VALUES (
         'GB',
         'devicemanager2@mailinator.com',
         'Phone number',
-        'Active'
+        'Active',
+        '0xfd863c662307fcf0c15f0b9f74f1d06544f19908',
+        '0x617ba0b0b20d547272001e2b1d9a9ef7da24b5e58c2a97767fb2e65a294010906862458c503dbe1a6db0db782cddf9bd98409bdaa0930754b3bd18863c8d99ab1b'
     );
 INSERT INTO public."platform_organization" (
         "createdAt",
@@ -156,7 +168,9 @@ INSERT INTO public."platform_organization" (
         "signatoryCountry",
         "signatoryEmail",
         "signatoryPhoneNumber",
-        status
+        status,
+        "blockchainAccountAddress",
+        "blockchainAccountSignedMessage"
     )
 VALUES (
         '2020-03-30 09:55:25.962333+02',
@@ -177,7 +191,9 @@ VALUES (
         'GB',
         'trader@mailinator.com',
         'Phone number',
-        'Active'
+        'Active',
+        '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
+        '0xb0a804f410f2934278703eb992e5ba12f9e8b9068b68ff6d1246a56cf52e48677d3648057453d86f4372b2ffd98fa189aee1562d8c564ac62bc416d6cdc474051c'
     );
 INSERT INTO public."platform_organization" (
         "createdAt",
@@ -234,8 +250,6 @@ INSERT INTO public."user" (
         email,
         telephone,
         password,
-        "blockchainAccountAddress",
-        "blockchainAccountSignedMessage",
         notifications,
         rights,
         "organizationId",
@@ -252,8 +266,6 @@ VALUES (
         'issuer@mailinator.com',
         '111-111-111',
         '$2a$08$R5nXlTeycdggncK6ElVtDehsv3ZUcBfyekPv5uYdt6dS76.rcAB.m',
-        '0xd173313a51f8fc37bcf67569b463abd89d81844f',
-        '0x09790e96275e023b965f6b267512b5267bcb18f5b5fdaaf46de899a0f91f2a8d006c7fbaebddf5ad36c116775c961aca3c32525b6dd1529bdee41eee5e9730a71c',
         'f',
         '8',
         '1',
@@ -270,8 +282,6 @@ INSERT INTO public."user" (
         email,
         telephone,
         password,
-        "blockchainAccountAddress",
-        "blockchainAccountSignedMessage",
         notifications,
         rights,
         "organizationId",
@@ -288,8 +298,6 @@ VALUES (
         'devicemanager@mailinator.com',
         '111-111-111',
         '$2a$08$kBdGu/H3pAHzGupU2qB0NeHIBtRVCOFpLXkQay.LxnjGVm2oFxUSK',
-        '0x5b1b89a48c1fb9b6ef7fb77c453f2aaf4b156d45',
-        '0xe6f70568571f331ae431bb4d3249aaf4a01c548ddd6e0a1fbefdd207cf31b13d419f43ff28cf011df17697eb7856c470e361b4239898f53613cacbcc589e5d6a1c',
         't',
         '1',
         '2',
@@ -306,8 +314,6 @@ INSERT INTO public."user" (
         email,
         telephone,
         password,
-        "blockchainAccountAddress",
-        "blockchainAccountSignedMessage",
         notifications,
         rights,
         "organizationId",
@@ -324,8 +330,6 @@ VALUES (
         'devicemanager2@mailinator.com',
         '111-111-111',
         '$2a$08$hxfSpn5Y7mZ9MjmcV5QdZemmi3aST8U2RFmod4bjpTZbWcwxAFgaO',
-        '0xfd863c662307fcf0c15f0b9f74f1d06544f19908',
-        '0x617ba0b0b20d547272001e2b1d9a9ef7da24b5e58c2a97767fb2e65a294010906862458c503dbe1a6db0db782cddf9bd98409bdaa0930754b3bd18863c8d99ab1b',
         't',
         '1',
         '3',
@@ -342,8 +346,6 @@ INSERT INTO public."user" (
         email,
         telephone,
         password,
-        "blockchainAccountAddress",
-        "blockchainAccountSignedMessage",
         notifications,
         rights,
         "organizationId",
@@ -360,8 +362,6 @@ VALUES (
         'trader@mailinator.com',
         '111-111-111',
         '$2a$08$j8LnGtFdbTfKN5F.0InfdO2gxMWXHbrjWvRziCIl0lRj.kxOKJ/b6',
-        '0x7672fa3f8c04abbcbad14d896aad8bedece72d2b',
-        '0xb0a804f410f2934278703eb992e5ba12f9e8b9068b68ff6d1246a56cf52e48677d3648057453d86f4372b2ffd98fa189aee1562d8c564ac62bc416d6cdc474051c',
         'f',
         '1',
         '4',
@@ -449,6 +449,7 @@ SELECT setval(
 /*
  DEVICE REGISTRIES
  */
+ /*
 INSERT INTO public."irec_device_registry_device" (
         "createdAt",
         "updatedAt",
@@ -458,7 +459,7 @@ INSERT INTO public."irec_device_registry_device" (
         "name",
         "defaultAccount",
         "deviceType",
-        "fuel",
+        "fuelType",
         "countryCode",
         "registrantOrganization",
         "issuer",
@@ -471,7 +472,10 @@ INSERT INTO public."irec_device_registry_device" (
         "notes",
         "status",
         "timezone",
-        "gridOperator"
+        "gridOperator",
+        "postalCode",
+        "region",
+        "subregion"
     )
 VALUES (
         '2020-03-30 09:36:02.607206+02',
@@ -493,9 +497,12 @@ VALUES (
         '14.059500',
         '99.977800',
         'Notes...',
-        'Active',
+        'Approved',
         'Asia/Bangkok',
-        'TH-PEA'
+        'TH-PEA',
+        '12345',
+        'Some place',
+        'Another place'
     );
 INSERT INTO public."device_registry_device" (
         "createdAt",
@@ -524,7 +531,7 @@ INSERT INTO public."irec_device_registry_device" (
         "name",
         "defaultAccount",
         "deviceType",
-        "fuel",
+        "fuelType",
         "countryCode",
         "registrantOrganization",
         "issuer",
@@ -537,7 +544,10 @@ INSERT INTO public."irec_device_registry_device" (
         "notes",
         "status",
         "timezone",
-        "gridOperator"
+        "gridOperator",
+        "postalCode",
+        "region",
+        "subregion"
     )
 VALUES (
         '2020-03-30 09:36:02.607206+02',
@@ -559,9 +569,12 @@ VALUES (
         '15.1739',
         '101.4928',
         'Notes...',
-        'Active',
+        'Approved',
         'Asia/Bangkok',
-        'TH-MEA'
+        'TH-MEA',
+        '12345',
+        'Some place',
+        'Another place'
     );
 INSERT INTO public."device_registry_device" (
         "createdAt",
@@ -590,7 +603,7 @@ INSERT INTO public."irec_device_registry_device" (
         "name",
         "defaultAccount",
         "deviceType",
-        "fuel",
+        "fuelType",
         "countryCode",
         "registrantOrganization",
         "issuer",
@@ -603,7 +616,10 @@ INSERT INTO public."irec_device_registry_device" (
         "notes",
         "status",
         "timezone",
-        "gridOperator"
+        "gridOperator",
+        "postalCode",
+        "region",
+        "subregion"
     )
 VALUES (
         '2020-03-30 09:36:02.607206+02',
@@ -625,9 +641,12 @@ VALUES (
         '14.059500',
         '99.977800',
         'Notes...',
-        'Active',
+        'Approved',
         'Asia/Bangkok',
-        'TH-PEA'
+        'TH-PEA',
+        '12345',
+        'Some place',
+        'Another place'
     );
 INSERT INTO public."device_registry_device" (
         "createdAt",
@@ -647,3 +666,77 @@ VALUES (
         'METER003',
         'Biomass Facility description'
     );
+  */
+
+INSERT INTO public."irec_beneficiary" (
+    "createdAt",
+    "updatedAt",
+    "id",
+    "irecBeneficiaryId",
+    "organizationId",
+    "name",
+    "countryCode",
+    "location",
+    "active"
+)
+VALUES (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        1,
+        1,
+        1,
+        'TestOrg1',
+        'GB',
+        'Test location 1',
+        true
+    ),
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        2,
+        2,
+        2,
+        'TestOrg2',
+        'GB',
+        'Test location 2',
+        true
+    ),
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        3,
+        3,
+        3,
+        'TestOrg3',
+        'GB',
+        'Test location 3',
+        true
+    ),
+    (
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        4,
+        4,
+        4,
+        'TestOrg4',
+        'GB',
+        'Test location 4',
+        true
+    ),(
+        '2020-03-30 09:55:25.962333+02',
+        '2020-03-30 09:55:25.962333+02',
+        5,
+        5,
+        5,
+        'TestOrg5',
+        'GB',
+        'Test location 5',
+        true
+    );
+SELECT setval(
+    pg_get_serial_sequence('public.irec_beneficiary', 'id'),
+    (
+        SELECT MAX("id")
+        FROM public.irec_beneficiary
+    ) + 1
+);

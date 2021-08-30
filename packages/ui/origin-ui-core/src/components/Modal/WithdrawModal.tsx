@@ -13,8 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { resyncCertificate, requestWithdrawCertificate } from '../../features/certificates';
 import { ICertificateViewItem } from '../../features/certificates/types';
-import { getEnvironment } from '../../features/general/selectors';
-import { getUserOffchain } from '../../features/users/selectors';
+import { fromGeneralSelectors } from '../../features/general/selectors';
+import { fromUsersSelectors } from '../../features/users/selectors';
 import { EnergyFormatter, formatDate, countDecimals } from '../../utils';
 import { IEnvironment } from '../../features/general';
 import { IOriginDevice } from '../../types';
@@ -28,8 +28,8 @@ interface IProps {
 
 export function WithdrawModal(props: IProps) {
     const { certificate, callback, device, showModal } = props;
-    const user = useSelector(getUserOffchain);
-    const environment: IEnvironment = useSelector(getEnvironment);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const environment: IEnvironment = useSelector(fromGeneralSelectors.getEnvironment);
     const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
         Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)
     );
@@ -59,9 +59,8 @@ export function WithdrawModal(props: IProps) {
         switch (event.target.id) {
             case 'energyInDisplayUnitInput':
                 const newEnergyInDisplayUnit = Number(event.target.value);
-                const newEnergyInBaseValueUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-                    newEnergyInDisplayUnit
-                );
+                const newEnergyInBaseValueUnit =
+                    EnergyFormatter.getBaseValueFromValueInDisplayUnit(newEnergyInDisplayUnit);
 
                 const ownedPublicVolume = certificate.energy.publicVolume;
 
@@ -87,10 +86,9 @@ export function WithdrawModal(props: IProps) {
             return;
         }
         const assetId = certificate.assetId;
-        const address = user.blockchainAccountAddress;
-        const amount = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-            energyInDisplayUnit
-        ).toString();
+        const address = user.organization?.blockchainAccountAddress;
+        const amount =
+            EnergyFormatter.getBaseValueFromValueInDisplayUnit(energyInDisplayUnit).toString();
         dispatch(
             requestWithdrawCertificate({
                 assetId,

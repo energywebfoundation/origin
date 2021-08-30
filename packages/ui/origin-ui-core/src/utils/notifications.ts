@@ -5,7 +5,7 @@ export interface INotificationOptions {
     timeOut?: number;
 }
 
-export enum NotificationType {
+export enum NotificationTypeEnum {
     Success = 'success',
     Info = 'info',
     Error = 'error',
@@ -18,7 +18,7 @@ const DEFAULT_OPTIONS: INotificationOptions = {
 
 export function showNotification(
     message: string,
-    type: NotificationType = NotificationType.Info,
+    type = NotificationTypeEnum.Info,
     options: INotificationOptions = DEFAULT_OPTIONS
 ): void {
     toastr[type.toLowerCase()](message, getI18n().t(`notification.type.${type}`), options);

@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
-    getUserOffchain,
     CertificateSource,
     requestClaimCertificate,
     requestDepositCertificate,
-    EnergyFormatter
+    EnergyFormatter,
+    fromUsersSelectors
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../utils/configuration';
 import {
@@ -27,18 +27,17 @@ export function BlockchainInboxPage(): JSX.Element {
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
 
     useEffect(() => {
         setRetireForBeneficiary(false);
         setBeneficiaryFormData({
             beneficiary: user?.organization?.name,
-            address: user?.organization?.address,
-            zipCode: user?.organization?.zipCode,
-            region: null,
+            location: `${user?.organization?.address}, ${user?.organization?.zipCode}`,
             countryCode: user?.organization?.country,
-            fromDate: new Date().toISOString(),
-            toDate: new Date().toISOString()
+            periodStartDate: new Date().toISOString(),
+            periodEndDate: new Date().toISOString(),
+            purpose: 'GHG Accounting'
         });
     }, [user]);
 

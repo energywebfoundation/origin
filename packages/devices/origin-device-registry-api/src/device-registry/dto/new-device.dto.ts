@@ -35,6 +35,6 @@ export class NewDeviceDTO {
     imageIds?: string[];
 
     public static sanitize(device: NewDeviceDTO): NewDeviceDTO {
-        return plainToClass(NewDeviceDTO, device, { excludeExtraneousValues: true });
+        return plainToClass(NewDeviceDTO, device);
     }
 }

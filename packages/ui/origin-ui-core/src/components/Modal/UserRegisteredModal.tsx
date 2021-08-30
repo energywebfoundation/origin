@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, Grid } from '@material-ui/core';
 import HowToRegIcon from '@material-ui/icons/HowToReg';
-import { useLinks } from '../../utils/routing';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     showModal: boolean;
@@ -13,7 +13,7 @@ interface IProps {
 export const UserRegisteredModal = ({ showModal, setShowModal }: IProps) => {
     const history = useHistory();
     const { t } = useTranslation();
-    const { getAccountLoginLink } = useLinks();
+    const { accountLoginPageUrl } = useLinks();
 
     return (
         <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="md">
@@ -50,7 +50,7 @@ export const UserRegisteredModal = ({ showModal, setShowModal }: IProps) => {
                     data-cy="user-registered-modal-ok"
                     variant="contained"
                     color="primary"
-                    onClick={() => history.push(getAccountLoginLink())}
+                    onClick={() => history.push(accountLoginPageUrl)}
                 >
                     {t('general.responses.ok')}
                 </Button>

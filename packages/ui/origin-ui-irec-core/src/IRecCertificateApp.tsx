@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import {
-    getUserOffchain,
     useLinks,
     PageContent,
     RoleChangedModal,
-    ConnectBlockchainAccountModal
+    ConnectBlockchainAccountModal,
+    fromUsersSelectors
 } from '@energyweb/origin-ui-core';
 import { CertificateDetailView } from './components/certificates/detailView';
 import { useCertificatesMenu } from './certificateMenu';
@@ -15,9 +15,9 @@ function CertificateDetailViewId(id: number) {
     return <CertificateDetailView id={id} />;
 }
 
-export function IRecCertificateApp() {
-    const user = useSelector(getUserOffchain);
-    const { getCertificatesLink } = useLinks();
+export const IRecCertificateApp = (): ReactElement => {
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const { certificatesPageUrl } = useLinks();
     const [showRoleModal, setShowRoleModal] = useState(false);
     const [showBlockchainModal, setShowBlockchainModal] = useState(false);
 
@@ -31,13 +31,13 @@ export function IRecCertificateApp() {
     }
 
     const defaultRedirect = {
-        pathname: `${getCertificatesLink()}/${getDefaultRedirect()}`
+        pathname: `${certificatesPageUrl}/${getDefaultRedirect()}`
     };
 
     return (
         <div className="PageWrapper">
             <Route
-                path={`${getCertificatesLink()}/:key/:id?`}
+                path={`${certificatesPageUrl}/:key/:id?`}
                 render={(props) => {
                     const key = props.match.params.key;
                     const id = props.match.params.id as string;
@@ -53,13 +53,13 @@ export function IRecCertificateApp() {
                     return (
                         <PageContent
                             menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getCertificatesLink()}
+                            redirectPath={certificatesPageUrl}
                         />
                     );
                 }}
             />
 
-            <Route path={getCertificatesLink()} render={() => <Redirect to={defaultRedirect} />} />
+            <Route path={certificatesPageUrl} render={() => <Redirect to={defaultRedirect} />} />
 
             <RoleChangedModal
                 showModal={showRoleModal}
@@ -72,4 +72,4 @@ export function IRecCertificateApp() {
             />
         </div>
     );
-}
+};

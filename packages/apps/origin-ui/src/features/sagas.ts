@@ -7,7 +7,7 @@ import {
 } from '@energyweb/exchange-ui-core';
 import { iRecDevicesSaga, iRecGeneralSaga } from '@energyweb/origin-ui-irec-core';
 
-export const sagas = {
+export const sagas: { [sagaName: string]: typeof ordersSaga } = {
     generalSaga,
     usersSaga,
     certificatesSaga,

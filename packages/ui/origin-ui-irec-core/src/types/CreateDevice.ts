@@ -5,7 +5,7 @@ export type CreateDeviceData = {
     code: string;
     defaultAccount: string;
     deviceType: string;
-    fuel: string;
+    fuelType: string;
     countryCode: string;
     capacity: number;
     commissioningDate: string;
@@ -20,4 +20,7 @@ export type CreateDeviceData = {
     description: string;
     externalDeviceIds?: IExternalDeviceId[];
     imageIds: string[];
+    postalCode: string;
+    region: string;
+    subregion: string;
 };

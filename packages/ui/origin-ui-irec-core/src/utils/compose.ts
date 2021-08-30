@@ -1,9 +1,10 @@
 import { OriginDeviceDTO } from '@energyweb/origin-device-registry-api-client';
 import {
     DeviceDTO as IRecMyDeviceDTO,
+    IrecDeviceDTO,
     PublicDeviceDTO as IRecPublicDeviceDTO
 } from '@energyweb/origin-device-registry-irec-local-api-client';
-import { ComposedPublicDevice, ComposedDevice } from '../types';
+import { ComposedDevice, ComposedPublicDevice } from '../types';
 
 export function composePublicDevices(
     originDevices: OriginDeviceDTO[],
@@ -41,6 +42,28 @@ export function composeMyDevices(
         });
     }
     return composedResult;
+}
+
+export function composeImportedDevices(
+    iRecDevices: IRecMyDeviceDTO[],
+    iRecDevicesNotInOrigin: IrecDeviceDTO[]
+): IRecMyDeviceDTO[] {
+    return [
+        ...iRecDevices,
+        ...iRecDevicesNotInOrigin.map((d) => {
+            return {
+                ...d,
+                id: '',
+                ownerId: '',
+                timezone: '',
+                gridOperator: '',
+                country: '',
+                postalCode: '',
+                region: '',
+                subregion: ''
+            };
+        })
+    ];
 }
 
 export function composeCreatedDevice(

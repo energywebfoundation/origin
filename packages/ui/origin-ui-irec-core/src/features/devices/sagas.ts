@@ -1,6 +1,10 @@
 import { SagaIterator } from 'redux-saga';
-import { all, apply, fork, put, select, take } from 'redux-saga/effects';
-import { NotificationType, setLoading, showNotification } from '@energyweb/origin-ui-core';
+import { all, fork, take, select, put, apply } from 'redux-saga/effects';
+import {
+    showNotification,
+    NotificationTypeEnum,
+    fromGeneralActions
+} from '@energyweb/origin-ui-core';
 import {
     NewDeviceDTO as OriginCreateDeviceDTO,
     OriginDeviceDTO
@@ -8,14 +12,26 @@ import {
 import {
     CreateDeviceDTO as IRecCreateDeviceDTO,
     DeviceDTO as IRecMyDeviceDTO,
-    PublicDeviceDTO as IRecPublicDeviceDTO
+    PublicDeviceDTO as IRecPublicDeviceDTO,
+    IrecDeviceDTO
 } from '@energyweb/origin-device-registry-irec-local-api-client';
-import { DeviceClient } from '../../utils/client';
-import { composeCreatedDevice, composeMyDevices, composePublicDevices } from '../../utils/compose';
+import { DeviceClient } from '../../utils';
+import {
+    composeCreatedDevice,
+    composeImportedDevices,
+    composeMyDevices,
+    composePublicDevices
+} from '../../utils/compose';
 import { decomposeForIRec, decomposeForOrigin } from '../../utils/decompose';
 import { ComposedDevice } from '../../types';
 import { getDeviceClient } from '../general';
-import { DevicesActions, ICreateDevice, storeMyDevices, storePublicDevices } from './actions';
+import {
+    DevicesActions,
+    ICreateDevice,
+    storeIrecDevicesToImport,
+    storeMyDevices,
+    storePublicDevices
+} from './actions';
 
 function* getPublicDevices(): SagaIterator {
     while (true) {
@@ -36,7 +52,7 @@ function* getPublicDevices(): SagaIterator {
 
             yield put(storePublicDevices(composed));
         } catch (error) {
-            showNotification(`Error while getting devices data`, NotificationType.Error);
+            showNotification(`Error while getting devices data`, NotificationTypeEnum.Error);
             console.log(error);
         }
     }
@@ -62,7 +78,42 @@ function* getMyDevices(): SagaIterator {
             const composed = composeMyDevices(originDevices, iRecDevices);
             yield put(storeMyDevices(composed));
         } catch (error) {
-            showNotification(`Error while getting devices data`, NotificationType.Error);
+            showNotification(`Error while getting devices data`, NotificationTypeEnum.Error);
+            console.log(error);
+        }
+    }
+}
+
+function* getDevicesToImport(): SagaIterator {
+    while (true) {
+        yield take(DevicesActions.fetchDevicesToImport);
+
+        const deviceClient: DeviceClient = yield select(getDeviceClient);
+        const originClient = deviceClient.originClient;
+        const iRecClient = deviceClient.iRecClient;
+
+        try {
+            const [originResponse, iRecDevicesResponse, iRecDevicesToImportResponse] = yield all([
+                yield apply(originClient, originClient.getMyDevices, null),
+                yield apply(iRecClient, iRecClient.getMyDevices, null),
+                yield apply(iRecClient, iRecClient.getDevicesToImportFromIrec, null)
+            ]);
+
+            const originDevices: OriginDeviceDTO[] = originResponse.data;
+            const iRecDevices: IRecMyDeviceDTO[] = iRecDevicesResponse.data;
+            const iRecDevicesToImport: IrecDeviceDTO[] = iRecDevicesToImportResponse.data;
+
+            const iRecDevicesNotInOrigin: IRecMyDeviceDTO[] = iRecDevices.filter((device) => {
+                return !originDevices.find((d) => d.externalRegistryId === device.id);
+            });
+
+            const composed = composeImportedDevices(iRecDevicesNotInOrigin, iRecDevicesToImport);
+            yield put(storeIrecDevicesToImport(composed));
+        } catch (error) {
+            showNotification(
+                `Error while getting devices to import data`,
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -70,7 +121,7 @@ function* getMyDevices(): SagaIterator {
 
 function* createNewDevice(): SagaIterator {
     while (true) {
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
         const { payload: newDevice }: ICreateDevice = yield take(DevicesActions.createDevice);
 
         const deviceClient: DeviceClient = yield select(getDeviceClient);
@@ -101,15 +152,20 @@ function* createNewDevice(): SagaIterator {
             );
 
             yield put(storeMyDevices([...myDevices, composedCreatedDevice]));
-            showNotification(`New device successfully created.`, NotificationType.Success);
+            showNotification(`New device successfully created.`, NotificationTypeEnum.Success);
         } catch (error) {
-            showNotification(`Error while creating new device`, NotificationType.Error);
+            showNotification(`Error while creating new device`, NotificationTypeEnum.Error);
             console.log(error);
         }
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
 export function* iRecDevicesSaga(): SagaIterator {
-    yield all([fork(getPublicDevices), fork(getMyDevices), fork(createNewDevice)]);
+    yield all([
+        fork(getPublicDevices),
+        fork(getMyDevices),
+        fork(createNewDevice),
+        fork(getDevicesToImport)
+    ]);
 }

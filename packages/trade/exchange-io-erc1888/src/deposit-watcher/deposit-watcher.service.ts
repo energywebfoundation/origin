@@ -1,4 +1,4 @@
-import { Contracts } from '@energyweb/issuer';
+import { Contracts, CertificateUtils } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -18,7 +18,7 @@ import {
 export class DepositWatcherService implements OnModuleInit {
     private readonly logger = new Logger(DepositWatcherService.name);
 
-    private tokenInterface = new ethers.utils.Interface(Contracts.RegistryJSON.abi);
+    private tokenInterface = new ethers.utils.Interface(Contracts.RegistryExtendedJSON.abi);
 
     private walletAddress: string;
 
@@ -57,7 +57,7 @@ export class DepositWatcherService implements OnModuleInit {
 
         this.registry = new Contract(
             this.registryAddress,
-            Contracts.RegistryJSON.abi,
+            Contracts.RegistryExtendedJSON.abi,
             this.provider
         );
 
@@ -90,7 +90,7 @@ export class DepositWatcherService implements OnModuleInit {
 
         const { transactionHash } = event;
 
-        const { _from: from, _to: to, _value: value, _id: id } = log;
+        const [, from, to, id, value] = log;
 
         if (!value || !from || !to) {
             this.logger.error(`Received an incorrect event: ${JSON.stringify(event)}`);
@@ -131,12 +131,13 @@ export class DepositWatcherService implements OnModuleInit {
     private async decodeDataField(certificateId: string) {
         const { data } = await this.registry.getCertificate(certificateId);
 
-        const result = await this.issuer.decodeData(data);
+        const { generationStartTime, generationEndTime, deviceId } =
+            await CertificateUtils.decodeData(data);
 
         return {
-            generationFrom: moment.unix(result[0]).toDate(),
-            generationTo: moment.unix(result[1]).toDate(),
-            deviceId: result[2]
+            generationFrom: moment.unix(generationStartTime).toDate(),
+            generationTo: moment.unix(generationEndTime).toDate(),
+            deviceId
         };
     }
 }

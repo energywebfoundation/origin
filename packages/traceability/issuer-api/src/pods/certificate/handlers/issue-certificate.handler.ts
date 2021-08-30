@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -9,15 +9,17 @@ import { BigNumber } from 'ethers';
 import { IssueCertificateCommand } from '../commands/issue-certificate.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { CertificateDTO } from '../certificate.dto';
+import { CertificateDTO } from '../dto/certificate.dto';
 import { certificateToDto } from '../utils';
+import { CertificatePersistedEvent } from '../events/certificate-persisted.event';
 
 @CommandHandler(IssueCertificateCommand)
 export class IssueCertificateHandler implements ICommandHandler<IssueCertificateCommand> {
     constructor(
         @InjectRepository(Certificate)
         private readonly repository: Repository<Certificate>,
-        private readonly blockchainPropertiesService: BlockchainPropertiesService
+        private readonly blockchainPropertiesService: BlockchainPropertiesService,
+        private readonly eventBus: EventBus
     ) {}
 
     async execute({
@@ -27,7 +29,8 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
         toTime,
         deviceId,
         isPrivate,
-        userId
+        userId,
+        metadata
     }: IssueCertificateCommand): Promise<CertificateDTO> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
@@ -41,7 +44,8 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
                 fromTime,
                 toTime,
                 deviceId,
-                blockchainProperties.wrap()
+                blockchainProperties.wrap(),
+                metadata
             );
         } else {
             ({ certificate: cert, proof: commitment } = await CertificateFacade.createPrivate(
@@ -50,23 +54,27 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
                 fromTime,
                 toTime,
                 deviceId,
-                blockchainProperties.wrap()
+                blockchainProperties.wrap(),
+                metadata
             ));
         }
 
         const certificate = this.repository.create({
+            id: cert.id,
             blockchain: blockchainProperties,
-            tokenId: cert.id,
             deviceId: cert.deviceId,
             generationStartTime: cert.generationStartTime,
             generationEndTime: cert.generationEndTime,
             creationTime: cert.creationTime,
+            metadata: cert.metadata,
             creationBlockHash: cert.creationBlockHash,
             owners: cert.owners,
             issuedPrivately: isPrivate ?? false,
             latestCommitment: isPrivate ? commitment : null
         });
         const savedCertificate = await this.repository.save(certificate);
+
+        this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
 
         return certificateToDto(savedCertificate, userId);
     }

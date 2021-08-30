@@ -13,7 +13,7 @@ import {
 import { getEnvironment } from '../../features/general';
 import { createSupply, updateSupply } from '../../features/supply';
 import { IDeviceWithSupply } from '../../types';
-import { SupplyStatus } from '../../containers/SupplyTable';
+import { SupplyStatus } from '../../pages/SupplyTablePage';
 
 interface IProps {
     showModal: boolean;

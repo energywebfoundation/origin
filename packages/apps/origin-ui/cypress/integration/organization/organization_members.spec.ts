@@ -69,10 +69,12 @@ describe('Organization members page', () => {
         cy.dataCy('change-role-button').click();
 
         cy.notification('User role updated');
+        cy.get('.toast').click();
         cy.contains('tr', testUser.email).contains('td', 'Admin');
         cy.contains('tr', member.email).contains('td', 'Member');
         cy.contains('tr', deviceManager.email).contains('td', 'Admin');
         cy.contains('1-3 of 3');
+        cy.wait(750);
     });
 
     it('should not allow remove last person in organization', () => {

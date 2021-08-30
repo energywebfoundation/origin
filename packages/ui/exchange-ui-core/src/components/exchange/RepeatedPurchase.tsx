@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Grid, InputAdornment, Divider } from '@material-ui/core';
-import { useValidation, getUserOffchain, LightenColor } from '@energyweb/origin-ui-core';
+import { useValidation, LightenColor, fromUsersSelectors } from '@energyweb/origin-ui-core';
 import { FormInput, CalendarFieldOnPeriod, FormSelect } from '../Form';
 import { getExchangeClient } from '../../features/general';
 import { periodTypeOptions } from '../../utils/demand';
@@ -21,7 +21,7 @@ export const RepeatedPurchase = (props) => {
     const { t } = useTranslation();
     const { Yup } = useValidation();
     const exchangeClient = useSelector(getExchangeClient);
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const originConfiguration = useOriginConfiguration();
     const originBgColor = originConfiguration?.styleConfig?.MAIN_BACKGROUND_COLOR;
     const bgColorLighten = LightenColor(originBgColor, 5);

@@ -1,0 +1,107 @@
+{
+    "name": "@energyweb/issuer-irec-api",
+    "version": "0.1.0",
+    "description": "NestJS module for interacting with renewable energy certificates with IREC connectivity",
+    "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-irec-api#readme",
+    "author": "EnergyWeb DevHub GmbH; Aleksandr Marenin, aleksandr.marenin@energyweb.org",
+    "license": "GPL-3.0-or-later",
+    "main": "dist/js/src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/energywebfoundation/origin.git"
+    },
+    "bugs": {
+        "url": "https://github.com/energywebfoundation/origin/issues"
+    },
+    "bin": {
+        "issuer-irec-api-migrate": "./bin/issuer-irec-api-migrate"
+    },
+    "scripts": {
+        "build": "yarn build:ts",
+        "build:ts": "tsc -b tsconfig.json",
+        "prettier": "prettier --write --config-precedence file-override './src/**/*'",
+        "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet",
+        "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet --fix",
+        "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
+        "test:e2e": "yarn typeorm:run:all && npx concurrently --success first --kill-others -n eth,test \"yarn start-ganache\" \"npx wait-on tcp:8581 && yarn test:mocha\"",
+        "start-ganache": "ganache-cli -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8581 -q",
+        "clean": "shx rm -rf dist dist-shakeable",
+        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
+        "typeorm:migrate": "yarn typeorm migration:generate -- -n",
+        "typeorm:run": "yarn typeorm migration:run",
+        "typeorm:run:all": "yarn typeorm:run:origin-backend && yarn typeorm:run:organization && yarn typeorm:run:issuer && yarn typeorm:run:device-registry && yarn typeorm:run:device-registry-irec && yarn typeorm migration:run",
+        "typeorm:drop": "yarn typeorm schema:drop",
+        "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run",
+        "typeorm:run:issuer": "node_modules/typeorm/cli.js migration:run --config node_modules/@energyweb/issuer-api/dist/js/ormconfig.js",
+        "typeorm:drop:issuer": "node_modules/typeorm/cli.js schema:drop --config node_modules/@energyweb/issuer-api/dist/js/ormconfig.js",
+        "typeorm:run:device-registry": "node_modules/typeorm/cli.js migration:run --config node_modules/@energyweb/origin-device-registry-api/dist/js/ormconfig.js",
+        "typeorm:drop:device-registry": "node_modules/typeorm/cli.js schema:drop --config node_modules/@energyweb/origin-device-registry-api/dist/js/ormconfig.js",
+        "typeorm:run:organization": "node_modules/typeorm/cli.js migration:run --config node_modules/@energyweb/origin-organization-irec-api/dist/js/ormconfig.js",
+        "typeorm:drop:organization": "node_modules/typeorm/cli.js schema:drop --config node_modules/@energyweb/origin-organization-irec-api/dist/js/ormconfig.js",
+        "typeorm:run:origin-backend": "node_modules/typeorm/cli.js migration:run --config node_modules/@energyweb/origin-backend/dist/js/ormconfig.js",
+        "typeorm:drop:origin-backend": "node_modules/typeorm/cli.js migration:run --config node_modules/@energyweb/origin-backend/dist/js/ormconfig.js",
+        "typeorm:run:device-registry-irec": "node_modules/typeorm/cli.js migration:run --config node_modules/@energyweb/origin-device-registry-irec-local-api/dist/js/ormconfig.js",
+        "typeorm:drop:device-registry-irec": "node_modules/typeorm/cli.js schema:drop --config node_modules/@energyweb/origin-device-registry-irec-local-api/dist/js/ormconfig.js",
+        "precommit": "lint-staged"
+    },
+    "dependencies": {
+        "@energyweb/issuer": "3.2.0",
+        "@energyweb/issuer-api": "0.2.0",
+        "@energyweb/issuer-irec-api-wrapper": "0.4.0",
+        "@energyweb/origin-backend": "10.0.1",
+        "@energyweb/origin-backend-core": "8.0.1",
+        "@energyweb/origin-backend-utils": "1.5.1",
+        "@energyweb/origin-organization-irec-api": "1.4.0",
+        "@energyweb/origin-device-registry-api": "0.1.0",
+        "@energyweb/origin-device-registry-irec-local-api": "0.2.0",
+        "@energyweb/utils-general": "11.0.2",
+        "@nestjs/common": "7.6.18",
+        "@nestjs/config": "1.0.1",
+        "@nestjs/core": "7.6.18",
+        "@nestjs/cqrs": "7.0.1",
+        "@nestjs/passport": "7.1.6",
+        "@nestjs/schedule": "1.0.1",
+        "@nestjs/swagger": "4.8.2",
+        "@nestjs/typeorm": "7.1.5",
+        "class-transformer": "0.3.1",
+        "class-validator": "0.13.1",
+        "ethers": "5.3.1",
+        "moment": "2.29.1",
+        "moment-range": "4.0.2",
+        "pg": "8.7.1",
+        "precise-proofs-js": "1.2.0",
+        "rxjs": "6.6.7",
+        "swagger-ui-express": "4.1.6",
+        "typeorm": "0.2.34"
+    },
+    "devDependencies": {
+        "typescript": "4.4.2",
+        "@nestjs/cli": "7.6.0",
+        "@nestjs/schematics": "8.0.3",
+        "@nestjs/testing": "7.6.18",
+        "@types/express": "4.17.13",
+        "@types/mocha": "9.0.0",
+        "@types/node": "14.17.12",
+        "@types/supertest": "2.0.11",
+        "@types/superagent": "4.1.12",
+        "polly-js": "1.8.2",
+        "prettier": "2.3.2",
+        "supertest": "6.1.6",
+        "mocha": "9.1.1",
+        "chai": "4.3.0",
+        "@types/chai": "4.2.15",
+        "ts-node": "9.1.1",
+        "ganache-cli": "6.12.2"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "files": [
+        "dist",
+        "bin"
+    ],
+    "resolutions": {
+        "tslib": "2.3.1"
+    }
+}

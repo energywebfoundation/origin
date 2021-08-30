@@ -9,34 +9,32 @@ import {
     DialogTitle,
     DialogContentText
 } from '@material-ui/core';
-import {
-    getAccountMismatchModalProperties,
-    setAccountMismatchModalPropertiesAction,
-    accountMismatchModalResolvedAction
-} from '../../features/general';
-import { getUserOffchain, getActiveBlockchainAccountAddress } from '../../features/users';
+import { fromGeneralActions, fromGeneralSelectors } from '../../features/general';
+import { fromUsersSelectors } from '../../features/users';
 
-export function AccountMismatchModal() {
-    const { visibility } = useSelector(getAccountMismatchModalProperties);
-    const user = useSelector(getUserOffchain);
-    const activeBlockchainAddress = useSelector(getActiveBlockchainAccountAddress);
+export const AccountMismatchModal = () => {
+    const { visibility } = useSelector(fromGeneralSelectors.getAccountMismatchModalProperties);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const activeBlockchainAddress = useSelector(
+        fromUsersSelectors.getActiveBlockchainAccountAddress
+    );
     const dispatch = useDispatch();
     const { t } = useTranslation();
 
     const handleClose = () =>
         dispatch(
-            setAccountMismatchModalPropertiesAction({
+            fromGeneralActions.setAccountMismatchModalProperties({
                 visibility: false
             })
         );
 
     const submit = () => {
-        dispatch(accountMismatchModalResolvedAction(true));
+        dispatch(fromGeneralActions.accountMismatchModalResolved(true));
         handleClose();
     };
 
     const cancel = () => {
-        dispatch(accountMismatchModalResolvedAction(false));
+        dispatch(fromGeneralActions.accountMismatchModalResolved(false));
         handleClose();
     };
 
@@ -54,7 +52,7 @@ export function AccountMismatchModal() {
                         {t('general.info.tryingToSignAndBoundIs')}
                         <br />
                         <br />
-                        {user?.blockchainAccountAddress?.toLowerCase()}
+                        {user?.organization?.blockchainAccountAddress?.toLowerCase()}
                         <br />
                         <br />
                         {t('general.info.andYouAreTrying')}
@@ -74,4 +72,4 @@ export function AccountMismatchModal() {
             </form>
         </Dialog>
     );
-}
+};

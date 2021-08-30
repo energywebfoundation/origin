@@ -1,0 +1,12 @@
+FROM node:14-alpine
+
+ARG VERSION=latest
+
+RUN apk --no-cache add make gcc g++ python
+
+RUN mkdir -p /var/deployment
+COPY ./ /var/deployment
+
+WORKDIR /var/deployment/packages/tools/solar-simulator
+
+CMD ["bin/solar-simulator"]

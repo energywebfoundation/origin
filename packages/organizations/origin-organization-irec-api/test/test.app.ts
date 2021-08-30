@@ -8,11 +8,15 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
-import { AppModule } from '../src/app.module';
-import { Connection } from '../src/connection/connection.entity';
-import { Registration } from '../src/registration/registration.entity';
-import { RegistrationService } from '../src/registration/registration.service';
-import { IrecConnectionService } from '../src';
+import {
+    AppModule,
+    Connection,
+    Beneficiary,
+    Registration,
+    RegistrationService,
+    usedEntities
+} from '../src';
+import { OrganizationService, UserService } from '@energyweb/origin-backend';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -50,6 +54,8 @@ export const testUsers = new Map([
     ]
 ]);
 
+export const testOrganizations = [{ id: 1000 }, { id: 1001 }, { id: 1002 }];
+
 const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {
         const req = context.switchToHttp().getRequest();
@@ -68,7 +74,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Registration, Connection],
+                entities: [Connection, Beneficiary, Registration, ...usedEntities],
                 logging: ['info']
             }),
             AppModule
@@ -77,13 +83,20 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
-        .overrideProvider(IrecConnectionService)
+        .overrideProvider(UserService)
         .useValue({
-            login: () => ({
-                expiryDate: new Date(),
-                accessToken: 'someAccessToken',
-                refreshToken: 'someRefreshToken'
-            })
+            getPlatformAdmin() {
+                return testUsers.get(TestUser.PlatformAdmin);
+            }
+        })
+        .overrideProvider(OrganizationService)
+        .useValue({
+            find() {
+                return testOrganizations;
+            },
+            findOne(id: string | number) {
+                return testOrganizations.find((org) => String(org.id) === String(id));
+            }
         })
         .compile();
 

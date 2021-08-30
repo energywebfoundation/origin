@@ -9,7 +9,7 @@ export type ComposedDevice = {
     name: string;
     defaultAccount: string;
     deviceType: string;
-    fuel: string;
+    fuelType: string;
     countryCode: string;
     registrantOrganization: string;
     issuer: string;
@@ -27,6 +27,9 @@ export type ComposedDevice = {
     description: string;
     externalDeviceIds?: IExternalDeviceId[];
     imageIds?: string[];
+    postalCode: string;
+    region: string;
+    subregion: string;
 };
 
 export type ComposedPublicDevice = Omit<ComposedDevice, 'defaultAccount'>;

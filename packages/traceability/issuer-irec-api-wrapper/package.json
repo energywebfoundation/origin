@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-irec-api-wrapper",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "A Typescript wrapper for I-REC Evident API",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
@@ -14,21 +14,37 @@
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
+        "build:docs": "rm -Rf ../../../docs/sdk-reference/issuer-irec-api-wrapper && typedoc --plugin typedoc-plugin-markdown src/index.ts --out ../../../docs/sdk-reference/issuer-irec-api-wrapper",
         "lint": "eslint \"src/**/*{.ts,.tsx}\" \"test/**/*{.ts,.tsx}\" --quiet",
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "prettier": "prettier --write --config-precedence file-override './src/**/*'",
         "precommit": "lint-staged",
-        "test:api": "mocha -r ts-node/register test/*.test.ts --timeout 600000 --exit"
+        "test:api": "mocha -r ts-node/register test/*.test.ts --timeout 600000 --exit",
+        "clean": "shx rm -rf dist"
     },
     "dependencies": {
         "axios": "0.21.1",
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",
-        "form-data": "3.0.1",
+        "form-data": "4.0.0",
         "moment": "2.29.1",
         "moment-timezone": "0.5.33",
-        "qs": "6.10.0",
+        "qs": "6.10.1",
         "reflect-metadata": "0.1.13"
+    },
+    "devDependencies": {
+        "typescript": "4.4.2",
+        "@types/mocha": "9.0.0",
+        "@types/node": "14.17.12",
+        "mocha": "9.1.1",
+        "@types/chai": "4.2.15",
+        "chai": "4.3.0",
+        "@types/dotenv": "6.1.1",
+        "dotenv": "10.0.0",
+        "@types/qs": "6.9.7",
+        "ts-node": "9.1.1",
+        "typedoc": "0.21.8",
+        "typedoc-plugin-markdown": "3.10.4"
     },
     "publishConfig": {
         "access": "public",

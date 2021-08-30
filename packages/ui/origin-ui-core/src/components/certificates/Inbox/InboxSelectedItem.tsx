@@ -70,7 +70,7 @@ export function InboxSelectedItem(props: {
     const classes = useStyles();
 
     const [localEditMode, setLocalEditMode] = useState(false);
-    const [MWhValue, setMWh] = useState<number>(cert.energy.toNumber() / Unit.MWh);
+    const [MWhValue, setMWh] = useState<number | string>(cert.energy.toNumber() / Unit.MWh);
     const { t } = useTranslation();
 
     const { isEditing, setIsEditing } = useContext(InboxItemEditContext);
@@ -136,10 +136,16 @@ export function InboxSelectedItem(props: {
                             const max = cert.maxEnergy.toNumber() / Unit.MWh;
                             let value = parseInt(event.target.value, 10);
                             value = Math.min(max, Math.max(value, 1));
-                            setMWh(value);
+                            setMWh(isNaN(value) ? '' : value);
                         }}
                     />
-                    <Button color="primary" variant="contained" size="small" onClick={saveForm}>
+                    <Button
+                        disabled={Number(MWhValue) < 1}
+                        color="primary"
+                        variant="contained"
+                        size="small"
+                        onClick={saveForm}
+                    >
                         {t('certificate.actions.save')}
                     </Button>
                 </div>

@@ -1,4 +1,5 @@
 import * as CertificateUtils from './blockchain-facade/CertificateUtils';
+import * as CertificateBatchOperations from './blockchain-facade/CertificateBatchOperations';
 import * as Contracts from './contracts';
 
 export * from './const';
@@ -9,4 +10,4 @@ export * from './blockchain-facade/CertificationRequest';
 export * from './blockchain-facade/Certificate';
 export * from './blockchain-facade/BlockchainProperties';
 
-export { Contracts, CertificateUtils };
+export { Contracts, CertificateUtils, CertificateBatchOperations };

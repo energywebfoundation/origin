@@ -9,7 +9,13 @@ import {
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { CanActivate, ExecutionContext } from '@nestjs/common';
-import { Connection, Registration } from '@energyweb/origin-organization-irec-api';
+import {
+    Connection,
+    IrecService,
+    Registration,
+    UserIdentifier,
+    usedEntities
+} from '@energyweb/origin-organization-irec-api';
 
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
@@ -21,14 +27,8 @@ import {
     DeviceCreateParams,
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
-import {
-    Device,
-    DeviceModule,
-    DeviceService,
-    ImportIrecDeviceDTO,
-    IrecDeviceService,
-    UserIdentifier
-} from '../src/device';
+import { Device, DeviceModule, DeviceService, ImportIrecDeviceDTO } from '../src/device';
+import { UserService } from '@energyweb/origin-backend';
 
 export enum TestUser {
     OrganizationAdmin = '0',
@@ -91,8 +91,8 @@ export const bootstrapTestInstance = async () => {
         defaultAccount: 'MYTRADEACCOUNT001',
         registrantOrganization: 'REGORG',
         issuer: 'ISSUERORG',
-        deviceType: 'ES100',
-        fuel: 'TC110',
+        deviceType: 'TC110',
+        fuelType: 'ES100',
         countryCode: 'TH',
         capacity: 1000,
         commissioningDate: new Date('2020-01-01'),
@@ -100,7 +100,8 @@ export const bootstrapTestInstance = async () => {
         address: '1 Wind Farm Avenue, Thailand',
         latitude: '10',
         longitude: '10',
-        status: DeviceState.Approved
+        status: DeviceState.Approved,
+        active: true
     };
 
     const moduleFixture = await Test.createTestingModule({
@@ -112,7 +113,7 @@ export const bootstrapTestInstance = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [Device, Connection, Registration],
+                entities: [Device, Connection, Registration, ...usedEntities],
                 logging: ['info']
             }),
             DeviceModule
@@ -121,7 +122,13 @@ export const bootstrapTestInstance = async () => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
-        .overrideProvider(IrecDeviceService)
+        .overrideProvider(UserService)
+        .useValue({
+            getPlatformAdmin() {
+                return testUsers.get(TestUser.PlatformAdmin);
+            }
+        })
+        .overrideProvider(IrecService)
         .useValue({
             async importIrecDevice(user: ILoggedInUser, deviceToImport: ImportIrecDeviceDTO) {
                 return {
@@ -132,12 +139,12 @@ export const bootstrapTestInstance = async () => {
                 };
             },
             async getDevice(user: ILoggedInUser, code: string): Promise<IrecDevice> {
-                return { ...irecDevice, code };
+                return { ...irecDevice, code, active: true };
             },
             async getDevices(): Promise<IrecDevice[]> {
                 return [irecDevice];
             },
-            async createIrecDevice(
+            async createDevice(
                 user: ILoggedInUser,
                 deviceData: DeviceCreateParams
             ): Promise<IrecDevice> {
@@ -147,12 +154,15 @@ export const bootstrapTestInstance = async () => {
                     status: DeviceState.InProgress
                 };
             },
-            async update(
+            async updateDevice(
                 user: UserIdentifier,
                 code: string,
                 device: Partial<IrecDevice>
             ): Promise<Partial<IrecDevice>> {
                 return { ...device, status: DeviceState.InProgress };
+            },
+            async getTradeAccountCode() {
+                return 'somecode';
             }
         })
         .compile();

@@ -1,21 +1,9 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
         "rootDir": "./",
         "outDir": "./dist/js",
         "target": "ES2020"
     },
-    "include": ["./contracts.ts", "./src/**/*", "./schemas/*.json", "./build/**/*.json"],
-    "references": [
-        {
-            "path": "../utils/utils-general/tsconfig.json"
-        },
-        {
-            "path": "../devices/origin-device-registry-irec-form-api-client/tsconfig.json"
-        },
-        {
-            "path": "../origin-backend-core/tsconfig.json"
-        }
-    ]
+    "include": ["./contracts.ts", "./src/**/*", "./schemas/*.json", "./build/**/*.json"]
 }

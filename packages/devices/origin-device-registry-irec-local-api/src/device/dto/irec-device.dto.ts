@@ -24,7 +24,7 @@ export class IrecDeviceDTO {
 
     @ApiProperty({ type: String })
     @Expose()
-    fuel: string;
+    fuelType: string;
 
     @ApiProperty({ type: String })
     @Expose()

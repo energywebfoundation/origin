@@ -1,20 +1,16 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, Unique } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { IsBoolean, IsInt, IsPositive, IsString, Min } from 'class-validator';
-import {
-    CertificateUtils,
-    IClaim,
-    IOwnershipCommitmentProof,
-    Certificate as OnChainCertificate
-} from '@energyweb/issuer';
+import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
 
 export const CERTIFICATES_TABLE_NAME = 'issuer_certificate';
 
 @Entity({ name: CERTIFICATES_TABLE_NAME })
-@Unique(['tokenId'])
 export class Certificate extends ExtendedBaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
+    @IsInt()
+    @Min(1)
     id: number;
 
     @Column()
@@ -36,6 +32,9 @@ export class Certificate extends ExtendedBaseEntity {
     @IsPositive()
     creationTime: number;
 
+    @Column({ default: '' })
+    metadata: string;
+
     @Column('simple-json')
     owners: CertificateUtils.IShareInCertificate;
 
@@ -51,11 +50,6 @@ export class Certificate extends ExtendedBaseEntity {
     blockchain: BlockchainProperties;
 
     @Column({ nullable: true })
-    @IsInt()
-    @Min(0)
-    tokenId: number;
-
-    @Column({ nullable: true })
     @IsString()
     creationBlockHash: string;
 
@@ -67,24 +61,4 @@ export class Certificate extends ExtendedBaseEntity {
     @Column()
     @IsBoolean()
     issuedPrivately: boolean;
-
-    /*
-        Syncs the db certificate with it's on-chain counterpart.
-    */
-    async sync(): Promise<void> {
-        if (!this.blockchain || !this.tokenId) {
-            return;
-        }
-
-        const onChainCert = await new OnChainCertificate(
-            this.tokenId,
-            this.blockchain.wrap()
-        ).sync();
-
-        await Certificate.update(this.id, {
-            owners: onChainCert.owners,
-            claimers: onChainCert.claimers,
-            claims: await onChainCert.getClaimedData()
-        });
-    }
 }

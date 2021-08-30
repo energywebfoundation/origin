@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import printValue from 'yup/lib/util/printValue';
 
-export function useValidation() {
+export const useValidation = () => {
     const { t } = useTranslation();
     const [yupLocaleInitialized, setYupLocaleInitialized] = useState(false);
 
@@ -76,4 +76,4 @@ export function useValidation() {
     }, [t, yupLocaleInitialized]);
 
     return { Yup, yupLocaleInitialized };
-}
+};

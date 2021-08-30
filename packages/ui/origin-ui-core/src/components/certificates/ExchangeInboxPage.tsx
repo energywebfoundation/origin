@@ -3,26 +3,29 @@ import {
     CertificateSource,
     requestPublishForSale,
     requestWithdrawCertificate,
-    getUserOffchain
+    fromGeneralSelectors
 } from '../../features';
 import React, { useState } from 'react';
 import { TabContent } from './Inbox/InboxTabContent';
 import { SelectedInboxList, IInboxCertificateData } from './Inbox';
-import { EnergyFormatter, usePermissions } from '../../utils';
-import TextField from '@material-ui/core/TextField';
+import { EnergyFormatter, formatCurrencyComplete, usePermissions } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/styles';
 import { useOriginConfiguration } from '../../utils/configuration';
+import { fromUsersSelectors } from '../../features';
 import { Requirements } from '../Layout';
+import CurrencyTextField from '@unicef/material-ui-currency-textfield';
+import { Unit } from '@energyweb/utils-general';
 
 export function ExchangeInboxPage(): JSX.Element {
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const [price, setPrice] = useState(0);
+    const currency = useSelector(fromGeneralSelectors.getCurrencies)[0];
 
-    const hasBlockchainAccount = Boolean(user.blockchainAccountAddress);
+    const hasBlockchainAccount = !!user.organization?.blockchainAccountAddress;
 
     async function publishForSale(certs: IInboxCertificateData[], callback: () => void) {
         certs.forEach((certificate) => {
@@ -42,7 +45,7 @@ export function ExchangeInboxPage(): JSX.Element {
     }
 
     async function withdraw(certs: IInboxCertificateData[], callback: () => void) {
-        const address = user.blockchainAccountAddress;
+        const address = user.organization?.blockchainAccountAddress;
 
         certs.forEach((certificate) => {
             const assetId = certificate.assetId;
@@ -123,21 +126,29 @@ export function ExchangeInboxPage(): JSX.Element {
                                         {EnergyFormatter.format(totalVolume, true)}
                                     </div>
                                 </div>
-                                <TextField
+                                <CurrencyTextField
                                     style={{ margin: '24px 0' }}
-                                    type="number"
+                                    fullWidth
+                                    variant="filled"
+                                    required
+                                    label={t('bundle.properties.price')}
+                                    currencySymbol="$"
+                                    outputFormat="number"
                                     value={price}
-                                    onChange={(ev) => {
-                                        const newValue = parseFloat(ev.target.value);
-                                        if (!isNaN(newValue)) setPrice(newValue);
-                                    }}
+                                    onChange={(event, value) => setPrice(value)}
+                                    minimumValue="0"
                                 />
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <div className={classes.text_2}>
                                         {t('certificate.info.totalPrice')}:{' '}
                                     </div>
                                     <div className={classes.text_1} style={{ fontSize: 16 }}>
-                                        ${EnergyFormatter.format(totalVolume.mul(price))}
+                                        {formatCurrencyComplete(
+                                            (totalVolume.toNumber() /
+                                                Unit[EnergyFormatter.displayUnit]) *
+                                                price,
+                                            currency
+                                        )}
                                     </div>
                                 </div>
                             </TabContent>

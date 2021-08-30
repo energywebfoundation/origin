@@ -2,7 +2,7 @@ import { SagaIterator } from 'redux-saga';
 import { all, fork, take, select, apply, put } from 'redux-saga/effects';
 import { getI18n } from 'react-i18next';
 import { SupplyDto } from '@energyweb/exchange-client';
-import { showNotification, NotificationType } from '@energyweb/origin-ui-core';
+import { showNotification, NotificationTypeEnum } from '@energyweb/origin-ui-core';
 import { getExchangeClient } from '../general';
 import { ExchangeClient } from '../../utils/exchange';
 import { SupplyActions, storeSupplies, fetchSupplies } from './actions';
@@ -21,7 +21,10 @@ function* getAllSupplies(): SagaIterator {
             );
             yield put(storeSupplies(supplies));
         } catch (error) {
-            showNotification(i18n.t('exchange.supply.fetchSupplyError'), NotificationType.Error);
+            showNotification(
+                i18n.t('exchange.supply.fetchSupplyError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -37,10 +40,13 @@ function* createNewSupply(): SagaIterator {
             yield put(fetchSupplies());
             showNotification(
                 i18n.t('exchange.supply.supplyCreatedSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(i18n.t('exchange.supply.supplyCreateError'), NotificationType.Error);
+            showNotification(
+                i18n.t('exchange.supply.supplyCreateError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -57,10 +63,13 @@ function* updateExistingSupply(): SagaIterator {
             yield put(fetchSupplies());
             showNotification(
                 i18n.t('exchange.supply.supplyUpdatedSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(i18n.t('exchange.supply.supplyUpdateError'), NotificationType.Error);
+            showNotification(
+                i18n.t('exchange.supply.supplyUpdateError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }
@@ -76,10 +85,13 @@ function* removeSelectedSupply(): SagaIterator {
             yield put(fetchSupplies());
             showNotification(
                 i18n.t('exchange.supply.supplyRemovedSuccess'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
-            showNotification(i18n.t('exchange.supply.supplyRemoveError'), NotificationType.Error);
+            showNotification(
+                i18n.t('exchange.supply.supplyRemoveError'),
+                NotificationTypeEnum.Error
+            );
             console.log(error);
         }
     }

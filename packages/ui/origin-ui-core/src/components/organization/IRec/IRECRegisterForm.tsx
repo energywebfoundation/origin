@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Formik, Form, FormikHelpers } from 'formik';
@@ -13,10 +13,8 @@ import {
     makeStyles,
     createStyles
 } from '@material-ui/core';
-import { getIRecClient, setLoading } from '../../../features/general';
-import { setIRecAccount } from '../../../features/users';
 import { IRECAccountType, RegistrationIRecPostData } from '../../../utils/irec';
-import { showNotification, NotificationType } from '../../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../../utils/notifications';
 import { useValidation } from '../../../utils/validation';
 import { LightenColor } from '../../../utils/colors';
 import { useOriginConfiguration } from '../../../utils/configuration';
@@ -27,8 +25,9 @@ import {
     IAutocompleteMultiSelectOptionType,
     FormSelect
 } from '../../Form';
-import { IRecAccountRegisteredModal, ConnectBlockchainAccountModal } from '../../Modal';
 import irecLogo from '../../../../assets/logo-i-rec.svg';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersActions } from '../../../features';
+import { OrganizationModalsActionsEnum, useOrgModalsDispatch } from '../../../context';
 
 interface IFormValues {
     accountType: string;
@@ -97,14 +96,13 @@ const TITLE_OPTIONS = ['Dr', 'Mr', 'Mrs', 'Ms', 'Other'].map((option) => {
     };
 });
 
-export const IRECRegisterForm = () => {
+export const IRECRegisterForm = (): JSX.Element => {
     const { spacing }: Theme = useTheme();
     const { t } = useTranslation();
     const { Yup } = useValidation();
-    const [showIRecRegisteredModal, setShowIRecRegisteredModal] = useState<boolean>(false);
-    const [showBlockchainModal, setShowBlockchainModal] = useState(false);
+    const dispatchModals = useOrgModalsDispatch();
 
-    const iRecClient = useSelector(getIRecClient);
+    const iRecClient = useSelector(fromGeneralSelectors.getIRecClient);
     const dispatch = useDispatch();
     const dividerBgColor = LightenColor(
         useOriginConfiguration()?.styleConfig?.MAIN_BACKGROUND_COLOR,
@@ -160,14 +158,14 @@ export const IRECRegisterForm = () => {
         if (values.headquarterCountry === '' || values.activeCountries === []) {
             return;
         }
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             setSubmitting(true);
 
             const formData: RegistrationIRecPostData = {
                 ...values,
-                accountType: (values.accountType as unknown) as IRECAccountType,
+                accountType: values.accountType as unknown as IRECAccountType,
                 registrationYear: parseInt(values.registrationYear, 10),
                 activeCountries: values.activeCountries.map((i) => i?.code),
                 leadUserTitle:
@@ -180,18 +178,21 @@ export const IRECRegisterForm = () => {
 
             if (iRecAccount) {
                 setSubmitting(false);
-                dispatch(setIRecAccount(iRecAccount));
-                setShowIRecRegisteredModal(true);
+                dispatch(fromUsersActions.setIRecAccount(iRecAccount));
+                dispatchModals({
+                    type: OrganizationModalsActionsEnum.SHOW_IREC_ACCOUNT_REGISTERED,
+                    payload: true
+                });
             }
         } catch (error) {
             console.warn('Error while registering an organization', error);
             if (error?.response?.status === 401) {
-                showNotification('Unauthorized.', NotificationType.Error);
+                showNotification('Unauthorized.', NotificationTypeEnum.Error);
             } else {
-                showNotification('Organization could not be created.', NotificationType.Error);
+                showNotification('Organization could not be created.', NotificationTypeEnum.Error);
             }
         }
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
     };
 
     const VALIDATION_SCHEME = Yup.object({
@@ -310,8 +311,10 @@ export const IRECRegisterForm = () => {
                                                 label={t(
                                                     'organization.registration.orgHeadquartersCountry'
                                                 )}
-                                                property="headquarterCountry"
                                                 currentValue={values.headquarterCountry}
+                                                onChange={(value) =>
+                                                    setFieldValue('headquarterCountry', value, true)
+                                                }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
                                                 required
@@ -374,7 +377,6 @@ export const IRECRegisterForm = () => {
                                                 selectedValues={values.activeCountries}
                                                 disabled={isSubmitting}
                                                 className="mt-3"
-                                                isoFormat={true}
                                                 max={3}
                                             />
                                             <FormInput
@@ -469,9 +471,15 @@ export const IRECRegisterForm = () => {
                                                 label={t(
                                                     'organization.registration.primaryContactOrgCountry'
                                                 )}
-                                                property="primaryContactOrganizationCountry"
                                                 currentValue={
                                                     values.primaryContactOrganizationCountry
+                                                }
+                                                onChange={(value) =>
+                                                    setFieldValue(
+                                                        'primaryContactOrganizationCountry',
+                                                        value,
+                                                        true
+                                                    )
                                                 }
                                                 disabled={isSubmitting}
                                                 className="mt-3"
@@ -637,15 +645,6 @@ export const IRECRegisterForm = () => {
                     );
                 }}
             </Formik>
-            <IRecAccountRegisteredModal
-                showModal={showIRecRegisteredModal}
-                setShowModal={setShowIRecRegisteredModal}
-                setShowBlockchainModal={setShowBlockchainModal}
-            />
-            <ConnectBlockchainAccountModal
-                showModal={showBlockchainModal}
-                setShowModal={setShowBlockchainModal}
-            />
         </Paper>
     );
 };

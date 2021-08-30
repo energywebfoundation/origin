@@ -3,6 +3,7 @@ import { Timestamp } from '@energyweb/utils-general';
 
 import { IBlockchainProperties } from './BlockchainProperties';
 import { getEventsFromContract } from '../utils/events';
+import { decodeData, encodeData } from './CertificateUtils';
 
 // Maximum number Solidity can handle is (2^256)-1
 export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
@@ -47,8 +48,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
     constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
 
     public static async create(
-        fromTime: Timestamp,
-        toTime: Timestamp,
+        generationStartTime: Timestamp,
+        generationEndTime: Timestamp,
         deviceId: string,
         blockchainProperties: IBlockchainProperties,
         forAddress?: string
@@ -58,11 +59,11 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         const { issuer, activeUser } = blockchainProperties;
         const issuerWithSigner = issuer.connect(activeUser);
 
-        const data = await issuer.encodeData(fromTime, toTime, deviceId);
+        const data = encodeData({ generationStartTime, generationEndTime, deviceId, metadata: '' });
 
         const tx = await (forAddress
-            ? issuerWithSigner.requestCertificationFor(data, forAddress, false)
-            : issuerWithSigner.requestCertification(data, false));
+            ? issuerWithSigner.requestCertificationFor(data, forAddress)
+            : issuerWithSigner.requestCertification(data));
 
         const {
             events: [certificationRequested]
@@ -86,7 +87,7 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
         const certificationRequestedEvents = await getEventsFromContract(
             issuer,
-            issuer.filters.CertificationRequested(null, null, null)
+            issuer.filters.CertificationRequested(null, null)
         );
 
         return certificationRequestedEvents.map(
@@ -101,18 +102,19 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
         const { issuer } = this.blockchainProperties;
         const issueRequest = await issuer.getCertificationRequest(this.id);
-        const decodedData = await issuer.decodeData(issueRequest.data);
+
+        const decodedData = decodeData(issueRequest.data);
 
         this.owner = issueRequest.owner;
-        this.fromTime = Number(decodedData['0']);
-        this.toTime = Number(decodedData['1']);
-        this.deviceId = decodedData['2'];
+        this.fromTime = decodedData.generationStartTime;
+        this.toTime = decodedData.generationEndTime;
+        this.deviceId = decodedData.deviceId;
         this.approved = issueRequest.approved;
         this.revoked = issueRequest.revoked;
 
         const certificationRequestedLogs = await getEventsFromContract(
             issuer,
-            issuer.filters.CertificationRequested(null, this.id, null)
+            issuer.filters.CertificationRequested(null, this.id)
         );
 
         const certificationApprovedLogs = await getEventsFromContract(
@@ -137,17 +139,9 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
     async approve(energy: BigNumber): Promise<CertificationRequest['issuedCertificateTokenId']> {
         const { issuer, activeUser } = this.blockchainProperties;
 
-        const validityData = issuer.interface.encodeFunctionData('isRequestValid', [
-            this.id.toString()
-        ]);
-
         const issuerWithSigner = issuer.connect(activeUser);
 
-        const approveTx = await issuerWithSigner.approveCertificationRequest(
-            this.id,
-            energy,
-            validityData
-        );
+        const approveTx = await issuerWithSigner.approveCertificationRequest(this.id, energy);
 
         const { events } = await approveTx.wait();
 

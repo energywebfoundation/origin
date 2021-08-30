@@ -17,21 +17,17 @@ import {
     reloadCertificates,
     updateCertificate
 } from '.';
-import { moment, NotificationType, showNotification } from '../../utils';
+import { moment, NotificationTypeEnum, showNotification } from '../../utils';
 import { certificateEnergyStringToBN } from '../../utils/certificates';
 import { ExchangeClient } from '../../utils/clients/ExchangeClient';
 import {
-    setLoading,
-    setNoAccountModalVisibilityAction,
-    setAccountMismatchModalPropertiesAction,
     IAccountMismatchModalResolvedAction,
-    GeneralActions
+    GeneralActions,
+    fromGeneralActions
 } from '../general/actions';
 import { enhanceCertificate, fetchDataAfterConfigurationChange } from '../general/sagas';
-import { getExchangeClient } from '../general/selectors';
 import { getConfiguration } from '../configuration';
 import { getWeb3 } from '../web3';
-import { getUserOffchain, getActiveBlockchainAccountAddress } from '../users/selectors';
 import {
     addCertificate,
     CertificatesActions,
@@ -51,15 +47,13 @@ import {
     getCertificationRequestsClient
 } from './selectors';
 import { ICertificate, ICertificateViewItem } from './types';
+import { fromGeneralSelectors } from '../general';
+import { fromUsersSelectors } from '../users';
 
-export function* getCertificate(id: number, byTokenId = false): any {
+export function* getCertificate(id: number): any {
     const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
 
-    const { data: certificate } = yield apply(
-        certificatesClient,
-        byTokenId ? certificatesClient.getByTokenId : certificatesClient.get,
-        [id]
-    );
+    const { data: certificate } = yield apply(certificatesClient, certificatesClient.get, [id]);
 
     return {
         ...certificate,
@@ -82,7 +76,10 @@ export function* getBlockchainCertificate(id: number): any {
 
     const configuration: IBlockchainProperties = {
         web3,
-        registry: Contracts.factories.RegistryFactory.connect(blockchainProperties.registry, web3),
+        registry: Contracts.factories.RegistryExtendedFactory.connect(
+            blockchainProperties.registry,
+            web3
+        ),
         issuer: Contracts.factories.IssuerFactory.connect(blockchainProperties.issuer, web3),
         activeUser: web3.getSigner()
     };
@@ -100,7 +97,7 @@ function* requestCertificatesSaga(): SagaIterator {
             CertificatesActions.requestCertificates
         );
 
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
 
         const { startTime, endTime, energy, files, deviceId } = action.payload.requestData;
         const closeModalCallback = action.payload.callback;
@@ -109,7 +106,9 @@ function* requestCertificatesSaga(): SagaIterator {
             const certificationRequestsClient: CertificationRequestsClient = yield select(
                 getCertificationRequestsClient
             );
-            const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+            const { accountClient }: ExchangeClient = yield select(
+                fromGeneralSelectors.getExchangeClient
+            );
             const {
                 data: { address }
             } = yield call([accountClient, accountClient.getAccount]);
@@ -134,7 +133,7 @@ function* requestCertificatesSaga(): SagaIterator {
                 yield call(closeModalCallback);
             }
 
-            showNotification(`Certificates requested.`, NotificationType.Success);
+            showNotification(`Certificates requested.`, NotificationTypeEnum.Success);
         } catch (error) {
             console.warn('Error while requesting certificates', error);
 
@@ -151,10 +150,10 @@ function* requestCertificatesSaga(): SagaIterator {
                     errorMsg = `Transaction could not be completed.`;
             }
 
-            showNotification(errorMsg, NotificationType.Error);
+            showNotification(errorMsg, NotificationTypeEnum.Error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
@@ -200,9 +199,11 @@ function* resyncCertificateSaga(): SagaIterator {
         const { id, assetId } = action.payload;
 
         const certificate: ICertificate = yield call(getCertificate, id);
-        const user = yield select(getUserOffchain);
+        const user = yield select(fromUsersSelectors.getUserOffchain);
 
-        const { accountBalanceClient }: ExchangeClient = yield select(getExchangeClient);
+        const { accountBalanceClient }: ExchangeClient = yield select(
+            fromGeneralSelectors.getExchangeClient
+        );
 
         const {
             data: { available }
@@ -243,7 +244,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
             CertificatesActions.requestPublishForSale
         );
         const { accountClient, transferClient, ordersClient }: ExchangeClient = yield select(
-            getExchangeClient
+            fromGeneralSelectors.getExchangeClient
         );
 
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
@@ -253,7 +254,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
 
         const i18n = getI18n();
 
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
 
         try {
             if (source === CertificateSource.Blockchain) {
@@ -267,7 +268,7 @@ function* requestPublishForSaleSaga(): SagaIterator {
 
                 const onChainCertificate: Certificate = yield call(
                     getBlockchainCertificate,
-                    certificate.tokenId
+                    certificate.id
                 );
 
                 const transferResult: ContractTransaction = yield call(
@@ -303,14 +304,14 @@ function* requestPublishForSaleSaga(): SagaIterator {
             yield put(reloadCertificates());
             showNotification(
                 i18n.t('certificate.feedback.certificatePublished'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
             console.error(error);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
 
         if (callback) {
             yield call(callback);
@@ -319,23 +320,26 @@ function* requestPublishForSaleSaga(): SagaIterator {
 }
 
 function* assertCorrectBlockchainAccount() {
-    const user: IUser = yield select(getUserOffchain);
-    const activeBlockchainAddress: string = yield select(getActiveBlockchainAccountAddress);
+    const user: IUser = yield select(fromUsersSelectors.getUserOffchain);
+    const activeBlockchainAddress: string = yield select(
+        fromUsersSelectors.getActiveBlockchainAccountAddress
+    );
 
     if (user) {
-        if (!user.blockchainAccountAddress || !activeBlockchainAddress) {
-            yield put(setNoAccountModalVisibilityAction(true));
+        if (!user.organization?.blockchainAccountAddress || !activeBlockchainAddress) {
+            yield put(fromGeneralActions.setNoAccountModalVisibility(true));
 
             return false;
         } else if (
-            user.blockchainAccountAddress.toLowerCase() === activeBlockchainAddress?.toLowerCase()
+            user.organization.blockchainAccountAddress.toLowerCase() ===
+            activeBlockchainAddress.toLowerCase()
         ) {
             return true;
         }
     }
 
     yield put(
-        setAccountMismatchModalPropertiesAction({
+        fromGeneralActions.setAccountMismatchModalProperties({
             visibility: true
         })
     );
@@ -351,7 +355,9 @@ function* requestDepositSaga(): SagaIterator {
         const action: IRequestPublishForSaleAction = yield take(
             CertificatesActions.requestDepositCertificate
         );
-        const { accountClient }: ExchangeClient = yield select(getExchangeClient);
+        const { accountClient }: ExchangeClient = yield select(
+            fromGeneralSelectors.getExchangeClient
+        );
 
         const shouldContinue: boolean = yield call(assertCorrectBlockchainAccount);
 
@@ -364,7 +370,7 @@ function* requestDepositSaga(): SagaIterator {
 
         const i18n = getI18n();
 
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
 
         try {
             const { data: account } = yield call([accountClient, accountClient.getAccount]);
@@ -375,21 +381,21 @@ function* requestDepositSaga(): SagaIterator {
 
             const onChainCertificate: Certificate = yield call(
                 getBlockchainCertificate,
-                certificate.tokenId
+                certificate.id
             );
 
             yield call([onChainCertificate, onChainCertificate.transfer], account.address, amount);
 
             showNotification(
                 i18n.t('certificate.feedback.certificateDeposited'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
             console.error(error);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
 
         if (callback) {
             yield call(callback);
@@ -411,7 +417,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
 
         const { certificateId, amount, claimData, callback } = action.payload;
 
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
 
         const i18n = getI18n();
 
@@ -424,7 +430,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
 
             const onChainCertificate: Certificate = yield call(
                 getBlockchainCertificate,
-                certificate.tokenId
+                certificate.id
             );
 
             const claimResult: ContractTransaction = yield call(
@@ -436,7 +442,7 @@ function* requestClaimCertificateSaga(): SagaIterator {
             const txResult: ContractReceipt = yield call([claimResult, claimResult.wait]);
 
             if (!txResult.status) {
-                showNotification('Claiming failed.', NotificationType.Error);
+                showNotification('Claiming failed.', NotificationTypeEnum.Error);
                 continue;
             }
 
@@ -446,15 +452,15 @@ function* requestClaimCertificateSaga(): SagaIterator {
 
             showNotification(
                 i18n.t('certificate.feedback.claimed', { id: certificateId }),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
             yield put(reloadCertificates());
         } catch (error) {
             console.error(error);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
@@ -471,31 +477,26 @@ function* requestClaimCertificateBulkSaga(): SagaIterator {
         }
 
         const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
-        const { certificateIds, claimData } = action.payload;
+        const { claims } = action.payload;
 
         const i18n = getI18n();
 
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
 
         try {
-            yield apply(certificatesClient, certificatesClient.bulkClaim, [
-                {
-                    certificateIds: certificateIds.map((id) => id),
-                    claimData
-                }
-            ]);
+            yield apply(certificatesClient, certificatesClient.batchClaim, [claims]);
             yield put(reloadCertificates());
 
             showNotification(
                 i18n.t('certificate.feedback.certificatesClaimed'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
         } catch (error) {
             console.error(error);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
     }
 }
 
@@ -513,20 +514,20 @@ function* requestCertificateApprovalSaga(): SagaIterator {
 
         const i18n = getI18n();
 
-        yield put(setLoading(true));
+        yield put(fromGeneralActions.setLoading(true));
 
         try {
             yield apply(certificationRequestsClient, certificationRequestsClient.approve, [
                 certificationRequestId
             ]);
 
-            showNotification(i18n.t('certificate.feedback.approved'), NotificationType.Success);
+            showNotification(i18n.t('certificate.feedback.approved'), NotificationTypeEnum.Success);
         } catch (error) {
             console.error(error);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
 
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
 
         if (callback) {
             yield call(callback);
@@ -540,7 +541,9 @@ export function* withdrawSaga(): SagaIterator {
             CertificatesActions.withdrawCertificate
         );
         const { callback } = action.payload;
-        const { transferClient }: ExchangeClient = yield select(getExchangeClient);
+        const { transferClient }: ExchangeClient = yield select(
+            fromGeneralSelectors.getExchangeClient
+        );
         const i18n = getI18n();
         try {
             yield call([transferClient, transferClient.requestWithdrawal], action.payload);
@@ -548,10 +551,13 @@ export function* withdrawSaga(): SagaIterator {
             if (callback) {
                 yield call(callback);
             }
-            showNotification(i18n.t('certificate.feedback.withdrawn'), NotificationType.Success);
+            showNotification(
+                i18n.t('certificate.feedback.withdrawn'),
+                NotificationTypeEnum.Success
+            );
         } catch (error) {
             console.error(error);
-            showNotification(i18n.t('general.feedback.unknownError'), NotificationType.Error);
+            showNotification(i18n.t('general.feedback.unknownError'), NotificationTypeEnum.Error);
         }
     }
 }

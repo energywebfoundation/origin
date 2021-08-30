@@ -14,10 +14,11 @@ import { CommandBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ConnectionDTO, CreateConnectionDTO } from './dto';
+import { CreateConnectionDTO } from '../irec';
+import { ConnectionDTO } from './dto';
 import { CreateConnectionCommand, GetConnectionCommand } from './commands';
 
-@ApiTags('irec_connection')
+@ApiTags('irec-connection')
 @ApiBearerAuth('access-token')
 @UsePipes(ValidationPipe)
 @Controller('irec/connection')
@@ -26,7 +27,7 @@ export class ConnectionController {
 
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiBody({ type: CreateConnectionDTO })
     @ApiCreatedResponse({
         type: ConnectionDTO,
@@ -41,7 +42,7 @@ export class ConnectionController {
 
     @Get()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiResponse({
         status: HttpStatus.OK,
         type: [ConnectionDTO],

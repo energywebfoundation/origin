@@ -17,13 +17,12 @@ import {
     MenuItem
 } from '@material-ui/core';
 import { Role } from '@energyweb/origin-backend-core';
-import { setLoading, getBackendClient } from '../../../features/general';
-import { getUserOffchain } from '../../../features/users';
-import { showNotification, NotificationType } from '../../../utils/notifications';
-import { roleNames } from '../../../utils/organizationRoles';
+import { showNotification, NotificationTypeEnum, roleNames } from '../../../utils';
+
 import { FormInput } from '../../Form';
 import { InvitationDTO } from '@energyweb/origin-backend-client';
 import { Skeleton } from '@material-ui/lab';
+import { fromGeneralActions, fromGeneralSelectors, fromUsersSelectors } from '../../../features';
 
 interface IFormValues {
     email: string;
@@ -42,10 +41,10 @@ const VALIDATION_SCHEMA = Yup.object({
 export function OrganizationInvite() {
     const { t } = useTranslation();
 
-    const backendClient = useSelector(getBackendClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const invitationClient = backendClient?.invitationClient;
     const organizationClient = backendClient?.organizationClient;
-    const userOffchain = useSelector(getUserOffchain);
+    const userOffchain = useSelector(fromUsersSelectors.getUserOffchain);
     const [invitations, setInvitations] = useState<InvitationDTO[]>(null);
     const dispatch = useDispatch();
 
@@ -80,7 +79,7 @@ export function OrganizationInvite() {
         formikActions: FormikHelpers<IFormValues>
     ): Promise<void> {
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         const inviteAlreadySent = invitations.find((invite) => invite.email === values.email);
         try {
@@ -94,36 +93,37 @@ export function OrganizationInvite() {
             formikActions.resetForm();
             showNotification(
                 t('organization.invitations.notification.invitationSent'),
-                NotificationType.Success
+                NotificationTypeEnum.Success
             );
             getInvitations();
         } catch (error) {
             console.warn(t('organization.invitations.notification.errorInvitingUser'), error);
             const _error = { ...error };
             if (error?.response?.status === 401) {
+                showNotification('Unauthorized.', NotificationTypeEnum.Error);
                 showNotification(
                     t('organization.invitations.notification.unauthorized'),
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             } else if (inviteAlreadySent) {
                 showNotification(
                     t('organization.invitations.notification.alreadySent'),
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             } else if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${userOffchain.status}`,
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             } else {
                 showNotification(
                     t('organization.invitations.notification.unableToInvite'),
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             }
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
         formikActions.setSubmitting(false);
     }
 

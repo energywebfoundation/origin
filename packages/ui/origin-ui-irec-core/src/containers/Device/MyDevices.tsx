@@ -1,25 +1,18 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { UserStatus } from '@energyweb/origin-backend-core';
-import { getUserOffchain } from '@energyweb/origin-ui-core';
 import { DeviceTable } from '../../components/devices/table';
 import { getMyDevices, fetchMyDevices } from '../../features/devices';
-import { getDeviceClient } from '../../features';
+import { fromUsersSelectors } from '@energyweb/origin-ui-core';
 
-export function MyDevices() {
+export const MyDevices = () => {
     const dispatch = useDispatch();
 
-    const user = useSelector(getUserOffchain);
-    const userIsActive = user?.status === UserStatus.Active;
-
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const myDevices = useSelector(getMyDevices);
-    const iRecClient = useSelector(getDeviceClient)?.iRecClient;
 
     useEffect(() => {
-        if (iRecClient && userIsActive) {
-            dispatch(fetchMyDevices());
-        }
-    }, [iRecClient, user]);
+        dispatch(fetchMyDevices());
+    }, []);
 
     return (
         <DeviceTable
@@ -31,4 +24,4 @@ export function MyDevices() {
             }}
         />
     );
-}
+};

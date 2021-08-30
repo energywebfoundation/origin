@@ -17,27 +17,27 @@
 
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [Packages](#packages)
-  - [SDK Releases](#sdk-releases)
-  - [Applications, Infrastructure and Demo](#applications-infrastructure-and-demo)
-  - [Packages types](#packages-types)
-    - [Stable](#stable)
-    - [Canary](#canary)
-    - [Preview](#preview)
-- [Installation](#installation)
-- [Build](#build)
-- [Test](#test)
-- [Run demo](#run-demo)
-  - [Preparation](#preparation)
-  - [Running](#running)
-  - [Heroku environment provisioning](#heroku-environment-provisioning)
-- [Energy Attribute Certificates](#energy-attribute-certificates)
-- [Key modules and components](#key-modules-and-components)
-  - [Key repositories](#key-repositories)
-  - [Other components](#other-components)
-- [Deployment](#deployment)
-- [Contribution guidelines](#contribution-guidelines)
+-   [Table of Contents](#table-of-contents)
+-   [Packages](#packages)
+    -   [SDK Releases](#sdk-releases)
+    -   [Applications, Infrastructure and Demo](#applications-infrastructure-and-demo)
+    -   [Packages types](#packages-types)
+        -   [Stable](#stable)
+        -   [Canary](#canary)
+        -   [Preview](#preview)
+-   [Installation](#installation)
+-   [Build](#build)
+-   [Test](#test)
+-   [Run demo](#run-demo)
+    -   [Preparation](#preparation)
+    -   [Running](#running)
+    -   [Heroku environment provisioning](#heroku-environment-provisioning)
+-   [Energy Attribute Certificates](#energy-attribute-certificates)
+-   [Key modules and components](#key-modules-and-components)
+    -   [Key repositories](#key-repositories)
+    -   [Other components](#other-components)
+-   [Deployment](#deployment)
+-   [Contribution guidelines](#contribution-guidelines)
 
 ## Packages
 
@@ -82,52 +82,54 @@ Preview packages are built on a special `preview` branch, this is mostly used as
 
 Install using `yarn add @energyweb/{package}@preview`
 
-## Installation
+## Preparation
 
-Make sure have latest `yarn` package manager installed.
-
-```shell
-yarn
-```
-
-## Build
+1. Make sure you are using Node 14.x.x
+2. Make sure have latest `@microsoft/rush` package manager installed.
 
 ```shell
-yarn build
+npm install -g @microsoft/rush
 ```
 
-## Test
-
-```shell
-yarn test
-```
-
-## Run demo
-
-### Preparation
-
-0. Make sure you are using Node 14.x.x
-1. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
+3. Make sure you have Java runtime installed
+4. Install [Postgres](https://www.postgresql.org/download/) 12.x+ and create a new database named `origin`.
 
 We recommend using Docker based setup as follows (requires psql command line tool installed):
 
 ```
 docker pull postgres
-docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 postgres
-psql -h localhost -p 5432 -U postgres -c "CREATE DATABASE origin"
+docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=origin -d -p 5432:5432 postgres
 ```
 
-2. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
+4. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
    Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
-3. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
+5. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
 
-### Running
-
-After you have the `.env` file created, installed dependencies (`yarn`) and build completed (`yarn build`) run the following command:
+## Installation
 
 ```shell
-yarn run:origin
+rush update
+```
+
+## Build
+
+```shell
+rush build
+```
+
+## Test
+
+```shell
+rush test:e2e
+```
+
+## Run demo
+
+After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
+
+```shell
+rush run:origin
 ```
 
 Visit the UI at: http://localhost:3000.

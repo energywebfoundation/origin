@@ -25,9 +25,11 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
 
 import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
+import { RequestBatchClaimDTO } from './dto/request-batch-claim.dto';
 import { RequestClaimDTO } from './dto/request-claim.dto';
-import { ClaimBeingProcessedError } from './errors/claim-being-processed.error';
-import { WithdrawalBeingProcessedError } from './errors/withdrawal-being-processed.error';
+import { RequestSendDTO } from './dto/request-send.dto';
+import { BeingProcessedError } from './errors/being-processed.error';
+import { TransferDirection } from './transfer-direction';
 import { Transfer } from './transfer.entity';
 import { TransferService } from './transfer.service';
 
@@ -62,14 +64,14 @@ export class TransferController {
                 user.ownerId,
                 'requestWithdrawal',
                 () => this.transferService.requestWithdrawal(user.ownerId, withdrawal),
-                new WithdrawalBeingProcessedError()
+                new BeingProcessedError(TransferDirection.Withdrawal)
             );
 
             return result;
         } catch (error) {
             this.logger.error(error.message);
 
-            if (error instanceof WithdrawalBeingProcessedError) {
+            if (error instanceof BeingProcessedError) {
                 throw new ConflictException({ message: error.message });
             }
 
@@ -91,14 +93,76 @@ export class TransferController {
                 ownerId,
                 'requestClaim',
                 () => this.transferService.requestClaim(ownerId, claim),
-                new ClaimBeingProcessedError()
+                new BeingProcessedError(TransferDirection.Claim)
             );
 
             return result;
         } catch (error) {
             this.logger.error(error.message);
 
-            if (error instanceof ClaimBeingProcessedError) {
+            if (error instanceof BeingProcessedError) {
+                throw new ConflictException({ message: error.message });
+            }
+
+            throw new ForbiddenException();
+        }
+    }
+
+    @Post('claim/batch')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: RequestBatchClaimDTO })
+    @ApiResponse({ status: HttpStatus.CREATED, type: String, description: 'Request a claim' })
+    public async requestBatchClaim(
+        @UserDecorator() { ownerId }: ILoggedInUser,
+        @Body() batchClaim: RequestBatchClaimDTO
+    ): Promise<string[]> {
+        try {
+            const result = await ensureSingleProcessOnly(
+                ownerId,
+                'requestClaim',
+                () => this.transferService.requestBatchClaim(ownerId, batchClaim),
+                new BeingProcessedError(TransferDirection.Claim)
+            );
+
+            return result;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            if (error instanceof BeingProcessedError) {
+                throw new ConflictException({ message: error.message });
+            }
+
+            throw new ForbiddenException();
+        }
+    }
+
+    @Post('send')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin)
+    @ApiBody({ type: RequestSendDTO })
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        type: String,
+        description: 'Request to send some amount to an address'
+    })
+    public async requestSend(
+        @UserDecorator() { ownerId }: ILoggedInUser,
+        @Body() send: RequestSendDTO
+    ): Promise<string> {
+        try {
+            const result = await ensureSingleProcessOnly(
+                ownerId,
+                'requestSend',
+                () => this.transferService.requestSend(ownerId, send),
+                new BeingProcessedError(TransferDirection.Send)
+            );
+
+            return result;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            if (error instanceof BeingProcessedError) {
                 throw new ConflictException({ message: error.message });
             }
 

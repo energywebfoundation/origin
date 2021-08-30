@@ -1,37 +1,44 @@
-pragma solidity ^0.5.2;
+// SPDX-License-Identifier: GPL-3.0-or-later
+pragma solidity ^0.8.0;
 
-import '@energyweb/issuer/contracts/ERC1155/IERC1155.sol';
-import '@energyweb/issuer/contracts/ERC1155/IERC1155TokenReceiver.sol';
-import '@energyweb/issuer/contracts/ERC1155/Common.sol';
+import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+import "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract TokenAccount is ERC1155TokenReceiver, CommonConstants {
+import './Common.sol';
+
+contract TokenAccount is ReentrancyGuard, IERC1155Receiver, CommonConstants {
     address private wallet;
 
-    constructor(address _wallet) public {
+    constructor(address _wallet) nonReentrant {
         wallet = _wallet;
     }
 
     function onERC1155Received(
-        address _operator,
-        address _from,
-        uint256 _id,
-        uint256 _value,
-        bytes calldata _data
-    ) external returns (bytes4) {
-        IERC1155(msg.sender).safeTransferFrom(address(this), wallet, _id, _value, _data);
+        address operator, // Needed for the interface, but unused because it's irrelevant for our use case
+        address from, // Needed for the interface, but unused because it's irrelevant for our use case
+        uint256 id,
+        uint256 value,
+        bytes calldata data
+    ) external override nonReentrant returns (bytes4) {
+        IERC1155(msg.sender).safeTransferFrom(address(this), wallet, id, value, data);
 
         return ERC1155_ACCEPTED;
     }
 
     function onERC1155BatchReceived(
-        address _operator,
-        address _from,
-        uint256[] calldata _ids,
-        uint256[] calldata _values,
-        bytes calldata _data
-    ) external returns (bytes4) {
-        IERC1155(msg.sender).safeBatchTransferFrom(address(this), wallet, _ids, _values, _data);
+        address operator, // Needed for the interface, but unused because it's irrelevant for our use case
+        address from, // Needed for the interface, but unused because it's irrelevant for our use case
+        uint256[] calldata ids,
+        uint256[] calldata values,
+        bytes calldata data
+    ) external override nonReentrant returns (bytes4) {
+        IERC1155(msg.sender).safeBatchTransferFrom(address(this), wallet, ids, values, data);
 
         return ERC1155_BATCH_ACCEPTED;
+    }
+
+    function supportsInterface(bytes4 interfaceId) public pure override returns (bool) {
+        return interfaceId == type(IERC165).interfaceId;
     }
 }

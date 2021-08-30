@@ -27,6 +27,7 @@ module.exports = {
             http: require.resolve('stream-http'),
             https: require.resolve('https-browserify'),
             vm: require.resolve('vm-browserify'),
+            buffer: require.resolve('buffer/'),
             fs: false
         }
     },
@@ -36,9 +37,7 @@ module.exports = {
         compress: true,
         historyApiFallback: true,
         watchOptions: {
-            ignored: [
-                path.resolve(__dirname, '../cypress')
-            ]
+            ignored: [path.resolve(__dirname, '../cypress')]
         }
     },
 
@@ -87,7 +86,7 @@ module.exports = {
                             limit: 8192
                         }
                     }
-                ],
+                ]
             },
             {
                 test: /\.(png|jpg|gif)$/,

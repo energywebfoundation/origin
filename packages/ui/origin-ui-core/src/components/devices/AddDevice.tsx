@@ -16,25 +16,19 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { CloudUpload } from '@material-ui/icons';
 import { DeviceStatus, IExternalDeviceId } from '@energyweb/origin-backend-core';
-import {
-    getEnvironment,
-    getExternalDeviceIdTypes,
-    getCompliance,
-    getCountry,
-    getBackendClient
-} from '../../features/general';
 import { getConfiguration } from '../../features/configuration';
 import { PowerFormatter } from '../../utils/PowerFormatter';
 import { useValidation } from '../../utils/validation';
 import { areDeviceSpecificPropertiesValid } from '../../utils/device';
 import { usePermissions } from '../../utils/permissions';
 import { Moment } from '../../utils/time';
-import { showNotification, NotificationType } from '../../utils/notifications';
+import { showNotification, NotificationTypeEnum } from '../../utils/notifications';
 import { FormikDatePicker, FormInput, HierarchicalMultiSelect } from '../Form';
 import { Upload, IUploadedFile } from '../Documents';
 import { Requirements } from '../Layout';
 import { DeviceSelectors } from './DeviceSelectors';
 import { createDevice } from '../../features/devices';
+import { fromGeneralSelectors } from '../../features';
 
 interface IFormValues {
     facilityName: string;
@@ -60,13 +54,13 @@ const INITIAL_FORM_VALUES: IFormValues = {
     projectStory: ''
 };
 
-export function AddDevice() {
+export const AddDevice = () => {
     const configuration = useSelector(getConfiguration);
-    const compliance = useSelector(getCompliance);
-    const country = useSelector(getCountry);
-    const backendClient = useSelector(getBackendClient);
-    const externalDeviceIdTypes = useSelector(getExternalDeviceIdTypes);
-    const environment = useSelector(getEnvironment);
+    const compliance = useSelector(fromGeneralSelectors.getCompliance);
+    const country = useSelector(fromGeneralSelectors.getCountry);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
+    const externalDeviceIdTypes = useSelector(fromGeneralSelectors.getExternalDeviceIdTypes);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
 
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -120,7 +114,10 @@ export function AddDevice() {
 
     const VALIDATION_SCHEMA = Yup.object().shape({
         facilityName: Yup.string().label(t('device.properties.facilityName')).required(),
-        capacity: Yup.number().label(t('device.properties.capacity')).required().positive(),
+        capacity: Yup.number()
+            .label(`${t('device.properties.capacity')} (${PowerFormatter.displayUnit})`)
+            .required()
+            .positive(),
         commissioningDate: Yup.date().required(),
         registrationDate: Yup.date().required(),
         address: Yup.string().label(t('device.properties.address')).required(),
@@ -188,7 +185,7 @@ export function AddDevice() {
                     limit: 10,
                     actual: files.length
                 }),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             return;
         }
@@ -204,7 +201,7 @@ export function AddDevice() {
             console.log(error);
             showNotification(
                 t('device.feedback.unexpectedErrorWhenUploadingImages'),
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
     }
@@ -259,6 +256,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
+                                            data-cy="facilityName"
                                             label={t('device.properties.facilityName')}
                                             name="facilityName"
                                             component={TextField}
@@ -268,7 +266,7 @@ export function AddDevice() {
                                             disabled={fieldDisabled}
                                         />
                                     </FormControl>
-                                    <div className={classes.selectContainer}>
+                                    <div className={classes.selectContainer} data-cy="device-type">
                                         <HierarchicalMultiSelect
                                             selectedValue={selectedDeviceType}
                                             onChange={(value: string[]) =>
@@ -296,6 +294,7 @@ export function AddDevice() {
                                     </div>
 
                                     <Field
+                                        data-cy="commissioningDate"
                                         name="commissioningDate"
                                         label={t('device.properties.vintageCod')}
                                         className="mt-3"
@@ -307,6 +306,7 @@ export function AddDevice() {
                                         disabled={fieldDisabled}
                                     />
                                     <Field
+                                        data-cy="registrationDate"
                                         name="registrationDate"
                                         label={t('device.properties.registrationDate')}
                                         className="mt-3"
@@ -318,6 +318,7 @@ export function AddDevice() {
                                         disabled={fieldDisabled}
                                     />
                                     <Field
+                                        data-cy="supported"
                                         name="supported"
                                         Label={{
                                             label: t('device.info.supported')
@@ -336,6 +337,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
+                                            data-cy="capacity"
                                             label={`${t('device.properties.capacity')} (${
                                                 PowerFormatter.displayUnit
                                             })`}
@@ -366,6 +368,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <Field
+                                            data-cy="address"
                                             label={t('device.properties.address')}
                                             name="address"
                                             component={TextField}
@@ -382,6 +385,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <FormInput
+                                            data-cy="latitude"
                                             label={t('device.properties.latitude')}
                                             property="latitude"
                                             variant="filled"
@@ -412,6 +416,7 @@ export function AddDevice() {
                                         required
                                     >
                                         <FormInput
+                                            data-cy="longitude"
                                             label={t('device.properties.longitude')}
                                             property="longitude"
                                             variant="filled"
@@ -445,6 +450,7 @@ export function AddDevice() {
                                     </Typography>
                                     <FormControl fullWidth variant="filled" className="mt-3">
                                         <Field
+                                            data-cy="projectStory"
                                             label={t('device.properties.projectStory')}
                                             name="projectStory"
                                             component={TextField}
@@ -464,6 +470,7 @@ export function AddDevice() {
 
                                         return (
                                             <FormInput
+                                                data-cy={externalDeviceIdType.type}
                                                 key={index}
                                                 label={externalDeviceIdType.type}
                                                 property={externalDeviceIdType.type}
@@ -486,7 +493,7 @@ export function AddDevice() {
                                             {t('device.info.pleaseFillOtherFields')}
                                         </p>
                                     ) : (
-                                        <>
+                                        <div data-cy="device-upload-image">
                                             <input
                                                 className={classes.fileUploadInput}
                                                 id="contained-button-file"
@@ -507,14 +514,14 @@ export function AddDevice() {
                                                     })}
                                                 </Button>
                                             </label>
-                                        </>
+                                        </div>
                                     )}
-
                                     <Upload onChange={(newFiles) => setFiles(newFiles)} />
                                 </Grid>
                             </Grid>
 
                             <Button
+                                data-cy="device-register-submit"
                                 type="submit"
                                 variant="contained"
                                 color="primary"
@@ -529,4 +536,4 @@ export function AddDevice() {
             </Formik>
         </Paper>
     );
-}
+};

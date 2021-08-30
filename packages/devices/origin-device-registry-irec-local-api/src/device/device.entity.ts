@@ -1,9 +1,12 @@
 import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsBoolean, IsString } from 'class-validator';
+
+import { DeviceDTO } from './dto';
 
 @Entity({ name: 'irec_device_registry_device' })
-export class Device extends ExtendedBaseEntity {
+export class Device extends ExtendedBaseEntity implements DeviceDTO {
     constructor(device: Partial<Device>) {
         super();
         Object.assign(this, device);
@@ -28,7 +31,7 @@ export class Device extends ExtendedBaseEntity {
     deviceType: string;
 
     @Column()
-    fuel: string;
+    fuelType: string;
 
     @Column()
     countryCode: string;
@@ -68,4 +71,20 @@ export class Device extends ExtendedBaseEntity {
 
     @Column({ nullable: true })
     gridOperator: string;
+
+    @Column()
+    @IsString()
+    postalCode: string;
+
+    @Column()
+    @IsString()
+    region: string;
+
+    @Column({ default: '' })
+    @IsString()
+    subregion: string;
+
+    @Column({ default: true })
+    @IsBoolean()
+    active: boolean;
 }

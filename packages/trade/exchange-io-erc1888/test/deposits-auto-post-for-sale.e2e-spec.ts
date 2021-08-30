@@ -7,7 +7,6 @@ import moment from 'moment';
 import request from 'supertest';
 import {
     AccountService,
-    Order,
     IExternalDeviceService,
     IProductInfo,
     testUtils
@@ -97,16 +96,13 @@ describe('Deposits automatic posting for sale', () => {
 
         await sleep(6000);
 
-        await request(app.getHttpServer())
-            .get('/orders')
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                const [ask] = res.body as Order[];
+        const {
+            body: [ask]
+        } = await request(app.getHttpServer()).get('/orders').expect(HttpStatus.OK);
 
-                expect(ask.currentVolume.toString(10)).equals(depositAmount);
-                expect(ask.status).equals(OrderStatus.Active);
-                expect(ask.side).equals(OrderSide.Ask);
-                expect(ask.price).equals(defaultAskPrice);
-            });
+        expect(ask.currentVolume.toString(10)).equals(depositAmount);
+        expect(ask.status).equals(OrderStatus.Active);
+        expect(ask.side).equals(OrderSide.Ask);
+        expect(ask.price).equals(defaultAskPrice);
     });
 });

@@ -27,20 +27,33 @@
         "lint-fix": "solium -d contracts --fix && eslint \"src/**/*{.ts,.tsx}\" --fix",
         "start-ganache": "ganache-cli -q -m 'chalk park staff buzz chair purchase wise oak receive avoid avoid home' -l 8000000 -e 1000000 -a 20 -p 8570",
         "test": "truffle test",
-        "test:concurrent": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
+        "test:e2e": "concurrently --success first --kill-others -n eth,test \"yarn start-ganache\"  \"wait-on tcp:8570 && yarn test\"",
         "clean": "shx rm -rf build dist src/ethers",
-        "typechain:ethers": "typechain --target ethers-v5 --outDir src/ethers './build/contracts/TokenAccount.json'"
+        "typechain:ethers": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/TokenAccount.json'"
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "chai": "4.3.4",
-        "ethers": "5.0.31"
+        "@ethersproject/abi": "5.3.1",
+        "@ethersproject/contracts": "5.3.0",
+        "@ethersproject/providers": "5.3.1",
+        "chai": "4.3.0",
+        "ethers": "5.3.1"
     },
     "devDependencies": {
+        "@openzeppelin/cli": "2.8.2",
+        "@openzeppelin/contracts": "4.3.1",
+        "@openzeppelin/contracts-upgradeable": "4.3.1",
+        "@openzeppelin/upgrades": "2.8.0",
+        "typescript": "4.4.2",
         "@energyweb/issuer": "3.2.0",
-        "@typechain/ethers-v5": "1.0.0",
+        "@typechain/ethers-v5": "7.0.1",
         "truffle-typings": "1.0.8",
-        "typechain": "4.0.3"
+        "typechain": "5.1.2",
+        "@types/mocha": "9.0.0",
+        "@types/node": "14.17.12",
+        "mocha": "9.1.1",
+        "truffle": "5.4.8",
+        "solc": "0.8.4"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
     "publishConfig": {

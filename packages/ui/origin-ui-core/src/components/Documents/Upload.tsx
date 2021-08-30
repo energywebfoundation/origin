@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { useDropzone } from 'react-dropzone';
 import { CancelTokenSource } from 'axios';
 import { makeStyles, createStyles, useTheme, Chip } from '@material-ui/core';
-import { getBackendClient } from '../../features/general/selectors';
 import { FILE_SUPPORTED_MIMETYPES } from '@energyweb/origin-backend-core';
 import { Delete, Cancel, Replay } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { useOriginConfiguration } from '../../utils/configuration';
 import { LightenColor } from '../../utils';
+import { fromGeneralSelectors } from '../../features';
 
 interface IProps {
     onChange: (files: IUploadedFile[]) => void;
@@ -161,7 +161,7 @@ export function Upload(props: IProps) {
 
     const [files, setFiles] = useState<File[]>([]);
 
-    const backendClient = useSelector(getBackendClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: FILE_SUPPORTED_MIMETYPES,

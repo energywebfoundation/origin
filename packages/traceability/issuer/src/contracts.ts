@@ -1,10 +1,16 @@
-import RegistryJSON from '../build/contracts/Registry.json';
+import RegistryExtendedJSON from '../build/contracts/RegistryExtended.json';
 import IssuerJSON from '../build/contracts/Issuer.json';
+import PrivateIssuerJSON from '../build/contracts/PrivateIssuer.json';
 
-import { IssuerFactory } from './ethers/IssuerFactory';
-import { RegistryFactory } from './ethers/RegistryFactory';
+import { Issuer__factory } from './ethers/factories/Issuer__factory';
+import { RegistryExtended__factory } from './ethers/factories/RegistryExtended__factory';
+import { PrivateIssuer__factory } from './ethers/factories/PrivateIssuer__factory';
 
-const factories = { IssuerFactory, RegistryFactory };
+const factories = {
+    IssuerFactory: Issuer__factory,
+    RegistryExtendedFactory: RegistryExtended__factory,
+    PrivateIssuerFactory: PrivateIssuer__factory
+};
 
-export { migrateIssuer, migrateRegistry } from './migrate';
-export { RegistryJSON, IssuerJSON, factories };
+export * from './migrate';
+export { RegistryExtendedJSON, IssuerJSON, PrivateIssuerJSON, factories };

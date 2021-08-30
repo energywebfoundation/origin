@@ -3,7 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { Dialog, DialogTitle, DialogActions, Button, Box, Grid } from '@material-ui/core';
 import DraftOutlineIcon from '@material-ui/icons/DraftsOutlined';
-import { useLinks } from '../../utils/routing';
+import { useLinks } from '../../hooks';
 
 interface IProps {
     showModal: boolean;
@@ -14,16 +14,16 @@ export const LoginNoInvitationsModal = (props: IProps) => {
     const { showModal, setShowModal } = props;
     const history = useHistory();
     const { t } = useTranslation();
-    const { getOrganizationRegisterLink, getDefaultLink } = useLinks();
+    const { organizationRegisterPageUrl, defaultPageUrl } = useLinks();
 
     const notNow = async () => {
         setShowModal(false);
-        history.push(getDefaultLink());
+        history.push(defaultPageUrl);
     };
 
     const registerOrganization = async () => {
         setShowModal(false);
-        history.push(getOrganizationRegisterLink());
+        history.push(organizationRegisterPageUrl);
     };
 
     return (

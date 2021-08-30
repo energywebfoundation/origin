@@ -20,10 +20,10 @@ export async function startAPI(logger?: LoggerService) {
         const parsed = JSON.parse(info.toString());
 
         return {
-            '@energyweb/origin-backend-app': parsed.version,
+            '@energyweb/origin-backend-irec-app': parsed.version,
             '@energyweb/exchange': parsed.dependencies['@energyweb/exchange'],
             '@energyweb/origin-backend': parsed.dependencies['@energyweb/origin-backend'],
-            '@energyweb/issuer-api': parsed.dependencies['@energyweb/issuer-api'],
+            '@energyweb/issuer-irec-api': parsed.dependencies['@energyweb/issuer-irec-api'],
             '@energyweb/origin-organization-irec-api':
                 parsed.dependencies['@energyweb/origin-organization-irec-api']
         };
@@ -32,7 +32,7 @@ export async function startAPI(logger?: LoggerService) {
     console.log(`Backend starting on port: ${PORT}`);
     console.log(`Backend versions: ${JSON.stringify(getVersion())}`);
 
-    const app = await NestFactory.create(OriginAppModule);
+    const app = await NestFactory.create(OriginAppModule, { logger: console });
 
     app.enableShutdownHooks();
     app.enableCors();

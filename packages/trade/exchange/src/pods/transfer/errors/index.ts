@@ -1,1 +1,1 @@
-export * from './withdrawal-being-processed.error';
+export * from './being-processed.error';

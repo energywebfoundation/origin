@@ -9,25 +9,23 @@ import {
     checkRecordPassesFilters,
     CustomFilterInputType,
     EnergyFormatter,
-    getBaseURL,
     getConfiguration,
-    getDeviceDetailLink,
-    getExchangeDepositAddress,
-    getUserOffchain,
     ICustomFilterDefinition,
     IPaginatedLoaderFetchDataReturnValues,
     IPaginatedLoaderHooksFetchDataParameters,
     ITableAction,
     moment,
-    NotificationType,
+    NotificationTypeEnum,
     PowerFormatter,
     showNotification,
+    // TODO  !SHOULD BE REMOVED!
+    fromUsersSelectors,
+    useLinks,
     TableMaterial,
     usePaginatedLoaderFiltered
 } from '@energyweb/origin-ui-core';
-import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
-// import { getConfiguration, getProducingDevices } from '../../../features/selectors';
 import { getEnvironment } from '../../../features/general';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-client';
 import { getDeviceColumns } from '../../../utils/device';
 import { ComposedDevice, ComposedPublicDevice } from '../../../types';
 import { RequestCertificatesModal } from '../../Modal/RequestCertificatesModal';
@@ -62,16 +60,16 @@ interface IDeviceRowData {
     status: DeviceState;
 }
 
-export function DeviceTable(props: IOwnProps) {
+export const DeviceTable = (props: IOwnProps) => {
     const { devices } = props;
     const [detailViewForDeviceId, setDetailViewForDeviceId] = useState(null);
     const configuration = useSelector(getConfiguration);
-    const user = useSelector(getUserOffchain);
-    const baseURL = useSelector(getBaseURL);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const environment = useSelector(getEnvironment);
-    const exchangeDepositAddress = useSelector(getExchangeDepositAddress);
+    const exchangeDepositAddress = useSelector(fromUsersSelectors.getExchangeDepositAddress);
     const [showRequestModal, setShowRequestModal] = useState(false);
     const [deviceForModal, setDeviceForModal] = useState(null);
+    const { getDeviceDetailsPageUrl } = useLinks();
 
     async function getPaginatedData({
         requestedPageSize,
@@ -90,12 +88,11 @@ export function DeviceTable(props: IOwnProps) {
                     ) &&
                     (!props.owner ||
                         // check if its true later
-                        record?.registrantOrganization === user?.organization?.id.toString()) &&
+                        record?.ownerId === user?.organization?.id.toString()) &&
                     (includedStatuses.length === 0 || includedStatuses.includes(record.status))
             ) || [];
 
         const total = filteredEnrichedDeviceData.length;
-
         const paginatedData = filteredEnrichedDeviceData.slice(offset, offset + requestedPageSize);
 
         return {
@@ -104,14 +101,11 @@ export function DeviceTable(props: IOwnProps) {
         };
     }
 
-    const {
-        paginatedData,
-        loadPage,
-        total,
-        pageSize
-    } = usePaginatedLoaderFiltered<IEnrichedDeviceData>({
-        getPaginatedData
-    });
+    const { paginatedData, loadPage, total, pageSize } = usePaginatedLoaderFiltered<ComposedDevice>(
+        {
+            getPaginatedData
+        }
+    );
 
     const { t } = useTranslation();
 
@@ -120,9 +114,7 @@ export function DeviceTable(props: IOwnProps) {
     }, [user, devices]);
 
     function viewDevice(rowIndex: number) {
-        const device = paginatedData[rowIndex].device;
-
-        setDetailViewForDeviceId(device.id);
+        setDetailViewForDeviceId(paginatedData[rowIndex].id);
     }
 
     async function requestCerts(rowIndex: string) {
@@ -130,7 +122,7 @@ export function DeviceTable(props: IOwnProps) {
         if (targetDevice.status !== DeviceStatus.Active) {
             return showNotification(
                 `You can only request certificates for devices with status ${DeviceStatus.Active}.`,
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
         }
         setDeviceForModal(targetDevice);
@@ -181,24 +173,23 @@ export function DeviceTable(props: IOwnProps) {
         }
     ] as const).filter((column) => !hiddenColumns.includes(column.id));
 
-    const rows: IDeviceRowData[] = [];
-    // Adjust according to new properties
-
-    // paginatedData.map((enrichedData) => ({
-    //     owner: enrichedData.organizationName,
-    //     facilityName: enrichedData.device.facilityName,
-    //     deviceLocation: enrichedData.locationText,
-    //     type:
-    //         configuration?.deviceTypeService?.getDisplayText(enrichedData.device.deviceType) ?? '',
-    //     capacity: PowerFormatter.format(enrichedData.device.capacityInW),
-    //     readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
-    //     readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
-    //     status: enrichedData.device.status,
-    //     gridOperator: enrichedData?.device?.gridOperator
-    // }));
+    const rows: IDeviceRowData[] = paginatedData.map((enrichedData) => ({
+        owner: enrichedData.registrantOrganization,
+        facilityName: enrichedData.name,
+        deviceLocation: enrichedData.address,
+        type: enrichedData.deviceType ?? '',
+        // type: configuration?.deviceTypeService?.getDisplayText(enrichedData.deviceType) ?? '',
+        capacity: PowerFormatter.format(enrichedData.capacity),
+        // readCertified: EnergyFormatter.format(enrichedData.device.meterStats?.certified ?? 0),
+        readCertified: '',
+        // readToBeCertified: EnergyFormatter.format(enrichedData.device.meterStats?.uncertified ?? 0),
+        readToBeCertified: '',
+        status: enrichedData.status,
+        gridOperator: enrichedData.gridOperator ?? ''
+    }));
 
     if (detailViewForDeviceId !== null) {
-        return <Redirect push={true} to={getDeviceDetailLink(baseURL, detailViewForDeviceId)} />;
+        return <Redirect push={true} to={getDeviceDetailsPageUrl(detailViewForDeviceId)} />;
     }
 
     const actions: (ITableAction | ((row: IDeviceRowData) => ITableAction))[] = [];
@@ -257,4 +248,4 @@ export function DeviceTable(props: IOwnProps) {
             />
         </>
     );
-}
+};

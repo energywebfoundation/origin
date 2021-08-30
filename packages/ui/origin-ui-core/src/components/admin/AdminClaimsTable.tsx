@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CertificateDTO } from '@energyweb/issuer-api-client';
 import {
     fetchAllDevices,
+    fromGeneralSelectors,
     getAllDevices,
-    getBackendClient,
-    getCertificatesClient,
-    getEnvironment
+    getCertificatesClient
 } from '../../features';
 import {
     IPaginatedLoaderHooksFetchDataParameters,
@@ -14,7 +13,7 @@ import {
     TableMaterial,
     usePaginatedLoader
 } from '../Table';
-import { NotificationType, showNotification } from '../../utils/notifications';
+import { NotificationTypeEnum, showNotification } from '../../utils';
 import { EnergyFormatter, formatDate, getDeviceName } from '../../utils';
 import { useTranslation } from 'react-i18next';
 
@@ -23,17 +22,17 @@ type Record = {
     deviceName: string;
     energy: string;
     beneficiary: string;
-    fromDate: string;
-    toDate: string;
+    periodStartDate: string;
+    periodEndDate: string;
 };
 
 type DeviceNamesMap = Map<string, string>;
 
 export function AdminClaimsTable(): JSX.Element {
     const certificatesClient = useSelector(getCertificatesClient);
-    const backendClient = useSelector(getBackendClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const deviceClient = backendClient?.deviceClient;
-    const environment = useSelector(getEnvironment);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
     const allDevices = useSelector(getAllDevices);
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -67,9 +66,8 @@ export function AdminClaimsTable(): JSX.Element {
         const newPaginatedData: Record[] = [];
 
         try {
-            const {
-                data: certificates
-            }: { data: CertificateDTO[] } = await certificatesClient.getAll();
+            const { data: certificates }: { data: CertificateDTO[] } =
+                await certificatesClient.getAll();
 
             const deviceNames: DeviceNamesMap = new Map<string, string>();
 
@@ -86,13 +84,13 @@ export function AdminClaimsTable(): JSX.Element {
                             ),
                         energy: EnergyFormatter.format(claim.value, true),
                         beneficiary: claim.claimData.beneficiary,
-                        fromDate: formatDate(claim.claimData.fromDate),
-                        toDate: formatDate(claim.claimData.toDate)
+                        periodStartDate: formatDate(claim.claimData.periodStartDate),
+                        periodEndDate: formatDate(claim.claimData.periodEndDate)
                     });
                 });
             });
         } catch (error) {
-            showNotification('Error while getting certificates', NotificationType.Error);
+            showNotification('Error while getting certificates', NotificationTypeEnum.Error);
         }
 
         const newTotal = newPaginatedData.length;

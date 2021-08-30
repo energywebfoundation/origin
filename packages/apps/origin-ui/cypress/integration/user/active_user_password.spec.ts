@@ -33,7 +33,7 @@ describe('Active user profile password block interactions', () => {
         cy.dataCy('current-password').find('input').should('have.value', oldPassword);
 
         cy.dataCy('new-password').type(newPassword);
-        cy.dataCy('password-save-button').should('be.disabled');
+        cy.dataCy('password-save-button').should('not.be.disabled');
         cy.dataCy('new-password').find('input').should('have.value', newPassword);
 
         cy.dataCy('confirm-password').type(newPassword);

@@ -1,21 +1,6 @@
 import { call, put, select, take, all, fork, cancelled, apply } from 'redux-saga/effects';
 import { SagaIterator, eventChannel, EventChannel } from 'redux-saga';
-import {
-    setEnvironment,
-    IEnvironment,
-    GeneralActions,
-    setBackendClient,
-    setExchangeClient,
-    setOffchainConfiguration,
-    setLoading,
-    setIRecClient
-} from './actions';
-import {
-    getEnvironment,
-    getBackendClient,
-    getOffchainConfiguration,
-    getExchangeClient
-} from './selectors';
+import { IEnvironment, GeneralActions, fromGeneralActions } from './actions';
 import axios, { Canceler } from 'axios';
 import { AccountAsset } from '../../utils/exchange';
 import { IOriginConfiguration, UserStatus, IUser, IRegions } from '@energyweb/origin-backend-core';
@@ -27,7 +12,7 @@ import {
     BlockchainPropertiesClient
 } from '@energyweb/issuer-api-client';
 
-import { setActiveBlockchainAccountAddress, UsersActions } from '../users/actions';
+import { UsersActions, LOCAL_STORAGE_KEYS, fromUsersActions, fromUsersSelectors } from '../users';
 import { getSearch } from 'connected-react-router';
 import { configurationUpdated } from '../configuration';
 import * as queryString from 'query-string';
@@ -36,7 +21,14 @@ import { DeviceTypeService } from '@energyweb/utils-general';
 
 import { web3Updated } from '../web3';
 import { Configuration } from '@energyweb/device-registry';
-import { showNotification, NotificationType, checkNetworkName } from '../../utils';
+import {
+    showNotification,
+    NotificationTypeEnum,
+    checkNetworkName,
+    BackendClient,
+    IRecClient,
+    ExchangeClient
+} from '../../utils';
 import {
     ICertificateViewItem,
     CertificateSource,
@@ -45,16 +37,14 @@ import {
     addCertificate,
     setCertificatesClient,
     setCertificationRequestsClient,
-    setBlockchainPropertiesClient
+    setBlockchainPropertiesClient,
+    getCertificatesClient,
+    getBlockchainPropertiesClient,
+    getCertificate
 } from '../certificates';
-import { getCertificate } from '../certificates/sagas';
-import { getUserOffchain } from '../users/selectors';
-import { getCertificatesClient, getBlockchainPropertiesClient } from '../certificates/selectors';
+
 import { certificateEnergyStringToBN } from '../../utils/certificates';
-import { BackendClient } from '../../utils/clients/BackendClient';
-import { LOCAL_STORAGE_KEYS } from '../users/sagas';
-import { IRecClient } from '../../utils/clients/IRecClient';
-import { ExchangeClient } from '../../utils/clients/ExchangeClient';
+import { fromGeneralSelectors } from './selectors';
 
 function getStoredAuthenticationToken() {
     return localStorage.getItem(LOCAL_STORAGE_KEYS.AUTHENTICATION_TOKEN);
@@ -85,7 +75,11 @@ function* showAccountChangedModalOnChange(): SagaIterator {
     while (true) {
         const newAccounts: string[] = yield take(channel);
 
-        yield put(setActiveBlockchainAccountAddress((newAccounts && newAccounts[0]) || ''));
+        yield put(
+            fromUsersActions.setActiveBlockchainAccountAddress(
+                (newAccounts && newAccounts[0]) || ''
+            )
+        );
     }
 }
 
@@ -146,7 +140,7 @@ function* setupEnvironment(): SagaIterator {
 
         const environment: IEnvironment = yield call(getEnvironmentTask.getEnvironment);
 
-        yield put(setEnvironment(environment));
+        yield put(fromGeneralActions.setEnvironment(environment));
     } finally {
         if (yield cancelled()) {
             getEnvironmentTask.cancel();
@@ -158,8 +152,8 @@ function* fillOffchainConfiguration(): SagaIterator {
     while (true) {
         yield take([GeneralActions.setEnvironment, GeneralActions.setBackendClient]);
 
-        const environment: IEnvironment = yield select(getEnvironment);
-        const backendClient: BackendClient = yield select(getBackendClient);
+        const environment: IEnvironment = yield select(fromGeneralSelectors.getEnvironment);
+        const backendClient: BackendClient = yield select(fromGeneralSelectors.getBackendClient);
 
         if (!environment || !backendClient) {
             continue;
@@ -170,7 +164,7 @@ function* fillOffchainConfiguration(): SagaIterator {
             backendClient
         );
 
-        yield put(setOffchainConfiguration({ configuration }));
+        yield put(fromGeneralActions.setOffchainConfiguration({ configuration }));
     }
 }
 
@@ -178,7 +172,7 @@ function* initializeClients(): SagaIterator {
     while (true) {
         yield take(GeneralActions.setEnvironment);
 
-        const environment: IEnvironment = yield select(getEnvironment);
+        const environment: IEnvironment = yield select(fromGeneralSelectors.getEnvironment);
 
         if (!environment) {
             continue;
@@ -187,11 +181,21 @@ function* initializeClients(): SagaIterator {
         const authenticationTokenFromStorage = getStoredAuthenticationToken();
         const backendUrl = `${environment.BACKEND_URL}:${environment.BACKEND_PORT}`;
 
-        yield put(setBackendClient(new BackendClient(backendUrl, authenticationTokenFromStorage)));
         yield put(
-            setExchangeClient(new ExchangeClient(backendUrl, authenticationTokenFromStorage))
+            fromGeneralActions.setBackendClient(
+                new BackendClient(backendUrl, authenticationTokenFromStorage)
+            )
         );
-        yield put(setIRecClient(new IRecClient(backendUrl, authenticationTokenFromStorage)));
+        yield put(
+            fromGeneralActions.setExchangeClient(
+                new ExchangeClient(backendUrl, authenticationTokenFromStorage)
+            )
+        );
+        yield put(
+            fromGeneralActions.setIRecClient(
+                new IRecClient(backendUrl, authenticationTokenFromStorage)
+            )
+        );
 
         const clientConfiguration = new ClientConfiguration(
             authenticationTokenFromStorage
@@ -263,20 +267,23 @@ function* findEnhancedExchangeCertificate(
     userId: string
 ) {
     const certificateId = parseInt(asset.asset.tokenId, 10);
-    let onChainCertificate = onChainCertificates.find((c) => c.tokenId === certificateId);
+    let onChainCertificate = onChainCertificates.find((c) => c.id === certificateId);
 
     if (!onChainCertificate) {
-        onChainCertificate = yield call(getCertificate, certificateId, true);
+        onChainCertificate = yield call(getCertificate, certificateId);
     }
 
     return enhanceCertificate(onChainCertificate, userId, asset);
 }
 
 export function* fetchDataAfterConfigurationChange(update = false): SagaIterator {
-    const user = yield select(getUserOffchain);
+    const user = yield select(fromUsersSelectors.getUserOffchain);
 
     if (user) {
-        const { blockchainAccountAddress, status }: IUser = user;
+        const {
+            organization: { blockchainAccountAddress },
+            status
+        }: IUser = user;
         if (status === UserStatus.Active) {
             const certificatesClient: CertificatesClient = yield select(getCertificatesClient);
             const { data: allCertificates }: { data: ICertificate[] } = yield apply(
@@ -288,7 +295,9 @@ export function* fetchDataAfterConfigurationChange(update = false): SagaIterator
                 (c): ICertificateViewItem => enhanceCertificate(c, blockchainAccountAddress)
             );
 
-            const { accountBalanceClient }: ExchangeClient = yield select(getExchangeClient);
+            const { accountBalanceClient }: ExchangeClient = yield select(
+                fromGeneralSelectors.getExchangeClient
+            );
 
             const {
                 data: { available }
@@ -320,9 +329,11 @@ function* initializeEnvironment(): SagaIterator {
             GeneralActions.setOffchainConfiguration
         ]);
 
-        const environment: IEnvironment = yield select(getEnvironment);
-        const backendClient: BackendClient = yield select(getBackendClient);
-        const offchainConfiguration: IOriginConfiguration = yield select(getOffchainConfiguration);
+        const environment: IEnvironment = yield select(fromGeneralSelectors.getEnvironment);
+        const backendClient: BackendClient = yield select(fromGeneralSelectors.getBackendClient);
+        const offchainConfiguration: IOriginConfiguration = yield select(
+            fromGeneralSelectors.getOffchainConfiguration
+        );
 
         if (!environment || !backendClient || !offchainConfiguration) {
             continue;
@@ -362,15 +373,15 @@ function* initializeEnvironment(): SagaIterator {
 
             const [userAddress] = yield apply(web3, web3.listAccounts, []);
             yield put(web3Updated(web3));
-            yield put(setActiveBlockchainAccountAddress(userAddress));
+            yield put(fromUsersActions.setActiveBlockchainAccountAddress(userAddress));
         } catch (error) {
             showNotification(
                 'Please enable your MetaMask browser extension',
-                NotificationType.Error
+                NotificationTypeEnum.Error
             );
             console.error('ContractsSaga::UnableToFetchBlockchainAddress', error);
         }
-        yield put(setLoading(false));
+        yield put(fromGeneralActions.setLoading(false));
         try {
             yield call(fetchDataAfterConfigurationChange);
         } catch (error) {
@@ -383,7 +394,7 @@ function* checkBlockchainNetwork(): SagaIterator {
     while (true) {
         yield take([UsersActions.setUserState, UsersActions.setUserOffchain]);
 
-        const user = yield select(getUserOffchain);
+        const user = yield select(fromUsersSelectors.getUserOffchain);
         const ethereumProvider = (window as any).ethereum;
 
         if (user && user.status === UserStatus.Active && ethereumProvider) {
@@ -406,7 +417,7 @@ function* checkBlockchainNetwork(): SagaIterator {
                     `You are connected to the wrong blockchain. ${checkNetworkName(
                         blockchainProperties?.netId
                     )}`,
-                    NotificationType.Error,
+                    NotificationTypeEnum.Error,
                     { timeOut: 10000 }
                 );
             }

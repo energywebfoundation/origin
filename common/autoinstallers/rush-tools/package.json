@@ -1,0 +1,11 @@
+{
+    "name": "rush-tools",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "concurrently": "6.2.1",
+        "wait-on": "6.0.0",
+        "ganache-cli": "6.12.2",
+        "lerna": "4.0.0"
+    }
+}

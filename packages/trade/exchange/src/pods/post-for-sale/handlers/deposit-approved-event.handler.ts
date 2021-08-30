@@ -1,7 +1,7 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { Logger } from '@nestjs/common';
 import { PostForSaleService } from '../post-for-sale.service';
-import { DepositApprovedEvent } from '../../transfer/deposit-approved.event';
+import { DepositApprovedEvent } from '../../transfer/events/deposit-approved.event';
 
 @EventsHandler(DepositApprovedEvent)
 export class DepositApprovedEventHandler implements IEventHandler<DepositApprovedEvent> {

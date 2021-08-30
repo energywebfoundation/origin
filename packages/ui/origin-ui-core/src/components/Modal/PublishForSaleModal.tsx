@@ -21,12 +21,11 @@ import {
     resyncCertificate,
     ICertificateViewItem
 } from '../../features/certificates';
-import { getCurrencies, IEnvironment, getEnvironment } from '../../features/general';
-import { getUserOffchain } from '../../features/users';
 import { formatDate } from '../../utils/time';
 import { countDecimals } from '../../utils/helper';
 import { EnergyFormatter } from '../../utils/EnergyFormatter';
 import { IOriginDevice } from '../../types';
+import { fromGeneralSelectors, fromUsersSelectors, IEnvironment } from '../../features';
 
 interface IProps {
     certificate: ICertificateViewItem;
@@ -40,9 +39,9 @@ export function PublishForSaleModal(props: IProps) {
 
     const { t } = useTranslation();
 
-    const currencies = useSelector(getCurrencies);
-    const user = useSelector(getUserOffchain);
-    const environment: IEnvironment = useSelector(getEnvironment);
+    const currencies = useSelector(fromGeneralSelectors.getCurrencies);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const environment: IEnvironment = useSelector(fromGeneralSelectors.getEnvironment);
 
     const DEFAULT_ENERGY_IN_BASE_UNIT = BigNumber.from(
         Number(environment?.DEFAULT_ENERGY_IN_BASE_UNIT || 1)

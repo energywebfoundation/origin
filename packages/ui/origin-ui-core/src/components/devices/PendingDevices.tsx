@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DeviceStatus } from '@energyweb/origin-backend-core';
-import { getBackendClient } from '../../features/general';
 import { getAllDevices, fetchAllDevices } from '../../features/devices';
 import { TableFallback } from '../Table';
 import { DeviceTable } from './Table/DeviceTable';
+import { fromGeneralSelectors } from '../../features';
 
-export function PendingDevices() {
+export const PendingDevices = () => {
     const dispatch = useDispatch();
-    const deviceClient = useSelector(getBackendClient)?.deviceClient;
+    const deviceClient = useSelector(fromGeneralSelectors.getBackendClient)?.deviceClient;
     const allDevices = useSelector(getAllDevices);
 
     useEffect(() => {
@@ -30,4 +30,4 @@ export function PendingDevices() {
             }}
         />
     );
-}
+};

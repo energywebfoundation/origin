@@ -10,15 +10,11 @@ import {
 } from '../../Table';
 import { Skeleton } from '@material-ui/lab';
 import { Check } from '@material-ui/icons';
-import { CertificationRequestStatus } from '@energyweb/issuer-api-client';
+
+import { getConfiguration } from '../../../features/configuration';
+import { getAllDevices, fetchAllDevices } from '../../../features/devices';
 
 import {
-    getConfiguration,
-    getAllDevices,
-    fetchAllDevices,
-    getUserOffchain,
-    getBackendClient,
-    getEnvironment,
     getCertificationRequestsClient,
     ICertificationRequest,
     requestCertificateApproval
@@ -30,11 +26,12 @@ import {
     EnergyFormatter,
     PowerFormatter,
     showNotification,
-    NotificationType,
+    NotificationTypeEnum,
     formatDate
 } from '../../../utils';
-import { downloadFile } from '../../Documents';
+import { downloadFileHandler } from '../../Documents';
 import { IOriginDevice } from '../../../types';
+import { fromGeneralSelectors, fromUsersSelectors } from '../../../features';
 
 interface IProps {
     approved?: boolean;
@@ -61,11 +58,11 @@ type Rows = IRowData[];
 
 export function CertificationRequestsTable(props: IProps): JSX.Element {
     const configuration = useSelector(getConfiguration);
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const allDevices = useSelector(getAllDevices);
-    const backendClient = useSelector(getBackendClient);
+    const backendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const deviceClient = backendClient?.deviceClient;
-    const environment = useSelector(getEnvironment);
+    const environment = useSelector(fromGeneralSelectors.getEnvironment);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -107,7 +104,6 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
 
                 if (
                     (props.approved !== undefined && request.approved !== props.approved) ||
-                    request.status !== CertificationRequestStatus.Executed ||
                     (!isIssuer && user.organization?.id !== requestDevice?.organizationId)
                 ) {
                     continue;
@@ -123,7 +119,7 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
             if (_error.response.status === 412) {
                 showNotification(
                     `Only active users can perform this action. Your status is ${user.status}`,
-                    NotificationType.Error
+                    NotificationTypeEnum.Error
                 );
             }
         }
@@ -202,7 +198,9 @@ export function CertificationRequestsTable(props: IProps): JSX.Element {
                 <div key={fileId}>
                     <a
                         style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                        onClick={() => downloadFile(backendClient?.fileClient, fileId, fileId)}
+                        onClick={() =>
+                            downloadFileHandler(backendClient?.fileClient, fileId, fileId)
+                        }
                     >
                         {fileId}
                     </a>

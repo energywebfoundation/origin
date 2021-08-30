@@ -1,48 +1,54 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useLinks } from '../../utils/routing';
 import { PageContent } from '../Layout';
 import { useOrganizationMenu } from './organizationMenu';
+import { useLinks } from '../../hooks';
+import { useOriginConfiguration } from '../../utils/configuration';
+import { OrganizationModalsProvider } from '../../context';
+import { OrganizationModalsCenter } from '../Modal/OrganizationModalsCenter';
 
-export function Organization() {
-    const { getOrganizationLink } = useLinks();
-
-    const organizationMenuList = useOrganizationMenu();
-
-    const firstNotHiddenRoute = organizationMenuList.filter((i) => i.show)[0]?.key;
+export const Organization = () => {
+    const { organizationPageUrl } = useLinks();
+    const config = useOriginConfiguration();
+    const organizationMenuList = useOrganizationMenu(config);
+    const displayableMenuList = organizationMenuList.filter((i) => i.show);
+    const firstNotHiddenRoute = displayableMenuList[0]?.key;
 
     return (
         <div className="PageWrapper">
-            <Route
-                path={`${getOrganizationLink()}/:key/:id?`}
-                render={(props) => {
-                    const key = props.match.params.key;
-                    const matches = organizationMenuList.filter((item) => {
-                        return item.key === key;
-                    });
-
-                    return (
-                        <PageContent
-                            menu={matches.length > 0 ? matches[0] : null}
-                            redirectPath={getOrganizationLink()}
-                        />
-                    );
-                }}
-            />
-
-            {firstNotHiddenRoute && (
+            <OrganizationModalsProvider>
                 <Route
-                    exact={true}
-                    path={`${getOrganizationLink()}`}
-                    render={() => (
-                        <Redirect
-                            to={{
-                                pathname: `${getOrganizationLink()}/${firstNotHiddenRoute}`
-                            }}
-                        />
-                    )}
+                    path={`${organizationPageUrl}/:key/:id?`}
+                    render={(props) => {
+                        const key = props.match.params.key;
+                        const matches = displayableMenuList.filter((item) => {
+                            return item.key === key;
+                        });
+
+                        return (
+                            <PageContent
+                                menu={matches.length > 0 ? matches[0] : null}
+                                redirectPath={organizationPageUrl}
+                            />
+                        );
+                    }}
                 />
-            )}
+
+                {firstNotHiddenRoute && (
+                    <Route
+                        exact={true}
+                        path={`${organizationPageUrl}`}
+                        render={() => (
+                            <Redirect
+                                to={{
+                                    pathname: `${organizationPageUrl}/${firstNotHiddenRoute}`
+                                }}
+                            />
+                        )}
+                    />
+                )}
+                <OrganizationModalsCenter />
+            </OrganizationModalsProvider>
         </div>
     );
-}
+};

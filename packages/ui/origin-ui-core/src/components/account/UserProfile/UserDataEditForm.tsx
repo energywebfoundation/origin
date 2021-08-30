@@ -4,12 +4,15 @@ import { Button, Grid, Paper, Typography, TextField } from '@material-ui/core';
 import { Form, Formik, FormikHelpers, yupToFormErrors, Field, FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { IUser, UserStatus, KYCStatus } from '@energyweb/origin-backend-core';
-import { setLoading, getBackendClient } from '../../../features/general';
-import { refreshUserOffchain, getUserOffchain } from '../../../features/users';
-import { NotificationType, showNotification } from '../../../utils';
-import { useValidation } from '../../../utils/validation';
-import { BackendClient } from '../../../utils/clients';
+import { NotificationTypeEnum, showNotification } from '../../../utils';
+import { useValidation, BackendClient } from '../../../utils';
 import { FormInput } from '../../Form';
+import {
+    fromGeneralActions,
+    fromGeneralSelectors,
+    fromUsersActions,
+    fromUsersSelectors
+} from '../../../features';
 
 const INITIAL_FORM_VALUES: IUser = {
     id: 0,
@@ -18,8 +21,6 @@ const INITIAL_FORM_VALUES: IUser = {
     lastName: '',
     email: '',
     telephone: '',
-    blockchainAccountAddress: '',
-    blockchainAccountSignedMessage: '',
     notifications: null,
     organization: null,
     rights: 0,
@@ -28,9 +29,9 @@ const INITIAL_FORM_VALUES: IUser = {
     emailConfirmed: false
 };
 
-export function UserDataEditForm(): JSX.Element {
-    const user = useSelector(getUserOffchain);
-    const backendClient: BackendClient = useSelector(getBackendClient);
+export const UserDataEditForm = (): JSX.Element => {
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
+    const backendClient: BackendClient = useSelector(fromGeneralSelectors.getBackendClient);
     const userClient = backendClient?.userClient;
     const dispatch = useDispatch();
     const { t } = useTranslation();
@@ -52,7 +53,7 @@ export function UserDataEditForm(): JSX.Element {
         formikActions: FormikHelpers<typeof INITIAL_FORM_VALUES>
     ): Promise<void> {
         formikActions.setSubmitting(true);
-        dispatch(setLoading(true));
+        dispatch(fromGeneralActions.setLoading(true));
 
         try {
             await userClient.updateOwnProfile({
@@ -61,15 +62,15 @@ export function UserDataEditForm(): JSX.Element {
                 telephone: values?.telephone,
                 email: values?.email
             });
-            showNotification(t('user.profile.updateProfile'), NotificationType.Success);
-            dispatch(refreshUserOffchain());
+            showNotification(t('user.profile.updateProfile'), NotificationTypeEnum.Success);
+            dispatch(fromUsersActions.refreshUserOffchain());
             setIsEditing(false);
             formikActions.setTouched({}, false);
         } catch (error) {
-            showNotification(t('user.profile.errorUpdateProfile'), NotificationType.Error);
+            showNotification(t('user.profile.errorUpdateProfile'), NotificationTypeEnum.Error);
         }
 
-        dispatch(setLoading(false));
+        dispatch(fromGeneralActions.setLoading(false));
         formikActions.setSubmitting(false);
     }
 
@@ -96,7 +97,7 @@ export function UserDataEditForm(): JSX.Element {
             validate={ValidationHandler}
         >
             {(formikProps: FormikProps<typeof INITIAL_VALUES>) => {
-                const { isSubmitting, values, dirty, isValid } = formikProps;
+                const { isSubmitting, touched, values } = formikProps;
                 const fieldDisabled = isSubmitting || !isEditing;
 
                 return (
@@ -156,11 +157,7 @@ export function UserDataEditForm(): JSX.Element {
                                             variant="filled"
                                             fullWidth
                                             disabled={true}
-                                            value={t(
-                                                values.emailConfirmed
-                                                    ? 'general.responses.yes'
-                                                    : 'general.responses.no'
-                                            )}
+                                            value={t('general.responses.yes')}
                                             className="mt-3"
                                         />
                                     ) : (
@@ -183,8 +180,8 @@ export function UserDataEditForm(): JSX.Element {
                                                 showNotification(
                                                     message,
                                                     success
-                                                        ? NotificationType.Success
-                                                        : NotificationType.Error
+                                                        ? NotificationTypeEnum.Success
+                                                        : NotificationTypeEnum.Error
                                                 );
                                             }}
                                         >
@@ -213,7 +210,13 @@ export function UserDataEditForm(): JSX.Element {
                                     variant="contained"
                                     color="primary"
                                     className="mt-3 right"
-                                    disabled={!dirty && isValid}
+                                    disabled={
+                                        !(
+                                            touched.firstName ||
+                                            touched.lastName ||
+                                            touched.telephone
+                                        )
+                                    }
                                     onClick={async () => {
                                         await formikProps.validateForm();
                                         await formikProps.submitForm();
@@ -255,4 +258,4 @@ export function UserDataEditForm(): JSX.Element {
             }}
         </Formik>
     );
-}
+};

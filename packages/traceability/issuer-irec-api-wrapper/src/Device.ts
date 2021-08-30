@@ -1,5 +1,6 @@
 import { Expose, Transform } from 'class-transformer';
 import {
+    IsBoolean,
     IsDate,
     IsIn,
     IsLatitude,
@@ -9,15 +10,17 @@ import {
     IsPositive,
     IsString
 } from 'class-validator';
+import { FileIds } from './File';
 
 export enum DeviceState {
     Draft = 'Draft',
     InProgress = 'In-progress',
     Rejected = 'Rejected',
-    Approved = 'Approved'
+    Approved = 'Approved',
+    Submitted = 'Submitted'
 }
 
-export class DeviceCreateParams {
+export class DeviceCreateParams extends FileIds {
     @IsString()
     name: string;
 
@@ -31,7 +34,7 @@ export class DeviceCreateParams {
 
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
-    fuel: string;
+    fuelType: string;
 
     @Expose({ name: 'country_code', toPlainOnly: true })
     @IsString()
@@ -75,9 +78,13 @@ export class DeviceCreateParams {
     @IsOptional()
     @IsString()
     notes?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    active: boolean;
 }
 
-export class DeviceUpdateParams {
+export class DeviceUpdateParams extends FileIds {
     @IsOptional()
     @IsString()
     name?: string;
@@ -95,7 +102,7 @@ export class DeviceUpdateParams {
     @IsOptional()
     @Expose({ name: 'fuel_code', toPlainOnly: true })
     @IsString()
-    fuel?: string;
+    fuelType?: string;
 
     @IsOptional()
     @Expose({ name: 'country_code', toPlainOnly: true })
@@ -148,6 +155,10 @@ export class DeviceUpdateParams {
     @IsOptional()
     @IsString()
     notes?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    active: boolean;
 }
 
 export class Device extends DeviceCreateParams {
@@ -162,5 +173,6 @@ export class Device extends DeviceCreateParams {
         | DeviceState.Approved
         | DeviceState.Draft
         | DeviceState.InProgress
-        | DeviceState.Rejected;
+        | DeviceState.Rejected
+        | DeviceState.Submitted;
 }

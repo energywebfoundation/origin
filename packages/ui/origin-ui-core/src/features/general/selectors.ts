@@ -2,40 +2,56 @@ import { ICoreState } from '../../types';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IEnvironment } from './actions';
 
-export const getLoading = (state: ICoreState) => state.generalState.loading;
+const getLoading = (state: ICoreState) => state.generalState.loading;
 
-export const getError = (state: ICoreState) => state.generalState.error;
+const getError = (state: ICoreState) => state.generalState.error;
 
-export const getBackendClient = (state: ICoreState) => state.generalState.backendClient;
+const getBackendClient = (state: ICoreState) => state.generalState.backendClient;
 
-export const getEnvironment = (state: ICoreState): IEnvironment => state.generalState.environment;
+const getEnvironment = (state: ICoreState): IEnvironment => state.generalState.environment;
 
-export const getCurrencies = (state: ICoreState): string[] =>
+const getCurrencies = (state: ICoreState): string[] =>
     state.generalState.offChainConfiguration?.currencies || ['USD'];
 
-export const getCompliance = (state: ICoreState): string =>
+const getCompliance = (state: ICoreState): string =>
     state.generalState.offChainConfiguration?.complianceStandard;
 
-export const getRegions = (state: ICoreState): any =>
-    state.generalState.offChainConfiguration?.regions;
+const getRegions = (state: ICoreState): any => state.generalState.offChainConfiguration?.regions;
 
-export const getCountry = (state: ICoreState): string =>
+const getCountry = (state: ICoreState): string =>
     state.generalState.offChainConfiguration?.countryName;
 
-export const getExchangeClient = (state: ICoreState) => state.generalState.exchangeClient;
+const getExchangeClient = (state: ICoreState) => state.generalState.exchangeClient;
 
-export const getExternalDeviceIdTypes = (state: ICoreState): ExternalDeviceIdType[] =>
+const getExternalDeviceIdTypes = (state: ICoreState): ExternalDeviceIdType[] =>
     state.generalState.offChainConfiguration?.externalDeviceIdTypes;
 
-export const getOffchainConfiguration = (state: ICoreState) =>
-    state.generalState.offChainConfiguration;
+const getOffchainConfiguration = (state: ICoreState) => state.generalState.offChainConfiguration;
 
-export const getAccountMismatchModalProperties = (state: ICoreState) =>
+const getAccountMismatchModalProperties = (state: ICoreState) =>
     state.generalState.accountMismatchModalProperties;
 
-export const getNoAccountModalVisibility = (state: ICoreState) =>
+const getNoAccountModalVisibility = (state: ICoreState) =>
     state.generalState.noAccountModalVisibility;
 
-export const getIRecClient = (state: ICoreState) => state.generalState.iRecClient;
+const getIRecClient = (state: ICoreState) => state.generalState.iRecClient;
 
-export const getDeviceClient = (store: ICoreState) => store.generalState.backendClient.deviceClient;
+const getDeviceClient = (store: ICoreState) => store.generalState.backendClient.deviceClient;
+
+export const fromGeneralSelectors = {
+    getLoading,
+    getError,
+    getBackendClient,
+    getCurrencies,
+    getEnvironment,
+    getCompliance,
+    getRegions,
+    getCountry,
+    getExchangeClient,
+    getExternalDeviceIdTypes,
+    getIRecClient,
+    getNoAccountModalVisibility,
+    getOffchainConfiguration,
+    getAccountMismatchModalProperties,
+    getDeviceClient
+};

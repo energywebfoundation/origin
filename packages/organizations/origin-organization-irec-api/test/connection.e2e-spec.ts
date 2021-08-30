@@ -93,5 +93,6 @@ describe('I-REC Registration tests', () => {
         expect(connection.refreshToken).to.equal(connection2.refreshToken);
         expect(String(connection.expiryDate)).to.equal(String(connection2.expiryDate));
         expect(connection.registration.id).to.equal(connection2.registration.id);
+        expect(connection.active).to.equal(true);
     });
 });

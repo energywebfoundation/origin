@@ -8,7 +8,7 @@ import {
     requestPublishForSale,
     requestWithdrawCertificate,
     EnergyFormatter,
-    getUserOffchain
+    fromUsersSelectors
 } from '@energyweb/origin-ui-core';
 import { useOriginConfiguration } from '../../utils/configuration';
 import {
@@ -21,7 +21,7 @@ import {
 export function ExchangeInboxPage(): JSX.Element {
     const dispatch = useDispatch();
     const { t } = useTranslation();
-    const user = useSelector(getUserOffchain);
+    const user = useSelector(fromUsersSelectors.getUserOffchain);
     const [price, setPrice] = useState(0);
 
     async function publishForSale(certs: IInboxCertificateData[], callback: () => void) {
@@ -42,7 +42,7 @@ export function ExchangeInboxPage(): JSX.Element {
     }
 
     async function withdraw(certs: IInboxCertificateData[], callback: () => void) {
-        const address = user.blockchainAccountAddress;
+        const address = user.organization?.blockchainAccountAddress;
 
         certs.forEach((certificate) => {
             const assetId = certificate.assetId;

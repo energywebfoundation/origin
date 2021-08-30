@@ -2,25 +2,30 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogActions, Button, Box, useTheme, Grid } from '@material-ui/core';
 import iconAdded from '../../../assets/icon-org-added.svg';
+import {
+    useOrgModalsStore,
+    useOrgModalsDispatch,
+    OrganizationModalsActionsEnum
+} from '../../context';
 
-interface IProps {
-    showModal?: boolean;
-    setShowModal?: (showModal: boolean) => void;
-}
-
-export const OrganizationAlreadyExistsModal = ({ showModal, setShowModal }: IProps) => {
+export const OrganizationAlreadyExistsModal = () => {
     const {
         typography: { fontSizeMd }
     } = useTheme();
     const { t } = useTranslation();
 
+    const { organizationAlreadyExists: open } = useOrgModalsStore();
+    const dispatchModals = useOrgModalsDispatch();
+
+    const closeModal = () => {
+        dispatchModals({
+            type: OrganizationModalsActionsEnum.SHOW_ORGANIZATION_ALREADY_EXISTS,
+            payload: false
+        });
+    };
+
     return (
-        <Dialog
-            open={showModal}
-            onClose={() => setShowModal(false)}
-            maxWidth={'sm'}
-            fullWidth={true}
-        >
+        <Dialog open={open} onClose={closeModal} maxWidth={'sm'} fullWidth={true}>
             <DialogTitle>
                 <Grid container>
                     <Grid item xs={3}>
@@ -53,7 +58,7 @@ export const OrganizationAlreadyExistsModal = ({ showModal, setShowModal }: IPro
             </DialogTitle>
             <DialogActions>
                 <Box pr={2.5} pb={2.5}>
-                    <Button variant="contained" color="primary" onClick={() => setShowModal(false)}>
+                    <Button variant="contained" color="primary" onClick={closeModal}>
                         {t('general.responses.ok')}
                     </Button>
                 </Box>

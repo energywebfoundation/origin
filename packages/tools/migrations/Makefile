@@ -1,11 +1,17 @@
-PROJECT				= migrations-heroku
+PROJECT				= migrations
 
 NAME   				= energyweb/${PROJECT}
 LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
 
 build-canary:
-	@docker build -f deployment/migrations/canary/Dockerfile -t ${CANARY} .
+	@rm -rf ./deployment/migrations/canary/deployment
+	@mkdir ./deployment/migrations/canary/deployment
+	@rush deploy -p @energyweb/migrations -t ./deployment/migrations/canary/deployment --overwrite
+	@cp -r ./config ./deployment/migrations/canary/deployment/config
+	@docker rmi ${LATEST} -f
+	@docker build -f deployment/migrations/canary/Dockerfile.local -t ${CANARY} ./deployment/migrations/canary/deployment
+	@rm -rf ./deployment/migrations/canary/deployment
 
 build-stable:
 	@docker build --no-cache -f deployment/migrations/stable/Dockerfile -t ${LATEST} .
