@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.6](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.5...@energyweb/migrations@3.2.6) (2021-08-30)
+
+
+### Bug Fixes
+
+* **migrations:** fixed dockerfiles ([14eb238](https://github.com/energywebfoundation/origin/commit/14eb238da837e788e8a09b48fe5dcdf1101bea7d))
+
+
+
+
+
 ## [3.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.4...@energyweb/migrations@3.2.5) (2021-08-30)
 
 
