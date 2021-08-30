@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.5.0...@energyweb/origin-ui@2.6.0) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([9ff7678](https://github.com/energywebfoundation/origin/commit/9ff76782d7816031fdedb7f5ecd37ff2b4e8fd78))
+* **deps:** update dependency @reduxjs/toolkit to v1.6.1 ([c36f093](https://github.com/energywebfoundation/origin/commit/c36f093d2701eb771ff5293a17d964dcfb2edc24))
+* **deps:** update dependency i18next to v20 ([85c2c01](https://github.com/energywebfoundation/origin/commit/85c2c01956048b57d50746405ac23dd7b382b027))
+* **deps:** update dependency i18next to v20.2.1 ([15a73ac](https://github.com/energywebfoundation/origin/commit/15a73acb081bace9bf5f864d7c4b782394a90a40))
+* **deps:** update dependency i18next to v20.2.2 ([a79edfc](https://github.com/energywebfoundation/origin/commit/a79edfcc43addb23fc56da38edf7f6f647dcedac))
+* **deps:** update dependency i18next to v20.2.4 ([5a2adf1](https://github.com/energywebfoundation/origin/commit/5a2adf15ea6de851b8558e8e9ec443e4237c1f08))
+* **deps:** update dependency i18next to v20.3.0 ([729a56b](https://github.com/energywebfoundation/origin/commit/729a56b6591c0c5930c6b43a947ce71c8f74f199))
+* **deps:** update dependency i18next to v20.3.1 ([649bb6f](https://github.com/energywebfoundation/origin/commit/649bb6f52813f3cff2815cdd4fd0a3e1b921675d))
+* **deps:** update dependency i18next to v20.3.2 ([3c0e83c](https://github.com/energywebfoundation/origin/commit/3c0e83c0c815f43ae0c6d6f00868cfab643632ee))
+* **deps:** update dependency i18next to v20.3.3 ([84f266b](https://github.com/energywebfoundation/origin/commit/84f266b32e35991c900d4b96e91279a106606f4b))
+* **deps:** update dependency i18next to v20.3.4 ([7137026](https://github.com/energywebfoundation/origin/commit/71370263a5dadb9b858b822821b3c51a2ac11373))
+* **deps:** update dependency i18next to v20.3.5 ([5ec53fe](https://github.com/energywebfoundation/origin/commit/5ec53fee0d5548c6cc1e3d5af2a2ae39ddd8a8f9))
+* **deps:** update dependency i18next to v20.4.0 ([9d2bc42](https://github.com/energywebfoundation/origin/commit/9d2bc424ac2681719b13f2606881ef6a5194617e))
+* **deps:** update dependency react-i18next to v11.11.3 ([0648481](https://github.com/energywebfoundation/origin/commit/06484812057414bc8cb46d64855b1a6dcb0ee5b4))
+* **deps:** update dependency react-router-dom to v5.2.1 ([68afc80](https://github.com/energywebfoundation/origin/commit/68afc80a013517a2a8d149a721558552f5531d8c))
+* **deps:** update dependency stream-http to v3.2.0 ([c6a7130](https://github.com/energywebfoundation/origin/commit/c6a7130cd04b1c35e0eacc6932b1373f4d8c3874))
+* **deps:** update mui monorepo ([dfa6001](https://github.com/energywebfoundation/origin/commit/dfa60015d4c0386ab9ff783b8ea32a8a2a1feb5a))
+* **deps:** update react ([52a320c](https://github.com/energywebfoundation/origin/commit/52a320c9626e94e7d5750e990ffcab637ddd6d5f))
+* **deps:** update react ([0fe76a9](https://github.com/energywebfoundation/origin/commit/0fe76a92bc37438cefc766ce4d307f419c6db463))
+* **origin-ui-core:** fix irec register not showing up in organization menu ([7c299bc](https://github.com/energywebfoundation/origin/commit/7c299bc0dd3c780b7918de268deeb5e49932db4a))
+* **origin-ui:** use optional irec menu for certificates ([00189c2](https://github.com/energywebfoundation/origin/commit/00189c296391ad0f9333110032914a43f5792520))
+
+
+### Features
+
+* **origin-ui-irec-core:** device import ui ([1dfd423](https://github.com/energywebfoundation/origin/commit/1dfd423fe914016c74564b99482f64481f935167))
+
+
+
+
+
 # [2.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui@2.4.0...@energyweb/origin-ui@2.5.0) (2021-03-23)
 
 

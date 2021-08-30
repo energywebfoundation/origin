@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api-client@0.1.0...@energyweb/origin-device-registry-irec-local-api-client@0.2.0) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/passport to v7.1.6 ([e6c99f4](https://github.com/energywebfoundation/origin/commit/e6c99f47c789a30ba3c73969854ebe956838b3be))
+* **deps:** update dependency @nestjs/swagger to v4.8.1 ([daa023b](https://github.com/energywebfoundation/origin/commit/daa023bdcd20b78aa3dd8af966c8127b57b9d9ad))
+* **deps:** update dependency @nestjs/swagger to v4.8.2 ([d17e433](https://github.com/energywebfoundation/origin/commit/d17e433f1fa2a07ea50bd26b423652670436c6ae))
+* **deps:** update nest monorepo to v7.6.17 ([ecc84c0](https://github.com/energywebfoundation/origin/commit/ecc84c0ce3d2d2e47ebe7c667d53adbc6fdd9f6b))
+* **deps:** update nest monorepo to v7.6.18 ([6835926](https://github.com/energywebfoundation/origin/commit/6835926dff7764d275b2006084e344c37948b7fa))
+
+
+### Features
+
+* **origin-device-registry-irec-local-api:** removed duplicate country field ([2a03050](https://github.com/energywebfoundation/origin/commit/2a03050fe18aa0b0bb3039dc693d0973f35267e4))
+* **origin-organization-irec-api:** added beneficiary creation on org creation ([309c43a](https://github.com/energywebfoundation/origin/commit/309c43acca868157a0aad7885d3b01942b86a383))
+* **origin-organization-irec-api:** fixed build ([6c946dd](https://github.com/energywebfoundation/origin/commit/6c946dd889f63864e7c76ff0088eeabec9813950))
+* **origin-organization-irec-api:** rewrote beneficiaries creation ([038d79e](https://github.com/energywebfoundation/origin/commit/038d79ee458c7fba2b893180c4598fb0bb82fe36))
+
+
+
+
+
 # [0.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api-client@0.0.2...@energyweb/origin-device-registry-irec-local-api-client@0.1.0) (2021-03-23)
 
 

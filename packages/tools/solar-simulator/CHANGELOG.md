@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.12](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.11...@energyweb/solar-simulator@1.2.12) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency concurrently to v6 ([f0b4152](https://github.com/energywebfoundation/origin/commit/f0b415215107a0417e6c020802ff088051eb5c7b))
+* **deps:** update dependency concurrently to v6.1.0 ([5854bc5](https://github.com/energywebfoundation/origin/commit/5854bc59af21efb3035857514756fb57a6305a6a))
+* **deps:** update dependency concurrently to v6.2.0 ([9ee02af](https://github.com/energywebfoundation/origin/commit/9ee02afcae2e30c8c2a44d7b27b6c99337cff70e))
+* **deps:** update dependency concurrently to v6.2.1 ([5a1347c](https://github.com/energywebfoundation/origin/commit/5a1347c1775dc0625616b6bd040c46e0b9ffae74))
+* **deps:** update dependency csv-parse to v4.15.4 ([32128c1](https://github.com/energywebfoundation/origin/commit/32128c1608578f2c69830508cf94694613f9117d))
+* **deps:** update dependency csv-parse to v4.16.0 ([aea5384](https://github.com/energywebfoundation/origin/commit/aea5384424f0490b71db9bcdb7224c0c9ca4f844))
+* **deps:** update dependency csv-parse to v4.16.2 ([f7e5356](https://github.com/energywebfoundation/origin/commit/f7e53566acb8d768103500a4eda64160d29b7701))
+* **deps:** update dependency dotenv to v10 ([c1b44b7](https://github.com/energywebfoundation/origin/commit/c1b44b765b65c94129fb8be7131236de326fac45))
+* **deps:** update dependency dotenv to v9 ([6b97197](https://github.com/energywebfoundation/origin/commit/6b971972a5633ba0417c746256d28b96e582028d))
+* **deps:** update dependency dotenv to v9.0.2 ([711307a](https://github.com/energywebfoundation/origin/commit/711307a49b0a8a18879fcc80b6127708c2b0953d))
+* **deps:** update dependency ethers to v5.1.3 ([e7f4abb](https://github.com/energywebfoundation/origin/commit/e7f4abb8109303814e5727976732c528dcfa342d))
+* **deps:** update dependency ethers to v5.1.4 ([71f379b](https://github.com/energywebfoundation/origin/commit/71f379b020e8e6bcd1b4b6f117d27e9babc6f93c))
+* **deps:** update dependency fs-extra to v10 ([3f4007c](https://github.com/energywebfoundation/origin/commit/3f4007c54f529c8dc0bfa1df2e27857e4d9b1e30))
+* **deps:** update ethers ([785e3ef](https://github.com/energywebfoundation/origin/commit/785e3efbe95fbde1984d80d8a50293d123364803))
+* **deps:** update ethers ([d40f585](https://github.com/energywebfoundation/origin/commit/d40f585815ede90cc3ce1a901aa35bb3e9ebde3d))
+* **deps:** update ethers to v5.3.0 ([72c970e](https://github.com/energywebfoundation/origin/commit/72c970e69d220250e7d9d3f36ac653a3610d6825))
+* **docker:** solar-simulator Dockerfile.local incorrect WORKDIR and CMD ([b86ba35](https://github.com/energywebfoundation/origin/commit/b86ba35b3d77a64491afde5840aaa1c86fc1d3c3))
+* revert ethers versions to working and disable updates ([49753f0](https://github.com/energywebfoundation/origin/commit/49753f0aed3f5e32e861b7bbe1d4a85bd900dce9))
+
+
+
+
+
 ## [1.2.11](https://github.com/energywebfoundation/origin/compare/@energyweb/solar-simulator@1.2.10...@energyweb/solar-simulator@1.2.11) (2021-03-23)
 
 

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.2.0...@energyweb/exchange-core@3.2.1) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency immutable to v4.0.0-rc.14 ([f5a076c](https://github.com/energywebfoundation/origin/commit/f5a076c225ec45f250a27daef8b9e40c87013d8f))
+* **deps:** update dependency rxjs to v6.6.7 ([5adc1e2](https://github.com/energywebfoundation/origin/commit/5adc1e219b360b4e3a28e037a1461f5719329cfd))
+* **deps:** update nest monorepo to v7.6.17 ([ecc84c0](https://github.com/energywebfoundation/origin/commit/ecc84c0ce3d2d2e47ebe7c667d53adbc6fdd9f6b))
+* **deps:** update nest monorepo to v7.6.18 ([6835926](https://github.com/energywebfoundation/origin/commit/6835926dff7764d275b2006084e344c37948b7fa))
+
+
+
+
+
 # [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.1.9...@energyweb/exchange-core@3.2.0) (2021-03-23)
 
 
