@@ -14,7 +14,14 @@ build-canary:
 	@rm -rf ./deployment/migrations/canary/deployment
 
 build-stable:
-	@docker build --no-cache -f deployment/migrations/stable/Dockerfile -t ${LATEST} .
+	@rm -rf ./deployment/migrations/stable/deployment
+	@mkdir ./deployment/migrations/stable/deployment
+	@rush deploy -p @energyweb/migrations -t ./deployment/migrations/stable/deployment --overwrite
+	@cp -r ./config ./deployment/migrations/stable/deployment/config
+	@docker rmi ${LATEST} -f
+	@docker build -f deployment/migrations/stable/Dockerfile.local -t ${LATEST} ./deployment/migrations/stable/deployment
+	@rm -rf ./deployment/migrations/stable/deployment
+
 
 push-heroku-canary:
 ifdef HEROKU_API_KEY
