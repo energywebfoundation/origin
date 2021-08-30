@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import { FC } from 'react';
 
 export type CertificateEnvVariables = {
