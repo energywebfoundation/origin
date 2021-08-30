@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.5.2...@energyweb/origin-backend-app@1.5.3) (2021-08-30)
+
+
+### Bug Fixes
+
+* **migrations:** stable dockerfile fix ([fc981aa](https://github.com/energywebfoundation/origin/commit/fc981aa0d9f752e74a4de156c53a6bba3dfcfd1f))
+
+
+
+
+
 ## [1.5.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-app@1.5.1...@energyweb/origin-backend-app@1.5.2) (2021-08-30)
 
 
