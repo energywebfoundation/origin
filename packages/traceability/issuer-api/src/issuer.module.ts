@@ -4,7 +4,6 @@ import { Module, DynamicModule } from '@nestjs/common';
 
 import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { ConfigModule } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
 import { CertificateModule } from './pods/certificate';
 import { BlockchainPropertiesModule } from './pods/blockchain';
 import { CertificationRequestModule } from './pods/certification-request';
