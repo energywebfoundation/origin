@@ -7,3 +7,7 @@
   <h2 align="center">Issuer API</h2>
   <br>
 </h1>
+
+## Notes
+
+If you decide to use CertificationRequest, then you should also include `ScheduleModule.forRoot()` in your application, to run synchronization task.

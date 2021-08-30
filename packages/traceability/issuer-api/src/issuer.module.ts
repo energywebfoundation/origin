@@ -47,7 +47,6 @@ export class IssuerModule {
                     envFilePath: getEnvFilePath(),
                     isGlobal: true
                 }),
-                ScheduleModule.forRoot(),
                 CertificateModule,
                 BlockchainPropertiesModule,
                 ...(options.enableCertificationRequest ? [CertificationRequestModule] : [])
