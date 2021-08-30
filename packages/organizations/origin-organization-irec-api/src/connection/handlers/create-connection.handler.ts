@@ -22,7 +22,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
     ) {}
 
     async execute({
-        user: { organizationId },
+        user: { ownerId, organizationId },
         credentials: { userName, password, clientId, clientSecret }
     }: CreateConnectionCommand): Promise<ConnectionDTO> {
         const loginResult = await this.irecService.login({
@@ -32,19 +32,46 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
             clientSecret
         });
 
-        const [registration] = await this.registrationService.find(String(organizationId));
+        const [registration] = await this.registrationService.find(
+            String(ownerId || organizationId)
+        );
         if (!registration) {
             throw new BadRequestException('IREC Registration not found');
         }
 
-        const connection = await this.repository.save({
-            ...loginResult,
-            userName,
-            registration
+        const existingConnection = await this.repository.findOne({
+            where: { registration: registration.id }
         });
 
-        this.eventBus.publish(new ConnectionCreatedEvent(connection, organizationId, registration));
+        if (existingConnection) {
+            if (userName !== existingConnection.userName) {
+                throw new BadRequestException('IREC connection user name mismatch');
+            }
 
-        return ConnectionDTO.wrap(connection);
+            existingConnection.clientId = clientId;
+            existingConnection.clientSecret = clientSecret;
+            existingConnection.expiryDate = loginResult.expiryDate;
+            existingConnection.accessToken = loginResult.accessToken;
+            existingConnection.refreshToken = loginResult.refreshToken;
+            existingConnection.active = true;
+            existingConnection.attempts = 0;
+
+            await existingConnection.save();
+
+            return ConnectionDTO.wrap(existingConnection);
+        } else {
+            const connection = await this.repository.save({
+                ...loginResult,
+                userName,
+                registration,
+                clientId,
+                clientSecret
+            });
+
+            this.eventBus.publish(
+                new ConnectionCreatedEvent(connection, organizationId, registration)
+            );
+            return ConnectionDTO.wrap(connection);
+        }
     }
 }

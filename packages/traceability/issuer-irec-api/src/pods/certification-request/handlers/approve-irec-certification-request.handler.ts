@@ -38,13 +38,14 @@ export class ApproveIrecCertificationRequestHandler
 
         const allowedStatuses = [
             IssuanceStatus.Approved,
+            IssuanceStatus.Submitted,
             IssuanceStatus.InProgress,
             IssuanceStatus.Verified
         ];
 
         if (!allowedStatuses.includes(issueRequest.status)) {
             throw new BadRequestException(
-                `IREC issuance request have to be in IN-PROGRESS, VERIFIED, or APPROVED state, got ${issueRequest.status}`
+                `IREC issuance request have to be in In-progress, Submitted, Verified, or Approved state, got ${issueRequest.status}`
             );
         }
 
@@ -52,7 +53,8 @@ export class ApproveIrecCertificationRequestHandler
             return this.commandBus.execute(new ApproveCertificationRequestCommand(id));
         }
 
-        if (issueRequest.status === IssuanceStatus.InProgress) {
+        const inProgressStatuses = [IssuanceStatus.Submitted, IssuanceStatus.InProgress];
+        if (inProgressStatuses.includes(issueRequest.status)) {
             await this.irecService.verifyIssueRequest(
                 platformAdmin.organization.id,
                 irecIssueRequestId

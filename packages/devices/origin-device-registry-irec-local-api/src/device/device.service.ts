@@ -53,25 +53,28 @@ export class DeviceService {
         const tradeAccount = await this.irecService.getTradeAccountCode(
             platformAdmin.organization.id
         );
-        const participantTradeAccount = await this.irecService.getTradeAccountCode(user);
         const issuerOrg = await this.irecService.getUserOrganization(platformAdmin.organization.id);
+        const registrantOrg = await this.irecService.getUserOrganization(user);
 
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
             defaultAccount: tradeAccount,
-            registrantOrganization: participantTradeAccount,
+            registrantOrganization: registrantOrg.code,
             issuer: issuerOrg.code,
             active: true
         };
 
         const irecDevice = await this.irecService.createDevice(user, {
             ...deviceData,
+            capacity: deviceData.capacity / 1e6,
             address: this.getAddressLine(newDevice)
         });
 
         const deviceToStore = new Device({
             ...deviceData,
             ...irecDevice,
+            capacity: deviceData.capacity,
+            status: DeviceState.InProgress,
             ownerId: user.ownerId
         });
 
@@ -115,7 +118,8 @@ export class DeviceService {
     async approveDevice(id: string): Promise<Device> {
         const device = await this.findOne(id);
 
-        if (device.status !== DeviceState.InProgress) {
+        const allowedStatuses: string[] = [DeviceState.InProgress, DeviceState.Submitted];
+        if (!allowedStatuses.includes(device.status)) {
             throw new BadRequestException('Device state have to be in "In-Progress" state');
         }
 

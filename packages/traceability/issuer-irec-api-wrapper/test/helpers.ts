@@ -19,8 +19,8 @@ export async function getClient({
     clientId,
     clientSecret
 }: LoginParams): Promise<IRECAPIClient> {
-    const client = new IRECAPIClient(apiUrl);
-    await client.login(login, apiToken, clientId, clientSecret);
+    const client = new IRECAPIClient(apiUrl, clientId, clientSecret);
+    await client.login(login, apiToken);
 
     return client;
 }

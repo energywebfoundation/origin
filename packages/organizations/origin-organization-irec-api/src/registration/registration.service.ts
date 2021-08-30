@@ -21,7 +21,7 @@ export class RegistrationService {
     public async register(user: ILoggedInUser, registration: NewRegistrationDTO): Promise<string> {
         const registrationToStore = new Registration({
             ...NewRegistrationDTO.sanitize(registration),
-            owner: user.ownerId
+            owner: String(user.ownerId || user.organizationId)
         });
 
         const storedRegistration = await this.repository.save(registrationToStore);
