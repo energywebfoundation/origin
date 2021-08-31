@@ -1,6 +1,7 @@
 import { GenericMap } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
 import React, { FC } from 'react';
+import { useDeviceAppEnv } from '../../../context';
 import { CarouselControls, CarouselModeEnum } from '../CarouselControls';
 
 interface DeviceMapCarouselProps {
@@ -21,10 +22,11 @@ export const DeviceMapCarousel: FC<DeviceMapCarouselProps> = ({
   handleModeChange,
   mapContainerClassName,
 }) => {
+  const { googleMapsApiKey } = useDeviceAppEnv();
   return (
     <div {...itemProps}>
       <GenericMap
-        apiKey={process.env.NX_GOOGLE_MAPS_API_KEY}
+        apiKey={googleMapsApiKey}
         allItems={[device]}
         containerClassName={mapContainerClassName}
         mapProps={{

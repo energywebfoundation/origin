@@ -56,7 +56,15 @@ const App: FC<AppProps> = memo(
         >
           <Route
             path="device/*"
-            element={<DeviceApp routesConfig={deviceRoutes} />}
+            element={
+              <DeviceApp
+                routesConfig={deviceRoutes}
+                envVariables={{
+                  googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
+                  smartMeterId: process.env.NX_SMART_METER_ID,
+                }}
+              />
+            }
           />
           <Route
             path="exchange/*"
@@ -64,7 +72,15 @@ const App: FC<AppProps> = memo(
           />
           <Route
             path="certificate/*"
-            element={<CertificateApp routesConfig={certificateRoutes} />}
+            element={
+              <CertificateApp
+                routesConfig={certificateRoutes}
+                envVariables={{
+                  googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
+                  exchangeWalletPublicKey: process.env.NX_EXCHANGE_WALLET_PUB,
+                }}
+              />
+            }
           />
           <Route
             path="organization/*"
@@ -72,7 +88,15 @@ const App: FC<AppProps> = memo(
           />
           <Route
             path="account/*"
-            element={<AccountApp routesConfig={accountRoutes} />}
+            element={
+              <AccountApp
+                routesConfig={accountRoutes}
+                envVariables={{
+                  registrationMessage:
+                    process.env.NX_REGISTRATION_MESSAGE_TO_SIGN,
+                }}
+              />
+            }
           />
           <Route
             path="admin/*"

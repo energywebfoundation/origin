@@ -4,7 +4,8 @@ import { gridOperatorOptions } from '../utils';
 import { TUseImportDeviceFormLogic } from './types';
 
 export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
-  handleClose
+  handleClose,
+  smartMeterId
 ) => {
   const { t } = useTranslation();
 
@@ -24,7 +25,7 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
       smartMeterId: yup
         .string()
         .required()
-        .label(process.env.NX_SMART_METER_ID || 'Smart meter ID'),
+        .label(smartMeterId || 'Smart meter ID'),
       timezone: yup.string().required().label(t('device.import.timezone')),
       gridOperator: yup
         .string()
@@ -38,7 +39,7 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
     fields: [
       {
         name: 'smartMeterId',
-        label: process.env.NX_SMART_METER_ID || 'Smart meter ID',
+        label: smartMeterId || 'Smart meter ID',
         required: true,
       },
       {

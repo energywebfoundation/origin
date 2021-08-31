@@ -2,7 +2,11 @@ import { PageNotFound } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { DeviceModalsCenter } from './containers';
-import { DeviceModalsProvider } from './context';
+import {
+  DeviceAppEnvProvider,
+  DeviceEnvVariables,
+  DeviceModalsProvider,
+} from './context';
 import {
   AllDevicesPage,
   MyDevicesPage,
@@ -22,9 +26,13 @@ export interface DeviceAppProps {
     showRegisterDevice: boolean;
     showDeviceImport: boolean;
   };
+  envVariables: DeviceEnvVariables;
 }
 
-export const DeviceApp: FC<DeviceAppProps> = ({ routesConfig }) => {
+export const DeviceApp: FC<DeviceAppProps> = ({
+  routesConfig,
+  envVariables,
+}) => {
   const {
     showAllDevices,
     showMapView,
@@ -34,26 +42,28 @@ export const DeviceApp: FC<DeviceAppProps> = ({ routesConfig }) => {
     showDeviceImport,
   } = routesConfig;
   return (
-    <DeviceModalsProvider>
-      <Routes>
-        {showAllDevices && <Route path="all" element={<AllDevicesPage />} />}
-        {showMapView && <Route path="map" element={<MapViewPage />} />}
-        {showMyDevices && <Route path="my" element={<MyDevicesPage />} />}
-        {showPendingDevices && (
-          <Route path="pending" element={<PendingPage />} />
-        )}
-        {showRegisterDevice && (
-          <Route path="register" element={<RegisterPage />} />
-        )}
-        {showAllDevices && (
-          <Route path="detail-view/:id" element={<DetailViewPage />} />
-        )}
-        {showDeviceImport && (
-          <Route path="import" element={<DeviceImportPage />} />
-        )}
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-      <DeviceModalsCenter />
-    </DeviceModalsProvider>
+    <DeviceAppEnvProvider variables={envVariables}>
+      <DeviceModalsProvider>
+        <Routes>
+          {showAllDevices && <Route path="all" element={<AllDevicesPage />} />}
+          {showMapView && <Route path="map" element={<MapViewPage />} />}
+          {showMyDevices && <Route path="my" element={<MyDevicesPage />} />}
+          {showPendingDevices && (
+            <Route path="pending" element={<PendingPage />} />
+          )}
+          {showRegisterDevice && (
+            <Route path="register" element={<RegisterPage />} />
+          )}
+          {showAllDevices && (
+            <Route path="detail-view/:id" element={<DetailViewPage />} />
+          )}
+          {showDeviceImport && (
+            <Route path="import" element={<DeviceImportPage />} />
+          )}
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+        <DeviceModalsCenter />
+      </DeviceModalsProvider>
+    </DeviceAppEnvProvider>
   );
 };

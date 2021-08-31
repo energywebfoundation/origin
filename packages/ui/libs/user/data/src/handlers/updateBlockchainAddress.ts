@@ -16,6 +16,7 @@ import { useQueryClient } from 'react-query';
 import { userApiErrorHandler } from './errorHandler';
 
 export const useUpdateBlockchainAddress = (
+  registrationMessage: string,
   setIsUpdating: (value: boolean) => void
 ) => {
   const { t } = useTranslation();
@@ -27,8 +28,6 @@ export const useUpdateBlockchainAddress = (
   const { user, userLoading } = useUser();
   const blockchainAddress = user?.organization?.blockchainAccountAddress;
   const { library: web3, account } = useWeb3React();
-
-  const registrationMessage = process.env.NX_REGISTRATION_MESSAGE_TO_SIGN;
 
   const submitHandler = () => {
     try {

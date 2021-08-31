@@ -5,7 +5,7 @@ import { ItemHighlightedContent } from '../../containers';
 import { useMapViewPageEffects } from './MapViewPage.effects';
 
 export const MapViewPage: FC = () => {
-  const { allDevices, isLoading } = useMapViewPageEffects();
+  const { allDevices, isLoading, googleMapsApiKey } = useMapViewPageEffects();
 
   if (isLoading) {
     return <CircularProgress />;
@@ -13,7 +13,7 @@ export const MapViewPage: FC = () => {
 
   return (
     <GenericMap
-      apiKey={process.env.NX_GOOGLE_MAPS_API_KEY}
+      apiKey={googleMapsApiKey}
       allItems={allDevices}
       infoWindowContent={ItemHighlightedContent}
     />
