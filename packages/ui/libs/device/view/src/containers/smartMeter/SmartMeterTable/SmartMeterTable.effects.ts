@@ -1,12 +1,10 @@
+import { ReadDTO } from '@energyweb/origin-energy-api-react-query-client';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
 import { useSmartMeterTableLogic } from '@energyweb/origin-ui-device-logic';
-import { smartMeterReadingsMock } from '../../../__mocks__/smartMeterReadingsMock';
 
 export const useSmartMeterTableEffects = (device: ComposedPublicDevice) => {
-  const reads =
-    smartMeterReadingsMock[
-      device.smartMeterId as keyof typeof smartMeterReadingsMock
-    ];
+  // @should connect to actual readings api
+  const reads: ReadDTO[] = [];
 
   const tableProps = useSmartMeterTableLogic({
     device,

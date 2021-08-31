@@ -1,4 +1,4 @@
-import { CircularProgress, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { ButtonsGroupWithArrows } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -17,15 +17,10 @@ export const SmartMeterChart: FC<SmartMeterChartProps> = ({ meterId }) => {
     displayDate,
     window,
     setWindow,
-    isLoading,
     decrementDate,
     incrementDate,
     chartData,
   } = useSmartMeterChartsEffects(meterId);
-
-  if (isLoading) {
-    return <CircularProgress />;
-  }
 
   return (
     <>

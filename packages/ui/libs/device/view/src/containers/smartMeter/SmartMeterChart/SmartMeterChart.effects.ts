@@ -28,7 +28,7 @@ export const useSmartMeterChartsEffects = (meterId: string) => {
     setEndDate,
   });
 
-  const { reads, isLoading } = useSmartMeterReads({
+  const { reads } = useSmartMeterReads({
     meterId,
     start: startDate,
     end: endDate,
@@ -47,7 +47,6 @@ export const useSmartMeterChartsEffects = (meterId: string) => {
     reads,
     windowButtons,
     displayDate,
-    isLoading,
     window,
     setWindow,
     incrementDate,

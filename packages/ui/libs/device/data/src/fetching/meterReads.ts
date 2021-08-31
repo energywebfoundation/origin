@@ -3,7 +3,6 @@ import {
   Aggregate,
 } from '@energyweb/origin-energy-api-react-query-client';
 import dayjs from 'dayjs';
-import { generateRandomMockEnergyBlocks } from '../mock';
 
 export enum ReadingsWindowEnum {
   Day = '1d',
@@ -33,7 +32,7 @@ export const useSmartMeterReads = ({
     difference: false,
   });
 
-  const reads = data?.length ? data : generateRandomMockEnergyBlocks(24, 135);
+  const reads = data || [];
 
   return { reads, isLoading };
 };
