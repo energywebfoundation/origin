@@ -3,19 +3,24 @@ import {
   GenericFormSecondaryButton,
 } from '@energyweb/origin-ui-core';
 import { DocsUploadFormValues } from '@energyweb/origin-ui-organization-logic';
-import { Box, Button, Divider } from '@material-ui/core';
+import { Box, Button, CircularProgress, Divider } from '@material-ui/core';
 import React, { FC } from 'react';
+import { UnpackNestedValue } from 'react-hook-form';
 import { useRegisterOrgDocsEffects } from './RegisterOrgDocs.effects';
 import { useStyles } from './RegisterOrgDocs.styles';
 
 export interface RegisterOrgDocsProps {
-  submitHandler: (values: DocsUploadFormValues) => void;
+  submitHandler: (
+    values: UnpackNestedValue<DocsUploadFormValues>
+  ) => Promise<void>;
   secondaryButtons?: GenericFormSecondaryButton[];
+  loading?: boolean;
 }
 
 export const RegisterOrgDocs: FC<RegisterOrgDocsProps> = ({
   submitHandler,
   secondaryButtons,
+  loading,
 }) => {
   const {
     values,
@@ -57,10 +62,15 @@ export const RegisterOrgDocs: FC<RegisterOrgDocsProps> = ({
           name="submit"
           size="large"
           variant="contained"
-          disabled={buttonDisabled}
+          disabled={buttonDisabled || loading}
           onClick={() => submitHandler(values)}
         >
           {buttonText}
+          {loading && (
+            <Box ml={2}>
+              <CircularProgress size={20} />
+            </Box>
+          )}
         </Button>
       </Box>
     </Box>

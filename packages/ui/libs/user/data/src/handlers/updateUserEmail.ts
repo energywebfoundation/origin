@@ -30,12 +30,13 @@ export const useApiUpdateUserAccountEmail = () => {
     const restUserProps = { firstName, lastName, telephone };
 
     if (status !== UserStatus.Active) {
-      return showNotification(
+      showNotification(
         t('user.profile.notifications.onlyActiveUserCan', {
           status: user.status,
         }),
         NotificationTypeEnum.Error
       );
+      return;
     }
 
     return mutate(

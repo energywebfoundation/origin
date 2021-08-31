@@ -6,9 +6,12 @@ import { Box, Button, CircularProgress } from '@material-ui/core';
 import { DeviceImagesFormValues } from '@energyweb/origin-ui-device-logic';
 import React, { FC } from 'react';
 import { useDeviceImagesUploadEffects } from './DeviceImagesUpload.effects';
+import { UnpackNestedValue } from 'react-hook-form';
 
 export interface DeviceImagesUploadProps {
-  submitHandler: (values: DeviceImagesFormValues) => void;
+  submitHandler: (
+    values: UnpackNestedValue<DeviceImagesFormValues>
+  ) => Promise<void>;
   secondaryButtons?: GenericFormSecondaryButton[];
   loading?: boolean;
 }

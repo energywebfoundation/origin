@@ -30,12 +30,13 @@ export const useApiUpdateUserAccountPassword = () => {
     const user: UserDTO = queryClient.getQueryData(userQueryKey);
     const { status } = user;
     if (status !== UserStatus.Active) {
-      return showNotification(
+      showNotification(
         t('user.profile.notifications.onlyActiveUserCan', {
           status: user.status,
         }),
         NotificationTypeEnum.Error
       );
+      return;
     }
     mutate(
       { data: values },

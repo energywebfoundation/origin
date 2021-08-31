@@ -1,15 +1,20 @@
 import { Typography, TypographyVariant, ButtonProps } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement, FC } from 'react';
+import { UnpackNestedValue } from 'react-hook-form';
 import { StepReport } from '../../components/form';
-import { GenericFormProps } from '../GenericForm';
+import { GenericFormProps, GenericFormSecondaryButton } from '../GenericForm';
 import { useMultiStepFormEffects } from './MultiStepForm.effects';
 
 export type MultiStepFormItem<FormValuesType> = Omit<
   GenericFormProps<FormValuesType>,
-  'submitHandler'
+  'submitHandler' | 'loading' | 'secondaryButtons'
 > & {
   customStep?: boolean;
-  component?: FC<any>;
+  component?: FC<{
+    submitHandler: (values: UnpackNestedValue<FormValuesType>) => Promise<void>;
+    secondaryButtons?: GenericFormSecondaryButton[];
+    loading?: boolean;
+  }>;
 };
 
 export interface MultiStepFormProps<FormValuesMerged> {
@@ -36,7 +41,7 @@ export const MultiStepForm: TMultiStepForm = ({
   loading,
 }) => {
   const { stepperLabels, activeStep, getCurrentForm } = useMultiStepFormEffects(
-    { forms, submitHandler, backButtonText, backButtonProps }
+    { forms, submitHandler, backButtonText, backButtonProps, loading }
   );
   return (
     <>

@@ -47,7 +47,7 @@ export const useGenericFormEffects: TGenericFormEffects = ({
   acceptInitialValues,
 }) => {
   const { control, register, handleSubmit, formState, reset, watch } = useForm({
-    mode: validationMode ? validationMode : 'onBlur',
+    mode: validationMode,
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
