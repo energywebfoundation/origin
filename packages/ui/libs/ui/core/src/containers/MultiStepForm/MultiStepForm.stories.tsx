@@ -1,112 +1,227 @@
+/* deepscan-disable */
 import React from 'react';
-import { Meta } from '@storybook/react';
+import { Meta, Story } from '@storybook/react';
+import {
+  Title,
+  Description,
+  Primary,
+  ArgsTable,
+  PRIMARY_STORY,
+  Stories,
+} from '@storybook/addon-docs';
 import { MultiStepForm, MultiStepFormProps } from './MultiStepForm';
 import * as yup from 'yup';
 
+const description =
+  'Component used for creating multi step forms. ' +
+  'Built with `GenericForm` component and based on `react-hook-form`. ';
+
+const formsTypeDescription = `{
+  // see GenericForm component docs for detailed description
+  validationSchema: yup.AnyObjectSchema;
+  initialValues: UnpackNestedValue<DeepPartial<FormValuesType>>;
+  fields: GenericFormField<FormValuesType>[];
+  buttonText: string;
+  hideSubmitButton?: boolean;
+  buttonFullWidth?: boolean;
+  buttonWrapperProps?: BoxProps;
+  buttonDisabled?: boolean;
+  formTitle?: string;
+  formTitleVariant?: TypographyVariant;
+  formClass?: string;
+  inputsVariant?: FormInputProps<FormValuesType>['variant'];
+  formInputsProps?: TextFieldProps;
+  partOfMultiForm?: boolean;
+  twoColumns?: boolean;
+  inputsToWatch?: Path<FormValuesType>[];
+  onWatchHandler?: (watchedValues: unknown[]) => void;
+  validationMode?: keyof ValidationMode;
+  acceptInitialValues?: boolean;
+  // should be true in case of any custom step not containing GenericForm component
+  // e.g. Documents Upload step
+  customStep?: boolean;
+  // Component supplied as custom step
+  component?: FC<{
+    submitHandler: (values: UnpackNestedValue<any>) => Promise<void>;
+    secondaryButtons?: GenericFormSecondaryButton[];
+    loading?: boolean;
+  }>;
+}`;
+
 export default {
-  title: 'Containers / MultiStepForm',
+  title: 'Form / MultiStepForm',
   component: MultiStepForm,
+  parameters: {
+    docs: {
+      page: () => (
+        <>
+          <Title />
+          <Description>{description}</Description>
+          <Primary />
+          <ArgsTable story={PRIMARY_STORY} />
+          <Stories />
+        </>
+      ),
+    },
+  },
+  argTypes: {
+    heading: {
+      description: 'Form heading',
+    },
+    forms: {
+      description: 'Array of objects describing forms',
+      table: {
+        type: {
+          detail: formsTypeDescription,
+        },
+      },
+    },
+    submitHandler: {
+      description:
+        'Function handling form submit action. Receives the values of all forms filled by user as an arg.',
+    },
+    backButtonText: {
+      description:
+        'Text for button which allows user to return to previous form.',
+    },
+    backButtonProps: {
+      description:
+        "<a href='https://next.material-ui.com/api/button' target='_blank'>`ButtonProps`</a>",
+      table: {
+        type: {
+          summary: null,
+        },
+      },
+      control: false,
+    },
+    headingVariant: {
+      description:
+        'Variant of displaying form title in a `Typography` component',
+    },
+    loading: {
+      description:
+        'Loading state of the form. Disables submit button and shows loader inside submit button',
+      control: false,
+    },
+  },
 } as Meta;
 
-export const ThreeStepForm = (args: MultiStepFormProps) => (
+type RegisterForm = {
+  email: string;
+  password: string;
+  username?: string;
+};
+type LocationForm = {
+  country: string;
+  city: string;
+  zipCode: string;
+};
+type PersonalForm = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+};
+type MultiStepFormValuesType = RegisterForm & LocationForm & PersonalForm;
+
+const Template: Story<MultiStepFormProps<MultiStepFormValuesType>> = (args) => (
   <MultiStepForm {...args} />
 );
 
-ThreeStepForm.args = {
-  heading: 'TEST MULTI FORM TITLE',
-  submitHandler: (values) => {
-    console.log(values);
+export const Default = Template.bind({});
+Default.args = {
+  heading: 'Test multistep form',
+  submitHandler: (values: MultiStepFormValuesType) => {
+    alert(JSON.stringify(values));
   },
   forms: [
     {
       validationSchema: yup.object().shape({
-        test1_1: yup.string().required('test1_1 is required field'),
-        test1_2: yup.string().min(6, 'test1_2 should be longer than 6 symbols'),
-        test1_3: yup.string().notRequired(),
+        email: yup.string().required('Email is required field'),
+        password: yup
+          .string()
+          .min(6, 'Password should be longer than 6 symbols')
+          .required(),
+        username: yup.string().notRequired(),
       }),
       initialValues: {
-        test1_1: '',
-        test1_2: '',
-        test1_3: '',
+        email: '',
+        password: '',
+        username: '',
       },
-      formTitle: 'Test form step 1',
+      formTitle: 'Register data',
       fields: [
         {
-          name: 'test1_1',
-          label: 'Test field 1 step 1',
+          name: 'email',
+          label: 'Email',
         },
         {
-          name: 'test1_2',
-          label: 'Test field 2 step 1',
+          name: 'password',
+          label: 'Password',
           type: 'password',
         },
         {
-          name: 'test1_3',
-          label: 'Test field 3 step 1',
-          type: 'text',
+          name: 'username',
+          label: 'Username',
         },
       ],
       buttonText: 'Next',
     },
     {
       validationSchema: yup.object().shape({
-        test2_1: yup.string().required('test2_1 is required field'),
-        test2_2: yup.string().min(6, 'test2_2 should be longer than 6 symbols'),
-        test2_3: yup.string().notRequired(),
+        country: yup.string().required('Country is required field'),
+        city: yup.string().required('City is required field'),
+        zipCode: yup.string().required('Zip code is required field'),
       }),
       initialValues: {
-        test2_1: '',
-        test2_2: '',
-        test2_3: '',
+        country: '',
+        city: '',
+        zipCode: '',
       },
-      formTitle: 'Test form step 2',
+      formTitle: 'Location',
       fields: [
         {
-          name: 'test2_1',
-          label: 'Test field 1 step 2',
+          name: 'country',
+          label: 'Country',
         },
         {
-          name: 'test2_2',
-          label: 'Test field 2 step 2',
-          type: 'password',
+          name: 'city',
+          label: 'City',
         },
         {
-          name: 'test2_3',
-          label: 'Test field 3 step 2',
-          type: 'text',
+          name: 'zipCode',
+          label: 'Zip code',
         },
       ],
       buttonText: 'Next',
     },
     {
       validationSchema: yup.object().shape({
-        test3_1: yup.string().required('test3_1 is required field'),
-        test3_2: yup.string().min(6, 'test3_2 should be longer than 6 symbols'),
-        test3_3: yup.string().notRequired(),
+        firstName: yup.string().required('First name is required field'),
+        lastName: yup.string().required('Last name is required field'),
+        phoneNumber: yup.string().required('Phone number is required field'),
       }),
       initialValues: {
-        test3_1: '',
-        test3_2: '',
-        test3_3: '',
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
       },
-      formTitle: 'Test form step 3',
+      formTitle: 'Personal data',
       fields: [
         {
-          name: 'test3_1',
-          label: 'Test field 1 step 3',
+          name: 'firstName',
+          label: 'First name',
         },
         {
-          name: 'test3_2',
-          label: 'Test field 2 step 3',
-          type: 'password',
+          name: 'lastName',
+          label: 'Last name',
         },
         {
-          name: 'test3_3',
-          label: 'Test field 3 step 3',
-          type: 'text',
+          name: 'phoneNumber',
+          label: 'Phone number',
         },
       ],
       buttonText: 'Submit',
     },
   ],
+  backButtonText: 'Back',
 };
