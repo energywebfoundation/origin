@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-app",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "description": "This is a bootstrap project for Origin API",
     "main": "dist/js/index.js",
     "scripts": {

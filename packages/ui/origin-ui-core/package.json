@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-ui-core",
-    "version": "1.14.1",
+    "version": "1.14.2",
     "main": "dist/src/index.js",
     "scripts": {
         "app:build": "yarn config-env && node --max-old-space-size=8192 ./node_modules/.bin/webpack --config webpack/prod.config.js",
