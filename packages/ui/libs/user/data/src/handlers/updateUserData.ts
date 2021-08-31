@@ -36,12 +36,13 @@ export const useApiUpdateUserAccountData = () => {
     const { email, status } = user;
 
     if (status !== UserStatus.Active) {
-      return showNotification(
+      showNotification(
         t('user.profile.notifications.onlyActiveUserCan', {
           status: user.status,
         }),
         NotificationTypeEnum.Error
       );
+      return;
     }
 
     mutate(
