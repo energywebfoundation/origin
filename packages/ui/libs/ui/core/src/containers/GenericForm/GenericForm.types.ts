@@ -54,7 +54,7 @@ export interface GenericFormProps<FormValuesType> {
   submitHandler: (
     values: UnpackNestedValue<FormValuesType>,
     resetForm: UseFormReset<FormValuesType>
-  ) => void;
+  ) => void | Promise<void>;
   validationSchema: yup.AnyObjectSchema;
   initialValues: UnpackNestedValue<DeepPartial<FormValuesType>>;
   fields: GenericFormField<FormValuesType>[];
