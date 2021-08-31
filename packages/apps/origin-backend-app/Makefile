@@ -19,10 +19,5 @@ build-canary:
 	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
 
 build-latest:
-	@rm -rf ./deployment
-	@mkdir ./deployment
-	@rush deploy -p @energyweb/origin-backend-app -t ./deployment --overwrite
-	@docker rmi ${LATEST} -f
-	@docker build -t ${NAME}:${TAG_LATEST} --build-arg VERSION=${TAG_LATEST} -f Dockerfile.local ./deployment
-	@rm -rf ./deployment
+	@docker build --no-cache -t ${NAME}:${TAG_LATEST} .
 	@docker tag ${NAME}:${TAG_LATEST} ${LATEST}
