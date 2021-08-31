@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-ui-irec-core",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "main": "dist/src/index.js",
     "scripts": {
         "build": "yarn build:static && yarn build:ts",
@@ -21,7 +21,7 @@
         "@energyweb/origin-backend-core": "8.0.2",
         "@energyweb/origin-device-registry-api-client": "0.0.4",
         "@energyweb/origin-device-registry-irec-local-api-client": "0.2.0",
-        "@energyweb/origin-ui-core": "1.14.2",
+        "@energyweb/origin-ui-core": "1.14.3",
         "@energyweb/utils-general": "11.0.3",
         "@hookform/resolvers": "1.3.7",
         "@material-ui/core": "4.11.4",

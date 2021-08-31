@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-ui-core",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "main": "dist/src/index.js",
     "scripts": {
         "app:build": "yarn config-env && node --max-old-space-size=8192 ./node_modules/webpack/bin/webpack.js --config webpack/prod.config.js",
@@ -25,8 +25,8 @@
         "@energyweb/exchange-irec-client": "0.0.4",
         "@energyweb/origin-backend-core": "8.0.2",
         "@energyweb/origin-device-registry-irec-form-api-client": "1.0.3",
-        "@energyweb/origin-ui-core": "1.14.2",
-        "@energyweb/origin-ui-irec-core": "0.2.1",
+        "@energyweb/origin-ui-core": "1.14.3",
+        "@energyweb/origin-ui-irec-core": "0.2.2",
         "@energyweb/utils-general": "11.0.3",
         "@material-ui/core": "4.11.4",
         "@material-ui/icons": "4.11.2",
