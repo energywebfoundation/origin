@@ -186,7 +186,7 @@ const getThemeConfig = (styleConfig: IOriginStyleConfig): ThemeOptions => ({
   },
 });
 
-const createMaterialThemeForOrigin = (
+export const createMaterialThemeForOrigin = (
   styleConfig: IOriginStyleConfig,
   language: 'en'
 ): Theme => {
@@ -198,5 +198,3 @@ const createMaterialThemeForOrigin = (
 
   return createMuiTheme(getThemeConfig(styleConfig), materialLocale);
 };
-
-export default createMaterialThemeForOrigin;

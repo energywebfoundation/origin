@@ -1,7 +1,4 @@
 dependencies:
-  '@angular-devkit/architect': 0.1202.3
-  '@angular-devkit/core': 12.2.3
-  '@angular-devkit/schematics': 12.2.3
   '@babel/core': 7.9.6
   '@babel/preset-env': 7.13.15_@babel+core@7.9.6
   '@babel/preset-react': 7.9.4_@babel+core@7.9.6
@@ -162,6 +159,7 @@ dependencies:
   class-sanitizer: 1.0.1
   class-transformer: 0.3.1
   class-validator: 0.13.1
+  clsx: 1.1.1
   commander: 6.2.1
   concurrently: 6.2.1
   core-js: 3.6.5
@@ -169,7 +167,6 @@ dependencies:
   csv-parse: 4.16.0
   cypress: 7.3.0
   dayjs: 1.10.4
-  document-register-element: 1.13.1
   dotenv: 10.0.0
   emotion-theming: 11.0.0
   eslint: 7.10.0
@@ -208,7 +205,6 @@ dependencies:
   moment-range: 4.0.2_moment@2.29.1
   moment-timezone: 0.5.33
   multer: 1.4.3
-  ngx-deploy-npm: 2.1.0_b0a449d200c9f1148187da6102a273a2
   nodemailer: 6.6.3
   orval: 5.0.0-alpha.9
   passport: 0.4.1
@@ -39147,6 +39143,7 @@ packages:
       babel-loader: 8.1.0_@babel+core@7.9.6+webpack@4.42.0
       babel-plugin-styled-components: 1.12.0
       chart.js: 3.3.2
+      clsx: 1.1.1
       core-js: 3.6.5
       cypress: 7.3.0
       dayjs: 1.10.4
@@ -39205,7 +39202,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-1o/stmM5p7WZOJ5fXxdoAPoPgMO6BWmWQ4rntwfZ3Ya+lEqiAtyQ1cvEX9nZ/i97txWefHBTpSKeOqN3CYWhBw==
+      integrity: sha512-5LdmcRPjRiSg/VeZk+a4pBOrCl918kLqWJKgkQmEnFrEbVuAQ2hTHpMQmUBH+xLKJyIj3tc3U9ncE1j1/7bh5g==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -39283,9 +39280,6 @@ packages:
     version: 0.1.0
 registry: ''
 specifiers:
-  '@angular-devkit/architect': 0.1202.3
-  '@angular-devkit/core': 12.2.3
-  '@angular-devkit/schematics': 12.2.3
   '@babel/core': 7.9.6
   '@babel/preset-env': 7.13.15
   '@babel/preset-react': 7.9.4
@@ -39446,6 +39440,7 @@ specifiers:
   class-sanitizer: 1.0.1
   class-transformer: 0.3.1
   class-validator: 0.13.1
+  clsx: 1.1.1
   commander: 6.2.1
   concurrently: 6.2.1
   core-js: 3.6.5
@@ -39453,7 +39448,6 @@ specifiers:
   csv-parse: 4.16.0
   cypress: 7.3.0
   dayjs: 1.10.4
-  document-register-element: 1.13.1
   dotenv: 10.0.0
   emotion-theming: 11.0.0
   eslint: 7.10.0
@@ -39492,7 +39486,6 @@ specifiers:
   moment-range: 4.0.2
   moment-timezone: 0.5.33
   multer: 1.4.3
-  ngx-deploy-npm: 2.1.0
   nodemailer: 6.6.3
   orval: 5.0.0-alpha.9
   passport: 0.4.1
