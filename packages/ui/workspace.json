@@ -28,10 +28,7 @@
             "main": "apps/origin-ui/src/main.tsx",
             "polyfills": "apps/origin-ui/src/polyfills.ts",
             "tsConfig": "apps/origin-ui/tsconfig.app.json",
-            "assets": [
-              "apps/origin-ui/src/favicon.ico",
-              "apps/origin-ui/src/assets"
-            ],
+            "assets": ["apps/origin-ui/src/favicon.ico"],
             "styles": [],
             "scripts": [],
             "webpackConfig": "webpack.config.js"
