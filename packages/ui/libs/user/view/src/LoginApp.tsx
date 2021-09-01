@@ -1,13 +1,21 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import { LoginPage } from './pages';
 import { UserModalsProvider } from './context';
 import { UserModalsCenter } from './containers/modals';
 
-export const LoginApp: FC = () => {
+export interface LoginAppProps {
+  loginPageBgImage?: string;
+  loginFormIcon?: ReactNode;
+}
+
+export const LoginApp: FC<LoginAppProps> = ({
+  loginPageBgImage,
+  loginFormIcon,
+}) => {
   return (
     <UserModalsProvider>
-      <LoginPage />
+      <LoginPage bgImage={loginPageBgImage} formIcon={loginFormIcon} />
       <UserModalsCenter />
     </UserModalsProvider>
   );
