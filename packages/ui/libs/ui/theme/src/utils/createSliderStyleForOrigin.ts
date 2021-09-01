@@ -1,7 +1,9 @@
 import { LightenColor } from './colors';
 import { IOriginStyleConfig } from './makeOriginUiConfig';
 
-const createSliderStyleForOrigin = (styleConfig: IOriginStyleConfig) => ({
+export const createSliderStyleForOrigin = (
+  styleConfig: IOriginStyleConfig
+) => ({
   root: {
     height: 3,
     padding: '13px 0',
@@ -51,5 +53,3 @@ const createSliderStyleForOrigin = (styleConfig: IOriginStyleConfig) => ({
     backgroundColor: 'currentColor',
   },
 });
-
-export default createSliderStyleForOrigin;

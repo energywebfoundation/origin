@@ -1,8 +1,8 @@
 import { Theme } from '@material-ui/core/styles';
 
 import { OriginUiThemeVariables, variables } from '../config/variables';
-import createSliderStyleForOrigin from './createSliderStyleForOrigin';
-import createMaterialThemeForOrigin from '../config/themeConfig';
+import { createSliderStyleForOrigin } from './createSliderStyleForOrigin';
+import { createMaterialThemeForOrigin } from '../config/themeConfig';
 
 export interface IOriginStyleConfig {
   PRIMARY_COLOR: string;
