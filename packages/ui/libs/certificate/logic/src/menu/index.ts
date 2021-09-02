@@ -10,6 +10,7 @@ export type TGetCertificateMenuArgs = {
   showRequests: boolean;
   showPending: boolean;
   showApproved: boolean;
+  showImport: boolean;
 };
 
 type TGetCertificateMenu = (args?: TGetCertificateMenuArgs) => TMenuSection;
@@ -24,6 +25,7 @@ export const getCertificateMenu: TGetCertificateMenu = ({
   showRequests,
   showPending,
   showApproved,
+  showImport,
 }) => {
   const menuList = [
     {
@@ -55,6 +57,11 @@ export const getCertificateMenu: TGetCertificateMenu = ({
       url: 'approved',
       label: t('navigation.certificate.approved'),
       show: showApproved,
+    },
+    {
+      url: 'import',
+      label: t('navigation.certificate.import'),
+      show: showImport,
     },
   ];
 

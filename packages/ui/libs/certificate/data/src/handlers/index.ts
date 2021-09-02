@@ -8,3 +8,5 @@ export * from './exchangeTransferCertificate';
 export * from './depositCertificate';
 export * from './retireCertificate';
 export * from './blockchainTransferCertificate';
+
+export * from './importCertificate';
