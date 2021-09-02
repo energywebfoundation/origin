@@ -1,5 +1,5 @@
 import { UploadedFile } from '@energyweb/origin-ui-core';
-import { fileUploadHandler } from '@energyweb/origin-ui-device-data';
+import { publicFileUploadHandler } from '@energyweb/origin-ui-device-data';
 import { DeviceImagesFormValues } from '@energyweb/origin-ui-device-logic';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,7 @@ export const useDeviceImagesUploadEffects = () => {
   const uploadText = t('file.upload.dropOrClick');
   const deviceImagesHeading = t('device.register.deviceImagesFormTitle');
 
-  const uploadFunction = fileUploadHandler;
+  const uploadFunction = publicFileUploadHandler;
   const onDeviceImageChange = (newValues: UploadedFile[]) =>
     setImageIds(newValues);
 

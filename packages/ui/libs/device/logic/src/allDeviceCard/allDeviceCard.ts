@@ -14,6 +14,7 @@ export const useSpecsForAllDeviceCard: TUseSpecsForAllDeviceCard = ({
   device,
   allTypes,
   clickHandler,
+  imageUrl,
 }) => {
   const { t } = useTranslation();
 
@@ -49,7 +50,7 @@ export const useSpecsForAllDeviceCard: TUseSpecsForAllDeviceCard = ({
   const cardProps: Omit<CardWithImageProps, 'content'> = {
     heading: device.name,
     hoverText: t('device.card.hoverText').toUpperCase(),
-    imageUrl: '',
+    imageUrl,
     fallbackIcon: deviceIcon,
     onActionClick: () => clickHandler(detailViewLink),
   };

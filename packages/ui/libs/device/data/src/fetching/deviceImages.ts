@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ComposedPublicDevice } from '../types';
-import { fileDownloadHandler } from './file';
+import { publicFileDownloadHandler } from './file';
 
-export const useDeviceImageUrl = (
+export const useDeviceImageUrls = (
   imageIds: ComposedPublicDevice['imageIds']
 ) => {
-  const [imageUrl, setImageUrl] = useState<string>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
-  const getAndSetImage = async (id: string) => {
-    const response = await fileDownloadHandler(id);
+  const getImageUrl = async (id: string) => {
+    const response = await publicFileDownloadHandler(id);
     const imageType = (response as any).headers['content-type'];
     const blob = new Blob(
       [Buffer.from((response.data as any).data as unknown as string)],
@@ -18,14 +18,21 @@ export const useDeviceImageUrl = (
     );
     const urlCreator = window.URL || window.webkitURL;
     const imageUrl = urlCreator.createObjectURL(blob);
-    setImageUrl(imageUrl);
+    return imageUrl;
+  };
+
+  const getAndSetAllImages = async (imageIds: string[]) => {
+    const receivedUrls = await Promise.all(
+      imageIds.map(async (id) => await getImageUrl(id))
+    );
+    setImageUrls(receivedUrls);
   };
 
   useEffect(() => {
     if (imageIds?.length > 0) {
-      getAndSetImage(imageIds[0]);
+      getAndSetAllImages(imageIds);
     }
   }, [imageIds]);
 
-  return imageUrl;
+  return imageUrls;
 };
