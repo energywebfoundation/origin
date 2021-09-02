@@ -32,7 +32,7 @@ export const ListItemHeader: FC<ListItemHeaderProps> = ({
         </div>
       </div>
       {importHandler && (
-        <Button color="primary" variant="outlined" onClick={importHandler}>
+        <Button color="primary" variant="contained" onClick={importHandler}>
           {t('device.import.importButton')}
         </Button>
       )}
