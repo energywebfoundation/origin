@@ -8,4 +8,5 @@ export * from './pendingDevices';
 export * from './regionsConfig';
 export * from './userAndAccount';
 export * from './file';
-export * from './deviceImage';
+export * from './deviceFirstImage';
+export * from './deviceImages';

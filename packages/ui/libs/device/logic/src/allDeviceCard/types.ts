@@ -10,6 +10,7 @@ type TUseSpecsForAllDeviceCardArgs = {
   device: ComposedPublicDevice;
   allTypes: CodeNameDTO[];
   clickHandler: (link: string) => void;
+  imageUrl: string;
 };
 
 type TUseSpecsForAllDeviceCardReturnType = {
