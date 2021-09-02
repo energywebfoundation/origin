@@ -135,6 +135,7 @@ export const useAppContainerEffects = () => {
     showRequests: userIsActive && userHasOrg && !userIsIssuer,
     showPending: userIsIssuer,
     showApproved: userIsIssuer,
+    showImport: true,
   };
   const certificateMenu = getCertificateMenu({
     t,
