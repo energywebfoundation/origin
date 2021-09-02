@@ -1,7 +1,5 @@
 import { Theme } from '@material-ui/core/styles';
-
 import { OriginUiThemeVariables, variables } from '../config/variables';
-import { createSliderStyleForOrigin } from './createSliderStyleForOrigin';
 import { createMaterialThemeForOrigin } from '../config/themeConfig';
 
 export interface IOriginStyleConfig {
@@ -22,8 +20,6 @@ export interface IOriginStyleConfig {
 const DEFAULT_COLOR = variables.primaryColor;
 
 export interface IOriginThemeConfiguration {
-  styleConfig: IOriginStyleConfig;
-  customSliderStyle: unknown;
   materialTheme: Theme;
 }
 
@@ -52,8 +48,6 @@ export const makeOriginUiConfig = (
   const DEFAULT_STYLE_CONFIG = createStyleConfig(variables);
 
   const DEFAULT_ORIGIN_CONFIGURATION: IOriginThemeConfiguration = {
-    styleConfig: DEFAULT_STYLE_CONFIG,
-    customSliderStyle: createSliderStyleForOrigin(DEFAULT_STYLE_CONFIG),
     materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, 'en'),
   };
 
@@ -61,21 +55,6 @@ export const makeOriginUiConfig = (
     ...DEFAULT_ORIGIN_CONFIGURATION,
     ...configuration,
   };
-
-  if (configuration.styleConfig) {
-    if (!configuration.materialTheme) {
-      newConfiguration.materialTheme = createMaterialThemeForOrigin(
-        configuration.styleConfig,
-        'en'
-      );
-    }
-
-    if (!configuration.customSliderStyle) {
-      newConfiguration.customSliderStyle = createSliderStyleForOrigin(
-        configuration.styleConfig
-      );
-    }
-  }
 
   return newConfiguration;
 };
