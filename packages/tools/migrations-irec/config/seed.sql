@@ -449,6 +449,7 @@ SELECT setval(
 /*
  DEVICE REGISTRIES
  */
+ /*
 INSERT INTO public."irec_device_registry_device" (
         "createdAt",
         "updatedAt",
@@ -665,6 +666,7 @@ VALUES (
         'METER003',
         'Biomass Facility description'
     );
+  */
 
 INSERT INTO public."irec_beneficiary" (
     "createdAt",

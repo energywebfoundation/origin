@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [11.0.3](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@11.0.2...@energyweb/utils-general@11.0.3) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ethers to v5.1.3 ([e7f4abb](https://github.com/energywebfoundation/origin/commit/e7f4abb8109303814e5727976732c528dcfa342d))
+* **deps:** update dependency ethers to v5.1.4 ([71f379b](https://github.com/energywebfoundation/origin/commit/71f379b020e8e6bcd1b4b6f117d27e9babc6f93c))
+* **deps:** update ethers ([785e3ef](https://github.com/energywebfoundation/origin/commit/785e3efbe95fbde1984d80d8a50293d123364803))
+* **deps:** update ethers ([d40f585](https://github.com/energywebfoundation/origin/commit/d40f585815ede90cc3ce1a901aa35bb3e9ebde3d))
+* **deps:** update ethers to v5.3.0 ([72c970e](https://github.com/energywebfoundation/origin/commit/72c970e69d220250e7d9d3f36ac653a3610d6825))
+* revert ethers versions to working and disable updates ([49753f0](https://github.com/energywebfoundation/origin/commit/49753f0aed3f5e32e861b7bbe1d4a85bd900dce9))
+
+
+
+
+
 ## [11.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/utils-general@11.0.1...@energyweb/utils-general@11.0.2) (2021-03-23)
 
 

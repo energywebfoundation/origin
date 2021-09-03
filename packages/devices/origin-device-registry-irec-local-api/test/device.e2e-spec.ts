@@ -24,7 +24,7 @@ describe('Device e2e tests', () => {
         deviceType: 'TC110',
         fuelType: 'ES100',
         countryCode: 'TH',
-        capacity: 1000,
+        capacity: 1000000,
         commissioningDate: new Date('2020-01-01'),
         registrationDate: new Date('2020-01-02'),
         address: '1 Wind Farm Avenue, Thailand',

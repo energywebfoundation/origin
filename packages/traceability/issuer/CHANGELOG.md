@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@3.2.0...@energyweb/issuer@4.0.0) (2021-08-30)
+
+
+### Bug Fixes
+
+* claim data number overflow ([d3b9f85](https://github.com/energywebfoundation/origin/commit/d3b9f857f3119dc89d8a915b6ee96b54137e980a))
+* **deps:** update dependency @ethersproject/abi to v5.2.0 ([297112c](https://github.com/energywebfoundation/origin/commit/297112ce22a2f5453e53b1da2e8873c810c2423b))
+* **deps:** update dependency @ethersproject/contracts to v5.2.0 ([c98515b](https://github.com/energywebfoundation/origin/commit/c98515b096c5071f1f6db49a9c5f78e13d8ed2f0))
+* **deps:** update dependency @ethersproject/providers to v5.0.24 ([87afd70](https://github.com/energywebfoundation/origin/commit/87afd707390d949ee6e768bb4e9de59fb86cf5ad))
+* **deps:** update dependency dotenv to v10 ([c1b44b7](https://github.com/energywebfoundation/origin/commit/c1b44b765b65c94129fb8be7131236de326fac45))
+* **deps:** update dependency dotenv to v9 ([6b97197](https://github.com/energywebfoundation/origin/commit/6b971972a5633ba0417c746256d28b96e582028d))
+* **deps:** update dependency dotenv to v9.0.2 ([711307a](https://github.com/energywebfoundation/origin/commit/711307a49b0a8a18879fcc80b6127708c2b0953d))
+* **deps:** update dependency ethers to v5.1.3 ([e7f4abb](https://github.com/energywebfoundation/origin/commit/e7f4abb8109303814e5727976732c528dcfa342d))
+* **deps:** update dependency ethers to v5.1.4 ([71f379b](https://github.com/energywebfoundation/origin/commit/71f379b020e8e6bcd1b4b6f117d27e9babc6f93c))
+* **deps:** update ethers ([785e3ef](https://github.com/energywebfoundation/origin/commit/785e3efbe95fbde1984d80d8a50293d123364803))
+* **deps:** update ethers ([d40f585](https://github.com/energywebfoundation/origin/commit/d40f585815ede90cc3ce1a901aa35bb3e9ebde3d))
+* **deps:** update ethers to v5.3.0 ([72c970e](https://github.com/energywebfoundation/origin/commit/72c970e69d220250e7d9d3f36ac653a3610d6825))
+* Fix and improve the batch issuance API + add test ([37484e5](https://github.com/energywebfoundation/origin/commit/37484e58d0d3ac5b4d08612b81c320c70a4f4b49))
+* **issuer:** allow setting amounts in batch transfer/claim ([3f263f2](https://github.com/energywebfoundation/origin/commit/3f263f2286384e67c54ecd31f5e5fcca3d5da1e9))
+* revert ethers versions to working and disable updates ([49753f0](https://github.com/energywebfoundation/origin/commit/49753f0aed3f5e32e861b7bbe1d4a85bd900dce9))
+* syncing a Certificate that was issued in a batch ([8665a4e](https://github.com/energywebfoundation/origin/commit/8665a4ef7a8d03388f4f6dd17c978298e5e54306))
+
+
+### Features
+
+* **issuer-irec-api:** import irec certificates ([30e6832](https://github.com/energywebfoundation/origin/commit/30e68323331021ce044c214ac2fde50669000f36))
+* **issuer:** add batch issuing facade ([4e7f321](https://github.com/energywebfoundation/origin/commit/4e7f321357e7442b13835d2c4a6c97d839b36d16))
+* **issuer:** add Certificate.metadata support ([ab37d58](https://github.com/energywebfoundation/origin/commit/ab37d58a92c49053cc67db1181ea40565fe04c82))
+* **issuer:** Add RegistryExtended contract ([124560b](https://github.com/energywebfoundation/origin/commit/124560b5abd014087b1c150cdd1a9d487ba2bce6))
+* **issuer:** Allow the Issuer contract to mint more tokens ([396f54e](https://github.com/energywebfoundation/origin/commit/396f54e43224c10ebf5d522ab4c0f59a89a8b07a))
+* **issuer:** Upgradeability tests ([8dc49f6](https://github.com/energywebfoundation/origin/commit/8dc49f6e377e85dc3559a859f8489a861df6a2a3))
+* **issuer:** Use OpenZeppelin ERC-1155 smart contracts + separate Private Issuer contract ([97ef554](https://github.com/energywebfoundation/origin/commit/97ef5543d1ab4755bdcc5bfd7055ed30a73a6cd0))
+
+
+### BREAKING CHANGES
+
+* **issuer:** There is a new set of Issuer and Registry smart contracts that is based on OpenZeppelin's ERC-1155 contracts and not backwards compatible with the previous smart contracts
+
+
+
+
+
 # [3.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@3.1.0...@energyweb/issuer@3.2.0) (2021-03-23)
 
 

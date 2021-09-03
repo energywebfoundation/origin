@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 
+import { UserService } from '@energyweb/origin-backend';
 import {
     ApproveCertificationRequestCommand,
     GetAllCertificationRequestsQuery,
@@ -19,7 +20,8 @@ export class CheckCertificationRequestStateTask {
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly eventBus: EventBus,
-        private readonly queryBus: QueryBus
+        private readonly queryBus: QueryBus,
+        private readonly userService: UserService
     ) {}
 
     @Cron(CronExpression.EVERY_MINUTE)
@@ -29,8 +31,9 @@ export class CheckCertificationRequestStateTask {
         );
 
         for (const certificateRequest of certificationRequests) {
+            const user = await this.userService.findOne(certificateRequest.userId);
             const irecIssue = await this.irecService.getIssueRequest(
-                certificateRequest.userId,
+                user.organization.id,
                 certificateRequest.irecIssueId
             );
 
