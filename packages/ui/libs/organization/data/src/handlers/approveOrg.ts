@@ -2,7 +2,6 @@ import { OrganizationStatus } from '@energyweb/origin-backend-core';
 import {
   FullOrganizationInfoDTO,
   getOrganizationControllerGetAllQueryKey,
-  useOrganizationControllerGetAll,
   useOrganizationControllerUpdate,
 } from '@energyweb/origin-backend-react-query-client';
 import {
@@ -11,13 +10,6 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
-
-export const useAllOrganizations = () => {
-  const { data: allOrganizations, isLoading } =
-    useOrganizationControllerGetAll();
-
-  return { allOrganizations, isLoading };
-};
 
 export const useOrgApproveHandler = () => {
   const { mutate } = useOrganizationControllerUpdate();
