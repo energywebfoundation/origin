@@ -35,7 +35,7 @@
         "ethers": "5.3.1",
         "formik": "2.2.9",
         "formik-material-ui": "3.0.1",
-        "history": "4.10.1",
+        "history": "5.0.1",
         "i18next": "20.6.0",
         "moment": "2.29.1",
         "react": "17.0.2",
