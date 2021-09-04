@@ -75,6 +75,7 @@ export interface GenericFormProps<FormValuesType> {
   validationMode?: keyof ValidationMode;
   loading?: boolean;
   acceptInitialValues?: boolean;
+  formDisabled?: boolean;
 }
 
 export type TGenericForm = <FormValuesType>(
