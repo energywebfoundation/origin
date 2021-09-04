@@ -21,6 +21,7 @@ import { useStyles } from './CardWithImage.styles';
 export interface CardWithImageProps {
   heading: string;
   content: ReactNode;
+  imageUrl: string;
   onActionClick?: () => void;
   fallbackIcon?: FC<React.SVGProps<SVGSVGElement>>;
   fallbackIconWrapperProps?: DetailedHTMLProps<
@@ -28,7 +29,6 @@ export interface CardWithImageProps {
     HTMLDivElement
   >;
   fallbackIconProps?: React.SVGProps<SVGSVGElement>;
-  imageUrl?: string;
   hoverText?: string;
   cardProps?: CardProps;
   cardActionAreaProps?: CardActionAreaProps;
@@ -65,13 +65,15 @@ export const CardWithImage: FC<CardWithImageProps> = ({
 }) => {
   const classes = useStyles();
   return (
-    <Card {...cardProps}>
+    <Card className={classes.card} {...cardProps}>
       <CardActionArea onClick={onActionClick} {...cardActionAreaProps}>
         {imageUrl ? (
           <ImageWithHoverText
             src={imageUrl}
             text={hoverText}
-            imageWrapperProps={imageWrapperProps}
+            imageWrapperProps={
+              imageWrapperProps || { className: classes.imageWrapper }
+            }
             imageProps={imageProps || { className: classes.image }}
             overlayProps={overlayProps}
             overlayTextProps={overlayTextProps}
@@ -80,7 +82,7 @@ export const CardWithImage: FC<CardWithImageProps> = ({
           <FallbackIcon
             icon={fallbackIcon}
             hoverText={hoverText}
-            iconProps={fallbackIconProps}
+            iconProps={fallbackIconProps || { className: classes.image }}
             wrapperProps={fallbackIconWrapperProps}
             overlayProps={overlayProps}
             overlayTextProps={overlayTextProps}
