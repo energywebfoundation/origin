@@ -30,7 +30,7 @@
         "@material-ui/pickers": "3.3.10",
         "@material-ui/styles": "4.11.4",
         "@react-google-maps/api": "2.2.0",
-        "axios": "0.21.1",
+        "axios": "0.21.3",
         "connected-react-router": "6.9.1",
         "ethers": "5.3.1",
         "formik": "2.2.9",
