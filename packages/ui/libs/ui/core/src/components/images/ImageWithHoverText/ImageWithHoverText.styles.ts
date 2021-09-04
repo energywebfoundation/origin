@@ -17,6 +17,7 @@ export const useStyles = makeStyles((theme) => ({
     '&:hover': {
       opacity: 0.8,
     },
+    height: 180,
   },
   text: {
     color: theme.palette.primary.contrastText,
