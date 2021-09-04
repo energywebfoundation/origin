@@ -43,7 +43,8 @@
         "invite": "Invite",
         "all": "All Organizations",
         "registerIRec": "Register I-REC",
-        "createBeneficiary": "Create Beneficiary"
+        "createBeneficiary": "Create Beneficiary",
+        "connectIRec": "Connect I-REC"
       },
       "account": {
         "sectionTitle": "Account",
@@ -258,6 +259,20 @@
           "approvedError": "Error while approving organization"
         }
       },
+      "connectIRec": {
+        "requestingIRecAccess": "Requesting I-REC API Access",
+        "orgInformation": "Organization Information",
+        "platformOrgId": "Platform Organization ID",
+        "iRecApiCredentials": "I-REC API Credentials",
+        "userName": "I-REC Username",
+        "apiKey": "API Token",
+        "clientId": "Client ID",
+        "clientSecret": "Client Secret",
+        "notifications": {
+          "connectSuccess": "I-REC connection has been successfully set",
+          "connectError": "Error while setting connection to I-REC"
+        }
+      },
       "modals": {
         "roleChanged": {
           "title": "Successfully joined {organizationName}",
@@ -308,6 +323,11 @@
       }
     },
     "device": {
+      "all": {
+        "noDeviceTitle": "There are no devices in the system",
+        "noDeviceDescription1": "Currently there no registered and approved devices.",
+        "noDeviceDescription2": "Once any of devices is created and approved it will be displayed here."
+      },
       "card": {
         "capacity": "Capacity (MW)",
         "age": "Age (Years)",
