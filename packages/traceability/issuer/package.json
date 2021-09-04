@@ -63,7 +63,7 @@
     "devDependencies": {
         "@openzeppelin/contracts": "4.3.1",
         "@openzeppelin/contracts-upgradeable": "4.3.1",
-        "@openzeppelin/truffle-upgrades": "1.9.0",
+        "@openzeppelin/truffle-upgrades": "1.9.1",
         "@typechain/ethers-v5": "7.0.1",
         "@types/chai": "4.2.15",
         "@types/dotenv": "6.1.1",
