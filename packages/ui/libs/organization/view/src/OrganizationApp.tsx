@@ -12,6 +12,7 @@ import {
   InvitePage,
   AllOrganizationsPage,
   CreateBeneficiaryPage,
+  ConnectIRecPage,
 } from './pages';
 
 interface OrganizationAppProps {
@@ -24,6 +25,7 @@ interface OrganizationAppProps {
     showAllOrgs: boolean;
     showRegisterIRec: boolean;
     showCreateBeneficiary: boolean;
+    showConnectIRec: boolean;
   };
 }
 
@@ -37,6 +39,7 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
     showAllOrgs,
     showRegisterIRec,
     showCreateBeneficiary,
+    showConnectIRec,
   } = routesConfig;
 
   return (
@@ -60,6 +63,9 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
             path="create-beneficiary"
             element={<CreateBeneficiaryPage />}
           />
+        )}
+        {showConnectIRec && (
+          <Route path="connect-irec" element={<ConnectIRecPage />} />
         )}
 
         <Route path="*" element={<PageNotFound />} />

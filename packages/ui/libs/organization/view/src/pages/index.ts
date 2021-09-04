@@ -6,3 +6,4 @@ export * from './MembersPage';
 export * from './InvitePage';
 export * from './AllOrganizationsPage';
 export * from './CreateBeneficiaryPage';
+export * from './ConnectIRecPage';
