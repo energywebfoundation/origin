@@ -6,27 +6,30 @@ import {
   CardContent,
   CardContentProps,
 } from '@material-ui/core';
-import { FallbackIconProps, FallbackIcon } from '../../icons';
+import { FallbackIcon } from '../../icons';
 import { useStyles } from './HorizontalCard.styles';
 
 export interface HorizontalCardProps {
-  onClick: () => void;
-  selected: boolean;
   header: React.ReactNode;
   content: React.ReactNode;
+  selected?: boolean;
+  onClick?: () => void;
   imageUrl?: string;
-  fallbackIcon?: FallbackIconProps['icon'];
-  fallbackIconProps?: FallbackIconProps['iconProps'];
-  fallbackIconWrapperProps?: FallbackIconProps['wrapperProps'];
+  fallbackIcon?: React.FC<React.SVGProps<SVGSVGElement>>;
+  fallbackIconProps?: React.SVGProps<SVGSVGElement>;
+  fallbackIconWrapperProps?: React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >;
   cardHeaderProps?: CardContentProps;
   cardContentProps?: CardContentProps;
 }
 
 export const HorizontalCard: React.FC<HorizontalCardProps> = ({
-  onClick,
-  selected,
   header,
   content,
+  onClick,
+  selected = false,
   imageUrl,
   fallbackIcon,
   fallbackIconProps,
