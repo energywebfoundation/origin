@@ -48,7 +48,7 @@
         "@unicef/material-ui-currency-textfield": "0.8.6",
         "@vmw/queue-for-redux-saga": "0.3.1",
         "axios": "0.21.3",
-        "chart.js": "2.9.4",
+        "chart.js": "3.5.1",
         "clsx": "1.1.1",
         "connected-react-router": "6.9.1",
         "ethers": "5.3.1",
