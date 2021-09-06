@@ -33,7 +33,7 @@
         "@energyweb/origin-device-registry-irec-form-api-client": "1.0.3",
         "@energyweb/utils-general": "11.0.3",
         "@types/moment-timezone": "0.5.13",
-        "axios": "0.21.1",
+        "axios": "0.21.3",
         "bn.js": "5.2.0",
         "body-parser": "1.19.0",
         "commander": "6.2.1",
