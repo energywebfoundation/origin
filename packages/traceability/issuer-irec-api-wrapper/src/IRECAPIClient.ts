@@ -7,7 +7,6 @@ import { validateOrReject } from 'class-validator';
 import FormData from 'form-data';
 import { ReadStream } from 'fs';
 import qs from 'qs';
-import EventEmitter from 'events';
 
 import {
     Account,
@@ -33,19 +32,20 @@ export type AccessTokens = {
     refreshToken: string;
 };
 
-export declare interface IRECAPIClient {
-    on(event: 'tokensRefreshed', listener: (accessTokens: AccessTokens) => void): this;
-}
-
-export class IRECAPIClient extends EventEmitter {
+export class IRECAPIClient {
     private config: AxiosRequestConfig;
 
     private interceptorId = NaN;
 
     private axiosInstance: AxiosInstance;
 
-    public constructor(private readonly endPointUrl: string, private accessTokens?: AccessTokens) {
-        super();
+    public constructor(
+        private readonly endPointUrl: string,
+        private clientId: string,
+        private clientSecret: string,
+        private onTokensRefreshed?: (accessTokens: AccessTokens) => any,
+        private accessTokens?: AccessTokens
+    ) {
         this.axiosInstance = axios.create({
             baseURL: endPointUrl,
             timeout: 30000
@@ -53,14 +53,12 @@ export class IRECAPIClient extends EventEmitter {
 
         this.enableInterceptor();
         this.enableErrorHandler();
+        if (accessTokens) {
+            this.applyAccessToken(accessTokens.accessToken);
+        }
     }
 
-    public async login(
-        userName: string,
-        password: string,
-        clientId: string,
-        clientSecret: string
-    ): Promise<AccessTokens> {
+    public async login(userName: string, password: string): Promise<AccessTokens> {
         const url = `${this.endPointUrl}/api/token`;
 
         this.disableInterceptor();
@@ -74,8 +72,8 @@ export class IRECAPIClient extends EventEmitter {
                 grant_type: 'password',
                 username: userName,
                 password,
-                client_id: clientId,
-                client_secret: clientSecret,
+                client_id: this.clientId,
+                client_secret: this.clientSecret,
                 scope: ''
             })
         );
@@ -509,9 +507,13 @@ export class IRECAPIClient extends EventEmitter {
             refreshToken
         };
 
+        this.applyAccessToken(accessToken);
+    }
+
+    private applyAccessToken(accessToken: string) {
         this.config = {
             headers: {
-                Authorization: `Bearer ${this.accessTokens.accessToken}`
+                Authorization: `Bearer ${accessToken}`
             }
         };
     }
@@ -528,7 +530,9 @@ export class IRECAPIClient extends EventEmitter {
             url,
             qs.stringify({
                 grant_type: 'refresh_token',
-                refresh_token: this.accessTokens.refreshToken
+                refresh_token: this.accessTokens.refreshToken,
+                client_id: this.clientId,
+                client_secret: this.clientSecret
             })
         );
         this.enableInterceptor();
@@ -538,7 +542,8 @@ export class IRECAPIClient extends EventEmitter {
             response.data.refresh_token,
             response.data.expires_in
         );
-        this.emit('tokensRefreshed', this.accessTokens);
+
+        await this.onTokensRefreshed(this.accessTokens);
 
         return this.accessTokens;
     }

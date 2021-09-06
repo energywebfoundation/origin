@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-irec-api-client",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "Client library interacting with the Issuer IREC API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-irec-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -23,21 +23,21 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "axios": "0.21.1"
+        "axios": "0.21.3"
     },
     "devDependencies": {
-        "typescript": "4.3.5",
-        "@energyweb/issuer-irec-api": "0.1.0",
+        "@energyweb/issuer-irec-api": "0.2.0",
         "@nestjs/swagger": "4.8.2",
         "@nestjs/testing": "7.6.18",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.3.10",
+        "@openapitools/openapi-generator-cli": "2.4.1",
+        "@types/mocha": "9.0.0",
+        "@types/node": "14.17.14",
         "json-to-pretty-yaml": "1.2.2",
+        "mocha": "9.1.1",
         "prettier": "2.3.2",
         "ts-node": "9.1.1",
-        "@types/mocha": "9.0.0",
-        "@types/node": "14.17.9",
-        "mocha": "9.0.3"
+        "typescript": "4.4.2"
     },
     "publishConfig": {
         "access": "public",

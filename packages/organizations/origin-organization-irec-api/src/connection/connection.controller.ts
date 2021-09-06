@@ -15,8 +15,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateConnectionDTO } from '../irec';
-import { ConnectionDTO, ShortConnectionDTO } from './dto';
-import { CreateConnectionCommand, GetConnectionCommand } from './commands';
+import { AccountDTO, ConnectionDTO, ShortConnectionDTO } from './dto';
+import { CreateConnectionCommand, GetAccountsCommand, GetConnectionCommand } from './commands';
 
 @ApiTags('irec-connection')
 @ApiBearerAuth('access-token')
@@ -44,20 +44,21 @@ export class ConnectionController {
     @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [ShortConnectionDTO],
+        type: ShortConnectionDTO,
         description: 'Get a IREC connection info'
     })
-    public async getMyConnection(
-        @UserDecorator() user: ILoggedInUser
-    ): Promise<ShortConnectionDTO> {
-        const connectionData: ConnectionDTO = await this.commandBus.execute(
-            new GetConnectionCommand(user)
-        );
-        return connectionData
-            ? {
-                  expiryDate: connectionData.expiryDate,
-                  registration: connectionData.registration
-              }
-            : null;
+    public async getMyConnection(@UserDecorator() user: ILoggedInUser): Promise<ConnectionDTO> {
+        return this.commandBus.execute(new GetConnectionCommand(user));
+    }
+
+    @Get('/accounts')
+    @UseGuards(AuthGuard())
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [AccountDTO],
+        description: 'Get a IREC user accounts'
+    })
+    public async getMyAccounts(@UserDecorator() user: ILoggedInUser): Promise<[AccountDTO]> {
+        return this.commandBus.execute(new GetAccountsCommand(user));
     }
 }

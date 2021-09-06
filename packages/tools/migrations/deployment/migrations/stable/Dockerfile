@@ -2,15 +2,16 @@ FROM energyweb/origin-backend-app:latest
 
 RUN apk --no-cache add curl
 
-RUN mkdir /var/migration-config
-COPY config/* /var/migration-config/
+RUN mkdir -p /var/deployment
+COPY ./ /var/deployment
 
-WORKDIR /usr/local/share/.config/yarn/global/node_modules/\@energyweb/
+WORKDIR /var/deployment/packages/
 
-CMD ["/bin/bash","-c", "origin-backend-app/node_modules/.bin/typeorm migration:run --config exchange/dist/js/ormconfig.js && \ 
-                        origin-backend-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \ 
-                        origin-backend-app/node_modules/.bin/typeorm migration:run --config origin-organization-irec-api/dist/js/ormconfig.js && \ 
-                        origin-backend-app/node_modules/.bin/typeorm migration:run --config issuer-api/dist/js/ormconfig.js && \ 
-                        origin-backend-app/node_modules/.bin/typeorm migration:run --config origin-device-registry-api/dist/js/ormconfig.js && \
-                        migrations/bin/migrations -c /var/migration-config/demo-config.json -s /var/migration-config/seed.sql && \
-                        origin-backend-app"]
+CMD ["/bin/bash","-c", "apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config trade/exchange/dist/js/ormconfig.js && \
+                        apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \
+                        apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config organizations/origin-organization-irec-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-api/dist/js/ormconfig.js && \
+                        cd tools/migrations/bin && \
+                        ./migrations -c /var/deployment/config/demo-config.json -s /var/deployment/config/seed.sql && \
+                        cd - && \
+                        tools/migrations/node_modules/.bin/origin-backend-app"]

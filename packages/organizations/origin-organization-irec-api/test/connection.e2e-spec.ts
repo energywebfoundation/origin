@@ -84,6 +84,7 @@ describe('I-REC Registration tests', () => {
             })
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
+
         expect(connection.registration.id).to.equal(registration.id);
         expect(connection.accessToken).to.be.a('string');
         expect(connection.refreshToken).to.be.a('string');
@@ -97,5 +98,19 @@ describe('I-REC Registration tests', () => {
         expect(connection2.refreshToken).to.be.undefined;
         expect(String(connection2.expiryDate)).to.equal(String(connection.expiryDate));
         expect(connection2.registration.id).to.equal(connection.registration.id);
+        const { body: accounts }: { body: any[] } = await test
+            .get('/irec/connection/accounts')
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+
+        accounts.forEach((account) => {
+            expect(account.code).to.be.a('string');
+            expect(account.type).to.be.a('string');
+            expect(account.details.name).to.be.a('string');
+            expect(account.details.notes).to.be.a('string');
+            expect(account.details.private).to.be.a('boolean');
+            expect(account.details.restricted).to.be.a('boolean');
+            expect(account.details.active).to.be.a('boolean');
+        });
     });
 });

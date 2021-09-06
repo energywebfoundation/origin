@@ -3,6 +3,64 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [11.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@10.0.1...@energyweb/origin-backend@11.0.0) (2021-08-30)
+
+
+### Bug Fixes
+
+* **db-schema:** incorrect Configuration.id definition causing unnecessary changes in typeorm generated migrations ([cbb1ae1](https://github.com/energywebfoundation/origin/commit/cbb1ae13b9c41b9fcad509d2ad42fdc464bd3d4d))
+* **deps:** update dependency @nestjs/config to v1 ([5226f56](https://github.com/energywebfoundation/origin/commit/5226f56898771fc093590bc0f337296496e945ba))
+* **deps:** update dependency @nestjs/config to v1.0.1 ([3463c6f](https://github.com/energywebfoundation/origin/commit/3463c6f197398c159e88b078a9b8581c5f450429))
+* **deps:** update dependency @nestjs/jwt to v8 ([88eef7c](https://github.com/energywebfoundation/origin/commit/88eef7c7a06c3865c21d9976361dee2cf4109ec4))
+* **deps:** update dependency @nestjs/passport to v7.1.6 ([e6c99f4](https://github.com/energywebfoundation/origin/commit/e6c99f47c789a30ba3c73969854ebe956838b3be))
+* **deps:** update dependency @nestjs/swagger to v4.8.1 ([daa023b](https://github.com/energywebfoundation/origin/commit/daa023bdcd20b78aa3dd8af966c8127b57b9d9ad))
+* **deps:** update dependency @nestjs/swagger to v4.8.2 ([d17e433](https://github.com/energywebfoundation/origin/commit/d17e433f1fa2a07ea50bd26b423652670436c6ae))
+* **deps:** update dependency dotenv to v10 ([c1b44b7](https://github.com/energywebfoundation/origin/commit/c1b44b765b65c94129fb8be7131236de326fac45))
+* **deps:** update dependency dotenv to v9 ([6b97197](https://github.com/energywebfoundation/origin/commit/6b971972a5633ba0417c746256d28b96e582028d))
+* **deps:** update dependency dotenv to v9.0.2 ([711307a](https://github.com/energywebfoundation/origin/commit/711307a49b0a8a18879fcc80b6127708c2b0953d))
+* **deps:** update dependency ethers to v5.1.3 ([e7f4abb](https://github.com/energywebfoundation/origin/commit/e7f4abb8109303814e5727976732c528dcfa342d))
+* **deps:** update dependency ethers to v5.1.4 ([71f379b](https://github.com/energywebfoundation/origin/commit/71f379b020e8e6bcd1b4b6f117d27e9babc6f93c))
+* **deps:** update dependency multer to v1.4.3 ([95ab7fa](https://github.com/energywebfoundation/origin/commit/95ab7faff989cb7b6bea21acf47497ae3a659471))
+* **deps:** update dependency polly-js to v1.8.2 ([af8a3db](https://github.com/energywebfoundation/origin/commit/af8a3dbb75977dadc182f2f2b3595d91766f967f))
+* **deps:** update dependency rxjs to v6.6.7 ([5adc1e2](https://github.com/energywebfoundation/origin/commit/5adc1e219b360b4e3a28e037a1461f5719329cfd))
+* **deps:** update dependency typeorm to v0.2.32 ([e2f606e](https://github.com/energywebfoundation/origin/commit/e2f606ee89aec9a5db84138b8df369a0561e08b1))
+* **deps:** update dependency typeorm to v0.2.34 ([8c6f39c](https://github.com/energywebfoundation/origin/commit/8c6f39cffcce4cc3d6c3b65daa1a1a883e41aaac))
+* **deps:** update ethers ([785e3ef](https://github.com/energywebfoundation/origin/commit/785e3efbe95fbde1984d80d8a50293d123364803))
+* **deps:** update ethers ([d40f585](https://github.com/energywebfoundation/origin/commit/d40f585815ede90cc3ce1a901aa35bb3e9ebde3d))
+* **deps:** update ethers to v5.3.0 ([72c970e](https://github.com/energywebfoundation/origin/commit/72c970e69d220250e7d9d3f36ac653a3610d6825))
+* **deps:** update nest monorepo to v7.6.17 ([ecc84c0](https://github.com/energywebfoundation/origin/commit/ecc84c0ce3d2d2e47ebe7c667d53adbc6fdd9f6b))
+* **deps:** update nest monorepo to v7.6.18 ([6835926](https://github.com/energywebfoundation/origin/commit/6835926dff7764d275b2006084e344c37948b7fa))
+* **origin-backend:** documents ownership check ([a3b9f0e](https://github.com/energywebfoundation/origin/commit/a3b9f0ef630f6396aa2d0703417db5d984f59206))
+* **origin-backend:** throw when platform admin/org doesn't exist ([0dfb34d](https://github.com/energywebfoundation/origin/commit/0dfb34d8a4e9722dc62192e3c3e3560bb1afc106))
+* revert ethers versions to working and disable updates ([49753f0](https://github.com/energywebfoundation/origin/commit/49753f0aed3f5e32e861b7bbe1d4a85bd900dce9))
+
+
+### chore
+
+* **origin-backend:** Move blockchain account from User to Organization entity + allow only admin to change it ([0fd35ce](https://github.com/energywebfoundation/origin/commit/0fd35ce471dc6c886af26d2fa0a5b0151cdbb08f))
+
+
+### Features
+
+* irec certificates handling ([fc0cb5e](https://github.com/energywebfoundation/origin/commit/fc0cb5e50c4acff4e16becf1d8d02ff628050c93))
+* **issuer-irec-api:** remade irec certification request entity, fixed irec app launch issues ([47df127](https://github.com/energywebfoundation/origin/commit/47df127b88db05ef1154a2d7c69f54614f7188a1))
+* **origin-backend:** remove organization.beneficiaryId column from db ([681f7b5](https://github.com/energywebfoundation/origin/commit/681f7b5292ed62ce559210f70e2b501af782a206))
+* **origin-organization-irec-api:** added beneficiary creation on org creation ([309c43a](https://github.com/energywebfoundation/origin/commit/309c43acca868157a0aad7885d3b01942b86a383))
+* **origin-organization-irec-api:** added beneficiary creation on org creation ([5d2719c](https://github.com/energywebfoundation/origin/commit/5d2719c4eea8e0b0f36100700c87b042f6a055c0))
+* **origin-organization-irec-api:** added beneficiary module with cqrs handlers ([2379ab1](https://github.com/energywebfoundation/origin/commit/2379ab104e1588a5ec71b4e7f6f91b40cefcaac5))
+* **origin-organization-irec-api:** beneficiary API ([4f6c0db](https://github.com/energywebfoundation/origin/commit/4f6c0dbf8e6466467c9c1dcb379c3b3ab934ed3f))
+* **origin-organization-irec-api:** fixed build ([6c946dd](https://github.com/energywebfoundation/origin/commit/6c946dd889f63864e7c76ff0088eeabec9813950))
+* **origin-organization-irec-api:** rewrote beneficiaries creation ([038d79e](https://github.com/energywebfoundation/origin/commit/038d79ee458c7fba2b893180c4598fb0bb82fe36))
+
+
+### BREAKING CHANGES
+
+* **origin-backend:** user.blockchainAccountAddress moved to organization
+
+
+
+
+
 ## [10.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@10.0.0...@energyweb/origin-backend@10.0.1) (2021-03-23)
 
 

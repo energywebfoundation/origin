@@ -97,8 +97,11 @@ export class IrecMockService implements IIrecService {
         return {
             accessToken: 'access-token',
             refreshToken: 'refresh-token',
+            clientId: 'oauth client id',
+            clientSecret: 'oauth client secret',
             expiryDate: new Date(),
             userName: 'irecUser',
+            active: true,
             registration: {
                 id: '123',
                 owner: '234',
@@ -351,7 +354,7 @@ export class IrecMockService implements IIrecService {
         const device = await this.getDevice(user, code);
 
         if (device.status !== DeviceState.InProgress) {
-            throw new Error('To approve IREC device its state have to be In-Progress');
+            throw new Error('To approve IREC device its state has to be In-Progress');
         }
 
         device.status = DeviceState.Approved;

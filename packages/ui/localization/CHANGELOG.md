@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.15.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.14.0...@energyweb/localization@0.15.0) (2021-08-30)
+
+
+### Bug Fixes
+
+* **localization:** translations fixes ([91e63df](https://github.com/energywebfoundation/origin/commit/91e63df068853eddc0ac234f17c9a2a66d67cbda))
+
+
+### Features
+
+* **localization:** modal message added ([13b1966](https://github.com/energywebfoundation/origin/commit/13b196603da1340e42806920bbc085dc4a408c11))
+* **origin-ui-irec-core:** get devices to import ([3d03739](https://github.com/energywebfoundation/origin/commit/3d0373965167208dd3d09125ebd88bd57c1bf364))
+
+
+
+
+
 # [0.14.0](https://github.com/energywebfoundation/origin/compare/@energyweb/localization@0.13.0...@energyweb/localization@0.14.0) (2021-03-23)
 
 

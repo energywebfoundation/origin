@@ -4,7 +4,7 @@ $linkHoverColor: lighten($mainBackgroundColor, 10%);
 $headerBgColor: lighten($mainBackgroundColor, 5%);
 
 .Header {
-    height: 120px;
+    height: 90px;
     width: 100%;
     z-index: 2;
     background: $headerBgColor;

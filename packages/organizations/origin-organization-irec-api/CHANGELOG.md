@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.4.0...@energyweb/origin-organization-irec-api@1.5.0) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1 ([5226f56](https://github.com/energywebfoundation/origin/commit/5226f56898771fc093590bc0f337296496e945ba))
+* **deps:** update dependency @nestjs/config to v1.0.1 ([3463c6f](https://github.com/energywebfoundation/origin/commit/3463c6f197398c159e88b078a9b8581c5f450429))
+* **deps:** update dependency @nestjs/passport to v7.1.6 ([e6c99f4](https://github.com/energywebfoundation/origin/commit/e6c99f47c789a30ba3c73969854ebe956838b3be))
+* **deps:** update dependency @nestjs/schedule to v1 ([2817ea0](https://github.com/energywebfoundation/origin/commit/2817ea077d2e2c9cd5eb96f5120c204e5b509cb6))
+* **deps:** update dependency @nestjs/schedule to v1.0.1 ([43e71b4](https://github.com/energywebfoundation/origin/commit/43e71b464331fb32c38a0937c17aa297e6d4e363))
+* **deps:** update dependency @nestjs/swagger to v4.8.1 ([daa023b](https://github.com/energywebfoundation/origin/commit/daa023bdcd20b78aa3dd8af966c8127b57b9d9ad))
+* **deps:** update dependency @nestjs/swagger to v4.8.2 ([d17e433](https://github.com/energywebfoundation/origin/commit/d17e433f1fa2a07ea50bd26b423652670436c6ae))
+* **deps:** update dependency rxjs to v6.6.7 ([5adc1e2](https://github.com/energywebfoundation/origin/commit/5adc1e219b360b4e3a28e037a1461f5719329cfd))
+* **deps:** update dependency typeorm to v0.2.32 ([e2f606e](https://github.com/energywebfoundation/origin/commit/e2f606ee89aec9a5db84138b8df369a0561e08b1))
+* **deps:** update dependency typeorm to v0.2.34 ([8c6f39c](https://github.com/energywebfoundation/origin/commit/8c6f39cffcce4cc3d6c3b65daa1a1a883e41aaac))
+* **deps:** update nest monorepo to v7.6.17 ([ecc84c0](https://github.com/energywebfoundation/origin/commit/ecc84c0ce3d2d2e47ebe7c667d53adbc6fdd9f6b))
+* **deps:** update nest monorepo to v7.6.18 ([6835926](https://github.com/energywebfoundation/origin/commit/6835926dff7764d275b2006084e344c37948b7fa))
+* **issuer-irec-api-wrapper:** changed constructor signature to run onTokensRefreshed handler synchronously ([a3ef564](https://github.com/energywebfoundation/origin/commit/a3ef5644d425c460765bb07c360b507bdb850aad))
+* **issuer-irec-api-wrapper:** hopefully fixed irec auth token refresh ([d05441a](https://github.com/energywebfoundation/origin/commit/d05441aaf83506dd3859e12ae955346fd113beb2))
+* **issuer-irec-api:** fix check certification request state task ([9c601b8](https://github.com/energywebfoundation/origin/commit/9c601b8b8a589713317e5663c38696d1cdcf54c4))
+* **issuer-irec-api:** several fixes ([0b71973](https://github.com/energywebfoundation/origin/commit/0b7197317be96dbc21c57ef555793b19e60eef05))
+* **origin-device-registry-irec-local-api:** cast WH to MWH for IREC device creation ([311081b](https://github.com/energywebfoundation/origin/commit/311081ba538e84dc397446c38e3b077b9c009fe4))
+* **origin-device-registry-irec-local-api:** fixed tokens refresh ([299280d](https://github.com/energywebfoundation/origin/commit/299280da4b31782bd7649430f3ccba72cb74d5c8))
+* revert ethers versions to working and disable updates ([49753f0](https://github.com/energywebfoundation/origin/commit/49753f0aed3f5e32e861b7bbe1d4a85bd900dce9))
+
+
+### Features
+
+* irec certificates handling ([fc0cb5e](https://github.com/energywebfoundation/origin/commit/fc0cb5e50c4acff4e16becf1d8d02ff628050c93))
+* **irec-issuer-api:** added irec certificate dto ([92f2dcd](https://github.com/energywebfoundation/origin/commit/92f2dcd133c094f2440b06b426fb679cd192acd7))
+* **irec-issuer-api:** added irec certificate dto ([2bfa9f7](https://github.com/energywebfoundation/origin/commit/2bfa9f759fca55fd9a1c0851a13091c0f850fff7))
+* **issuer-irec-api:** added irec certificate transfer ([9bdb3c4](https://github.com/energywebfoundation/origin/commit/9bdb3c4d98b6fd3822bc5fb6ddcc287f7c81723b))
+* **issuer-irec-api:** added revoke handler and cron ([a42e9f9](https://github.com/energywebfoundation/origin/commit/a42e9f90d3c4f481001cf026487d48cbf6ec1c77))
+* **issuer-irec-api:** import irec certificates ([30e6832](https://github.com/energywebfoundation/origin/commit/30e68323331021ce044c214ac2fde50669000f36))
+* **issuer-irec-api:** import test update ([a5cbd09](https://github.com/energywebfoundation/origin/commit/a5cbd09baad7773747e9e29073bffaee433851b7))
+* **issuer-irec-api:** list certificates ready to import ([bab0eb9](https://github.com/energywebfoundation/origin/commit/bab0eb954652c47bc101f71261bf0193f313e312))
+* **origin-device-registry-irec-local-api:** added approve/reject actions to irec devices ([38c1943](https://github.com/energywebfoundation/origin/commit/38c1943ceb23753d724cc4673445db6c7dd04780))
+* **origin-device-registry-irec-local-api:** added approve/reject endpoint ([eaa6e96](https://github.com/energywebfoundation/origin/commit/eaa6e9692dd88e9cb926c6986216301407ef8e7d))
+* **origin-device-registry-irec-local-api:** cron jobs refactoring ([a73fcd2](https://github.com/energywebfoundation/origin/commit/a73fcd269aea2569e369f6955eea65c82ef58943))
+* **origin-device-registry-irec-local-api:** default account for irec device creation is platform acc now ([956424d](https://github.com/energywebfoundation/origin/commit/956424deb7168514a064803887e24d6042dbc89a))
+* **origin-device-registry-irec-local-api:** irec service refactoring ([19b0e61](https://github.com/energywebfoundation/origin/commit/19b0e6182dc07da07dc37b03d7683236a4a9ab6f))
+* **origin-device-registry-irec-local-api:** irec service refactoring, mock service separated ([ca1d53c](https://github.com/energywebfoundation/origin/commit/ca1d53c81f28ac6db3d3e778bf89e66517e68fd2))
+* **origin-organization-irec-api:** Add redeem function to IREC service ([67bfd1b](https://github.com/energywebfoundation/origin/commit/67bfd1b4b472a05a5583982d72fbe187295279b1))
+* **origin-organization-irec-api:** added access token apply method ([3b857dd](https://github.com/energywebfoundation/origin/commit/3b857ddfdb31e7b009950af3121d3b8141fcc204))
+* **origin-organization-irec-api:** added active/attempts fields to connection entity ([4ef6dff](https://github.com/energywebfoundation/origin/commit/4ef6dffb5ef1273bcfcb891511c7bf0fd4037e02))
+* **origin-organization-irec-api:** added beneficiaries controller ([92d85be](https://github.com/energywebfoundation/origin/commit/92d85bee9269f2c97e6a2f793277968afe10002c))
+* **origin-organization-irec-api:** added beneficiaries controller ([a114f1f](https://github.com/energywebfoundation/origin/commit/a114f1f12d845d30370a68ef49f240247797b0c1))
+* **origin-organization-irec-api:** added beneficiaries migration ([2578bb5](https://github.com/energywebfoundation/origin/commit/2578bb5c559d8954fc07b8044bd4e1ede515f3f5))
+* **origin-organization-irec-api:** added beneficiary creation on org creation ([309c43a](https://github.com/energywebfoundation/origin/commit/309c43acca868157a0aad7885d3b01942b86a383))
+* **origin-organization-irec-api:** added beneficiary creation on org creation ([5d2719c](https://github.com/energywebfoundation/origin/commit/5d2719c4eea8e0b0f36100700c87b042f6a055c0))
+* **origin-organization-irec-api:** added beneficiary module with cqrs handlers ([2379ab1](https://github.com/energywebfoundation/origin/commit/2379ab104e1588a5ec71b4e7f6f91b40cefcaac5))
+* **origin-organization-irec-api:** added create local beneficiary endpoint and changed list beneficiaries endpoint ([7f2a75e](https://github.com/energywebfoundation/origin/commit/7f2a75e596e5f5c55b350cb53e225e4cdfbd6691))
+* **origin-organization-irec-api:** added irec module to organization package ([e72cdd2](https://github.com/energywebfoundation/origin/commit/e72cdd2ec0f4c4a0ef175b1bf09b4bb757bf52cb))
+* **origin-organization-irec-api:** added userName to connection ([bc5eb6d](https://github.com/energywebfoundation/origin/commit/bc5eb6df464baeaa6ff50948ce8e29ffe577ef17))
+* **origin-organization-irec-api:** beneficiary API ([4f6c0db](https://github.com/energywebfoundation/origin/commit/4f6c0dbf8e6466467c9c1dcb379c3b3ab934ed3f))
+* **origin-organization-irec-api:** fixed build ([6c946dd](https://github.com/energywebfoundation/origin/commit/6c946dd889f63864e7c76ff0088eeabec9813950))
+* **origin-organization-irec-api:** list certificates test fix ([797f4d7](https://github.com/energywebfoundation/origin/commit/797f4d70026baaf5ce98db2126f026c2c0e2a55b))
+* **origin-organization-irec-api:** rewrote beneficiaries creation ([038d79e](https://github.com/energywebfoundation/origin/commit/038d79ee458c7fba2b893180c4598fb0bb82fe36))
+* **origin-organization-irec-api:** use irec module in connection module ([a74f2bc](https://github.com/energywebfoundation/origin/commit/a74f2bc294965a1d408d46a3e58bab1b845dfc95))
+* **origin-organization-irec-api:** user can recreate irec connection now ([143a6ba](https://github.com/energywebfoundation/origin/commit/143a6ba87b7fe575e9d804b99657c46c788b5840))
+
+
+
+
+
 # [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.3.0...@energyweb/origin-organization-irec-api@1.4.0) (2021-03-23)
 
 
