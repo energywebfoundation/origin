@@ -62,7 +62,7 @@ describe('I-REC Registration tests', () => {
     });
 
     it('should create and return new IREC connection', async () => {
-        const { body: registration } = await test
+        await test
             .post('/irec/registration')
             .send(registrationForm)
             .set({ 'test-user': TestUser.OrganizationAdmin })
@@ -85,19 +85,19 @@ describe('I-REC Registration tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
 
-        expect(connection.registration.id).to.equal(registration.id);
-        expect(connection.accessToken).to.be.a('string');
-        expect(connection.refreshToken).to.be.a('string');
+        expect(connection.accessToken).to.be.undefined;
+        expect(connection.refreshToken).to.be.undefined;
         expect(connection.expiryDate).to.be.a('string');
 
         const { body: connection2 } = await test
             .get('/irec/connection')
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.OK);
+
         expect(connection2.accessToken).to.be.undefined;
         expect(connection2.refreshToken).to.be.undefined;
         expect(String(connection2.expiryDate)).to.equal(String(connection.expiryDate));
-        expect(connection2.registration.id).to.equal(connection.registration.id);
+
         const { body: accounts }: { body: any[] } = await test
             .get('/irec/connection/accounts')
             .set({ 'test-user': TestUser.OrganizationAdmin })

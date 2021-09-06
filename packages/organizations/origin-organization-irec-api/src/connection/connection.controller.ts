@@ -28,15 +28,15 @@ export class ConnectionController {
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
-    @ApiBody({ type: CreateConnectionDTO })
+    @ApiBody({ type: ShortConnectionDTO })
     @ApiCreatedResponse({
-        type: ConnectionDTO,
+        type: ShortConnectionDTO,
         description: 'Creates a connection to I-REC'
     })
     public async register(
         @UserDecorator() user: ILoggedInUser,
         @Body() credentials: CreateConnectionDTO
-    ): Promise<ConnectionDTO> {
+    ): Promise<ShortConnectionDTO> {
         return this.commandBus.execute(new CreateConnectionCommand(user, credentials));
     }
 
@@ -47,8 +47,14 @@ export class ConnectionController {
         type: ShortConnectionDTO,
         description: 'Get a IREC connection info'
     })
-    public async getMyConnection(@UserDecorator() user: ILoggedInUser): Promise<ConnectionDTO> {
-        return this.commandBus.execute(new GetConnectionCommand(user));
+    public async getMyConnection(
+        @UserDecorator() user: ILoggedInUser
+    ): Promise<ShortConnectionDTO> {
+        const connectionData: ConnectionDTO = await this.commandBus.execute(
+            new GetConnectionCommand(user)
+        );
+
+        return ShortConnectionDTO.sanitize(connectionData);
     }
 
     @Get('/accounts')
