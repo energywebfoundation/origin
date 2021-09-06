@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import {
   getOrganizationMenu,
+  IRECAccountType,
   TGetOrganizationMenuArgs,
 } from '@energyweb/origin-ui-organization-logic';
 import {
@@ -23,14 +24,13 @@ import {
   TGetAdminMenuArgs,
   useTopbarButtonList,
 } from '@energyweb/origin-ui-user-logic';
-
+import {
+  useInvitationControllerGetInvitations,
+  useConnectionControllerGetMyConnection,
+} from '@energyweb/origin-organization-irec-api-react-query-client';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
 import { useActiveMenuTab, useAxiosDefaults } from '../hooks';
-import {
-  useInvitationControllerGetInvitations,
-  useRegistrationControllerGetRegistrations,
-} from '@energyweb/origin-organization-irec-api-react-query-client';
 
 export type RoutesConfig = {
   orgRoutes: Omit<TGetOrganizationMenuArgs, 't' | 'isOpen' | 'showSection'>;
@@ -63,10 +63,12 @@ export const useAppContainerEffects = () => {
     useInvitationControllerGetInvitations({
       enabled: isAuthenticated,
     });
-  const { data: iRecOrg, isLoading: isIRecOrgLoading } =
-    useRegistrationControllerGetRegistrations({
+  const { data: iRecConnection, isLoading: isIRecOrgLoading } =
+    useConnectionControllerGetMyConnection({
       enabled: isAuthenticated && Boolean(user?.organization?.id),
     });
+  const iRecOrg = iRecConnection?.registration;
+  const iRecConnectionActive = iRecConnection?.active;
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsDeviceManagerOrAdmin = isRole(
@@ -97,9 +99,9 @@ export const useAppContainerEffects = () => {
         : !!userInvitations && userInvitations.length > 0,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
-    showRegisterIRec:
-      userHasOrg && userIsOrgAdmin && iRecOrg && iRecOrg.length === 0,
+    showRegisterIRec: userHasOrg && userIsOrgAdmin && Boolean(iRecOrg),
     showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
+    showConnectIRec: userHasOrg && userIsOrgAdmin,
   };
   const orgMenu = getOrganizationMenu({
     t,
@@ -115,7 +117,16 @@ export const useAppContainerEffects = () => {
     showPendingDevices: userIsIssuer,
     showRegisterDevice:
       userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
-    showDeviceImport: userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
+    showDeviceImport:
+      userIsActive &&
+      userHasOrg &&
+      userIsDeviceManagerOrAdmin &&
+      iRecConnectionActive &&
+      // @should be fixed on backend to actually return a string
+      ((iRecOrg?.accountType as unknown as IRECAccountType) ===
+        IRECAccountType.Registrant ||
+        (iRecOrg?.accountType as unknown as IRECAccountType) ===
+          IRECAccountType.Both),
   };
   const deviceMenu = getDeviceMenu({
     t,

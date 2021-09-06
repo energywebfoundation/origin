@@ -28,6 +28,7 @@ export const GenericForm: TGenericForm = memo(
     validationMode = 'onBlur',
     loading = false,
     acceptInitialValues = false,
+    formDisabled = false,
     children,
   }) => {
     const {
@@ -68,6 +69,7 @@ export const GenericForm: TGenericForm = memo(
             dirtyFields={dirtyFields}
             formInputsProps={formInputsProps}
             inputsVariant={inputsVariant}
+            disabled={formDisabled}
           />
         ) : (
           <SingleColumnForm
@@ -78,6 +80,7 @@ export const GenericForm: TGenericForm = memo(
             dirtyFields={dirtyFields}
             formInputsProps={formInputsProps}
             inputsVariant={inputsVariant}
+            disabled={formDisabled}
           />
         )}
 

@@ -16,7 +16,8 @@ export enum DeviceState {
     Draft = 'Draft',
     InProgress = 'In-progress',
     Rejected = 'Rejected',
-    Approved = 'Approved'
+    Approved = 'Approved',
+    Submitted = 'Submitted'
 }
 
 export class DeviceCreateParams extends FileIds {
@@ -172,5 +173,6 @@ export class Device extends DeviceCreateParams {
         | DeviceState.Approved
         | DeviceState.Draft
         | DeviceState.InProgress
-        | DeviceState.Rejected;
+        | DeviceState.Rejected
+        | DeviceState.Submitted;
 }

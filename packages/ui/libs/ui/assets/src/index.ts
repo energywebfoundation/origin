@@ -12,6 +12,7 @@ export { ReactComponent as EnergyWebLogo } from './images/EW-Origin-WhiteText.sv
 export { ReactComponent as OrganizationAdded } from './images/icon-org-added.svg';
 export { ReactComponent as CoordinatesLogo } from './images/coordinates-logo.svg';
 export { default as EnergyWebBackground } from './images/bg-origin.png';
+export { ReactComponent as IRecLogo } from './images/IREC-logo.svg';
 
 export { ReactComponent as WindRegular } from './images/device-type-regular/icon-wind-regular.svg';
 export { ReactComponent as SolarRegular } from './images/device-type-regular/icon-solar-regular.svg';

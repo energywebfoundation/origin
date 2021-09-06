@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { CircularProgress, Grid } from '@material-ui/core';
-import { PublicDeviceCard } from '../../containers';
+import { NoPublicDevices, PublicDeviceCard } from '../../containers';
 import { useStyles } from './AllDevicesPage.styles';
 import { useAllDevicesPageEffects } from './AllDevicesPage.effects';
 
@@ -11,6 +11,10 @@ export const AllDevicesPage: FC = () => {
 
   if (isLoading) {
     return <CircularProgress />;
+  }
+
+  if (allActiveDevices.length === 0) {
+    return <NoPublicDevices />;
   }
 
   return (

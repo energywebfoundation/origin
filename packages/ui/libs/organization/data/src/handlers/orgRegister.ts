@@ -1,5 +1,4 @@
 import {
-  fileControllerUpload,
   getUserControllerMeQueryKey,
   NewOrganizationDTO,
   useOrganizationControllerRegister,
@@ -76,8 +75,4 @@ export const useOrganizationRegisterHandler = ({
   };
 
   return registerHandler;
-};
-
-export const fileUploadHandler = async (file: Blob[]) => {
-  return await fileControllerUpload({ files: file });
 };

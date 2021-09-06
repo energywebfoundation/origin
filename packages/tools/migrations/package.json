@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "3.2.4",
+    "version": "3.2.8",
     "main": "dist/js/main.js",
     "bin": {
         "origin-migrations": "./bin/migrations"
@@ -32,10 +32,10 @@
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
-        "@energyweb/issuer": "3.2.0",
-        "@energyweb/origin-backend-core": "8.0.1",
-        "@energyweb/origin-backend-app": "1.5.1",
-        "@energyweb/utils-general": "11.0.2",
+        "@energyweb/issuer": "4.0.0",
+        "@energyweb/origin-backend-app": "1.5.4",
+        "@energyweb/origin-backend-core": "8.0.2",
+        "@energyweb/utils-general": "11.0.3",
         "@types/pg": "8.6.1",
         "commander": "6.2.1",
         "dotenv": "10.0.0",
@@ -47,10 +47,10 @@
         "yaeti": "1.0.2"
     },
     "devDependencies": {
-        "typescript": "4.3.5",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.17.11",
-        "mocha": "9.1.0"
+        "@types/node": "14.17.12",
+        "mocha": "9.1.1",
+        "typescript": "4.4.2"
     },
     "publishConfig": {
         "access": "public",

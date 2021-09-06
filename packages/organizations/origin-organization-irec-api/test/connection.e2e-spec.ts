@@ -7,9 +7,8 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { expect } from 'chai';
 import supertest from 'supertest';
 import { bootstrapTestInstance, TestUser } from './test.app';
-import { IRECAccountType } from '../src/registration/account-type.enum';
+import { IRECAccountType, NewRegistrationDTO } from '../src';
 import { request } from './request';
-import { NewRegistrationDTO } from '../src/registration/new-registration.dto';
 
 describe('I-REC Registration tests', () => {
     let app: INestApplication;
@@ -93,5 +92,21 @@ describe('I-REC Registration tests', () => {
         expect(connection.refreshToken).to.equal(connection2.refreshToken);
         expect(String(connection.expiryDate)).to.equal(String(connection2.expiryDate));
         expect(connection.registration.id).to.equal(connection2.registration.id);
+        expect(connection.active).to.equal(true);
+
+        const { body: accounts }: { body: any[] } = await test
+            .get('/irec/connection/accounts')
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+
+        accounts.forEach((account) => {
+            expect(account.code).to.be.a('string');
+            expect(account.type).to.be.a('string');
+            expect(account.details.name).to.be.a('string');
+            expect(account.details.notes).to.be.a('string');
+            expect(account.details.private).to.be.a('boolean');
+            expect(account.details.restricted).to.be.a('boolean');
+            expect(account.details.active).to.be.a('boolean');
+        });
     });
 });

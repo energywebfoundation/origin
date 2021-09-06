@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.8](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.7...@energyweb/migrations@3.2.8) (2021-08-31)
+
+
+### Bug Fixes
+
+* **migrations:** stable dockerfile fix ([a1495b2](https://github.com/energywebfoundation/origin/commit/a1495b2f5e73a3ce7304a957c65de989759a37b5))
+
+
+
+
+
+## [3.2.7](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.6...@energyweb/migrations@3.2.7) (2021-08-30)
+
+
+### Bug Fixes
+
+* **migrations:** stable dockerfile fix ([fc981aa](https://github.com/energywebfoundation/origin/commit/fc981aa0d9f752e74a4de156c53a6bba3dfcfd1f))
+
+
+
+
+
+## [3.2.6](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.5...@energyweb/migrations@3.2.6) (2021-08-30)
+
+
+### Bug Fixes
+
+* **migrations:** fixed dockerfiles ([14eb238](https://github.com/energywebfoundation/origin/commit/14eb238da837e788e8a09b48fe5dcdf1101bea7d))
+
+
+
+
+
+## [3.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.4...@energyweb/migrations@3.2.5) (2021-08-30)
+
+
+### Bug Fixes
+
+* Copy migration files when creating docker image ([adafda1](https://github.com/energywebfoundation/origin/commit/adafda13821c6c0d246dc8c0660fe943b9ff59f9))
+* **deps:** update dependency dotenv to v10 ([c1b44b7](https://github.com/energywebfoundation/origin/commit/c1b44b765b65c94129fb8be7131236de326fac45))
+* **deps:** update dependency dotenv to v9 ([6b97197](https://github.com/energywebfoundation/origin/commit/6b971972a5633ba0417c746256d28b96e582028d))
+* **deps:** update dependency dotenv to v9.0.2 ([711307a](https://github.com/energywebfoundation/origin/commit/711307a49b0a8a18879fcc80b6127708c2b0953d))
+* **deps:** update dependency ethers to v5.1.3 ([e7f4abb](https://github.com/energywebfoundation/origin/commit/e7f4abb8109303814e5727976732c528dcfa342d))
+* **deps:** update dependency ethers to v5.1.4 ([71f379b](https://github.com/energywebfoundation/origin/commit/71f379b020e8e6bcd1b4b6f117d27e9babc6f93c))
+* **deps:** update dependency pg to v8.6.0 ([5b16742](https://github.com/energywebfoundation/origin/commit/5b167423919ee4b238cb022c27a89a0d920f318b))
+* **deps:** update dependency pg to v8.7.1 ([033293f](https://github.com/energywebfoundation/origin/commit/033293f0c203102f03b53fe50a519a60ebe170de))
+* **deps:** update dependency write-json-file to v5 ([1e41c84](https://github.com/energywebfoundation/origin/commit/1e41c8492dfbd822ec8404e93602e28b915de5dc))
+* **deps:** update ethers ([785e3ef](https://github.com/energywebfoundation/origin/commit/785e3efbe95fbde1984d80d8a50293d123364803))
+* **deps:** update ethers ([d40f585](https://github.com/energywebfoundation/origin/commit/d40f585815ede90cc3ce1a901aa35bb3e9ebde3d))
+* **deps:** update ethers to v5.3.0 ([72c970e](https://github.com/energywebfoundation/origin/commit/72c970e69d220250e7d9d3f36ac653a3610d6825))
+* **docker:** migration config overwritten ([85fd2ce](https://github.com/energywebfoundation/origin/commit/85fd2ce03185e93fa2f12689c86aff66c0beac09))
+* **docker:** origin-device-registry-api migration not executed ([110ab37](https://github.com/energywebfoundation/origin/commit/110ab37f82811fbf4a703b6269e465e7dafc4e24))
+* path to migrations main.js ([09d598b](https://github.com/energywebfoundation/origin/commit/09d598bb3d86385ab42b146514665f171b65514f))
+* revert ethers versions to working and disable updates ([49753f0](https://github.com/energywebfoundation/origin/commit/49753f0aed3f5e32e861b7bbe1d4a85bd900dce9))
+
+
+
+
+
 ## [3.2.4](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations@3.2.3...@energyweb/migrations@3.2.4) (2021-03-23)
 
 

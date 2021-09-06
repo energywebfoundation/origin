@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api@1.0.2...@energyweb/origin-energy-api@1.0.3) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @energyweb/energy-api-influxdb to v0.7.1 ([d8a4c46](https://github.com/energywebfoundation/origin/commit/d8a4c46b76ca28bd65811f143451711c32e59416))
+* **deps:** update dependency @energyweb/energy-api-influxdb to v0.8.0 ([838e39f](https://github.com/energywebfoundation/origin/commit/838e39fd1fe949fc486b8f116b34d67f75136501))
+* **deps:** update dependency @nestjs/config to v1 ([5226f56](https://github.com/energywebfoundation/origin/commit/5226f56898771fc093590bc0f337296496e945ba))
+* **deps:** update dependency @nestjs/config to v1.0.1 ([3463c6f](https://github.com/energywebfoundation/origin/commit/3463c6f197398c159e88b078a9b8581c5f450429))
+* **deps:** update dependency @nestjs/passport to v7.1.6 ([e6c99f4](https://github.com/energywebfoundation/origin/commit/e6c99f47c789a30ba3c73969854ebe956838b3be))
+* **deps:** update dependency @nestjs/swagger to v4.8.1 ([daa023b](https://github.com/energywebfoundation/origin/commit/daa023bdcd20b78aa3dd8af966c8127b57b9d9ad))
+* **deps:** update dependency @nestjs/swagger to v4.8.2 ([d17e433](https://github.com/energywebfoundation/origin/commit/d17e433f1fa2a07ea50bd26b423652670436c6ae))
+* **deps:** update nest monorepo to v7.6.17 ([ecc84c0](https://github.com/energywebfoundation/origin/commit/ecc84c0ce3d2d2e47ebe7c667d53adbc6fdd9f6b))
+* **deps:** update nest monorepo to v7.6.18 ([6835926](https://github.com/energywebfoundation/origin/commit/6835926dff7764d275b2006084e344c37948b7fa))
+* revert ethers versions to working and disable updates ([49753f0](https://github.com/energywebfoundation/origin/commit/49753f0aed3f5e32e861b7bbe1d4a85bd900dce9))
+
+
+
+
+
 ## [1.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api@1.0.1...@energyweb/origin-energy-api@1.0.2) (2021-03-23)
 
 

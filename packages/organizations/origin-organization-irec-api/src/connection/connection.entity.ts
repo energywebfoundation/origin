@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 import { Registration } from '../registration';
 
@@ -33,4 +33,24 @@ export class Connection extends ExtendedBaseEntity {
     @JoinColumn()
     @IsNotEmpty()
     registration: Registration;
+
+    @Column()
+    @IsNotEmpty()
+    @IsString()
+    clientId: string;
+
+    @Column()
+    @IsNotEmpty()
+    @IsString()
+    clientSecret: string;
+
+    @Column({ default: true })
+    @IsNotEmpty()
+    @IsBoolean()
+    active: boolean;
+
+    @Column({ default: 0 })
+    @IsNotEmpty()
+    @IsNumber()
+    attempts: number;
 }

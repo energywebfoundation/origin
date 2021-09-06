@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config';
 import { RefreshAllTokensCommand } from '../commands';
 import { Connection } from '../connection.entity';
 
+const MAX_ATTEMPTS = 5;
+
 @CommandHandler(RefreshAllTokensCommand)
 export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokensCommand> {
     private readonly logger = new Logger(RefreshAllTokensHandler.name);
@@ -23,7 +25,8 @@ export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokens
 
         const expiredConnections = await this.repository.find({
             where: {
-                expiryDate: LessThan(new Date())
+                expiryDate: LessThan(new Date()),
+                active: true
             }
         });
 
@@ -34,22 +37,39 @@ export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokens
 
         const results = await Promise.allSettled(
             expiredConnections.map(async (irecConnection) => {
-                const client = new IRECAPIClient(irecApiUrl, {
+                const accessToken: AccessTokens = {
                     accessToken: irecConnection.accessToken,
                     refreshToken: irecConnection.refreshToken,
                     expiryDate: irecConnection.expiryDate
-                });
+                };
+                const client = new IRECAPIClient(
+                    irecApiUrl,
+                    irecConnection.clientId,
+                    irecConnection.clientSecret,
+                    async (accessTokens: AccessTokens) => {
+                        await this.repository.update(irecConnection.id, {
+                            ...accessTokens,
+                            attempts: 0
+                        });
+                    },
+                    accessToken
+                );
 
-                client.on('tokensRefreshed', (accessToken: AccessTokens) => {
-                    this.repository.update(irecConnection.id, accessToken).catch(() => {
-                        this.logger.warn(
-                            `Unable to update IREC access tokens for registration ${irecConnection.registration}`
-                        );
-                    });
-                    client.removeAllListeners();
+                await client.organisation.get().catch(async (): Promise<void> => {
+                    const disabled = ++irecConnection.attempts >= MAX_ATTEMPTS;
+                    this.logger.warn(
+                        `Unable to update IREC access tokens for registration ${irecConnection.registration}, ` +
+                            `attempt №${irecConnection.attempts} ${
+                                disabled ? '. Disabling connection...' : ''
+                            }`
+                    );
+                    await this.repository
+                        .update(
+                            irecConnection.id,
+                            disabled ? { active: false } : { attempts: () => 'attempts + 1' }
+                        )
+                        .catch(() => {});
                 });
-
-                await client.organisation.get();
             })
         );
 
