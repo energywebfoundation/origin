@@ -6,6 +6,12 @@ export const useStyles = makeStyles((theme) => ({
     width: 250,
     height: 180,
   },
+  card: {
+    width: 250,
+  },
+  imageWrapper: {
+    height: 180,
+  },
   heading: {
     backgroundColor: LightenColor(
       theme.palette.background.paper,
