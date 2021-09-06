@@ -6,8 +6,8 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 
 import { expect } from 'chai';
 import supertest from 'supertest';
-import { bootstrapTestInstance, TestUser } from './test.app';
 import { IRECAccountType, NewRegistrationDTO } from '../src';
+import { bootstrapTestInstance, TestUser } from './test.app';
 import { request } from './request';
 
 describe('I-REC Registration tests', () => {
@@ -62,11 +62,17 @@ describe('I-REC Registration tests', () => {
     });
 
     it('should create and return new IREC connection', async () => {
-        const { body: registration } = await test
+        await test
             .post('/irec/registration')
             .send(registrationForm)
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
+
+        const { body: connection0 } = await test
+            .get('/irec/connection')
+            .set({ 'test-user': TestUser.OrganizationAdmin })
+            .expect(HttpStatus.OK);
+        expect(connection0).to.deep.equal({});
 
         const { body: connection } = await test
             .post('/irec/connection')
@@ -79,20 +85,18 @@ describe('I-REC Registration tests', () => {
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.CREATED);
 
-        expect(connection.registration.id).to.equal(registration.id);
-        expect(connection.accessToken).to.be.a('string');
-        expect(connection.refreshToken).to.be.a('string');
+        expect(connection.accessToken).to.be.undefined;
+        expect(connection.refreshToken).to.be.undefined;
         expect(connection.expiryDate).to.be.a('string');
+
         const { body: connection2 } = await test
             .get('/irec/connection')
             .set({ 'test-user': TestUser.OrganizationAdmin })
             .expect(HttpStatus.OK);
 
-        expect(connection.accessToken).to.equal(connection2.accessToken);
-        expect(connection.refreshToken).to.equal(connection2.refreshToken);
-        expect(String(connection.expiryDate)).to.equal(String(connection2.expiryDate));
-        expect(connection.registration.id).to.equal(connection2.registration.id);
-        expect(connection.active).to.equal(true);
+        expect(connection2.accessToken).to.be.undefined;
+        expect(connection2.refreshToken).to.be.undefined;
+        expect(String(connection2.expiryDate)).to.equal(String(connection.expiryDate));
 
         const { body: accounts }: { body: any[] } = await test
             .get('/irec/connection/accounts')
