@@ -21,6 +21,12 @@ export class GetAccountsHandler implements ICommandHandler<GetAccountsCommand> {
     ) {}
 
     async execute({ owner }: GetAccountsCommand): Promise<AccountDTO[]> {
-        return this.irecService.getAccountInfo(owner);
+        try {
+            return await this.irecService.getAccountInfo(owner);
+        } catch (e) {
+            // Registrant account does not have permissions to get list of accounts
+            // so we return empty list
+            return [];
+        }
     }
 }
