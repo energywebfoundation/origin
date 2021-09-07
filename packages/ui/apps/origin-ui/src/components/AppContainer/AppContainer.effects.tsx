@@ -28,6 +28,7 @@ import {
 import {
   useInvitationControllerGetInvitations,
   useConnectionControllerGetMyConnection,
+  useRegistrationControllerGetRegistrations,
 } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
@@ -72,7 +73,12 @@ export const useAppContainerEffects = () => {
     useConnectionControllerGetMyConnection({
       enabled: isAuthenticated && Boolean(user?.organization?.id),
     });
-  const iRecOrg = iRecConnection?.registration;
+  const { data: iRecRegistrations, isLoading: isIRecRegistrationsLoading } =
+    useRegistrationControllerGetRegistrations({
+      enabled: isAuthenticated && Boolean(user?.organization?.id),
+    });
+
+  const iRecOrg = iRecRegistrations?.length > 0 && iRecRegistrations[0];
   const iRecConnectionActive = iRecConnection?.active;
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
@@ -226,7 +232,11 @@ export const useAppContainerEffects = () => {
     adminRoutes: adminRoutesConfig,
   };
 
-  const isLoading = userLoading || areInvitationsLoading || isIRecOrgLoading;
+  const isLoading =
+    userLoading ||
+    areInvitationsLoading ||
+    isIRecOrgLoading ||
+    isIRecRegistrationsLoading;
 
   return {
     topbarButtons,

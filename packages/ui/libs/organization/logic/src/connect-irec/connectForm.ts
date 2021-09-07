@@ -1,5 +1,5 @@
 import {
-  ConnectionDTO,
+  ShortConnectionDTO,
   CreateConnectionDTO,
 } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { GenericFormProps } from '@energyweb/origin-ui-core';
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 
 export const useConnectIRecFormLogic = (
-  iRecConnection: ConnectionDTO,
+  iRecConnection: ShortConnectionDTO,
   loading: boolean
 ): Omit<GenericFormProps<CreateConnectionDTO>, 'submitHandler'> => {
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ export const useConnectIRecFormLogic = (
       userName: iRecConnection?.userName || '',
       password: '',
       clientId: iRecConnection?.clientId || '',
-      clientSecret: iRecConnection?.clientSecret || '',
+      clientSecret: '',
     },
     validationSchema: yup.object().shape({
       userName: yup
