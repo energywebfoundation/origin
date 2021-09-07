@@ -11,6 +11,8 @@ export type TGetExchangeMenuArgs = {
   showSupply: boolean;
   showMyBundles: boolean;
   showMyOrders: boolean;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 };
 
 type TGetExchangeMenu = (args?: TGetExchangeMenuArgs) => TMenuSection;
@@ -25,6 +27,8 @@ export const getExchangeMenu: TGetExchangeMenu = ({
   showMyTrades,
   showSupply,
   showMyOrders,
+  menuButtonClass,
+  selectedMenuItemClass,
 }) => {
   const menuList = [
     {
@@ -70,5 +74,7 @@ export const getExchangeMenu: TGetExchangeMenu = ({
     show: showSection,
     rootUrl: '/exchange',
     menuList,
+    menuButtonClass,
+    selectedMenuItemClass,
   };
 };

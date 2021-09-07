@@ -1,4 +1,4 @@
-import { IRecLogo } from '@energyweb/origin-ui-assets';
+import { IRecLogo, IRecLogoDark } from '@energyweb/origin-ui-assets';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import {
   Box,
@@ -21,6 +21,7 @@ export const ConnectIRecPage: FC = () => {
     orgInformation,
     platformOrgId,
     organizationId,
+    isDarkTheme,
   } = useConnectIRecPageEffects();
   const classes = useStyles();
 
@@ -55,7 +56,11 @@ export const ConnectIRecPage: FC = () => {
             sx={{ display: { md: 'flex', xs: 'none' } }}
             justifyContent="center"
           >
-            <IRecLogo className={classes.logo} />
+            {isDarkTheme ? (
+              <IRecLogo className={classes.logo} />
+            ) : (
+              <IRecLogoDark className={classes.logo} />
+            )}
           </Box>
         </Grid>
       </Grid>

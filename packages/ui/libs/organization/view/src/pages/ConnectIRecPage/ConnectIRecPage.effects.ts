@@ -6,6 +6,7 @@ import {
   useMyOrganizationData,
 } from '@energyweb/origin-ui-organization-data';
 import { useConnectIRecFormLogic } from '@energyweb/origin-ui-organization-logic';
+import { useTheme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
 export const useConnectIRecPageEffects = () => {
@@ -32,7 +33,11 @@ export const useConnectIRecPageEffects = () => {
   const isLoading = iRecConnectionLoading || organizationLoading;
   const organizationId = organization?.id;
 
+  const theme = useTheme();
+  const isDarkTheme = theme.palette.mode === 'dark';
+
   return {
+    isDarkTheme,
     isLoading,
     formProps,
     requestingIRecAccess,
