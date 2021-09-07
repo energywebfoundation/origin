@@ -7,6 +7,8 @@ export type TGetAdminMenuArgs = {
   showSection: boolean;
   showUsers: boolean;
   showClaims: boolean;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 };
 
 type TUseAdminMenuFn = (args?: TGetAdminMenuArgs) => TMenuSection;
@@ -17,11 +19,13 @@ export const getAdminMenu: TUseAdminMenuFn = ({
   showSection,
   showUsers,
   showClaims,
+  menuButtonClass,
+  selectedMenuItemClass,
 }) => {
   return {
     isOpen,
     sectionTitle: t('navigation.admin.sectionTitle'),
-    rootUrl: 'admin',
+    rootUrl: '/admin',
     show: showSection,
     menuList: [
       {
@@ -35,5 +39,7 @@ export const getAdminMenu: TUseAdminMenuFn = ({
         show: showClaims,
       },
     ],
+    menuButtonClass,
+    selectedMenuItemClass,
   };
 };

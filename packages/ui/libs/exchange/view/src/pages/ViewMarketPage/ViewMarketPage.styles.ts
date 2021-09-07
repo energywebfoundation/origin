@@ -26,7 +26,7 @@ export const useStyles = makeStyles((theme) => ({
     backgroundColor: LightenColor(theme.palette.background.paper, 3),
     paddingTop: 5,
     '& .Mui-selected': {
-      color: theme.palette.common.white,
+      color: theme.palette.text.primary,
     },
   },
   tabs: {

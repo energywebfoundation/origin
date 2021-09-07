@@ -10,21 +10,24 @@ import {
   OriginQueryClientProvider,
   OriginThemeProvider,
 } from './components';
-import { AppContainer } from './AppContainer';
+import { AppContainer } from './components/AppContainer';
+import { ThemeModeProvider } from '@energyweb/origin-ui-theme';
 
 ReactDOM.render(
   <React.StrictMode>
-    <OriginThemeProvider>
-      <ErrorBoundary FallbackComponent={CustomErrorFallback}>
-        <BrowserRouter>
-          <Web3ReactProvider getLibrary={getLibrary}>
-            <OriginQueryClientProvider>
-              <AppContainer />
-            </OriginQueryClientProvider>
-          </Web3ReactProvider>
-        </BrowserRouter>
-      </ErrorBoundary>
-    </OriginThemeProvider>
+    <ThemeModeProvider>
+      <OriginThemeProvider>
+        <ErrorBoundary FallbackComponent={CustomErrorFallback}>
+          <BrowserRouter>
+            <Web3ReactProvider getLibrary={getLibrary}>
+              <OriginQueryClientProvider>
+                <AppContainer />
+              </OriginQueryClientProvider>
+            </Web3ReactProvider>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </OriginThemeProvider>
+    </ThemeModeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

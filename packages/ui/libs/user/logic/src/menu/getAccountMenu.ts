@@ -7,6 +7,8 @@ export type TGetAccountMenuArgs = {
   showSection: boolean;
   showSettings: boolean;
   showUserProfile: boolean;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 };
 
 type TGetAccountMenuFn = (args?: TGetAccountMenuArgs) => TMenuSection;
@@ -16,12 +18,14 @@ export const getAccountMenu: TGetAccountMenuFn = ({
   isOpen,
   showSettings,
   showUserProfile,
+  selectedMenuItemClass,
+  menuButtonClass,
 }) => ({
   isOpen,
   sectionTitle: showUserProfile
     ? t('navigation.account.sectionTitle')
     : t('navigation.account.sectionTitleForUnlogged'),
-  rootUrl: 'account',
+  rootUrl: '/account',
   show: true,
   menuList: [
     {
@@ -35,4 +39,6 @@ export const getAccountMenu: TGetAccountMenuFn = ({
       show: showUserProfile,
     },
   ],
+  menuButtonClass,
+  selectedMenuItemClass,
 });

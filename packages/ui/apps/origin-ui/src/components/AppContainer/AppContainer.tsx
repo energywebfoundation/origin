@@ -1,7 +1,8 @@
 import React from 'react';
 
-import App from '../components/App';
-import { OriginGlobalStyles, NotificationsCenter } from '../components';
+import { App } from '../App';
+import { OriginGlobalStyles } from '../OriginGlobalStyles';
+import { NotificationsCenter } from '../NotificationsCenter';
 import { useAppContainerEffects } from './AppContainer.effects';
 
 export const AppContainer = () => {

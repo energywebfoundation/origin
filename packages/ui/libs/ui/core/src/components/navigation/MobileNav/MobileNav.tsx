@@ -1,5 +1,5 @@
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
-import { BoxProps, Drawer, List } from '@material-ui/core';
+import { BoxProps, Drawer, List, PaperProps } from '@material-ui/core';
 import React, { FC, ReactNode } from 'react';
 import { CloseButton } from '../../buttons';
 import { IconLink } from '../../icons';
@@ -15,6 +15,7 @@ export interface MobileNavProps {
   menuSections: TMenuSection[];
   icon?: ReactNode;
   iconWrapperProps?: BoxProps;
+  paperProps?: PaperProps;
 }
 
 export const MobileNav: FC<MobileNavProps> = ({
@@ -25,6 +26,7 @@ export const MobileNav: FC<MobileNavProps> = ({
   userAndOrgData,
   icon,
   iconWrapperProps,
+  paperProps,
 }) => {
   const classes = useStyles();
   return (
@@ -33,6 +35,7 @@ export const MobileNav: FC<MobileNavProps> = ({
       open={open}
       variant="persistent"
       className={classes.drawer}
+      PaperProps={paperProps}
     >
       <CloseButton onClose={onClose} />
       <IconLink url="/" wrapperProps={iconWrapperProps}>

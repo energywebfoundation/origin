@@ -1,4 +1,4 @@
-import { LightenColor } from '@energyweb/origin-ui-theme';
+import { LightenColor, ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { makeStyles } from '@material-ui/core';
 
 export const useStyles = makeStyles((theme) => ({
@@ -20,7 +20,11 @@ export const useStyles = makeStyles((theme) => ({
   image: {
     width: 160,
     minHeight: 140,
-    borderRight: `1px solid ${theme.palette.background.paper}`,
+    borderRight: `1px solid ${
+      theme.palette.mode === ThemeModeEnum.Dark
+        ? theme.palette.background.paper
+        : theme.palette.text.primary
+    }`,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

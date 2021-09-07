@@ -10,6 +10,8 @@ export type TGetDeviceMenuArgs = {
   showPendingDevices: boolean;
   showRegisterDevice: boolean;
   showDeviceImport: boolean;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 };
 
 type TGetDeviceMenu = (args?: TGetDeviceMenuArgs) => TMenuSection;
@@ -24,6 +26,8 @@ export const getDeviceMenu: TGetDeviceMenu = ({
   showPendingDevices,
   showRegisterDevice,
   showDeviceImport,
+  selectedMenuItemClass,
+  menuButtonClass,
 }) => {
   const menuList = [
     {
@@ -64,5 +68,7 @@ export const getDeviceMenu: TGetDeviceMenu = ({
     show: showSection,
     rootUrl: '/device',
     menuList,
+    menuButtonClass,
+    selectedMenuItemClass,
   };
 };

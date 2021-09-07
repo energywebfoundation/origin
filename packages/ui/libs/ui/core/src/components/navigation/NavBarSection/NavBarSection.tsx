@@ -18,6 +18,8 @@ export interface NavBarSectionProps {
   isOpen: boolean;
   menuList: TModuleMenuItem[];
   closeMobileNav?: () => void;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 }
 
 export const NavBarSection: FC<NavBarSectionProps> = ({
@@ -27,24 +29,32 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
   isOpen,
   menuList,
   closeMobileNav,
+  menuButtonClass,
+  selectedMenuItemClass,
 }) => {
   const classes = useStyles();
   const availableLinks = menuList.filter((item) => item.show);
   const sectionTitleUrl = `${rootUrl}/${availableLinks[0]?.url}`;
 
   return (
-    <div className={classes.wrapper}>
+    <>
       {show && (
-        <>
-          <NavSectionTitle url={sectionTitleUrl} title={sectionTitle} />
+        <div className={classes.wrapper}>
+          <NavSectionTitle
+            url={sectionTitleUrl}
+            title={sectionTitle}
+            buttonClass={menuButtonClass}
+          />
           <NavSubMenu
             closeMobileNav={closeMobileNav}
             rootUrl={rootUrl}
             open={isOpen}
             menuList={menuList}
+            selectedMenuItemClass={selectedMenuItemClass}
+            menuButtonClass={menuButtonClass}
           />
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 };

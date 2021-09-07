@@ -5,6 +5,11 @@ import {
   TMenuSection,
   TopBarButtonData,
 } from '@energyweb/origin-ui-core';
+import {
+  ThemeModeEnum,
+  useThemeModeDispatch,
+  useThemeModeStore,
+} from '@energyweb/origin-ui-theme';
 import { LoginApp } from '@energyweb/origin-ui-user-view';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { initializeI18N } from '@energyweb/origin-ui-localization';
@@ -17,6 +22,7 @@ import { ExchangeApp } from '@energyweb/origin-ui-exchange-view';
 import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { RoutesConfig } from '../AppContainer';
+import { useStyles } from './App.styles';
 
 export interface AppProps {
   isAuthenticated: boolean;
@@ -28,8 +34,9 @@ export interface AppProps {
 
 initializeI18N(getOriginLanguage());
 
-const App: FC<AppProps> = memo(
+export const App: FC<AppProps> = memo(
   ({ isAuthenticated, user, menuSections, topbarButtons, routesConfig }) => {
+    const classes = useStyles();
     const { orgData, userData } = useUserAndOrgData(user);
     const {
       accountRoutes,
@@ -39,6 +46,9 @@ const App: FC<AppProps> = memo(
       deviceRoutes,
       exchangeRoutes,
     } = routesConfig;
+    const themeMode = useThemeModeStore();
+    const isLightTheme = themeMode === ThemeModeEnum.Light;
+    const changeThemeMode = useThemeModeDispatch();
 
     return (
       <Routes>
@@ -46,11 +56,18 @@ const App: FC<AppProps> = memo(
           path="/"
           element={
             <MainLayout
+              themeSwitcher
+              themeMode={themeMode}
+              changeThemeMode={changeThemeMode}
               isAuthenticated={isAuthenticated}
               topbarButtons={topbarButtons}
               menuSections={menuSections}
               userData={userData}
               orgData={orgData}
+              navBarPaperProps={
+                isLightTheme ? { className: classes.navPaper } : undefined
+              }
+              topBarClassName={isLightTheme ? classes.topBar : undefined}
             />
           }
         >
@@ -119,5 +136,3 @@ const App: FC<AppProps> = memo(
 );
 
 App.displayName = 'App';
-
-export default App;

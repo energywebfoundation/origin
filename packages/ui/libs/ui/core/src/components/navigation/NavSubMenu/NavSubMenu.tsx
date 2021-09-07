@@ -10,10 +10,19 @@ export interface NavSubMenuProps {
   rootUrl: string;
   menuList: TModuleMenuItem[];
   closeMobileNav?: () => void;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 }
 
 export const NavSubMenu: FC<NavSubMenuProps> = memo(
-  ({ open, menuList, rootUrl, closeMobileNav }) => {
+  ({
+    open,
+    menuList,
+    rootUrl,
+    closeMobileNav,
+    selectedMenuItemClass,
+    menuButtonClass,
+  }) => {
     const classes = useStyles();
     const location = useLocation();
     return (
@@ -29,6 +38,8 @@ export const NavSubMenu: FC<NavSubMenuProps> = memo(
                   url={link}
                   label={item.label}
                   selected={location.pathname === link}
+                  selectedClass={selectedMenuItemClass}
+                  buttonClass={menuButtonClass}
                 />
               );
             }

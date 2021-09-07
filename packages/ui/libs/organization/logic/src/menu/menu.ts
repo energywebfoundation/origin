@@ -14,6 +14,8 @@ export type TGetOrganizationMenuArgs = {
   showRegisterIRec: boolean;
   showCreateBeneficiary: boolean;
   showConnectIRec: boolean;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 };
 
 type TGetOrganizationMenu = (args?: TGetOrganizationMenuArgs) => TMenuSection;
@@ -31,6 +33,8 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
   showRegisterIRec,
   showCreateBeneficiary,
   showConnectIRec,
+  menuButtonClass,
+  selectedMenuItemClass,
 }) => {
   const menuList: TModuleMenuItem[] = [
     {
@@ -86,5 +90,7 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
     show: showSection,
     rootUrl: '/organization',
     menuList,
+    selectedMenuItemClass,
+    menuButtonClass,
   };
 };

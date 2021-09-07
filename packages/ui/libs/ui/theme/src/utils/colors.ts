@@ -1,4 +1,5 @@
 import { PaletteMode } from '@material-ui/core';
+import { ThemeModeEnum } from './ThemeModeEnum';
 
 /* eslint-disable no-bitwise */
 export function LightenColor(
@@ -9,7 +10,7 @@ export function LightenColor(
   let formattedPercent = percent;
 
   if (themeMode) {
-    formattedPercent = themeMode === 'dark' ? percent : -percent;
+    formattedPercent = themeMode === ThemeModeEnum.Dark ? percent : -percent;
   }
 
   if (color) {

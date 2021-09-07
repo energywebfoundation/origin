@@ -1,6 +1,11 @@
 import { Theme } from '@material-ui/core/styles';
-import { OriginUiThemeVariables, variables } from '../config/variables';
+import {
+  OriginUiThemeVariables,
+  variables_darkTheme,
+  variables_lightTheme,
+} from '../config/variables';
 import { createMaterialThemeForOrigin } from '../config/themeConfig';
+import { ThemeModeEnum } from './ThemeModeEnum';
 
 export interface IOriginStyleConfig {
   PRIMARY_COLOR: string;
@@ -17,7 +22,7 @@ export interface IOriginStyleConfig {
   FONT_SIZE: number;
 }
 
-const DEFAULT_COLOR = variables.primaryColor;
+const DEFAULT_COLOR = variables_darkTheme.primaryColor;
 
 export interface IOriginThemeConfiguration {
   materialTheme: Theme;
@@ -42,18 +47,23 @@ export function createStyleConfig(
   };
 }
 
-export const makeOriginUiConfig = (
-  configuration: Partial<IOriginThemeConfiguration> = {}
-) => {
-  const DEFAULT_STYLE_CONFIG = createStyleConfig(variables);
+export const makeOriginUiConfig = (themeMode?: ThemeModeEnum) => {
+  const colors =
+    themeMode === ThemeModeEnum.Dark
+      ? variables_darkTheme
+      : variables_lightTheme;
+  const DEFAULT_STYLE_CONFIG = createStyleConfig(colors);
 
   const DEFAULT_ORIGIN_CONFIGURATION: IOriginThemeConfiguration = {
-    materialTheme: createMaterialThemeForOrigin(DEFAULT_STYLE_CONFIG, 'en'),
+    materialTheme: createMaterialThemeForOrigin(
+      DEFAULT_STYLE_CONFIG,
+      'en',
+      themeMode
+    ),
   };
 
   const newConfiguration: IOriginThemeConfiguration = {
     ...DEFAULT_ORIGIN_CONFIGURATION,
-    ...configuration,
   };
 
   return newConfiguration;

@@ -1,4 +1,5 @@
 import { Button, ListItem } from '@material-ui/core';
+import clsx from 'clsx';
 import React, { FC, memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useStyles } from './MenuItem.styles';
@@ -8,19 +9,22 @@ export interface MenuItemProps {
   url: string;
   selected: boolean;
   closeMobileNav?: () => void;
+  selectedClass?: string;
+  buttonClass?: string;
 }
 
 export const MenuItem: FC<MenuItemProps> = memo(
-  ({ label, url, selected, closeMobileNav, ...props }) => {
+  ({ label, url, selected, closeMobileNav, selectedClass, buttonClass }) => {
     const classes = useStyles();
     return (
       <ListItem
-        className={`${classes.listItem} ${selected && classes.selected}`}
-        {...props}
+        className={`${classes.listItem} ${
+          selected && (selectedClass || classes.selected)
+        }`}
       >
         <Button
           onClick={closeMobileNav}
-          className={classes.button}
+          className={clsx(classes.button, buttonClass)}
           component={NavLink}
           to={url}
         >

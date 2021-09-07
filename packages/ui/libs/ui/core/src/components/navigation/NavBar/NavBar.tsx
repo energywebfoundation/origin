@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@material-ui/core';
+import { Box, BoxProps, PaperProps } from '@material-ui/core';
 import React, { FC, ReactNode } from 'react';
 import { UsernameAndOrgProps } from '../../layout';
 import { DesktopNav } from '../DesktopNav';
@@ -23,6 +23,7 @@ export interface NavBarProps {
   isAuthenticated: boolean;
   icon?: ReactNode;
   iconWrapperProps?: BoxProps;
+  paperProps?: PaperProps;
 }
 
 export const NavBar: FC<NavBarProps> = ({
@@ -34,6 +35,7 @@ export const NavBar: FC<NavBarProps> = ({
   isAuthenticated,
   icon,
   iconWrapperProps,
+  paperProps,
 }) => {
   return (
     <>
@@ -46,6 +48,7 @@ export const NavBar: FC<NavBarProps> = ({
           menuSections={menuSections}
           icon={icon}
           iconWrapperProps={iconWrapperProps}
+          paperProps={paperProps}
         />
       </Box>
       <Box sx={{ display: { lg: 'block', xs: 'none' } }}>
@@ -55,6 +58,7 @@ export const NavBar: FC<NavBarProps> = ({
           menuSections={menuSections}
           icon={icon}
           iconWrapperProps={iconWrapperProps}
+          sidebarPaperProps={paperProps}
         />
       </Box>
     </>

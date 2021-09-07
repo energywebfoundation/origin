@@ -10,6 +10,8 @@ export type TGetCertificateMenuArgs = {
   showRequests: boolean;
   showPending: boolean;
   showApproved: boolean;
+  menuButtonClass?: string;
+  selectedMenuItemClass?: string;
 };
 
 type TGetCertificateMenu = (args?: TGetCertificateMenuArgs) => TMenuSection;
@@ -24,6 +26,8 @@ export const getCertificateMenu: TGetCertificateMenu = ({
   showRequests,
   showPending,
   showApproved,
+  menuButtonClass,
+  selectedMenuItemClass,
 }) => {
   const menuList = [
     {
@@ -64,5 +68,7 @@ export const getCertificateMenu: TGetCertificateMenu = ({
     show: showSection,
     rootUrl: '/certificate',
     menuList,
+    menuButtonClass,
+    selectedMenuItemClass,
   };
 };
