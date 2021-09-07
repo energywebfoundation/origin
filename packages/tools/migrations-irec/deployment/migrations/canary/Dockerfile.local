@@ -1,5 +1,7 @@
 FROM energyweb/origin-backend-irec-app:canary
 
+RUN apk --no-cache add curl
+
 RUN mkdir -p /var/deployment
 COPY ./ /var/deployment
 
@@ -9,6 +11,7 @@ CMD ["/bin/bash","-c", "apps/origin-backend-irec-app/node_modules/.bin/typeorm m
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config organizations/origin-organization-irec-api/dist/js/ormconfig.js && \
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-irec-api/dist/js/ormconfig.js && \
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config devices/origin-device-registry-irec-local-api/dist/js/ormconfig.js && \
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config devices/origin-device-registry-api/dist/js/ormconfig.js && \
                         cd tools/migrations-irec/bin && \

@@ -13,6 +13,19 @@
             "groupName": "webpack"
         },
         {
+            "packagePatterns": ["ethers"],
+            "groupName": "ethers",
+            "enabled": false
+        },
+        {
+            "packagePatterns": ["nestjs"],
+            "groupName": "nestjs"
+        },
+        {
+            "packagePatterns": ["solc"],
+            "groupName": "solc"
+        },
+        {
             "packagePatterns": ["jest"],
             "groupName": "jest"
         },

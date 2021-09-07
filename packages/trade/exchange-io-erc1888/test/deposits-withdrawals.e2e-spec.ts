@@ -1,4 +1,5 @@
 import { DatabaseService } from '@energyweb/origin-backend-utils';
+import { UserStatus } from '@energyweb/origin-backend-core';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { ethers } from 'ethers';
@@ -16,12 +17,15 @@ import {
     Transfer,
     TransferService,
     DB_TABLE_PREFIX,
-    testUtils
+    testUtils,
+    RequestBatchClaimDTO,
+    RequestSendDTO,
+    AccountBalanceService
 } from '@energyweb/exchange';
 import { TestProduct } from '@energyweb/exchange/test/product/get-product.handler';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { Registry } from '@energyweb/issuer/src/ethers/Registry';
-import { Issuer } from '@energyweb/issuer/src/ethers/Issuer';
+import { RegistryExtended } from '@energyweb/issuer/dist/js/src/ethers/RegistryExtended';
+import { Issuer } from '@energyweb/issuer/dist/js/src/ethers/Issuer';
 import { ConfigService } from '@nestjs/config';
 import { Certificate } from '@energyweb/issuer';
 import { ExchangeErc1888Module } from '../src';
@@ -43,16 +47,18 @@ describe('Deposits using deployed registry', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
     let accountService: AccountService;
+    let accountBalanceService: AccountBalanceService;
     let transferService: TransferService;
     let configService: ConfigService;
 
     const user1Id = authenticatedUser.organization.id;
 
-    let registry: Registry;
+    let registry: RegistryExtended;
     let issuer: Issuer;
 
     let depositAddress: string;
     let tokenId: number;
+    let token2Id: number;
 
     const tokenReceiverPrivateKey =
         '0xca77c9b06fde68bcbcc09f603c958620613f4be79f3abb4b2032131d0229462e';
@@ -64,6 +70,7 @@ describe('Deposits using deployed registry', () => {
     const startExchange = async () => {
         ({
             accountService,
+            accountBalanceService,
             databaseService,
             transferService,
             configService,
@@ -81,15 +88,24 @@ describe('Deposits using deployed registry', () => {
             generationFrom,
             generationTo
         );
+
+        token2Id = await issueToken(
+            issuer,
+            tokenReceiver.address,
+            `${500 * MWh}`,
+            generationFrom,
+            generationTo
+        );
     };
 
-    const depositToExchangeAddress = async (amount: string) => {
-        await depositToken(registry, tokenReceiver, depositAddress, amount, tokenId);
+    const depositToExchangeAddress = async (amount: string, id?: number): Promise<string> => {
+        await depositToken(registry, tokenReceiver, depositAddress, amount, id ?? tokenId);
 
         await sleep(5000);
 
-        const res = await request(app.getHttpServer()).get('/transfer/all');
-        const [transfer] = res.body as Transfer[];
+        const {
+            body: [transfer]
+        } = await request(app.getHttpServer()).get('/transfer/all');
 
         // eslint-disable-next-line no-unused-expressions
         expect(transfer.id).to.be.ok;
@@ -306,5 +322,69 @@ describe('Deposits using deployed registry', () => {
 
         const [claimDetails] = await certificate.getClaimedData();
         expect(claimDetails.claimData.beneficiary).to.equal(depositAddress);
+    });
+
+    it('should batch claim from the exchange', async () => {
+        const tokenAmount = '10';
+        const token2Amount = '5';
+        const exchangeAddress = configService.get('EXCHANGE_WALLET_PUB');
+
+        const assetId = await depositToExchangeAddress(tokenAmount);
+        const asset2Id = await depositToExchangeAddress(token2Amount, token2Id);
+
+        const batchClaim: RequestBatchClaimDTO = {
+            assetIds: [assetId, asset2Id]
+        };
+
+        const balance = await getBalance(exchangeAddress, tokenId);
+        const balance2 = await getBalance(exchangeAddress, token2Id);
+
+        expect(balance.toNumber()).to.be.least(Number(tokenAmount));
+        expect(balance2.toNumber()).to.be.least(Number(token2Amount));
+
+        await request(app.getHttpServer())
+            .post('/transfer/claim/batch')
+            .send(batchClaim)
+            .expect(HttpStatus.CREATED);
+
+        await sleep(5000);
+
+        const claimedBalance = await getClaimedBalance(exchangeAddress, tokenId);
+
+        expect(claimedBalance.toNumber()).to.be.least(Number(tokenAmount) + Number(token2Amount));
+    });
+
+    it('should send to requested address', async () => {
+        const recipient = { id: 2, organization: { id: '2000' }, status: UserStatus.Active };
+        const destinationAddress = await createDepositAddress(
+            accountService,
+            recipient.organization.id
+        );
+        const sendAmount = '3';
+        const depositAmount = '10';
+
+        const assetId = await depositToExchangeAddress(depositAmount);
+
+        const send: RequestSendDTO = {
+            assetId,
+            amount: sendAmount,
+            address: destinationAddress
+        };
+
+        const startBalance = await getBalance(destinationAddress, tokenId);
+        expect(startBalance.isZero()).equals(true);
+
+        await request(app.getHttpServer())
+            .post('/transfer/send')
+            .send(send)
+            .expect(HttpStatus.CREATED);
+
+        await sleep(6000);
+
+        const destinationBalance = await accountBalanceService.getAccountBalance(
+            recipient.organization.id
+        );
+
+        expect(destinationBalance.available[0].amount.toString()).equals(sendAmount);
     });
 });

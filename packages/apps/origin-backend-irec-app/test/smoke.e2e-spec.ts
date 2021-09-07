@@ -6,7 +6,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import ganache from 'ganache-core';
 
-import { BlockchainPropertiesService } from '@energyweb/issuer-api';
+import { BlockchainPropertiesService } from '@energyweb/issuer-irec-api';
 import { Contracts } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { OriginAppModule } from '../src/origin-app.module';

@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { providers } from 'ethers';
+import { constants, providers } from 'ethers';
 import { CertificateUtils, IBlockchainProperties } from '@energyweb/issuer';
 import { EventBus } from '@nestjs/cqrs';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -8,9 +8,10 @@ import { SyncCertificateEvent } from '../events/sync-certificate-event';
 
 enum EventType {
     IssuanceSingle = 'IssuanceSingle',
+    IssuanceBatch = 'IssuanceBatch',
     TransferSingle = 'TransferSingle',
-    ClaimSingle = 'ClaimSingle',
     TransferBatch = 'TransferBatch',
+    ClaimSingle = 'ClaimSingle',
     ClaimBatch = 'ClaimBatch'
 }
 
@@ -44,8 +45,18 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         );
 
         this.provider.on(
+            this.registry.filters.IssuanceBatch(null, null, null),
+            (event: providers.Log) => this.processEvent(EventType.IssuanceBatch, event)
+        );
+
+        this.provider.on(
             this.registry.filters.TransferSingle(null, null, null, null, null),
             (event: providers.Log) => this.processEvent(EventType.TransferSingle, event)
+        );
+
+        this.provider.on(
+            this.registry.filters.TransferBatch(null, null, null, null, null),
+            (event: providers.Log) => this.processEvent(EventType.TransferBatch, event)
         );
 
         this.provider.on(
@@ -54,13 +65,8 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         );
 
         this.provider.on(
-            this.registry.filters.TransferBatch(null, null, null, null, null),
-            (event: providers.Log) => this.processEvent(EventType.TransferSingle, event)
-        );
-
-        this.provider.on(
             this.registry.filters.ClaimBatch(null, null, null, null, null, null),
-            (event: providers.Log) => this.processEvent(EventType.ClaimSingle, event)
+            (event: providers.Log) => this.processEvent(EventType.ClaimBatch, event)
         );
     }
 
@@ -78,33 +84,61 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         // before processing blockchain events
         await sleep(2000);
 
-        this.logger.log(
-            `Detected a new event: ${eventType} on Certificate ${event._id.toNumber()}`
-        );
+        const logEvent = (type: EventType, ids: number[]) =>
+            this.logger.log(`Detected a new event: ${type} on Certificate ${JSON.stringify(ids)}`);
 
         switch (eventType) {
             case EventType.IssuanceSingle:
+                logEvent(EventType.IssuanceSingle, [event._id.toNumber()]);
                 this.eventBus.publish(new CertificateCreatedEvent(event._id.toNumber()));
                 break;
 
-            case EventType.TransferSingle:
-                this.eventBus.publish(new SyncCertificateEvent(event._id.toNumber()));
+            case EventType.IssuanceBatch:
+                event._ids.forEach((id: any) => {
+                    logEvent(EventType.IssuanceBatch, [id.toNumber()]);
+                    this.eventBus.publish(new CertificateCreatedEvent(id.toNumber()));
+                });
                 break;
 
-            case EventType.ClaimSingle:
-                this.eventBus.publish(new SyncCertificateEvent(event._id.toNumber()));
+            case EventType.TransferSingle:
+                logEvent(EventType.TransferSingle, [event.id.toNumber()]);
+
+                if (event.from === constants.AddressZero) {
+                    this.logger.debug(
+                        `Skipping TransferSingle handler for certificate ${event.id.toNumber()} because it's an issuance.`
+                    );
+                    break;
+                }
+
+                this.eventBus.publish(new SyncCertificateEvent(event.id.toNumber()));
                 break;
 
             case EventType.TransferBatch:
-                event._ids.forEach((id: any) =>
-                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()))
-                );
+                if (event.from === constants.AddressZero) {
+                    this.logger.debug(
+                        `Skipping TransferBatch handler for certificates ${event.ids
+                            .map((id: any) => id.toNumber())
+                            .join(', ')} because it's an issuance.`
+                    );
+                    break;
+                }
+
+                event.ids.forEach((id: any) => {
+                    logEvent(EventType.TransferBatch, [id.toNumber()]);
+                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
+                });
+                break;
+
+            case EventType.ClaimSingle:
+                logEvent(EventType.ClaimSingle, [event._id.toNumber()]);
+                this.eventBus.publish(new SyncCertificateEvent(event._id.toNumber()));
                 break;
 
             case EventType.ClaimBatch:
-                event._ids.forEach((id: any) =>
-                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()))
-                );
+                event._ids.forEach((id: any) => {
+                    logEvent(EventType.ClaimBatch, [id.toNumber()]);
+                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
+                });
                 break;
 
             default:
@@ -118,8 +152,11 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         this.logger.debug('onApplicationShutdown');
 
         this.provider.off(this.registry.filters.IssuanceSingle(null, null, null));
+        this.provider.off(this.registry.filters.IssuanceBatch(null, null, null));
         this.provider.off(this.registry.filters.TransferSingle(null, null, null, null, null));
+        this.provider.off(this.registry.filters.TransferBatch(null, null, null, null, null));
         this.provider.off(this.registry.filters.ClaimSingle(null, null, null, null, null, null));
+        this.provider.off(this.registry.filters.ClaimBatch(null, null, null, null, null, null));
 
         this.provider = null;
     }

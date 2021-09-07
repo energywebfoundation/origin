@@ -1,19 +1,10 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
-import fs from 'fs';
-import moment from 'moment-timezone';
 
-import {
-    ApproveIssue,
-    Fuel,
-    FuelType,
-    IRECAPIClient,
-    Product,
-    Redemption,
-    ReservationItem
-} from '../src';
+import { DeviceType, FuelType, IRECAPIClient, ReservationItem } from '../src';
 
 import { credentials, getClient, validateCodeName, validateOrganization } from './helpers';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
 
 describe('IREC API', () => {
     let participantClient: IRECAPIClient;
@@ -31,6 +22,12 @@ describe('IREC API', () => {
     });
 
     describe('Account', () => {
+        it(`should throw correct HTTP exception`, async () => {
+            const e = await registrantClient.account.getAll().catch((e) => e);
+            expect(e instanceof HttpException).to.equal(true);
+            expect(e.getStatus()).to.equal(403);
+        });
+
         it(`should fetch all accounts`, async () => {
             const [firstAccount] = await participantClient.account.getAll();
 
@@ -53,95 +50,54 @@ describe('IREC API', () => {
             const [firstAccount] = await participantClient.account.getAll();
             const [accountBalance] = await participantClient.account.getBalance(firstAccount.code);
 
+            expect(accountBalance.balance).to.be.a('number');
             expect(accountBalance.code).to.equal(firstAccount.code);
-            expect(accountBalance.product).to.be.instanceOf(Product);
+            expect(accountBalance.product.code).to.be.a('string');
+            expect(accountBalance.product.name).to.be.a('string');
+            expect(accountBalance.product.unit).to.be.a('string');
         });
 
         it('should fetch items by code', async () => {
-            const [accountItem] = await participantClient.account.getItems(tradeAccount);
-
-            expect(accountItem).to.exist;
-            expect(accountItem.items).to.exist;
-            expect(accountItem.code).to.be.equal(tradeAccount);
-
-            const [item] = accountItem.items;
-
-            expect(item.code).to.exist;
-            expect(item.asset).to.exist;
-
-            expect(item.asset.start).to.be.an.instanceOf(Date);
-            expect(item.asset.end).to.be.an.instanceOf(Date);
+            const accountItems = await participantClient.account.getItems(tradeAccount);
+            accountItems.forEach((accountItem) => {
+                expect(accountItem).to.exist;
+                expect(accountItem.co2Produced).to.be.a('number');
+                expect(accountItem.product).to.be.a('string');
+                expect(accountItem.country).to.be.a('string');
+                expect(accountItem.device.code).to.be.a('string');
+                expect(accountItem.device.name).to.be.a('string');
+                expect(accountItem.deviceSupported).to.be.a('boolean');
+                expect(accountItem.tagged).to.be.a('boolean');
+                expect(accountItem.startDate).to.be.a('string');
+                expect(accountItem.endDate).to.be.a('string');
+                expect(accountItem.fuelType.code).to.be.a('string');
+                expect(accountItem.fuelType.description).to.be.a('string');
+                expect(accountItem.deviceType.code).to.be.a('string');
+                expect(accountItem.deviceType.description).to.be.a('string');
+                expect(accountItem.asset).to.be.a('string');
+            });
         });
-
-        it('should fetch transactions', async () => {
-            const transactions = await participantClient.account.getTransactions(tradeAccount);
-
-            expect(transactions).to.exist;
-        });
-    });
-
-    it('should be able to request certificate', async () => {
-        const [accountItem] = await participantClient.account.getItems(tradeAccount);
-
-        const [lastItem] = accountItem.items.sort(
-            (a, b) => b.asset.end.getTime() - a.asset.end.getTime()
-        );
-
-        const beforeTransactions = await participantClient.account.getTransactions(tradeAccount);
-
-        const code = await registrantClient.issue.create({
-            device: 'DEVICE001',
-            recipient: tradeAccount,
-            start: moment(lastItem.asset.end).add(1, 'day').toDate(),
-            end: moment(lastItem.asset.end).add(2, 'day').toDate(),
-            production: 100,
-            fuel: 'ES200'
-        });
-
-        await participantClient.issue.submit(code, 'Note');
-        await participantClient.issue.verify(code, 'Note');
-
-        const approval = new ApproveIssue();
-        approval.issuer = issueAccount;
-
-        await participantClient.issue.approve(code, approval);
-
-        const afterTransactions = await registrantClient.account.getTransactions(tradeAccount);
-
-        expect(afterTransactions).to.has.lengthOf(beforeTransactions.length + 1);
     });
 
     it('should be able to redeem the certificate', async () => {
-        const [account] = await participantClient.account.getItems(tradeAccount);
-        const [newestItem] = account.items;
+        const accountItems = await participantClient.account.getItems(tradeAccount);
 
         const reservationItem = new ReservationItem();
-        reservationItem.code = newestItem.code;
+        reservationItem.code = accountItems[0].code;
         reservationItem.amount = 1;
 
-        const redemption = new Redemption();
-        redemption.items = [reservationItem];
-        redemption.beneficiary = 1;
-        redemption.start = new Date('2020-01-01');
-        redemption.end = new Date('2020-02-01');
-        redemption.purpose = 'Purpose';
-        redemption.sender = tradeAccount;
-        redemption.recipient = redemptionAccount;
-        redemption.approver = process.env.IREC_API_LOGIN;
-
-        await participantClient.redeem(redemption);
-    });
-
-    it('should be able to upload pdf evidence file', async () => {
-        const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
-
-        const [fileId] = await registrantClient.file.upload([file]);
-
-        expect(fileId).to.exist;
-
-        const url = await registrantClient.file.download(fileId);
-
-        expect(url).to.exist;
+        await participantClient.redeem({
+            sender: tradeAccount,
+            recipient: redemptionAccount,
+            approver: issueAccount,
+            items: [reservationItem],
+            notes: 'notes',
+            beneficiary: 1,
+            start: new Date('2020-01-01'),
+            end: new Date('2020-02-01'),
+            purpose: 'Purpose',
+            volume: 1
+        });
     });
 
     describe('Organization', () => {
@@ -163,7 +119,7 @@ describe('IREC API', () => {
 
     describe('Fuel', () => {
         it('should return all fuels', async () => {
-            const fuels: Fuel[] = await registrantClient.fuel.getAll();
+            const fuels: FuelType[] = await registrantClient.fuel.getFuelTypes();
 
             expect(fuels).to.be.an('array');
             fuels.forEach((fuel) => {
@@ -173,7 +129,7 @@ describe('IREC API', () => {
         });
 
         it('should return all fuel types', async () => {
-            const types: FuelType[] = await registrantClient.fuel.getAllTypes();
+            const types: DeviceType[] = await registrantClient.fuel.getDeviceTypes();
 
             expect(types).to.be.an('array');
             types.forEach((type) => {

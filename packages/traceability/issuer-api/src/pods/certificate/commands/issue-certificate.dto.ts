@@ -1,10 +1,18 @@
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsPositive, IsString, Validate, ValidateIf } from 'class-validator';
+import {
+    IsBoolean,
+    IsEthereumAddress,
+    IsInt,
+    IsOptional,
+    IsPositive,
+    IsString,
+    Validate
+} from 'class-validator';
 
 export class IssueCertificateDTO {
     @ApiProperty({ type: String })
-    @IsString()
+    @IsEthereumAddress()
     to: string;
 
     @ApiProperty({ type: String })
@@ -27,7 +35,12 @@ export class IssueCertificateDTO {
     deviceId: string;
 
     @ApiProperty({ type: Boolean, required: false })
-    @ValidateIf((dto: IssueCertificateDTO) => !!dto.isPrivate)
+    @IsOptional()
     @IsBoolean()
     isPrivate?: boolean;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    metadata?: string;
 }

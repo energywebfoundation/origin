@@ -14,10 +14,11 @@ import { CommandBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { ConnectionDTO, CreateConnectionDTO } from './dto';
-import { CreateConnectionCommand, GetConnectionCommand } from './commands';
+import { CreateConnectionDTO } from '../irec';
+import { AccountDTO, ConnectionDTO, ShortConnectionDTO } from './dto';
+import { CreateConnectionCommand, GetAccountsCommand, GetConnectionCommand } from './commands';
 
-@ApiTags('irec_connection')
+@ApiTags('irec-connection')
 @ApiBearerAuth('access-token')
 @UsePipes(ValidationPipe)
 @Controller('irec/connection')
@@ -26,28 +27,44 @@ export class ConnectionController {
 
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
-    @ApiBody({ type: CreateConnectionDTO })
+    @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiBody({ type: ShortConnectionDTO })
     @ApiCreatedResponse({
-        type: ConnectionDTO,
+        type: ShortConnectionDTO,
         description: 'Creates a connection to I-REC'
     })
     public async register(
         @UserDecorator() user: ILoggedInUser,
         @Body() credentials: CreateConnectionDTO
-    ): Promise<ConnectionDTO> {
+    ): Promise<ShortConnectionDTO> {
         return this.commandBus.execute(new CreateConnectionCommand(user, credentials));
     }
 
     @Get()
-    @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @UseGuards(AuthGuard())
     @ApiResponse({
         status: HttpStatus.OK,
-        type: [ConnectionDTO],
+        type: ShortConnectionDTO,
         description: 'Get a IREC connection info'
     })
-    public async getMyConnection(@UserDecorator() user: ILoggedInUser): Promise<ConnectionDTO> {
-        return this.commandBus.execute(new GetConnectionCommand(user));
+    public async getMyConnection(
+        @UserDecorator() user: ILoggedInUser
+    ): Promise<ShortConnectionDTO> {
+        const connectionData: ConnectionDTO = await this.commandBus.execute(
+            new GetConnectionCommand(user)
+        );
+
+        return ShortConnectionDTO.sanitize(connectionData);
+    }
+
+    @Get('/accounts')
+    @UseGuards(AuthGuard())
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [AccountDTO],
+        description: 'Get a IREC user accounts'
+    })
+    public async getMyAccounts(@UserDecorator() user: ILoggedInUser): Promise<[AccountDTO]> {
+        return this.commandBus.execute(new GetAccountsCommand(user));
     }
 }

@@ -11,6 +11,6 @@ export class ClaimRequestedEventHandler {
 
     async handle(event: ClaimRequestedEvent): Promise<void> {
         this.logger.log(`Received claim requested event with transfer id=${event.transfer.id}`);
-        this.withdrawalProcessorService.requestClaim(event.transfer);
+        this.withdrawalProcessorService.request(event.transfer);
     }
 }

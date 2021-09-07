@@ -3,6 +3,7 @@ common/changes/
 common/scripts/
 common/config/
 CHANGELOG.*
+docs/
 
 # Package manager files
 pnpm-lock.yaml
@@ -11,3 +12,4 @@ package-lock.json
 shrinkwrap.json
 
 .github/workflows/*.yml
+docs/

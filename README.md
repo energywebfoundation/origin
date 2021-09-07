@@ -25,12 +25,11 @@
         -   [Stable](#stable)
         -   [Canary](#canary)
         -   [Preview](#preview)
+-   [Preparation](#preparation)
 -   [Installation](#installation)
 -   [Build](#build)
 -   [Test](#test)
 -   [Run demo](#run-demo)
-    -   [Preparation](#preparation)
-    -   [Running](#running)
     -   [Heroku environment provisioning](#heroku-environment-provisioning)
 -   [Energy Attribute Certificates](#energy-attribute-certificates)
 -   [Key modules and components](#key-modules-and-components)
@@ -112,6 +111,8 @@ docker run --rm --env-file ./.env -v $PWD/influxdb-local:/var/lib/influxdb influ
 
 Run the InfluxDB instance
 
+<<<<<<< HEAD
+
 ```
 docker run --name energy-influxdb --env-file ./.env -d -p 8086:8086 -v $PWD/influxdb-local:/var/lib/influxdb -v $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro influxdb:1.8
 ```
@@ -138,7 +139,10 @@ rush test:e2e
 
 ## Run demo
 
-After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
+=======
+
+> > > > > > > 306afeeae28d326a979c946a3fee77810b1891a3
+> > > > > > > After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
 
 ```shell
 rush run:origin

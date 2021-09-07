@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api-client@0.1.4...@energyweb/issuer-api-client@0.2.0) (2021-08-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v4.8.1 ([daa023b](https://github.com/energywebfoundation/origin/commit/daa023bdcd20b78aa3dd8af966c8127b57b9d9ad))
+* **deps:** update dependency @nestjs/swagger to v4.8.2 ([d17e433](https://github.com/energywebfoundation/origin/commit/d17e433f1fa2a07ea50bd26b423652670436c6ae))
+* **deps:** update nest monorepo to v7.6.17 ([ecc84c0](https://github.com/energywebfoundation/origin/commit/ecc84c0ce3d2d2e47ebe7c667d53adbc6fdd9f6b))
+* **deps:** update nest monorepo to v7.6.18 ([6835926](https://github.com/energywebfoundation/origin/commit/6835926dff7764d275b2006084e344c37948b7fa))
+
+
+### Features
+
+* irec certificates handling ([fc0cb5e](https://github.com/energywebfoundation/origin/commit/fc0cb5e50c4acff4e16becf1d8d02ff628050c93))
+* **issue-irec-api:** created new package ([b8e1322](https://github.com/energywebfoundation/origin/commit/b8e132295c8fb6f22974b824f34fa0d00951881d))
+
+
+
+
+
 ## [0.1.4](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api-client@0.1.3...@energyweb/issuer-api-client@0.1.4) (2021-03-23)
 
 

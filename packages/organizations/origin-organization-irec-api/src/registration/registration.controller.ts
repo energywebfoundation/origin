@@ -24,7 +24,7 @@ import { RegisterResponseDTO } from './registration-response.dto';
 import { RegistrationDTO } from './registration.dto';
 import { RegistrationService } from './registration.service';
 
-@ApiTags('irec_registration')
+@ApiTags('irec-registration')
 @ApiBearerAuth('access-token')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
@@ -51,7 +51,7 @@ export class RegistrationController {
 
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiBody({ type: NewRegistrationDTO })
     @ApiResponse({
         status: HttpStatus.CREATED,

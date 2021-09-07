@@ -3,7 +3,8 @@ import {
     RolesGuard,
     Roles,
     ExceptionInterceptor,
-    UserDecorator
+    UserDecorator,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -26,19 +27,22 @@ import {
     Role,
     ValidateDeviceOwnershipQuery
 } from '@energyweb/origin-backend-core';
-
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateCertificationRequestCommand } from './commands/create-certification-request.command';
-import { CreateCertificationRequestDTO } from './commands/create-certification-request.dto';
-import { GetAllCertificationRequestsQuery } from './queries/get-all-certification-requests.query';
-import { GetCertificationRequestQuery } from './queries/get-certification-request.query';
-import { ApproveCertificationRequestCommand } from './commands/approve-certification-request.command';
-import { RevokeCertificationRequestCommand } from './commands/revoke-certification-request.command';
-import { GetCertificationRequestByCertificateQuery } from './queries/get-certification-request-by-certificate.query';
+
+import {
+    CreateCertificationRequestCommand,
+    ApproveCertificationRequestCommand,
+    RevokeCertificationRequestCommand,
+    ValidateCertificationRequestCommand,
+    CertificateBoundToCertificationRequestCommand,
+    CreateCertificationRequestDTO
+} from './commands';
+import {
+    GetAllCertificationRequestsQuery,
+    GetCertificationRequestQuery,
+    GetCertificationRequestByCertificateQuery
+} from './queries';
 import { CertificationRequestDTO } from './certification-request.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
-import { ValidateCertificationRequestCommand } from './commands/validate-certification-request.command';
-import { CertificateBoundToCertificationRequestCommand } from './commands/certificate-bound-to-certification-request.command';
 
 @ApiTags('certification-requests')
 @ApiBearerAuth('access-token')

@@ -5,6 +5,7 @@ import {
     NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
+    SuccessResponseDTO,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
@@ -35,7 +36,6 @@ import {
 } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 
-import { SuccessResponseDTO } from '../utils/success-response.dto';
 import { DeviceService } from './device.service';
 import {
     CodeNameDTO,
@@ -44,10 +44,12 @@ import {
     ImportIrecDeviceDTO,
     IrecDeviceDTO,
     PublicDeviceDTO,
-    UpdateDeviceDTO
+    UpdateDeviceDTO,
+    UpdateDeviceStateDTO,
+    DeviceState
 } from './dto';
 
-@ApiTags('device')
+@ApiTags('irec-device')
 @ApiBearerAuth('access-token')
 @Controller('/irec/device-registry')
 @UseInterceptors(NullOrUndefinedResultInterceptor, ClassSerializerInterceptor)
@@ -73,9 +75,9 @@ export class DeviceController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CodeNameDTO],
-        description: 'Returns all IREC fuels'
+        description: 'Returns all IREC device types'
     })
-    getFuels(): CodeNameDTO[] {
+    getDeviceTypes(): CodeNameDTO[] {
         const deviceTypes = this.deviceService.getDeviceTypes();
 
         return deviceTypes.map((deviceType) => plainToClass(CodeNameDTO, deviceType));
@@ -85,7 +87,7 @@ export class DeviceController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: [CodeNameDTO],
-        description: 'Returns all IREC fuels types'
+        description: 'Returns all IREC fuel types'
     })
     getFuelTypes(): CodeNameDTO[] {
         const fuelTypes = this.deviceService.getFuelTypes();
@@ -204,6 +206,28 @@ export class DeviceController {
         @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<DeviceDTO> {
         const device = await this.deviceService.importIrecDevice(loggedInUser, deviceToImport);
+
+        return plainToClass(DeviceDTO, device);
+    }
+
+    @Put('/:id/status')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.Issuer, Role.Admin)
+    @ApiBody({ type: UpdateDeviceStateDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: DeviceDTO,
+        description: `Update device status`
+    })
+    @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
+    async updateDeviceStatus(
+        @Param('id') id: string,
+        @Body() { status }: UpdateDeviceStateDTO
+    ): Promise<DeviceDTO> {
+        const device =
+            status === DeviceState.Approved
+                ? await this.deviceService.approveDevice(id)
+                : await this.deviceService.rejectDevice(id);
 
         return plainToClass(DeviceDTO, device);
     }

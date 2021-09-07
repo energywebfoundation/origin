@@ -7,7 +7,6 @@ import moment from 'moment';
 import request from 'supertest';
 import {
     AccountService,
-    Order,
     IExternalDeviceService,
     IProductInfo,
     testUtils
@@ -17,13 +16,8 @@ import { ExchangeErc1888Module } from '../src';
 
 const web3 = 'http://localhost:8590';
 
-const {
-    authenticatedUser,
-    createDepositAddress,
-    depositToken,
-    issueToken,
-    bootstrapTestInstance
-} = testUtils;
+const { authenticatedUser, createDepositAddress, depositToken, issueToken, bootstrapTestInstance } =
+    testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits automatic posting for sale', () => {
@@ -52,13 +46,11 @@ describe('Deposits automatic posting for sale', () => {
     } as IExternalDeviceService;
 
     before(async () => {
-        ({
-            accountService,
-            databaseService,
-            registry,
-            issuer,
-            app
-        } = await bootstrapTestInstance(web3, deviceServiceMock, [ExchangeErc1888Module]));
+        ({ accountService, databaseService, registry, issuer, app } = await bootstrapTestInstance(
+            web3,
+            deviceServiceMock,
+            [ExchangeErc1888Module]
+        ));
 
         await app.init();
         depositAddress = await createDepositAddress(accountService, user1Id);
@@ -97,16 +89,13 @@ describe('Deposits automatic posting for sale', () => {
 
         await sleep(6000);
 
-        await request(app.getHttpServer())
-            .get('/orders')
-            .expect(HttpStatus.OK)
-            .expect((res) => {
-                const [ask] = res.body as Order[];
+        const {
+            body: [ask]
+        } = await request(app.getHttpServer()).get('/orders').expect(HttpStatus.OK);
 
-                expect(ask.currentVolume.toString(10)).equals(depositAmount);
-                expect(ask.status).equals(OrderStatus.Active);
-                expect(ask.side).equals(OrderSide.Ask);
-                expect(ask.price).equals(defaultAskPrice);
-            });
+        expect(ask.currentVolume.toString(10)).equals(depositAmount);
+        expect(ask.status).equals(OrderStatus.Active);
+        expect(ask.side).equals(OrderSide.Ask);
+        expect(ask.price).equals(defaultAskPrice);
     });
 });

@@ -33,26 +33,18 @@
             "name": "prettier",
             "commandKind": "global",
             "summary": "Used by the pre-commit Git hook. This command invokes Prettier to reformat staged changes.",
+            "safeForSimultaneousRushProcesses": true,
             "autoinstallerName": "rush-prettier",
             // This will invoke common/autoinstallers/rush-prettier/node_modules/.bin/pretty-quick
             "shellCommand": "pretty-quick --staged"
         },
         {
+            "commandKind": "bulk",
             "name": "test:ci:contracts",
-            "commandKind": "global",
-            "summary": "Run ci:contracts test",
+            "summary": "Tests the smart contracts",
             "safeForSimultaneousRushProcesses": false,
-            "autoinstallerName": "rush-tools",
-            "shellCommand": "lerna run --scope @energyweb/issuer --scope @energyweb/utils-general test:concurrent --parallel --stream",
-            "allowWarningsInSuccessfulBuild": true
-        },
-        {
-            "name": "test:ci:apps",
-            "commandKind": "global",
-            "summary": "Run ci:apps test",
-            "safeForSimultaneousRushProcesses": false,
-            "autoinstallerName": "rush-tools",
-            "shellCommand": "lerna run --scope @energyweb/exchange --scope @energyweb/origin-backend test:concurrent --parallel --stream",
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
             "allowWarningsInSuccessfulBuild": true
         },
         {
@@ -77,6 +69,15 @@
             "commandKind": "bulk",
             "name": "build:container:latest",
             "summary": "Deploys the stable containers",
+            "safeForSimultaneousRushProcesses": false,
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
+            "commandKind": "bulk",
+            "name": "clean",
+            "summary": "Cleans the repo",
             "safeForSimultaneousRushProcesses": false,
             "enableParallelism": false,
             "ignoreMissingScript": true,

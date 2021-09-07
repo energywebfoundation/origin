@@ -15,12 +15,6 @@ export enum TransactionType {
     Transfer = 'Transfer'
 }
 
-export class Beneficiary {
-    id: number;
-
-    name: string;
-}
-
 export class AccountDetails {
     name: string;
 
@@ -71,37 +65,35 @@ export class Transaction {
 
     notes: string;
 
-    @Transform((value) => value.code, { toClassOnly: true })
     @Expose({ name: 'source_account', toClassOnly: true })
     sender: string;
 
-    @Transform((value) => value.code, { toClassOnly: true })
     @Expose({ name: 'destination_account', toClassOnly: true })
     recipient: string;
 
     @Transform((value) => moment.tz(value.date, value.timezone).toDate())
     time: Date;
 
-    @Transform((value) => value.code, { toClassOnly: true })
-    @Expose({ name: 'transaction_type', toClassOnly: true })
+    @Expose({ name: 'type', toClassOnly: true })
     transactionType: TransactionType;
 }
 
-export class TransactionResult extends Transaction {
-    @Expose({ name: 'type', toClassOnly: true })
-    transactionType: TransactionType;
+export class ApproveTransaction extends Transaction {
+    asset: string;
+}
 
-    @Expose({ name: 'source_account', toClassOnly: true })
-    sender: string;
+export class TransactionResult extends Transaction {}
 
-    @Expose({ name: 'destination_account', toClassOnly: true })
-    recipient: string;
+export class RedeemBeneficiary {
+    id: number;
+
+    name: string;
 }
 
 export class RedeemTransaction extends Transaction {
     purpose: string;
 
-    beneficiary: Beneficiary;
+    beneficiary: RedeemBeneficiary;
 
     @Expose({ name: 'period_start', toPlainOnly: true })
     @Transform((value) => moment.tz(value.date, value.timezone).toDate())

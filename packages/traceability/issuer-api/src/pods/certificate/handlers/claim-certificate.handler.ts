@@ -29,8 +29,15 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
             { relations: ['blockchain'] }
         );
 
+        if (!certificate) {
+            return ResponseFailure(
+                `No certificate found with id ${certificateId}`,
+                HttpStatus.NOT_FOUND
+            );
+        }
+
         const cert = await new CertificateFacade(
-            certificate.tokenId,
+            certificate.id,
             certificate.blockchain.wrap()
         ).sync();
 
@@ -42,24 +49,24 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
         const amountToClaim = amount ? BigNumber.from(amount) : claimerBalance;
 
-        if (amountToClaim > claimerBalance) {
+        if (amountToClaim.gt(claimerBalance)) {
             return ResponseFailure(
-                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amount}.`,
+                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amountToClaim}.`,
                 HttpStatus.BAD_REQUEST
             );
         }
 
         // Transfer private certificates to public
         if (certificate.issuedPrivately) {
-            const { activeUser, issuer } = certificate.blockchain.wrap();
-            const issuerWithSigner = issuer.connect(activeUser);
+            const { activeUser, privateIssuer } = certificate.blockchain.wrap();
+            const privateIssuerWithSigner = privateIssuer.connect(activeUser);
 
             const ownerAddressLeafHash = certificate.latestCommitment.leafs.find(
                 (leaf) => leaf.key === checksummedForAddress
             ).hash;
 
-            const requestTx = await issuerWithSigner.requestMigrateToPublicFor(
-                certificate.tokenId,
+            const requestTx = await privateIssuerWithSigner.requestMigrateToPublicFor(
+                certificate.id,
                 ownerAddressLeafHash,
                 checksummedForAddress
             );
@@ -82,7 +89,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
             const { salt } = theProof;
 
-            const migrateTx = await issuerWithSigner.migrateToPublic(
+            const migrateTx = await privateIssuerWithSigner.migrateToPublic(
                 requestId.toString(),
                 amountToClaim.toString(),
                 salt,
@@ -92,17 +99,23 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
         }
 
         try {
-            await cert.claim(
+            const claimTx = await cert.claim(
                 claimData,
                 BigNumber.from(amountToClaim),
                 checksummedForAddress,
                 checksummedForAddress
             );
+
+            const receipt = await claimTx.wait();
+
+            if (receipt.status === 0) {
+                throw new Error(
+                    `Transfer tx ${receipt.transactionHash} on certificate with id ${cert.id} failed.`
+                );
+            }
         } catch (error) {
             return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        await certificate.sync();
 
         return ResponseSuccess();
     }

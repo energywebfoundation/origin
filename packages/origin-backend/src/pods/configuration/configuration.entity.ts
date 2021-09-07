@@ -11,8 +11,8 @@ import { IsArray, IsString } from 'class-validator';
 @Entity()
 @Check(`id = 1`)
 export class Configuration extends ExtendedBaseEntity implements IOriginConfiguration {
-    @PrimaryColumn({ type: 'int', default: () => `1`, nullable: false })
-    id: 1;
+    @PrimaryColumn({ type: 'int', default: 1, nullable: false })
+    id: number;
 
     @Column('varchar', { nullable: true })
     @IsString()

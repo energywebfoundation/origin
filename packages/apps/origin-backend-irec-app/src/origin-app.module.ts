@@ -1,7 +1,7 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
 import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
 import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
-import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-api';
+import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-irec-api';
 import {
     AppModule as OriginBackendModule,
     entities as OriginBackendEntities,
@@ -35,6 +35,7 @@ import {
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
+    IrecModule,
     OrganizationMemberRemovedHandler,
     OrganizationMemberRoleChangedHandler,
     OrganizationRegisteredHandler,
@@ -43,7 +44,7 @@ import {
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
-import { CheckDeviceStateTask, RefreshAllTokensTask } from './cron';
+import { RefreshAllTokensTask } from './cron';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -95,7 +96,8 @@ const OriginAppTypeOrmModule = () => {
         UserModule,
         CqrsModule,
         RegistrationModule,
-        IrecDeviceModule
+        IrecDeviceModule,
+        IrecModule
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
@@ -109,7 +111,6 @@ const OriginAppTypeOrmModule = () => {
         OrganizationStatusChangedHandler,
         RegistrationCreatedHandler,
         OrganizationRegisteredHandler,
-        CheckDeviceStateTask,
         RefreshAllTokensTask
     ]
 })

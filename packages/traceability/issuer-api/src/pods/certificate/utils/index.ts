@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers';
-import { CertificateDTO } from '../certificate.dto';
+import { CertificateDTO } from '../dto/certificate.dto';
 import { Certificate } from '../certificate.entity';
 
 export const certificateToDto = async (
@@ -26,11 +26,11 @@ export const certificateToDto = async (
 
     return {
         id: certificate.id,
-        tokenId: certificate.tokenId,
         deviceId: certificate.deviceId,
         generationStartTime: certificate.generationStartTime,
         generationEndTime: certificate.generationEndTime,
         creationTime: certificate.creationTime,
+        metadata: certificate.metadata,
         creationBlockHash: certificate.creationBlockHash,
         energy: {
             publicVolume: publicVolume.toString(),

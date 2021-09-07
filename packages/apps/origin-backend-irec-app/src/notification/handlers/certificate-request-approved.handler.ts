@@ -1,7 +1,7 @@
 import {
     CertificateRequestApprovedEvent,
     GetCertificationRequestQuery
-} from '@energyweb/issuer-api';
+} from '@energyweb/issuer-irec-api';
 import { UserService } from '@energyweb/origin-backend';
 import { Role } from '@energyweb/origin-backend-core';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
@@ -15,7 +15,8 @@ import { MailService } from '../../mail';
 
 @EventsHandler(CertificateRequestApprovedEvent)
 export class CertificateRequestApprovedHandler
-    implements IEventHandler<CertificateRequestApprovedEvent> {
+    implements IEventHandler<CertificateRequestApprovedEvent>
+{
     private readonly logger = new Logger(CertificateRequestApprovedHandler.name);
 
     private readonly issuerTypeId: string;

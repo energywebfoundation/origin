@@ -4,7 +4,8 @@ import {
     BlockchainAccountDecorator,
     ExceptionInterceptor,
     Roles,
-    RolesGuard
+    RolesGuard,
+    SuccessResponseDTO
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -19,7 +20,8 @@ import {
     HttpStatus,
     Query,
     UsePipes,
-    ValidationPipe
+    ValidationPipe,
+    NotFoundException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -36,14 +38,10 @@ import { TransferCertificateCommand } from './commands/transfer-certificate.comm
 import { TransferCertificateDTO } from './commands/transfer-certificate.dto';
 import { ClaimCertificateDTO } from './commands/claim-certificate.dto';
 import { ClaimCertificateCommand } from './commands/claim-certificate.command';
-import { GetCertificateByTokenIdQuery } from './queries/get-certificate-by-token.query';
 import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
-import { BulkClaimCertificatesCommand } from './commands/bulk-claim-certificates.command';
-import { BulkClaimCertificatesDTO } from './commands/bulk-claim-certificates.dto';
 import { CertificateEvent } from '../../types';
 import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
-import { CertificateDTO } from './certificate.dto';
-import { SuccessResponseDTO } from '../../utils/success-response.dto';
+import { CertificateDTO } from './dto/certificate.dto';
 import { certificateToDto } from './utils';
 import { Certificate } from './certificate.entity';
 
@@ -53,7 +51,7 @@ import { Certificate } from './certificate.entity';
 @UseInterceptors(ExceptionInterceptor)
 @UsePipes(ValidationPipe)
 export class CertificateController {
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
+    constructor(public readonly commandBus: CommandBus, public readonly queryBus: QueryBus) {}
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
@@ -70,23 +68,9 @@ export class CertificateController {
             new GetCertificateQuery(id)
         );
 
-        return certificateToDto(certificate, blockchainAddress);
-    }
-
-    @Get('/token-id/:tokenId')
-    @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: CertificateDTO,
-        description: 'Returns a Certificate by token ID'
-    })
-    public async getByTokenId(
-        @Param('tokenId', new ParseIntPipe()) tokenId: number,
-        @BlockchainAccountDecorator() blockchainAddress: string
-    ): Promise<CertificateDTO> {
-        const certificate = await this.queryBus.execute<GetCertificateByTokenIdQuery, Certificate>(
-            new GetCertificateByTokenIdQuery(tokenId)
-        );
+        if (!certificate) {
+            throw new NotFoundException(`Certificate with ID ${id} does not exist.`);
+        }
 
         return certificateToDto(certificate, blockchainAddress);
     }
@@ -152,7 +136,8 @@ export class CertificateController {
                 dto.toTime,
                 dto.deviceId,
                 blockchainAddress,
-                dto.isPrivate
+                dto.isPrivate,
+                dto.metadata
             )
         );
     }
@@ -196,23 +181,6 @@ export class CertificateController {
     ): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(
             new ClaimCertificateCommand(certificateId, dto.claimData, blockchainAddress, dto.amount)
-        );
-    }
-
-    @Put('/bulk-claim')
-    @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
-    @ApiBody({ type: BulkClaimCertificatesDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: SuccessResponseDTO,
-        description: 'Returns whether the bulk claim succeeded'
-    })
-    public async bulkClaim(
-        @BlockchainAccountDecorator() blockchainAddress: string,
-        @Body() dto: BulkClaimCertificatesDTO
-    ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
-            new BulkClaimCertificatesCommand(dto.certificateIds, dto.claimData, blockchainAddress)
         );
     }
 

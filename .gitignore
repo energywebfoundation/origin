@@ -77,3 +77,7 @@ common/autoinstallers/*/.npmrc
 dist/
 
 influxdb-local/
+site/
+
+deployment/
+!packages/tools/migrations/deployment/

@@ -10,13 +10,18 @@ import { AssetService } from '../asset/asset.service';
 import { HasEnoughAssetAmountQuery } from '../order/queries/has-enough-asset-amount.query';
 import { CreateDepositDTO } from './dto/create-deposit.dto';
 import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
-import { DepositApprovedEvent } from './deposit-approved.event';
+import { DepositApprovedEvent } from './events/deposit-approved.event';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
 import { Transfer } from './transfer.entity';
-import { WithdrawalRequestedEvent } from './withdrawal-requested.event';
+import { WithdrawalRequestedEvent } from './events/withdrawal-requested.event';
 import { RequestClaimDTO } from './dto/request-claim.dto';
-import { ClaimRequestedEvent } from './claim-requested.event';
+import { ClaimRequestedEvent } from './events/claim-requested.event';
+import { RequestBatchClaimDTO } from './dto/request-batch-claim.dto';
+import { GetAssetAmountQuery } from '../account-balance/queries/get-asset-amount.query';
+import { AssetAmount } from '../account-balance/account-balance.service';
+import { RequestSendDTO } from './dto/request-send.dto';
+import { SendRequestedEvent } from './events/send-requested.event';
 
 @Injectable()
 export class TransferService {
@@ -40,7 +45,9 @@ export class TransferService {
         return this.repository.find({
             where: [
                 { userId, direction: TransferDirection.Deposit, status: TransferStatus.Confirmed },
-                { userId, direction: TransferDirection.Withdrawal }
+                { userId, direction: TransferDirection.Withdrawal },
+                { userId, direction: TransferDirection.Claim },
+                { userId, direction: TransferDirection.Send }
             ]
         });
     }
@@ -97,32 +104,75 @@ export class TransferService {
 
         const { address } = await this.accountService.getAccount(userId);
 
-        const claim: Partial<Transfer> = {
-            userId,
-            amount,
-            address,
-            asset: { id: assetId } as Asset,
-            status: TransferStatus.Accepted,
-            direction: TransferDirection.Claim
-        };
+        return this.triggerClaim(
+            {
+                userId,
+                amount,
+                address,
+                asset: { id: assetId } as Asset,
+                status: TransferStatus.Accepted,
+                direction: TransferDirection.Claim
+            },
+            transaction
+        );
+    }
 
-        const manager = transaction || this.repository.manager;
+    public async requestBatchClaim(
+        userId: string,
+        { assetIds }: RequestBatchClaimDTO,
+        transaction?: EntityManager
+    ): Promise<Transfer['id'][]> {
+        const { address } = await this.accountService.getAccount(userId);
 
-        try {
-            const storedClaim = await manager.transaction((tr) =>
-                tr.getRepository<Transfer>(Transfer).save(claim)
+        const transferIds = [];
+
+        for (const assetId of assetIds) {
+            const { amount } = await this.queryBus.execute<GetAssetAmountQuery, AssetAmount>(
+                new GetAssetAmountQuery(userId, assetId)
             );
 
-            this.logger.debug(`Created new claim with id=${storedClaim.id}`);
+            if (amount.eq(new BN(0))) {
+                this.logger.error(
+                    `Skipping claiming because the user doesn't own any tokens in asset with ID ${assetId}`
+                );
+            }
 
-            this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
+            const id = await this.triggerClaim(
+                {
+                    userId,
+                    amount: amount.toString(10),
+                    address,
+                    asset: { id: assetId } as Asset,
+                    status: TransferStatus.Accepted,
+                    direction: TransferDirection.Claim
+                },
+                transaction
+            );
 
-            return storedClaim.id;
-        } catch (error) {
-            this.logger.error(error.message);
-
-            throw error;
+            transferIds.push(id);
         }
+
+        return transferIds;
+    }
+
+    public async requestSend(
+        userId: string,
+        { address, amount, assetId }: RequestSendDTO,
+        transaction?: EntityManager
+    ): Promise<Transfer['id']> {
+        await this.validateEnoughFunds(userId, assetId, amount);
+
+        return this.triggerSend(
+            {
+                userId,
+                amount,
+                address,
+                asset: { id: assetId } as Asset,
+                status: TransferStatus.Accepted,
+                direction: TransferDirection.Send
+            },
+            transaction
+        );
     }
 
     public async createDeposit(depositDTO: CreateDepositDTO) {
@@ -189,14 +239,12 @@ export class TransferService {
             const { transactionHash, address, amount, asset, blockNumber } = deposit;
 
             let transfer = await this.findOne(null, {
-                where: { transactionHash }
+                where: { transactionHash, direction: TransferDirection.Deposit }
             });
 
             if (transfer) {
                 this.logger.debug(
-                    `Deposit with transactionHash ${transactionHash} already exists and has status ${
-                        TransferStatus[transfer.status]
-                    } `
+                    `Deposit with transactionHash ${transactionHash} already exists and has status ${transfer.status} `
                 );
                 return;
             }
@@ -219,6 +267,52 @@ export class TransferService {
             );
         } catch (error) {
             this.logger.error(error.message);
+        }
+    }
+
+    private async triggerClaim(
+        claim: Partial<Transfer>,
+        transaction?: EntityManager
+    ): Promise<Transfer['id']> {
+        const manager = transaction || this.repository.manager;
+
+        try {
+            const storedClaim = await manager.transaction((tr) =>
+                tr.getRepository<Transfer>(Transfer).save(claim)
+            );
+
+            this.logger.debug(`Created new claim with id=${storedClaim.id}`);
+
+            this.eventBus.publish(new ClaimRequestedEvent(storedClaim));
+
+            return storedClaim.id;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
+        }
+    }
+
+    private async triggerSend(
+        send: Partial<Transfer>,
+        transaction?: EntityManager
+    ): Promise<Transfer['id']> {
+        const manager = transaction || this.repository.manager;
+
+        try {
+            const storedSend = await manager.transaction((tr) =>
+                tr.getRepository<Transfer>(Transfer).save(send)
+            );
+
+            this.logger.debug(`Created new send with id=${storedSend.id}`);
+
+            this.eventBus.publish(new SendRequestedEvent(storedSend));
+
+            return storedSend.id;
+        } catch (error) {
+            this.logger.error(error.message);
+
+            throw error;
         }
     }
 

@@ -54,7 +54,10 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         this.blockchainProperties = {
             web3: provider,
-            registry: Contracts.factories.RegistryFactory.connect(registryAddress, this.wallet),
+            registry: Contracts.factories.RegistryExtendedFactory.connect(
+                registryAddress,
+                this.wallet
+            ),
             issuer: Contracts.factories.IssuerFactory.connect(issuerAddress, this.wallet),
             activeUser: this.wallet
         };
@@ -87,44 +90,28 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         await this.processAcceptedWithdrawals();
         await this.processAcceptedClaims();
+        await this.processAcceptedSends();
         await this.processUnconfirmedWithdrawals();
         await this.processUnconfirmedClaims();
+        await this.processUnconfirmedSends();
     }
 
-    public requestWithdrawal(withdrawal: Transfer): void {
-        const { id } = withdrawal;
-        this.logger.log(`[Withdrawal ${id}] Requested processing`);
-        this.logger.debug(`[Withdrawal ${id}] Requested processing ${JSON.stringify(withdrawal)}`);
+    public request(transfer: Transfer): void {
+        const { id } = transfer;
+        this.logger.log(`[${transfer.direction} ${id}] Requested processing`);
+        this.logger.debug(
+            `[${transfer.direction} ${id}] Requested processing ${JSON.stringify(transfer)}`
+        );
 
-        if (withdrawal.direction !== TransferDirection.Withdrawal) {
-            this.logger.error(
-                `[Withdrawal ${id}] Expected ${
-                    TransferDirection[TransferDirection.Withdrawal]
-                } but got ${withdrawal.direction}`
-            );
+        if (transfer.direction === TransferDirection.Deposit) {
+            const errorMessage = `Expected ${TransferDirection.Withdrawal}/${TransferDirection.Claim}/${TransferDirection.Send} but got ${transfer.direction}`;
 
-            throw new Error('Expected transfer but got deposit');
+            this.logger.error(`[${transfer.direction} ${id}] ${errorMessage}`);
+
+            throw new Error(errorMessage);
         }
 
-        this.transferQueue.next(withdrawal.id);
-    }
-
-    public requestClaim(claim: Transfer): void {
-        const { id } = claim;
-        this.logger.log(`[Claim ${id}] Requested processing`);
-        this.logger.debug(`[Claim ${id}] Requested processing ${JSON.stringify(claim)}`);
-
-        if (claim.direction !== TransferDirection.Claim) {
-            this.logger.error(
-                `[Claim ${id}] Expected ${TransferDirection[TransferDirection.Claim]} but got ${
-                    claim.direction
-                }`
-            );
-
-            throw new Error('Expected transfer but got deposit');
-        }
-
-        this.transferQueue.next(claim.id);
+        this.transferQueue.next(transfer.id);
     }
 
     private async process(id: string) {
@@ -140,40 +127,52 @@ export class WithdrawalProcessorService implements OnModuleInit {
 
         if (transfer.status !== TransferStatus.Accepted) {
             this.logger.error(
-                `[Transfer ${id}] Expected status ${
-                    TransferStatus[TransferStatus.Accepted]
-                } but got ${TransferStatus[transfer.status]} instead`
+                `[Transfer ${id}] Expected status ${TransferStatus.Accepted} but got ${transfer.status} instead`
             );
             return;
         }
 
         let result: ContractTransaction;
 
-        const certificate = await new Certificate(
-            Number(transfer.asset.tokenId),
-            this.blockchainProperties
-        ).sync();
+        try {
+            const certificate = await new Certificate(
+                Number(transfer.asset.tokenId),
+                this.blockchainProperties
+            ).sync();
 
-        if (transfer.direction === TransferDirection.Withdrawal) {
-            result = await certificate.transfer(transfer.address, BigNumber.from(transfer.amount));
-        } else if (transfer.direction === TransferDirection.Claim) {
-            result = await certificate.claim(
-                { beneficiary: transfer.address },
-                BigNumber.from(transfer.amount)
-            );
-        } else {
-            throw Error(
-                `Unable to process transfer with direction ${
-                    TransferDirection[transfer.direction]
-                }.`
-            );
+            if (
+                transfer.direction === TransferDirection.Withdrawal ||
+                transfer.direction === TransferDirection.Send
+            ) {
+                result = await certificate.transfer(
+                    transfer.address,
+                    BigNumber.from(transfer.amount)
+                );
+            } else if (transfer.direction === TransferDirection.Claim) {
+                result = await certificate.claim(
+                    {
+                        beneficiary: transfer.address,
+                        location: '',
+                        countryCode: '',
+                        periodStartDate: '',
+                        periodEndDate: '',
+                        purpose: 'GHG Accounting'
+                    },
+                    BigNumber.from(transfer.amount)
+                );
+            } else {
+                throw Error(`Unable to process transfer with direction ${transfer.direction}.`);
+            }
+
+            await this.transferService.setAsUnconfirmed(id, result.hash);
+
+            const receipt = await result.wait();
+
+            await this.handleConfirmation(transfer, receipt);
+        } catch (error) {
+            this.logger.error(`[Transfer ${id}] Error processing transfer: ${error.message}`);
+            this.logger.error(`[Transfer ${id}] Error trace: ${JSON.stringify(error)}`);
         }
-
-        await this.transferService.setAsUnconfirmed(id, result.hash);
-
-        const receipt = await result.wait();
-
-        await this.handleConfirmation(transfer, receipt);
     }
 
     private async processAcceptedWithdrawals() {
@@ -183,7 +182,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
         );
         this.logger.debug(`Found ${withdrawals.length} ${TransferStatus.Accepted} withdrawals`);
 
-        withdrawals.forEach((withdrawal) => this.requestWithdrawal(withdrawal));
+        withdrawals.forEach((withdrawal) => this.request(withdrawal));
     }
 
     private async processAcceptedClaims() {
@@ -193,7 +192,17 @@ export class WithdrawalProcessorService implements OnModuleInit {
         );
         this.logger.debug(`Found ${claims.length} ${TransferStatus.Accepted} claims`);
 
-        claims.forEach((claim) => this.requestClaim(claim));
+        claims.forEach((claim) => this.request(claim));
+    }
+
+    private async processAcceptedSends() {
+        const sends = await this.transferService.getByStatus(
+            TransferStatus.Accepted,
+            TransferDirection.Send
+        );
+        this.logger.debug(`Found ${sends.length} ${TransferStatus.Accepted} sends`);
+
+        sends.forEach((send) => this.request(send));
     }
 
     private async processUnconfirmedWithdrawals() {
@@ -228,23 +237,44 @@ export class WithdrawalProcessorService implements OnModuleInit {
         }
     }
 
+    private async processUnconfirmedSends() {
+        const sends = await this.transferService.getByStatus(
+            TransferStatus.Unconfirmed,
+            TransferDirection.Send
+        );
+        this.logger.debug(`Found ${sends.length} ${TransferStatus.Unconfirmed} sends`);
+
+        for (const send of sends) {
+            const transaction = await this.wallet.provider.getTransaction(send.transactionHash);
+            const receipt = await transaction.wait();
+
+            await this.handleConfirmation(send, receipt);
+        }
+    }
+
     private async handleConfirmation(
         transfer: Transfer,
         { transactionHash, logs, blockNumber }: ContractReceipt
     ) {
         const { id } = transfer;
 
-        const logName =
-            transfer.direction === TransferDirection.Withdrawal ? 'TransferSingle' : 'ClaimSingle';
+        const isWithdrawalOrSend = (t: Transfer) =>
+            [TransferDirection.Withdrawal, TransferDirection.Send].includes(t.direction);
+
+        const logName = isWithdrawalOrSend(transfer) ? 'TransferSingle' : 'ClaimSingle';
 
         const hasLog = logs
             .map((log: any) => this.blockchainProperties.registry.interface.parseLog(log))
             .filter((log: any) => log.name === logName)
-            .some((log: any) => this.hasMatchingLog(transfer, log));
+            .some((log: any) =>
+                isWithdrawalOrSend(transfer)
+                    ? this.hasMatchingTransferLog(transfer, log)
+                    : this.hasMatchingClaimLog(transfer, log)
+            );
 
         if (!hasLog) {
             this.logger.error(
-                `[Transaction ${id}] Expected event ${logName} was not found in the transaction ${transactionHash}`
+                `[Transfer ${id}] Expected event ${logName} was not found in the transaction ${transactionHash}`
             );
             return this.transferService.setAsError(id);
         }
@@ -252,14 +282,26 @@ export class WithdrawalProcessorService implements OnModuleInit {
         return this.transferService.setAsConfirmed(transactionHash, blockNumber);
     }
 
-    private hasMatchingLog(transfer: Transfer, { args }: ethers.utils.LogDescription) {
-        const _to = String(args._to).toLowerCase();
-        const _from = String(args._from).toLowerCase();
+    private hasMatchingTransferLog(transfer: Transfer, { args }: ethers.utils.LogDescription) {
+        const to = String(args.to).toLowerCase();
+        const from = String(args.from).toLowerCase();
+
+        return (
+            args.id.toString() === transfer.asset.tokenId &&
+            from === this.wallet.address.toLowerCase() &&
+            to === transfer.address.toLowerCase() &&
+            args.value.toString() === transfer.amount
+        );
+    }
+
+    private hasMatchingClaimLog(transfer: Transfer, { args }: ethers.utils.LogDescription) {
+        const to = String(args._claimIssuer).toLowerCase();
+        const from = String(args._claimSubject).toLowerCase();
 
         return (
             args._id.toString() === transfer.asset.tokenId &&
-            _from === this.wallet.address.toLowerCase() &&
-            _to === transfer.address.toLowerCase() &&
+            from === this.wallet.address.toLowerCase() &&
+            to === this.wallet.address.toLowerCase() &&
             args._value.toString() === transfer.amount
         );
     }

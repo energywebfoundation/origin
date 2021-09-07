@@ -469,6 +469,14 @@
             "projectFolder": "packages/traceability/issuer-api-client"
         },
         {
+            "packageName": "@energyweb/issuer-irec-api",
+            "projectFolder": "packages/traceability/issuer-irec-api"
+        },
+        {
+            "packageName": "@energyweb/issuer-irec-api-client",
+            "projectFolder": "packages/traceability/issuer-irec-api-client"
+        },
+        {
             "packageName": "@energyweb/issuer-irec-api-wrapper",
             "projectFolder": "packages/traceability/issuer-irec-api-wrapper"
         },
