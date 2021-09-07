@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@material-ui/core';
 
 import {
   getOrganizationMenu,
@@ -30,7 +31,8 @@ import {
 } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
-import { useActiveMenuTab, useAxiosDefaults } from '../hooks';
+import { useActiveMenuTab, useAxiosDefaults } from '../../hooks';
+import { useStyles } from './AppContainer.styles';
 
 export type RoutesConfig = {
   orgRoutes: Omit<TGetOrganizationMenuArgs, 't' | 'isOpen' | 'showSection'>;
@@ -46,6 +48,9 @@ export type RoutesConfig = {
 
 export const useAppContainerEffects = () => {
   useAxiosDefaults();
+  const classes = useStyles();
+  const theme = useTheme();
+  const isLightTheme = theme.palette.mode === 'light';
 
   const { t } = useTranslation();
   const { isAuthenticated, user, logout, userLoading } = useUser();
@@ -107,6 +112,8 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isOrganizationTabActive,
     showSection: userIsOrgAdminOrAdminOrSupport,
+    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...orgRoutesConfig,
   });
 
@@ -132,6 +139,8 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isDeviceTabActive,
     showSection: true,
+    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...deviceRoutesConfig,
   });
 
@@ -151,6 +160,8 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isCertificateTabActive,
     showSection: (userIsActive && userHasOrg) || userIsIssuer,
+    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...certificateRoutesConfig,
   });
 
@@ -167,6 +178,8 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isExchangeTabActive,
     showSection: true,
+    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...exchangeRoutesConfig,
   });
 
@@ -178,6 +191,8 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isAccountTabActive,
     showSection: true,
+    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...accountRoutesConfig,
   });
   const adminRoutesConfig: RoutesConfig['adminRoutes'] = {
@@ -188,6 +203,8 @@ export const useAppContainerEffects = () => {
     t,
     isOpen: isAdminTabAcive,
     showSection: userIsAdminOrSupport,
+    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...adminRoutesConfig,
   });
 
