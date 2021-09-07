@@ -75,3 +75,5 @@ common/autoinstallers/*/.npmrc
 !.env.test
 
 dist/
+
+influxdb-local/
