@@ -6,6 +6,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   button: {
+    borderRadius: 0,
     justifyContent: 'flex-start',
     fontWeight: 600,
     letterSpacing: '0.1rem',

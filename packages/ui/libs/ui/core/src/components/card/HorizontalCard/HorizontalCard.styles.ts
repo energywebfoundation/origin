@@ -20,7 +20,11 @@ export const useStyles = makeStyles((theme) => ({
   image: {
     width: 160,
     minHeight: 140,
-    borderRight: `1px solid ${theme.palette.background.paper}`,
+    borderRight: `1px solid ${
+      theme.palette.mode === 'dark'
+        ? theme.palette.background.paper
+        : theme.palette.text.primary
+    }`,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

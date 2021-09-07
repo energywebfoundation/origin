@@ -1,4 +1,4 @@
-import { BoxProps } from '@material-ui/core';
+import { BoxProps, PaperProps, SwitchProps } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -21,6 +21,12 @@ interface MainLayoutProps {
   isAuthenticated: boolean;
   icon?: ReactNode;
   iconWrapperProps?: BoxProps;
+  topBarClassName?: string;
+  navBarPaperProps?: PaperProps;
+  themeSwitcher?: boolean;
+  themeMode?: 'dark' | 'light';
+  changeThemeMode?: () => void;
+  themeSwitchProps?: Omit<SwitchProps, 'checked' | 'onChange'>;
 }
 
 export const MainLayout: FC<MainLayoutProps> = ({
@@ -31,14 +37,18 @@ export const MainLayout: FC<MainLayoutProps> = ({
   isAuthenticated,
   icon,
   iconWrapperProps,
+  topBarClassName,
+  navBarPaperProps,
+  ...themeSwitcherProps
 }) => {
   const { mobileNavOpen, setMobileNavOpen } = useMainLayoutEffects();
   return (
     <>
       <TopBar
-        isAuthenticated={isAuthenticated}
         buttons={topbarButtons}
         onMobileNavOpen={() => setMobileNavOpen(true)}
+        toolbarClassName={topBarClassName}
+        {...themeSwitcherProps}
       />
       <NavBar
         isAuthenticated={isAuthenticated}
@@ -49,6 +59,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
         orgData={orgData}
         icon={icon}
         iconWrapperProps={iconWrapperProps}
+        paperProps={navBarPaperProps}
       />
       <PageWrapper>
         <Outlet />

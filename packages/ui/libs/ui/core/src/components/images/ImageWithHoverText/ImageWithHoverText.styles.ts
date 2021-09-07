@@ -20,6 +20,6 @@ export const useStyles = makeStyles((theme) => ({
     height: 180,
   },
   text: {
-    color: theme.palette.primary.contrastText,
+    color: theme.palette.text.primary,
   },
 }));
