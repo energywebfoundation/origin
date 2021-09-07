@@ -381,16 +381,8 @@
      */
     "projects": [
         {
-            "packageName": "@energyweb/origin-backend-app",
-            "projectFolder": "packages/apps/origin-backend-app"
-        },
-        {
             "packageName": "@energyweb/origin-backend-irec-app",
             "projectFolder": "packages/apps/origin-backend-irec-app"
-        },
-        {
-            "packageName": "@energyweb/device-registry",
-            "projectFolder": "packages/device-registry"
         },
         {
             "packageName": "@energyweb/origin-device-registry-api",
@@ -399,14 +391,6 @@
         {
             "packageName": "@energyweb/origin-device-registry-api-client",
             "projectFolder": "packages/devices/origin-device-registry-api-client"
-        },
-        {
-            "packageName": "@energyweb/origin-device-registry-irec-form-api",
-            "projectFolder": "packages/devices/origin-device-registry-irec-form-api"
-        },
-        {
-            "packageName": "@energyweb/origin-device-registry-irec-form-api-client",
-            "projectFolder": "packages/devices/origin-device-registry-irec-form-api-client"
         },
         {
             "packageName": "@energyweb/origin-device-registry-irec-local-api",
@@ -445,16 +429,8 @@
             "projectFolder": "packages/origin-backend-core"
         },
         {
-            "packageName": "@energyweb/migrations",
-            "projectFolder": "packages/tools/migrations"
-        },
-        {
             "packageName": "@energyweb/migrations-irec",
             "projectFolder": "packages/tools/migrations-irec"
-        },
-        {
-            "packageName": "@energyweb/solar-simulator",
-            "projectFolder": "packages/tools/solar-simulator"
         },
         {
             "packageName": "@energyweb/issuer",
@@ -531,10 +507,6 @@
         {
             "packageName": "@energyweb/origin-device-registry-api-react-query-client",
             "projectFolder": "packages/api-clients/react-query/origin-device-registry-api"
-        },
-        {
-            "packageName": "@energyweb/origin-device-registry-irec-form-api-react-query-client",
-            "projectFolder": "packages/api-clients/react-query/origin-device-registry-irec-form-api"
         },
         {
             "packageName": "@energyweb/origin-device-registry-irec-local-api-react-query-client",
