@@ -23,6 +23,7 @@
         "clean": "shx rm -rf dist"
     },
     "dependencies": {
+        "@nestjs/common": "7.6.18",
         "axios": "0.21.3",
         "class-transformer": "0.3.1",
         "class-validator": "0.13.1",

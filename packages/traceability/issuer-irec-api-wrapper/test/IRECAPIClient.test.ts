@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import { DeviceType, FuelType, IRECAPIClient, ReservationItem } from '../src';
 
 import { credentials, getClient, validateCodeName, validateOrganization } from './helpers';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
 
 describe('IREC API', () => {
     let participantClient: IRECAPIClient;
@@ -21,6 +22,12 @@ describe('IREC API', () => {
     });
 
     describe('Account', () => {
+        it(`should throw correct HTTP exception`, async () => {
+            const e = await registrantClient.account.getAll().catch((e) => e);
+            expect(e instanceof HttpException).to.equal(true);
+            expect(e.getStatus()).to.equal(403);
+        });
+
         it(`should fetch all accounts`, async () => {
             const [firstAccount] = await participantClient.account.getAll();
 

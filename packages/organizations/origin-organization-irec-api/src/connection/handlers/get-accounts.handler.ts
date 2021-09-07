@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Inject } from '@nestjs/common';
+import { HttpStatus, Inject } from '@nestjs/common';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -8,6 +8,7 @@ import { RegistrationService } from '../../registration';
 import { GetAccountsCommand } from '../commands';
 import { IREC_SERVICE, IrecService } from '../../irec';
 import { AccountDTO } from '../dto';
+import { HttpException } from '@nestjs/common';
 
 @CommandHandler(GetAccountsCommand)
 export class GetAccountsHandler implements ICommandHandler<GetAccountsCommand> {
@@ -21,6 +22,18 @@ export class GetAccountsHandler implements ICommandHandler<GetAccountsCommand> {
     ) {}
 
     async execute({ owner }: GetAccountsCommand): Promise<AccountDTO[]> {
-        return this.irecService.getAccountInfo(owner);
+        try {
+            return await this.irecService.getAccountInfo(owner);
+        } catch (e) {
+            if (e instanceof HttpException) {
+                const status = e.getStatus();
+                if (status === HttpStatus.FORBIDDEN) {
+                    // Registrant account does not have permissions to get list of accounts
+                    // so we return empty list
+                    return [];
+                }
+            }
+            throw e;
+        }
     }
 }
