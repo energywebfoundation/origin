@@ -5,7 +5,7 @@ import {
   variables_lightTheme,
 } from '../config/variables';
 import { createMaterialThemeForOrigin } from '../config/themeConfig';
-import { ThemeModeType } from '../providers';
+import { ThemeModeEnum } from './ThemeModeEnum';
 
 export interface IOriginStyleConfig {
   PRIMARY_COLOR: string;
@@ -47,9 +47,11 @@ export function createStyleConfig(
   };
 }
 
-export const makeOriginUiConfig = (themeMode?: ThemeModeType) => {
+export const makeOriginUiConfig = (themeMode?: ThemeModeEnum) => {
   const colors =
-    themeMode === 'dark' ? variables_darkTheme : variables_lightTheme;
+    themeMode === ThemeModeEnum.Dark
+      ? variables_darkTheme
+      : variables_lightTheme;
   const DEFAULT_STYLE_CONFIG = createStyleConfig(colors);
 
   const DEFAULT_ORIGIN_CONFIGURATION: IOriginThemeConfiguration = {

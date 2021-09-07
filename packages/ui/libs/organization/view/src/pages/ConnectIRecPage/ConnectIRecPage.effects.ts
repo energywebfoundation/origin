@@ -6,6 +6,7 @@ import {
   useMyOrganizationData,
 } from '@energyweb/origin-ui-organization-data';
 import { useConnectIRecFormLogic } from '@energyweb/origin-ui-organization-logic';
+import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { useTheme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +35,7 @@ export const useConnectIRecPageEffects = () => {
   const organizationId = organization?.id;
 
   const theme = useTheme();
-  const isDarkTheme = theme.palette.mode === 'dark';
+  const isDarkTheme = theme.palette.mode === ThemeModeEnum.Dark;
 
   return {
     isDarkTheme,

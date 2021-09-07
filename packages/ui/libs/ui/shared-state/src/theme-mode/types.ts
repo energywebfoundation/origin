@@ -1,3 +1,5 @@
-export type TSaveThemeModeToLS = (mode: 'dark' | 'light') => void;
+import { ThemeModeEnum } from './ThemeModeEnum';
 
-export type TGetThemeModeFromLS = () => 'dark' | 'light';
+export type TSaveThemeModeToLS = (mode: ThemeModeEnum) => void;
+
+export type TGetThemeModeFromLS = () => ThemeModeEnum;

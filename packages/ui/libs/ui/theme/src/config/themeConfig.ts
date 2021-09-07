@@ -2,14 +2,14 @@ import { createMuiTheme, Theme, ThemeOptions } from '@material-ui/core/styles';
 import { enUS, plPL } from '@material-ui/core/locale';
 import { LightenColor } from '../utils/colors';
 import { IOriginStyleConfig } from '../utils/makeOriginUiConfig';
-import { ThemeModeType } from '../providers';
+import { ThemeModeEnum } from '../utils';
 import { variables_darkTheme } from './variables';
 
 const getThemeConfig = (
   styleConfig: IOriginStyleConfig,
-  themeMode?: ThemeModeType
+  themeMode?: ThemeModeEnum
 ): ThemeOptions => {
-  const isDarkTheme = themeMode === 'dark';
+  const isDarkTheme = themeMode === ThemeModeEnum.Dark;
 
   return {
     palette: {
@@ -27,7 +27,7 @@ const getThemeConfig = (
         secondary: styleConfig.TEXT_COLOR_DEFAULT,
         disabled: styleConfig.TEXT_COLOR_DEFAULT,
       },
-      mode: themeMode || 'dark',
+      mode: themeMode || ThemeModeEnum.Dark,
     },
     typography: {
       fontFamily: styleConfig.FONT_FAMILY_PRIMARY,
@@ -204,7 +204,7 @@ const getThemeConfig = (
 export const createMaterialThemeForOrigin = (
   styleConfig: IOriginStyleConfig,
   language: 'en' | 'pl',
-  themeMode?: ThemeModeType
+  themeMode?: ThemeModeEnum
 ): Theme => {
   const materialLocale =
     {

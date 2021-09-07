@@ -6,6 +6,7 @@ import {
   TopBarButtonData,
 } from '@energyweb/origin-ui-core';
 import {
+  ThemeModeEnum,
   useThemeModeDispatch,
   useThemeModeStore,
 } from '@energyweb/origin-ui-theme';
@@ -46,7 +47,7 @@ export const App: FC<AppProps> = memo(
       exchangeRoutes,
     } = routesConfig;
     const themeMode = useThemeModeStore();
-    const isLightTheme = themeMode === 'light';
+    const isLightTheme = themeMode === ThemeModeEnum.Light;
     const changeThemeMode = useThemeModeDispatch();
 
     return (

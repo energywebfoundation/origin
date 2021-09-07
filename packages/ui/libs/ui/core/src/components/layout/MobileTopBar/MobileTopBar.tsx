@@ -7,17 +7,18 @@ import {
   SwitchProps,
 } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
-import { TopBarButtonData } from '../TopBar';
-import { useStyles } from './MobileTopBar.styles';
-import { ThemeSwitcher } from '@energyweb/origin-ui-core';
 import clsx from 'clsx';
+import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
+import { ThemeSwitcher } from '@energyweb/origin-ui-core';
+import { useStyles } from './MobileTopBar.styles';
+import { TopBarButtonData } from '../TopBar';
 
 export interface MobileTopBarProps {
   onMobileNavOpen: () => void;
   buttons: TopBarButtonData[];
   toolbarClassName?: string;
   themeSwitcher?: boolean;
-  themeMode?: 'dark' | 'light';
+  themeMode?: ThemeModeEnum;
   changeThemeMode?: () => void;
   themeSwitchProps?: Omit<SwitchProps, 'checked' | 'onChange'>;
 }
@@ -43,7 +44,7 @@ export const MobileTopBar: FC<MobileTopBarProps> = memo(
           <Box>
             {themeSwitcher && (
               <ThemeSwitcher
-                selected={themeMode === 'light'}
+                selected={themeMode === ThemeModeEnum.Light}
                 handleThemeChange={changeThemeMode}
                 switchProps={themeSwitchProps}
               />

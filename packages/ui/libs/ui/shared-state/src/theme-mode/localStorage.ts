@@ -1,4 +1,5 @@
 import { THEME_MODE } from '../utils';
+import { ThemeModeEnum } from './ThemeModeEnum';
 import { TGetThemeModeFromLS, TSaveThemeModeToLS } from './types';
 
 export const saveThemeModeToLS: TSaveThemeModeToLS = (mode) => {
@@ -6,5 +7,5 @@ export const saveThemeModeToLS: TSaveThemeModeToLS = (mode) => {
 };
 
 export const getThemeModeFromLS: TGetThemeModeFromLS = () => {
-  return localStorage.getItem(THEME_MODE) as 'dark' | 'light';
+  return localStorage.getItem(THEME_MODE) as ThemeModeEnum;
 };

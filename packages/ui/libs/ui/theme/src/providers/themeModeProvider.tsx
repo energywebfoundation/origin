@@ -3,18 +3,20 @@ import {
   getThemeModeFromLS,
   saveThemeModeToLS,
 } from '@energyweb/origin-ui-shared-state';
+import { ThemeModeEnum } from '../utils';
 
-export type ThemeModeType = 'dark' | 'light';
-
-const ThemeModeStore = createContext<ThemeModeType>(null);
+const ThemeModeStore = createContext<ThemeModeEnum>(null);
 const ThemeModeDispatch = createContext<() => void>(null);
 
 export const ThemeModeProvider: FC = ({ children }) => {
-  const [themeMode, setThemeMode] = useState<ThemeModeType>(
-    getThemeModeFromLS() || 'dark'
+  const [themeMode, setThemeMode] = useState<ThemeModeEnum>(
+    getThemeModeFromLS() || ThemeModeEnum.Dark
   );
   const setMode = () => {
-    const newMode = themeMode === 'dark' ? 'light' : 'dark';
+    const newMode =
+      themeMode === ThemeModeEnum.Dark
+        ? ThemeModeEnum.Light
+        : ThemeModeEnum.Dark;
     setThemeMode(newMode);
     saveThemeModeToLS(newMode);
   };

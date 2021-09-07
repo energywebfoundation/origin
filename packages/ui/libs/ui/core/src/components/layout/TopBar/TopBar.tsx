@@ -1,4 +1,5 @@
 import { Box, SwitchProps } from '@material-ui/core';
+import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import React, { FC } from 'react';
 import { DesktopTopBar } from '../DesktopTopBar';
 import { MobileTopBar } from '../MobileTopBar';
@@ -15,7 +16,7 @@ export interface TopBarProps {
   onMobileNavOpen: () => void;
   toolbarClassName?: string;
   themeSwitcher?: boolean;
-  themeMode?: 'dark' | 'light';
+  themeMode?: ThemeModeEnum;
   changeThemeMode?: () => void;
   themeSwitchProps?: Omit<SwitchProps, 'checked' | 'onChange'>;
 }

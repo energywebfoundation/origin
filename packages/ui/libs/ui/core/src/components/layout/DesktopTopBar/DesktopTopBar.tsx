@@ -1,4 +1,5 @@
 import React, { FC, memo } from 'react';
+import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { Box, Button, SwitchProps, Toolbar } from '@material-ui/core';
 import { useStyles } from './DesktopTopBar.styles';
 import { TopBarButtonData } from '../TopBar';
@@ -9,7 +10,7 @@ export interface DesktopTopBarProps {
   buttons: TopBarButtonData[];
   toolbarClassName?: string;
   themeSwitcher?: boolean;
-  themeMode?: 'dark' | 'light';
+  themeMode?: ThemeModeEnum;
   changeThemeMode?: () => void;
   themeSwitchProps?: Omit<SwitchProps, 'checked' | 'onChange'>;
 }
@@ -29,7 +30,7 @@ export const DesktopTopBar: FC<DesktopTopBarProps> = memo(
         <Box flexGrow={1} />
         {themeSwitcher && (
           <ThemeSwitcher
-            selected={themeMode === 'light'}
+            selected={themeMode === ThemeModeEnum.Light}
             handleThemeChange={changeThemeMode}
             switchProps={themeSwitchProps}
           />

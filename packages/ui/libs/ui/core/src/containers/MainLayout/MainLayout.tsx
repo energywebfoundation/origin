@@ -1,4 +1,5 @@
 import { BoxProps, PaperProps, SwitchProps } from '@material-ui/core';
+import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import React, { ReactNode } from 'react';
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -24,7 +25,7 @@ interface MainLayoutProps {
   topBarClassName?: string;
   navBarPaperProps?: PaperProps;
   themeSwitcher?: boolean;
-  themeMode?: 'dark' | 'light';
+  themeMode?: ThemeModeEnum;
   changeThemeMode?: () => void;
   themeSwitchProps?: Omit<SwitchProps, 'checked' | 'onChange'>;
 }

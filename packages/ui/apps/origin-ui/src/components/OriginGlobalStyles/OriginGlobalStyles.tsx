@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Global, css } from '@emotion/react';
 import {
+  ThemeModeEnum,
   variables_darkTheme,
   variables_lightTheme,
 } from '@energyweb/origin-ui-theme';
@@ -13,7 +14,7 @@ export const OriginGlobalStyles: FC = () => {
       styles={css({
         body: {
           backgroundColor:
-            theme.palette.mode === 'dark'
+            theme.palette.mode === ThemeModeEnum.Dark
               ? variables_darkTheme.bodyBackgroundColor
               : variables_lightTheme.bodyBackgroundColor,
           margin: 0,
