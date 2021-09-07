@@ -1,0 +1,1034 @@
+{
+  "version": 2,
+  "cli": { "defaultCollection": "@nrwl/react" },
+  "defaultProject": "origin-ui",
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "@emotion/styled",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": { "style": "@emotion/styled" },
+      "library": { "style": "@emotion/styled", "linter": "eslint" }
+    }
+  },
+  "projects": {
+    "origin-ui": {
+      "root": "apps/origin-ui",
+      "sourceRoot": "apps/origin-ui/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/origin-ui",
+            "index": "apps/origin-ui/src/index.html",
+            "main": "apps/origin-ui/src/main.tsx",
+            "polyfills": "apps/origin-ui/src/polyfills.ts",
+            "tsConfig": "apps/origin-ui/tsconfig.app.json",
+            "assets": ["apps/origin-ui/src/favicon.ico"],
+            "styles": [],
+            "scripts": [],
+            "webpackConfig": "webpack.config.js"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/origin-ui/src/environments/environment.ts",
+                  "with": "apps/origin-ui/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "origin-ui:build",
+            "webpackConfig": "webpack.config.js"
+          },
+          "configurations": {
+            "production": { "buildTarget": "origin-ui:build:production" }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/origin-ui/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/origin-ui"],
+          "options": {
+            "jestConfig": "apps/origin-ui/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "origin-ui-e2e": {
+      "root": "apps/origin-ui-e2e",
+      "sourceRoot": "apps/origin-ui-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/origin-ui-e2e/cypress.json",
+            "tsConfig": "apps/origin-ui-e2e/tsconfig.e2e.json",
+            "devServerTarget": "origin-ui:serve"
+          },
+          "configurations": {
+            "production": { "devServerTarget": "origin-ui:serve:production" }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": { "lintFilePatterns": ["apps/origin-ui-e2e/**/*.{js,ts}"] }
+        }
+      }
+    },
+    "ui-core": {
+      "root": "libs/ui/core",
+      "sourceRoot": "libs/ui/core/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/core",
+            "tsConfig": "libs/ui/core/tsconfig.lib.json",
+            "project": "libs/ui/core/package.json",
+            "entryFile": "libs/ui/core/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/core/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/core"],
+          "options": {
+            "jestConfig": "libs/ui/core/jest.config.js",
+            "passWithNoTests": true
+          }
+        },
+        "storybook": {
+          "executor": "@nrwl/storybook:storybook",
+          "options": {
+            "uiFramework": "@storybook/react",
+            "port": 4400,
+            "config": { "configFolder": "libs/ui/core/.storybook" }
+          },
+          "configurations": { "ci": { "quiet": true } }
+        },
+        "build-storybook": {
+          "executor": "@nrwl/storybook:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "uiFramework": "@storybook/react",
+            "outputPath": "dist/storybook/ui-core",
+            "config": { "configFolder": "libs/ui/core/.storybook" }
+          },
+          "configurations": { "ci": { "quiet": true } }
+        }
+      }
+    },
+    "ui-utils": {
+      "root": "libs/ui/utils",
+      "sourceRoot": "libs/ui/utils/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/utils",
+            "tsConfig": "libs/ui/utils/tsconfig.lib.json",
+            "project": "libs/ui/utils/package.json",
+            "entryFile": "libs/ui/utils/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/utils/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/utils"],
+          "options": {
+            "jestConfig": "libs/ui/utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-localization": {
+      "root": "libs/ui/localization",
+      "sourceRoot": "libs/ui/localization/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/localization",
+            "tsConfig": "libs/ui/localization/tsconfig.lib.json",
+            "project": "libs/ui/localization/package.json",
+            "entryFile": "libs/ui/localization/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/localization/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/localization"],
+          "options": {
+            "jestConfig": "libs/ui/localization/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-theme": {
+      "root": "libs/ui/theme",
+      "sourceRoot": "libs/ui/theme/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/theme",
+            "tsConfig": "libs/ui/theme/tsconfig.lib.json",
+            "project": "libs/ui/theme/package.json",
+            "entryFile": "libs/ui/theme/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/theme/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/theme"],
+          "options": {
+            "jestConfig": "libs/ui/theme/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-assets": {
+      "root": "libs/ui/assets",
+      "sourceRoot": "libs/ui/assets/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/assets",
+            "tsConfig": "libs/ui/assets/tsconfig.lib.json",
+            "project": "libs/ui/assets/package.json",
+            "entryFile": "libs/ui/assets/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/assets/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/assets"],
+          "options": {
+            "jestConfig": "libs/ui/assets/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "exchange-view": {
+      "root": "libs/exchange/view",
+      "sourceRoot": "libs/exchange/view/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/exchange/view",
+            "tsConfig": "libs/exchange/view/tsconfig.lib.json",
+            "project": "libs/exchange/view/package.json",
+            "entryFile": "libs/exchange/view/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/exchange/view/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/exchange/view"],
+          "options": {
+            "jestConfig": "libs/exchange/view/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "exchange-logic": {
+      "root": "libs/exchange/logic",
+      "sourceRoot": "libs/exchange/logic/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/exchange/logic",
+            "tsConfig": "libs/exchange/logic/tsconfig.lib.json",
+            "project": "libs/exchange/logic/package.json",
+            "entryFile": "libs/exchange/logic/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/exchange/logic/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/exchange/logic"],
+          "options": {
+            "jestConfig": "libs/exchange/logic/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "certificate-view": {
+      "root": "libs/certificate/view",
+      "sourceRoot": "libs/certificate/view/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/certificate/view",
+            "tsConfig": "libs/certificate/view/tsconfig.lib.json",
+            "project": "libs/certificate/view/package.json",
+            "entryFile": "libs/certificate/view/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/certificate/view/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/certificate/view"],
+          "options": {
+            "jestConfig": "libs/certificate/view/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "certificate-logic": {
+      "root": "libs/certificate/logic",
+      "sourceRoot": "libs/certificate/logic/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/certificate/logic",
+            "tsConfig": "libs/certificate/logic/tsconfig.lib.json",
+            "project": "libs/certificate/logic/package.json",
+            "entryFile": "libs/certificate/logic/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/certificate/logic/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/certificate/logic"],
+          "options": {
+            "jestConfig": "libs/certificate/logic/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "user-view": {
+      "root": "libs/user/view",
+      "sourceRoot": "libs/user/view/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/user/view",
+            "tsConfig": "libs/user/view/tsconfig.lib.json",
+            "project": "libs/user/view/package.json",
+            "entryFile": "libs/user/view/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/user/view/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/user/view"],
+          "options": {
+            "jestConfig": "libs/user/view/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "user-logic": {
+      "root": "libs/user/logic",
+      "sourceRoot": "libs/user/logic/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/user/logic",
+            "tsConfig": "libs/user/logic/tsconfig.lib.json",
+            "project": "libs/user/logic/package.json",
+            "entryFile": "libs/user/logic/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/user/logic/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/user/logic"],
+          "options": {
+            "jestConfig": "libs/user/logic/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "device-logic": {
+      "root": "libs/device/logic",
+      "sourceRoot": "libs/device/logic/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/device/logic",
+            "tsConfig": "libs/device/logic/tsconfig.lib.json",
+            "project": "libs/device/logic/package.json",
+            "entryFile": "libs/device/logic/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/device/logic/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/device/logic"],
+          "options": {
+            "jestConfig": "libs/device/logic/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "device-view": {
+      "root": "libs/device/view",
+      "sourceRoot": "libs/device/view/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/device/view",
+            "tsConfig": "libs/device/view/tsconfig.lib.json",
+            "project": "libs/device/view/package.json",
+            "entryFile": "libs/device/view/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/device/view/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/device/view"],
+          "options": {
+            "jestConfig": "libs/device/view/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-shared-state": {
+      "root": "libs/ui/shared-state",
+      "sourceRoot": "libs/ui/shared-state/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/shared-state",
+            "tsConfig": "libs/ui/shared-state/tsconfig.lib.json",
+            "project": "libs/ui/shared-state/package.json",
+            "entryFile": "libs/ui/shared-state/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/shared-state/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/shared-state"],
+          "options": {
+            "jestConfig": "libs/ui/shared-state/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-view": {
+      "root": "libs/organization/view",
+      "sourceRoot": "libs/organization/view/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/view",
+            "tsConfig": "libs/organization/view/tsconfig.lib.json",
+            "project": "libs/organization/view/package.json",
+            "entryFile": "libs/organization/view/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/view/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/view"],
+          "options": {
+            "jestConfig": "libs/organization/view/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-data": {
+      "root": "libs/organization/data",
+      "sourceRoot": "libs/organization/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/data",
+            "tsConfig": "libs/organization/data/tsconfig.lib.json",
+            "project": "libs/organization/data/package.json",
+            "entryFile": "libs/organization/data/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/data"],
+          "options": {
+            "jestConfig": "libs/organization/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "organization-logic": {
+      "root": "libs/organization/logic",
+      "sourceRoot": "libs/organization/logic/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/organization/logic",
+            "tsConfig": "libs/organization/logic/tsconfig.lib.json",
+            "project": "libs/organization/logic/package.json",
+            "entryFile": "libs/organization/logic/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/organization/logic/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/organization/logic"],
+          "options": {
+            "jestConfig": "libs/organization/logic/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "device-data": {
+      "root": "libs/device/data",
+      "sourceRoot": "libs/device/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/device/data",
+            "tsConfig": "libs/device/data/tsconfig.lib.json",
+            "project": "libs/device/data/package.json",
+            "entryFile": "libs/device/data/src/index.ts",
+            "external": ["react", "react-dom"],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/device/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/device/data"],
+          "options": {
+            "jestConfig": "libs/device/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "certificate-data": {
+      "root": "libs/certificate/data",
+      "sourceRoot": "libs/certificate/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/certificate/data",
+            "tsConfig": "libs/certificate/data/tsconfig.lib.json",
+            "project": "libs/certificate/data/package.json",
+            "entryFile": "libs/certificate/data/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/certificate/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/certificate/data"],
+          "options": {
+            "jestConfig": "libs/certificate/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "ui-blockchain": {
+      "root": "libs/ui/blockchain",
+      "sourceRoot": "libs/ui/blockchain/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/ui/blockchain",
+            "tsConfig": "libs/ui/blockchain/tsconfig.lib.json",
+            "project": "libs/ui/blockchain/package.json",
+            "entryFile": "libs/ui/blockchain/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/ui/blockchain/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/blockchain"],
+          "options": {
+            "jestConfig": "libs/ui/blockchain/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "user-data": {
+      "root": "libs/user/data",
+      "sourceRoot": "libs/user/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/user/data",
+            "tsConfig": "libs/user/data/tsconfig.lib.json",
+            "project": "libs/user/data/package.json",
+            "entryFile": "libs/user/data/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/user/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/user/data"],
+          "options": {
+            "jestConfig": "libs/user/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "exchange-data": {
+      "root": "libs/exchange/data",
+      "sourceRoot": "libs/exchange/data/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/exchange/data",
+            "tsConfig": "libs/exchange/data/tsconfig.lib.json",
+            "project": "libs/exchange/data/package.json",
+            "entryFile": "libs/exchange/data/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "react-is",
+              "@emotion/styled",
+              "@emotion/react",
+              "react/jsx-runtime",
+              "react/jsx-dev-runtime"
+            ],
+            "rollupConfig": "rollup.config.js",
+            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/exchange/data/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/exchange/data"],
+          "options": {
+            "jestConfig": "libs/exchange/data/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  }
+}
