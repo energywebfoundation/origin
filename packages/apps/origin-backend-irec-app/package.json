@@ -47,6 +47,7 @@
         "@energyweb/origin-device-registry-api": "0.2.0",
         "@energyweb/origin-device-registry-irec-local-api": "0.3.0",
         "@energyweb/origin-organization-irec-api": "1.5.0",
+        "@energyweb/origin-energy-api": "1.0.3",
         "@energyweb/utils-general": "11.0.3",
         "@nestjs-modules/mailer": "1.5.1",
         "@nestjs/common": "7.6.18",
