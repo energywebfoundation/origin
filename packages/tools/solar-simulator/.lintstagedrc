@@ -1,6 +1,0 @@
-{
-  "*.{ts,tsx}": [
-    "prettier --write --config-precedence file-override './src/**/*'",
-    "eslint --fix"
-  ]
-}
