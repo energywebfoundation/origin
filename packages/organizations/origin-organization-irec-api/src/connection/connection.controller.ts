@@ -28,7 +28,7 @@ export class ConnectionController {
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
-    @ApiBody({ type: ShortConnectionDTO })
+    @ApiBody({ type: CreateConnectionDTO })
     @ApiCreatedResponse({
         type: ShortConnectionDTO,
         description: 'Creates a connection to I-REC'
