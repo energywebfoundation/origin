@@ -111,13 +111,11 @@ docker run --rm --env-file ./.env -v $PWD/influxdb-local:/var/lib/influxdb influ
 
 Run the InfluxDB instance
 
-<<<<<<< HEAD
-
 ```
 docker run --name energy-influxdb --env-file ./.env -d -p 8086:8086 -v $PWD/influxdb-local:/var/lib/influxdb -v $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro influxdb:1.8
 ```
 
-6. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
+1. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
 
 ## Installation
 
@@ -141,8 +139,7 @@ rush test:e2e
 
 =======
 
-> > > > > > > 306afeeae28d326a979c946a3fee77810b1891a3
-> > > > > > > After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
+After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
 
 ```shell
 rush run:origin

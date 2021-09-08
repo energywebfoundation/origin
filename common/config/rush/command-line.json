@@ -39,12 +39,12 @@
             "shellCommand": "pretty-quick --staged"
         },
         {
-            "commandKind": "bulk",
+            "commandKind": "global",
             "name": "test:ci:contracts",
             "summary": "Tests the smart contracts",
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "cd packages/traceability/issuer && rushx test:ci:contracts",
             "safeForSimultaneousRushProcesses": false,
-            "enableParallelism": false,
-            "ignoreMissingScript": true,
             "allowWarningsInSuccessfulBuild": true
         },
         {
@@ -89,7 +89,7 @@
             "summary": "Runs the full Origin development suite with a local blockchain",
             "safeForSimultaneousRushProcesses": false,
             "autoinstallerName": "rush-tools",
-            "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n ganache,backend-irec,ui \"yarn run:ganache\" \"wait-on tcp:8545 && yarn migrate:irec-demo && yarn run:irec-backend\" \"wait-on tcp:3030 && yarn run:ui\"",
+            "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n ganache,backend,ui \"yarn run:ganache\" \"wait-on tcp:8545 && yarn migrate:demo && yarn run:backend\" \"wait-on tcp:3030 && yarn run:ui\"",
             "allowWarningsInSuccessfulBuild": true
         },
         {

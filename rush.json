@@ -389,10 +389,6 @@
             "projectFolder": "packages/apps/origin-backend-irec-app"
         },
         {
-            "packageName": "@energyweb/device-registry",
-            "projectFolder": "packages/device-registry"
-        },
-        {
             "packageName": "@energyweb/origin-device-registry-api",
             "projectFolder": "packages/devices/origin-device-registry-api"
         },
@@ -451,10 +447,6 @@
         {
             "packageName": "@energyweb/migrations-irec",
             "projectFolder": "packages/tools/migrations-irec"
-        },
-        {
-            "packageName": "@energyweb/solar-simulator",
-            "projectFolder": "packages/tools/solar-simulator"
         },
         {
             "packageName": "@energyweb/issuer",
