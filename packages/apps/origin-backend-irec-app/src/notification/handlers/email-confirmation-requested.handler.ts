@@ -5,7 +5,8 @@ import { MailService } from '../../mail';
 
 @EventsHandler(EmailConfirmationRequestedEvent)
 export class EmailConfirmationRequestedHandler
-    implements IEventHandler<EmailConfirmationRequestedEvent> {
+    implements IEventHandler<EmailConfirmationRequestedEvent>
+{
     private readonly logger = new Logger(EmailConfirmationRequestedHandler.name);
 
     constructor(private readonly mailService: MailService) {}
@@ -13,7 +14,7 @@ export class EmailConfirmationRequestedHandler
     public async handle(event: EmailConfirmationRequestedEvent): Promise<void> {
         const { email, token } = event;
 
-        const url = `${process.env.UI_BASE_URL}/account/confirm-email?token=${token}`;
+        const url = `${process.env.UI_BASE_URL}/confirm-email?token=${token}`;
 
         const result = await this.mailService.send({
             to: email,
