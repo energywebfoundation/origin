@@ -24,6 +24,9 @@ export class IrecAccountItemDto implements AccountItem {
 
     device: CodeName;
 
+    @IsBoolean()
+    isDeviceImported: boolean;
+
     @ApiProperty({ type: Boolean })
     @IsBoolean()
     deviceSupported: boolean;
