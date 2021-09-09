@@ -137,8 +137,6 @@ rush test:e2e
 
 ## Run demo
 
-=======
-
 After you have the `.env` file created, installed dependencies (`rush install`) and build completed (`rush build`) run the following command:
 
 ```shell

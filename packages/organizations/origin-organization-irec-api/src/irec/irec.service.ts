@@ -2,7 +2,8 @@ import {
     BadRequestException,
     ForbiddenException,
     Injectable,
-    NotFoundException
+    NotFoundException,
+    UnauthorizedException
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
@@ -143,6 +144,12 @@ export class IrecService implements IIrecService {
 
         if (!irecConnection) {
             throw new ForbiddenException('User does not have an IREC connection');
+        }
+
+        if (!irecConnection.active) {
+            throw new UnauthorizedException(
+                'IREC connection is no longer active, please consider update IREC connection credentials'
+            );
         }
 
         const accessToken: AccessTokens = {

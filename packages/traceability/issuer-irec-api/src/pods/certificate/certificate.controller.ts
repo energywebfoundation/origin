@@ -5,10 +5,10 @@ import {
     Controller,
     Get,
     HttpStatus,
-    Post,
-    Put,
     Param,
     ParseIntPipe,
+    Post,
+    Put,
     UseGuards,
     UseInterceptors,
     UsePipes,
@@ -28,9 +28,12 @@ import {
 import { CertificateController, ClaimCertificateDTO } from '@energyweb/issuer-api';
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 
-import { GetIrecCertificatesToImportCommand, ImportIrecCertificateCommand } from './command';
+import {
+    ClaimIRECCertificateCommand,
+    GetIrecCertificatesToImportCommand,
+    ImportIrecCertificateCommand
+} from './command';
 import { ImportIrecCertificateDTO, IrecAccountItemDto } from './dto';
-import { ClaimIRECCertificateCommand } from './command/claim-irec-certificate.command';
 
 @ApiTags('irec-certificates')
 @ApiBearerAuth('access-token')
@@ -60,7 +63,7 @@ export class IrecCertificateController extends CertificateController {
         type: SuccessResponseDTO,
         description: 'Imports a certificate from IREC'
     })
-    async importIrecDevice(
+    async importIrecCertificate(
         @Body() certificateToImport: ImportIrecCertificateDTO,
         @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {
