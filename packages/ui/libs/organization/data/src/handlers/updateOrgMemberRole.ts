@@ -14,7 +14,8 @@ import { useQueryClient } from 'react-query';
 
 export const useOrganizationMemberRoleUpdate = () => {
   const { t } = useTranslation();
-  const { mutate } = useOrganizationControllerChangeMemberRole();
+  const { mutate, isLoading: isMutating } =
+    useOrganizationControllerChangeMemberRole();
   const { data: userUpdating } = useUserControllerMe();
 
   const queryClient = useQueryClient();
@@ -51,5 +52,5 @@ export const useOrganizationMemberRoleUpdate = () => {
     );
   };
 
-  return updateRoleHandler;
+  return { updateRoleHandler, isMutating };
 };

@@ -34,7 +34,7 @@ export const useOrderDetailsEffects = () => {
     order?.side === OrderSide.Bid
       ? t('exchange.myOrders.bid')
       : t('exchange.myOrders.ask');
-  const removeHandler = useApiCancelOrderHandler(orderSideText);
+  const { removeHandler } = useApiCancelOrderHandler(orderSideText);
 
   const handleRemove = () => {
     handleClose();

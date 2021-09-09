@@ -1,5 +1,6 @@
 import {
   useOrganizationMemberRemove,
+  useOrganizationMemberRoleUpdate,
   useOrganizationMembersData,
 } from '@energyweb/origin-ui-organization-data';
 import { useMembersTableLogic } from '@energyweb/origin-ui-organization-logic';
@@ -14,6 +15,7 @@ import {
   OrganizationModalsActionsEnum,
   useOrgModalsDispatch,
 } from '../../context';
+import { TableActionData } from '@energyweb/origin-ui-core';
 
 export const useMembersPageEffects = () => {
   const { t } = useTranslation();
@@ -23,7 +25,10 @@ export const useMembersPageEffects = () => {
   const {
     removeHandler,
     isLoading: removeHandlerIsLoading,
+    isMutating: isRemoveMutating,
   } = useOrganizationMemberRemove();
+  const { isMutating: isUpdateMemberMutating } =
+    useOrganizationMemberRoleUpdate();
 
   const openChangeRoleModal = async (id: User['id']) => {
     const preloadedUserToUpdate = await userControllerGet(id);
@@ -36,16 +41,18 @@ export const useMembersPageEffects = () => {
     });
   };
 
-  const membersActions = [
+  const actions: TableActionData<User['id']>[] = [
     {
       icon: <PermIdentityOutlined />,
       name: t('organization.members.editRole'),
       onClick: openChangeRoleModal,
+      loading: isUpdateMemberMutating,
     },
     {
       icon: <DeleteOutline />,
       name: t('organization.members.remove'),
-      onClick: (id: User['id']) => removeHandler(id),
+      onClick: removeHandler,
+      loading: isRemoveMutating,
     },
   ];
 
@@ -53,7 +60,7 @@ export const useMembersPageEffects = () => {
 
   const tableData = useMembersTableLogic({
     users: members,
-    actions: membersActions,
+    actions,
     loading: pageLoading,
   });
 

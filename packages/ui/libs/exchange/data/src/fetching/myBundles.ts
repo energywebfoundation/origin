@@ -24,9 +24,9 @@ export const useApiRemoveBundleHandler = () => {
   const queryClient = useQueryClient();
   const myBundlesQueryKey = getBundleControllerGetMyBundlesQueryKey();
 
-  const { mutate } = useBundleControllerCancelBundle();
+  const { mutate, isLoading: isMutating } = useBundleControllerCancelBundle();
 
-  return (id: Bundle['id']) => {
+  const removeHandler = (id: Bundle['id']) => {
     mutate(
       { id },
       {
@@ -46,4 +46,6 @@ export const useApiRemoveBundleHandler = () => {
       }
     );
   };
+
+  return { removeHandler, isMutating };
 };

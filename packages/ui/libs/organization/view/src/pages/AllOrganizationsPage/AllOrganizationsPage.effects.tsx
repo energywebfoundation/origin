@@ -1,4 +1,5 @@
 import { FullOrganizationInfoDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
+import { TableActionData } from '@energyweb/origin-ui-core';
 import {
   useAllOrganizations,
   useOrgApproveHandler,
@@ -12,13 +13,14 @@ export const useAllOrganizationsPageEffects = () => {
   const { allOrganizations, isLoading } = useAllOrganizations();
   const { t } = useTranslation();
 
-  const approveHandler = useOrgApproveHandler();
+  const { approveHandler, isMutating } = useOrgApproveHandler();
 
-  const actions = [
+  const actions: TableActionData<FullOrganizationInfoDTO['id']>[] = [
     {
       icon: <Check />,
       name: t('organization.all.approve'),
-      onClick: (id: FullOrganizationInfoDTO['id']) => approveHandler(id),
+      onClick: approveHandler,
+      loading: isMutating,
     },
   ];
   const tableProps = useAllOrganizationsTableLogic({

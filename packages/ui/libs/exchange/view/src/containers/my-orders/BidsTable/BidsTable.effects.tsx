@@ -22,16 +22,14 @@ import {
 import { BidsTableProps } from './BidsTable';
 
 export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllDeviceFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
   const { t } = useTranslation();
   // const navigate = useNavigate();
   const dispatchModals = useExchangeModalsDispatch();
 
   const bidText = t('exchange.myOrders.bid');
-  const removeHandler = useApiCancelOrderHandler(bidText);
+  const { removeHandler, isMutating } = useApiCancelOrderHandler(bidText);
   const openRemoveModal = (id: OrderDTO['id']) => {
     dispatchModals({
       type: ExchangeModalsActionsEnum.SHOW_REMOVE_ORDER_CONFIRM,
@@ -71,6 +69,7 @@ export const useBidsTableEffects = ({ bids, isLoading }: BidsTableProps) => {
       name: t('exchange.myOrders.remove'),
       icon: <Remove />,
       onClick: (id: OrderDTO['id']) => openRemoveModal(id),
+      loading: isMutating,
     },
     {
       name: t('exchange.myOrders.view'),

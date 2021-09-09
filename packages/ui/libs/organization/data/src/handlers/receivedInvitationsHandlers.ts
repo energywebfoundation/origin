@@ -20,12 +20,13 @@ export const useReceivedInvitationsActions = (
   const invitationsKey = getInvitationControllerGetInvitationsQueryKey();
   const userKey = getUserControllerMeQueryKey();
 
-  const { mutate } = useInvitationControllerUpdateInvitation({
-    onSettled: () => {
-      queryClient.invalidateQueries(invitationsKey);
-      queryClient.invalidateQueries(userKey);
-    },
-  });
+  const { mutate, isLoading: isMutating } =
+    useInvitationControllerUpdateInvitation({
+      onSettled: () => {
+        queryClient.invalidateQueries(invitationsKey);
+        queryClient.invalidateQueries(userKey);
+      },
+    });
 
   const acceptInvite = (id: InvitationDTO['id']) =>
     mutate(
@@ -76,5 +77,5 @@ export const useReceivedInvitationsActions = (
       }
     );
 
-  return { acceptInvite, rejectInvite };
+  return { acceptInvite, rejectInvite, isMutating };
 };

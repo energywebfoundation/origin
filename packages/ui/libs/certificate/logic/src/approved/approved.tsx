@@ -85,7 +85,6 @@ export const useApprovedCertificatesLogic: TUseApprovedCertificatesLogic = ({
       files: t('certificate.approved.files'),
       timeFrame: t('certificate.approved.timeFrame'),
       status: t('certificate.approved.status'),
-      actions: '',
     },
     pageSize: 10,
     loading: loading,
