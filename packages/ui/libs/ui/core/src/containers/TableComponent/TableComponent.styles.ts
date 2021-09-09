@@ -1,8 +1,10 @@
 import { makeStyles } from '@material-ui/core';
 
-export const useStyles = makeStyles({
+export const useStyles = makeStyles((theme) => ({
   wrapper: {
     width: '100%',
-    overflowX: 'auto',
+    [theme.breakpoints.down('md')]: {
+      overflowX: 'auto',
+    },
   },
-});
+}));
