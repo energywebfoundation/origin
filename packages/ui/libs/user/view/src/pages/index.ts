@@ -7,3 +7,5 @@ export * from './RegisterPage';
 
 export * from './ProfilePage';
 export * from './SettingsPage';
+
+export * from './ConfirmEmailPage';

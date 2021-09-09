@@ -9,3 +9,4 @@ export * from './updateUserData';
 export * from './updateUserEmail';
 export * from './updateUserPassword';
 export * from './userLogin';
+export * from './confirmEmail';
