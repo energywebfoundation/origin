@@ -53,7 +53,7 @@
             "summary": "Run all test:e2e in packages",
             "safeForSimultaneousRushProcesses": false,
             "autoinstallerName": "rush-tools",
-            "shellCommand": "lerna run test:e2e --stream --ignore @energyweb/exchange-irec && lerna run test:e2e --stream --ignore @energyweb/origin-device-registry-irec-form-api && lerna run test:e2e --stream --scope @energyweb/exchange-irec",
+            "shellCommand": "lerna run test:e2e --stream --ignore @energyweb/exchange-irec && lerna run test:e2e --stream --scope @energyweb/exchange-irec",
             "allowWarningsInSuccessfulBuild": true
         },
         {
