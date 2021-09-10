@@ -22,7 +22,8 @@
         "claimsReport": "Claims report",
         "requests": "Requests",
         "pending": "Pending",
-        "approved": "Approved"
+        "approved": "Approved",
+        "import": "Import Certificate"
       },
       "exchange": {
         "sectionTitle": "Exchange",
@@ -598,6 +599,23 @@
         "compliance": "Compliance",
         "claimDate": "Claim Date",
         "certifiedEnergy": "Certified Energy"
+      },
+      "import": {
+        "certificatesToImport": "Certificates to import",
+        "device": "Device",
+        "importButton": "Import",
+        "volume": "Volume",
+        "generationTimeFrame": "Generation Time Frame",
+        "notifications": {
+          "importSuccess": "Certificate successfully imported",
+          "importError": "Error while importing certificate"
+        }
+      },
+      "modals": {
+        "confirmImport": {
+          "title": "Confirm certificate import",
+          "text": "Please, confirm that you want to import certificate with {volume} MWh of {deviceName} for the period of {timeFrame}."
+        }
       }
     },
     "exchange": {
