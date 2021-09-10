@@ -1,4 +1,4 @@
-import { IFullOrganization, IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
+import { IUser, KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsBoolean,
@@ -62,7 +62,7 @@ export class UserDTO implements IUser {
 
     @ApiProperty({ type: FullOrganizationInfoDTO })
     @ValidateNested()
-    organization: IFullOrganization;
+    organization: FullOrganizationInfoDTO;
 
     @ApiProperty({ type: Boolean, required: false })
     @IsOptional()
