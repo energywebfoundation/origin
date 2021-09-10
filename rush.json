@@ -381,10 +381,6 @@
      */
     "projects": [
         {
-            "packageName": "@energyweb/origin-backend-app",
-            "projectFolder": "packages/apps/origin-backend-app"
-        },
-        {
             "packageName": "@energyweb/origin-backend-irec-app",
             "projectFolder": "packages/apps/origin-backend-irec-app"
         },
@@ -395,14 +391,6 @@
         {
             "packageName": "@energyweb/origin-device-registry-api-client",
             "projectFolder": "packages/devices/origin-device-registry-api-client"
-        },
-        {
-            "packageName": "@energyweb/origin-device-registry-irec-form-api",
-            "projectFolder": "packages/devices/origin-device-registry-irec-form-api"
-        },
-        {
-            "packageName": "@energyweb/origin-device-registry-irec-form-api-client",
-            "projectFolder": "packages/devices/origin-device-registry-irec-form-api-client"
         },
         {
             "packageName": "@energyweb/origin-device-registry-irec-local-api",
@@ -439,10 +427,6 @@
         {
             "packageName": "@energyweb/origin-backend-core",
             "projectFolder": "packages/origin-backend-core"
-        },
-        {
-            "packageName": "@energyweb/migrations",
-            "projectFolder": "packages/tools/migrations"
         },
         {
             "packageName": "@energyweb/migrations-irec",
