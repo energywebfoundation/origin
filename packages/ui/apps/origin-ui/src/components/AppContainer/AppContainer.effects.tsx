@@ -65,24 +65,18 @@ export const useAppContainerEffects = () => {
     isExchangeTabActive,
     isCertificateTabActive,
   } = useActiveMenuTab();
-  const {
-    data: userInvitations,
-    isLoading: areInvitationsLoading,
-  } = useInvitationControllerGetInvitations({
-    enabled: isAuthenticated,
-  });
-  const {
-    data: iRecConnection,
-    isLoading: isIRecOrgLoading,
-  } = useConnectionControllerGetMyConnection({
-    enabled: isAuthenticated && Boolean(user?.organization?.id),
-  });
-  const {
-    data: iRecRegistrations,
-    isLoading: isIRecRegistrationsLoading,
-  } = useRegistrationControllerGetRegistrations({
-    enabled: isAuthenticated && Boolean(user?.organization?.id),
-  });
+  const { data: userInvitations, isLoading: areInvitationsLoading } =
+    useInvitationControllerGetInvitations({
+      enabled: isAuthenticated,
+    });
+  const { data: iRecConnection, isLoading: isIRecOrgLoading } =
+    useConnectionControllerGetMyConnection({
+      enabled: isAuthenticated && Boolean(user?.organization?.id),
+    });
+  const { data: iRecRegistrations, isLoading: isIRecRegistrationsLoading } =
+    useRegistrationControllerGetRegistrations({
+      enabled: isAuthenticated && Boolean(user?.organization?.id),
+    });
 
   const iRecOrg = iRecRegistrations?.length > 0 && iRecRegistrations[0];
   const iRecConnectionActive = iRecConnection?.active;
@@ -142,9 +136,9 @@ export const useAppContainerEffects = () => {
       userIsDeviceManagerOrAdmin &&
       iRecConnectionActive &&
       // @should be fixed on backend to actually return a string
-      (((iRecOrg?.accountType as unknown) as IRECAccountType) ===
+      ((iRecOrg?.accountType as unknown as IRECAccountType) ===
         IRECAccountType.Registrant ||
-        ((iRecOrg?.accountType as unknown) as IRECAccountType) ===
+        (iRecOrg?.accountType as unknown as IRECAccountType) ===
           IRECAccountType.Both),
   };
   const deviceMenu = getDeviceMenu({
@@ -167,6 +161,11 @@ export const useAppContainerEffects = () => {
     showRequests: userIsActive && userHasOrg && !userIsIssuer,
     showPending: userIsIssuer,
     showApproved: userIsIssuer,
+    showImport:
+      (iRecOrg?.accountType as unknown as IRECAccountType) ===
+        IRECAccountType.Participant ||
+      (iRecOrg?.accountType as unknown as IRECAccountType) ===
+        IRECAccountType.Both,
   };
   const certificateMenu = getCertificateMenu({
     t,
