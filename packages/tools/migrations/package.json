@@ -19,8 +19,6 @@
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",
-        "build:container:canary": "make build-canary",
-        "build:container:latest": "make build-stable",
         "start": "npx ts-node src/main.ts",
         "start:defaultConfigs": "yarn start -c ./config/demo-config.json -s ./config/seed.sql -e ../../../.env",
         "start-all": "concurrently --restart-tries 3 --restart-after 1500 -n eth,deploy \"yarn start-ganache\" \"wait-on tcp:8553 && yarn start:redeploy\"",
