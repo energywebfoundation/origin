@@ -19,7 +19,7 @@
         "lint-fix": "eslint \"src/**/*{.ts,.tsx}\" --fix",
         "precommit": "lint-staged",
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
-        "test:e2e": "yarn test:mocha"
+        "test": "yarn test:mocha"
     },
     "bin": {
         "origin-backend-app": "./bin/origin-backend-app"
