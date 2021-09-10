@@ -25,12 +25,11 @@
         -   [Stable](#stable)
         -   [Canary](#canary)
         -   [Preview](#preview)
+-   [Preparation](#preparation)
 -   [Installation](#installation)
 -   [Build](#build)
 -   [Test](#test)
 -   [Run demo](#run-demo)
-    -   [Preparation](#preparation)
-    -   [Running](#running)
     -   [Heroku environment provisioning](#heroku-environment-provisioning)
 -   [Energy Attribute Certificates](#energy-attribute-certificates)
 -   [Key modules and components](#key-modules-and-components)
@@ -104,7 +103,19 @@ docker run --name origin-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=o
 4. Make sure you have created a `.env` file in the root of the monorepo and that all necessary variables are set.
    Use [`.env.example`](.env.example) as an example of how the `.env` file should look.
 
-5. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
+5. Create InfluxDB to store smart meter readings
+
+```
+docker run --rm --env-file ./.env -v $PWD/influxdb-local:/var/lib/influxdb influxdb:1.8 /init-influxdb.sh
+```
+
+Run the InfluxDB instance
+
+```
+docker run --name energy-influxdb --env-file ./.env -d -p 8086:8086 -v $PWD/influxdb-local:/var/lib/influxdb -v $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro influxdb:1.8
+```
+
+1. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
 
 ## Installation
 

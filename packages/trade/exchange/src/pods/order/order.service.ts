@@ -175,7 +175,7 @@ export class OrderService<TProduct> {
     }
 
     public async submit(order: Order): Promise<void> {
-        this.logger.debug(`Submitting order:${JSON.stringify(order)}`);
+        this.logger.debug(`Submitting order: ${order.id}`);
 
         await this.commandBus.execute(new SubmitOrderCommand(order));
     }

@@ -1,9 +1,0 @@
-{
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "rootDir": "./",
-        "outDir": "./dist/js",
-        "target": "ES2020"
-    },
-    "include": ["./contracts.ts", "./src/**/*", "./schemas/*.json", "./build/**/*.json"]
-}

@@ -172,7 +172,7 @@
      * and set projectFolderMaxDepth to a large number.
      */
     // "projectFolderMinDepth": 2,
-    "projectFolderMaxDepth": 3,
+    "projectFolderMaxDepth": 4,
 
     /**
      * Today the npmjs.com registry enforces fairly strict naming rules for packages, but in the early
@@ -389,14 +389,6 @@
             "projectFolder": "packages/apps/origin-backend-irec-app"
         },
         {
-            "packageName": "@energyweb/origin-ui",
-            "projectFolder": "packages/apps/origin-ui"
-        },
-        {
-            "packageName": "@energyweb/device-registry",
-            "projectFolder": "packages/device-registry"
-        },
-        {
             "packageName": "@energyweb/origin-device-registry-api",
             "projectFolder": "packages/devices/origin-device-registry-api"
         },
@@ -457,10 +449,6 @@
             "projectFolder": "packages/tools/migrations-irec"
         },
         {
-            "packageName": "@energyweb/solar-simulator",
-            "projectFolder": "packages/tools/solar-simulator"
-        },
-        {
             "packageName": "@energyweb/issuer",
             "projectFolder": "packages/traceability/issuer"
         },
@@ -517,28 +505,48 @@
             "projectFolder": "packages/trade/exchange-token-account"
         },
         {
-            "packageName": "@energyweb/exchange-ui-core",
-            "projectFolder": "packages/ui/exchange-ui-core"
-        },
-        {
-            "packageName": "@energyweb/localization",
-            "projectFolder": "packages/ui/localization"
-        },
-        {
-            "packageName": "@energyweb/origin-ui-core",
-            "projectFolder": "packages/ui/origin-ui-core"
-        },
-        {
-            "packageName": "@energyweb/origin-ui-irec-core",
-            "projectFolder": "packages/ui/origin-ui-irec-core"
-        },
-        {
             "packageName": "@energyweb/origin-backend-utils",
             "projectFolder": "packages/utils/origin-backend-utils"
         },
         {
             "packageName": "@energyweb/utils-general",
             "projectFolder": "packages/utils/utils-general"
+        },
+        {
+            "packageName": "@energyweb/exchange-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/exchange"
+        },
+        {
+            "packageName": "@energyweb/exchange-irec-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/exchange-irec"
+        },
+        {
+            "packageName": "@energyweb/origin-device-registry-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-device-registry-api"
+        },
+        {
+            "packageName": "@energyweb/origin-device-registry-irec-local-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-device-registry-irec-local-api"
+        },
+        {
+            "packageName": "@energyweb/origin-energy-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-energy-api"
+        },
+        {
+            "packageName": "@energyweb/origin-organization-irec-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-organization-irec-api"
+        },
+        {
+            "packageName": "@energyweb/origin-backend-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/origin-backend"
+        },
+        {
+            "packageName": "@energyweb/issuer-irec-api-react-query-client",
+            "projectFolder": "packages/api-clients/react-query/issuer-irec-api"
+        },
+        {
+            "packageName": "ui-packages",
+            "projectFolder": "packages/ui"
         }
         // {
         //   /**

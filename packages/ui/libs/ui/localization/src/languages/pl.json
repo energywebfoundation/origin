@@ -1,0 +1,11 @@
+{
+  "translation": {
+    "navigation": {
+      "topbar": {
+        "register": "Zarejestrować",
+        "login": "Zaloguj sie",
+        "logout": "Wyloguj"
+      }
+    }
+  }
+}

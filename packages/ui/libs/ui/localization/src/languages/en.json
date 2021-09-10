@@ -1,0 +1,1001 @@
+{
+  "translation": {
+    "navigation": {
+      "topbar": {
+        "register": "Register",
+        "login": "Login",
+        "logout": "Logout"
+      },
+      "device": {
+        "sectionTitle": "Devices",
+        "all": "All Devices",
+        "map": "Map View",
+        "my": "My Devices",
+        "pending": "Pending",
+        "register": "Register Device",
+        "import": "Import Device"
+      },
+      "certificate": {
+        "sectionTitle": "Certificate",
+        "exchangeInbox": "Exchange Inbox",
+        "blockchainInbox": "Blockchain Inbox",
+        "claimsReport": "Claims report",
+        "requests": "Requests",
+        "pending": "Pending",
+        "approved": "Approved"
+      },
+      "exchange": {
+        "sectionTitle": "Exchange",
+        "viewMarket": "View Market",
+        "supply": "Supply",
+        "allBundles": "All bundles",
+        "createBundle": "Create bundle",
+        "myBundles": "My bundles",
+        "myOrders": "My orders",
+        "myTrades": "My trades"
+      },
+      "organization": {
+        "sectionTitle": "Organization",
+        "register": "Register",
+        "my": "My Organization",
+        "members": "Members",
+        "invitations": "Invitations",
+        "invite": "Invite",
+        "all": "All Organizations",
+        "registerIRec": "Register I-REC",
+        "createBeneficiary": "Create Beneficiary",
+        "connectIRec": "Connect I-REC"
+      },
+      "account": {
+        "sectionTitle": "Account",
+        "sectionTitleForUnlogged": "Settings",
+        "settings": "Settings",
+        "userProfile": "User profile"
+      },
+      "admin": {
+        "sectionTitle": "Admin",
+        "users": "Users",
+        "claims": "Claims"
+      },
+      "layout": {
+        "userPendingTooltip": "Your user account status is pending",
+        "orgPendingTooltip": "Your organization status is pending"
+      }
+    },
+    "organization": {
+      "register": {
+        "formTitle": "Register New Organization",
+        "orgInfoTitle": "Organization information",
+        "orgInfoName": "Organization Name",
+        "orgInfoAddress": "Organization Address",
+        "orgInfoZipCode": "Zip code",
+        "orgInfoCity": "City",
+        "orgInfoCountry": "Country",
+        "orgInfoBusinessType": "Business Type",
+        "orgInfoTradeRegistryCompanyNumber": "Trade Registry Company number",
+        "orgInfoVatNumber": "VAT number",
+        "signatoryFormTitle": "Authorized Signatory Information",
+        "signatoryName": "Signatory Full Name",
+        "signatoryAddress": "Signatory Address",
+        "signatoryZipCode": "Zip code",
+        "signatoryCity": "City",
+        "signatoryCountry": "Country",
+        "signatoryEmail": "Signatory Email",
+        "signatoryPhoneNumber": "Signatory phone number",
+        "docsFormTitle": "Upload documents",
+        "companyProofDocsHeading": "Upload Company Proof",
+        "signatoryIdDocsHeading": "Upload Signatory ID",
+        "notifications": {
+          "registeredSuccess": "Organization registered.",
+          "registeredFailure": "Organization could not be created.",
+          "unauthorized": "Unauthorized"
+        }
+      },
+      "createBeneficiary": {
+        "formTitle": "Create beneficiary",
+        "name": "Name",
+        "country": "Country",
+        "location": "Location",
+        "create": "Create",
+        "notifications": {
+          "createBeneficiarySuccess": "Beneficiary created successfully",
+          "createBeneficiaryError": "Error while creating beneficiary"
+        }
+      },
+      "view": {
+        "regular": {
+          "title": "Organization Information",
+          "name": "Organization Name",
+          "address": "Organization Address",
+          "businessType": "Business Type",
+          "tradeRegistry": "Trade Registry Company number",
+          "vat": "VAT number",
+          "signatoryName": "Signatory Full Name",
+          "signatoryAddress": "Signatory Address",
+          "signatoryEmail": "Signatory Email",
+          "signatoryPhone": "Signatory Phone Number",
+          "status": "Status",
+          "documents": "Documents",
+          "companyProof": "Company Proof",
+          "signatoryId": "Signatory ID"
+        },
+        "iRec": {
+          "registrationInfoFormTitle": "I-REC Registration information",
+          "accountTypeLabel": "I-REC Account type",
+          "accountType": {
+            "registrant": "Registrant Account for managing devices",
+            "participant": "Participant Account for managing certificates outside of the marketplace",
+            "both": "Both Registrant and Participant Account"
+          },
+          "orgHeadquartersCountry": "Organization Headquarters Country",
+          "yearOfregisterIRec": "Year of Registration",
+          "numberOfEmployees": "Number of employees",
+          "shareholderNames": "Shareholder Names (over 10%)",
+          "orgWebsite": "Organization Website",
+          "activeCountries": "Active Countries",
+          "mainBusiness": "Main Business",
+          "ceoName": "Name of the Chief Executive Officer/General Manager",
+          "ceoPassport": "Chief Executive Officer/General Manager passport number",
+          "balanceSheetTotal": "Balance sheet total for last financial year",
+          "primaryContactFormTitle": "Primary Contact Details",
+          "primaryContactOrgName": "Organization name",
+          "primaryContactOrgAddress": "Organization address",
+          "primaryContactOrgPostalCode": "Organization postal code",
+          "primaryContactOrgCountry": "Organization country",
+          "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+          "primaryContactName": "Contact person name",
+          "primaryContactEmail": "Contact person email",
+          "primaryContactPhoneNumber": "Contact person telephone",
+          "primaryContactFax": "Contact person fax",
+          "leadUserFormTitle": "Lead User Details",
+          "leadUserTitle": "Title",
+          "leadUserFirstName": "First Name",
+          "leadUserLastName": "Last Name",
+          "leadUserEmail": "Email",
+          "leadUserPhoneNumber": "Phone number",
+          "leadUserFax": "Fax"
+        }
+      },
+      "members": {
+        "tableTitle": "Organization members",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "role": "Role",
+        "roleOrgAdmin": "Admin",
+        "roleOrgDeviceManager": "Device Manager",
+        "roleOrgMember": "Member",
+        "editRole": "Edit role",
+        "remove": "Remove",
+        "notifications": {
+          "cantRemoveYourself": "You can't remove yourself from organization",
+          "removeSuccess": "User removed",
+          "removeError": "Could not remove user",
+          "roleChangeSuccess": "Member role updated",
+          "roleChangeError": "Error while changing member role"
+        }
+      },
+      "invite": {
+        "email": "Email",
+        "role": "Role",
+        "member": "Member",
+        "deviceManager": "Device Manager",
+        "organizationAdmin": "Admin",
+        "inviteButton": "Invite",
+        "notifications": {
+          "invitationSent": "Invitation sent",
+          "unauthorized": "Unauthorized",
+          "alreadySent": "You have already sent an invitation for this user",
+          "onlyActiveUserCan": "Only active users can perform this action. Your status is ${status}",
+          "unableToInvite": "Could not invite user to organization"
+        }
+      },
+      "invitations": {
+        "sentTableTitle": "Sent",
+        "receivedTableTitle": "Received",
+        "email": "Email",
+        "status": "Status",
+        "organization": "Organization",
+        "accept": "Accept",
+        "decline": "Decline",
+        "noInvitations": "You have no Sent or Received invitations",
+        "notifications": {
+          "acceptedSuccess": "Invitation accepted",
+          "acceptedFailure": "Could not accept invitation",
+          "rejectedSuccess": "Invitation rejected",
+          "rejectedFailure": "Could not reject invitation"
+        }
+      },
+      "registerIRec": {
+        "registerOrgInIRec": "Register organization in I-REC",
+        "registrationInfoFormTitle": "I-REC Registration information",
+        "IRECAccountType": "I-REC Account type",
+        "accountType": {
+          "registrant": "Registrant Account for managing devices",
+          "participant": "Participant Account for managing certificates outside of the marketplace",
+          "both": "Both Registrant and Participant Account"
+        },
+        "orgHeadquartersCountry": "Organization Headquarters Country",
+        "yearOfregisterIRec": "Year of Registration",
+        "numberOfEmployees": "Number of employees",
+        "shareholderNames": "Shareholder Names (over 10%)",
+        "orgWebsite": "Organization Website",
+        "activeCountries": "Active Countries",
+        "mainBusiness": "Main Business",
+        "ceoName": "Name of the Chief Executive Officer/General Manager",
+        "ceoPassport": "Chief Executive Officer/General Manager passport number",
+        "balanceSheetTotal": "Balance sheet total for last financial year",
+        "primaryContactFormTitle": "Primary Contact Details",
+        "primaryContactOrgName": "Organization name",
+        "primaryContactOrgAddress": "Organization address",
+        "primaryContactOrgPostalCode": "Organization postal code",
+        "primaryContactOrgCountry": "Organization country",
+        "existingIRECOrg": "Existing IREC organization(s) to become subsidiary",
+        "primaryContactName": "Contact person name",
+        "primaryContactEmail": "Contact person email",
+        "primaryContactPhoneNumber": "Contact person telephone",
+        "primaryContactFax": "Contact person fax",
+        "leadUserFormTitle": "Lead User Details",
+        "leadUserTitle": "Title",
+        "leadUserFirstName": "First Name",
+        "leadUserLastName": "Last Name",
+        "leadUserEmail": "Email",
+        "leadUserPhoneNumber": "Phone number",
+        "leadUserFax": "Fax",
+        "notifications": {
+          "unauthorized": "Unauthorized",
+          "registerError": "Organization could not be created",
+          "registerSuccess": "Organization registered"
+        }
+      },
+      "all": {
+        "name": "Name",
+        "country": "Country",
+        "tradeRegistryNumber": "Trade Registry Company Number",
+        "status": "Status",
+        "approve": "Approve",
+        "notifications": {
+          "approvedSuccess": "Organization was successfully approved",
+          "approvedError": "Error while approving organization"
+        }
+      },
+      "connectIRec": {
+        "requestingIRecAccess": "Requesting I-REC API Access",
+        "orgInformation": "Organization Information",
+        "platformOrgId": "Platform Organization ID",
+        "iRecApiCredentials": "I-REC API Credentials",
+        "userName": "I-REC Username",
+        "apiKey": "API Token",
+        "clientId": "Client ID",
+        "clientSecret": "Client Secret",
+        "notifications": {
+          "connectSuccess": "I-REC connection has been successfully set",
+          "connectError": "Error while setting connection to I-REC"
+        }
+      },
+      "modals": {
+        "roleChanged": {
+          "title": "Successfully joined {organizationName}",
+          "text": "You have successfully joined {organizationName} organization.",
+          "asMemberYouCan": "As an Organization Member you can:",
+          "canPlaceOrder": "Place orders on the exchange",
+          "canBuyCertificates": "Directly buy {certificateType}",
+          "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
+          "canRedeemCertificates": "Redeem {certificateType}",
+          "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
+          "asDeviceManagerYouCan": "As a Device Manager you have permission to:",
+          "canRegisterDevices": "Register devices and device groups",
+          "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
+          "canConfigureAutomatedOrderCreation": "Configure automated order creation",
+          "asOrgAdminYouCan": "As an Organization Admin you have permission to:",
+          "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
+          "canEditUserRoles": "Give and edit user roles",
+          "connectOrgToIRec": "Connect the organization to the I-REC registry",
+          "asDeviceManagerYouCanAlso": "You can also perform all actions of a Device Manager:",
+          "asAMemberYouCanAlso": "You can also perform all actions that a regular Organization Member can perform:"
+        },
+        "changeMemberRole": {
+          "title": "Change role for {username}"
+        },
+        "iRecAccountRegistered": {
+          "title": "Thank you for registering an I-REC account!",
+          "text": "We will forward your application to I-REC and inform you as soon as it is approved."
+        },
+        "iRecConnectOrRegister": {
+          "title": "Thank you for registering an organization on the marketplace!",
+          "text1": "We are checking your information as soon as possible and will contact you once everything is approved and you can start trading.",
+          "text2": "In order to register devices and request I-RECs, users also need to connect an I-REC account.",
+          "buttonRegister": "Register new I-REC account"
+        },
+        "iRecRegisteredThankYou": {
+          "title": "Thank you for registering!",
+          "text": "Your account is being approved."
+        },
+        "organizationAlreadyExists": {
+          "title": "Sorry but this organization could not be registered.",
+          "text1": "There already exists an organization with the same information.",
+          "text2": "Our support team will get in contact with you shortly to sort out the issue."
+        },
+        "registerThankYou": {
+          "title": "Thank you for registering!",
+          "text": "Your registration is reviewed by the platform administrator and you will be notified when your account is activated."
+        }
+      }
+    },
+    "device": {
+      "all": {
+        "noDeviceTitle": "There are no devices in the system",
+        "noDeviceDescription1": "Currently there no registered and approved devices.",
+        "noDeviceDescription2": "Once any of devices is created and approved it will be displayed here."
+      },
+      "card": {
+        "capacity": "Capacity (MW)",
+        "age": "Age (Years)",
+        "hoverText": "View details",
+        "certifiedMw": "Certified (MW)",
+        "nameplateCapacity": "Nameplate Capacity",
+        "certifiedByRegistry": "Certified by registry",
+        "toBeCertified": "To be certified",
+        "otherGreenAttr": "Other green attributes",
+        "publicSupport": "Public support",
+        "vintageCOD": "Vintage / (Commercial Operation Date)",
+        "viewDetailsButton": "View Details"
+      },
+      "detailView": {
+        "photo": "Photo",
+        "map": "Map",
+        "smartMeter": {
+          "tableTime": "Time ({timezone})",
+          "tableMeterValue": "Meter value ({unit})",
+          "day": "Day",
+          "week": "Week",
+          "month": "Month",
+          "year": "Year"
+        }
+      },
+      "register": {
+        "formTitle": "Register New Device",
+        "deviceInfoFormTitle": "Device Information",
+        "facilityName": "Facility Name",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "commissioningDate": "Vintage / Commercial Operation Date",
+        "registrationDate": "Registration Date",
+        "capacity": "Capacity (MW)",
+        "gridOperator": "Grid Operator",
+        "description": "Description",
+
+        "deviceLocationFormTitle": "Device Location",
+        "country": "Country",
+        "region": "Region",
+        "subregion": "Subregion",
+        "postalCode": "Postal Code",
+        "address": "Address",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+
+        "deviceImagesFormTitle": "Device Images",
+        "notifications": {
+          "registerSuccess": "New device created successfully",
+          "registerError": "Error while creating device"
+        }
+      },
+      "pending": {
+        "tableTitle": "Pending Devices",
+        "owner": "Owner",
+        "facilityName": "Facility Name",
+        "location": "Location",
+        "gridOperator": "Grid Operator",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "nameplateCapacity": "Nameplate capacity (MW)",
+        "status": "Status",
+        "certifiedFor": "Certified for {yearToDisplay} (MWh)",
+        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "approve": "Approve",
+        "reject": "Reject",
+        "notifications": {
+          "approveSuccess": "Device has been successfully approved",
+          "approveError": "Error while approving device",
+          "rejectSuccess": "Device has been rejected",
+          "rejectError": "Error while rejecting device"
+        }
+      },
+      "my": {
+        "noDeviceTitle": "Currently you don't have any devices in Origin.",
+        "noDeviceDescription": "You can add new devices to Origin by either registering a new one or importing already existing device from I-REC registry.",
+        "registerDevice": "Register Device",
+        "importDevice": "Import Device",
+        "requestCertificates": {
+          "formTitle": "Request Certificates for",
+          "fromTime": "From",
+          "toTime": "To",
+          "energy": "Amount of energy in MW"
+        },
+        "notifications": {
+          "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates.",
+          "certificateRequestSuccess": "Certificate has been successfully requested",
+          "certificateRequestError": "Error while requesting certificate",
+          "certificateRequestAlreadyExists": "There is already a certificate requested for that time period"
+        }
+      },
+      "map": {
+        "owner": "Owner",
+        "seeMore": "See more"
+      },
+      "import": {
+        "device": "Device",
+        "importButton": "Import",
+        "capacity": "Capacity (MW)",
+        "country": "Country",
+        "devicesToImport": "Devices to import",
+        "devicesInSystem": "Devices in system",
+        "formTitle": "Attach additional device data",
+        "smartMeterId": "Smart meter ID",
+        "timezone": "Timezone",
+        "gridOperator": "Grid Operator",
+        "postalCode": "Postal Code",
+        "region": "Region",
+        "subregion": "Subregion",
+        "description": "Description",
+        "deviceImages": "Device images",
+        "saveData": "Save data",
+        "notifications": {
+          "importSuccess": "Device has been successfully imported",
+          "importError": "Error while importing device"
+        }
+      }
+    },
+    "certificate": {
+      "exchangeInbox": {
+        "title": "Exchange Inbox",
+        "sellActionTitle": "Sell",
+        "withdrawActionTitle": "Withdraw",
+        "transferActionTitle": "Transfer",
+        "generationTime": "Generation Time Frame",
+        "selectedForSale": "Selected For Sale",
+        "price": "Price per MWh",
+        "totalPrice": "Total Price",
+        "sellButton": "Sell",
+        "selectedForWithdraw": "Selected For Withdrawal",
+        "withdrawButton": "Withdraw",
+        "selectedForTransfer": "Selected For Transfer",
+        "exchangeAddress": "Exchange Deposit Address",
+        "transferButton": "Transfer",
+        "notifications": {
+          "sellSuccess": "Certificate has been successfully posted to exchange",
+          "sellError": "Error while posting certificate for sale",
+          "withdrawSuccess": "Certificate has been successfully withdrawn",
+          "withdrawError": "Error while withdrawing certificate",
+          "transferSuccess": "Certificate has been successfully transfered",
+          "transferError": "Error while transfering certificate"
+        }
+      },
+      "blockchainInbox": {
+        "title": "Blockchain Inbox",
+        "depositActionTitle": "Deposit",
+        "retireActionTitle": "Retire",
+        "selectedForDeposit": "Selected For Deposit",
+        "depositButton": "Deposit",
+        "selectedForRetirement": "Selected For Retirement",
+        "retireButton": "Retire",
+        "generationTime": "Generation Time Frame",
+        "selectBeneficiary": "Select beneficiary",
+        "beneficiary": "Beneficiary",
+        "beneficiaryId": "ID:",
+        "beneficiaryName": "Name:",
+        "transferActionTitle": "Transfer",
+        "selectedForTransfer": "Selected For Transfer",
+        "transferButton": "Transfer",
+        "blockchainAddress": "Blockchain address",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "purpose": "Purpose",
+        "notifications": {
+          "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can deposit certificates",
+          "depositSuccess": "Certificate has been successfully deposited",
+          "depositError": "Error while depositing certificate",
+          "retireSuccess": "Certificate has been successfully retired",
+          "retireError": "Error while retiring certificate",
+          "transferSuccess": "Certificate has been successfully transfered",
+          "transferError": "Error while transfering certificate"
+        }
+      },
+      "inbox": {
+        "selectAll": "Select All",
+        "selectCertificate": "Select Certificate",
+        "totalVolume": "Total Volume",
+        "viewButton": "View",
+        "noCertificates": "You don't have any certificates in the inbox",
+        "bulkActionsRestrictionsText": "Bulk certificate actions are currently unavailable. Please, select single certificate to continue",
+        "enterValidAddress": "Please, enter valid address",
+        "transactionInProgress": "Transaction in progress"
+      },
+      "detailView": {
+        "certificateId": "Certificate ID",
+        "certifiedEnergy": "Certified Energy (MWh)",
+        "claimed": "Claimed",
+        "yes": "Yes",
+        "no": "No",
+        "creationDate": "Creation Date",
+        "generationStartDate": "Generation Start Date",
+        "generationEndDate": "Generation End Date",
+        "claimedEnergy": "Claimed Energy (MWh)",
+        "remainingEnergy": "Remaining (unclaimed) Energy (MWh)",
+        "claimBeneficiaries": "Claim beneficiaries",
+        "blockchainTransactions": "Blockchain Transactions",
+        "viewDevice": "View Device",
+        "events": {
+          "exchangeWallet": "Exchange Wallet",
+          "exchangeDepositAddress": "Exchange Deposit Address",
+          "certified": "Certified",
+          "initialOwner": "Initial owner",
+          "changedOwnership": "Changed ownership",
+          "claimedTitle": "Certificate claimed",
+          "requestedTitle": "Requested certification",
+          "certificationRequestApproved": "Local issuer approved the certification request",
+          "transferred": "Transferred {amount} from {oldOwner} to {newOwner}",
+          "claimedContent": "Claimed {amount} by {claimer}",
+          "requestedContent": "{requestor} requested certification of {amount}",
+          "requestedClaimTitle": "Requested claim",
+          "requestedClaimContent": "For {amount} by {claimer}",
+          "transferedToInitialOwner": "Transfered {amount} to the {address} of the initial owner"
+        }
+      },
+      "requests": {
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "fuelType": "Fuel Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved",
+        "pending": "Pending"
+      },
+      "pending": {
+        "tableTitle": "Pending Certificates",
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "fuelType": "Fuel Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved",
+        "pending": "Pending",
+        "approve": "Approve",
+        "reject": "Reject",
+        "notifications": {
+          "approveSuccess": "Certificate approved",
+          "approveError": "Error while approving certificate",
+          "revokeSuccess": "Certificate revoked",
+          "revokeError": "Error while revoking certificate"
+        }
+      },
+      "approved": {
+        "tableTitle": "Approved certificates",
+        "facility": "Facility",
+        "gridOperator": "Grid operator",
+        "location": "Region, province",
+        "fuelType": "Fuel Type",
+        "capacity": "Capacity",
+        "meterRead": "Meter Read",
+        "files": "Evidence files",
+        "timeFrame": "Request Date",
+        "status": "Status",
+        "approved": "Approved"
+      },
+      "claimsReport": {
+        "fuelType": "Fuel Type",
+        "vintageCOD": "Vintage / (Commercial Operation Date)",
+        "location": "Region, province",
+        "gridOperator": "Grid operator",
+        "compliance": "Compliance",
+        "claimDate": "Claim Date",
+        "certifiedEnergy": "Certified Energy"
+      }
+    },
+    "exchange": {
+      "viewMarket": {
+        "market": "Market",
+        "type": "Type",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "regions": "Regions",
+        "gridOperator": "Grid Operator",
+        "subregions": "Subregions",
+        "oneTimePurchase": "One time purchase",
+        "repeatedPurchase": "Repeated purchase",
+        "generationFrom": "Generation Start Date",
+        "generationTo": "Generation End Date",
+        "energy": "Energy",
+        "price": "Price",
+        "placeBidButton": "Place bid order",
+        "period": "Period",
+        "volume": "Volume",
+        "demandStartDate": "Demand start date",
+        "demandEndDate": "Demand end date",
+        "totalVolume": "Total Volume",
+        "placeDemandButton": "Place demand order",
+        "sellOffers": "Sell offers",
+        "buyOffers": "Buy offers",
+        "generationStart": "Generation Start",
+        "generationEnd": "Generation End",
+        "buyDirect": "Direct buy",
+        "buy": "Buy",
+        "tradingView": "Trading view",
+        "matching": "Matching",
+        "asks": "Asks",
+        "bids": "Bids",
+        "popover": {
+          "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",
+          "asksFurtherInstructions": "To see all available asks, remove the set market filters. To see a list of your active asks go to \"My Orders\".",
+          "bidsDescription": "Below you see all the buy offers that are matching the certificate criteria you defined in the market filter.",
+          "bidsFurtherInstructions": "To see more specific bids, set the appropriate market filters. To see a list of your active bids go to \"My Orders\"."
+        },
+        "notifications": {
+          "createBidSuccess": "Bid successfully placed",
+          "createBidError": "Error while creating bid",
+          "createDemandSuccess": "Demand successfully placed",
+          "creteDemandError": "Error while creating demand",
+          "buyDirectSuccess": "Direct buy succeed",
+          "buyDirectError": "Direct buy failed"
+        },
+        "modals": {
+          "buyDirect": {
+            "title": "Direct buy",
+            "buy": "Buy"
+          }
+        }
+      },
+      "allBundles": {
+        "tableTitle": "All bundles",
+        "totalEnergy": "Total energy",
+        "solar": "Solar",
+        "wind": "Wind",
+        "hydro": "Hydro",
+        "other": "Other",
+        "price": "Price per MWh",
+        "createBundle": "Create bundle",
+        "notifications": {
+          "bundleBuySuccess": "Bundle bought",
+          "bundleBuyError": "Error while buying bundle"
+        }
+      },
+      "myBundles": {
+        "tableTitle": "My bundles",
+        "totalEnergy": "Total energy",
+        "solar": "Solar",
+        "wind": "Wind",
+        "hydro": "Hydro",
+        "other": "Other",
+        "price": "Price per MWh",
+        "removeBundle": "Remove bundle",
+        "notifications": {
+          "removeSuccess": "Bundle successfully removed",
+          "removeError": "Error while removing bundle"
+        }
+      },
+      "myTrades": {
+        "tableTitle": "My Trades",
+        "date": "Date",
+        "side": "Side",
+        "volume": "Volume",
+        "price": "Price",
+        "total": "Total",
+        "buy": "Buy",
+        "sell": "Sell"
+      },
+      "createBundle": {
+        "title": "Create Bundle",
+        "selectAll": "Select All",
+        "certificationDate": "Certification date",
+        "selectedForSale": "Selected For Sale",
+        "selectCertificate": "Select Certificate",
+        "totalVolume": "Total Volume",
+        "price": "Price per MWh",
+        "totalPrice": "Total Price",
+        "sellAsBundleButton": "Sell as bundle",
+        "noCertificates": "You don't have any certificates to create a bundle from",
+        "notifications": {
+          "createSuccess": "Bundle has been successfully created and published for sale",
+          "createError": "Error while creating bundle"
+        }
+      },
+      "myOrders": {
+        "demands": "Demands",
+        "volume": "Volume",
+        "price": "Price",
+        "type": "Type",
+        "period": "Period",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "status": "Status",
+        "bids": "Bids",
+        "filled": "Filled",
+        "generationStart": "Generation Start",
+        "generationEnd": "Generation End",
+        "asks": "Asks",
+        "facilityName": "Facility Name",
+        "remove": "Remove",
+        "bid": "Bid",
+        "ask": "Ask",
+        "view": "View",
+        "orderNo": "Order No.",
+        "fuelType": "Fuel Type",
+        "gridOperator": "Grid Operator",
+        "region": "Region",
+        "update": "Update",
+        "viewMarket": "View Market",
+        "modals": {
+          "removeOrderConfirm": {
+            "title": "Are you sure you want to remove?"
+          }
+        },
+        "notifications": {
+          "orderRemoveSuccess": "{orderSide} has been successfully removed",
+          "orderRemoveError": "Error while removing order",
+          "demandRemoveSuccess": "Demand has been successfully removed",
+          "demandRemoveError": "Error while removing demand",
+          "demandShouldBePaused": "Demand should be paused before removing",
+          "demandPausedSuccess": "Demand paused",
+          "demandPausedError": "Error while pausing demand",
+          "demandResumedSuccess": "Demand resumed",
+          "demandResumedError": "Error while resuming demand",
+          "demandUpdateSuccess": "Demand updated",
+          "demandUpdateError": "Error while updating demand"
+        }
+      },
+      "supply": {
+        "tableTitle": "Supply",
+        "fuelType": "Fuel Type",
+        "facilityName": "Facility Name",
+        "price": "Price",
+        "status": "Status",
+        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "update": "Update",
+        "remove": "Remove",
+        "cancel": "Cancel",
+        "modals": {
+          "updateSupply": {
+            "title": "Update Supply"
+          },
+          "removeSupplyConfirm": {
+            "title": "Are you sure you want to remove supply?",
+            "no": "No",
+            "yes": "Yes"
+          }
+        },
+        "notifications": {
+          "updateSupplySuccess": "Supply updated successfully",
+          "updateSupplyError": "Error while updating supply",
+          "createSupplySuccess": "Supply created successfully",
+          "createSupplyError": "Error while creating supply",
+          "removeSupplySuccess": "Supply removed successfully",
+          "removeSupplyError": "Error while removing supply",
+          "missingSupplyError": "This device is missing supply"
+        }
+      },
+      "properties": {
+        "period": {
+          "daily": "Daily",
+          "weekly": "Weekly",
+          "monthly": "Monthly",
+          "yearly": "Yearly",
+          "day": "Day",
+          "week": "Week",
+          "month": "Month",
+          "year": "Year"
+        },
+        "status": {
+          "active": "Active",
+          "paused": "Paused"
+        }
+      }
+    },
+    "user": {
+      "register": {
+        "title": "Title",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "telephone": "Telephone",
+        "password": "Password",
+        "notifications": {
+          "registerSuccess": "User registered",
+          "registerError": "Error while registering user"
+        }
+      },
+      "login": {
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "dontHaveAcc": "Don't have an account?",
+        "registerNow": "Register now",
+        "loginButton": "Login",
+        "notifications": {
+          "loginError": "Could not log in with supplied credentials"
+        }
+      },
+      "profile": {
+        "userInfoTitle": "User information",
+        "changeEmailTitle": "Change email",
+        "changePasswordTitle": "Change password",
+        "resendConfirmationEmail": "Re-send confirmation email",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "telephone": "Telephone",
+        "status": "Status",
+        "kycStatus": "KYC Status",
+        "email": "Email",
+        "changeEmail": "Change Email",
+        "currentPassword": "Current Password",
+        "newPassword": "New Password",
+        "newPasswordConfirm": "New Password Confirm",
+        "confirmDoesntMatch": "Confirmed password doesn't match with new password",
+        "changePassword": "Change Password",
+        "blockchainAddresses": "Blockchain Addresses",
+        "exchangeAddressTitle": "Exchange Deposit Address",
+        "createExchangeAddressButton": "Create Exchange Deposit Address",
+        "orgBlockchainAccountAddress": "Organization's Blockchain Account Address",
+        "connectBlockchain": "Connect Blockchain Address",
+        "popover": {
+          "exchangeAddressWhatFor": "This blockchain address identifies you on the certificate exchange. You need it to trade certificates on the exchange.",
+          "exchangeAddressHowTo": "The platform automatically generates the deposit address and takes custody of it. You do not have to manage your own blockchain wallet.",
+          "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
+          "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
+          "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
+        },
+        "notifications": {
+          "userInfoUpdateSuccess": "User information updated successfully",
+          "userInfoUpdateError": "Error while updating user information",
+          "userEmailUpdateSuccess": "User email updated successfully. Please log in using new email",
+          "userEmailUpdateError": "Error while updating user email",
+          "userPasswordUpdateSuccess": "User password updated successfully. Please log in using new password",
+          "userPasswordUpdateError": "Error while updating user password",
+          "onlyActiveUserCan": "Only active users can perform this action. Your status is {status}",
+          "onlyMembersOfActiveOrgCan": "Only members of active organization can perform this action",
+          "exchangeAddressSuccess": "Exchange Deposit Address created successfully",
+          "exchangeAddressFailure": "Exchange Deposit Address could not be created",
+          "noBlockchainConnection": "No blockchain connection detected, please visit metamask.io and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.",
+          "thisAccountAlreadyConnected": "This blockchain address is already connected to your account",
+          "blockchainAccountLinked": "Blockchain address successfully linked to your organization account"
+        }
+      },
+      "settings": {
+        "notifications": "Notifications",
+        "language": "Language",
+        "languages": {
+          "en": "English",
+          "pl": "Polish"
+        }
+      },
+      "modals": {
+        "userRegistered": {
+          "title": "Thanks for registering as a user on the marketplace",
+          "text": "You should have received an E-Mail from us. In order to activate your user, please confirm your E-Mail address by clicking the confirmation link in the E-Mail"
+        },
+        "loginRegisterOrg": {
+          "title": "Thank you for registering as a user on the marketplace!",
+          "text": "To unlock all the functionalities of the marketplace, like trading I-RECs, users also need to register an organization.",
+          "registerOrgButton": "Register Organization"
+        },
+        "pendingInvitation": {
+          "title": "Invitation to join the organization on marketplace",
+          "text": "{admin} has invited you to join the marketplace as a {role} for {orgName}. Click accept to join the organization",
+          "acceptSuccess": "Invitation accepted",
+          "acceptError": "Could not accept invitation",
+          "declineSuccess": "Invitation rejected",
+          "declineError": "Could not reject invitation",
+          "laterSuccess": "You can find this invitation on the Organizations tab",
+          "laterError": "Could not process invitation"
+        },
+        "createExchangeAddress": {
+          "title": "Create Exchange Deposit Address",
+          "text": "In order to unlock all functionalities of the marketplace, like trading on the exchange and claiming certificates, users have to create an exchange deposit address",
+          "create": "Create"
+        },
+        "roleOrgAdmin": "Admin",
+        "roleOrgDeviceManager": "Device Manager",
+        "roleOrgMember": "Member"
+      }
+    },
+    "admin": {
+      "users": {
+        "name": "Name",
+        "organization": "Organization",
+        "email": "Email",
+        "status": "Status",
+        "kycStatus": "KYC Status",
+        "update": "Update",
+        "remove": "Remove"
+      },
+      "claims": {
+        "certificateId": "Certificate ID",
+        "deviceName": "Device name",
+        "energy": "Energy",
+        "beneficiary": "Beneficiary",
+        "fromDate": "From date",
+        "toDate": "To date"
+      },
+      "updateUser": {
+        "title": "Title",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "telephone": "Telephone",
+        "status": "Status",
+        "kycStatus": "KYC Status",
+        "notifications": {
+          "userUpdateSuccess": "User successfully updated",
+          "userUpdateError": "Error while updating user"
+        }
+      }
+    },
+    "general": {
+      "buttons": {
+        "ok": "Ok",
+        "notNow": "Not now",
+        "nextStep": "Next Step",
+        "submit": "Submit",
+        "register": "Register",
+        "cancel": "Cancel",
+        "change": "Change",
+        "confirm": "Confirm",
+        "edit": "Edit",
+        "update": "Update",
+        "save": "Save",
+        "later": "Later",
+        "decline": "Decline",
+        "accept": "Accept",
+        "no": "No",
+        "yes": "Yes",
+        "back": "Back"
+      },
+      "requirements": {
+        "requirementsTitle": "To access this page, you need to fulfill following criteria",
+        "haveToBeLoggedInUser": "You need to be a logged in user.",
+        "hasToBeActiveUser": "User has to be approved by the platform admin.",
+        "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
+        "organizationHasToHaveExchangeDeposit": "The organization has to have a blockchain exchange deposit address attached to the account.",
+        "organizationHasToHaveBlockchainAccount": "Your organization has to have a blockchain account attached."
+      },
+      "input": {
+        "editAmount": "Edit amount"
+      },
+      "notifications": {
+        "unknownError": "Unknown error"
+      },
+      "titles": {
+        "dr": "Dr",
+        "mr": "Mr",
+        "mrs": "Mrs",
+        "ms": "Ms",
+        "other": "Other"
+      }
+    },
+    "error": {
+      "somethingWentWrong": "Something went wrong:",
+      "reloadPage": "Reload page",
+      "returnToHome": "Return to Home page"
+    },
+    "notifications": {
+      "title": {
+        "success": "Success",
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Info"
+      }
+    },
+    "file": {
+      "upload": {
+        "dropOrClick": "Drop files here or click to select files"
+      }
+    }
+  }
+}

@@ -15,7 +15,8 @@ import { MailService } from '../../mail';
 
 @EventsHandler(CertificateRequestApprovedEvent)
 export class CertificateRequestApprovedHandler
-    implements IEventHandler<CertificateRequestApprovedEvent> {
+    implements IEventHandler<CertificateRequestApprovedEvent>
+{
     private readonly logger = new Logger(CertificateRequestApprovedHandler.name);
 
     private readonly issuerTypeId: string;

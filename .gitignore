@@ -76,6 +76,7 @@ common/autoinstallers/*/.npmrc
 
 dist/
 
+influxdb-local/
 site/
 
 deployment/
