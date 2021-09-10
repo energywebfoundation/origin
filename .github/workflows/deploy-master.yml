@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - master
+
+env:
+  EXCHANGE_WALLET_PUB: ${{secrets.EXCHANGE_WALLET_PUB}}
+  GOOGLE_MAPS_API_KEY: ${{secrets.GOOGLE_MAPS_API_KEY}}
+  ISSUER_ID: ${{secrets.ISSUER_ID}}
+  SMART_METER_ID: ${{secrets.SMART_METER_ID}}
+  REGISTRATION_MESSAGE_TO_SIGN: ${{secrets.REGISTRATION_MESSAGE_TO_SIGN}}
+
 jobs:
   cancel-previous:
     name: 'Cancel Previous Runs'
@@ -72,6 +80,3 @@ jobs:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         HEROKU_CANARY_APP_API: ${{ secrets.HEROKU_CANARY_APP_API }}
         HEROKU_CANARY_APP_UI: ${{ secrets.HEROKU_CANARY_APP_UI }}
-        HEROKU_CANARY_APP_SIM: ${{ secrets.HEROKU_CANARY_APP_SIM }}
-        HEROKU_CANARY_APP_IREC_UI: ${{ secrets.HEROKU_CANARY_APP_IREC_UI }}
-        HEROKU_CANARY_APP_IREC_API: ${{ secrets.HEROKU_CANARY_APP_IREC_API }}
