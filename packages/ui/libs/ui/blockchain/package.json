@@ -45,7 +45,7 @@
     "@emotion/react": "11.0.0",
     "@energyweb/origin-ui-core": "2.0.0",
     "@energyweb/origin-ui-theme": "0.0.1",
-    "@energyweb/origin-ui-assets": "0.0.1",
+    "@energyweb/origin-ui-assets": "0.0.1-alpha.1",
     "@energyweb/origin-ui-utils": "0.0.2"
   }
 }
