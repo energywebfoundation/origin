@@ -43,6 +43,6 @@
     "@material-ui/core": "5.0.0-alpha.29",
     "@energyweb/origin-ui-theme": "0.0.1",
     "@energyweb/origin-ui-assets": "0.0.1",
-    "@energyweb/origin-ui-utils": "0.0.2"
+    "@energyweb/origin-ui-utils": "0.0.2-beta.0"
   }
 }
