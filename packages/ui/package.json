@@ -72,7 +72,7 @@
     "core-js": "3.6.5",
     "dayjs": "1.10.7",
     "ethers": "5.3.1",
-    "history": "5.0.0",
+    "history": "5.0.1",
     "i18next": "20.2.1",
     "i18next-icu": "1.4.2",
     "lodash": "4.17.21",
