@@ -67,7 +67,7 @@
         "supertest": "6.1.6",
         "supertest-capture-error": "1.0.0",
         "ts-node": "9.1.1",
-        "typescript": "4.4.2"
+        "typescript": "4.4.3"
     },
     "publishConfig": {
         "access": "public",

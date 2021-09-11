@@ -43,7 +43,7 @@
         "supertest-capture-error": "1.0.0",
         "ts-node": "9.1.1",
         "typeorm": "0.2.34",
-        "typescript": "4.4.2"
+        "typescript": "4.4.3"
     },
     "publishConfig": {
         "access": "public",
