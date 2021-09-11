@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "@energyweb/origin-energy-api": "1.0.3",
-        "axios": "0.21.3"
+        "axios": "0.21.4"
     },
     "devDependencies": {
         "@nestjs/passport": "7.1.6",

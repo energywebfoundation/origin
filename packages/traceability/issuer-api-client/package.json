@@ -23,7 +23,7 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "axios": "0.21.3"
+        "axios": "0.21.4"
     },
     "devDependencies": {
         "@energyweb/issuer-api": "0.3.0",
