@@ -33,7 +33,7 @@
     "react-dropzone": "11.3.2",
     "axios": "0.21.3",
     "yup": "0.32.9",
-    "@energyweb/utils-general": "11.0.2"
+    "@energyweb/utils-general": "11.0.3"
   },
   "peerDependencies": {
     "react": "17.0.2",
