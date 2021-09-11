@@ -31,7 +31,7 @@
         "@nestjs/swagger": "4.8.2",
         "@nestjs/testing": "7.6.18",
         "@nestjs/typeorm": "7.1.5",
-        "@openapitools/openapi-generator-cli": "2.4.1",
+        "@openapitools/openapi-generator-cli": "2.4.2",
         "@types/mocha": "9.0.0",
         "@types/node": "14.17.14",
         "json-to-pretty-yaml": "1.2.2",
