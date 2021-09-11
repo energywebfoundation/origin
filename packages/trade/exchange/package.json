@@ -68,7 +68,7 @@
         "typeorm": "0.2.34"
     },
     "devDependencies": {
-        "@jest/globals": "27.1.0",
+        "@jest/globals": "27.1.1",
         "@nestjs/cli": "7.6.0",
         "@nestjs/schematics": "8.0.3",
         "@types/bn.js": "5.1.0",
@@ -82,7 +82,7 @@
         "chai": "4.3.0",
         "eslint-plugin-jest": "24.4.0",
         "ganache-cli": "6.12.2",
-        "jest": "27.1.0",
+        "jest": "27.1.1",
         "mocha": "9.1.1",
         "prettier": "2.3.2",
         "supertest": "6.1.6",
