@@ -1,3 +1,4 @@
+import { ReadStream } from 'fs';
 import {
     BadRequestException,
     ForbiddenException,
@@ -31,10 +32,10 @@ import {
     TransactionResult
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
+import { TUserBaseEntity, UserService } from '@energyweb/origin-backend';
 
 import { CreateConnectionDTO } from './dto';
 import { ConnectionDTO, GetConnectionCommand, RefreshTokensCommand } from '../connection';
-import { ReadStream } from 'fs';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
@@ -130,16 +131,32 @@ export interface IIrecService {
 
 @Injectable()
 export class IrecService implements IIrecService {
+    private platformAdmin: TUserBaseEntity;
+
     constructor(
         private readonly commandBus: CommandBus,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly userService: UserService
     ) {}
+
+    public isSingleUserMode(): boolean {
+        return this.configService.get<string>('IREC_API_MODE') === 'single';
+    }
 
     public async getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO> {
         return await this.commandBus.execute(new GetConnectionCommand(user));
     }
 
-    private async getIrecClient(user: UserIdentifier) {
+    private async getPlatformAdmin(): Promise<TUserBaseEntity> {
+        if (!this.platformAdmin) {
+            this.platformAdmin = await this.userService.getPlatformAdmin();
+        }
+        return this.platformAdmin;
+    }
+
+    private async getIrecClient(u: UserIdentifier) {
+        const user = this.isSingleUserMode() ? (await this.getPlatformAdmin()).organization.id : u;
+
         const irecConnection = await this.getConnectionInfo(user);
 
         if (!irecConnection) {
