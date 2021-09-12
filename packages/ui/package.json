@@ -96,7 +96,7 @@
     "@ethersproject/providers": "5.3.1",
     "react-beautiful-dnd": "13.1.0",
     "chart.js": "3.3.2",
-    "tslib": "2.3.0",
+    "tslib": "2.3.1",
     "yup": "0.32.9"
   },
   "devDependencies": {
