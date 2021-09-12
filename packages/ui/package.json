@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@emotion/react": "11.0.0",
-    "@emotion/styled": "11.0.0",
+    "@emotion/styled": "11.3.0",
     "emotion-theming": "11.0.0",
     "@energyweb/exchange-irec-react-query-client": "0.0.1",
     "@energyweb/exchange-react-query-client": "0.0.1",
@@ -104,7 +104,7 @@
     "@babel/preset-env": "7.15.6",
     "@babel/preset-react": "7.9.4",
     "@babel/preset-typescript": "7.15.0",
-    "@emotion/babel-preset-css-prop": "11.0.0",
+    "@emotion/babel-preset-css-prop": "11.2.0",
     "@nrwl/cli": "12.6.5",
     "@nrwl/cypress": "12.6.5",
     "@nrwl/eslint-plugin-nx": "12.6.5",
