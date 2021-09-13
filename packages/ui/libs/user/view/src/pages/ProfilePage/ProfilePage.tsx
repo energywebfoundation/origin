@@ -13,9 +13,7 @@ export const ProfilePage = () => {
   const classes = useStyles();
   const { user, userLoading } = useProfilePageEffects();
 
-  if (userLoading) {
-    return <CircularProgress />;
-  }
+  if (userLoading) return <CircularProgress />;
 
   return (
     <Box px={2} width="100%">
@@ -28,9 +26,7 @@ export const ProfilePage = () => {
       <Paper classes={{ root: classes.paper }}>
         <UpdateUserPassword />
       </Paper>
-      <Paper classes={{ root: classes.paper }}>
-        <BlockchainAddressesContainer />
-      </Paper>
+      <BlockchainAddressesContainer />
     </Box>
   );
 };
