@@ -27,7 +27,7 @@ export const useAsksTableEffects = ({ asks, isLoading }: AsksTableProps) => {
   const dispatchModals = useExchangeModalsDispatch();
 
   const askText = t('exchange.myOrders.ask');
-  const removeHandler = useApiCancelOrderHandler(askText);
+  const { removeHandler, isMutating } = useApiCancelOrderHandler(askText);
   const openRemoveModal = (id: OrderDTO['id']) => {
     dispatchModals({
       type: ExchangeModalsActionsEnum.SHOW_REMOVE_ORDER_CONFIRM,
@@ -55,6 +55,7 @@ export const useAsksTableEffects = ({ asks, isLoading }: AsksTableProps) => {
       name: t('exchange.myOrders.remove'),
       icon: <Remove />,
       onClick: (id: OrderDTO['id']) => openRemoveModal(id),
+      loading: isMutating,
     },
     {
       name: t('exchange.myOrders.view'),

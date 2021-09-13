@@ -1,4 +1,5 @@
 import {
+  CircularProgress,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
@@ -25,10 +26,9 @@ export const TableComponentActions: TTableComponentActions = ({
 }) => {
   const classes = useStyles();
   const { open, setOpen, handleMobileOpen } = useTableActionsEffects();
+  const anyActionLoading = actions?.some((action) => action.loading);
 
-  if (!actions) {
-    return <TableCell></TableCell>;
-  }
+  if (!actions) return <TableCell />;
 
   return (
     <TableCell className={classes.cell}>
@@ -49,8 +49,9 @@ export const TableComponentActions: TTableComponentActions = ({
             <SpeedDialAction
               tooltipOpen
               key={action.name + id}
-              icon={action.icon}
+              icon={action.loading ? <CircularProgress /> : action.icon}
               tooltipTitle={action.name}
+              FabProps={{ disabled: anyActionLoading }}
               onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();
                 action.onClick(id);

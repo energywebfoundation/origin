@@ -1,4 +1,5 @@
 import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
+import { TableActionData } from '@energyweb/origin-ui-core';
 import {
   useReceivedInvitationsActions,
   useReceivedInvitationsData,
@@ -20,10 +21,8 @@ export const useInvitationsPageEffects = () => {
   const { t } = useTranslation();
   const dispatchModals = useOrgModalsDispatch();
 
-  const {
-    isLoading: isSentLoading,
-    invitations: sentInvitations,
-  } = useSentOrgInvitationsData();
+  const { isLoading: isSentLoading, invitations: sentInvitations } =
+    useSentOrgInvitationsData();
   const sentInvitationsTable = useSentInvitationsTableLogic(
     sentInvitations,
     isSentLoading
@@ -36,25 +35,24 @@ export const useInvitationsPageEffects = () => {
     });
   };
 
-  const { acceptInvite, rejectInvite } = useReceivedInvitationsActions(
-    openRoleChangedModal
-  );
-  const receivedInvitationsActions = [
+  const { acceptInvite, rejectInvite, isMutating } =
+    useReceivedInvitationsActions(openRoleChangedModal);
+  const receivedInvitationsActions: TableActionData<InvitationDTO['id']>[] = [
     {
       icon: <Check />,
       name: t('organization.invitations.accept'),
-      onClick: (id: InvitationDTO['id']) => acceptInvite(id),
+      onClick: acceptInvite,
+      loading: isMutating,
     },
     {
       icon: <Clear />,
       name: t('organization.invitations.decline'),
-      onClick: (id: InvitationDTO['id']) => rejectInvite(id),
+      onClick: rejectInvite,
+      loading: isMutating,
     },
   ];
-  const {
-    isLoading: isReceivedLoading,
-    invitations: receivedInvitations,
-  } = useReceivedInvitationsData();
+  const { isLoading: isReceivedLoading, invitations: receivedInvitations } =
+    useReceivedInvitationsData();
   const receivedInvitationsTable = useReceivedInvitationsTableLogic(
     receivedInvitations,
     receivedInvitationsActions,
