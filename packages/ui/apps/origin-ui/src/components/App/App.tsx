@@ -10,11 +10,16 @@ import {
   useThemeModeDispatch,
   useThemeModeStore,
 } from '@energyweb/origin-ui-theme';
-import { LoginApp } from '@energyweb/origin-ui-user-view';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { initializeI18N } from '@energyweb/origin-ui-localization';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
-import { AuthApp, AdminApp, AccountApp } from '@energyweb/origin-ui-user-view';
+import {
+  AuthApp,
+  AdminApp,
+  AccountApp,
+  ConfirmEmailApp,
+  LoginApp,
+} from '@energyweb/origin-ui-user-view';
 import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
 import { DeviceApp } from '@energyweb/origin-ui-device-view';
 import { CertificateApp } from '@energyweb/origin-ui-certificate-view';
@@ -129,6 +134,7 @@ export const App: FC<AppProps> = memo(
           <Route element={<Navigate to="device/all" />} />
         </Route>
         <Route path="/login" element={<LoginApp />} />
+        <Route path="/confirm-email" element={<ConfirmEmailApp />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     );
