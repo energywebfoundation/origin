@@ -5,3 +5,4 @@ export * from './RequestsPage';
 export * from './ClaimsReportPage';
 export * from './DetailViewPage';
 export * from './ApprovedPage';
+export * from './CertificatesImportPage';
