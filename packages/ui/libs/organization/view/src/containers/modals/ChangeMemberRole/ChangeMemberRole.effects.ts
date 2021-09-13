@@ -19,19 +19,20 @@ export const useChangeMemberRoleEffects = () => {
   const dispatchModals = useOrgModalsDispatch();
 
   const [role, setRole] = useState<Role>(null);
+
   useEffect(() => {
     if (userToUpdate?.rights) {
       setRole(userToUpdate?.rights);
     }
   }, [userToUpdate]);
 
-  const handleRoleChange = useOrganizationMemberRoleUpdate();
+  const { updateRoleHandler } = useOrganizationMemberRoleUpdate();
   const changeRoleHandler = () => {
     dispatchModals({
       type: OrganizationModalsActionsEnum.SHOW_CHANGE_MEMBER_ORG_ROLE,
       payload: { open: false, userToUpdate: null },
     });
-    handleRoleChange(userToUpdate?.id, role);
+    updateRoleHandler(userToUpdate?.id, role);
   };
 
   const closeModal = () => {
@@ -41,18 +42,13 @@ export const useChangeMemberRoleEffects = () => {
     });
   };
 
-  const {
-    title,
-    errorExists,
-    errorText,
-    field,
-    buttons,
-  } = useChangeMemberRoleLogic({
-    userToUpdate,
-    changeRoleHandler,
-    closeModal,
-    buttonDisabled: role === userToUpdate?.rights,
-  });
+  const { title, errorExists, errorText, field, buttons } =
+    useChangeMemberRoleLogic({
+      userToUpdate,
+      changeRoleHandler,
+      closeModal,
+      buttonDisabled: role === userToUpdate?.rights,
+    });
 
   const dialogProps: GenericModalProps['dialogProps'] = {
     maxWidth: 'sm',
@@ -67,7 +63,7 @@ export const useChangeMemberRoleEffects = () => {
 
   const selectProps: SelectRegularProps = {
     value: role,
-    onChange: (event) => setRole((event.target.value as unknown) as Role),
+    onChange: (event) => setRole(event.target.value as unknown as Role),
     errorExists,
     errorText,
     field,

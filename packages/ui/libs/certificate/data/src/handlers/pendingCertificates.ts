@@ -14,43 +14,50 @@ import { useQueryClient } from 'react-query';
 export const useApiHandlersForPendingRequests = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const certificationRequestsKey = getCertificationRequestControllerGetAllQueryKey();
+  const certificationRequestsKey =
+    getCertificationRequestControllerGetAllQueryKey();
 
-  const { mutate: approve } = useCertificationRequestControllerApprove({
-    onSuccess: () => {
-      showNotification(
-        t('certificate.pending.notifications.approveSuccess'),
-        NotificationTypeEnum.Success
-      );
-      queryClient.invalidateQueries(certificationRequestsKey);
-    },
-    onError: (error: any) => {
-      showNotification(
-        `${t('certificate.pending.notifications.approveError')}:
+  const { mutate: approve, isLoading: isApproveMutating } =
+    useCertificationRequestControllerApprove({
+      mutation: {
+        onSuccess: () => {
+          showNotification(
+            t('certificate.pending.notifications.approveSuccess'),
+            NotificationTypeEnum.Success
+          );
+          queryClient.invalidateQueries(certificationRequestsKey);
+        },
+        onError: (error: any) => {
+          showNotification(
+            `${t('certificate.pending.notifications.approveError')}:
         ${error?.response?.data?.message || ''}
         `,
-        NotificationTypeEnum.Error
-      );
-    },
-  });
+            NotificationTypeEnum.Error
+          );
+        },
+      },
+    });
 
-  const { mutate: revoke } = useCertificationRequestControllerRevoke({
-    onSuccess: () => {
-      showNotification(
-        t('certificate.pending.notifications.revokeSuccess'),
-        NotificationTypeEnum.Success
-      );
-      queryClient.invalidateQueries(certificationRequestsKey);
-    },
-    onError: (error: any) => {
-      showNotification(
-        `${t('organization.invitations.notifications.revokeError')}:
+  const { mutate: revoke, isLoading: isRejectMutating } =
+    useCertificationRequestControllerRevoke({
+      mutation: {
+        onSuccess: () => {
+          showNotification(
+            t('certificate.pending.notifications.revokeSuccess'),
+            NotificationTypeEnum.Success
+          );
+          queryClient.invalidateQueries(certificationRequestsKey);
+        },
+        onError: (error: any) => {
+          showNotification(
+            `${t('organization.invitations.notifications.revokeError')}:
         ${error?.response?.data?.message || ''}
         `,
-        NotificationTypeEnum.Error
-      );
-    },
-  });
+            NotificationTypeEnum.Error
+          );
+        },
+      },
+    });
 
   const approveHandler = (id: FullCertificationRequestDTO['id']) => {
     approve({ id });
@@ -60,5 +67,5 @@ export const useApiHandlersForPendingRequests = () => {
     revoke({ id });
   };
 
-  return { approveHandler, rejectHandler };
+  return { approveHandler, isApproveMutating, rejectHandler, isRejectMutating };
 };

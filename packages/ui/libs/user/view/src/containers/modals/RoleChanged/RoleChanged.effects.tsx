@@ -8,18 +8,20 @@ import {
   useUserModalsDispatch,
   UserModalsActionsEnum,
 } from '../../../context';
+import { useQueryClient } from 'react-query';
 
 export const useRoleChangedEffects = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const token = getAuthenticationToken();
+  const queryClient = useQueryClient();
 
   const { roleChanged: open } = useUserModalsStore();
   const dispatchModals = useUserModalsDispatch();
 
   const isIRecEnabled = true;
 
-  const { data: user } = useUserControllerMe({ enabled: !!token });
+  const { data: user } = useUserControllerMe({ query: { enabled: !!token } });
   const orgName = user?.organization?.name;
   const role = user?.rights;
 
@@ -28,6 +30,7 @@ export const useRoleChangedEffects = () => {
       type: UserModalsActionsEnum.SHOW_ROLE_CHANGED,
       payload: false,
     });
+    queryClient.resetQueries();
     navigate('/');
   };
 

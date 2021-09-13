@@ -13,7 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useApiHandlersForPendingDevices = () => {
-  const { mutate } = useDeviceControllerUpdateDeviceStatus();
+  const { mutate, isLoading: isMutating } =
+    useDeviceControllerUpdateDeviceStatus();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const originDevicesQueryKey = getDeviceRegistryControllerGetAllQueryKey();
@@ -67,5 +68,5 @@ export const useApiHandlersForPendingDevices = () => {
     );
   };
 
-  return { approveHandler, rejectHandler };
+  return { approveHandler, rejectHandler, isMutating };
 };

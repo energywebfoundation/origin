@@ -7,16 +7,16 @@ export const useCertifiedAmountForDevice = (
   const start = new Date(new Date().getFullYear(), 0, 1).toISOString();
   const end = new Date(new Date().getFullYear(), 11, 31).toISOString();
 
-  const {
-    data: certifiedAmount,
-    isLoading: isCertifiedLoading,
-  } = useIrecCertificateControllerGetAggregateCertifiedEnergyByDeviceId(
-    id,
-    { start, end },
-    {
-      enabled: !!id,
-    }
-  );
+  const { data: certifiedAmount, isLoading: isCertifiedLoading } =
+    useIrecCertificateControllerGetAggregateCertifiedEnergyByDeviceId(
+      id,
+      { start, end },
+      {
+        query: {
+          enabled: !!id,
+        },
+      }
+    );
 
   return { certifiedAmount, isCertifiedLoading };
 };

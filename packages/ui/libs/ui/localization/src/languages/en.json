@@ -22,7 +22,8 @@
         "claimsReport": "Claims report",
         "requests": "Requests",
         "pending": "Pending",
-        "approved": "Approved"
+        "approved": "Approved",
+        "import": "Import Certificate"
       },
       "exchange": {
         "sectionTitle": "Exchange",
@@ -598,6 +599,23 @@
         "compliance": "Compliance",
         "claimDate": "Claim Date",
         "certifiedEnergy": "Certified Energy"
+      },
+      "import": {
+        "certificatesToImport": "Certificates to import",
+        "device": "Device",
+        "importButton": "Import",
+        "volume": "Volume",
+        "generationTimeFrame": "Generation Time Frame",
+        "notifications": {
+          "importSuccess": "Certificate successfully imported",
+          "importError": "Error while importing certificate"
+        }
+      },
+      "modals": {
+        "confirmImport": {
+          "title": "Confirm certificate import",
+          "text": "Please, confirm that you want to import certificate with {volume} MWh of {deviceName} for the period of {timeFrame}."
+        }
       }
     },
     "exchange": {
@@ -822,6 +840,12 @@
           "loginError": "Could not log in with supplied credentials"
         }
       },
+      "confirmEmail": {
+        "alreadyConfirmed": "Email has been already confirmed",
+        "success": "Email successfully confirmed",
+        "expired": "Confirmation link expired",
+        "error": "Error while confirming email"
+      },
       "profile": {
         "userInfoTitle": "User information",
         "changeEmailTitle": "Change email",
@@ -832,6 +856,9 @@
         "telephone": "Telephone",
         "status": "Status",
         "kycStatus": "KYC Status",
+        "emailConfirmed": "Email confirmed",
+        "yes": "Yes",
+        "no": "No",
         "email": "Email",
         "changeEmail": "Change Email",
         "currentPassword": "Current Password",
@@ -852,6 +879,8 @@
           "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
         },
         "notifications": {
+          "confirmationEmailResentSuccess": "Confirmation email re-sent",
+          "confirmationEmailResentError": "Error while trying to re-send confirmation email",
           "userInfoUpdateSuccess": "User information updated successfully",
           "userInfoUpdateError": "Error while updating user information",
           "userEmailUpdateSuccess": "User email updated successfully. Please log in using new email",

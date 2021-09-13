@@ -7,6 +7,7 @@ export type TableActionData<Id> = {
   name: string;
   icon: ReactNode;
   onClick: (rowId: Id) => any;
+  loading?: boolean;
 };
 
 export type TableRowData<Id> = {

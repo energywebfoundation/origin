@@ -1,6 +1,8 @@
 import { GenericModalProps } from '@energyweb/origin-ui-core';
 import { usePendingInvitationModalHandlers } from '@energyweb/origin-ui-user-data';
 import { usePendingInvitationModalLogic } from '@energyweb/origin-ui-user-logic';
+import { useQueryClient } from 'react-query';
+import { useNavigate } from 'react-router';
 import {
   UserModalsActionsEnum,
   useUserModalsDispatch,
@@ -12,12 +14,16 @@ export const usePendingInvitationEffects = () => {
     pendingInvitation: { open, invitation },
   } = useUserModalsStore();
   const dispatchModals = useUserModalsDispatch();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const closeModal = () => {
     dispatchModals({
       type: UserModalsActionsEnum.SHOW_PENDING_INVITATION,
       payload: { open: false, invitation: null },
     });
+    queryClient.resetQueries();
+    navigate('/');
   };
 
   const openRoleChangeModal = () => {
@@ -27,11 +33,8 @@ export const usePendingInvitationEffects = () => {
     });
   };
 
-  const {
-    acceptHandler,
-    declineHandler,
-    laterHandler,
-  } = usePendingInvitationModalHandlers(closeModal, openRoleChangeModal);
+  const { acceptHandler, declineHandler, laterHandler } =
+    usePendingInvitationModalHandlers(closeModal, openRoleChangeModal);
 
   const { title, text, buttons } = usePendingInvitationModalLogic({
     invitation,
