@@ -156,7 +156,7 @@
     "jest-fetch-mock": "3.0.3",
     "jest-localstorage-mock": "2.4.17",
     "prettier": "2.4.0",
-    "test-react-hooks": "2.0.4",
+    "test-react-hooks": "3.0.4",
     "ts-jest": "27.0.5",
     "ts-node": "9.1.1",
     "typescript": "4.4.3",
