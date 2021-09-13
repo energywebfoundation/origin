@@ -230,7 +230,7 @@ dependencies:
   supertest: 6.1.6
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6_express@4.17.1
-  test-react-hooks: 2.0.4_react-dom@17.0.2+react@17.0.2
+  test-react-hooks: 3.0.4_react@17.0.2
   truffle: 5.4.10_453fe946899394317fa361aa06afbbf2
   truffle-typings: 1.0.8
   ts-jest: 27.0.5_decc0645116b8957e026d7a7e7ef5e71
@@ -35415,16 +35415,18 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==
-  /test-react-hooks/2.0.4_react-dom@17.0.2+react@17.0.2:
+  /test-react-hooks/3.0.4_react@17.0.2:
     dependencies:
       react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      rxjs: 7.3.0
     dev: false
+    engines:
+      node: '>= 12'
     peerDependencies:
-      react: '>= 16.8.0'
-      react-dom: '>= 16.8.0'
+      react: '>= 16.14.0'
+      react-test-renderer: '>= 16.14.0'
     resolution:
-      integrity: sha512-fcOotC8OPJ7rTd2MIYoLIOvfzvzL0emi5bwinYsADhaHAHso9sGanT4/0U5D4ggZDB7cp+ep9hMPeW9HybroEw==
+      integrity: sha512-fTXdpbCIJ9szINmdOXriLkyRllFAGeM3r0fV/mwUENRU47Iz/vcCITVP+6oRKzOHTK4ZlsmO9l7Ez30u30yvcw==
   /test-value/2.1.0:
     dependencies:
       array-back: 1.0.4
@@ -41246,7 +41248,7 @@ packages:
       react-use: 17.2.4_react-dom@17.0.2+react@17.0.2
       regenerator-runtime: 0.13.9
       storybook-dark-mode: 1.0.8_c6cabef4f2c9dc2b772a9ccb91171044
-      test-react-hooks: 2.0.4_react-dom@17.0.2+react@17.0.2
+      test-react-hooks: 3.0.4_react@17.0.2
       ts-jest: 27.0.5_decc0645116b8957e026d7a7e7ef5e71
       ts-node: 9.1.1_typescript@4.4.3
       tsconfig-paths-webpack-plugin: 3.5.1
@@ -41263,7 +41265,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-S7jEgAmZFVaMmhkEXr1lUqO5fI6E6CeDR1UJPEi8k/B8yA/p4qygPcaz9SgNWi8HNjRUPJJ620QYh6jz7BN9Ww==
+      integrity: sha512-iKiyPRCB/kAL4kpZ/4EbgSfli5EpN/9MDDy6iUBzWb8GG2hQNzAtgUtGCbE6osjYPr1zJTAgpNSLnsocA/iF7Q==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -41572,7 +41574,7 @@ specifiers:
   supertest: 6.1.6
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6
-  test-react-hooks: 2.0.4
+  test-react-hooks: 3.0.4
   truffle: 5.4.10
   truffle-typings: 1.0.8
   ts-jest: 27.0.5
