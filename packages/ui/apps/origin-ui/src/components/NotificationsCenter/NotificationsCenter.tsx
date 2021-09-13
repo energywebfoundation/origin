@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ToastContainer, ToastContainerProps, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 export const useStyles = makeStyles((theme) => ({
   toast: {

@@ -3,14 +3,14 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { FirstStep } from './StepReport.stories';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@material-ui/core';
 
 describe('StepReport', () => {
   it('should render StepReport with first step', () => {
     const { baseElement } = render(
-      <MuiThemeProvider theme={createMuiTheme()}>
+      <ThemeProvider theme={createTheme()}>
         <FirstStep {...FirstStep.args} />
-      </MuiThemeProvider>
+      </ThemeProvider>
     );
     expect(baseElement).toBeInTheDocument();
   });

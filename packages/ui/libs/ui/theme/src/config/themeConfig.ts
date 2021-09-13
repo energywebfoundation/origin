@@ -1,4 +1,4 @@
-import { createMuiTheme, Theme, ThemeOptions } from '@material-ui/core/styles';
+import { createTheme, Theme, ThemeOptions } from '@material-ui/core/styles';
 import { enUS, plPL } from '@material-ui/core/locale';
 import { LightenColor } from '../utils/colors';
 import { IOriginStyleConfig } from '../utils/makeOriginUiConfig';
@@ -212,5 +212,5 @@ export const createMaterialThemeForOrigin = (
       en: enUS,
     }[language] ?? enUS;
 
-  return createMuiTheme(getThemeConfig(styleConfig, themeMode), materialLocale);
+  return createTheme(getThemeConfig(styleConfig, themeMode), materialLocale);
 };

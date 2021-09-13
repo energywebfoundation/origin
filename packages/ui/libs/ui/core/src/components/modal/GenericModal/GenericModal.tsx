@@ -74,8 +74,8 @@ export const GenericModal: FC<GenericModalProps> = ({
           <Grid container alignItems="center" justifyContent="space-between">
             {title && (
               <Grid item>
-                <DialogTitle disableTypography>
-                  <Typography variant="h5" {...titleProps}>
+                <DialogTitle>
+                  <Typography variant="h5" component="span" {...titleProps}>
                     {title}
                   </Typography>
                 </DialogTitle>
