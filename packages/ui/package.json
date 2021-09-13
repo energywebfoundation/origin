@@ -90,7 +90,7 @@
     "react-toastify": "8.0.2",
     "react-use": "17.3.1",
     "regenerator-runtime": "0.13.9",
-    "react-chartjs-2": "3.0.4",
+    "react-chartjs-2": "3.0.3",
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",
     "@ethersproject/providers": "5.3.1",
