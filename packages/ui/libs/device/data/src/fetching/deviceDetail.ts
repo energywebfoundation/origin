@@ -11,32 +11,30 @@ const useCertifiedAmountForDevice = (
 ) => {
   const start = new Date(new Date().getFullYear(), 0, 1).toISOString();
   const end = new Date(new Date().getFullYear(), 11, 31).toISOString();
-  const {
-    data: certifiedAmount,
-    isLoading: isCertifiedLoading,
-  } = useIrecCertificateControllerGetAggregateCertifiedEnergyByDeviceId(
-    id,
-    { start, end },
-    {
-      enabled: !!id,
-    }
-  );
+  const { data: certifiedAmount, isLoading: isCertifiedLoading } =
+    useIrecCertificateControllerGetAggregateCertifiedEnergyByDeviceId(
+      id,
+      { start, end },
+      {
+        query: {
+          enabled: !!id,
+        },
+      }
+    );
 
   return { certifiedAmount, isCertifiedLoading };
 };
 
 export const useDeviceDetailData = (id: OriginDeviceDTO['id']) => {
-  const {
-    data: originDevice,
-    isLoading: isOriginDeviceLoading,
-  } = useDeviceRegistryControllerGet(id);
+  const { data: originDevice, isLoading: isOriginDeviceLoading } =
+    useDeviceRegistryControllerGet(id);
 
-  const {
-    data: iRecDevice,
-    isLoading: isIRecDeviceLoading,
-  } = useDeviceControllerGet(originDevice?.externalRegistryId, {
-    enabled: !!originDevice?.externalRegistryId,
-  });
+  const { data: iRecDevice, isLoading: isIRecDeviceLoading } =
+    useDeviceControllerGet(originDevice?.externalRegistryId, {
+      query: {
+        enabled: !!originDevice?.externalRegistryId,
+      },
+    });
 
   const { certifiedAmount, isCertifiedLoading } = useCertifiedAmountForDevice(
     originDevice?.externalRegistryId

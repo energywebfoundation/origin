@@ -16,12 +16,12 @@ export const useOrganizationMemberRemove = () => {
   const organizationId = user?.organization?.id;
 
   const { t } = useTranslation();
-  const { mutate } = useOrganizationControllerRemoveMember();
+  const { mutate, isLoading: isMutating } =
+    useOrganizationControllerRemoveMember();
 
   const queryClient = useQueryClient();
-  const orgMembersKey = getOrganizationControllerGetUsersQueryKey(
-    organizationId
-  );
+  const orgMembersKey =
+    getOrganizationControllerGetUsersQueryKey(organizationId);
 
   const removeHandler = (userToDeleteId: UserDTO['id']) => {
     if (userToDeleteId === user?.id) {
@@ -54,5 +54,5 @@ export const useOrganizationMemberRemove = () => {
     );
   };
 
-  return { removeHandler, isLoading };
+  return { removeHandler, isLoading, isMutating };
 };

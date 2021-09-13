@@ -12,7 +12,7 @@ export class InvitationCreatedHandler implements IEventHandler<InvitationCreated
     public async handle(event: InvitationCreatedEvent): Promise<void> {
         const { organization, email } = event;
 
-        const url = `${process.env.UI_BASE_URL}/organization/organization-invitations`;
+        const url = `${process.env.UI_BASE_URL}/organization/invitations`;
 
         const result = await this.mailService.send({
             to: email,

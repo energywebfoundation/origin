@@ -12,7 +12,9 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useApiMyBundles = (enabled?: boolean) => {
-  const { data, isLoading } = useBundleControllerGetMyBundles({ enabled });
+  const { data, isLoading } = useBundleControllerGetMyBundles({
+    query: { enabled },
+  });
 
   const myBundles = data?.filter((bundle) => !bundle.isCancelled) || [];
 
@@ -24,9 +26,9 @@ export const useApiRemoveBundleHandler = () => {
   const queryClient = useQueryClient();
   const myBundlesQueryKey = getBundleControllerGetMyBundlesQueryKey();
 
-  const { mutate } = useBundleControllerCancelBundle();
+  const { mutate, isLoading: isMutating } = useBundleControllerCancelBundle();
 
-  return (id: Bundle['id']) => {
+  const removeHandler = (id: Bundle['id']) => {
     mutate(
       { id },
       {
@@ -46,4 +48,6 @@ export const useApiRemoveBundleHandler = () => {
       }
     );
   };
+
+  return { removeHandler, isMutating };
 };

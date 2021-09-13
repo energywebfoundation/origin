@@ -44,7 +44,7 @@
         "@types/supertest": "2.0.11",
         "supertest": "6.1.6",
         "supertest-capture-error": "1.0.0",
-        "orval": "5.0.0-alpha.9",
+        "orval": "5.5.9",
         "barrelsby": "2.2.0"
     },
     "publishConfig": {

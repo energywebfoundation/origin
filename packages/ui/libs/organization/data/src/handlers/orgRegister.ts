@@ -1,5 +1,4 @@
 import {
-  getUserControllerMeQueryKey,
   NewOrganizationDTO,
   useOrganizationControllerRegister,
 } from '@energyweb/origin-backend-react-query-client';
@@ -9,8 +8,6 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
-import { useQueryClient } from 'react-query';
-import { useNavigate } from 'react-router-dom';
 
 interface IUseOrganizationRegisterHandlerProps {
   openRoleChangedModal: () => void;
@@ -30,11 +27,8 @@ export const useOrganizationRegisterHandler = ({
   openAlreadyExistsModal,
 }: IUseOrganizationRegisterHandlerProps) => {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const { mutate } = useOrganizationControllerRegister();
-  const userKey = getUserControllerMeQueryKey();
 
   const registerHandler = (values: OrgRegisterFormValues) => {
     const formattedValues: NewOrganizationDTO = {
@@ -46,12 +40,10 @@ export const useOrganizationRegisterHandler = ({
       { data: formattedValues },
       {
         onSuccess: () => {
-          navigate('/organization/my');
           showNotification(
             t('organization.register.notifications.registeredSuccess'),
             NotificationTypeEnum.Success
           );
-          queryClient.invalidateQueries(userKey);
           openRoleChangedModal();
         },
         onError: (error: any) => {

@@ -83,6 +83,6 @@ export const useCreateBundleLogic: TUseCreateBundleLogic = ({
     selectAllText: t('exchange.createBundle.selectAll'),
     actionsTabsProps: { scrollButtons: false },
     containers: containers,
-    actions: actions,
+    actions,
   };
 };

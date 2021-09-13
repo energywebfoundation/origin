@@ -29,8 +29,8 @@
     "react-material-ui-carousel": "2.3.1",
     "@react-google-maps/api": "2.2.0",
     "react-beautiful-dnd": "13.1.0",
-    "react-toastify": "7.0.4",
     "react-dropzone": "11.3.4",
+    "react-toastify": "8.0.2",
     "axios": "0.21.4",
     "yup": "0.32.9",
     "@energyweb/utils-general": "11.0.3"

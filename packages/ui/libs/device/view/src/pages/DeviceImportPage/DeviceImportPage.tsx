@@ -8,9 +8,7 @@ export const DeviceImportPage = () => {
   const classes = useStyles();
   const { isLoading, allFuelTypes } = useDeviceImportPageEffects();
 
-  if (isLoading) {
-    return <CircularProgress />;
-  }
+  if (isLoading) return <CircularProgress />;
 
   return (
     <div className={classes.wrapper}>

@@ -12,12 +12,12 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useOrgApproveHandler = () => {
-  const { mutate } = useOrganizationControllerUpdate();
+  const { mutate, isLoading: isMutating } = useOrganizationControllerUpdate();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const allOrgsQueryKey = getOrganizationControllerGetAllQueryKey();
 
-  return (id: FullOrganizationInfoDTO['id']) => {
+  const approveHandler = (id: FullOrganizationInfoDTO['id']) => {
     mutate(
       { id, data: { status: OrganizationStatus.Active } },
       {
@@ -39,4 +39,6 @@ export const useOrgApproveHandler = () => {
       }
     );
   };
+
+  return { approveHandler, isMutating };
 };

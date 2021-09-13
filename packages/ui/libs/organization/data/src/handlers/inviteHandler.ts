@@ -15,28 +15,30 @@ export const useOrganizationInviteHandler = () => {
   const { t } = useTranslation();
 
   const { data: user, isLoading: isUserLoading } = useUserControllerMe();
-  const {
-    data: alreadySentInvitations,
-    isLoading: isInvitationsLoading,
-  } = useOrganizationControllerGetInvitationsForOrganization(
-    user?.organization?.id,
-    { enabled: Boolean(user?.organization?.id) }
-  );
+  const { data: alreadySentInvitations, isLoading: isInvitationsLoading } =
+    useOrganizationControllerGetInvitationsForOrganization(
+      user?.organization?.id,
+      {
+        query: { enabled: Boolean(user?.organization?.id) },
+      }
+    );
 
   const { mutate } = useInvitationControllerInvite({
-    onSuccess: () => {
-      showNotification(
-        t('organization.invite.notifications.invitationSent'),
-        NotificationTypeEnum.Success
-      );
-    },
-    onError: (error: any) => {
-      showNotification(
-        `${t('organization.invite.notifications.unableToInvite')}:
+    mutation: {
+      onSuccess: () => {
+        showNotification(
+          t('organization.invite.notifications.invitationSent'),
+          NotificationTypeEnum.Success
+        );
+      },
+      onError: (error: any) => {
+        showNotification(
+          `${t('organization.invite.notifications.unableToInvite')}:
         ${error?.response?.data?.message || ''}
         `,
-        NotificationTypeEnum.Error
-      );
+          NotificationTypeEnum.Error
+        );
+      },
     },
   });
 
