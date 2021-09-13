@@ -11,7 +11,9 @@ export const useUserExchangeDepositAddressEffects = () => {
 
   useEffect(() => {
     isMountedRef.current = true;
-    return () => (isMountedRef.current = false);
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
 
   const { submitHandler } = useApiCreateExchangeBlockchainAddress(
