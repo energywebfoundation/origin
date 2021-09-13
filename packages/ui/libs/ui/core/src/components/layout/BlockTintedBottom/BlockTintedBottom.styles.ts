@@ -1,5 +1,5 @@
 import { HexToRGBA } from '@energyweb/origin-ui-theme';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 export const useStyles = (height: number) => {
   return makeStyles((theme) => ({

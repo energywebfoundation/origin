@@ -1,5 +1,5 @@
 import { LightenColor } from '@energyweb/origin-ui-theme';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 
 export const useStyles = makeStyles((theme) => ({
   navPaper: {
@@ -11,6 +11,9 @@ export const useStyles = makeStyles((theme) => ({
       color: theme.palette.background.paper,
     },
     '& span': {
+      color: theme.palette.background.paper,
+    },
+    '& a': {
       color: theme.palette.background.paper,
     },
     '& > ul > div': {
@@ -27,7 +30,7 @@ export const useStyles = makeStyles((theme) => ({
     '& svg': {
       fill: theme.palette.background.paper,
     },
-    '& button > span': {
+    '& button': {
       color: theme.palette.background.paper,
     },
   },

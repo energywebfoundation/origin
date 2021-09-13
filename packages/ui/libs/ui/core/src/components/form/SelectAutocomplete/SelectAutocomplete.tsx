@@ -49,12 +49,8 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
   dependentValue = null,
   className,
 }) => {
-  const {
-    options,
-    textValue,
-    setTextValue,
-    changeHandler,
-  } = useSelectAutocompleteEffects(onChange, dependentValue, field);
+  const { options, textValue, setTextValue, changeHandler } =
+    useSelectAutocompleteEffects(onChange, dependentValue, field);
   const classes = useStyles();
 
   return (
@@ -66,7 +62,7 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
       inputValue={textValue}
       getOptionLabel={(option) => option.label}
       onChange={changeHandler}
-      getOptionSelected={(option, value) => option.value === value.value}
+      isOptionEqualToValue={(option, value) => option.value === value.value}
       getOptionDisabled={() => disabled}
       disabled={disabled}
       value={value !== undefined ? value : []}
