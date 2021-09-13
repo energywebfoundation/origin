@@ -1,5 +1,6 @@
 import { GenericModalProps } from '@energyweb/origin-ui-core';
 import { useLoginRegisterOrgModalLogic } from '@energyweb/origin-ui-user-logic';
+import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';
 import {
   UserModalsActionsEnum,
@@ -11,12 +12,14 @@ export const useLoginRegisterOrgEffects = () => {
   const { loginRegisterOrg: open } = useUserModalsStore();
   const dispatchModals = useUserModalsDispatch();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const closeModal = () => {
     dispatchModals({
       type: UserModalsActionsEnum.SHOW_LOGIN_REGISTER_ORG,
       payload: false,
     });
+    queryClient.resetQueries();
     navigate('/');
   };
 
@@ -25,6 +28,7 @@ export const useLoginRegisterOrgEffects = () => {
       type: UserModalsActionsEnum.SHOW_LOGIN_REGISTER_ORG,
       payload: false,
     });
+    queryClient.resetQueries();
     navigate('/organization/register');
   };
 
