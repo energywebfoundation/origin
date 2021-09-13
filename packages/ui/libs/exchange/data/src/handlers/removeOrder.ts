@@ -11,12 +11,12 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
 export const useApiCancelOrderHandler = (orderSide: string) => {
-  const { mutate } = useOrderControllerCancelOrder();
+  const { mutate, isLoading: isMutating } = useOrderControllerCancelOrder();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const ordersQueryKey = getOrderControllerGetMyOrdersQueryKey();
 
-  return (id: OrderDTO['id'], closeModal: () => void) => {
+  const removeHandler = (id: OrderDTO['id'], closeModal: () => void) => {
     mutate(
       { id },
       {
@@ -42,4 +42,6 @@ export const useApiCancelOrderHandler = (orderSide: string) => {
       }
     );
   };
+
+  return { removeHandler, isMutating };
 };

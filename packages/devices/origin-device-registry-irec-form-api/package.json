@@ -23,9 +23,9 @@
         "test": "yarn typeorm:run && yarn test:mocha",
         "clean": "shx rm -rf dist",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
-        "typeorm:migrate": "yarn typeorm migration:generate -- -n",
-        "typeorm:run": "yarn typeorm migration:run",
-        "typeorm:drop": "yarn typeorm schema:drop",
+        "typeorm:migration-generate": "yarn typeorm migration:generate -- -n",
+        "typeorm:migration-run": "yarn typeorm migration:run",
+        "typeorm:drop-db": "yarn typeorm schema:drop",
         "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run",
         "precommit": "lint-staged"
     },

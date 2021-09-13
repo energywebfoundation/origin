@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AccountItem, CodeDescription, CodeName } from '@energyweb/issuer-irec-api-wrapper';
-import { IsBoolean, IsISO31661Alpha2, IsString } from 'class-validator';
+import { AccountItem } from '@energyweb/issuer-irec-api-wrapper';
+import { IsBoolean, IsISO31661Alpha2, IsString, ValidateNested } from 'class-validator';
+import { CodeDescriptionDTO } from './code-description.dto';
+import { CodeNameDTO } from './code-name.dto';
 
 export class IrecAccountItemDto implements AccountItem {
     @ApiProperty({ type: String })
@@ -18,14 +20,17 @@ export class IrecAccountItemDto implements AccountItem {
     @IsString()
     endDate: string;
 
-    fuelType: CodeDescription;
+    @ApiProperty({ type: CodeDescriptionDTO })
+    @ValidateNested()
+    fuelType: CodeDescriptionDTO;
 
-    deviceType: CodeDescription;
+    @ApiProperty({ type: CodeDescriptionDTO })
+    @ValidateNested()
+    deviceType: CodeDescriptionDTO;
 
-    device: CodeName;
-
-    @IsBoolean()
-    isDeviceImported: boolean;
+    @ApiProperty({ type: CodeNameDTO })
+    @ValidateNested()
+    device: CodeNameDTO;
 
     @ApiProperty({ type: Boolean })
     @IsBoolean()

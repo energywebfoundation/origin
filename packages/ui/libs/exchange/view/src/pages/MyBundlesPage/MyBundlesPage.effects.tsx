@@ -17,6 +17,7 @@ import {
   ExchangeModalsActionsEnum,
   useExchangeModalsDispatch,
 } from '../../context';
+import { TableActionData } from '@energyweb/origin-ui-core';
 
 export const useMyBundlesPageEffects = () => {
   const { t } = useTranslation();
@@ -31,10 +32,8 @@ export const useMyBundlesPageEffects = () => {
   });
   const { myBundles, isLoading: areBundlesLoading } = useApiMyBundles();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllDeviceFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
 
   const dispatchModals = useExchangeModalsDispatch();
 
@@ -49,13 +48,14 @@ export const useMyBundlesPageEffects = () => {
     });
   };
 
-  const removeHandler = useApiRemoveBundleHandler();
+  const { removeHandler, isMutating } = useApiRemoveBundleHandler();
 
-  const actions = [
+  const actions: TableActionData<Bundle['id']>[] = [
     {
       icon: <Cancel />,
       name: t('exchange.myBundles.removeBundle'),
       onClick: removeHandler,
+      loading: isMutating,
     },
   ];
 

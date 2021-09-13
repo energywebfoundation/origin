@@ -20,12 +20,8 @@ export const useReceivedInvitationsActions = (
   const invitationsKey = getInvitationControllerGetInvitationsQueryKey();
   const userKey = getUserControllerMeQueryKey();
 
-  const { mutate } = useInvitationControllerUpdateInvitation({
-    onSettled: () => {
-      queryClient.invalidateQueries(invitationsKey);
-      queryClient.invalidateQueries(userKey);
-    },
-  });
+  const { mutate, isLoading: isMutating } =
+    useInvitationControllerUpdateInvitation();
 
   const acceptInvite = (id: InvitationDTO['id']) =>
     mutate(
@@ -64,6 +60,8 @@ export const useReceivedInvitationsActions = (
             t('organization.invitations.notifications.rejectedSuccess'),
             NotificationTypeEnum.Success
           );
+          queryClient.invalidateQueries(invitationsKey);
+          queryClient.invalidateQueries(userKey);
         },
         onError: (error: any) => {
           showNotification(
@@ -76,5 +74,5 @@ export const useReceivedInvitationsActions = (
       }
     );
 
-  return { acceptInvite, rejectInvite };
+  return { acceptInvite, rejectInvite, isMutating };
 };

@@ -9,39 +9,38 @@ import {
   downloadFileHandler,
 } from '@energyweb/origin-ui-certificate-data';
 import { usePendingCertificatesLogic } from '@energyweb/origin-ui-certificate-logic';
+import { TableActionData } from '@energyweb/origin-ui-core';
+import { FullCertificationRequestDTO } from '@energyweb/issuer-irec-api-react-query-client';
 
 export const usePendingPageEffects = () => {
   const { t } = useTranslation();
 
-  const {
-    allDevices: devices,
-    isLoading: areDevicesLoading,
-  } = useApiAllDevices();
+  const { allDevices: devices, isLoading: areDevicesLoading } =
+    useApiAllDevices();
 
-  const {
-    allTypes: allFuelTypes,
-    isLoading: isFuelTypesloading,
-  } = useAllFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
+    useAllFuelTypes();
 
-  const {
-    pendingRequests: requests,
-    isLoading: allRequestsLoading,
-  } = useApiPendingRequests();
+  const { pendingRequests: requests, isLoading: allRequestsLoading } =
+    useApiPendingRequests();
 
-  const { approveHandler, rejectHandler } = useApiHandlersForPendingRequests();
+  const { approveHandler, rejectHandler, isApproveMutating, isRejectMutating } =
+    useApiHandlersForPendingRequests();
 
   const loading = isFuelTypesloading || areDevicesLoading || allRequestsLoading;
 
-  const actions = [
+  const actions: TableActionData<FullCertificationRequestDTO['id']>[] = [
     {
       icon: <Check />,
       name: t('certificate.pending.approve'),
       onClick: approveHandler,
+      loading: isApproveMutating,
     },
     {
       icon: <Clear />,
       name: t('certificate.pending.reject'),
       onClick: rejectHandler,
+      loading: isRejectMutating,
     },
   ];
 
