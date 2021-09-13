@@ -32,22 +32,21 @@ export const useRequestCertificatesHandler = ({
 }: TUseRequestCertificatesHandlerArgs) => {
   const { t } = useTranslation();
   const { data, isLoading } = useAccountControllerGetAccount({
-    staleTime: 100000,
+    query: {
+      staleTime: 1000000,
+    },
   });
   const address = data?.address;
 
-  const {
-    mutate,
-    isLoading: isMutating,
-  } = useCertificationRequestControllerCreate();
+  const { mutate, isLoading: isMutating } =
+    useCertificationRequestControllerCreate();
 
   const requestHandler = (values: UnpackNestedValue<FormValuesTypes>) => {
     const parsedEnergy = isNaN(Number(values.energy))
       ? 0
       : Number(values.energy);
-    const energyInBaseUnit = EnergyFormatter.getBaseValueFromValueInDisplayUnit(
-      parsedEnergy
-    );
+    const energyInBaseUnit =
+      EnergyFormatter.getBaseValueFromValueInDisplayUnit(parsedEnergy);
 
     if (!address) {
       showNotification(

@@ -19,39 +19,43 @@ export const useApiHandlersForPendingRequests = () => {
 
   const { mutate: approve, isLoading: isApproveMutating } =
     useCertificationRequestControllerApprove({
-      onSuccess: () => {
-        showNotification(
-          t('certificate.pending.notifications.approveSuccess'),
-          NotificationTypeEnum.Success
-        );
-        queryClient.invalidateQueries(certificationRequestsKey);
-      },
-      onError: (error: any) => {
-        showNotification(
-          `${t('certificate.pending.notifications.approveError')}:
+      mutation: {
+        onSuccess: () => {
+          showNotification(
+            t('certificate.pending.notifications.approveSuccess'),
+            NotificationTypeEnum.Success
+          );
+          queryClient.invalidateQueries(certificationRequestsKey);
+        },
+        onError: (error: any) => {
+          showNotification(
+            `${t('certificate.pending.notifications.approveError')}:
         ${error?.response?.data?.message || ''}
         `,
-          NotificationTypeEnum.Error
-        );
+            NotificationTypeEnum.Error
+          );
+        },
       },
     });
 
   const { mutate: revoke, isLoading: isRejectMutating } =
     useCertificationRequestControllerRevoke({
-      onSuccess: () => {
-        showNotification(
-          t('certificate.pending.notifications.revokeSuccess'),
-          NotificationTypeEnum.Success
-        );
-        queryClient.invalidateQueries(certificationRequestsKey);
-      },
-      onError: (error: any) => {
-        showNotification(
-          `${t('organization.invitations.notifications.revokeError')}:
+      mutation: {
+        onSuccess: () => {
+          showNotification(
+            t('certificate.pending.notifications.revokeSuccess'),
+            NotificationTypeEnum.Success
+          );
+          queryClient.invalidateQueries(certificationRequestsKey);
+        },
+        onError: (error: any) => {
+          showNotification(
+            `${t('organization.invitations.notifications.revokeError')}:
         ${error?.response?.data?.message || ''}
         `,
-          NotificationTypeEnum.Error
-        );
+            NotificationTypeEnum.Error
+          );
+        },
       },
     });
 

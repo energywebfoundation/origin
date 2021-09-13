@@ -23,8 +23,14 @@ export const useUser = () => {
 
   const tokenExists = Boolean(getAuthenticationToken());
 
-  const { data, isLoading: userLoading, isSuccess } = useUserControllerMe({
-    enabled: tokenExists,
+  const {
+    data,
+    isLoading: userLoading,
+    isSuccess,
+  } = useUserControllerMe({
+    query: {
+      enabled: tokenExists,
+    },
   });
 
   const logout = () => clearUser();

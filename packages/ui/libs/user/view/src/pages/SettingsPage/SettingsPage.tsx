@@ -50,6 +50,7 @@ export const SettingsPage: FC = () => {
               value={language}
               onChange={handleLanguageChange}
               name="language"
+              variant="standard"
             >
               {languageOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
