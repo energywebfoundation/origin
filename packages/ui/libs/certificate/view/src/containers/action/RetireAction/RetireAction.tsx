@@ -1,4 +1,5 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
+import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import {
   ListActionComponentProps,
   FormSelect,
@@ -18,7 +19,7 @@ export type TRetireAction = (
   props: PropsWithChildren<RetireActionProps>
 ) => ReactElement;
 
-export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
+const Component: TRetireAction = ({ selectedIds, resetIds }) => {
   const classes = useStyles();
   const {
     title,
@@ -79,3 +80,5 @@ export const RetireAction: TRetireAction = ({ selectedIds, resetIds }) => {
     </CertificateActionContent>
   );
 };
+
+export const RetireAction = withMetamask(Component);
