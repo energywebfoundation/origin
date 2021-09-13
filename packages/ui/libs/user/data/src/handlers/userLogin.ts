@@ -1,7 +1,4 @@
-import {
-  accountControllerGetAccount,
-  getAccountControllerGetAccountQueryKey,
-} from '@energyweb/exchange-react-query-client';
+import { accountControllerGetAccount } from '@energyweb/exchange-react-query-client';
 import {
   isRole,
   OrganizationInvitationStatus,
@@ -12,10 +9,8 @@ import {
 import {
   userControllerMe,
   invitationControllerGetInvitations,
-  getUserControllerMeQueryKey,
   LoginDataDTO,
   useAppControllerLogin,
-  getInvitationControllerGetInvitationsQueryKey,
   InvitationDTO,
 } from '@energyweb/origin-backend-react-query-client';
 import {
@@ -36,9 +31,6 @@ export const useUserLogin = (
   const navigate = useNavigate();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const userQueryKey = getUserControllerMeQueryKey();
-  const invitationsQueryKey = getInvitationControllerGetInvitationsQueryKey();
-  const accountQueryKey = getAccountControllerGetAccountQueryKey();
 
   const { mutate } = useAppControllerLogin();
 
@@ -63,26 +55,16 @@ export const useUserLogin = (
           const account = await accountControllerGetAccount();
           const exchangeAddress = account?.address;
 
-          queryClient.setQueryData(userQueryKey, user);
-          queryClient.setQueryData(invitationsQueryKey, invitations);
-          queryClient.setQueryData(accountQueryKey, account);
-
           if (
             !user?.organization &&
             (!pendingInvitations || pendingInvitations.length === 0)
           ) {
             openRegisterOrgModal();
-            return;
-          }
-
-          if (!!pendingInvitations && pendingInvitations.length > 0) {
+          } else if (!!pendingInvitations && pendingInvitations.length > 0) {
             const lastInvitation =
               pendingInvitations[pendingInvitations.length - 1];
             openInvitationModal(lastInvitation);
-            return;
-          }
-
-          if (
+          } else if (
             user?.organization.status === OrganizationStatus.Active &&
             user.status === UserStatus.Active &&
             !isRole(user, Role.Issuer) &&
@@ -91,10 +73,10 @@ export const useUserLogin = (
             !exchangeAddress
           ) {
             openExchangeAddressModal();
-            return;
+          } else {
+            navigate('/');
+            queryClient.resetQueries();
           }
-
-          navigate('/');
         },
         onError: () => {
           showNotification(

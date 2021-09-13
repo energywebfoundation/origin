@@ -28,6 +28,7 @@ import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { RoutesConfig } from '../AppContainer';
 import { useStyles } from './App.styles';
+import { CircularProgress } from '@material-ui/core';
 
 export interface AppProps {
   isAuthenticated: boolean;
@@ -35,12 +36,20 @@ export interface AppProps {
   user: UserDTO;
   menuSections: TMenuSection[];
   routesConfig: RoutesConfig;
+  loading: boolean;
 }
 
 initializeI18N(getOriginLanguage());
 
 export const App: FC<AppProps> = memo(
-  ({ isAuthenticated, user, menuSections, topbarButtons, routesConfig }) => {
+  ({
+    isAuthenticated,
+    user,
+    menuSections,
+    topbarButtons,
+    routesConfig,
+    loading,
+  }) => {
     const classes = useStyles();
     const { orgData, userData } = useUserAndOrgData(user);
     const {
@@ -76,66 +85,73 @@ export const App: FC<AppProps> = memo(
             />
           }
         >
-          <Route
-            path="device/*"
-            element={
-              <DeviceApp
-                routesConfig={deviceRoutes}
-                envVariables={{
-                  googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
-                  smartMeterId: process.env.NX_SMART_METER_ID,
-                }}
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <Route
+                path="device/*"
+                element={
+                  <DeviceApp
+                    routesConfig={deviceRoutes}
+                    envVariables={{
+                      googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
+                      smartMeterId: process.env.NX_SMART_METER_ID,
+                    }}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="exchange/*"
-            element={<ExchangeApp routesConfig={exchangeRoutes} />}
-          />
-          <Route
-            path="certificate/*"
-            element={
-              <CertificateApp
-                routesConfig={certificateRoutes}
-                envVariables={{
-                  googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
-                  exchangeWalletPublicKey: process.env.NX_EXCHANGE_WALLET_PUB,
-                }}
+              <Route
+                path="exchange/*"
+                element={<ExchangeApp routesConfig={exchangeRoutes} />}
               />
-            }
-          />
-          <Route
-            path="organization/*"
-            element={<OrganizationApp routesConfig={orgRoutes} />}
-          />
-          <Route
-            path="account/*"
-            element={
-              <AccountApp
-                routesConfig={accountRoutes}
-                envVariables={{
-                  registrationMessage:
-                    process.env.NX_REGISTRATION_MESSAGE_TO_SIGN,
-                }}
+              <Route
+                path="certificate/*"
+                element={
+                  <CertificateApp
+                    routesConfig={certificateRoutes}
+                    envVariables={{
+                      googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
+                      exchangeWalletPublicKey:
+                        process.env.NX_EXCHANGE_WALLET_PUB,
+                    }}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="admin/*"
-            element={<AdminApp routesConfig={adminRoutes} />}
-          />
-          <Route
-            path="auth/*"
-            element={
-              <AuthApp routesConfig={{ showRegister: !isAuthenticated }} />
-            }
-          />
+              <Route
+                path="organization/*"
+                element={<OrganizationApp routesConfig={orgRoutes} />}
+              />
+              <Route
+                path="account/*"
+                element={
+                  <AccountApp
+                    routesConfig={accountRoutes}
+                    envVariables={{
+                      registrationMessage:
+                        process.env.NX_REGISTRATION_MESSAGE_TO_SIGN,
+                    }}
+                  />
+                }
+              />
+              <Route
+                path="admin/*"
+                element={<AdminApp routesConfig={adminRoutes} />}
+              />
+              <Route
+                path="auth/*"
+                element={
+                  <AuthApp routesConfig={{ showRegister: !isAuthenticated }} />
+                }
+              />
 
-          <Route element={<Navigate to="device/all" />} />
+              <Route element={<Navigate to="device/all" />} />
+            </>
+          )}
         </Route>
         <Route path="/login" element={<LoginApp />} />
         <Route path="/confirm-email" element={<ConfirmEmailApp />} />
-        <Route path="*" element={<PageNotFound />} />
+        {!loading && <Route path="*" element={<PageNotFound />} />}
       </Routes>
     );
   }

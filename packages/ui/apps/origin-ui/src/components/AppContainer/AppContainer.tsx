@@ -12,6 +12,7 @@ export const AppContainer = () => {
     user,
     isAuthenticated,
     routesConfig,
+    isLoading,
   } = useAppContainerEffects();
 
   return (
@@ -24,6 +25,7 @@ export const AppContainer = () => {
         isAuthenticated={isAuthenticated}
         topbarButtons={topbarButtons}
         routesConfig={routesConfig}
+        loading={isLoading}
       />
     </>
   );

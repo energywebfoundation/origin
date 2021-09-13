@@ -1,6 +1,10 @@
-import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
+import {
+  getUserControllerMeQueryKey,
+  useUserControllerMe,
+} from '@energyweb/origin-backend-react-query-client';
 import { getRoleChangedLogic } from '@energyweb/origin-ui-organization-logic';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';
 import {
   OrganizationModalsActionsEnum,
@@ -11,6 +15,8 @@ import {
 export const useRoleChangedEffects = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const userKey = getUserControllerMeQueryKey();
 
   const { roleChanged: open } = useOrgModalsStore();
   const dispatchModals = useOrgModalsDispatch();
@@ -39,6 +45,7 @@ export const useRoleChangedEffects = () => {
       });
     } else {
       navigate('/organization/my');
+      queryClient.invalidateQueries(userKey);
     }
   };
 

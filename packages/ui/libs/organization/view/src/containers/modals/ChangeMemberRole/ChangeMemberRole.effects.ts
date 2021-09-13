@@ -19,6 +19,7 @@ export const useChangeMemberRoleEffects = () => {
   const dispatchModals = useOrgModalsDispatch();
 
   const [role, setRole] = useState<Role>(null);
+
   useEffect(() => {
     if (userToUpdate?.rights) {
       setRole(userToUpdate?.rights);

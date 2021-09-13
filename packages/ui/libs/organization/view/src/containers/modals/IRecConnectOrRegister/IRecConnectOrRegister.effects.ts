@@ -1,5 +1,9 @@
-import { useUserControllerMe } from '@energyweb/origin-backend-react-query-client';
+import {
+  getUserControllerMeQueryKey,
+  useUserControllerMe,
+} from '@energyweb/origin-backend-react-query-client';
 import { useIRecConnectOrRegisterLogic } from '@energyweb/origin-ui-organization-logic';
+import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';
 import {
   OrganizationModalsActionsEnum,
@@ -12,6 +16,8 @@ export const useIRecConnectOrRegisterEffects = () => {
   const dispatchModals = useOrgModalsDispatch();
   const navigate = useNavigate();
   const { data: user } = useUserControllerMe();
+  const queryClient = useQueryClient();
+  const userKey = getUserControllerMeQueryKey();
 
   const notNow = () => {
     dispatchModals({
@@ -26,6 +32,7 @@ export const useIRecConnectOrRegisterEffects = () => {
       });
     } else {
       navigate('/organization/my');
+      queryClient.invalidateQueries(userKey);
     }
   };
 
@@ -34,6 +41,7 @@ export const useIRecConnectOrRegisterEffects = () => {
       type: OrganizationModalsActionsEnum.SHOW_IREC_CONNECT_OR_REGISTER,
       payload: false,
     });
+    queryClient.invalidateQueries(userKey);
     navigate('/organization/register-irec');
   };
 

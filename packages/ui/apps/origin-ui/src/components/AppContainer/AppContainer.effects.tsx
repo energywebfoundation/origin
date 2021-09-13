@@ -110,7 +110,7 @@ export const useAppContainerEffects = () => {
         : !!userInvitations && userInvitations.length > 0,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
-    showRegisterIRec: userHasOrg && userIsOrgAdmin && Boolean(iRecOrg),
+    showRegisterIRec: userHasOrg && userIsOrgAdmin && !Boolean(iRecOrg),
     showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
     showConnectIRec: userHasOrg && userIsOrgAdmin,
   };

@@ -1,6 +1,4 @@
 import {
-  getInvitationControllerGetInvitationsQueryKey,
-  getUserControllerMeQueryKey,
   InvitationDTO,
   OrganizationInvitationStatus,
   useInvitationControllerUpdateInvitation,
@@ -23,16 +21,12 @@ export const usePendingInvitationModalHandlers = (
   const { mutate } = useInvitationControllerUpdateInvitation();
 
   const queryClient = useQueryClient();
-  const userQueryKey = getUserControllerMeQueryKey();
-  const invitationsQueryKey = getInvitationControllerGetInvitationsQueryKey();
 
   const acceptHandler = (id: InvitationDTO['id']) => {
     mutate(
       { id: id.toString(), status: OrganizationInvitationStatus.Accepted },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(userQueryKey);
-          queryClient.invalidateQueries(invitationsQueryKey);
           closeModal();
           openRoleChangeModal();
           showNotification(
@@ -57,9 +51,8 @@ export const usePendingInvitationModalHandlers = (
       { id: id.toString(), status: OrganizationInvitationStatus.Rejected },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(userQueryKey);
-          queryClient.invalidateQueries(invitationsQueryKey);
           closeModal();
+          queryClient.resetQueries();
           navigate('/');
           showNotification(
             t('user.modals.pendingInvitation.declineSuccess'),
@@ -83,9 +76,8 @@ export const usePendingInvitationModalHandlers = (
       { id: id.toString(), status: OrganizationInvitationStatus.Viewed },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries(userQueryKey);
-          queryClient.invalidateQueries(invitationsQueryKey);
           closeModal();
+          queryClient.resetQueries();
           navigate('/');
           showNotification(
             t('user.modals.pendingInvitation.laterSuccess'),
