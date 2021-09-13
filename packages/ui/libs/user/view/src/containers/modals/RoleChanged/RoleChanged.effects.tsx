@@ -21,7 +21,7 @@ export const useRoleChangedEffects = () => {
 
   const isIRecEnabled = true;
 
-  const { data: user } = useUserControllerMe({ enabled: !!token });
+  const { data: user } = useUserControllerMe({ query: { enabled: !!token } });
   const orgName = user?.organization?.name;
   const role = user?.rights;
 

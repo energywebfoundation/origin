@@ -194,7 +194,7 @@ dependencies:
   moment-timezone: 0.5.33
   multer: 1.4.3
   nodemailer: 6.6.3
-  orval: 5.0.0-alpha.9
+  orval: 5.5.9
   passport: 0.4.1
   passport-jwt: 4.0.0
   passport-local: 1.0.0
@@ -230,7 +230,7 @@ dependencies:
   supertest: 6.1.6
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6_express@4.17.1
-  test-react-hooks: 2.0.4_react-dom@17.0.2+react@17.0.2
+  test-react-hooks: 3.0.4_react@17.0.2
   truffle: 5.4.10_453fe946899394317fa361aa06afbbf2
   truffle-typings: 1.0.8
   ts-jest: 27.0.5_decc0645116b8957e026d7a7e7ef5e71
@@ -9212,7 +9212,7 @@ packages:
       immer: 8.0.1
       lodash.get: 4.4.2
       lodash.set: 4.3.2
-      tslib: 2.3.0
+      tslib: 2.3.1
       urijs: 1.19.7
     dev: false
     engines:
@@ -9277,7 +9277,7 @@ packages:
       proxy-agent: 4.0.1
       strip-ansi: 6.0.0
       text-table: 0.2.0
-      tslib: 2.3.0
+      tslib: 2.3.1
       yargs: 15.4.1
     dev: false
     engines:
@@ -9312,7 +9312,7 @@ packages:
       '@stoplight/ordered-object-literal': 1.0.2
       '@stoplight/types': 12.3.0
       '@stoplight/yaml-ast-parser': 0.0.48
-      tslib: 2.3.0
+      tslib: 2.3.1
     dev: false
     engines:
       node: '>=10.8'
@@ -13709,12 +13709,6 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha512-nNcb30v0wfDyIe26Yif3PcV1JXQp4zEeEfupG7L4SRjnD6HLbO5b2a7eVSba53bOx4YCHYMBHt+Fp4vYstneRA==
-  /arrify/1.0.1:
-    dev: false
-    engines:
-      node: '>=0.10.0'
-    resolution:
-      integrity: sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
   /arrify/2.0.1:
     dev: false
     engines:
@@ -13781,7 +13775,7 @@ packages:
       integrity: sha1-9wtzXGvKGlycItmCw+Oef+ujva0=
   /ast-types/0.13.4:
     dependencies:
-      tslib: 2.3.0
+      tslib: 2.3.1
     dev: false
     engines:
       node: '>=4'
@@ -18180,15 +18174,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-kqag/Nl+f3GwyK25fhUMYj81BUOrZ9IuJsjIcDE5icNM9FJHAVm3VcUDxdLPoQtTuUylWm6ZIknYJwwaPxsUzg==
-  /dir-glob/2.0.0:
-    dependencies:
-      arrify: 1.0.1
-      path-type: 3.0.0
-    dev: false
-    engines:
-      node: '>=4'
-    resolution:
-      integrity: sha512-37qirFDz8cA5fimp9feo43fSuRo2gHwaIn6dXL8Ber1dGwUosDrGZeCCXq57WnIqE4aQ+u3eQZzsk1yOzhdwag==
   /dir-glob/2.2.2:
     dependencies:
       path-type: 3.0.0
@@ -21771,20 +21756,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-9abXDoOV4hyFj7BInWTfAkJNUGw=
-  /globby/8.0.2:
-    dependencies:
-      array-union: 1.0.2
-      dir-glob: 2.0.0
-      fast-glob: 2.2.7
-      glob: 7.1.7
-      ignore: 3.3.10
-      pify: 3.0.0
-      slash: 1.0.0
-    dev: false
-    engines:
-      node: '>=4'
-    resolution:
-      integrity: sha512-yTzMmKygLp8RUpG1Ymu2VXPSJQZjNAZPD4ywgYEaG7e4tBJeUQBO8OpXrf1RCNcEs5alsoJYPAMiIHP0cmeC7w==
   /globby/9.2.0:
     dependencies:
       '@types/glob': 7.1.4
@@ -22638,14 +22609,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-yCMYTMEJ9ihCwEQQ3phLo7I/Pwycf8uAx+sRHwwk5U9Aui/IZYgQRyMqXafQOw5QQ7DM1Z+WyEXWIqSuJHhG2A==
-  /ibm-openapi-validator/0.40.3:
+  /ibm-openapi-validator/0.46.4:
     dependencies:
       '@stoplight/spectral': 5.9.2
       chalk: 4.1.2
       commander: 2.20.3
       deepmerge: 2.2.1
       find-up: 3.0.0
-      globby: 8.0.2
+      globby: 11.0.4
       js-yaml: 3.14.1
       json-dup-key-validator: 1.0.3
       json-schema-ref-parser: 5.1.3
@@ -22663,7 +22634,7 @@ packages:
       node: '>=8.9.0'
     hasBin: true
     resolution:
-      integrity: sha512-/YY/ThG7LN3PFUTzAV1+qzbbpLLEnLMAFUB4H4HdUIOZy6BuM14OKvsujjmO86QNKWoXHpJN1EafMb7fzn2scg==
+      integrity: sha512-peaqHK7nIjcZH92sdu0s3UDdJqoHVvljfmwVPnuM7DUxGh7gQmLfP6WyAECr/ng2/8x/Po8Bs5lpuFOVcdtnqw==
   /ice-cap/0.0.4:
     dependencies:
       cheerio: 0.20.0
@@ -22759,10 +22730,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-PY6Ii8o1jMRA1z4F2hRkH/xN59ox43DavKvD3oDpfurRlOJyAHpifIwpbdv1n4jt4ov0jSpw3kQ4GhJnpBL6WQ==
-  /ignore/3.3.10:
-    dev: false
-    resolution:
-      integrity: sha512-Pgs951kaMm5GXP7MOvxERINe3gsaVjUWFm+UZPSq9xYriQAksyhg0csnS0KXSNRD5NmNdapXEpjxG49+AKh/ug==
   /ignore/4.0.6:
     dev: false
     engines:
@@ -29032,14 +28999,15 @@ packages:
     dev: false
     resolution:
       integrity: sha512-hyBVl6iqqUOJ8FqRe+l/gS8H+kKYjrEndd5Pm1MfBtsEKA038HkkdbAl/72EAXGyonD/PFsvmVG+EvcIpliMBg==
-  /orval/5.0.0-alpha.9:
+  /orval/5.5.9:
     dependencies:
       '@apidevtools/swagger-parser': 10.0.3
       chalk: 4.1.2
-      commander: 7.2.0
+      commander: 8.2.0
       cuid: 2.1.8
-      fs-extra: 9.1.0
-      ibm-openapi-validator: 0.40.3
+      esutils: 2.0.3
+      fs-extra: 10.0.0
+      ibm-openapi-validator: 0.46.4
       inquirer: 8.1.2
       lodash.get: 4.4.2
       lodash.omitby: 4.6.0
@@ -29050,10 +29018,11 @@ packages:
       swagger2openapi: 7.0.8
       upath: 2.0.1
       url: 0.11.0
+      validator: 13.6.0
     dev: false
     hasBin: true
     resolution:
-      integrity: sha512-/yFxOSpwaUFZy8w05WALiZoC18vvZtI5AIkMqAUxT1PE21a0ZRL29pzpbnxstJ/vtUF/IAgrTSXHf5C4+5/V/w==
+      integrity: sha512-okYJwP8dL/zc8YgmnrnmKpF09+5b81txbrX+mqanbPm2j4I/lOmo4OJAd48iLC8AYpRmM0oMLe+lrge2cdKViw==
   /os-browserify/0.3.0:
     dev: false
     resolution:
@@ -35415,16 +35384,18 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==
-  /test-react-hooks/2.0.4_react-dom@17.0.2+react@17.0.2:
+  /test-react-hooks/3.0.4_react@17.0.2:
     dependencies:
       react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      rxjs: 7.3.0
     dev: false
+    engines:
+      node: '>= 12'
     peerDependencies:
-      react: '>= 16.8.0'
-      react-dom: '>= 16.8.0'
+      react: '>= 16.14.0'
+      react-test-renderer: '>= 16.14.0'
     resolution:
-      integrity: sha512-fcOotC8OPJ7rTd2MIYoLIOvfzvzL0emi5bwinYsADhaHAHso9sGanT4/0U5D4ggZDB7cp+ep9hMPeW9HybroEw==
+      integrity: sha512-fTXdpbCIJ9szINmdOXriLkyRllFAGeM3r0fV/mwUENRU47Iz/vcCITVP+6oRKzOHTK4ZlsmO9l7Ez30u30yvcw==
   /test-value/2.1.0:
     dependencies:
       array-back: 1.0.4
@@ -39985,7 +39956,7 @@ packages:
       barrelsby: 2.2.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.3
@@ -40006,7 +39977,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-MV5qEJsh4eElSki+uYy8ytTlap40L+BLtNbeT9DM5tif3jpn+EUZ9JMztQ/pHzlcHJoESJxM+4IyKvUHT+Jc7g==
+      integrity: sha512-jMI50U1w5ebSKsS0Rz6bW7xWC57Fe3dbYvwd8aplDqValJ5kWl82Am9guY1Cdd9fA10sTnbQ315Jl2FrVEPtyg==
       tarball: file:projects/exchange-irec-react-query-client.tgz
     version: 0.0.0
   file:projects/exchange-irec.tgz_e378dac93141677efa83a1edc47bbc34:
@@ -40068,7 +40039,7 @@ packages:
       barrelsby: 2.2.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.3
@@ -40089,7 +40060,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-1lbaGk1Nj/+E6tFHOJPNDKyNOGSg5joEBrrhaAFbC9j9+XGcG+tyQgCRsOCY2ndwoK1yJhFf35WLOlvU6OMAsg==
+      integrity: sha512-dPrRLy/puPxQrS1DO+sfK8UNp94dnH1quW+YHXK6RW6fsoPOXKGVlWjQPIiz2n3MQUdIp5ZB7obswUvTK141xQ==
       tarball: file:projects/exchange-react-query-client.tgz
     version: 0.0.0
   file:projects/exchange-token-account.tgz_react@17.0.2:
@@ -40306,7 +40277,7 @@ packages:
       barrelsby: 2.2.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.3
@@ -40327,7 +40298,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-6+vNRp81ZX6oJ0REUl56lmYJvAweN1OSlOk2DvOfai9hBShZn7Tb+gmAJNsrNXNjeUp/VnbmZhNv2+M6x4KIrQ==
+      integrity: sha512-GMIyxvPqzCN06C5cPk5Pier9QZ6TiksDX5oRPfJIAeo7Cxykx99CKr6ecqxVcSyHejN16xtmsVBduvX/iYAORA==
       tarball: file:projects/issuer-irec-api-react-query-client.tgz
     version: 0.0.0
   file:projects/issuer-irec-api-wrapper.tgz_rxjs@6.6.7:
@@ -40575,7 +40546,7 @@ packages:
       barrelsby: 2.2.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.3
@@ -40596,7 +40567,7 @@ packages:
       rxjs: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-+dt43qe3CoAhMA1KWV3Z+lusRzwpVDgVAz2vhGTpUkJRjPHyNVR3evJ9tKubMUvE29FlUiyF4YQK5h69gyhXKA==
+      integrity: sha512-9Qkju5nZzrteVqHhSNqxePs2mLmPlK8HdZMkMZjjTueW7dhKD8makfuLiJif9I7r/QxcdxZbpOWuzn1d9Xsp8A==
       tarball: file:projects/origin-backend-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-backend-utils.tgz_c7b4fd5a60aa4ccaca1dbb6491d2e70d:
@@ -40744,7 +40715,7 @@ packages:
       chai: 4.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.3
@@ -40766,7 +40737,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-Fp45mFjLHBlCO8erYJ8x/qTTQfebjXkK7eefDcPKESH+OvmEELtEMYrluI4fge9nYhIzo1MbM5A05RTDuESLdg==
+      integrity: sha512-EvTVyh7qDF00saHUcRnbJlB2raqjHEj9GCp9fvX860RPdgwrz9oRM9KQgPdFVugjjMJRzCYnQfsfS7OdEk9bkg==
       tarball: file:projects/origin-device-registry-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-device-registry-api.tgz_24fa6d6d9eca8d81e156392c6322c4c7:
@@ -40857,7 +40828,7 @@ packages:
       barrelsby: 2.2.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.3
@@ -40879,7 +40850,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-SHNMWuNSJypr0VLNMfP5cOLWp+qVLwGrySlUklfPN+PaGxi0hP+o/x7HnC0iMNpNgoGNql22wa52N29GW/dZZw==
+      integrity: sha512-rXrfor5XIPb/pLq3KB6uOlTmPtmEZ5C4K40GODvrSfe9jq8xhEz0zJgueta+vHhn7Zu0Fcix1sCSPS2NLUbKDg==
       tarball: file:projects/origin-device-registry-irec-local-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-device-registry-irec-local-api.tgz_24fa6d6d9eca8d81e156392c6322c4c7:
@@ -40972,7 +40943,7 @@ packages:
       barrelsby: 2.2.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.3
@@ -40994,7 +40965,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-U88Hn0G+EIjijGdsbQ9WqMrR0KZzsSJVYjMBvMzl3b3PGV2dI4h/z4zaA5pxZrmEfWEn8iJWZM2mOHt7a358Jg==
+      integrity: sha512-BKbtvs4oirZhNO10TTemUlOL0iKLXri4AwVm1QZObAFifWjsZ7vf4GW/zUxgyjbH3++nqfyiKQ7hxSi5ZljHng==
       tarball: file:projects/origin-energy-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-energy-api.tgz_27dbb7a62fdd52a130415f76793fa9f5:
@@ -41083,7 +41054,7 @@ packages:
       barrelsby: 2.2.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.1
-      orval: 5.0.0-alpha.9
+      orval: 5.5.9
       prettier: 2.4.0
       react-query: 3.15.1_react-dom@17.0.2+react@17.0.2
       supertest: 6.1.6
@@ -41104,7 +41075,7 @@ packages:
       rxjs: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-uQ83oe0Bgzc3Z+JwvCZCWjSwvzgKJzodX+paeaDEZJZNtotm0N3WnF7zFY1vaZ/7AawKpkATXlfkI9uLWp5jTg==
+      integrity: sha512-vpyk6jh8PDMhAybDntYHe8PZb0OEq1SVfB6lMswJ+TnauZhBlPj/YQXSZe+xueDQQ7MusuEfc4Lfe7j0Sxk65g==
       tarball: file:projects/origin-organization-irec-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-organization-irec-api.tgz_24fa6d6d9eca8d81e156392c6322c4c7:
@@ -41246,7 +41217,7 @@ packages:
       react-use: 17.2.4_react-dom@17.0.2+react@17.0.2
       regenerator-runtime: 0.13.9
       storybook-dark-mode: 1.0.8_c6cabef4f2c9dc2b772a9ccb91171044
-      test-react-hooks: 2.0.4_react-dom@17.0.2+react@17.0.2
+      test-react-hooks: 3.0.4_react@17.0.2
       ts-jest: 27.0.5_decc0645116b8957e026d7a7e7ef5e71
       ts-node: 9.1.1_typescript@4.4.3
       tsconfig-paths-webpack-plugin: 3.5.1
@@ -41263,7 +41234,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-S7jEgAmZFVaMmhkEXr1lUqO5fI6E6CeDR1UJPEi8k/B8yA/p4qygPcaz9SgNWi8HNjRUPJJ620QYh6jz7BN9Ww==
+      integrity: sha512-iKiyPRCB/kAL4kpZ/4EbgSfli5EpN/9MDDy6iUBzWb8GG2hQNzAtgUtGCbE6osjYPr1zJTAgpNSLnsocA/iF7Q==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -41536,7 +41507,7 @@ specifiers:
   moment-timezone: 0.5.33
   multer: 1.4.3
   nodemailer: 6.6.3
-  orval: 5.0.0-alpha.9
+  orval: 5.5.9
   passport: 0.4.1
   passport-jwt: 4.0.0
   passport-local: 1.0.0
@@ -41572,7 +41543,7 @@ specifiers:
   supertest: 6.1.6
   supertest-capture-error: 1.0.0
   swagger-ui-express: 4.1.6
-  test-react-hooks: 2.0.4
+  test-react-hooks: 3.0.4
   truffle: 5.4.10
   truffle-typings: 1.0.8
   ts-jest: 27.0.5

@@ -2,7 +2,9 @@ import { useDeviceControllerGetDeviceTypes } from '@energyweb/origin-device-regi
 
 export const useAllDeviceTypes = () => {
   const { data: allTypes, isLoading } = useDeviceControllerGetDeviceTypes({
-    staleTime: 1000000,
+    query: {
+      staleTime: 1000000,
+    },
   });
 
   return { allTypes, isLoading };

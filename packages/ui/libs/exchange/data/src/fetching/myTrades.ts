@@ -6,7 +6,7 @@ import {
 export const useApiMyTrades = () => {
   const refetchInterval = 10000;
   const { data, isLoading } = useTradeControllerGetAll({
-    refetchInterval,
+    query: { refetchInterval },
   });
   const myTrades = data ?? ([] as TradeDTO[]);
 
