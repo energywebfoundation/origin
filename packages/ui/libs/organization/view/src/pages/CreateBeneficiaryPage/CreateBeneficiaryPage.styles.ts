@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/styles';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
-    width: '50%',
+    width: '80%',
     padding: '30px',
     [theme.breakpoints.down('md')]: {
       width: '100%',
