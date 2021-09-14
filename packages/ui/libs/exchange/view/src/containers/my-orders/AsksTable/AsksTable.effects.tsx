@@ -5,8 +5,9 @@ import {
   useApiCancelOrderHandler,
 } from '@energyweb/origin-ui-exchange-data';
 import { useMyOrdersAsksTableLogic } from '@energyweb/origin-ui-exchange-logic';
-import { Remove, Visibility } from '@material-ui/icons';
+import { Remove, Search, Visibility } from '@material-ui/icons';
 import dayjs, { Dayjs } from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -25,6 +26,7 @@ export const useAsksTableEffects = ({ asks, isLoading }: AsksTableProps) => {
 
   const { t } = useTranslation();
   const dispatchModals = useExchangeModalsDispatch();
+  const navigate = useNavigate();
 
   const askText = t('exchange.myOrders.ask');
   const { removeHandler, isMutating } = useApiCancelOrderHandler(askText);
@@ -50,6 +52,19 @@ export const useAsksTableEffects = ({ asks, isLoading }: AsksTableProps) => {
     });
   };
 
+  const viewMarket = (id: OrderDTO['id']) => {
+    const ask = asks.find((ask) => ask.id === id);
+    navigate('/exchange/view-market', {
+      state: {
+        deviceType: ask.product.deviceType,
+        location: ask.product.location,
+        gridOperator: ask.product.gridOperator,
+        generationFrom: ask.product.generationFrom,
+        generationTo: ask.product.generationTo,
+      },
+    });
+  };
+
   const actions: TableActionData<OrderDTO['id']>[] = [
     {
       name: t('exchange.myOrders.remove'),
@@ -61,6 +76,11 @@ export const useAsksTableEffects = ({ asks, isLoading }: AsksTableProps) => {
       name: t('exchange.myOrders.view'),
       icon: <Visibility />,
       onClick: (id: OrderDTO['id']) => openDetailsModal(id),
+    },
+    {
+      icon: <Search />,
+      name: t('exchange.myOrders.viewMarket'),
+      onClick: (id: OrderDTO['id']) => viewMarket(id),
     },
   ];
 

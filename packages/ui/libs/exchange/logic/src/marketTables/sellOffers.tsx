@@ -69,7 +69,7 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
       gridOperator: t('exchange.viewMarket.gridOperator'),
       generationStart: t('exchange.viewMarket.generationStart'),
       generationEnd: t('exchange.viewMarket.generationEnd'),
-      buyDirect: canBuyAnyAsk ? t('exchange.viewMarket.buyDirect') : undefined,
+      buyDirect: canBuyAnyAsk ? t('exchange.viewMarket.buyDirect') : '',
     },
     getCustomRowClassName: getOwnedOrderStyles(asks, user?.id, className),
     loading: isLoading,
