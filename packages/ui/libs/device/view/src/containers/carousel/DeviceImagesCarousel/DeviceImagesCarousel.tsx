@@ -4,7 +4,6 @@ import { CarouselControls, CarouselModeEnum } from '../CarouselControls';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { useDeviceImagesCarouselEffects } from './DeviceImagesCarousel.effects';
 import { BlockTintedBottom, ImagesCarousel } from '@energyweb/origin-ui-core';
-import { useStyles } from './DeviceImagesCarousel.styles';
 
 export interface DeviceImagesCarouselProps {
   deviceName: ComposedPublicDevice['name'];
@@ -33,7 +32,6 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
     fuelType,
     allFuelTypes
   );
-  const classes = useStyles();
   return (
     <>
       {imageUrls.length > 0 ? (
