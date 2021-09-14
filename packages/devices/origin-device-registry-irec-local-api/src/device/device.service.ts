@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -66,7 +67,7 @@ export class DeviceService {
 
         const irecDevice = await this.irecService.createDevice(user, {
             ...deviceData,
-            capacity: String(Number(deviceData.capacity) / 1e6),
+            capacity: BigNumber.from(deviceData.capacity).div(1e6).toString(),
             address: this.getAddressLine(newDevice)
         });
 
