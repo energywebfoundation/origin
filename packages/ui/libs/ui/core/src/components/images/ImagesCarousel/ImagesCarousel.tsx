@@ -1,18 +1,20 @@
-import React, { DetailedHTMLProps, FC, ImgHTMLAttributes } from 'react';
-// import Carousel, { CarouselProps } from 'react-material-ui-carousel';
+import React, { FC } from 'react';
+import { useImagesCarouselEffects } from './ImagesCarousel.effects';
 
 export interface ImagesCarouselProps {
-  carouselProps?: any; //CarouselProps;
-  itemProps?: DetailedHTMLProps<
-    ImgHTMLAttributes<HTMLImageElement>,
-    HTMLImageElement
-  >;
+  images: string[];
+  imagesProps?: React.SVGAttributes<HTMLOrSVGElement>;
 }
 
 export const ImagesCarousel: FC<ImagesCarouselProps> = ({
-  carouselProps,
-  children,
+  images,
+  imagesProps,
 }) => {
-  return <div></div>;
-  // return <Carousel {...carouselProps}>{children}</Carousel>;
+  const { currentIndex } = useImagesCarouselEffects(images.length);
+
+  return (
+    <div>
+      <img src={images[currentIndex]} {...imagesProps} />
+    </div>
+  );
 };
