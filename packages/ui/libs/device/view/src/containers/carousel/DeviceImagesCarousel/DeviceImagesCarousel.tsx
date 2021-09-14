@@ -35,27 +35,16 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
   );
   const classes = useStyles();
   return (
-    <ImagesCarousel
-      carouselProps={{
-        interval: 10000,
-        navButtonsAlwaysInvisible: true,
-        indicatorContainerProps: {
-          className: classes.indicatorContainer,
-          style: {},
-        },
-      }}
-    >
+    <>
       {imageUrls.length > 0 ? (
-        imageUrls.map((url) => (
-          <BlockTintedBottom key={url}>
-            <img src={url} {...itemProps} />
-            <CarouselControls
-              deviceName={deviceName}
-              carouselMode={carouselMode}
-              handleModeChange={handleModeChange}
-            />
-          </BlockTintedBottom>
-        ))
+        <BlockTintedBottom>
+          <ImagesCarousel images={imageUrls} imagesProps={itemProps} />
+          <CarouselControls
+            deviceName={deviceName}
+            carouselMode={carouselMode}
+            handleModeChange={handleModeChange}
+          />
+        </BlockTintedBottom>
       ) : (
         <BlockTintedBottom>
           <FallbackIcon {...itemProps} />
@@ -66,6 +55,6 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
           />
         </BlockTintedBottom>
       )}
-    </ImagesCarousel>
+    </>
   );
 };
