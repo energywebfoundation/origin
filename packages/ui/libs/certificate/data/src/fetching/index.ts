@@ -15,3 +15,4 @@ export * from './deviceById';
 export * from './userAndAccount';
 export * from './approvedCertificates';
 export * from './certificateToImport';
+export * from './deviceImages';
