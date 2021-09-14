@@ -27,7 +27,8 @@
         "typeorm:run": "yarn typeorm migration:run",
         "typeorm:drop": "yarn typeorm schema:drop",
         "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run",
-        "precommit": "lint-staged"
+        "precommit": "lint-staged",
+        "xxx": "xxx"
     },
     "dependencies": {
         "@energyweb/origin-backend": "11.0.0",
