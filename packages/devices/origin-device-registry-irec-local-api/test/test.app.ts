@@ -26,7 +26,7 @@ import {
     DeviceCreateParams,
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
-import { Device, DeviceModule, DeviceService, ImportIrecDeviceDTO } from '../src/device';
+import { Device, DeviceModule, DeviceService, ImportIrecDeviceDTO } from '../src';
 import { usedEntities } from '../src';
 import { UserService } from '@energyweb/origin-backend';
 
@@ -94,7 +94,7 @@ export const bootstrapTestInstance = async () => {
         deviceType: 'TC110',
         fuelType: 'ES100',
         countryCode: 'TH',
-        capacity: 1000,
+        capacity: '1000',
         commissioningDate: new Date('2020-01-01'),
         registrationDate: new Date('2020-01-02'),
         address: '1 Wind Farm Avenue, Thailand',
