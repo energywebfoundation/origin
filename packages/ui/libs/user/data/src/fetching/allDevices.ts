@@ -21,7 +21,7 @@ export type ComposedPublicDevice = {
   countryCode: string;
   registrantOrganization: string;
   issuer: string;
-  capacity: number;
+  capacity: string;
   commissioningDate: string;
   registrationDate: string;
   address: string;
@@ -61,14 +61,10 @@ export function composePublicDevices(
 }
 
 export const useFetchAllDevices = () => {
-  const {
-    data: allOriginDevices,
-    isLoading: isOriginDevicesLoading,
-  } = useDeviceRegistryControllerGetAll();
-  const {
-    data: allIRecDevices,
-    isLoading: isIRecDevicesLoading,
-  } = useDeviceControllerGetAll();
+  const { data: allOriginDevices, isLoading: isOriginDevicesLoading } =
+    useDeviceRegistryControllerGetAll();
+  const { data: allIRecDevices, isLoading: isIRecDevicesLoading } =
+    useDeviceControllerGetAll();
 
   const allDevices =
     allOriginDevices && allIRecDevices
