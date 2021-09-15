@@ -12,7 +12,7 @@ import {
 import {
   MaterialDatepicker,
   MaterialDatepickerProps,
-} from '@energyweb/origin-ui-core';
+} from '../MaterialDatepicker';
 import { Dayjs } from 'dayjs';
 
 const description =

@@ -55,6 +55,7 @@ export const useCertificateActionContentEffects = <Id>(
 
   useEffect(() => {
     addOrRemoveEnergyOnCheck(selectedIds, selectedItems);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedIds]);
 
   const handleItemEnergyAmountChange = (id: Id, amount: string) => {
@@ -97,6 +98,7 @@ export const useCertificateActionContentEffects = <Id>(
     if (setTotalAmount) {
       setTotalAmount(totalVolume);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalVolume]);
 
   return {

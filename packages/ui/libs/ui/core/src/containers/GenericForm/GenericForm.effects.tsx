@@ -60,6 +60,7 @@ export const useGenericFormEffects: TGenericFormEffects = ({
 
   useEffect(() => {
     onWatchHandler && onWatchHandler(watchedFields);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stringifiedWatchedFields]);
 
   const onSubmit = handleSubmit(async (values) => {

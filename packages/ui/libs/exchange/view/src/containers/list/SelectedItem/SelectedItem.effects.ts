@@ -23,6 +23,7 @@ export const useSelectedItemEffects = <Id>(
     if (amount !== inputValue) {
       setInputValue(amount);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount]);
 
   const handleInputChange = (

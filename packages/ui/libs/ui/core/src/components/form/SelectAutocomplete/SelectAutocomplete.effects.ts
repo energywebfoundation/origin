@@ -28,6 +28,7 @@ export const useSelectAutocompleteEffects = <FormValuesType>(
       setTextValue('');
       onChange([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dependentValue]);
 
   const options =

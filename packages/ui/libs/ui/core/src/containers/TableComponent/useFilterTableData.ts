@@ -13,7 +13,8 @@ export const useFilterTableData = <Id>(
   ) => {
     const newData =
       !!filtersToApply && filtersToApply.length > 0
-        ? tableData.filter((item) => {
+        ? // eslint-disable-next-line array-callback-return
+          tableData.filter((item) => {
             const itemMatchesFilters = filtersToApply.every((filter) => {
               if (!filter.value) {
                 return true;

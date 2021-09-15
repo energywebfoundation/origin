@@ -11,7 +11,7 @@ export const useDeviceImageUrls = (
     const response = await publicFileDownloadHandler(id);
     const imageType = (response as any).headers['content-type'];
     const blob = new Blob(
-      [Buffer.from(((response.data as any).data as unknown) as string)],
+      [Buffer.from((response.data as any).data as unknown as string)],
       {
         type: imageType,
       }
@@ -32,6 +32,7 @@ export const useDeviceImageUrls = (
     if (imageIds?.length > 0) {
       getAndSetAllImages(imageIds);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageIds]);
 
   return imageUrls;
