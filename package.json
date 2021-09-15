@@ -21,7 +21,7 @@
         "test:ui": "lerna run test --scope @energyweb/origin-ui-core --stream",
         "test:backend": "lerna run --scope @energyweb/origin-backend --scope @energyweb/origin-backend-utils --stream test",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
-        "test:ci:e2e": "lerna run test:e2e --stream --ignore @energyweb/exchange-irec && lerna run test:e2e --stream --scope @energyweb/exchange-irec",
+        "test:ci:e2e": "lerna run test:e2e --stream --ignore @energyweb/exchange-irec --ignore @energyweb/issuer-api && lerna run test:e2e --stream --scope @energyweb/exchange-irec --scope @energyweb/issuer-api",
         "publish:canary": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag canary --preid=alpha.$BUILD_ID",
         "publish:release": "lerna version --create-release github --conventional-commits --exact --yes --message \"chore(release): publish /skip-deploy\" && lerna publish from-git --yes",
         "build:containers:canary": "lerna run build:container:canary --stream",
