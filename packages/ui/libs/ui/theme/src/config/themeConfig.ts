@@ -1,9 +1,13 @@
 import { createTheme, Theme, ThemeOptions } from '@material-ui/core/styles';
 import { enUS, plPL } from '@material-ui/core/locale';
 import { LightenColor } from '../utils/colors';
-import { IOriginStyleConfig } from '../utils/makeOriginUiConfig';
+import {
+  createStyleConfig,
+  IOriginStyleConfig,
+  IOriginThemeConfiguration,
+} from '../utils/createStyleConfig';
 import { ThemeModeEnum } from '../utils';
-import { variables_darkTheme } from './variables';
+import { variables_darkTheme, variables_lightTheme } from './variables';
 
 const getThemeConfig = (
   styleConfig: IOriginStyleConfig,
@@ -199,6 +203,28 @@ const getThemeConfig = (
       },
     },
   };
+};
+
+export const makeOriginUiConfig = (themeMode?: ThemeModeEnum) => {
+  const colors =
+    themeMode === ThemeModeEnum.Dark
+      ? variables_darkTheme
+      : variables_lightTheme;
+  const DEFAULT_STYLE_CONFIG = createStyleConfig(colors);
+
+  const DEFAULT_ORIGIN_CONFIGURATION: IOriginThemeConfiguration = {
+    materialTheme: createMaterialThemeForOrigin(
+      DEFAULT_STYLE_CONFIG,
+      'en',
+      themeMode
+    ),
+  };
+
+  const newConfiguration: IOriginThemeConfiguration = {
+    ...DEFAULT_ORIGIN_CONFIGURATION,
+  };
+
+  return newConfiguration;
 };
 
 export const createMaterialThemeForOrigin = (
