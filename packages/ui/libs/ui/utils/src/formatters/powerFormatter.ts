@@ -14,15 +14,20 @@ export class PowerFormatter {
 
   static getBaseValueFromValueInDisplayUnit(
     valueInDisplayUnit: number
-  ): number {
+  ): string {
     return BigNumber.from(valueInDisplayUnit)
       .mul(Unit[PowerFormatter.displayUnit as keyof typeof Unit])
-      .toNumber();
+      .toString();
   }
 
-  static format(powerInWatt: number, includeDisplayUnit?: boolean): string {
+  static format(
+    powerInWatt: number | string,
+    includeDisplayUnit?: boolean
+  ): string {
     return `${PowerFormatter.formatter.format(
-      powerInWatt / Unit[PowerFormatter.displayUnit as keyof typeof Unit]
+      BigNumber.from(powerInWatt)
+        .div(Unit[PowerFormatter.displayUnit as keyof typeof Unit])
+        .toNumber()
     )}${includeDisplayUnit ? ' ' + PowerFormatter.displayUnit : ''}`;
   }
 }

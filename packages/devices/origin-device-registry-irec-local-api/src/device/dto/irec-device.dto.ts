@@ -38,9 +38,9 @@ export class IrecDeviceDTO {
     @Expose()
     issuer: string;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: String })
     @Expose()
-    capacity: number;
+    capacity: string;
 
     @ApiProperty({ type: Date })
     @Expose()
