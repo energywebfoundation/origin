@@ -48,7 +48,13 @@ export const getBundleEnergyShares = (
       .filter((p) => p !== 'total')
       .map((p) => [
         p,
-        energy[p].mul(BigNumber.from(10000)).div((energy as any).total),
+        energy[p]
+          .mul(BigNumber.from(10000))
+          .div(
+            (energy as any).total.toNumber() === 0
+              ? BigNumber.from(1)
+              : (energy as any).total
+          ),
       ])
       .map(([p, v]) => {
         return [p, `${(v.toNumber() / 100).toFixed(2)}%`];
