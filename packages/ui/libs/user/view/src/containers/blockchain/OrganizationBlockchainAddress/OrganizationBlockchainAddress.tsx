@@ -6,13 +6,12 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { useOrganizationBlockchainAddressEffects } from './OrganizationBlockchainAddress.effects';
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
-import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import { Info } from '@material-ui/icons';
+import { useOrganizationBlockchainAddressEffects } from './OrganizationBlockchainAddress.effects';
 import { useStyles } from './OrganizationBlockchainAddress.styles';
 
-const Component: FC = () => {
+export const OrganizationBlockchainAddress: FC = () => {
   const classes = useStyles();
   const {
     submitHandler,
@@ -63,5 +62,3 @@ const Component: FC = () => {
     </Grid>
   );
 };
-
-export const OrganizationBlockchainAddress = withMetamask(Component);

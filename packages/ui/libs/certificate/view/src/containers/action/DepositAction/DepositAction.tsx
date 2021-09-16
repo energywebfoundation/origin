@@ -1,6 +1,7 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { CircularProgress } from '@material-ui/core';
+import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useDepositActionEffects } from './DepositAction.effects';
@@ -11,14 +12,9 @@ export type TDepositAction = (
   props: PropsWithChildren<DepositActionProps>
 ) => ReactElement;
 
-export const DepositAction: TDepositAction = ({ selectedIds, resetIds }) => {
-  const {
-    title,
-    buttonText,
-    selectedItems,
-    depositHandler,
-    isLoading,
-  } = useDepositActionEffects(selectedIds, resetIds);
+const Component: TDepositAction = ({ selectedIds, resetIds }) => {
+  const { title, buttonText, selectedItems, depositHandler, isLoading } =
+    useDepositActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
 
@@ -32,3 +28,5 @@ export const DepositAction: TDepositAction = ({ selectedIds, resetIds }) => {
     />
   );
 };
+
+export const DepositAction = withMetamask(Component);

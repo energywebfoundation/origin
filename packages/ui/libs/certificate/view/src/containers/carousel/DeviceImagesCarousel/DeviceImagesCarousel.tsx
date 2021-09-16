@@ -3,6 +3,7 @@ import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import { CarouselControls, CarouselModeEnum } from '../CarouselControls';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { useDeviceImagesCarouselEffects } from './DeviceImagesCarousel.effects';
+import { BlockTintedBottom, ImagesCarousel } from '@energyweb/origin-ui-core';
 
 export interface DeviceImagesCarouselProps {
   deviceName: ComposedPublicDevice['name'];
@@ -26,16 +27,33 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
   carouselMode,
   handleModeChange,
 }) => {
-  const FallbackIcon = useDeviceImagesCarouselEffects(fuelType, allFuelTypes);
+  const { FallbackIcon, imageUrls } = useDeviceImagesCarouselEffects(
+    fuelType,
+    allFuelTypes,
+    images
+  );
 
   return (
     <>
-      <FallbackIcon {...itemProps} />
-      <CarouselControls
-        deviceName={deviceName}
-        carouselMode={carouselMode}
-        handleModeChange={handleModeChange}
-      />
+      {imageUrls.length > 0 ? (
+        <BlockTintedBottom>
+          <ImagesCarousel images={imageUrls} imagesProps={itemProps} />
+          <CarouselControls
+            deviceName={deviceName}
+            carouselMode={carouselMode}
+            handleModeChange={handleModeChange}
+          />
+        </BlockTintedBottom>
+      ) : (
+        <BlockTintedBottom>
+          <FallbackIcon {...itemProps} />
+          <CarouselControls
+            deviceName={deviceName}
+            carouselMode={carouselMode}
+            handleModeChange={handleModeChange}
+          />
+        </BlockTintedBottom>
+      )}
     </>
   );
 };

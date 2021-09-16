@@ -4,7 +4,6 @@ import { CarouselControls, CarouselModeEnum } from '../CarouselControls';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { useDeviceImagesCarouselEffects } from './DeviceImagesCarousel.effects';
 import { BlockTintedBottom, ImagesCarousel } from '@energyweb/origin-ui-core';
-import { useStyles } from './DeviceImagesCarousel.styles';
 
 export interface DeviceImagesCarouselProps {
   deviceName: ComposedPublicDevice['name'];
@@ -33,29 +32,17 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
     fuelType,
     allFuelTypes
   );
-  const classes = useStyles();
   return (
-    <ImagesCarousel
-      carouselProps={{
-        interval: 10000,
-        navButtonsAlwaysInvisible: true,
-        indicatorContainerProps: {
-          className: classes.indicatorContainer,
-          style: {},
-        },
-      }}
-    >
+    <>
       {imageUrls.length > 0 ? (
-        imageUrls.map((url) => (
-          <BlockTintedBottom key={url}>
-            <img src={url} {...itemProps} />
-            <CarouselControls
-              deviceName={deviceName}
-              carouselMode={carouselMode}
-              handleModeChange={handleModeChange}
-            />
-          </BlockTintedBottom>
-        ))
+        <BlockTintedBottom>
+          <ImagesCarousel images={imageUrls} imagesProps={itemProps} />
+          <CarouselControls
+            deviceName={deviceName}
+            carouselMode={carouselMode}
+            handleModeChange={handleModeChange}
+          />
+        </BlockTintedBottom>
       ) : (
         <BlockTintedBottom>
           <FallbackIcon {...itemProps} />
@@ -66,6 +53,6 @@ export const DeviceImagesCarousel: FC<DeviceImagesCarouselProps> = ({
           />
         </BlockTintedBottom>
       )}
-    </ImagesCarousel>
+    </>
   );
 };
