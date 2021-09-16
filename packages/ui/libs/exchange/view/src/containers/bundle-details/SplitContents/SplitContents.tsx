@@ -70,7 +70,7 @@ export const SplitContents: FC<SplitContentsProps> = ({
               className={classes.split}
               p={1}
               margin="0px 5px"
-              key={split.volume.toString()}
+              key={split.volume.toString() + split.items[0].id}
             >
               <Typography color="textSecondary" align="center">
                 {totalVolumeText}
