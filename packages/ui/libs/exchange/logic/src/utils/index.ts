@@ -8,3 +8,4 @@ export * from './prepareSubRegionsOptions';
 export * from './demandPeriod';
 export * from './getOwnedOrderStyles';
 export * from './demandStatusOptions';
+export * from './prepareRegionsOptions';

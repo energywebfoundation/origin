@@ -13,3 +13,4 @@ export * from './repeatedPurchase';
 export * from './marketTables';
 export * from './myOrders';
 export * from './permissions';
+export * from './viewMarketRedirect';

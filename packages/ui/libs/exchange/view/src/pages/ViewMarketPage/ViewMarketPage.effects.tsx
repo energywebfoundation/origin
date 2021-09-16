@@ -2,10 +2,22 @@ import React, { useReducer, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
+import dayjs from 'dayjs';
 import {
+  useAllDeviceFuelTypes,
+  useAllDeviceTypes,
   useApiOrderbookPoll,
+  useApiRegionsConfiguration,
   useUser,
 } from '@energyweb/origin-ui-exchange-data';
+import {
+  getDeviceTypeOption,
+  getFuelTypeOptions,
+  getGridOperatorOptions,
+  getRegionOption,
+  getSubregionOption,
+  ViewMarketRedirectFilters,
+} from '@energyweb/origin-ui-exchange-logic';
 import {
   OneTimePurchase,
   RepeatedPurchase,
@@ -17,36 +29,70 @@ import {
   initialFiltersState,
   filtersReducer,
   MarketFilterActionEnum,
-  MarketFiltersState,
 } from '../../reducer';
 
 export const useViewMarketPageEffects = () => {
   const [state, dispatch] = useReducer(filtersReducer, initialFiltersState);
   const { t } = useTranslation();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
+  const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
+    useAllDeviceTypes();
+  const { allRegions, isLoading: areRegionsLoading } =
+    useApiRegionsConfiguration();
+
   const location = useLocation();
-  const locationState = location.state as MarketFiltersState;
+  const locationState = location.state as ViewMarketRedirectFilters;
 
   useEffect(() => {
     if (locationState) {
+      const fuelTypeOptions = locationState.deviceType
+        ? getFuelTypeOptions(locationState.deviceType, allFuelTypes)
+        : initialFiltersState.fuelType;
+
+      const deviceTypeOptions = locationState.deviceType
+        ? getDeviceTypeOption({
+            deviceType: locationState.deviceType,
+            fuelTypeOptions,
+            allFuelTypes,
+            allDeviceTypes,
+          })
+        : initialFiltersState.deviceType;
+
+      const regionOptions = locationState.location
+        ? getRegionOption(locationState.location, allRegions)
+        : initialFiltersState.regions;
+
+      const subregionOptions = locationState.location
+        ? getSubregionOption(regionOptions, locationState.location, allRegions)
+        : initialFiltersState.subregions;
+
       dispatch({
         type: MarketFilterActionEnum.SET_MARKET_FILTERS_STATE,
         payload: {
-          fuelType: locationState.fuelType || initialFiltersState.fuelType,
-          deviceType:
-            locationState.deviceType || initialFiltersState.deviceType,
-          regions: locationState.regions || initialFiltersState.regions,
-          subregions:
-            locationState.subregions || initialFiltersState.subregions,
-          gridOperator:
-            locationState.gridOperator || initialFiltersState.gridOperator,
-          generationFrom:
-            locationState.generationFrom || initialFiltersState.generationFrom,
-          generationTo:
-            locationState.generationTo || initialFiltersState.generationTo,
+          fuelType: fuelTypeOptions,
+          deviceType: deviceTypeOptions,
+          regions: regionOptions,
+          subregions: subregionOptions,
+          gridOperator: locationState.gridOperator
+            ? getGridOperatorOptions(locationState.gridOperator)
+            : initialFiltersState.gridOperator,
+          generationFrom: locationState.generationFrom
+            ? dayjs(locationState.generationFrom)
+            : initialFiltersState.generationFrom,
+          generationTo: locationState.generationTo
+            ? dayjs(locationState.generationTo)
+            : initialFiltersState.generationTo,
         },
       });
     }
   }, [locationState]);
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: MarketFilterActionEnum.RESET_MARKET_FILTERS_STATE });
+    };
+  }, []);
 
   const { user, userLoading } = useUser();
   const { orderBookData, isLoading: isOrderbookLoading } = useApiOrderbookPoll(
@@ -54,7 +100,12 @@ export const useViewMarketPageEffects = () => {
     user
   );
 
-  const isLoading = userLoading || isOrderbookLoading;
+  const isLoading =
+    userLoading ||
+    isOrderbookLoading ||
+    areFuelTypesLoading ||
+    areDeviceTypesLoading ||
+    areRegionsLoading;
 
   const oneTimePurchase: ListAction = {
     name: t('exchange.viewMarket.oneTimePurchase'),

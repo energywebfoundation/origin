@@ -20,6 +20,7 @@ export enum MarketFilterActionEnum {
   SET_GENERATION_FROM = 'SET_GENERATION_FROM',
   SET_GENERATION_TO = 'SET_GENERATION_TO',
   SET_MARKET_FILTERS_STATE = 'SET_MARKET_FILTERS_STATE',
+  RESET_MARKET_FILTERS_STATE = 'RESET_MARKET_FILTERS_STATE',
 }
 
 export type MarketFiltersActions =
@@ -54,6 +55,9 @@ export type MarketFiltersActions =
   | {
       type: MarketFilterActionEnum.SET_MARKET_FILTERS_STATE;
       payload: MarketFiltersState;
+    }
+  | {
+      type: MarketFilterActionEnum.RESET_MARKET_FILTERS_STATE;
     };
 
 export const initialFiltersState: MarketFiltersState = {
@@ -87,5 +91,7 @@ export const filtersReducer = (
       return { ...state, generationTo: action.payload };
     case MarketFilterActionEnum.SET_MARKET_FILTERS_STATE:
       return action.payload;
+    case MarketFilterActionEnum.RESET_MARKET_FILTERS_STATE:
+      return initialFiltersState;
   }
 };

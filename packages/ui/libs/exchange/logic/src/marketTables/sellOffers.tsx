@@ -60,6 +60,7 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
   const { t } = useTranslation();
   const theme = useTheme();
   const primaryColor = theme.palette.primary.main;
+  const canBuyAnyAsk = asks.some((ask) => user?.id?.toString() !== ask.userId);
   return {
     header: {
       fuelType: t('exchange.viewMarket.type'),
@@ -68,7 +69,7 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
       gridOperator: t('exchange.viewMarket.gridOperator'),
       generationStart: t('exchange.viewMarket.generationStart'),
       generationEnd: t('exchange.viewMarket.generationEnd'),
-      buyDirect: t('exchange.viewMarket.buyDirect'),
+      buyDirect: canBuyAnyAsk ? t('exchange.viewMarket.buyDirect') : '',
     },
     getCustomRowClassName: getOwnedOrderStyles(asks, user?.id, className),
     loading: isLoading,
