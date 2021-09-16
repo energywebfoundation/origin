@@ -5,7 +5,6 @@ import {
     IsISO31661Alpha2,
     IsLatitude,
     IsLongitude,
-    IsNumber,
     IsOptional,
     IsString
 } from 'class-validator';
@@ -37,11 +36,10 @@ export class UpdateDeviceDTO {
     @Expose()
     countryCode: string;
 
-    @ApiProperty({ type: Number })
-    @IsNumber()
+    @ApiProperty({ type: String })
     @IsOptional()
     @Expose()
-    capacity: number;
+    capacity: string;
 
     @ApiProperty({ type: Date })
     @IsOptional()

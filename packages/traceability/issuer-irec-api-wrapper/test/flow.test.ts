@@ -33,7 +33,7 @@ describe('API flows', () => {
     function getDeviceParams(): DeviceCreateParams {
         return {
             address: '1 Wind Farm Avenue, London',
-            capacity: 500,
+            capacity: '500',
             commissioningDate: new Date('2001-08-10'),
             countryCode: 'GB',
             defaultAccount: tradeAccount,
@@ -100,7 +100,7 @@ describe('API flows', () => {
         device = await registrantClient.device.get(deviceCode);
         expect(device.status).to.equal(DeviceState.Approved);
 
-        await registrantClient.device.edit(deviceCode, { capacity: 1000, name: 'DeviceZZZ' });
+        await registrantClient.device.edit(deviceCode, { capacity: '1000', name: 'DeviceZZZ' });
         device = await registrantClient.device.get(deviceCode);
         expect(device.capacity).to.equal(1000);
         expect(device.name).to.equal('DeviceZZZ');

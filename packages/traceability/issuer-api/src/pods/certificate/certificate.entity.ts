@@ -1,5 +1,4 @@
-import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { IsBoolean, IsInt, IsPositive, IsString, Min } from 'class-validator';
 import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
@@ -7,7 +6,7 @@ import { BlockchainProperties } from '../blockchain/blockchain-properties.entity
 export const CERTIFICATES_TABLE_NAME = 'issuer_certificate';
 
 @Entity({ name: CERTIFICATES_TABLE_NAME })
-export class Certificate extends ExtendedBaseEntity {
+export class Certificate {
     @PrimaryColumn()
     @IsInt()
     @Min(1)
@@ -61,4 +60,10 @@ export class Certificate extends ExtendedBaseEntity {
     @Column()
     @IsBoolean()
     issuedPrivately: boolean;
+
+    @CreateDateColumn({ type: 'timestamptz' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: 'timestamptz' })
+    updatedAt: Date;
 }

@@ -3,7 +3,6 @@ import { CommandBus, EventBus } from '@nestjs/cqrs';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BlockchainPropertiesService } from '../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate/certificate.entity';
 import { CertificateCreatedEvent } from '../certificate/events/certificate-created-event';
 import { CertificationRequest } from './certification-request.entity';
@@ -18,7 +17,6 @@ export class SyncCertificationRequestsTask {
         private readonly repository: Repository<CertificationRequest>,
         @InjectRepository(Certificate)
         private readonly certificateRepository: Repository<Certificate>,
-        private readonly blockchainPropertiesService: BlockchainPropertiesService,
         private readonly commandBus: CommandBus,
         private readonly eventBus: EventBus
     ) {}

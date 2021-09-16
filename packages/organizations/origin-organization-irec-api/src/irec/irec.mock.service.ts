@@ -34,7 +34,7 @@ export class IrecMockService implements IIrecService {
     private devices: Device[] = [
         {
             address: '1 Wind Farm Avenue, London',
-            capacity: 500,
+            capacity: '500',
             commissioningDate: new Date('2001-08-10'),
             countryCode: 'GB',
             defaultAccount: 'someTradeAccount',
