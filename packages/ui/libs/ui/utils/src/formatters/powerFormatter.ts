@@ -24,6 +24,12 @@ export class PowerFormatter {
     powerInWatt: number | string,
     includeDisplayUnit?: boolean
   ): string {
+    if (!powerInWatt) {
+      const result = includeDisplayUnit
+        ? `0 ${PowerFormatter.displayUnit}`
+        : '0';
+      return result;
+    }
     return `${PowerFormatter.formatter.format(
       BigNumber.from(powerInWatt)
         .div(Unit[PowerFormatter.displayUnit as keyof typeof Unit])
