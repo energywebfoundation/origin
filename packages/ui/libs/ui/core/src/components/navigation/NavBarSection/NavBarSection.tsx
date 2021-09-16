@@ -37,7 +37,7 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
   const sectionTitleUrl = `${rootUrl}/${availableLinks[0]?.url}`;
 
   return (
-    <>
+    <div>
       {show && (
         <div className={classes.wrapper}>
           <NavSectionTitle
@@ -55,6 +55,6 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
           />
         </div>
       )}
-    </>
+    </div>
   );
 };

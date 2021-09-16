@@ -1,16 +1,12 @@
 import {
   BundlePublicDTO,
   Bundle,
-  BundlePublicItemDTO,
-  BundleItem,
 } from '@energyweb/exchange-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { BigNumber } from 'ethers';
 import { getMainFuelType } from './getMainFuelType';
-
-type TBundleItem = BundlePublicItemDTO | BundleItem;
 
 export const getBundleEnergyShares = (
   bundle: BundlePublicDTO | Bundle,
@@ -20,6 +16,7 @@ export const getBundleEnergyShares = (
   if (!bundle || !allFuelTypes || !allDevices) {
     return {};
   }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const energy = bundle.items.reduce(
     (grouped: any, item: any) => {

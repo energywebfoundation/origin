@@ -21,25 +21,15 @@ type DemandFormValues = {
 export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
   const theme = useTheme();
   const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
-  const {
-    initialValues,
-    validationSchema,
-    fields,
-    buttons,
-  } = useRepeatedPurchaseFormLogic(mobileView);
+  const { initialValues, validationSchema, fields, buttons } =
+    useRepeatedPurchaseFormLogic(mobileView);
 
-  const {
-    register,
-    control,
-    formState,
-    handleSubmit,
-    watch,
-    reset,
-  } = useForm<DemandFormValues>({
-    mode: 'onChange',
-    resolver: yupResolver(validationSchema),
-    defaultValues: initialValues,
-  });
+  const { register, control, formState, handleSubmit, watch, reset } =
+    useForm<DemandFormValues>({
+      mode: 'onChange',
+      resolver: yupResolver(validationSchema),
+      defaultValues: initialValues,
+    });
   const createDemandHandler = useApiCreateDemandHandler(filters, reset);
 
   const values = watch();
@@ -57,6 +47,7 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
       setTotalVolume(newTotal);
     };
     getAndSetTotalVolume();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.period, values.volume, values.startDate, values.endDate]);
 
   const onSubmit = handleSubmit(async (values) => {

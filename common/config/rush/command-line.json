@@ -107,6 +107,13 @@
             "summary": "Launch storybook UI in origin-ui-core package",
             "shellCommand": "cd packages/ui && rushx storybook",
             "safeForSimultaneousRushProcesses": true
+        },
+        {
+            "commandKind": "global",
+            "name": "build:ui-packages",
+            "summary": "Build all UI packages without root origin-ui app",
+            "shellCommand": "cd packages/ui && rushx build:all-packages",
+            "safeForSimultaneousRushProcesses": false
         }
         // {
         //   /**

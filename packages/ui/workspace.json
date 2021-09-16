@@ -115,7 +115,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/core",
+            "outputPath": "libs/ui/core/dist",
             "tsConfig": "libs/ui/core/tsconfig.lib.json",
             "project": "libs/ui/core/package.json",
             "entryFile": "libs/ui/core/src/index.ts",
@@ -176,7 +176,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/utils",
+            "outputPath": "libs/ui/utils/dist",
             "tsConfig": "libs/ui/utils/tsconfig.lib.json",
             "project": "libs/ui/utils/package.json",
             "entryFile": "libs/ui/utils/src/index.ts",
@@ -218,7 +218,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/localization",
+            "outputPath": "libs/ui/localization/dist",
             "tsConfig": "libs/ui/localization/tsconfig.lib.json",
             "project": "libs/ui/localization/package.json",
             "entryFile": "libs/ui/localization/src/index.ts",
@@ -260,7 +260,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/theme",
+            "outputPath": "libs/ui/theme/dist",
             "tsConfig": "libs/ui/theme/tsconfig.lib.json",
             "project": "libs/ui/theme/package.json",
             "entryFile": "libs/ui/theme/src/index.ts",
@@ -301,7 +301,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/assets",
+            "outputPath": "libs/ui/assets/dist",
             "tsConfig": "libs/ui/assets/tsconfig.lib.json",
             "project": "libs/ui/assets/package.json",
             "entryFile": "libs/ui/assets/src/index.ts",
@@ -342,7 +342,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/exchange/view",
+            "outputPath": "libs/exchange/view/dist",
             "tsConfig": "libs/exchange/view/tsconfig.lib.json",
             "project": "libs/exchange/view/package.json",
             "entryFile": "libs/exchange/view/src/index.ts",
@@ -383,7 +383,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/exchange/logic",
+            "outputPath": "libs/exchange/logic/dist",
             "tsConfig": "libs/exchange/logic/tsconfig.lib.json",
             "project": "libs/exchange/logic/package.json",
             "entryFile": "libs/exchange/logic/src/index.ts",
@@ -424,7 +424,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/certificate/view",
+            "outputPath": "libs/certificate/view/dist",
             "tsConfig": "libs/certificate/view/tsconfig.lib.json",
             "project": "libs/certificate/view/package.json",
             "entryFile": "libs/certificate/view/src/index.ts",
@@ -465,7 +465,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/certificate/logic",
+            "outputPath": "libs/certificate/logic/dist",
             "tsConfig": "libs/certificate/logic/tsconfig.lib.json",
             "project": "libs/certificate/logic/package.json",
             "entryFile": "libs/certificate/logic/src/index.ts",
@@ -506,7 +506,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/user/view",
+            "outputPath": "libs/user/view/dist",
             "tsConfig": "libs/user/view/tsconfig.lib.json",
             "project": "libs/user/view/package.json",
             "entryFile": "libs/user/view/src/index.ts",
@@ -547,7 +547,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/user/logic",
+            "outputPath": "libs/user/logic/dist",
             "tsConfig": "libs/user/logic/tsconfig.lib.json",
             "project": "libs/user/logic/package.json",
             "entryFile": "libs/user/logic/src/index.ts",
@@ -588,7 +588,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/device/logic",
+            "outputPath": "libs/device/logic/dist",
             "tsConfig": "libs/device/logic/tsconfig.lib.json",
             "project": "libs/device/logic/package.json",
             "entryFile": "libs/device/logic/src/index.ts",
@@ -629,7 +629,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/device/view",
+            "outputPath": "libs/device/view/dist",
             "tsConfig": "libs/device/view/tsconfig.lib.json",
             "project": "libs/device/view/package.json",
             "entryFile": "libs/device/view/src/index.ts",
@@ -670,7 +670,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/shared-state",
+            "outputPath": "libs/ui/shared-state/dist",
             "tsConfig": "libs/ui/shared-state/tsconfig.lib.json",
             "project": "libs/ui/shared-state/package.json",
             "entryFile": "libs/ui/shared-state/src/index.ts",
@@ -711,7 +711,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/organization/view",
+            "outputPath": "libs/organization/view/dist",
             "tsConfig": "libs/organization/view/tsconfig.lib.json",
             "project": "libs/organization/view/package.json",
             "entryFile": "libs/organization/view/src/index.ts",
@@ -753,7 +753,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/organization/data",
+            "outputPath": "libs/organization/data/dist",
             "tsConfig": "libs/organization/data/tsconfig.lib.json",
             "project": "libs/organization/data/package.json",
             "entryFile": "libs/organization/data/src/index.ts",
@@ -795,7 +795,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/organization/logic",
+            "outputPath": "libs/organization/logic/dist",
             "tsConfig": "libs/organization/logic/tsconfig.lib.json",
             "project": "libs/organization/logic/package.json",
             "entryFile": "libs/organization/logic/src/index.ts",
@@ -837,7 +837,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/device/data",
+            "outputPath": "libs/device/data/dist",
             "tsConfig": "libs/device/data/tsconfig.lib.json",
             "project": "libs/device/data/package.json",
             "entryFile": "libs/device/data/src/index.ts",
@@ -871,7 +871,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/certificate/data",
+            "outputPath": "libs/certificate/data/dist",
             "tsConfig": "libs/certificate/data/tsconfig.lib.json",
             "project": "libs/certificate/data/package.json",
             "entryFile": "libs/certificate/data/src/index.ts",
@@ -913,7 +913,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/blockchain",
+            "outputPath": "libs/ui/blockchain/dist",
             "tsConfig": "libs/ui/blockchain/tsconfig.lib.json",
             "project": "libs/ui/blockchain/package.json",
             "entryFile": "libs/ui/blockchain/src/index.ts",
@@ -955,7 +955,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/user/data",
+            "outputPath": "libs/user/data/dist",
             "tsConfig": "libs/user/data/tsconfig.lib.json",
             "project": "libs/user/data/package.json",
             "entryFile": "libs/user/data/src/index.ts",
@@ -997,7 +997,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/exchange/data",
+            "outputPath": "libs/exchange/data/dist",
             "tsConfig": "libs/exchange/data/tsconfig.lib.json",
             "project": "libs/exchange/data/package.json",
             "entryFile": "libs/exchange/data/src/index.ts",

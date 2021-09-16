@@ -9,7 +9,7 @@ import {
 import { Menu } from '@material-ui/icons';
 import clsx from 'clsx';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
-import { ThemeSwitcher } from '@energyweb/origin-ui-core';
+import { ThemeSwitcher } from '../ThemeSwitcher';
 import { useStyles } from './MobileTopBar.styles';
 import { TopBarButtonData } from '../TopBar';
 

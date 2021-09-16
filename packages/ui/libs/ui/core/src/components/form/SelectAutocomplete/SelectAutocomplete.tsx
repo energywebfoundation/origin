@@ -60,9 +60,12 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
       options={options}
       className={`${classes.autocomplete} ${className}`}
       inputValue={textValue}
-      getOptionLabel={(option) => option.label}
+      getOptionLabel={(option: FormSelectOption) => option.label}
       onChange={changeHandler}
-      isOptionEqualToValue={(option, value) => option.value === value.value}
+      isOptionEqualToValue={(
+        option: FormSelectOption,
+        value: FormSelectOption
+      ) => option.value === value.value}
       getOptionDisabled={() => disabled}
       disabled={disabled}
       value={value !== undefined ? value : []}
@@ -84,9 +87,9 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
       renderTags={(value, getTagProps) => {
         return value.map((option, index) => (
           <Chip
-            label={option.label}
             color="primary"
-            key={option.value}
+            label={(option as FormSelectOption).label}
+            key={(option as FormSelectOption).value}
             disabled={disabled}
             {...getTagProps({ index })}
           />

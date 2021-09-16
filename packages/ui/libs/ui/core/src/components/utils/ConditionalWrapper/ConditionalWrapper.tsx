@@ -11,5 +11,5 @@ export const ConditionalWrapper: React.FC<ConditionalWrapperProps> = ({
   children,
 }) => {
   if (condition) return <Wrapper>{children}</Wrapper>;
-  return <>{children}</>;
+  return <div>{children}</div>;
 };

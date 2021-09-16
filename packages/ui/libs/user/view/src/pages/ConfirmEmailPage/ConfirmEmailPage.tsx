@@ -15,6 +15,7 @@ export const ConfirmEmailPage = () => {
     if (!!token && !userLoading) {
       confirmHandler(token);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, userLoading]);
 
   return <div></div>;

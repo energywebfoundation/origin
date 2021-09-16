@@ -15,5 +15,8 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
-  }
+  },
+  "main": "dist/user-view.umd.js",
+  "module": "dist/user-view.esm.js",
+  "typings": "dist/index.d.ts"
 }

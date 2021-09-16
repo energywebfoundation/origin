@@ -13,7 +13,7 @@ import {
   SelectAutocomplete,
   SelectAutocompleteProps,
 } from './SelectAutocomplete';
-import { FormSelectOption } from '@energyweb/origin-ui-core';
+import { FormSelectOption } from '../FormSelect';
 
 const description =
   'Input with autocomplete and select functionality. So that the user can type into the input a label of the option he is looking for and options list will be filtered to match the text in the input. Used for selecting one or multiple values, which are then displayed as chip inside the input. Can be used on its own by providing a `value` prop and change handler as `onChange` prop. Also can be used in `react-hook-form` setup. In this case it has to be wrapped in `<Controller />` and receive `value` and `onChange` prop from its `render` prop.';
