@@ -13,6 +13,7 @@ import { TRegisterDeviceFormValues } from '../types';
 import { decomposeForIRec, decomposeForOrigin } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 
 export const useApiRegisterDevice = () => {
   const { t } = useTranslation();
@@ -28,33 +29,42 @@ export const useApiRegisterDevice = () => {
     const iRecCreateData = decomposeForIRec(values, user.organization);
     const originCreateData = decomposeForOrigin(values);
 
-    mutateAsync({ data: iRecCreateData }).then((createdIRecDevice) => {
-      mutate(
-        {
-          data: {
-            ...originCreateData,
-            externalRegistryId: createdIRecDevice.id,
+    mutateAsync({ data: iRecCreateData })
+      .then((createdIRecDevice) => {
+        mutate(
+          {
+            data: {
+              ...originCreateData,
+              externalRegistryId: createdIRecDevice.id,
+            },
           },
-        },
-        {
-          onSuccess: () => {
-            showNotification(
-              t('device.register.notifications.registerSuccess'),
-              NotificationTypeEnum.Success
-            );
-            navigate('/device/my');
-          },
-          onError: (error: any) => {
-            showNotification(
-              `${t('device.register.notifications.registerError')}:
+          {
+            onSuccess: () => {
+              showNotification(
+                t('device.register.notifications.registerSuccess'),
+                NotificationTypeEnum.Success
+              );
+              navigate('/device/my');
+            },
+            onError: (error: any) => {
+              showNotification(
+                `${t('device.register.notifications.registerError')}:
               ${error?.response?.data?.message || ''}
               `,
-              NotificationTypeEnum.Error
-            );
-          },
-        }
-      );
-    });
+                NotificationTypeEnum.Error
+              );
+            },
+          }
+        );
+      })
+      .catch((error: AxiosError) => {
+        showNotification(
+          `${t('device.register.notifications.registerError')}:
+        ${error?.response?.data?.message || ''}
+        `,
+          NotificationTypeEnum.Error
+        );
+      });
   };
 
   return { submitHandler, isMutating };

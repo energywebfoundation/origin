@@ -10,6 +10,7 @@ export const useStyles = makeStyles((theme) => ({
     width: 250,
   },
   imageWrapper: {
+    width: 250,
     height: 180,
   },
   heading: {

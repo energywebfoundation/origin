@@ -15,17 +15,20 @@ import {
 import { useStyles } from './GenericItemsList.styles';
 
 export interface GenericItemsListProps<ContainerId, ItemId> {
-  listContainers: ListItemsContainerProps<ContainerId, ItemId>[];
+  listContainers:
+    | ListItemsContainerProps<ContainerId, ItemId>[]
+    | null
+    | undefined;
   listTitle?: string;
   titleProps?: TypographyProps;
   checkboxes?: boolean;
   allSelected?: boolean;
-  selectAllHandler?: () => void;
+  selectAllHandler?: () => void | null;
   selectAllText?: string;
   pagination?: boolean;
   pageSize?: number;
   paginationProps?: PaginationProps;
-  emptyListComponent?: ReactNode;
+  emptyListComponent?: ReactNode | null;
   disabled?: boolean;
 }
 
@@ -34,17 +37,17 @@ export type TGenericItemsList = <ContainerId, ItemId>(
 ) => React.ReactElement;
 
 export const GenericItemsList: TGenericItemsList = ({
-  listTitle,
-  titleProps,
-  checkboxes,
-  allSelected,
-  selectAllHandler,
-  selectAllText,
   listContainers,
-  pagination,
+  listTitle = '',
+  titleProps,
+  checkboxes = false,
+  allSelected = false,
+  selectAllHandler = null,
+  selectAllText = '',
+  pagination = false,
   pageSize = 5,
   paginationProps,
-  emptyListComponent,
+  emptyListComponent = null,
   disabled = false,
 }) => {
   const classes = useStyles();
@@ -55,10 +58,12 @@ export const GenericItemsList: TGenericItemsList = ({
     itemsPerPage: number,
     currentPage: number
   ) => {
-    return allItems.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    );
+    return allItems
+      ? allItems.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        )
+      : [];
   };
 
   const formattedItems = pagination
@@ -73,7 +78,7 @@ export const GenericItemsList: TGenericItemsList = ({
         </Typography>
       )}
 
-      {checkboxes && listContainers.length > 0 && (
+      {checkboxes && listContainers?.length > 0 && (
         <div className={classes.selectAllHolder}>
           <Checkbox
             color="primary"
@@ -85,7 +90,7 @@ export const GenericItemsList: TGenericItemsList = ({
         </div>
       )}
 
-      {listContainers.length > 0 ? (
+      {listContainers?.length > 0 ? (
         <List>
           {formattedItems.map((container) => (
             <ListItemsContainer
@@ -105,7 +110,11 @@ export const GenericItemsList: TGenericItemsList = ({
           className={classes.pagination}
           size="small"
           defaultPage={1}
-          count={Math.ceil(listContainers.length / pageSize)}
+          count={
+            listContainers?.length > 0
+              ? Math.ceil(listContainers.length / pageSize)
+              : 0
+          }
           onChange={(event, index) => setPage(index)}
           {...paginationProps}
         />

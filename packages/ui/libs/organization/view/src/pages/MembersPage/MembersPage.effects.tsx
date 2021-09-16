@@ -10,6 +10,8 @@ import { DeleteOutline, PermIdentityOutlined } from '@material-ui/icons';
 import {
   User,
   userControllerGet,
+  UserStatus,
+  useUserControllerMe,
 } from '@energyweb/origin-backend-react-query-client';
 import {
   OrganizationModalsActionsEnum,
@@ -20,6 +22,9 @@ import { TableActionData } from '@energyweb/origin-ui-core';
 export const useMembersPageEffects = () => {
   const { t } = useTranslation();
   const dispatchModals = useOrgModalsDispatch();
+
+  const { data: user, isLoading: isUserLoading } = useUserControllerMe();
+  const userIsActive = user.status === UserStatus.Active;
 
   const { members, isLoading: membersIsLoading } = useOrganizationMembersData();
   const {
@@ -56,11 +61,12 @@ export const useMembersPageEffects = () => {
     },
   ];
 
-  const pageLoading = membersIsLoading || removeHandlerIsLoading;
+  const pageLoading =
+    membersIsLoading || removeHandlerIsLoading || isUserLoading;
 
   const tableData = useMembersTableLogic({
     users: members,
-    actions,
+    actions: userIsActive ? actions : undefined,
     loading: pageLoading,
   });
 
