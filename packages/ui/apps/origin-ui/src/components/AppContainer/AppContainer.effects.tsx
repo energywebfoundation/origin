@@ -116,7 +116,9 @@ export const useAppContainerEffects = () => {
     showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: userHasOrg && userIsOrgAdmin && !Boolean(iRecOrg),
     showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
-    showConnectIRec: userHasOrg && userIsOrgAdmin && Boolean(iRecOrg),
+    showConnectIRec:
+      (userHasOrg && userIsOrgAdmin && Boolean(iRecOrg)) ||
+      userIsAdminOrSupport,
   };
   const orgMenu = getOrganizationMenu({
     t,
