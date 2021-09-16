@@ -6,7 +6,6 @@ import {
     IsLatitude,
     IsLongitude,
     IsNotEmpty,
-    IsNumber,
     IsOptional,
     IsString
 } from 'class-validator';
@@ -36,11 +35,10 @@ export class CreateDeviceDTO {
     @Expose()
     countryCode: string;
 
-    @ApiProperty({ type: Number })
-    @IsNumber()
+    @ApiProperty({ type: String })
     @IsNotEmpty()
     @Expose()
-    capacity: number;
+    capacity: string;
 
     @ApiProperty({ type: Date })
     @IsNotEmpty()

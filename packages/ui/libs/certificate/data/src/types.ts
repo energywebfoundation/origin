@@ -22,7 +22,7 @@ export type ComposedDevice = {
   countryCode: string;
   registrantOrganization: string;
   issuer: string;
-  capacity: number;
+  capacity: string;
   commissioningDate: string;
   registrationDate: string;
   address: string;

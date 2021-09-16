@@ -53,9 +53,9 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
     @Column()
     issuer: string;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: String })
     @Column()
-    capacity: number;
+    capacity: string;
 
     @ApiProperty({ type: Date })
     @Column()
