@@ -66,6 +66,10 @@ jobs:
     - name: Build application
       run: |
         node common/scripts/install-run-rush.js build
+    
+    - name: Build UI packages
+      run: |
+        node common/scripts/install-run-rush.js build:ui-packages
 
     - name: Set creds to npm 
       run: |
