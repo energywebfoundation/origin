@@ -172,14 +172,25 @@ export class DeviceService {
         const devices = await this.repository.find({ where: { ownerId: user.ownerId } });
         const deviceCodes: string[] = devices.map((d) => d.code);
 
-        return irecDevices.filter((d) => !deviceCodes.includes(d.code));
+        return irecDevices
+            .filter((d) => !deviceCodes.includes(d.code))
+            .map((d) => {
+                return {
+                    ...d,
+                    // converting MWH to WH
+                    // numbers in JS are 64 bits floating point. And Number.MAX_SAFE_INTEGER
+                    // is 2^53, or about 9e20. So we safely can do such operations without BigInts
+                    capacity: Math.floor(Number(d.capacity) * 1e6).toString()
+                };
+            });
     }
 
     async importIrecDevice(
         user: ILoggedInUser,
         deviceToImport: ImportIrecDeviceDTO
     ): Promise<Device> {
-        let [irecDevice] = await this.irecService.getDevices(user);
+        const irecDevices = await this.irecService.getDevices(user);
+        const irecDevice = irecDevices.find((d) => d.code === deviceToImport.code);
 
         if (!irecDevice) {
             throw new NotFoundException(`Device with code ${deviceToImport.code} not found`);
