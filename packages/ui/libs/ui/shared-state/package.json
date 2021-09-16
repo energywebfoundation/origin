@@ -15,5 +15,14 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
+  },
+  "main": "dist/ui-shared-state.umd.js",
+  "module": "dist/ui-shared-state.esm.js",
+  "typings": "dist/index.d.ts",
+  "dependencies": {
+    "@energyweb/origin-ui-localization": "0.0.1",
+    "react-i18next": "11.12.0",
+    "i18next": "20.6.1",
+    "i18next-icu": "1.4.2"
   }
 }

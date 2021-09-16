@@ -1,3 +1,3 @@
 export * from './ThemeModeEnum';
 export * from './colors';
-export * from './makeOriginUiConfig';
+export * from './createStyleConfig';

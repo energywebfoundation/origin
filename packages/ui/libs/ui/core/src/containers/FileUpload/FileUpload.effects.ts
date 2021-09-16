@@ -76,9 +76,12 @@ export const useFileUploadEffects = ({
         upload(f);
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
+
   useEffect(() => {
     onChange(Object.entries(state).map(([, value]) => value));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return { getRootProps, getInputProps, files, state, dispatch };

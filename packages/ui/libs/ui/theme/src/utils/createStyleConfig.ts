@@ -2,10 +2,7 @@ import { Theme } from '@material-ui/core/styles';
 import {
   OriginUiThemeVariables,
   variables_darkTheme,
-  variables_lightTheme,
 } from '../config/variables';
-import { createMaterialThemeForOrigin } from '../config/themeConfig';
-import { ThemeModeEnum } from './ThemeModeEnum';
 
 export interface IOriginStyleConfig {
   PRIMARY_COLOR: string;
@@ -46,25 +43,3 @@ export function createStyleConfig(
     FONT_SIZE: themeVariables.fontSize,
   };
 }
-
-export const makeOriginUiConfig = (themeMode?: ThemeModeEnum) => {
-  const colors =
-    themeMode === ThemeModeEnum.Dark
-      ? variables_darkTheme
-      : variables_lightTheme;
-  const DEFAULT_STYLE_CONFIG = createStyleConfig(colors);
-
-  const DEFAULT_ORIGIN_CONFIGURATION: IOriginThemeConfiguration = {
-    materialTheme: createMaterialThemeForOrigin(
-      DEFAULT_STYLE_CONFIG,
-      'en',
-      themeMode
-    ),
-  };
-
-  const newConfiguration: IOriginThemeConfiguration = {
-    ...DEFAULT_ORIGIN_CONFIGURATION,
-  };
-
-  return newConfiguration;
-};

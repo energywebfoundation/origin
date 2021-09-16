@@ -1,3 +1,3 @@
-export * from './config/variables';
+export * from './config';
 export * from './utils';
 export * from './providers';

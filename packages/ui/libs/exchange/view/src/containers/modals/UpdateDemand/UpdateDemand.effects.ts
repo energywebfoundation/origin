@@ -39,6 +39,7 @@ export const useUpdateDemandEffects = () => {
         setDemandStatus(newStatus);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [demand]);
 
   const demandStatusHandler = useApiChangeDemandStatus(closeDemandModal);

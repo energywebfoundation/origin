@@ -19,7 +19,7 @@ export const DetailViewCarousel: FC<DetailViewCarouselProps> = ({
   const { carouselMode, handleModeChange } = useDetailViewCarouselEffects();
   const classes = useStyles();
   return (
-    <>
+    <div>
       {carouselMode === CarouselModeEnum.Photo ? (
         <DeviceImagesCarousel
           deviceName={device.name}
@@ -38,6 +38,6 @@ export const DetailViewCarousel: FC<DetailViewCarouselProps> = ({
           itemProps={{ className: classes.item }}
         />
       )}
-    </>
+    </div>
   );
 };
