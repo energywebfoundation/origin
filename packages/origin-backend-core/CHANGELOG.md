@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [8.0.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@8.0.2...@energyweb/origin-backend-core@8.0.3) (2021-09-17)
+
+
+### Bug Fixes
+
+* **origin-backend-core:** use full-organization interface in user interface ([c457000](https://github.com/energywebfoundation/origin/commit/c45700041e23d6304e04a4f4ff26f52232285f84))
+
+
+
+
+
 ## [8.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@8.0.1...@energyweb/origin-backend-core@8.0.2) (2021-08-30)
 
 

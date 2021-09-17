@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [11.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@11.0.0...@energyweb/origin-backend@11.0.1) (2021-09-17)
+
+
+### Bug Fixes
+
+* **origin-backend:** add api-property decorator, adjust types ([165a03b](https://github.com/energywebfoundation/origin/commit/165a03b7f84d085970425baf4076c439fdbaee73))
+
+
+
+
+
 # [11.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@10.0.1...@energyweb/origin-backend@11.0.0) (2021-08-30)
 
 

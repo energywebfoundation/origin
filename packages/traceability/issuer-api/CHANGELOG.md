@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api@0.3.0...@energyweb/issuer-api@0.4.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **issuer-api:** remove ScheduleModule from IssuerModule ([8dce607](https://github.com/energywebfoundation/origin/commit/8dce60771f57c6edfc63d4e2ef0d219c26b3c87b))
+
+
+### Features
+
+* **issuer-api:** add enableCertificationRequest option ([ffb4fa7](https://github.com/energywebfoundation/origin/commit/ffb4fa7592ac05636ddda755f34f6e21f24e758f))
+* **issuer-api:** add issuer module options ([1e55661](https://github.com/energywebfoundation/origin/commit/1e55661270fdeab001178c07ba0718bc3f1b44c6))
+* **issuer-api:** add transaction log entity validation ([4832a74](https://github.com/energywebfoundation/origin/commit/4832a74e91ceb731d1b9281939516c500c864b6c))
+* **issuer-api:** Allow to query for certificate with logs ([30ae58a](https://github.com/energywebfoundation/origin/commit/30ae58ab11950e773ba8fc9c9d6224e7643b727c))
+* **issuer-api:** store event timestamp, add tests ([8b3e120](https://github.com/energywebfoundation/origin/commit/8b3e12050367348414dce865fcb48e1b9aeb85d0))
+* **issuer-api:** track all transaction ([e4e0dd0](https://github.com/energywebfoundation/origin/commit/e4e0dd0fd3228aaf0fe1fe06a728dc457b162ac4))
+
+
+### BREAKING CHANGES
+
+* **issuer-api:** when used with certification request module, user need to include ScheduleModule.forRoot() by himself
+* **issuer-api:** issuer-api AppModule was renamed to IssuerModule. Also, to use it, you need to call `IssuerModule.register()`
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api@0.2.0...@energyweb/issuer-api@0.3.0) (2021-08-30)
 
 

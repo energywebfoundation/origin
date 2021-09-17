@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-organization-irec-api",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "description": "An API for I-REC based organizations",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-organization-irec-api#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -30,10 +30,10 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/issuer-irec-api-wrapper": "0.5.0",
-        "@energyweb/origin-backend": "11.0.0",
-        "@energyweb/origin-backend-core": "8.0.2",
-        "@energyweb/origin-backend-utils": "1.6.0",
+        "@energyweb/issuer-irec-api-wrapper": "0.6.0",
+        "@energyweb/origin-backend": "11.0.1",
+        "@energyweb/origin-backend-core": "8.0.3",
+        "@energyweb/origin-backend-utils": "1.6.1",
         "@nestjs/common": "7.6.18",
         "@nestjs/config": "1.0.1",
         "@nestjs/core": "7.6.18",

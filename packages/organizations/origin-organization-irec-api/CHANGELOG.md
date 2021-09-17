@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.5.0...@energyweb/origin-organization-irec-api@1.6.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **origin-organization-irec-api:** fix apiBody type, include usedEntities ([1dbe5a8](https://github.com/energywebfoundation/origin/commit/1dbe5a86532d6d6556f0e0e90233d0c15fa9c258))
+* **origin-organization-irec-api:** suppress error on list accounts for registrant ([61a830d](https://github.com/energywebfoundation/origin/commit/61a830d3abbe2181f4edef0c1b952948db3c0eeb))
+* **origin-organization-irec-api:** suppress error on list irec accounts for registrant ([306afee](https://github.com/energywebfoundation/origin/commit/306afeeae28d326a979c946a3fee77810b1891a3))
+
+
+### Features
+
+* **issuer-irec-api-wrapper:** added proper HTTPExceptions ([2bdc458](https://github.com/energywebfoundation/origin/commit/2bdc458c0e0c315f4e53b7be89bf8aac64d4deba))
+* **issuer-irec-api:** added isDeviceImported field to list of certificates to import ([18ac474](https://github.com/energywebfoundation/origin/commit/18ac474f3ac171f40f14e3d48968144efc1b8f98))
+* **issuer-irec-api:** added isDeviceImported field to list of certificates to import ([12d18bc](https://github.com/energywebfoundation/origin/commit/12d18bc2df9809b7ce03c704232c0619ddeb00c1))
+* **origin-device-registry-local-irec-api:** capacity is string now ([d769f4f](https://github.com/energywebfoundation/origin/commit/d769f4fc0bd89c3bfe2a077db3f47006c9f6cc33))
+* **origin-organization-irec-api:** added endpoint to receive IREC accounts ([a890908](https://github.com/energywebfoundation/origin/commit/a8909083ab4cfd19a9fd356dee0964de503bad6d))
+* **origin-organization-irec-api:** added single account mode ([573ee73](https://github.com/energywebfoundation/origin/commit/573ee738536cb14e4017bd568420c425a35a06b2))
+* **origin-organization-irec-api:** return only required data ([e0e3a63](https://github.com/energywebfoundation/origin/commit/e0e3a63c2845ef734c0c2f228268bbf79a376be8))
+* **origin-organization-irec-api:** updated get connection endpoint, now does not return connection credentials ([435949e](https://github.com/energywebfoundation/origin/commit/435949e20859453a9300163e19888b9e53e13d79))
+
+
+
+
+
 # [1.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.4.0...@energyweb/origin-organization-irec-api@1.5.0) (2021-08-30)
 
 

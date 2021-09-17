@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-ui-assets",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -20,9 +20,9 @@
   "module": "dist/ui-assets.esm.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
+    "@material-ui/core": "5.0.0-beta.4",
     "@material-ui/styles": "5.0.0-beta.4",
-    "clsx": "1.1.1",
-    "@material-ui/core": "5.0.0-beta.4"
+    "clsx": "1.1.1"
   },
   "peerDependencies": {
     "react": "17.0.2"

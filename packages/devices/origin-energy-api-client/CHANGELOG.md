@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api-client@1.1.1...@energyweb/origin-energy-api-client@1.1.2) (2021-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.21.3 ([a551097](https://github.com/energywebfoundation/origin/commit/a551097195e4cbc2cddc7cc4329bea76ae203158))
+* **deps:** update dependency axios to v0.21.4 ([6141657](https://github.com/energywebfoundation/origin/commit/6141657651a0212d45a6d09511916d4a247aeb25))
+
+
+
+
+
 ## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api-client@1.1.0...@energyweb/origin-energy-api-client@1.1.1) (2021-08-30)
 
 

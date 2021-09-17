@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api@0.3.0...@energyweb/origin-device-registry-irec-local-api@0.4.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **origin-device-registry-irec-form-api:** fix import devices, now it returns proper int string ([e2273b8](https://github.com/energywebfoundation/origin/commit/e2273b828cbe9bdf15ed2b65029b724f4d830950))
+* **origin-device-registry-irec-form-api:** invalid device imported fix ([3fa65e6](https://github.com/energywebfoundation/origin/commit/3fa65e645294b6d9f11f35e4b5b08793c4a04258))
+* **origin-device-registry-irec-local-api:** add ApiPropery decorator, include usedEntities ([9f4a74a](https://github.com/energywebfoundation/origin/commit/9f4a74ab3540c81a68905518272c59f8cb229ce5))
+* **origin-device-registry-irec-local-api:** correctly reflect breaking changes for package ([30e6f73](https://github.com/energywebfoundation/origin/commit/30e6f731dfe0d0c788be8a45be57a334d28fc6b1))
+
+
+### Features
+
+* **origin-device-registry-local-irec-api:** capacity is string now ([d769f4f](https://github.com/energywebfoundation/origin/commit/d769f4fc0bd89c3bfe2a077db3f47006c9f6cc33))
+
+
+### BREAKING CHANGES
+
+* **origin-device-registry-irec-local-api:** device capacity is a string
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api@0.2.0...@energyweb/origin-device-registry-irec-local-api@0.3.0) (2021-08-30)
 
 

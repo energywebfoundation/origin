@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.14.3...@energyweb/origin-ui-core@2.0.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @energyweb/utils-general to v11.0.3 ([9289fc6](https://github.com/energywebfoundation/origin/commit/9289fc690f8215da3564144d09e1caa59219cf3e))
+* **deps:** update dependency @hookform/resolvers to v2.8.0 ([c80b65e](https://github.com/energywebfoundation/origin/commit/c80b65eef404d8dfe4007b02b2fe744782aa2e3b))
+* **deps:** update dependency axios to v0.21.4 ([6141657](https://github.com/energywebfoundation/origin/commit/6141657651a0212d45a6d09511916d4a247aeb25))
+* **deps:** update dependency dayjs to v1.10.7 ([a427d76](https://github.com/energywebfoundation/origin/commit/a427d76fe6fdb3a212e507c84756218d208c5c34))
+* **deps:** update material-ui monorepo ([7a350c4](https://github.com/energywebfoundation/origin/commit/7a350c47f65a8926db9af8553a18bcc42ab5c3fc))
+* **deps:** update material-ui monorepo ([34eaab2](https://github.com/energywebfoundation/origin/commit/34eaab2b0fe46a714d5faa908e060848beb5ce9a))
+* **origin-ui-core:** add fixed width for imageWrapper in CardWithImage component ([1d37f61](https://github.com/energywebfoundation/origin/commit/1d37f61a10d8b804ede0cc7e8595c11954e31550))
+* **origin-ui-core:** add props defaults and null checks for GenericItemsList ([878c692](https://github.com/energywebfoundation/origin/commit/878c692ceef75ff3ec7c114f1ff6283292ed0716))
+* **origin-ui-core:** correctly reflect breaking change for package ([0a37955](https://github.com/energywebfoundation/origin/commit/0a3795545365d1df4d4724e220e3f7aba20e6723))
+* **origin-ui-core:** table actions not overlaping container in desktop view ([4a26a05](https://github.com/energywebfoundation/origin/commit/4a26a05aea5ea0ec7382f8279e1882b6e8887d2f))
+
+
+### Features
+
+* **origin-ui-core:** add optional loading state for table actions ([7f41ad9](https://github.com/energywebfoundation/origin/commit/7f41ad9aa6fcae569a2b5f723cf8f62a8195f983))
+
+
+### BREAKING CHANGES
+
+* **origin-ui-core:** package now serves as a generic components library
+
+
+
+
+
 ## [1.14.3](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.14.2...@energyweb/origin-ui-core@1.14.3) (2021-08-31)
 
 **Note:** Version bump only for package @energyweb/origin-ui-core

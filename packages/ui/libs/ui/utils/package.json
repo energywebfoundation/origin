@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-ui-utils",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -20,10 +20,10 @@
   "module": "dist/ui-utils.esm.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "lodash": "4.17.21",
-    "@energyweb/utils-general": "11.0.3",
+    "@energyweb/utils-general": "11.0.4",
     "dayjs": "1.10.7",
     "ethers": "5.3.1",
+    "lodash": "4.17.21",
     "react-router": "6.0.0-beta.4"
   }
 }

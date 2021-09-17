@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-irec-app@1.2.0...@energyweb/origin-backend-irec-app@1.3.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **origin-backend-irec-app:** adjusted urls sent via email to match new ui routes ([efecbf1](https://github.com/energywebfoundation/origin/commit/efecbf1a27c6922b34bf5c5a395a86c59d596446))
+
+
+### Features
+
+* **origin-backend-irec-app:** add energy api reads module ([867711b](https://github.com/energywebfoundation/origin/commit/867711bce3cc77f858c8981a345581b74f714cf5))
+
+
+
+
+
 # [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-irec-app@1.1.0...@energyweb/origin-backend-irec-app@1.2.0) (2021-08-30)
 
 
