@@ -1,7 +1,7 @@
 {
     "name": "@energyweb/exchange-irec",
     "version": "1.0.4",
-    "description": "A service project hosting order book based exchange",
+    "description": "A service project hosting order book based I-REC specific exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-irec#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
