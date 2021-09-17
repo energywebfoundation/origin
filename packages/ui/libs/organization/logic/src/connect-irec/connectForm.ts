@@ -63,7 +63,5 @@ export const useConnectIRecFormLogic = (
     inputsVariant: 'filled',
     formTitleVariant: 'h6',
     buttonText: t('general.buttons.submit'),
-    buttonDisabled: Boolean(iRecConnection?.active),
-    formDisabled: Boolean(iRecConnection?.active),
   };
 };
