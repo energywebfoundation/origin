@@ -175,13 +175,7 @@ export class DeviceService {
         return irecDevices
             .filter((d) => !deviceCodes.includes(d.code))
             .map((d) => {
-                return {
-                    ...d,
-                    // converting MWH to WH
-                    // numbers in JS are 64 bits floating point. And Number.MAX_SAFE_INTEGER
-                    // is 2^53, or about 9e20. So we safely can do such operations without BigInts
-                    capacity: Math.floor(Number(d.capacity) * 1e6).toString()
-                };
+                return { ...d, capacity: this.castCapacity(d.capacity) };
             });
     }
 
@@ -204,6 +198,7 @@ export class DeviceService {
         const deviceToStore = new Device({
             ...deviceToImport,
             ...irecDevice,
+            capacity: this.castCapacity(irecDevice.capacity),
             ownerId: user.ownerId
         });
 
@@ -216,5 +211,12 @@ export class DeviceService {
 
     getAddressLine(device: CreateDeviceDTO): string {
         return `${device.countryCode}, ${device.postalCode}, ${device.region}, ${device.subregion}`;
+    }
+
+    castCapacity(capacity: string) {
+        // converting MWH to WH
+        // numbers in JS are 64 bits floating point. And Number.MAX_SAFE_INTEGER
+        // is 2^53, or about 9e20. So we safely can do such operations without BigInts
+        return Math.floor(Number(capacity) * 1e6).toString();
     }
 }
