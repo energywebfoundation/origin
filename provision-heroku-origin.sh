@@ -1,6 +1,5 @@
 #!/bin/bash
 
-heroku apps:create ${PREFIX}-origin-sim-${STAGE}  -t ${TEAM} --region eu
 heroku apps:create ${PREFIX}-origin-ui-${STAGE}  -t ${TEAM} --region eu
 heroku apps:create ${PREFIX}-origin-api-${STAGE}  -t ${TEAM} --region eu
 
@@ -32,12 +31,6 @@ heroku config:set --app ${PREFIX}-origin-api-${STAGE} \
   ENERGY_PER_UNIT=1000000
 
 heroku config:set --app ${PREFIX}-origin-ui-${STAGE} \
-  BACKEND_PORT=443 \
   BACKEND_URL=https://${PREFIX}-origin-api-${STAGE}.herokuapp.com \
-  ISSUER_ID='Issuer ID' \
-  WEB3='https://volta-rpc-origin-0a316ab339e3d2ee3.energyweb.org' \
-  REGISTRATION_MESSAGE_TO_SIGN='I register as Origin user' \
-  DEVICE_PROPERTIES='<PROPS>' \
-  DEFAULT_ENERGY_IN_BASE_UNIT=1
-
-
+  SUPPORTED_NETWORK_IDS=73799
+  BLOCKCHAIN_EXPLORER_URL=https://volta-explorer.energyweb.org

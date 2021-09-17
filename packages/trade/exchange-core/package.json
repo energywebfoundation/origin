@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-core",
-    "description": "A service project hosting order book based exchange",
+    "description": "Generic EACs order book product and matching",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "GPL-3.0-or-later",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-core#readme",
