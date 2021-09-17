@@ -308,3 +308,15 @@ export async function approveOperator(
 
     return registryWithSigner.setApprovalForAll(operator, true);
 }
+
+export async function isApprovedForAll(
+    operator: string,
+    blockchainProperties: IBlockchainProperties
+): Promise<boolean> {
+    const { activeUser, registry } = blockchainProperties;
+
+    const registryWithSigner = registry.connect(activeUser);
+    const address = await activeUser.getAddress();
+
+    return registryWithSigner.isApprovedForAll(address, operator);
+}
