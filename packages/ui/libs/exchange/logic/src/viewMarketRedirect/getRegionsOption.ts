@@ -1,5 +1,5 @@
 import { ConfigurationDTORegions } from '@energyweb/origin-backend-react-query-client';
-import { prepareRegionsOptions } from '..';
+import { prepareRegionsOptions } from '../utils';
 
 export const getRegionOption = (
   location: string[],
