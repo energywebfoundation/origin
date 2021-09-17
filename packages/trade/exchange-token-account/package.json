@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.2.0",
+    "version": "0.3.0",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"
@@ -40,7 +40,7 @@
         "ethers": "5.3.1"
     },
     "devDependencies": {
-        "@energyweb/issuer": "4.0.0",
+        "@energyweb/issuer": "4.1.0",
         "@openzeppelin/cli": "2.8.2",
         "@openzeppelin/contracts": "4.3.1",
         "@openzeppelin/contracts-upgradeable": "4.3.1",

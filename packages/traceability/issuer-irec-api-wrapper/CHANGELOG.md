@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.5.0...@energyweb/issuer-irec-api-wrapper@0.6.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.21.3 ([a551097](https://github.com/energywebfoundation/origin/commit/a551097195e4cbc2cddc7cc4329bea76ae203158))
+* **deps:** update dependency axios to v0.21.4 ([6141657](https://github.com/energywebfoundation/origin/commit/6141657651a0212d45a6d09511916d4a247aeb25))
+* **issuer-irec-api-wrapper:** fix create certification request with file ([c13842e](https://github.com/energywebfoundation/origin/commit/c13842e118e9ad54702ba462d3167d31bb930ee5))
+
+
+### Features
+
+* **issuer-irec-api-wrapper:** added proper HTTPExceptions ([2bdc458](https://github.com/energywebfoundation/origin/commit/2bdc458c0e0c315f4e53b7be89bf8aac64d4deba))
+* **origin-device-registry-local-irec-api:** capacity is string now ([d769f4f](https://github.com/energywebfoundation/origin/commit/d769f4fc0bd89c3bfe2a077db3f47006c9f6cc33))
+
+
+
+
+
 # [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.3.0...@energyweb/issuer-irec-api-wrapper@0.5.0) (2021-08-30)
 
 

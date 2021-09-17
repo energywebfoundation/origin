@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-api",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "An API for Origin device registry",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-api#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -30,8 +30,8 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/origin-backend-core": "8.0.2",
-        "@energyweb/origin-backend-utils": "1.6.0",
+        "@energyweb/origin-backend-core": "8.0.3",
+        "@energyweb/origin-backend-utils": "1.6.1",
         "@nestjs/common": "7.6.18",
         "@nestjs/config": "1.0.1",
         "@nestjs/core": "7.6.18",

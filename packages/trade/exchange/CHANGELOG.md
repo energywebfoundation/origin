@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.10.0...@energyweb/exchange@1.11.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **exchange:** add missing ApiProperty decorators, remove unnecessary logging of trade events ([d073f92](https://github.com/energywebfoundation/origin/commit/d073f921ebdb6818a36e4a320ed76c8d12639c53))
+
+
+### Features
+
+* **origin-device-registry-local-irec-api:** capacity is string now ([d769f4f](https://github.com/energywebfoundation/origin/commit/d769f4fc0bd89c3bfe2a077db3f47006c9f6cc33))
+
+
+
+
+
 # [1.10.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.9.0...@energyweb/exchange@1.10.0) (2021-08-30)
 
 

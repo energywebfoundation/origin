@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api@0.2.0...@energyweb/issuer-irec-api@0.3.0) (2021-09-17)
+
+
+### Bug Fixes
+
+* **issuer-irec-api:** add missing swagger definitions ([f021952](https://github.com/energywebfoundation/origin/commit/f021952763fda47922978ba9e6eddfe0b5b5098b))
+
+
+### Features
+
+* **issuer-irec-api:** added isDeviceImported field to list of certificates to import ([12d18bc](https://github.com/energywebfoundation/origin/commit/12d18bc2df9809b7ce03c704232c0619ddeb00c1))
+
+
+
+
+
 # 0.2.0 (2021-08-30)
 
 
