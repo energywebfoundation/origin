@@ -23,6 +23,7 @@ import {
     entities as IRECOrganizationEntities,
     RegistrationModule
 } from '@energyweb/origin-organization-irec-api';
+import { ReadsModule } from '@energyweb/origin-energy-api';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -97,7 +98,8 @@ const OriginAppTypeOrmModule = () => {
         CqrsModule,
         RegistrationModule,
         IrecDeviceModule,
-        IrecModule
+        IrecModule,
+        ReadsModule
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },

@@ -324,6 +324,7 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.OK);
 
         expect(certificateToImport.asset).to.equal('test-asset-id');
+        expect(certificateToImport.isDeviceImported).to.equal(true);
 
         await request(app.getHttpServer())
             .post(`/irec/certificate/import`)

@@ -39,7 +39,11 @@ describe('Origin Backend App', () => {
             JWT_SECRET: '123',
             EXCHANGE_ACCOUNT_DEPLOYER_PRIV: privateKey,
             EXCHANGE_WALLET_PRIV: privateKey,
-            EXCHANGE_PRICE_STRATEGY: 0
+            EXCHANGE_PRICE_STRATEGY: 0,
+            INFLUXDB_URL: 'http://localhost:8086',
+            INFLUXDB_TOKEN: 'admin:admin',
+            INFLUXDB_ORG: 'org',
+            INFLUXDB_BUCKET: 'energy/autogen'
         };
 
         const moduleFixture = await Test.createTestingModule({

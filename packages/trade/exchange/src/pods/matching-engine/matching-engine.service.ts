@@ -70,7 +70,6 @@ export class MatchingEngineService<TProduct, TProductFilter> implements OnModule
 
     public async submit(order: Order) {
         this.logger.log(`Submitting order ${order.id}`);
-        this.logger.debug(`Submitting order ${JSON.stringify(order)}`);
 
         if (order.type === OrderType.Limit) {
             const mappedOrder = await this.orderMapperService.map(order);

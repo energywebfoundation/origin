@@ -3,9 +3,11 @@ FROM node:14-alpine
 ARG VERSION=latest
 
 RUN apk --no-cache add make gcc g++ python bash
-RUN npm i -g yarn --force
 RUN mkdir -p /var/db
 
-RUN for i in 1 2 3 4 5; do yarn global add @energyweb/origin-backend-app@${VERSION} && break || sleep 15; done
+RUN mkdir -p /var/deployment
+COPY ./ /var/deployment
 
-CMD ["/bin/bash", "-c", "origin-backend-app"]
+WORKDIR /var/deployment/packages/apps/origin-backend-app
+
+CMD ["/bin/bash", "-c", "bin/origin-backend-app"]

@@ -60,7 +60,7 @@ export class IrecCertificateController extends CertificateController {
         type: SuccessResponseDTO,
         description: 'Imports a certificate from IREC'
     })
-    async importIrecDevice(
+    async importIrecCertificate(
         @Body() certificateToImport: ImportIrecCertificateDTO,
         @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<SuccessResponseDTO> {

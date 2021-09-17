@@ -1,4 +1,4 @@
-import { BaseOrderController, CreateAskDTO, DirectBuyDTO, OrderDTO } from '@energyweb/exchange';
+import { BaseOrderController, CreateAskDTO, DirectBuyDTO } from '@energyweb/exchange';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import {
     ActiveUserGuard,
@@ -25,6 +25,7 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ProductDTO } from '../product/product.dto';
 import { CreateBidDTO } from './create-bid.dto';
+import { OrderDTO } from './order.dto';
 
 @ApiTags('orders')
 @ApiBearerAuth('access-token')
@@ -39,7 +40,7 @@ export class OrderController extends BaseOrderController<ProductDTO> {
     public async createBid(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateBidDTO
-    ): Promise<OrderDTO<ProductDTO>> {
+    ): Promise<OrderDTO> {
         return super.createBid(user, newOrder);
     }
 
@@ -50,7 +51,7 @@ export class OrderController extends BaseOrderController<ProductDTO> {
     public async createAsk(
         @UserDecorator() user: ILoggedInUser,
         @Body() newOrder: CreateAskDTO
-    ): Promise<OrderDTO<ProductDTO>> {
+    ): Promise<OrderDTO> {
         return super.createAsk(user, newOrder);
     }
 
@@ -61,16 +62,14 @@ export class OrderController extends BaseOrderController<ProductDTO> {
     public async directBuy(
         @UserDecorator() user: ILoggedInUser,
         @Body() directBuy: DirectBuyDTO
-    ): Promise<OrderDTO<ProductDTO>> {
+    ): Promise<OrderDTO> {
         return super.directBuy(user, directBuy);
     }
 
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiResponse({ status: HttpStatus.OK, type: [OrderDTO], description: 'Get my orders' })
-    public async getMyOrders(
-        @UserDecorator() user: ILoggedInUser
-    ): Promise<OrderDTO<ProductDTO>[]> {
+    public async getMyOrders(@UserDecorator() user: ILoggedInUser): Promise<OrderDTO[]> {
         return super.getMyOrders(user);
     }
 
@@ -80,7 +79,7 @@ export class OrderController extends BaseOrderController<ProductDTO> {
     public async getOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ): Promise<OrderDTO<ProductDTO>> {
+    ): Promise<OrderDTO> {
         return super.getOrder(user, orderId);
     }
 
@@ -91,7 +90,7 @@ export class OrderController extends BaseOrderController<ProductDTO> {
     public async cancelOrder(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseUUIDPipe({ version: '4' })) orderId: string
-    ): Promise<OrderDTO<ProductDTO>> {
+    ): Promise<OrderDTO> {
         return super.cancelOrder(user, orderId);
     }
 }

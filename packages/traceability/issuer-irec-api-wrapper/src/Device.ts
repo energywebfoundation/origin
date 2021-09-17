@@ -7,7 +7,6 @@ import {
     IsLongitude,
     IsNotEmpty,
     IsOptional,
-    IsPositive,
     IsString
 } from 'class-validator';
 import { FileIds } from './File';
@@ -48,9 +47,8 @@ export class DeviceCreateParams extends FileIds {
     @IsString()
     issuer: string;
 
-    @Transform((value: string) => Number(value))
-    @IsPositive()
-    capacity: number;
+    @Expose()
+    capacity: string;
 
     @Expose({ name: 'commissioning_date', toPlainOnly: true })
     @Transform((value: Date) => value?.toISOString().split('T')[0], {
@@ -85,6 +83,7 @@ export class DeviceCreateParams extends FileIds {
 }
 
 export class DeviceUpdateParams extends FileIds {
+    @Expose()
     @IsOptional()
     @IsString()
     name?: string;
@@ -120,9 +119,8 @@ export class DeviceUpdateParams extends FileIds {
     issuer?: string;
 
     @IsOptional()
-    @Transform((value: string) => Number(value))
-    @IsPositive()
-    capacity?: number;
+    @Expose()
+    capacity?: string;
 
     @IsOptional()
     @Expose({ name: 'commissioning_date', toPlainOnly: true })
@@ -140,22 +138,27 @@ export class DeviceUpdateParams extends FileIds {
     @IsDate()
     registrationDate?: Date;
 
+    @Expose()
     @IsOptional()
     @IsString()
     address?: string;
 
+    @Expose()
     @IsOptional()
     @IsLatitude()
     latitude?: string;
 
+    @Expose()
     @IsOptional()
     @IsLongitude()
     longitude?: string;
 
+    @Expose()
     @IsOptional()
     @IsString()
     notes?: string;
 
+    @Expose()
     @IsOptional()
     @IsBoolean()
     active: boolean;

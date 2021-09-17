@@ -6,7 +6,7 @@ import { BadRequestException, Inject } from '@nestjs/common';
 import { RegistrationService } from '../../registration';
 import { IREC_SERVICE, IrecService } from '../../irec';
 import { CreateConnectionCommand } from '../commands';
-import { ConnectionDTO } from '../dto';
+import { ShortConnectionDTO } from '../dto';
 import { ConnectionCreatedEvent } from '../events';
 import { Connection } from '../connection.entity';
 
@@ -24,7 +24,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
     async execute({
         user: { ownerId, organizationId },
         credentials: { userName, password, clientId, clientSecret }
-    }: CreateConnectionCommand): Promise<ConnectionDTO> {
+    }: CreateConnectionCommand): Promise<ShortConnectionDTO> {
         const loginResult = await this.irecService.login({
             userName,
             password,
@@ -58,7 +58,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
 
             await existingConnection.save();
 
-            return ConnectionDTO.wrap(existingConnection);
+            return ShortConnectionDTO.sanitize(existingConnection);
         } else {
             const connection = await this.repository.save({
                 ...loginResult,
@@ -71,7 +71,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
             this.eventBus.publish(
                 new ConnectionCreatedEvent(connection, organizationId, registration)
             );
-            return ConnectionDTO.wrap(connection);
+            return ShortConnectionDTO.sanitize(connection);
         }
     }
 }

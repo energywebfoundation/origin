@@ -26,7 +26,6 @@ import { ReadStream } from 'fs';
 import { CreateConnectionDTO } from './dto';
 import { ICreateBeneficiary, IIrecService } from './irec.service';
 import { ConnectionDTO } from '../connection';
-import { IRECAccountType } from '../registration';
 
 export type UserIdentifier = ILoggedInUser | string | number;
 
@@ -35,7 +34,7 @@ export class IrecMockService implements IIrecService {
     private devices: Device[] = [
         {
             address: '1 Wind Farm Avenue, London',
-            capacity: 500,
+            capacity: '500',
             commissioningDate: new Date('2001-08-10'),
             countryCode: 'GB',
             defaultAccount: 'someTradeAccount',
@@ -101,37 +100,7 @@ export class IrecMockService implements IIrecService {
             clientSecret: 'oauth client secret',
             expiryDate: new Date(),
             userName: 'irecUser',
-            active: true,
-            registration: {
-                id: '123',
-                owner: '234',
-                accountType: IRECAccountType.Both,
-                headquarterCountry: '',
-                registrationYear: 2020,
-                employeesNumber: '1-50',
-                shareholders: '',
-                website: 'https://example.com',
-                activeCountries: ['UK'],
-                mainBusiness: '',
-                ceoName: '',
-                ceoPassportNumber: '',
-                balanceSheetTotal: '',
-                subsidiaries: '',
-                primaryContactOrganizationName: '',
-                primaryContactOrganizationAddress: '',
-                primaryContactOrganizationPostalCode: '',
-                primaryContactOrganizationCountry: '',
-                primaryContactName: '',
-                primaryContactEmail: '',
-                primaryContactPhoneNumber: '',
-                primaryContactFax: '',
-                leadUserTitle: '',
-                leadUserFirstName: '',
-                leadUserLastName: '',
-                leadUserEmail: 'ceo@example.com',
-                leadUserPhoneNumber: '',
-                leadUserFax: ''
-            }
+            active: true
         };
     }
 

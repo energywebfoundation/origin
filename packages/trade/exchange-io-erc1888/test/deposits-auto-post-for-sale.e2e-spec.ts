@@ -16,13 +16,8 @@ import { ExchangeErc1888Module } from '../src';
 
 const web3 = 'http://localhost:8590';
 
-const {
-    authenticatedUser,
-    createDepositAddress,
-    depositToken,
-    issueToken,
-    bootstrapTestInstance
-} = testUtils;
+const { authenticatedUser, createDepositAddress, depositToken, issueToken, bootstrapTestInstance } =
+    testUtils;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Deposits automatic posting for sale', () => {
@@ -51,13 +46,11 @@ describe('Deposits automatic posting for sale', () => {
     } as IExternalDeviceService;
 
     before(async () => {
-        ({
-            accountService,
-            databaseService,
-            registry,
-            issuer,
-            app
-        } = await bootstrapTestInstance(web3, deviceServiceMock, [ExchangeErc1888Module]));
+        ({ accountService, databaseService, registry, issuer, app } = await bootstrapTestInstance(
+            web3,
+            deviceServiceMock,
+            [ExchangeErc1888Module]
+        ));
 
         await app.init();
         depositAddress = await createDepositAddress(accountService, user1Id);

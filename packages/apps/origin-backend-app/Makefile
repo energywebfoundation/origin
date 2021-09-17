@@ -7,17 +7,22 @@ LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
 
 build-local:
-	@docker build -t ${NAME}:local -f Dockerfile.local ../../
+	@docker build -t ${NAME}:local -f Dockerfile ../../
 
 build-canary:
 	@rm -rf ./deployment
 	@mkdir ./deployment
 	@rush deploy -p @energyweb/origin-backend-app -t ./deployment --overwrite
 	@docker rmi ${LATEST} -f
-	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY} -f Dockerfile.local ./deployment
+	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY} -f Dockerfile ./deployment
 	@rm -rf ./deployment
 	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
 
 build-latest:
-	@docker build --no-cache -t ${NAME}:${TAG_LATEST} .
+	@rm -rf ./deployment
+	@mkdir ./deployment
+	@rush deploy -p @energyweb/origin-backend-app -t ./deployment --overwrite
+	@docker rmi ${LATEST} -f
+	@docker build -t ${NAME}:${TAG_LATEST} --build-arg VERSION=${TAG_LATEST} -f Dockerfile ./deployment
+	@rm -rf ./deployment
 	@docker tag ${NAME}:${TAG_LATEST} ${LATEST}

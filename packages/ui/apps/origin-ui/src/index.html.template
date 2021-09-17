@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Origin</title>
+    <base href="/" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Rajdhani"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="./favicon.ico"
+    />
+    <script>
+      window.config = {
+        BACKEND_URL: '$BACKEND_URL',
+        BLOCKCHAIN_EXPLORER_URL: '$BLOCKCHAIN_EXPLORER_URL',
+        SUPPORTED_NETWORK_IDS: '$SUPPORTED_NETWORK_IDS',
+      };
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

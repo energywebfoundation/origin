@@ -49,19 +49,6 @@ services:
         ports:
             - 8545:8545
 
-    solar-simulator:
-        image: energyweb/solar-simulator:canary
-        restart: unless-stopped
-        env_file:
-            - ./.env
-        environment:
-            BACKEND_URL: http://backend
-        networks:
-            - vanilla-app-network
-        depends_on:
-            backend:
-                condition: service_healthy
-
     postgres:
         image: postgres
         restart: unless-stopped

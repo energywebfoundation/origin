@@ -1,0 +1,27 @@
+{
+  "name": "@energyweb/origin-ui-localization",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "author": "EnergyWeb DevHub GmbH; Alexander Popadyuk, alexander.popadyuk@energyweb.org",
+  "description": "Localization library for building Origin marketplace user interface",
+  "homepage": "https://github.com/energywebfoundation/origin/blob/master/packages/ui/libs/ui/localization/README.md",
+  "license": "GPL-3.0-or-later",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "main": "dist/ui-localization.umd.js",
+  "module": "dist/ui-localization.esm.js",
+  "typings": "dist/index.d.ts",
+  "dependencies": {
+    "react-i18next": "11.12.0",
+    "i18next": "20.6.1",
+    "i18next-icu": "1.4.2"
+  }
+}

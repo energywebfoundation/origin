@@ -1,7 +1,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-    IPublicOrganization,
+    IFullOrganization,
     LoggedInUser,
     OrganizationStatus,
     Role,
@@ -160,7 +160,7 @@ export const registerAndLogin = async (
         await userService.addToOrganization(user.id, organization.id);
     }
 
-    user.organization = { id: organization.id } as IPublicOrganization;
+    user.organization = { id: organization.id } as IFullOrganization;
 
     const accessToken = await loginUser(app, user.email, '123');
 

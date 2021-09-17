@@ -19,10 +19,7 @@
      */
     "deploymentProjectNames": [
         "@energyweb/origin-ui",
-        "@energyweb/origin-backend-app",
         "@energyweb/origin-backend-irec-app",
-        "@energyweb/solar-simulator",
-        "@energyweb/migrations",
         "@energyweb/migrations-irec"
     ],
 

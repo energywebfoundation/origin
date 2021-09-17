@@ -25,6 +25,7 @@ import { AccountItem, CodeName } from './Items';
 import { FuelType, DeviceType } from './FuelType';
 import { Organisation } from './Organisation';
 import { Beneficiary, BeneficiaryCreateParams, BeneficiaryUpdateParams } from './Beneficiary';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
 
 export type AccessTokens = {
     expiryDate: Date;
@@ -583,15 +584,11 @@ export class IRECAPIClient {
         this.axiosInstance.interceptors.response.use(
             (res) => res,
             (err) => {
+                const status = err?.response?.data?.status ?? err?.response?.status ?? 500;
                 return Promise.reject(
-                    new Error(
-                        JSON.stringify({
-                            status: err?.response?.data?.status ?? err?.response?.status ?? 500,
-                            msg:
-                                err?.response?.data?.msg ??
-                                err?.response?.data?.title ??
-                                err.message
-                        })
+                    new HttpException(
+                        err?.response?.data?.msg ?? err?.response?.data?.title ?? err.message,
+                        status
                     )
                 );
             }
