@@ -134,7 +134,7 @@
     "@types/react-dom": "17.0.9",
     "@types/react-is": "17.0.2",
     "@types/react-router-dom": "5.1.8",
-    "@types/webpack": "4.41.31",
+    "@types/webpack": "5.28.0",
     "@typescript-eslint/eslint-plugin": "4.31.1",
     "@typescript-eslint/parser": "4.31.1",
     "babel-jest": "27.1.1",
@@ -160,8 +160,8 @@
     "ts-node": "9.1.1",
     "tsconfig-paths-webpack-plugin": "3.5.1",
     "typescript": "4.4.3",
-    "url-loader": "3.0.0",
-    "webpack": "4.46.0",
+    "url-loader": "4.1.1",
+    "webpack": "5.53.0",
     "webpack-bundle-analyzer": "4.4.2"
   },
   "workspaces": [
