@@ -16,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
     '& a': {
       color: theme.palette.background.paper,
     },
-    '& > ul > div': {
+    '& > ul > div > div': {
       borderTop: `1px solid ${LightenColor(theme.palette.text.secondary, 10)}`,
     },
     '& > li > a': {
