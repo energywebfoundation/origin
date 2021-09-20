@@ -1,20 +1,19 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box, CircularProgress } from '@material-ui/core';
 import { Requirements } from '@energyweb/origin-ui-core';
 import { DemandsTable, BidsTable, AsksTable } from '../../containers';
 import { useMyOrdersPageEffects } from './MyOrdersPage.effects';
 
 export const MyOrdersPage = () => {
-  const {
-    bids,
-    asks,
-    isLoading,
-    canAccessPage,
-    requirementsProps,
-  } = useMyOrdersPageEffects();
+  const { bids, asks, isLoading, canAccessPage, requirementsProps } =
+    useMyOrdersPageEffects();
 
   if (!canAccessPage) {
     return <Requirements {...requirementsProps} />;
+  }
+
+  if (isLoading) {
+    return <CircularProgress />;
   }
 
   return (
