@@ -1,16 +1,20 @@
 FROM energyweb/origin-backend-irec-app:canary
 
-RUN mkdir /var/migration-config
-COPY config/* /var/migration-config/
+RUN apk --no-cache add curl
 
-WORKDIR /usr/local/share/.config/yarn/global/node_modules/@energyweb/
+RUN mkdir -p /var/deployment
+COPY ./ /var/deployment
 
-CMD ["/bin/bash","-c", "origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config exchange/dist/js/ormconfig.js && \
-                        origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \
-                        origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-organization-irec-api/dist/js/ormconfig.js && \
-                        origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config issuer-api/dist/js/ormconfig.js && \
-                        origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config issuer-irec-api/dist/js/ormconfig.js && \
-                        origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-device-registry-irec-local-api/dist/js/ormconfig.js && \
-                        origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-device-registry-api/dist/js/ormconfig.js && \
-                        migrations-irec/bin/migrations-irec -c /var/migration-config/demo-config.json -s /var/migration-config/seed.sql && \
-                        origin-backend-irec-app"]
+WORKDIR /var/deployment/packages/
+
+CMD ["/bin/bash","-c", "apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config trade/exchange/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config organizations/origin-organization-irec-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-irec-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config devices/origin-device-registry-irec-local-api/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config devices/origin-device-registry-api/dist/js/ormconfig.js && \
+                        cd tools/migrations-irec/bin && \
+                        ./migrations-irec -c /var/deployment/config/demo-config.json -s /var/deployment/config/seed.sql && \
+                        cd - && \
+                        tools/migrations-irec/node_modules/.bin/origin-backend-irec-app"]
