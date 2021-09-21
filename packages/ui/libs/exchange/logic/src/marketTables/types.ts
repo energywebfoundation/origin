@@ -1,9 +1,15 @@
 import { OrderBookOrderDTO } from '@energyweb/exchange-irec-react-query-client';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import {
   CodeNameDTO,
-  UserDTO,
+  PublicDeviceDTO,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { TableComponentProps, TableRowData } from '@energyweb/origin-ui-core';
+import {
+  SmallTitleWithTextProps,
+  TableComponentProps,
+  TableRowData,
+} from '@energyweb/origin-ui-core';
+import { FC } from 'react';
 import { TFunction } from 'react-i18next';
 
 // Sell offers table
@@ -49,6 +55,7 @@ export type TUseAsksTableArgs = {
   isLoading: boolean;
   className: string;
   user: UserDTO;
+  expandedRowComponent: FC<{ id: OrderBookOrderDTO['id'] }>;
 };
 export type TFormatAsksForTradingView = (
   props: Omit<TUseAsksTableArgs, 'isLoading' | 'user' | 'className'>
@@ -71,3 +78,20 @@ export type TUseBidsTableLogic = (
   props: TUseBidsTableArgs
 ) => TableComponentProps<OrderBookOrderDTO['id']>;
 // Trading view
+
+// Expanded asks row
+export type TUseExpandedAsksRowLogicArgs = {
+  ask: OrderBookOrderDTO;
+  device: PublicDeviceDTO;
+  allFuelTypes: CodeNameDTO[];
+  allDeviceTypes: CodeNameDTO[];
+};
+
+export type TUseExpandedAsksRowLogic = (args: TUseExpandedAsksRowLogicArgs) => {
+  facilityName: SmallTitleWithTextProps;
+  constructed: SmallTitleWithTextProps;
+  fuelDeviceType: SmallTitleWithTextProps;
+  generationFrom: SmallTitleWithTextProps;
+  generationTo: SmallTitleWithTextProps;
+};
+// Expanded asks row
