@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -30,7 +30,7 @@ export class GetConnectionHandler implements ICommandHandler<GetConnectionComman
 
         const [registration] = await this.registrationService.find(String(ownerId));
         if (!registration) {
-            return undefined;
+            throw new ForbiddenException('User does not have an IREC Organization Registration');
         }
         const connection = await this.repository.findOne({
             where: { registration: registration.id },

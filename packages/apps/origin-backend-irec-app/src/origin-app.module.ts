@@ -27,7 +27,6 @@ import { ReadsModule } from '@energyweb/origin-energy-api';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
-import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
@@ -36,7 +35,6 @@ import {
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
-    IrecModule,
     OrganizationMemberRemovedHandler,
     OrganizationMemberRoleChangedHandler,
     OrganizationRegisteredHandler,
@@ -45,7 +43,6 @@ import {
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
-import { RefreshAllTokensTask } from './cron';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -81,7 +78,6 @@ const OriginAppTypeOrmModule = () => {
 
 @Module({
     imports: [
-        ScheduleModule.forRoot(),
         OriginAppTypeOrmModule(),
         OriginBackendModule,
         IRECDeviceRegistry,
@@ -98,7 +94,6 @@ const OriginAppTypeOrmModule = () => {
         CqrsModule,
         RegistrationModule,
         IrecDeviceModule,
-        IrecModule,
         ReadsModule
     ],
     providers: [
@@ -112,8 +107,7 @@ const OriginAppTypeOrmModule = () => {
         OrganizationMemberRoleChangedHandler,
         OrganizationStatusChangedHandler,
         RegistrationCreatedHandler,
-        OrganizationRegisteredHandler,
-        RefreshAllTokensTask
+        OrganizationRegisteredHandler
     ]
 })
 export class OriginAppModule {}

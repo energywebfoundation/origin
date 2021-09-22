@@ -169,7 +169,7 @@ export class IrecService implements IIrecService {
             );
         }
 
-        const accessToken: AccessTokens = {
+        const accessTokens: AccessTokens = {
             accessToken: irecConnection.accessToken,
             refreshToken: irecConnection.refreshToken,
             expiryDate: irecConnection.expiryDate
@@ -182,7 +182,7 @@ export class IrecService implements IIrecService {
             async (newTokens: AccessTokens) => {
                 await this.commandBus.execute(new RefreshTokensCommand(user, newTokens));
             },
-            accessToken
+            accessTokens
         );
     }
 

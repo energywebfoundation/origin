@@ -3,9 +3,11 @@ import program from 'commander';
 import fs from 'fs';
 import { ethers } from 'ethers';
 import { Client, ClientConfig } from 'pg';
+import { NestFactory } from '@nestjs/core';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IContractsLookup } from '@energyweb/issuer';
+import { AccountModule, AccountService } from '@energyweb/exchange';
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
 
@@ -45,18 +47,11 @@ async function connectToDB() {
 
 async function importConfiguration(client: Client, configPath: string) {
     const parsedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8').toString());
-    const {
-        currencies,
-        countryName,
-        regions,
-        complianceStandard,
-        deviceTypes,
-        gridOperators
-    } = parsedConfig;
+    const { currencies, countryName, regions, complianceStandard, deviceTypes, gridOperators } =
+        parsedConfig;
 
-    const {
-        externalDeviceIdTypes
-    }: { externalDeviceIdTypes: ExternalDeviceIdType[] } = parsedConfig;
+    const { externalDeviceIdTypes }: { externalDeviceIdTypes: ExternalDeviceIdType[] } =
+        parsedConfig;
 
     if (currencies.length < 1) {
         throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
@@ -64,8 +59,7 @@ async function importConfiguration(client: Client, configPath: string) {
 
     logger.info(`Saving configuration...`);
     const newConfigurationQuery = {
-        text:
-            'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "complianceStandard", "deviceTypes", "gridOperators") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+        text: 'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "complianceStandard", "deviceTypes", "gridOperators") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
         values: [
             '1',
             countryName,
@@ -89,8 +83,7 @@ async function importContracts(
 
     logger.info(`Saving contracts...`);
     const newContractsQuery = {
-        text:
-            'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback", "platformOperatorPrivateKey") VALUES ($1, $2, $3, $4, $5, $6)',
+        text: 'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback", "platformOperatorPrivateKey") VALUES ($1, $2, $3, $4, $5, $6)',
         values: [
             provider.network.chainId,
             contractsLookup.registry,
@@ -132,6 +125,23 @@ async function importSeed(client: Client, seedFile: string) {
     const seedSql = fs.readFileSync(seedFile).toString();
 
     await client.query(seedSql);
+}
+
+async function createExchangeDepositAddresses(client: Client) {
+    const { rows } = await client.query<{ id: number }>(
+        'SELECT id FROM public.platform_organization;'
+    );
+
+    const app = await NestFactory.create(AccountModule);
+    const accountService = app.get(AccountService);
+    rows.forEach(({ id }) => {
+        accountService
+            .create(String(id))
+            .then(() => logger.info(`Exchange deposit address created for ${id}`))
+            .catch((e) =>
+                logger.error(`Unable to create exchange deposit address for ${id}: ${e.message}`)
+            );
+    });
 }
 
 function initEnv() {
@@ -183,6 +193,7 @@ try {
         await importSeed(dbClient, program.seedFile);
         await importConfiguration(dbClient, program.config);
         await importContracts(dbClient, provider, contractsLookup);
+        await createExchangeDepositAddresses(dbClient);
 
         process.exit(0);
     })();
