@@ -1,1 +1,1 @@
-export * from './export-certificate.command';
+export * from './export-asset.command';

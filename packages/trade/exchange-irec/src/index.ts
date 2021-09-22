@@ -8,5 +8,8 @@ export * from './runner';
 export * from './trade';
 export * from './utils';
 
-import { entities } from '@energyweb/issuer-irec-api';
-export const usedEntities: typeof entities = entities;
+export { entities as IssuerIRECEntities } from '@energyweb/issuer-irec-api';
+
+import { ExportedAsset } from './export/exported.entity';
+
+export const entities = [ExportedAsset];

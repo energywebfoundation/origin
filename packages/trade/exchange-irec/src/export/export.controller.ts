@@ -18,32 +18,32 @@ import {
     NullOrUndefinedResultInterceptor,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
-import { ExportCertificateDTO } from './dto';
-import { ExportCertificateCommand } from './command';
+import { ExportAssetDTO } from './dto';
+import { ExportAssetCommand } from './command';
 
 @ApiTags('irec-export')
 @ApiBearerAuth('access-token')
-@Controller('irec-export')
+@Controller('irec/export')
 @UseInterceptors(ClassSerializerInterceptor, NullOrUndefinedResultInterceptor)
 @UsePipes(ValidationPipe)
 export class ExportController {
     constructor(public readonly commandBus: CommandBus) {}
 
-    @Post('/certificate')
+    @Post()
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiBody({ type: ExportCertificateDTO })
+    @ApiBody({ type: ExportAssetDTO })
     @ApiResponse({
         status: HttpStatus.CREATED,
-        type: ExportCertificateDTO,
-        description: 'Exports Certificate to IREC organization'
+        type: ExportAssetDTO,
+        description: 'Exports Exchange Certificate to IREC organization'
     })
     public async exportCertificate(
         @UserDecorator() user: ILoggedInUser,
-        @Body() { certificateId, recipientTradeAccount }: ExportCertificateDTO
+        @Body() { assetId, recipientTradeAccount, amount }: ExportAssetDTO
     ): Promise<ISuccessResponse> {
         await this.commandBus.execute(
-            new ExportCertificateCommand(user, certificateId, recipientTradeAccount)
+            new ExportAssetCommand(user, assetId, recipientTradeAccount, amount)
         );
-        return ResponseSuccess('IREC certificate transferred');
+        return ResponseSuccess('IREC certificate exported');
     }
 }

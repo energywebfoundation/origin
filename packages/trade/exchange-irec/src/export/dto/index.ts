@@ -1,1 +1,1 @@
-export * from './export-certificate.dto';
+export * from './export-asset.dto';
