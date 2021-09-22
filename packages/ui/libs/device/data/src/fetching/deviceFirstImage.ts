@@ -19,17 +19,23 @@ export const useDeviceFirstImageUrl = (
     );
     const urlCreator = window.URL || window.webkitURL;
     const imageUrl = urlCreator.createObjectURL(blob);
-    setImageUrl(imageUrl);
+
+    if (isMountedRef.current === true) {
+      setImageUrl(imageUrl);
+    }
   };
 
   useEffect(() => {
     isMountedRef.current = true;
-    if (imageIds?.length > 0) {
-      getAndSetImage(imageIds[0]);
-    }
     return () => {
       isMountedRef.current = false;
     };
+  }, []);
+
+  useEffect(() => {
+    if (imageIds?.length > 0) {
+      getAndSetImage(imageIds[0]);
+    }
   }, [imageIds]);
 
   return imageUrl;
