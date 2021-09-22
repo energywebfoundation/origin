@@ -650,6 +650,9 @@
         "matching": "Matching",
         "asks": "Asks",
         "bids": "Bids",
+        "facilityName": "Facility Name",
+        "constructed": "Constructed",
+        "fuelDeviceType": "Fuel type / Device type",
         "popover": {
           "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",
           "asksFurtherInstructions": "To see all available asks, remove the set market filters. To see a list of your active asks go to \"My Orders\".",

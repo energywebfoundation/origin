@@ -14,3 +14,5 @@ export * from './allDemands';
 export * from './bidsAndAsks';
 export * from './userAndAccount';
 export * from './user';
+export * from './assetById';
+export * from './iRecDeviceById';

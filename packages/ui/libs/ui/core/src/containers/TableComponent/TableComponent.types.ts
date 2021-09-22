@@ -13,6 +13,7 @@ export type TableActionData<Id> = {
 export type TableRowData<Id> = {
   id: Id;
   actions?: TableActionData<Id>[];
+  expandedRowComponent?: FC<{ id: Id }>;
   [key: string]: any;
 };
 

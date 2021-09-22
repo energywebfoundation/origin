@@ -2,6 +2,7 @@ import { TableComponent } from '@energyweb/origin-ui-core';
 import { TOrderBookData } from '@energyweb/origin-ui-exchange-data';
 import { Box, Grid } from '@material-ui/core';
 import React, { FC } from 'react';
+import { OrderBookAsksProvider } from '../../../context';
 import { OrderBookTableHeader } from '../OrderBookTableHeader';
 import { useTradingViewEffects } from './TradingView.effects';
 
@@ -31,7 +32,9 @@ export const TradingView: FC<TradingViewProps> = (props) => {
             currentOrders={props.orderBookData?.asks?.length}
             popoverText={popoverTextAsks}
           />
-          <TableComponent {...asksTableProps} />
+          <OrderBookAsksProvider asks={props.orderBookData?.asks}>
+            <TableComponent {...asksTableProps} />
+          </OrderBookAsksProvider>
         </Grid>
         <Grid item md={6} xs={12}>
           <OrderBookTableHeader

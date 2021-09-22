@@ -8,6 +8,6 @@ export const getOwnedOrderStyles = (
 ) => {
   return (id: OrderBookOrderDTO['id']) => {
     const order = orders.find((order) => order.id === id);
-    if (order.userId === userId?.toString()) return className;
+    if (userId && order.userId === userId.toString()) return className;
   };
 };
