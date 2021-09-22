@@ -169,3 +169,23 @@ Allow only to the owner of the contract.
 
 
 
+
+### `CertificationRequest`
+
+
+address owner
+
+
+bytes data
+
+
+bool approved
+
+
+bool revoked
+
+
+address sender
+
+
+
