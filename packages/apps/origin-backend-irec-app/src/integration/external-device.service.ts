@@ -33,8 +33,8 @@ export class ExternalDeviceService implements IExternalDeviceService {
 
         return {
             deviceType: `${device.fuelType};${device.deviceType}`,
-            region: '',
-            province: '',
+            region: device.region,
+            province: device.subregion,
             country: device.countryCode,
             operationalSince: device.commissioningDate.getTime(),
             gridOperator: device.gridOperator
