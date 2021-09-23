@@ -2,12 +2,13 @@ import dotenv from 'dotenv';
 import program from 'commander';
 import fs from 'fs';
 import { ethers } from 'ethers';
-import { Client, ClientConfig } from 'pg';
-import { NestFactory } from '@nestjs/core';
+import { Client } from 'pg';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Test } from '@nestjs/testing';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IContractsLookup } from '@energyweb/issuer';
-import { AccountModule, AccountService } from '@energyweb/exchange';
+import { AccountModule, AccountService, entities } from '@energyweb/exchange';
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
 
@@ -23,8 +24,8 @@ program.option(
 
 program.parse(process.argv);
 
-async function connectToDB() {
-    const postgresConfig: ClientConfig = process.env.DATABASE_URL
+function getPostgresConfig() {
+    return process.env.DATABASE_URL
         ? {
               connectionString: process.env.DATABASE_URL,
               ssl: { rejectUnauthorized: false }
@@ -36,6 +37,10 @@ async function connectToDB() {
               password: process.env.DB_PASSWORD ?? 'postgres',
               database: process.env.DB_DATABASE ?? 'origin'
           };
+}
+
+async function connectToDB() {
+    const postgresConfig = getPostgresConfig();
     const client = new Client(postgresConfig);
 
     await client.connect();
@@ -128,12 +133,27 @@ async function importSeed(client: Client, seedFile: string) {
 }
 
 async function createExchangeDepositAddresses(client: Client) {
+    logger.info(`Creating exchange deposit addresses...`);
     const { rows } = await client.query<{ id: number }>(
         'SELECT id FROM public.platform_organization;'
     );
 
-    const app = await NestFactory.create(AccountModule);
+    const postgresConfig = getPostgresConfig();
+    const moduleFixture = await Test.createTestingModule({
+        imports: [
+            TypeOrmModule.forRoot({
+                type: 'postgres',
+                entities: entities,
+                logging: ['info'],
+                ...postgresConfig
+            }),
+            AccountModule
+        ]
+    }).compile();
+
+    const app = moduleFixture.createNestApplication();
     const accountService = app.get(AccountService);
+
     rows.forEach(({ id }) => {
         accountService
             .create(String(id))
