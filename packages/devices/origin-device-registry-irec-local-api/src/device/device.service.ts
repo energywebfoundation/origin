@@ -8,7 +8,6 @@ import {
     Injectable,
     NotFoundException
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { EventBus } from '@nestjs/cqrs';
 
 import {
@@ -31,7 +30,6 @@ export class DeviceService {
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,
         private readonly eventBus: EventBus,
-        private readonly configService: ConfigService,
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly userService: UserService

@@ -24,13 +24,7 @@ export class ExportAccountingService extends AccountBalanceAssetService {
     }
 
     public async lockedAssets(ownerId: string): Promise<Map<string, AccountAssetDTO>> {
-        const exportedAssetIds = await this.repository.find({ ownerId });
-        const exportedAssets = await Promise.all(
-            exportedAssetIds.map(async (exported) => ({
-                asset: await this.assetService.get(exported.assetId),
-                amount: exported.amount
-            }))
-        );
+        const exportedAssets = await this.getExportedAssets(ownerId);
 
         return this.sumByAsset(
             exportedAssets,
@@ -41,6 +35,22 @@ export class ExportAccountingService extends AccountBalanceAssetService {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async availableAssets(ownerId: string): Promise<Map<string, AccountAssetDTO>> {
-        return Map<string, AccountAssetDTO>();
+        const exportedAssets = await this.getExportedAssets(ownerId);
+
+        return this.sumByAsset(
+            exportedAssets,
+            (exported) => exported.asset,
+            (exported) => new BN(exported.amount).neg()
+        );
+    }
+
+    private async getExportedAssets(ownerId: string) {
+        const exportedAssetIds = await this.repository.find({ ownerId });
+        return await Promise.all(
+            exportedAssetIds.map(async (exported) => ({
+                asset: await this.assetService.get(exported.assetId),
+                amount: exported.amount
+            }))
+        );
     }
 }

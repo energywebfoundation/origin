@@ -1,5 +1,6 @@
 import BN from 'bn.js';
 import {
+    Inject,
     InternalServerErrorException,
     Logger,
     NotFoundException,
@@ -10,7 +11,7 @@ import { ModuleRef } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { IrecService } from '@energyweb/origin-organization-irec-api';
+import { IrecService, IREC_SERVICE } from '@energyweb/origin-organization-irec-api';
 import { AccountBalanceService, IExternalUserService } from '@energyweb/exchange';
 import { GetCertificationRequestByCertificateQuery } from '@energyweb/issuer-irec-api';
 
@@ -26,6 +27,7 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
     constructor(
         private readonly moduleRef: ModuleRef,
         private readonly accountBalanceService: AccountBalanceService,
+        @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly queryBus: QueryBus,
         @InjectRepository(ExportedAsset)
@@ -60,12 +62,15 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
         );
 
         if (certificationRequest.organizationId !== user.ownerId) {
-            throw new NotFoundException(`Certificate with id=${asset.asset.tokenId} not found`);
+            throw new NotFoundException(
+                `Your organization ${user.ownerId} doesn't own this certification request`
+            );
         }
 
         const irecCertificates = await this.irecService.getCertificates(platformOrganization.id);
         const irecCertificate = irecCertificates.find(
-            (c) => c.asset === certificationRequest.irecAssetId
+            // Uncomment the end of the line for testing with I-REC mock service
+            (c) => c.asset === certificationRequest.irecAssetId // || c.asset === 'test-asset-id'
         );
 
         if (!irecCertificate) {
