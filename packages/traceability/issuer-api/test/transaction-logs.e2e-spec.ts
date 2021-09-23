@@ -28,7 +28,6 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const certificateTestData = {
     to: deviceManager.address,
-    deviceId: 'ABC-123',
     fromTime: moment().subtract(2, 'month').unix(),
     toTime: moment().subtract(1, 'month').unix(),
     energy: '1000000'
@@ -52,16 +51,22 @@ describe('Transaction logs tests', () => {
     let queryBus: QueryBus;
 
     const createCertificate = async (toUser?: TestUser): Promise<CertificateDTO> => {
+        const deviceId = `device-${Math.random()}`;
+
         const { body } = await request(app.getHttpServer())
             .post('/certificate')
             .set({ 'test-user': TestUser.Issuer })
             .send({
                 ...certificateTestData,
+                deviceId,
                 to: toUser ? getUserBlockchainAddress(toUser) : certificateTestData.to
             })
             .expect(HttpStatus.CREATED);
 
-        return body;
+        return {
+            ...body,
+            deviceId
+        };
     };
 
     const expectLogs = (certificate: CertificateWithLogs) => {
@@ -99,7 +104,7 @@ describe('Transaction logs tests', () => {
     });
 
     it('should create single issue, transfer and claim logs', async () => {
-        const { id: certificateId } = await createCertificate();
+        const { id: certificateId, deviceId } = await createCertificate();
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/transfer`)
@@ -122,7 +127,7 @@ describe('Transaction logs tests', () => {
 
         const certificatesWithLogs: GetCertificatesWithLogsResponse = await queryBus.execute(
             new GetCertificatesWithLogsQuery({
-                deviceIds: [certificateTestData.deviceId],
+                deviceIds: [deviceId],
                 from: new Date(0),
                 to: new Date()
             })
@@ -134,10 +139,14 @@ describe('Transaction logs tests', () => {
     });
 
     it('should create batch issue, batch transfer and batch claim logs', async () => {
+        const deviceId = `device-${Math.random()}`;
         const { body: ids } = await request(app.getHttpServer())
             .post(`/certificate-batch/issue`)
             .set({ 'test-user': TestUser.Issuer })
-            .send([certificateTestData, certificateTestData])
+            .send([
+                { ...certificateTestData, deviceId },
+                { ...certificateTestData, deviceId }
+            ])
             .expect(HttpStatus.CREATED);
 
         await sleep(10000);
@@ -174,7 +183,7 @@ describe('Transaction logs tests', () => {
 
         const certificatesWithLogs: GetCertificatesWithLogsResponse = await queryBus.execute(
             new GetCertificatesWithLogsQuery({
-                deviceIds: [certificateTestData.deviceId],
+                deviceIds: [deviceId],
                 from: new Date(0),
                 to: new Date()
             })
