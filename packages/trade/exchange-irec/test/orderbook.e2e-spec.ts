@@ -5,7 +5,8 @@ import {
     IExternalDeviceService,
     IProductInfo,
     OrderService,
-    TransferService
+    TransferService,
+    testUtils
 } from '@energyweb/exchange';
 import { Filter } from '@energyweb/exchange-core-irec';
 import { IExternalDeviceId } from '@energyweb/origin-backend-core';
@@ -13,7 +14,6 @@ import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
-import polly from 'polly-js';
 import request from 'supertest';
 import { CreateBidDTO } from '../src/order';
 import { OrderBookOrderDTO, TradePriceInfoDTO } from '../src/order-book';
@@ -79,27 +79,6 @@ describe('orderbook tests', () => {
         await transferService.setAsConfirmed(deposit.transactionHash, 10000);
 
         return deposit;
-    };
-
-    const createDepositAddress = async (userId: string) => {
-        const account = await accountService.getAccount(userId);
-
-        if (account) {
-            return account.address;
-        }
-
-        await accountService.create(userId);
-        const { address } = await polly()
-            .waitAndRetry(5)
-            .executeForPromise(async () => {
-                const a = await accountService.getAccount(userId);
-                if (!a) {
-                    throw new Error('No account');
-                }
-                return a;
-            });
-
-        return address;
     };
 
     const createAsks = async (address: string) => {
@@ -266,24 +245,19 @@ describe('orderbook tests', () => {
         ]
     ]);
 
-    const deviceServiceMock = ({
+    const deviceServiceMock = {
         getDeviceProductInfo: async ({ id }: IExternalDeviceId): Promise<IProductInfo> => {
             return productByDeviceId.get(id);
         }
-    } as unknown) as IExternalDeviceService;
+    } as unknown as IExternalDeviceService;
 
     before(async () => {
-        ({
-            transferService,
-            orderService,
-            databaseService,
-            accountService,
-            app
-        } = await bootstrapTestInstance(deviceServiceMock));
+        ({ transferService, orderService, databaseService, accountService, app } =
+            await bootstrapTestInstance(deviceServiceMock));
 
         await app.init();
 
-        const address = await createDepositAddress(user1Id);
+        const address = await testUtils.createDepositAddress(accountService, user1Id);
         await createTrades(address);
 
         await createAsks(address);
@@ -316,7 +290,7 @@ describe('orderbook tests', () => {
         { ...defaultAllFilter, deviceTypeFilter: Filter.Specific, deviceType: ['LOL'] },
         {
             ...defaultAllFilter,
-            deviceVintageFilter: ('LOL' as unknown) as Filter
+            deviceVintageFilter: 'LOL' as unknown as Filter
         }
     ].forEach((params: ProductFilterDTO): void => {
         it(`should return 400 when filter is invalid: ${JSON.stringify(params)}`, async () => {

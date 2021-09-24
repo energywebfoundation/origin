@@ -61,7 +61,7 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
         const platformAdmin = await this.userService.getPlatformAdmin();
         const transaction = await this.irecService.transferCertificate(
             user,
-            platformAdmin.organization.id,
+            platformAdmin.organization.id.toString(),
             certificateToImport.assetId
         );
 

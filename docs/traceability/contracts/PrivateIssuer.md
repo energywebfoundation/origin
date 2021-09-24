@@ -133,3 +133,38 @@ Migrate a private certificate to be public.
 
 
 
+
+### `PrivateTransferRequest`
+
+
+address owner
+
+
+bytes32 hash
+
+
+### `RequestStateChange`
+
+
+address owner
+
+
+uint256 certificateId
+
+
+bytes32 hash
+
+
+bool approved
+
+
+### `Proof`
+
+
+bool left
+
+
+bytes32 hash
+
+
+

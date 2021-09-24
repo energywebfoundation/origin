@@ -7,6 +7,7 @@ dependencies:
   '@emotion/react': 11.4.1_832ac59335183f69c69af4dd1a5c8127
   '@emotion/styled': 11.3.0_20de4d7c06481574edaf49b95b4219b0
   '@energyweb/energy-api-influxdb': 0.8.0_1ba596b413b1fee075d934d39aaa8f96
+  '@energyweb/issuer': 4.0.0
   '@ethersproject/abi': 5.3.1
   '@ethersproject/abstract-provider': 5.3.0
   '@ethersproject/abstract-signer': 5.3.0
@@ -2412,6 +2413,34 @@ packages:
       swagger-ui-express: '*'
     resolution:
       integrity: sha512-HsnqjHeNY3rrP6yOgGMsJj8llXXAMncLld6d/CukJZF2UBlFObZtKT5gdctcsnAQzycNeX6mtAquzGqnB3U5AQ==
+  /@energyweb/issuer/4.0.0:
+    dependencies:
+      '@energyweb/utils-general': 11.0.3
+      '@ethersproject/abi': 5.3.1
+      '@ethersproject/abstract-signer': 5.3.0
+      '@ethersproject/contracts': 5.3.0
+      '@ethersproject/providers': 5.3.1
+      '@ethersproject/wallet': 5.3.0
+      dotenv: 10.0.0
+      ethers: 5.3.1
+      ganache-cli: 6.12.2
+      moment: 2.29.1
+      precise-proofs-js: 1.2.0
+      winston: 3.3.3
+    dev: false
+    resolution:
+      integrity: sha512-qSxEjFKrXu0/bCx3pRRmgL7C1vPuga0zDB2GOPF1tzXG3DUGdQJ0CAt1Nk8VYKnPlpR21hZt0szXzy2kBq3SXQ==
+  /@energyweb/utils-general/11.0.3:
+    dependencies:
+      chai: 4.3.0
+      eth-sig-util: 2.5.4
+      ethers: 5.3.1
+      jsonschema: 1.4.0
+      moment: 2.29.1
+      winston: 3.3.3
+    dev: false
+    resolution:
+      integrity: sha512-ndylKoNJ0kXvLeUweagPAphB95bNnCwm7HfSGwG5cUT4N6bPfHVvKJMexquXH18/t+fmBKuPAxx/xYHYqLQ8fA==
   /@ensdomains/address-encoder/0.1.9:
     dependencies:
       bech32: 1.1.4
@@ -36675,6 +36704,7 @@ packages:
     version: 0.0.0
   file:projects/exchange-irec.tgz_cc2bb7f9decd7dafe2c3e6d22814bd53:
     dependencies:
+      '@energyweb/issuer': 4.0.0
       '@nestjs/cli': 7.6.0
       '@nestjs/common': 7.6.18_fbc9982997ba253269f25bdc348cb93c
       '@nestjs/config': 1.0.1_ad92c204621b18a69181da190abca121
@@ -36686,6 +36716,7 @@ packages:
       '@nestjs/swagger': 4.8.2_d7a751e9d3f2b7adf81a9509448f2f4e
       '@nestjs/testing': 7.6.18_9cd0f963ae6f35bf288217e4f1c45cb4
       '@nestjs/typeorm': 7.1.5_770ecc3e0a72b32465b4dc73ad110208
+      '@types/bn.js': 5.1.0
       '@types/chai': 4.2.15
       '@types/express': 4.17.13
       '@types/jest': 27.0.1
@@ -36693,10 +36724,12 @@ packages:
       '@types/node': 14.17.17
       '@types/superagent': 4.1.13
       '@types/supertest': 2.0.11
+      bn.js: 5.2.0
       chai: 4.3.0
       class-transformer: 0.3.1
       class-validator: 0.13.1
       eslint-plugin-jest: 24.4.2_c59ad1753f394c982c539a8e2c3d4e25
+      immutable: 4.0.0-rc.15
       jest: 27.2.0_ts-node@9.1.1
       mocha: 9.1.1
       moment: 2.29.1
@@ -36718,7 +36751,7 @@ packages:
       passport: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-RgZiAGU8rcZPgINBJoCJzEFi74r/Y3bogaOmG0no03UmAziL3JkBcXbPmifpG5lmMj65xc2o/Uk+a869FJw9hw==
+      integrity: sha512-Rcu/1n9pNQnVdDbltPZfKvIHSVkJQCY7w98x3zcQNRDUrkOYhhG02tKTwNezWF5hWhPwq6cwZCVIVWk2YkgEEQ==
       tarball: file:projects/exchange-irec.tgz
     version: 0.0.0
   file:projects/exchange-react-query-client.tgz_ce489a627d58dc6ad1e18d99e7d87ffe:
@@ -38003,6 +38036,7 @@ packages:
     resolution:
       tarball: https://codeload.github.com/web3-js/scrypt-shim/tar.gz/aafdadda13e660e25e1c525d1f5b2443f5eb1ebb
     version: 0.1.0
+registry: ''
 specifiers:
   '@babel/core': 7.15.5
   '@babel/preset-env': 7.15.6
@@ -38012,6 +38046,7 @@ specifiers:
   '@emotion/react': 11.4.1
   '@emotion/styled': 11.3.0
   '@energyweb/energy-api-influxdb': 0.8.0
+  '@energyweb/issuer': 4.0.0
   '@ethersproject/abi': 5.3.1
   '@ethersproject/abstract-provider': 5.3.0
   '@ethersproject/abstract-signer': 5.3.0

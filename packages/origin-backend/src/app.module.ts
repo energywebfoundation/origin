@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import fs from 'fs';
-import path from 'path';
 
 import { providers } from '.';
 import { AppController } from './app.controller';
@@ -15,12 +13,9 @@ import { InvitationModule } from './pods/invitation/invitation.module';
 import { OrganizationModule } from './pods/organization/organization.module';
 import { UserModule } from './pods/user/user.module';
 
-const ENV_FILE_PATH = path.resolve(__dirname, '../../../.env');
-
 @Module({
     imports: [
         ConfigModule.forRoot({
-            envFilePath: fs.existsSync(ENV_FILE_PATH) ? ENV_FILE_PATH : null,
             load: [createConfig],
             isGlobal: true
         }),

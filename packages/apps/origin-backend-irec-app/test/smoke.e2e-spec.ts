@@ -11,7 +11,7 @@ import { Contracts } from '@energyweb/issuer';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { OriginAppModule } from '../src/origin-app.module';
 
-describe('Origin Backend App', () => {
+describe('Origin Backend I-REC App', () => {
     it('should run origin app', async () => {
         const privateKey = '0xdc8e1fc5a23a837105f11ca050f06bc5a88a2ad54fb49bc580232c8c82e8ff99';
 
