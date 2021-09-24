@@ -28,8 +28,8 @@ const irecServiceProvider = {
 
 @Module({
     imports: [ConfigModule, CqrsModule, UserModule],
-    providers: [irecServiceProvider],
-    exports: [irecServiceProvider],
+    providers: [irecServiceProvider, IrecService],
+    exports: [irecServiceProvider, IrecService],
     controllers: []
 })
 export class IrecModule {}

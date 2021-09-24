@@ -1,6 +1,9 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
 import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
-import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
+import {
+    AppModule as ExchangeIRECModule,
+    entities as ExchangeIRECEntities
+} from '@energyweb/exchange-irec';
 import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-irec-api';
 import {
     AppModule as OriginBackendModule,
@@ -51,7 +54,8 @@ const OriginAppTypeOrmModule = () => {
         ...IRECOrganizationEntities,
         ...IssuerEntities,
         ...OriginDeviceEntities,
-        ...IRECDeviceEntities
+        ...IRECDeviceEntities,
+        ...ExchangeIRECEntities
     ];
 
     return process.env.DATABASE_URL
@@ -67,7 +71,7 @@ const OriginAppTypeOrmModule = () => {
         : TypeOrmModule.forRoot({
               type: 'postgres',
               host: process.env.DB_HOST ?? 'localhost',
-              port: Number(process.env.DB_PORT) ?? 5432,
+              port: Number(process.env.DB_PORT ?? 5432),
               username: process.env.DB_USERNAME ?? 'postgres',
               password: process.env.DB_PASSWORD ?? 'postgres',
               database: process.env.DB_DATABASE ?? 'origin',

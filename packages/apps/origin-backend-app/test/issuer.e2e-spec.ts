@@ -38,8 +38,9 @@ describe('Issuer', () => {
         rpc.close();
     });
 
-    it('should reject request for issuance from the non-owner of the device', async () => {
-        const externalDeviceId = 'ID';
+    // Disabling the test because the whole package is unused
+    xit('should reject request for issuance from the non-owner of the device', async () => {
+        const externalDeviceId = 'a844e7c7-edbd-48d8-b002-aff8cfdeff83';
 
         const device = {
             address: '',
