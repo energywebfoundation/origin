@@ -41,7 +41,7 @@
         "@types/supertest": "2.0.11",
         "chai": "4.3.0",
         "influx": "5.9.2",
-        "mocha": "9.1.1",
+        "mocha": "9.1.2",
         "prettier": "2.4.1",
         "superagent-use": "0.1.0",
         "supertest": "6.1.6",

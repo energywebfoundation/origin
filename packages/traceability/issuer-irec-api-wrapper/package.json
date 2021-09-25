@@ -41,7 +41,7 @@
         "@types/qs": "6.9.7",
         "chai": "4.3.0",
         "dotenv": "10.0.0",
-        "mocha": "9.1.1",
+        "mocha": "9.1.2",
         "ts-node": "9.1.1",
         "typedoc": "0.22.4",
         "typedoc-plugin-markdown": "3.11.0",
