@@ -19,6 +19,9 @@
   "main": "dist/ui-assets.umd.js",
   "module": "dist/ui-assets.esm.js",
   "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@material-ui/core": "5.0.0-beta.4",
     "@material-ui/styles": "5.0.0-beta.4",

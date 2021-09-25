@@ -108,7 +108,7 @@
     },
     "ui-core": {
       "root": "libs/ui/core",
-      "sourceRoot": "libs/ui/core/src",
+      "sourceRoot": "libs/ui/core",
       "projectType": "library",
       "targets": {
         "build": {
@@ -129,7 +129,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/ui/core/LICENSE", "libs/ui/core/README.md"]
           }
         },
         "lint": {
@@ -169,7 +169,7 @@
     },
     "ui-utils": {
       "root": "libs/ui/utils",
-      "sourceRoot": "libs/ui/utils/src",
+      "sourceRoot": "libs/ui/utils",
       "projectType": "library",
       "targets": {
         "build": {
@@ -190,7 +190,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/ui/utils/LICENSE", "libs/ui/utils/README.md"]
           }
         },
         "lint": {
@@ -211,7 +211,7 @@
     },
     "ui-localization": {
       "root": "libs/ui/localization",
-      "sourceRoot": "libs/ui/localization/src",
+      "sourceRoot": "libs/ui/localization",
       "projectType": "library",
       "targets": {
         "build": {
@@ -232,7 +232,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/ui/localization/LICENSE",
+              "libs/ui/localization/README.md"
+            ]
           }
         },
         "lint": {
@@ -253,7 +256,7 @@
     },
     "ui-theme": {
       "root": "libs/ui/theme",
-      "sourceRoot": "libs/ui/theme/src",
+      "sourceRoot": "libs/ui/theme",
       "projectType": "library",
       "targets": {
         "build": {
@@ -273,7 +276,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/ui/theme/LICENSE", "libs/ui/theme/README.md"]
           }
         },
         "lint": {
@@ -294,7 +297,7 @@
     },
     "ui-assets": {
       "root": "libs/ui/assets",
-      "sourceRoot": "libs/ui/assets/src",
+      "sourceRoot": "libs/ui/assets",
       "projectType": "library",
       "targets": {
         "build": {
@@ -314,7 +317,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/ui/assets/LICENSE", "libs/ui/assets/README.md"]
           }
         },
         "lint": {
@@ -335,7 +338,7 @@
     },
     "exchange-view": {
       "root": "libs/exchange/view",
-      "sourceRoot": "libs/exchange/view/src",
+      "sourceRoot": "libs/exchange/view",
       "projectType": "library",
       "targets": {
         "build": {
@@ -355,7 +358,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/exchange/view/LICENSE",
+              "libs/exchange/view/README.md"
+            ]
           }
         },
         "lint": {
@@ -376,7 +382,7 @@
     },
     "exchange-logic": {
       "root": "libs/exchange/logic",
-      "sourceRoot": "libs/exchange/logic/src",
+      "sourceRoot": "libs/exchange/logic",
       "projectType": "library",
       "targets": {
         "build": {
@@ -396,7 +402,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/exchange/logic/LICENSE",
+              "libs/exchange/logic/README.md"
+            ]
           }
         },
         "lint": {
@@ -417,7 +426,7 @@
     },
     "certificate-view": {
       "root": "libs/certificate/view",
-      "sourceRoot": "libs/certificate/view/src",
+      "sourceRoot": "libs/certificate/view",
       "projectType": "library",
       "targets": {
         "build": {
@@ -437,7 +446,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/certificate/view/LICENSE",
+              "libs/certificate/view/README.md"
+            ]
           }
         },
         "lint": {
@@ -458,7 +470,7 @@
     },
     "certificate-logic": {
       "root": "libs/certificate/logic",
-      "sourceRoot": "libs/certificate/logic/src",
+      "sourceRoot": "libs/certificate/logic",
       "projectType": "library",
       "targets": {
         "build": {
@@ -478,7 +490,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/certificate/logic/LICENSE",
+              "libs/certificate/logic/README.md"
+            ]
           }
         },
         "lint": {
@@ -499,7 +514,7 @@
     },
     "user-view": {
       "root": "libs/user/view",
-      "sourceRoot": "libs/user/view/src",
+      "sourceRoot": "libs/user/view",
       "projectType": "library",
       "targets": {
         "build": {
@@ -519,7 +534,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/user/view/LICENSE", "libs/user/view/README.md"]
           }
         },
         "lint": {
@@ -540,7 +555,7 @@
     },
     "user-logic": {
       "root": "libs/user/logic",
-      "sourceRoot": "libs/user/logic/src",
+      "sourceRoot": "libs/user/logic",
       "projectType": "library",
       "targets": {
         "build": {
@@ -560,7 +575,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/user/logic/LICENSE", "libs/user/logic/README.md"]
           }
         },
         "lint": {
@@ -581,7 +596,7 @@
     },
     "device-logic": {
       "root": "libs/device/logic",
-      "sourceRoot": "libs/device/logic/src",
+      "sourceRoot": "libs/device/logic",
       "projectType": "library",
       "targets": {
         "build": {
@@ -601,7 +616,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/device/logic/LICENSE",
+              "libs/device/logic/README.md"
+            ]
           }
         },
         "lint": {
@@ -622,7 +640,7 @@
     },
     "device-view": {
       "root": "libs/device/view",
-      "sourceRoot": "libs/device/view/src",
+      "sourceRoot": "libs/device/view",
       "projectType": "library",
       "targets": {
         "build": {
@@ -642,7 +660,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/device/view/LICENSE", "libs/device/view/README.md"]
           }
         },
         "lint": {
@@ -663,7 +681,7 @@
     },
     "ui-shared-state": {
       "root": "libs/ui/shared-state",
-      "sourceRoot": "libs/ui/shared-state/src",
+      "sourceRoot": "libs/ui/shared-state",
       "projectType": "library",
       "targets": {
         "build": {
@@ -683,7 +701,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/ui/shared-state/LICENSE",
+              "libs/ui/shared-state/README.md"
+            ]
           }
         },
         "lint": {
@@ -704,7 +725,7 @@
     },
     "organization-view": {
       "root": "libs/organization/view",
-      "sourceRoot": "libs/organization/view/src",
+      "sourceRoot": "libs/organization/view",
       "projectType": "library",
       "targets": {
         "build": {
@@ -725,7 +746,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/organization/view/LICENSE",
+              "libs/organization/view/README.md"
+            ]
           }
         },
         "lint": {
@@ -746,7 +770,7 @@
     },
     "organization-data": {
       "root": "libs/organization/data",
-      "sourceRoot": "libs/organization/data/src",
+      "sourceRoot": "libs/organization/data",
       "projectType": "library",
       "targets": {
         "build": {
@@ -767,7 +791,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/organization/data/LICENSE",
+              "libs/organization/data/README.md"
+            ]
           }
         },
         "lint": {
@@ -788,7 +815,7 @@
     },
     "organization-logic": {
       "root": "libs/organization/logic",
-      "sourceRoot": "libs/organization/logic/src",
+      "sourceRoot": "libs/organization/logic",
       "projectType": "library",
       "targets": {
         "build": {
@@ -809,7 +836,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/organization/logic/LICENSE",
+              "libs/organization/logic/README.md"
+            ]
           }
         },
         "lint": {
@@ -830,7 +860,7 @@
     },
     "device-data": {
       "root": "libs/device/data",
-      "sourceRoot": "libs/device/data/src",
+      "sourceRoot": "libs/device/data",
       "projectType": "library",
       "targets": {
         "build": {
@@ -843,7 +873,7 @@
             "entryFile": "libs/device/data/src/index.ts",
             "external": ["react", "react-dom"],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/device/data/LICENSE", "libs/device/data/README.md"]
           }
         },
         "lint": {
@@ -864,7 +894,7 @@
     },
     "certificate-data": {
       "root": "libs/certificate/data",
-      "sourceRoot": "libs/certificate/data/src",
+      "sourceRoot": "libs/certificate/data",
       "projectType": "library",
       "targets": {
         "build": {
@@ -885,7 +915,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/certificate/data/LICENSE",
+              "libs/certificate/data/README.md"
+            ]
           }
         },
         "lint": {
@@ -906,7 +939,7 @@
     },
     "ui-blockchain": {
       "root": "libs/ui/blockchain",
-      "sourceRoot": "libs/ui/blockchain/src",
+      "sourceRoot": "libs/ui/blockchain",
       "projectType": "library",
       "targets": {
         "build": {
@@ -927,7 +960,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/ui/blockchain/LICENSE",
+              "libs/ui/blockchain/README.md"
+            ]
           }
         },
         "lint": {
@@ -948,7 +984,7 @@
     },
     "user-data": {
       "root": "libs/user/data",
-      "sourceRoot": "libs/user/data/src",
+      "sourceRoot": "libs/user/data",
       "projectType": "library",
       "targets": {
         "build": {
@@ -969,7 +1005,7 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": ["libs/user/data/LICENSE", "libs/user/data/README.md"]
           }
         },
         "lint": {
@@ -990,7 +1026,7 @@
     },
     "exchange-data": {
       "root": "libs/exchange/data",
-      "sourceRoot": "libs/exchange/data/src",
+      "sourceRoot": "libs/exchange/data",
       "projectType": "library",
       "targets": {
         "build": {
@@ -1011,7 +1047,10 @@
               "react/jsx-dev-runtime"
             ],
             "rollupConfig": "rollup.config.js",
-            "assets": [{ "glob": "README.md", "input": ".", "output": "." }]
+            "assets": [
+              "libs/exchange/data/LICENSE",
+              "libs/exchange/data/README.md"
+            ]
           }
         },
         "lint": {

@@ -55,6 +55,9 @@
   "peerDependencies": {
     "react": "17.0.2"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/ui-blockchain.umd.js",
   "module": "dist/ui-blockchain.esm.js",
   "typings": "dist/index.d.ts"
