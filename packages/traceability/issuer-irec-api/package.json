@@ -86,7 +86,7 @@
         "@types/supertest": "2.0.11",
         "chai": "4.3.0",
         "ganache-cli": "6.12.2",
-        "mocha": "9.1.1",
+        "mocha": "9.1.2",
         "polly-js": "1.8.2",
         "prettier": "2.4.1",
         "supertest": "6.1.6",
