@@ -25,7 +25,7 @@
         "build": "yarn build:static && yarn build:ts && yarn generate:docs",
         "build:static": "yarn compile && yarn typechain:registry && yarn typechain:registry:extended && yarn typechain:issuer && yarn typechain:issuer:private",
         "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
-        "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
+        "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers && shx cp -rf contracts dist/",
         "typechain:registry": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/Registry.json'",
         "typechain:registry:extended": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/RegistryExtended.json'",
         "typechain:issuer": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/Issuer.json'",
