@@ -9,13 +9,14 @@ export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = ({
   allDeviceTypes,
   allRegions,
   externalDeviceId,
+  platformCountryCode,
 }) => {
   const { t } = useTranslation();
   return {
     heading: t('device.register.formTitle'),
     forms: [
       createDeviceInfoForm(t, allFuelTypes, allDeviceTypes, externalDeviceId),
-      createDeviceLocationForm(t, allRegions),
+      createDeviceLocationForm(t, allRegions, platformCountryCode),
       createDeviceImagesForm(t),
     ],
     backButtonText: t('general.buttons.back'),

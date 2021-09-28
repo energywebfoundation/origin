@@ -67,11 +67,9 @@ export const useGenericFormEffects: TGenericFormEffects = ({
     await submitHandler(values, reset);
   });
 
-  const nextForm =
-    initialValues && Object.keys(initialValues)[0] in dirtyFields;
   const submitButtonDisabled =
     buttonDisabled || partOfMultiForm
-      ? !(nextForm && isValid)
+      ? !isValid
       : acceptInitialValues
       ? false
       : !isDirty;
