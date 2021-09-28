@@ -26,7 +26,7 @@ export type TCreateDeviceInfoForm = (
 ) => MultiStepFormItem<DeviceInfoFormValues>;
 
 export type DeviceLocationFormValues = {
-  countryCode: string[];
+  timeZone?: FormSelectOption[];
   region: FormSelectOption[];
   subregion: FormSelectOption[];
   postalCode: string;
@@ -36,7 +36,8 @@ export type DeviceLocationFormValues = {
 };
 export type TCreateDeviceLocationForm = (
   t: TFunction,
-  allRegions: ConfigurationDTORegions
+  allRegions: ConfigurationDTORegions,
+  platformCountryCode: string
 ) => MultiStepFormItem<DeviceLocationFormValues>;
 
 export type DeviceImagesFormValues = {
@@ -59,6 +60,7 @@ export type TUseRegisterDeviceFormArgs = {
   allDeviceTypes: CodeNameDTO[];
   allRegions: ConfigurationDTORegions;
   externalDeviceId: string;
+  platformCountryCode: string;
 };
 export type TUseRegisterDeviceFormLogic = (
   args: TUseRegisterDeviceFormArgs

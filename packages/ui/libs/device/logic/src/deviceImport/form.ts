@@ -1,24 +1,37 @@
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { gridOperatorOptions } from '../utils';
-import { TUseImportDeviceFormLogic } from './types';
+import {
+  getCountriesTimeZones,
+  getTimeZonesOptions,
+  gridOperatorOptions,
+  prepareRegionsOption,
+  prepareSubregionOptions,
+} from '../utils';
+import {
+  TUseImportDeviceFormLogic,
+  TUseImportDeviceFormLogicReturnType,
+} from './types';
 
 export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
   handleClose,
-  smartMeterId
+  smartMeterId,
+  allRegions,
+  platformCountryCode
 ) => {
   const { t } = useTranslation();
+  const { countryTimezones, moreThanOneTimeZone } =
+    getCountriesTimeZones(platformCountryCode);
 
-  return {
+  const formConfig: TUseImportDeviceFormLogicReturnType = {
     formTitle: t('device.import.formTitle'),
     formTitleVariant: 'h5',
     initialValues: {
       smartMeterId: '',
-      timezone: '',
+      timeZone: moreThanOneTimeZone ? [] : undefined,
       gridOperator: '',
       postalCode: '',
-      region: '',
-      subregion: '',
+      region: [],
+      subregion: [],
       description: '',
     },
     validationSchema: yup.object({
@@ -26,25 +39,22 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
         .string()
         .required()
         .label(smartMeterId || 'Smart meter ID'),
-      timezone: yup.string().required().label(t('device.import.timezone')),
+      timeZone: moreThanOneTimeZone
+        ? yup.array().required().label(t('device.import.timezone'))
+        : undefined,
       gridOperator: yup
         .string()
         .required()
         .label(t('device.import.gridOperator')),
       postalCode: yup.string().required().label(t('device.import.postalCode')),
-      region: yup.string().required().label(t('device.import.region')),
-      subregion: yup.string().required().label(t('device.import.subregion')),
+      region: yup.array().required().label(t('device.import.region')),
+      subregion: yup.array().required().label(t('device.import.subregion')),
       description: yup.string().label(t('device.import.description')),
     }),
     fields: [
       {
         name: 'smartMeterId',
         label: smartMeterId || 'Smart meter ID',
-        required: true,
-      },
-      {
-        name: 'timezone',
-        label: t('device.import.timezone'),
         required: true,
       },
       {
@@ -63,11 +73,18 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
         name: 'region',
         label: t('device.import.region'),
         required: true,
+        select: true,
+        autocomplete: true,
+        options: prepareRegionsOption(allRegions),
       },
       {
         name: 'subregion',
         label: t('device.import.subregion'),
+        select: true,
         required: true,
+        autocomplete: true,
+        dependentOn: 'region',
+        dependentOptionsCallback: prepareSubregionOptions(allRegions),
       },
       {
         name: 'description',
@@ -89,4 +106,17 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
     ],
     buttonText: t('device.import.saveData'),
   };
+
+  if (moreThanOneTimeZone) {
+    formConfig.fields.unshift({
+      name: 'timeZone',
+      label: t('device.register.timeZone'),
+      required: true,
+      select: true,
+      autocomplete: true,
+      options: getTimeZonesOptions(countryTimezones),
+    });
+  }
+
+  return formConfig;
 };

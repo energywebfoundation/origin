@@ -1,3 +1,4 @@
+import { Countries } from '@energyweb/utils-general';
 import { useRegisterDeviceFormLogic } from '@energyweb/origin-ui-device-logic';
 import {
   useAllDeviceTypes,
@@ -22,27 +23,29 @@ export const useRegisterPageEffects = () => {
     exchangeDepositAddress,
   });
 
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllDeviceFuelTypes();
-  const {
-    allTypes: allDeviceTypes,
-    isLoading: areDeviceTypesLoading,
-  } = useAllDeviceTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
+  const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
+    useAllDeviceTypes();
   const {
     allRegions,
+    country,
     isLoading: areRegionsLoading,
   } = useApiRegionsConfiguration();
+  const platformCountryCode = Countries.find(
+    (cntr) => cntr.name === country
+  )?.code;
 
   const formsLogic = useRegisterDeviceFormLogic({
     allFuelTypes,
     allDeviceTypes,
     allRegions,
     externalDeviceId: smartMeterId,
+    platformCountryCode,
   });
 
-  const { submitHandler, isMutating } = useApiRegisterDevice();
+  const { submitHandler, isMutating } =
+    useApiRegisterDevice(platformCountryCode);
 
   const formsWithImagesUpload = formsLogic.forms.map((form) =>
     form.customStep

@@ -12,6 +12,7 @@ import {
   useDeviceControllerImportIrecDevice,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import {
+  FormSelectOption,
   NotificationTypeEnum,
   showNotification,
   UploadedFile,
@@ -20,39 +21,44 @@ import { AxiosError } from 'axios';
 import { UseFormReset } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { getCountriesTimeZones } from '../utils';
 
 export const useApiDevicesToImport = () => {
-  const {
-    data: devicesToImport,
-    isLoading,
-  } = useDeviceControllerGetDevicesToImportFromIrec();
+  const { data: devicesToImport, isLoading } =
+    useDeviceControllerGetDevicesToImportFromIrec();
 
   return { devicesToImport, isLoading };
 };
 
 type TImportDeviceFormValues = {
   smartMeterId: string;
-  timezone: string;
+  timeZone?: FormSelectOption[];
   gridOperator: string;
   postalCode: string;
-  region: string;
-  subregion: string;
+  region: FormSelectOption[];
+  subregion: FormSelectOption[];
   description: string;
 };
 
 export const useApiDeviceImportHandler = (
   device: IrecDeviceDTO,
   imageIds: UploadedFile[],
-  handleModalClose: () => void
+  handleModalClose: () => void,
+  platformCountryCode: string
 ) => {
   const { t } = useTranslation();
   const { mutateAsync } = useDeviceControllerImportIrecDevice();
   const { mutate } = useDeviceRegistryControllerCreateDevice();
 
   const queryClient = useQueryClient();
-  const devicesToImportQueryKey = getDeviceControllerGetDevicesToImportFromIrecQueryKey();
+  const devicesToImportQueryKey =
+    getDeviceControllerGetDevicesToImportFromIrecQueryKey();
   const myIRecDevicesQueryKey = getDeviceControllerGetMyDevicesQueryKey();
-  const myOriginDevicesQueryKey = getDeviceRegistryControllerGetMyDevicesQueryKey();
+  const myOriginDevicesQueryKey =
+    getDeviceRegistryControllerGetMyDevicesQueryKey();
+
+  const { countryTimezones, moreThanOneTimeZone } =
+    getCountriesTimeZones(platformCountryCode);
 
   return (
     values: TImportDeviceFormValues,
@@ -60,11 +66,13 @@ export const useApiDeviceImportHandler = (
   ) => {
     const importData: ImportIrecDeviceDTO = {
       code: device.code,
-      timezone: values.timezone,
+      timezone: moreThanOneTimeZone
+        ? values.timeZone[0].value.toString()
+        : countryTimezones[0].timeZone,
       gridOperator: values.gridOperator,
       postalCode: values.postalCode,
-      region: values.region,
-      subregion: values.subregion,
+      region: values.region[0].value.toString(),
+      subregion: values.subregion[0].value.toString(),
     };
 
     mutateAsync({ data: importData })
