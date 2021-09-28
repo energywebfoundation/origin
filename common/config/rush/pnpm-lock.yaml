@@ -177,7 +177,7 @@ dependencies:
   ganache-cli: 6.12.2
   ganache-core: 2.13.2
   history: 5.0.1
-  i18next: 20.6.1
+  i18next: 21.1.1
   i18next-icu: 1.4.2
   immutable: 4.0.0-rc.15
   influx: 5.9.2
@@ -210,7 +210,7 @@ dependencies:
   react-dropzone: 11.4.0_react@17.0.2
   react-error-boundary: 3.1.3_react@17.0.2
   react-hook-form: 7.12.2_react@17.0.2
-  react-i18next: 11.12.0_i18next@20.6.1+react@17.0.2
+  react-i18next: 11.12.0_i18next@21.1.1+react@17.0.2
   react-is: 17.0.2
   react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
   react-router: 6.0.0-beta.4_history@5.0.1+react@17.0.2
@@ -9392,7 +9392,7 @@ packages:
       integrity: sha512-JtswU8N3kxBYgo+n9of7C97YQBT+AYPP2aBfNGTzABqPAZnK/WOAaKfh3XesUYMZRrXFuoPc2Hv0/G/nQFveHw==
   /@types/pbkdf2/3.1.0:
     dependencies:
-      '@types/node': 14.17.19
+      '@types/node': 14.17.17
     dev: false
     resolution:
       integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==
@@ -9529,7 +9529,7 @@ packages:
       integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
   /@types/secp256k1/4.0.3:
     dependencies:
-      '@types/node': 14.17.19
+      '@types/node': 14.17.17
     dev: false
     resolution:
       integrity: sha512-Da66lEIFeIz9ltsdMZcpQvmrmmoqrfju8pm1BH8WbYjZSwUgCwXLb9C+9XYogwBITnbsSaMdVPb2ekf7TV+03w==
@@ -20092,12 +20092,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-EqHafx/sL8eoEowwqi5P6cXtLrzJXBKI4RmV+UaMXlpIJNfckVsq873F2KkMKkApxiw2ATj46C8MurmhMsHQGw==
-  /i18next/20.6.1:
+  /i18next/21.1.1:
     dependencies:
       '@babel/runtime': 7.15.4
     dev: false
     resolution:
-      integrity: sha512-yCMYTMEJ9ihCwEQQ3phLo7I/Pwycf8uAx+sRHwwk5U9Aui/IZYgQRyMqXafQOw5QQ7DM1Z+WyEXWIqSuJHhG2A==
+      integrity: sha512-oBEi+3MI/jEv0DifAmA+e47WAS55Sv6yG2CmZ0Kpz/VGu8rTQARJGRkwhMcLhcIi+JYmxmfBD/DQ/7Ho3FYryw==
   /ibm-openapi-validator/0.46.4:
     dependencies:
       '@stoplight/spectral': 5.9.2
@@ -22563,7 +22563,7 @@ packages:
   /jest-util/27.2.0:
     dependencies:
       '@jest/types': 27.1.1
-      '@types/node': 14.17.19
+      '@types/node': 14.17.17
       chalk: 4.1.2
       graceful-fs: 4.2.8
       is-ci: 3.0.0
@@ -29254,11 +29254,11 @@ packages:
       react: ^16.8.0 || ^17
     resolution:
       integrity: sha512-cpxocjrgpMAJCMJQR51BQhMoEx80/EQqePNihMTgoTYTqCRbd2GExi+N4GJIr+cFqrmbwNj9wxk5oLWYQsUefg==
-  /react-i18next/11.12.0_i18next@20.6.1+react@17.0.2:
+  /react-i18next/11.12.0_i18next@21.1.1+react@17.0.2:
     dependencies:
       '@babel/runtime': 7.15.4
       html-parse-stringify: 3.0.1
-      i18next: 20.6.1
+      i18next: 21.1.1
       react: 17.0.2
     dev: false
     peerDependencies:
@@ -33515,7 +33515,7 @@ packages:
       integrity: sha1-4igPXoF/i/QnVlf9D5rr1E9aJ4Y=
   /tsutils/3.21.0_typescript@4.4.3:
     dependencies:
-      tslib: 1.14.1
+      tslib: 1.13.0
       typescript: 4.4.3
     dev: false
     engines:
@@ -38677,7 +38677,7 @@ packages:
       eslint-plugin-react-hooks: 4.2.0_eslint@7.32.0
       ethers: 5.3.1
       history: 5.0.1
-      i18next: 20.6.1
+      i18next: 21.1.1
       i18next-icu: 1.4.2
       jest: 27.2.2_ts-node@9.1.1
       jest-fetch-mock: 3.0.3
@@ -38691,7 +38691,7 @@ packages:
       react-dropzone: 11.4.0_react@17.0.2
       react-error-boundary: 3.1.3_react@17.0.2
       react-hook-form: 7.12.2_react@17.0.2
-      react-i18next: 11.12.0_i18next@20.6.1+react@17.0.2
+      react-i18next: 11.12.0_i18next@21.1.1+react@17.0.2
       react-is: 17.0.2
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       react-router: 6.0.0-beta.4_history@5.0.1+react@17.0.2
@@ -38717,7 +38717,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-zyKfZIMdVvKnxpzNsugVQD665nrZtAxVGueIKjsTRgCUZJA+mdtEeblqc9MZpW3IpuednRPxGc3DbUQPcuwZlw==
+      integrity: sha512-WweVXwIbl0Bx+sSFEQLwvrHfkZ2ZJeN754o9XVS2e13TaTjlQBmHJ7mHlyu5RvetiPDHMvNizL5zXdhD2Ef5kQ==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -38973,7 +38973,7 @@ specifiers:
   ganache-cli: 6.12.2
   ganache-core: 2.13.2
   history: 5.0.1
-  i18next: 20.6.1
+  i18next: 21.1.1
   i18next-icu: 1.4.2
   immutable: 4.0.0-rc.15
   influx: 5.9.2
