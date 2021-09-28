@@ -27,6 +27,9 @@
   "peerDependencies": {
     "react": "17.0.2"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/ui-theme.umd.js",
   "module": "dist/ui-theme.esm.js",
   "typings": "dist/index.d.ts"

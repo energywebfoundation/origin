@@ -16,6 +16,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/ui-shared-state.umd.js",
   "module": "dist/ui-shared-state.esm.js",
   "typings": "dist/index.d.ts",

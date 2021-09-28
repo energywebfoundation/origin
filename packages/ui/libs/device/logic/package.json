@@ -16,6 +16,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/device-logic.umd.js",
   "module": "dist/device-logic.esm.js",
   "typings": "dist/index.d.ts"

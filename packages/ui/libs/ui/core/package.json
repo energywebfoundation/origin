@@ -47,5 +47,8 @@
   },
   "main": "dist/ui-core.umd.js",
   "module": "dist/ui-core.esm.js",
-  "typings": "dist/index.d.ts"
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ]
 }

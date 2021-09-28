@@ -16,6 +16,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/exchange-data.umd.js",
   "module": "dist/exchange-data.esm.js",
   "typings": "dist/index.d.ts"
