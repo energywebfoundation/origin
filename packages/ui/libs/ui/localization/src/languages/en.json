@@ -367,6 +367,7 @@
         "description": "Description",
 
         "deviceLocationFormTitle": "Device Location",
+        "timeZone": "Time zone",
         "country": "Country",
         "region": "Region",
         "subregion": "Subregion",
