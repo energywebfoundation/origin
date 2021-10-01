@@ -61,7 +61,7 @@ export class CertificateBatchController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
-        description: 'Returns whether the batch claim succeeded'
+        description: 'Returns whether the batch transfer succeeded'
     })
     public async batchTransfer(
         @BlockchainAccountDecorator() blockchainAddress: string,
