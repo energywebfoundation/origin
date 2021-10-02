@@ -1,13 +1,13 @@
 lockfileVersion: 5.3
 
 specifiers:
-  concurrently: 6.2.1
+  concurrently: 6.3.0
   ganache-cli: 6.12.2
   lerna: 4.0.0
   wait-on: 6.0.0
 
 dependencies:
-  concurrently: 6.2.1
+  concurrently: 6.3.0
   ganache-cli: 6.12.2
   lerna: 4.0.0
   wait-on: 6.0.0
@@ -1374,15 +1374,14 @@ packages:
       typedarray: 0.0.6
     dev: false
 
-  /concurrently/6.2.1:
-    resolution: {integrity: sha512-emgwhH+ezkuYKSHZQ+AkgEpoUZZlbpPVYCVv7YZx0r+T7fny1H03r2nYRebpi2DudHR4n1Rgbo2YTxKOxVJ4+g==}
+  /concurrently/6.3.0:
+    resolution: {integrity: sha512-k4k1jQGHHKsfbqzkUszVf29qECBrkvBKkcPJEUDTyVR7tZd1G/JOfnst4g1sYbFvJ4UjHZisj1aWQR8yLKpGPw==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     dependencies:
       chalk: 4.1.0
       date-fns: 2.19.0
       lodash: 4.17.21
-      read-pkg: 5.2.0
       rxjs: 6.6.6
       spawn-command: 0.0.2-1
       supports-color: 8.1.1
@@ -1665,6 +1664,7 @@ packages:
 
   /encoding/0.1.13:
     resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
+    requiresBuild: true
     dependencies:
       iconv-lite: 0.6.2
     dev: false
@@ -4331,6 +4331,7 @@ packages:
     resolution: {integrity: sha512-TWYSWa9T2pPN4DIJYbU9oAjQx+5qdV5RUDxwARg8fmJZrD/V27Zj0JngW5xg1DFz42G0uDYl2XhzF6alSzD62w==}
     engines: {node: '>=0.8.0'}
     hasBin: true
+    requiresBuild: true
     dev: false
     optional: true
 
