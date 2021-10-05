@@ -3,11 +3,13 @@
 </p>
 
 
-# Origin Device Registry IREC Local API
+# Origin Device Registry IREC Form API
 
 ## Description
-TO DO - Overview of package. 
-API for working with I-REC specific implementation of device registry
+Overview of package. 
+Origin Device Registry IREC Form API is a module-based library built with xxx. 
+
+//Purpose of package, sdk, etc. 
 
 The Origin SDK is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 
@@ -17,8 +19,6 @@ See a reference implementation of Origin deployed [here](https://origin-ui-canar
 This is a Node.js module available through the npm registry.
 
 ### Requirements
-
-//TO DO OR REMOVE
 
 Before installing, download and install Node.js. Node.js xxx or higher is required.
 
@@ -50,6 +50,7 @@ $ npm run test
 
 ## Contributing Guidelines 
 See [contributing.md](../../../contributing.md)
+
 
 ## Questions and Support
 For questions and support please use Energy Web's [Discord channel](https://discord.com/channels/706103009205288990/843970822254362664) 
@@ -83,4 +84,3 @@ For a deep-dive into the motivation and methodology behind our technical solutio
 ## License
 
 This project is licensed under the GNU General Public License v3.0 or later - see the [LICENSE](LICENSE) file for details
-
