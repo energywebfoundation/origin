@@ -45,7 +45,7 @@
         "class-validator": "0.13.1",
         "ethers": "5.3.1",
         "reflect-metadata": "0.1.13",
-        "rxjs": "6.6.7",
+        "rxjs": "7.4.0",
         "typeorm": "0.2.34",
         "uuid": "8.3.2"
     },
