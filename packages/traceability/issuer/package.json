@@ -76,7 +76,7 @@
         "shx": "0.3.3",
         "solc": "0.8.4",
         "solc-0.8": "npm:solc@0.8.4",
-        "solidity-docgen": "0.5.14",
+        "solidity-docgen": "0.5.16",
         "truffle": "5.4.13",
         "truffle-typings": "1.0.8",
         "ts-node": "9.1.1",
