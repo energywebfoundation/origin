@@ -51,7 +51,7 @@
         "@energyweb/utils-general": "11.0.4",
         "@nestjs-modules/mailer": "1.5.1",
         "@nestjs/common": "7.6.18",
-        "@nestjs/config": "1.0.1",
+        "@nestjs/config": "1.0.2",
         "@nestjs/core": "7.6.18",
         "@nestjs/cqrs": "7.0.1",
         "@nestjs/passport": "7.1.6",
