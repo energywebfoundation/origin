@@ -27,7 +27,7 @@
         "@energyweb/energy-api-influxdb": "0.8.0",
         "@energyweb/origin-backend-core": "8.0.3",
         "@nestjs/common": "7.6.18",
-        "@nestjs/config": "1.0.1",
+        "@nestjs/config": "1.0.2",
         "@nestjs/core": "7.6.18",
         "@nestjs/passport": "7.1.6",
         "@nestjs/swagger": "4.8.2"
