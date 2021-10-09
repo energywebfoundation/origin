@@ -33,7 +33,7 @@
         "@nestjs/typeorm": "7.1.5",
         "@types/mocha": "9.0.0",
         "@types/node": "14.17.21",
-        "barrelsby": "2.2.0",
+        "barrelsby": "2.3.0",
         "json-to-pretty-yaml": "1.2.2",
         "mocha": "9.1.2",
         "orval": "5.5.10",
