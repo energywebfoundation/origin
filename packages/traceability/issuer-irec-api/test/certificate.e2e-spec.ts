@@ -42,7 +42,7 @@ describe('Certificate tests', () => {
         user: TestUser
     ): Promise<CertificateDTO[]> => {
         const certificates = await polly()
-            .waitAndRetry(5)
+            .waitAndRetry(10)
             .executeForPromise(async (): Promise<CertificateDTO[]> => {
                 const res = await request(app.getHttpServer())
                     .get(`/certificate/by-tx-hash/${txHash}`)
