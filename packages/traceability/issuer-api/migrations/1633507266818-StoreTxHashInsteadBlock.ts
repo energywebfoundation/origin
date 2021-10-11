@@ -1,14 +1,45 @@
+import { Certificate, Contracts, IBlockchainProperties } from '@energyweb/issuer';
+import { getProviderWithFallback } from '@energyweb/utils-general';
+import { Wallet } from 'ethers';
 import { MigrationInterface, QueryRunner } from 'typeorm';
+
+import { BlockchainProperties } from '../src/pods/blockchain/blockchain-properties.entity';
 
 export class StoreTxHashInsteadBlock1633507266818 implements MigrationInterface {
     name = 'StoreTxHashInsteadBlock1633507266818';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        // TO-DO: Write proper migrations
-        await queryRunner.query(`ALTER TABLE "issuer_certificate" DROP COLUMN "creationBlockHash"`);
         await queryRunner.query(
-            `ALTER TABLE "issuer_certificate" ADD "creationTransactionHash" character varying NOT NULL`
+            `ALTER TABLE "issuer_certificate" ADD "creationTransactionHash" character varying`
         );
+        const existingCertificates = await queryRunner.query(`SELECT id FROM "issuer_certificate"`);
+        console.log({
+            existingCertificates
+        });
+
+        if (existingCertificates.length > 0) {
+            const blockchainProperties: BlockchainProperties = await queryRunner.query(
+                `SELECT * FROM "issuer_blockchain_properties"`
+            );
+            const wrapped: IBlockchainProperties =
+                this.getBlockchainProperties(blockchainProperties);
+
+            const syncedCertificates = await Promise.all(
+                existingCertificates.map((cert: any) => new Certificate(cert.id, wrapped).sync)
+            );
+
+            syncedCertificates.forEach(async (cert: Certificate) => {
+                await queryRunner.query(
+                    `UPDATE "issuer_certificate" SET "creationTransactionHash" = ${cert.creationTransactionHash} WHERE id = '${cert.id}'`
+                );
+            });
+        }
+
+        await queryRunner.query(
+            `ALTER TABLE "issuer_certificate" ALTER COLUMN "creationTransactionHash" SET NOT NULL`
+        );
+
+        await queryRunner.query(`ALTER TABLE "issuer_certificate" DROP COLUMN "creationBlockHash"`);
 
         await queryRunner.query(`ALTER TABLE "issuer_certificate" ALTER COLUMN "id" SET NOT NULL`);
         await queryRunner.query(
@@ -40,5 +71,35 @@ export class StoreTxHashInsteadBlock1633507266818 implements MigrationInterface 
         await queryRunner.query(
             `ALTER TABLE "issuer_certificate" ADD "creationBlockHash" character varying`
         );
+    }
+
+    private getBlockchainProperties(
+        blockchainProperties: BlockchainProperties
+    ): IBlockchainProperties {
+        const web3 = getProviderWithFallback(
+            ...[blockchainProperties.rpcNode, blockchainProperties.rpcNodeFallback].filter(
+                (url) => !!url
+            )
+        );
+        const assure0x = (privateKey: string) =>
+            privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
+
+        const signer = new Wallet(assure0x(blockchainProperties.platformOperatorPrivateKey), web3);
+
+        return {
+            web3,
+            registry: Contracts.factories.RegistryExtendedFactory.connect(
+                blockchainProperties.registry,
+                signer
+            ),
+            issuer: Contracts.factories.IssuerFactory.connect(blockchainProperties.issuer, signer),
+            privateIssuer: blockchainProperties.privateIssuer
+                ? Contracts.factories.PrivateIssuerFactory.connect(
+                      blockchainProperties.privateIssuer,
+                      signer
+                  )
+                : null,
+            activeUser: signer
+        };
     }
 }
