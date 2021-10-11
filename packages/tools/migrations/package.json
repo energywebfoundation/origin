@@ -31,6 +31,7 @@
         "@energyweb/issuer": "4.0.0",
         "@energyweb/origin-backend-app": "1.5.4",
         "@energyweb/origin-backend-core": "8.0.2",
+        "@energyweb/origin-backend-utils": "1.6.1",
         "@energyweb/utils-general": "11.0.3",
         "@types/pg": "8.6.1",
         "commander": "6.2.1",

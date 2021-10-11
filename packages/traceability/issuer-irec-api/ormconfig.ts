@@ -3,7 +3,7 @@ import { getDBConnectionOptions } from '@energyweb/origin-backend-utils';
 import { entities } from './src';
 
 const config: ConnectionOptions = {
-    ...getDBConnectionOptions(),
+    ...(getDBConnectionOptions() as ConnectionOptions),
     entities,
     synchronize: false,
     migrationsRun: true,

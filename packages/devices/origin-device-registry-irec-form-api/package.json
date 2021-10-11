@@ -32,7 +32,7 @@
     "dependencies": {
         "@energyweb/origin-backend": "11.0.0",
         "@energyweb/origin-backend-core": "8.0.2",
-        "@energyweb/origin-backend-utils": "1.6.0",
+        "@energyweb/origin-backend-utils": "1.6.1",
         "@nestjs/common": "7.6.18",
         "@nestjs/config": "1.0.2",
         "@nestjs/core": "7.6.18",
