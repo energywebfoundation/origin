@@ -6,12 +6,12 @@
 # Origin Device Registry IREC Form API
 
 ## Description
-Overview of package. 
-Origin Device Registry IREC Form API is a module-based library built with xxx. 
+//TO DO: Overview of package. 
+An API for I-REC's form-based device registry
 
 //Purpose of package, sdk, etc. 
 
-The Origin SDK is a component of the [Energy Web Decentralized Operating System](#ew-dos)
+The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 
 See a reference implementation of Origin deployed [here](https://origin-ui-canary.herokuapp.com/device/all)
 

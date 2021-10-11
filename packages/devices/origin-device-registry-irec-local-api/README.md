@@ -6,10 +6,10 @@
 # Origin Device Registry IREC Local API
 
 ## Description
-TO DO - Overview of package. 
-API for working with I-REC specific implementation of device registry
+//TO DO - Overview of package. 
+API for working with the I-REC implementation of device registry
 
-The Origin SDK is a component of the [Energy Web Decentralized Operating System](#ew-dos)
+The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 
 See a reference implementation of Origin deployed [here](https://origin-ui-canary.herokuapp.com/device/all)
 

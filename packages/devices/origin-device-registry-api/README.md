@@ -9,7 +9,7 @@
 //TO DO: Overview of package. 
 Origin Device Registry API is a generic API implementation for Origin device registry. It does not conform to any specific certificate standard or issuing body. 
 
-The Origin SDK is a component of the [Energy Web Decentralized Operating System](#ew-dos)
+The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 
 See a reference implementation of Origin deployed [here](https://origin-ui-canary.herokuapp.com/device/all)
 

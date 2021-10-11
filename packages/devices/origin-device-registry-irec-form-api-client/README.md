@@ -6,10 +6,10 @@
 # Origin Device Registry IREC Form API Client
 
 ## Description
-Overview of package. 
-Origin Device Registry IREC Form API Client is a generic API implementation for Origin device registry. 
+//TO DO: Overview of package. 
+A client library to implement the [Origin I-REC device registry form API](../origin-device-registry-irec-form-api/README.md)
 
-The Origin SDK is a component of the [Energy Web Decentralized Operating System](#ew-dos)
+The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 
 See a reference implementation of Origin deployed [here](https://origin-ui-canary.herokuapp.com/device/all)
 
