@@ -24,8 +24,8 @@ export type BatchCertificateClaim = Omit<BatchCertificateTransfer, 'to'> & {
 export async function issueCertificates(
     certificateInfo: CertificateInfoInBatch[],
     blockchainProperties: IBlockchainProperties
-): Promise<Certificate['id'][]> {
-    const { issuer, registry, activeUser } = blockchainProperties;
+): Promise<ContractTransaction> {
+    const { issuer, activeUser } = blockchainProperties;
     const issuerWithSigner = issuer.connect(activeUser);
 
     const data = certificateInfo.map((info) =>
@@ -37,17 +37,28 @@ export async function issueCertificates(
         })
     );
 
-    const batchIssueTx = await issuerWithSigner.issueBatch(
+    return await issuerWithSigner.issueBatch(
         certificateInfo.map((info) => info.to),
         certificateInfo.map((info) => info.amount),
         data
     );
+}
 
-    const { events } = await batchIssueTx.wait();
+export async function getIdsFromBatchIssuanceTx(
+    txHash: string,
+    { web3, issuer, registry }: IBlockchainProperties
+): Promise<Certificate['id'][]> {
+    const txReceipt = await web3.getTransactionReceipt(txHash);
+
+    if (!txReceipt) {
+        throw new Error(`Tx ${txHash} not mined yet`);
+    }
+
+    const { logs } = txReceipt;
 
     let issuanceEvent: utils.LogDescription;
 
-    for (const event of events) {
+    for (const event of logs) {
         try {
             issuanceEvent = issuer.interface.parseLog(event);
         } catch (e) {
@@ -77,7 +88,7 @@ export async function transferCertificates(
 
     const certificates = await Promise.all(certificatesPromises);
 
-    const transferTx = await registryWithSigner.safeBatchTransferFromMultiple(
+    return await registryWithSigner.safeBatchTransferFromMultiple(
         certificateBatch.map((cert) => cert.from ?? activeUserAddress),
         certificateBatch.map((cert) => cert.to),
         certificateBatch.map((cert) => cert.id),
@@ -92,8 +103,6 @@ export async function transferCertificates(
         ),
         certificateBatch.map(() => utils.randomBytes(32)) // TO-DO: replace with proper data
     );
-
-    return transferTx;
 }
 
 export async function claimCertificates(
@@ -110,7 +119,7 @@ export async function claimCertificates(
 
     const registryWithSigner = registry.connect(activeUser);
 
-    const claimTx = await registryWithSigner.safeBatchTransferAndClaimFromMultiple(
+    return await registryWithSigner.safeBatchTransferAndClaimFromMultiple(
         certificateBatch.map((cert) => cert.from ?? activeUserAddress),
         certificateBatch.map((cert) => cert.to ?? cert.from ?? activeUserAddress),
         certificateBatch.map((cert) => cert.id),
@@ -126,6 +135,4 @@ export async function claimCertificates(
         certificateBatch.map(() => utils.randomBytes(32)), // TO-DO: replace with proper data
         certificateBatch.map((cert) => encodeClaimData(cert.claimData))
     );
-
-    return claimTx;
 }
