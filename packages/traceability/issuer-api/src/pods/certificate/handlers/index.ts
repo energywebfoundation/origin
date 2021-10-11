@@ -12,6 +12,7 @@ import { NewTransactionProcessedHandler } from './new-transaction-processed.hand
 import { SyncCertificateHandler } from './sync-certificate.handler';
 import { TransferCertificateHandler } from './transfer-certificate.handler';
 import { GetCertificatesWithLogsHandler } from './get-certificates-with-logs.handler';
+import { GetCertificateByTxHashHandler } from './get-certificate-by-tx-hash.handler';
 
 export {
     BatchClaimCertificatesHandler,
@@ -25,7 +26,8 @@ export {
     GetCertificateHandler,
     IssueCertificateHandler,
     SyncCertificateHandler,
-    TransferCertificateHandler
+    TransferCertificateHandler,
+    GetCertificateByTxHashHandler
 };
 
 export const CertificateHandlers = [
@@ -40,7 +42,8 @@ export const CertificateHandlers = [
     GetCertificateHandler,
     IssueCertificateHandler,
     SyncCertificateHandler,
-    TransferCertificateHandler
+    TransferCertificateHandler,
+    GetCertificateByTxHashHandler
 ];
 
 /** Because of irec-issuer-api using handlers above, and we don't want to migrate it yet to transaction logs */

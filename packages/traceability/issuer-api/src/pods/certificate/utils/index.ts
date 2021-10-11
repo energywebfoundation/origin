@@ -2,10 +2,7 @@ import { BigNumber, utils } from 'ethers';
 import { CertificateDTO } from '../dto/certificate.dto';
 import { Certificate } from '../certificate.entity';
 
-export const certificateToDto = async (
-    certificate: Certificate,
-    userId?: string
-): Promise<CertificateDTO> => {
+export const certificateToDto = (certificate: Certificate, userId?: string): CertificateDTO => {
     let userAddress: string;
 
     if (userId) {
@@ -31,7 +28,7 @@ export const certificateToDto = async (
         generationEndTime: certificate.generationEndTime,
         creationTime: certificate.creationTime,
         metadata: certificate.metadata,
-        creationBlockHash: certificate.creationBlockHash,
+        creationTransactionHash: certificate.creationTransactionHash,
         energy: {
             publicVolume: publicVolume.toString(),
             privateVolume: privateVolume.toString(),

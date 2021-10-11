@@ -4,8 +4,7 @@ import {
     BlockchainAccountDecorator,
     ExceptionInterceptor,
     Roles,
-    RolesGuard,
-    SuccessResponseDTO
+    RolesGuard
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -21,29 +20,39 @@ import {
     Query,
     UsePipes,
     ValidationPipe,
-    NotFoundException
+    NotFoundException,
+    HttpCode
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Role } from '@energyweb/origin-backend-core';
 
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import moment from 'moment';
 import { BigNumber } from 'ethers';
-import { IssueCertificateCommand } from './commands/issue-certificate.command';
-import { IssueCertificateDTO } from './commands/issue-certificate.dto';
-import { GetAllCertificatesQuery } from './queries/get-all-certificates.query';
-import { GetCertificateQuery } from './queries/get-certificate.query';
-import { TransferCertificateCommand } from './commands/transfer-certificate.command';
-import { TransferCertificateDTO } from './commands/transfer-certificate.dto';
-import { ClaimCertificateDTO } from './commands/claim-certificate.dto';
-import { ClaimCertificateCommand } from './commands/claim-certificate.command';
-import { GetAggregateCertifiedEnergyByDeviceIdQuery } from './queries/get-aggregate-certified-energy-by-device.query';
 import { CertificateEvent } from '../../types';
-import { GetAllCertificateEventsQuery } from './queries/get-all-certificate-events.query';
-import { CertificateDTO } from './dto/certificate.dto';
 import { certificateToDto } from './utils';
 import { Certificate } from './certificate.entity';
+
+import {
+    GetAggregateCertifiedEnergyByDeviceIdQuery,
+    GetAllCertificateEventsQuery,
+    GetAllCertificatesQuery,
+    GetCertificateByTxHashQuery,
+    GetCertificateQuery
+} from './queries';
+import {
+    ClaimCertificateCommand,
+    IssueCertificateCommand,
+    TransferCertificateCommand
+} from './commands';
+import {
+    CertificateDTO,
+    ClaimCertificateDTO,
+    IssueCertificateDTO,
+    TransferCertificateDTO
+} from './dto';
+import { TxHashDTO } from './dto/tx-hash.dto';
 
 @ApiTags('certificates')
 @ApiBearerAuth('access-token')
@@ -55,8 +64,7 @@ export class CertificateController {
 
     @Get('/:id')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         type: CertificateDTO,
         description: 'Returns a Certificate'
     })
@@ -75,10 +83,33 @@ export class CertificateController {
         return certificateToDto(certificate, blockchainAddress);
     }
 
+    @Get('/by-tx-hash/:txHash')
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiOkResponse({
+        type: [CertificateDTO],
+        description: 'Returns Certificates that were created in the transaction'
+    })
+    public async getByTxHash(
+        @Param('txHash') txHash: string,
+        @BlockchainAccountDecorator() blockchainAddress: string
+    ): Promise<CertificateDTO[]> {
+        const certificates = await this.queryBus.execute<
+            GetCertificateByTxHashQuery,
+            Certificate[]
+        >(new GetCertificateByTxHashQuery(txHash));
+
+        if (certificates?.length === 0) {
+            throw new NotFoundException(
+                `No certificates were issued in the tx with hash ${txHash}.`
+            );
+        }
+
+        return certificates.map((cert) => certificateToDto(cert, blockchainAddress));
+    }
+
     @Get()
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         type: [CertificateDTO],
         description: 'Returns all Certificates'
     })
@@ -88,14 +119,11 @@ export class CertificateController {
         const certificates = await this.queryBus.execute<GetAllCertificatesQuery, Certificate[]>(
             new GetAllCertificatesQuery()
         );
-        return Promise.all(
-            certificates.map((certificate) => certificateToDto(certificate, blockchainAddress))
-        );
+        return certificates.map((certificate) => certificateToDto(certificate, blockchainAddress));
     }
 
     @Get('/issuer/certified/:deviceId')
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         type: String,
         description: 'Returns SUM of certified energy by device ID'
     })
@@ -116,19 +144,19 @@ export class CertificateController {
     }
 
     @Post()
+    @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard, BlockchainAccountGuard)
     @Roles(Role.Issuer)
-    @ApiResponse({
-        status: HttpStatus.CREATED,
-        type: CertificateDTO,
-        description: 'Returns the issued Certificate'
+    @ApiOkResponse({
+        type: TxHashDTO,
+        description: 'Triggers an issuance transaction and returns the transaction hash'
     })
     @ApiBody({ type: IssueCertificateDTO })
     public async issue(
         @BlockchainAccountDecorator() blockchainAddress: string,
         @Body() dto: IssueCertificateDTO
-    ): Promise<CertificateDTO> {
-        return this.commandBus.execute(
+    ): Promise<TxHashDTO> {
+        const tx = await this.commandBus.execute(
             new IssueCertificateCommand(
                 dto.to,
                 dto.energy,
@@ -140,22 +168,23 @@ export class CertificateController {
                 dto.metadata
             )
         );
+
+        return { txHash: tx.hash };
     }
 
     @Put('/:id/transfer')
     @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiBody({ type: TransferCertificateDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: SuccessResponseDTO,
-        description: 'Returns whether the transfer succeeded'
+    @ApiOkResponse({
+        type: TxHashDTO,
+        description: 'Triggers a Transfer transaction and returns the transaction hash'
     })
     public async transfer(
         @BlockchainAccountDecorator() blockchainAddress: string,
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: TransferCertificateDTO
-    ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
+    ): Promise<TxHashDTO> {
+        const tx = await this.commandBus.execute(
             new TransferCertificateCommand(
                 certificateId,
                 blockchainAddress,
@@ -164,30 +193,32 @@ export class CertificateController {
                 dto.delegated
             )
         );
+
+        return { txHash: tx.hash };
     }
 
     @Put('/:id/claim')
     @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
     @ApiBody({ type: ClaimCertificateDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: SuccessResponseDTO,
-        description: 'Returns whether the claim succeeded'
+    @ApiOkResponse({
+        type: TxHashDTO,
+        description: 'Triggers a Transfer transaction and returns the transaction hash'
     })
     public async claim(
         @BlockchainAccountDecorator() blockchainAddress: string,
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: ClaimCertificateDTO
-    ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
+    ): Promise<TxHashDTO> {
+        const tx = await this.commandBus.execute(
             new ClaimCertificateCommand(certificateId, dto.claimData, blockchainAddress, dto.amount)
         );
+
+        return { txHash: tx.hash };
     }
 
     @Get('/:id/events')
     @UseGuards(AuthGuard(), ActiveUserGuard)
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         type: [CertificateEvent],
         description: 'Returns all the events for a Certificate'
     })

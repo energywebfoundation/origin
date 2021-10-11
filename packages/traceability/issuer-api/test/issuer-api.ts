@@ -10,6 +10,7 @@ import {
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { CanActivate, ExecutionContext, Type } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { IQueryHandler, QueryHandler, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
@@ -136,6 +137,10 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
 
     await issuer.setPrivateIssuer(privateIssuer.address);
 
+    const configService = new ConfigService({
+        BLOCKCHAIN_POLLING_INTERVAL: 100
+    });
+
     const moduleFixture = await Test.createTestingModule({
         imports: [
             TypeOrmModule.forRoot({
@@ -156,6 +161,8 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
     })
         .overrideGuard(AuthGuard('default'))
         .useValue(authGuard)
+        .overrideProvider(ConfigService)
+        .useValue(configService)
         .compile();
 
     const app = moduleFixture.createNestApplication();
@@ -186,7 +193,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         blockchainProperties.wrap(otherDeviceManager.privateKey)
     );
 
-    app.useLogger(['log', 'error', 'debug', 'verbose']);
+    app.useLogger(['log', 'error']);
     app.enableCors();
 
     useContainer(app.select(issuerModule), { fallbackOnErrors: true });
