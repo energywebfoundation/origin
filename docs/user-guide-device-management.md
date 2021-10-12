@@ -48,7 +48,7 @@ This view provides high-level generation capacity, certification overview and sm
 
 
 
-|           <b>Field</b>           |                                                               <b>Data</b>                                                               |
+|           Field           |                                           Data                                                               |
 |:-------------------------:|:-------------------------------------------------------------------------------------------------------------------------------:|
 | Certified MW              | MWh of generation already certified                                                                                             |
 | Nameplate Capacity        | Maximum generation capacity in MW                                                                                               |
@@ -62,7 +62,7 @@ This view provides high-level generation capacity, certification overview and sm
 
 ![Device Location Fields](images/deviceMgmtImages/DeviceLocationInfo.png)
 
-|      <b>Field</b>      |                     <b>Data</b>                    |
+|      Field      |                     Data                    |
 |:---------------:|:-------------------------------------------:|
 | Device Owner    | Organization ID of device owner             |
 | Device Location | Country flag indicator, region, city, state |
@@ -109,7 +109,7 @@ The local issuer receives the certification request, can verify the evidence and
 
 ### Certificate Request Fields
 
-|                   <b>Field</b>                |                               <b>Data<b>                                               |
+|                   Field                |                               Data                                               |
 |:----------------------------------------:|:------------------------------------------------------------------------------------------------:|
 | From                                     | Select initial date for generation period                                                        |
 | To                                       | Select last date for generation period                                                           |
