@@ -15,6 +15,7 @@ import { UnminedCommitment } from '../unmined-commitment.entity';
 import {
     CertificateCreatedEvent,
     CertificatePersistedEvent,
+    CertificateUpdatedEvent,
     SyncCertificateEvent
 } from '../events';
 
@@ -32,7 +33,11 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
         private readonly eventBus: EventBus
     ) {}
 
-    async handle({ id, privateInfo }: CertificateCreatedEvent): Promise<ISuccessResponse> {
+    async handle({
+        id,
+        byTxHash,
+        privateInfo
+    }: CertificateCreatedEvent): Promise<ISuccessResponse> {
         this.logger.log(`Detected a new certificate with ID ${id}`);
 
         const blockchainProperties = await this.blockchainPropertiesService.get();
@@ -44,7 +49,7 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
 
         if (existingCertificate) {
             // Re-sync the certificate to sync any eventual changes
-            this.eventBus.publish(new SyncCertificateEvent(id));
+            this.eventBus.publish(new SyncCertificateEvent(id, byTxHash));
 
             return ResponseFailure(
                 `Certificate with id ${id} already exists in the DB.`,
@@ -95,6 +100,7 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
             }
 
             this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
+            this.eventBus.publish(new CertificateUpdatedEvent(certificate.id, byTxHash));
 
             await queryRunner.commitTransaction();
         } catch (err) {

@@ -66,7 +66,7 @@ describe('Certificate tests', () => {
             .waitAndRetry(5)
             .executeForPromise(async (): Promise<CertificateDTO[]> => {
                 const res = await request(app.getHttpServer())
-                    .get(`/certificate/by-tx-hash/${txHash}`)
+                    .get(`/certificate/by-transaction/${txHash}`)
                     .set({ 'test-user': user });
 
                 if (res.status !== HttpStatus.OK) {

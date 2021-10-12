@@ -96,13 +96,17 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         switch (eventType) {
             case BlockchainEventType.IssuanceSingle:
                 logEvent(BlockchainEventType.IssuanceSingle, [event._id.toNumber()]);
-                this.eventBus.publish(new CertificateCreatedEvent(event._id.toNumber()));
+                this.eventBus.publish(
+                    new CertificateCreatedEvent(event._id.toNumber(), event.transactionHash)
+                );
                 break;
 
             case BlockchainEventType.IssuanceBatch:
                 event._ids.forEach((id: any) => {
                     logEvent(BlockchainEventType.IssuanceBatch, [id.toNumber()]);
-                    this.eventBus.publish(new CertificateCreatedEvent(id.toNumber()));
+                    this.eventBus.publish(
+                        new CertificateCreatedEvent(id.toNumber(), event.transactionHash)
+                    );
                 });
                 break;
 
@@ -116,7 +120,9 @@ export class OnChainCertificateWatcher implements OnModuleInit {
                     break;
                 }
 
-                this.eventBus.publish(new SyncCertificateEvent(event.id.toNumber()));
+                this.eventBus.publish(
+                    new SyncCertificateEvent(event.id.toNumber(), event.transactionHash)
+                );
                 break;
 
             case BlockchainEventType.TransferBatch:
@@ -132,20 +138,26 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
                 event.ids.forEach((id: any) => {
                     logEvent(BlockchainEventType.TransferBatch, [id.toNumber()]);
-                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
+                    this.eventBus.publish(
+                        new SyncCertificateEvent(id.toNumber(), event.transactionHash)
+                    );
                 });
                 break;
 
             case BlockchainEventType.ClaimSingle:
                 logEvent(BlockchainEventType.ClaimSingle, [event._id.toNumber()]);
-                this.eventBus.publish(new SyncCertificateEvent(event._id.toNumber()));
+                this.eventBus.publish(
+                    new SyncCertificateEvent(event._id.toNumber(), event.transactionHash)
+                );
                 break;
 
             case BlockchainEventType.ClaimBatch:
             case BlockchainEventType.ClaimBatchMultiple:
                 event._ids.forEach((id: any) => {
                     logEvent(BlockchainEventType.ClaimBatch, [id.toNumber()]);
-                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
+                    this.eventBus.publish(
+                        new SyncCertificateEvent(id.toNumber(), event.transactionHash)
+                    );
                 });
                 break;
 

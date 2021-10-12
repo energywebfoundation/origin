@@ -83,7 +83,7 @@ export class CertificateController {
         return certificateToDto(certificate, blockchainAddress);
     }
 
-    @Get('/by-tx-hash/:txHash')
+    @Get('/by-transaction/:txHash')
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @ApiOkResponse({
         type: [CertificateDTO],
