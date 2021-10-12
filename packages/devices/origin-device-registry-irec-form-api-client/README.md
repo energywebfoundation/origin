@@ -52,11 +52,6 @@ See [contributing.md](../../../contributing.md)
 ## Questions and Support
 For questions and support please use Energy Web's [Discord channel](https://discord.com/channels/706103009205288990/843970822254362664) 
 
-Or reach out to our contributing team members
-
-- TeamMember: email address@energyweb.org
-
-
 # EW-DOS
 The Energy Web Decentralized Operating System is a blockchain-based, multi-layer digital infrastructure. 
 
