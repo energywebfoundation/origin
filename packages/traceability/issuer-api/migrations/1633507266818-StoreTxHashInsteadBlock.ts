@@ -13,9 +13,6 @@ export class StoreTxHashInsteadBlock1633507266818 implements MigrationInterface 
             `ALTER TABLE "issuer_certificate" ADD "creationTransactionHash" character varying`
         );
         const existingCertificates = await queryRunner.query(`SELECT id FROM "issuer_certificate"`);
-        console.log({
-            existingCertificates
-        });
 
         if (existingCertificates.length > 0) {
             const blockchainProperties: BlockchainProperties = await queryRunner.query(

@@ -95,6 +95,8 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
             }
 
             this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
+
+            await queryRunner.commitTransaction();
         } catch (err) {
             await queryRunner.rollbackTransaction();
 
