@@ -14,7 +14,8 @@ The local issuer receives the device registration and can verify the data and ap
 
 Once you have an active account in the Origin platform and are part of an organization, you can register your devices on the platform.
 
-The Device interface has four views. The purpose of each view is explained in detail below.
+The Device interface has four views. The purpose and utility of each view is explained in detail below.
+
 ![Device Interface](images/deviceMgmtImages/DevicePortalAll.png)
 
 1. <b>[All Devices:](##all-devices)</b> Allows any user to see all registered devices within a marketplace. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
