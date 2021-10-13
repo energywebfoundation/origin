@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Certificate as CertificateFacade, PreciseProofUtils } from '@energyweb/issuer';
 import { BigNumber } from 'ethers';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { TransferCertificateCommand } from '../commands/transfer-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -25,6 +25,12 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
             { id: certificateId },
             { relations: ['blockchain'] }
         );
+
+        if (!certificate) {
+            throw new NotFoundException(
+                `Requested transfer of certificate ${certificateId}, but such doesn't exist`
+            );
+        }
 
         const onChainCert = await new CertificateFacade(
             certificate.id,

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CertificateBatchOperations } from '@energyweb/issuer';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { BigNumber } from 'ethers';
-import { HttpStatus } from '@nestjs/common';
+import { HttpStatus, NotFoundException } from '@nestjs/common';
 import { BatchClaimCertificatesCommand } from '../commands/batch-claim-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -28,6 +28,12 @@ export class BatchClaimCertificatesHandler
             }
 
             const cert = await this.repository.findOne(id);
+
+            if (!cert) {
+                throw new NotFoundException(
+                    `Requested claim of certificate ${id}, but such doesn't exist`
+                );
+            }
 
             if (
                 !cert.owners[from] ||
