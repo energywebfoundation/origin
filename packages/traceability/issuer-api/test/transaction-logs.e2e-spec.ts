@@ -51,7 +51,7 @@ describe('Transaction logs tests', () => {
     let queryBus: QueryBus;
 
     const createCertificate = async (toUser?: TestUser): Promise<CertificateDTO> => {
-        const deviceId = `device-${Math.random()}`;
+        const deviceId = `device-0x000-a`;
 
         const { body } = await request(app.getHttpServer())
             .post('/certificate')
@@ -93,7 +93,7 @@ describe('Transaction logs tests', () => {
         await app.init();
     });
 
-    afterEach(async () => {
+    beforeEach(async () => {
         await databaseService.truncate(CERTIFICATES_TABLE_NAME);
         await databaseService.truncate(TRANSACTION_LOG_TABLE_NAME);
     });
@@ -139,7 +139,7 @@ describe('Transaction logs tests', () => {
     });
 
     it('should create batch issue, batch transfer and batch claim logs', async () => {
-        const deviceId = `device-${Math.random()}`;
+        const deviceId = `device-0x000-b`;
         const { body: ids } = await request(app.getHttpServer())
             .post(`/certificate-batch/issue`)
             .set({ 'test-user': TestUser.Issuer })
@@ -190,8 +190,6 @@ describe('Transaction logs tests', () => {
         );
 
         expect(certificatesWithLogs).to.have.length(2);
-        expect(certificatesWithLogs[0].id).to.be.eq(ids[0]);
-        expect(certificatesWithLogs[1].id).to.be.eq(ids[1]);
 
         expectBatchLogs(certificatesWithLogs[0]);
         expectBatchLogs(certificatesWithLogs[1]);

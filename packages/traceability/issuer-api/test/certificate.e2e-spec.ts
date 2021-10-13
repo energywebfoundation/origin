@@ -655,4 +655,55 @@ describe('Certificate tests', () => {
             .set({ 'test-user': TestUser.UserWithoutBlockchainAccount })
             .expect(HttpStatus.OK);
     });
+
+    it('should reject transferring of not existing certificate', async () => {
+        await request(app.getHttpServer())
+            .put(`/certificate/1122334455/transfer`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({
+                to: registryDeployer.address,
+                amount: certificateTestData.energy
+            })
+            .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should reject batch transferring of not existing certificate', async () => {
+        const {
+            body: { message }
+        } = await request(app.getHttpServer())
+            .put(`/certificate-batch/transfer`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send([
+                {
+                    id: 1122334455,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: certificateTestData.energy
+                },
+                {
+                    id: 1122334456,
+                    to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
+                    amount: certificateTestData.energy
+                }
+            ])
+            .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should reject claim of not existing certificate', async () => {
+        await request(app.getHttpServer())
+            .put(`/certificate/1122334455/claim`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send({ amount: '1', claimData })
+            .expect(HttpStatus.NOT_FOUND);
+    });
+
+    it('should reject batch claim of not existing certificate', async () => {
+        await request(app.getHttpServer())
+            .put(`/certificate-batch/claim`)
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .send([
+                { id: 1122334455, claimData, amount: '1' },
+                { id: 1122334456, claimData, amount: '1' }
+            ])
+            .expect(HttpStatus.NOT_FOUND);
+    });
 });
