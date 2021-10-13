@@ -190,8 +190,6 @@ describe('Transaction logs tests', () => {
         );
 
         expect(certificatesWithLogs).to.have.length(2);
-        expect(certificatesWithLogs[0].id).to.be.eq(ids[0]);
-        expect(certificatesWithLogs[1].id).to.be.eq(ids[1]);
 
         expectBatchLogs(certificatesWithLogs[0]);
         expectBatchLogs(certificatesWithLogs[1]);
