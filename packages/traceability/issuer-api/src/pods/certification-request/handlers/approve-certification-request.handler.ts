@@ -65,7 +65,11 @@ export class ApproveCertificationRequestHandler
         });
 
         this.eventBus.publish(
-            new CertificateCreatedEvent(newCertificateId, isPrivate ? { owner, energy } : null)
+            new CertificateCreatedEvent(
+                newCertificateId,
+                null,
+                isPrivate ? { owner, energy } : null
+            )
         );
 
         this.eventBus.publish(new CertificateRequestApprovedEvent(id));

@@ -2,9 +2,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Certificate as CertificateFacade, PreciseProofUtils } from '@energyweb/issuer';
-import { BigNumber } from 'ethers';
-import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import { BigNumber, ContractTransaction } from 'ethers';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { TransferCertificateCommand } from '../commands/transfer-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -20,7 +19,7 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
         from,
         to,
         amount
-    }: TransferCertificateCommand): Promise<ISuccessResponse> {
+    }: TransferCertificateCommand): Promise<ContractTransaction | true> {
         const certificate = await this.repository.findOne(
             { id: certificateId },
             { relations: ['blockchain'] }
@@ -47,9 +46,8 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
             const amountToTransfer = BigNumber.from(amount);
 
             if (amountToTransfer > senderBalance) {
-                return ResponseFailure(
-                    `Sender ${from} has a balance of ${senderBalance.toString()} but wants to send ${amount}`,
-                    HttpStatus.BAD_REQUEST
+                throw new BadRequestException(
+                    `Sender ${from} has a balance of ${senderBalance.toString()} but wants to send ${amount}`
                 );
             }
 
@@ -66,27 +64,13 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
                 latestCommitment: PreciseProofUtils.generateProofs(newCommitment)
             });
 
-            return ResponseSuccess();
+            return true;
         }
 
-        try {
-            const transferTx = await onChainCert.transfer(
-                to,
-                BigNumber.from(amount ?? onChainCert.owners[from]),
-                from
-            );
-
-            const receipt = await transferTx.wait();
-
-            if (receipt.status === 0) {
-                throw new Error(
-                    `Transfer tx ${receipt.transactionHash} on certificate with id ${onChainCert.id} failed.`
-                );
-            }
-        } catch (error) {
-            return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return ResponseSuccess();
+        return await onChainCert.transfer(
+            to,
+            BigNumber.from(amount ?? onChainCert.owners[from]),
+            from
+        );
     }
 }

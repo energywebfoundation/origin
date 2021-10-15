@@ -1,11 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CertificateBatchOperations } from '@energyweb/issuer';
 import { HttpStatus, HttpException } from '@nestjs/common';
-import { BigNumber } from 'ethers';
+import { BigNumber, ContractTransaction } from 'ethers';
 
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { BatchIssueCertificatesCommand } from '../commands/batch-issue-certificates.command';
-import { Certificate } from '../certificate.entity';
 
 @CommandHandler(BatchIssueCertificatesCommand)
 export class BatchIssueCertificatesHandler
@@ -15,7 +14,7 @@ export class BatchIssueCertificatesHandler
 
     async execute({
         certificatesInfo
-    }: BatchIssueCertificatesCommand): Promise<Certificate['id'][]> {
+    }: BatchIssueCertificatesCommand): Promise<ContractTransaction> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
 
         try {

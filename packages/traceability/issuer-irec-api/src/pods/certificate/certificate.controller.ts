@@ -25,7 +25,7 @@ import {
     SuccessResponseDTO,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
-import { CertificateController, ClaimCertificateDTO } from '@energyweb/issuer-api';
+import { TxHashDTO, CertificateController, ClaimCertificateDTO } from '@energyweb/issuer-api';
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 
 import { GetIrecCertificatesToImportCommand, ImportIrecCertificateCommand } from './command';
@@ -74,16 +74,18 @@ export class IrecCertificateController extends CertificateController {
     @ApiBody({ type: ClaimCertificateDTO })
     @ApiResponse({
         status: HttpStatus.OK,
-        type: SuccessResponseDTO,
+        type: TxHashDTO,
         description: 'Returns whether the claim succeeded'
     })
     public async claimIREC(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseIntPipe()) certificateId: number,
         @Body() dto: ClaimCertificateDTO
-    ): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(
+    ): Promise<TxHashDTO> {
+        const tx = await this.commandBus.execute(
             new ClaimIRECCertificateCommand(user, certificateId, dto.claimData)
         );
+
+        return { txHash: tx.hash };
     }
 }

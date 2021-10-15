@@ -2,10 +2,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Certificate as CertificateFacade } from '@energyweb/issuer';
-import { BigNumber, Event as BlockchainEvent, utils } from 'ethers';
-import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
+import { BigNumber, ContractTransaction, Event as BlockchainEvent, utils } from 'ethers';
 import { PreciseProofs } from 'precise-proofs-js';
-import { HttpStatus, NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+
 import { ClaimCertificateCommand } from '../commands/claim-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -21,7 +21,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
         claimData,
         forAddress,
         amount
-    }: ClaimCertificateCommand): Promise<ISuccessResponse> {
+    }: ClaimCertificateCommand): Promise<ContractTransaction> {
         const checksummedForAddress = utils.getAddress(forAddress);
 
         const certificate = await this.repository.findOne(
@@ -49,9 +49,8 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
         const amountToClaim = amount ? BigNumber.from(amount) : claimerBalance;
 
         if (amountToClaim.gt(claimerBalance)) {
-            return ResponseFailure(
-                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amountToClaim}.`,
-                HttpStatus.BAD_REQUEST
+            throw new BadRequestException(
+                `Claimer ${checksummedForAddress} has a balance of ${claimerBalance.toString()} but wants to claim ${amountToClaim}.`
             );
         }
 
@@ -97,25 +96,11 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
             await migrateTx.wait();
         }
 
-        try {
-            const claimTx = await cert.claim(
-                claimData,
-                BigNumber.from(amountToClaim),
-                checksummedForAddress,
-                checksummedForAddress
-            );
-
-            const receipt = await claimTx.wait();
-
-            if (receipt.status === 0) {
-                throw new Error(
-                    `Transfer tx ${receipt.transactionHash} on certificate with id ${cert.id} failed.`
-                );
-            }
-        } catch (error) {
-            return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return ResponseSuccess();
+        return await cert.claim(
+            claimData,
+            BigNumber.from(amountToClaim),
+            checksummedForAddress,
+            checksummedForAddress
+        );
     }
 }
