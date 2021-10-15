@@ -5,6 +5,7 @@ import { Certificate as CertificateFacade } from '@energyweb/issuer';
 import { BigNumber, ContractTransaction, Event as BlockchainEvent, utils } from 'ethers';
 import { PreciseProofs } from 'precise-proofs-js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+
 import { ClaimCertificateCommand } from '../commands/claim-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -29,7 +30,9 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
         );
 
         if (!certificate) {
-            throw new NotFoundException(`No certificate found with id ${certificateId}`);
+            throw new NotFoundException(
+                `Requested claim of certificate ${certificateId}, but such doesn't exist`
+            );
         }
 
         const cert = await new CertificateFacade(

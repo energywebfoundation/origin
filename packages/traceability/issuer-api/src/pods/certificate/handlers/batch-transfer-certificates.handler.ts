@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertificateBatchOperations } from '@energyweb/issuer';
 import { BigNumber, ContractTransaction } from 'ethers';
-import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+
 import { BatchTransferCertificatesCommand } from '../commands/batch-transfer-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -27,6 +28,12 @@ export class BatchTransferCertificatesHandler
             }
 
             const cert = await this.repository.findOne(id);
+
+            if (!cert) {
+                throw new NotFoundException(
+                    `Requested transfer of certificate ${id}, but such doesn't exist`
+                );
+            }
 
             if (
                 !cert.owners[from] ||
