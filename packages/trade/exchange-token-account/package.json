@@ -52,7 +52,7 @@
         "solc": "0.8.4",
         "truffle": "5.4.15",
         "truffle-typings": "1.0.8",
-        "typechain": "5.1.2",
+        "typechain": "5.2.0",
         "typescript": "4.4.4"
     },
     "gitHead": "54beaf7fe6686810de74ca290daf99cbde510f9d",
