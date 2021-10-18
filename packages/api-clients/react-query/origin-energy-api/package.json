@@ -28,10 +28,10 @@
         "react-query": "3.24.3"
     },
     "devDependencies": {
-        "@nestjs/passport": "7.1.6",
-        "@nestjs/swagger": "4.8.2",
-        "@nestjs/testing": "7.6.18",
-        "@nestjs/typeorm": "7.1.5",
+        "@nestjs/passport": "8.0.1",
+        "@nestjs/swagger": "5.1.1",
+        "@nestjs/testing": "8.1.1",
+        "@nestjs/typeorm": "8.0.2",
         "@types/mocha": "9.0.0",
         "@types/node": "14.17.27",
         "barrelsby": "2.3.0",
