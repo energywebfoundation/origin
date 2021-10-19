@@ -8,6 +8,7 @@ import {
     ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
+    CreateAccountParams,
     Device,
     DeviceCreateParams,
     DeviceState,
@@ -222,6 +223,8 @@ export class IrecMockService implements IIrecService {
     async getIssueRequest(user: UserIdentifier, code: string): Promise<IssueWithStatus> {
         return this.issueRequests.find((ir) => ir.code === code);
     }
+
+    async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {}
 
     async uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]) {
         return files.map(() => randomString());
