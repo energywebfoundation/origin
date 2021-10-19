@@ -34,12 +34,12 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@nestjs/common": "7.6.18",
+        "@nestjs/common": "8.1.1",
         "bn.js": "5.2.0",
         "chai": "4.3.0",
         "immutable": "4.0.0",
         "moment": "2.29.1",
-        "rxjs": "6.6.7"
+        "rxjs": "7.4.0"
     },
     "devDependencies": {
         "@types/bn.js": "5.1.0",
