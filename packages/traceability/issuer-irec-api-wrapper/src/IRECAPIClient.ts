@@ -12,6 +12,7 @@ import {
     Account,
     AccountBalance,
     ApproveTransaction,
+    CreateAccountParams,
     RedeemTransaction,
     RedeemTransactionResult,
     Transaction,
@@ -93,6 +94,16 @@ export class IRECAPIClient {
         const accountManagementUrl = `${this.endPointUrl}/api/irec/v1/account-management`;
 
         return {
+            create: async (account: CreateAccountParams): Promise<void> => {
+                const accountParams =
+                    account instanceof CreateAccountParams
+                        ? account
+                        : plainToClass(CreateAccountParams, account);
+
+                await validateOrReject(accountParams);
+                const url = `${accountManagementUrl}/create`;
+                await this.axiosInstance.post(url, classToPlain(accountParams), this.config);
+            },
             getAll: async (): Promise<Account[]> => {
                 const response = await this.axiosInstance.get<unknown[]>(
                     accountManagementUrl,
