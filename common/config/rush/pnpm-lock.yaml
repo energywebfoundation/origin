@@ -7,12 +7,12 @@ dependencies:
   '@emotion/react': 11.4.1_ff15dd6d31398a7b0fd1e8a2ec90acbe
   '@emotion/styled': 11.3.0_e4b07a256b684e681f9b067c41bfe917
   '@energyweb/energy-api-influxdb': 0.8.1_ecb5cc502df3a2ec088b43091bdea01d
-  '@ethersproject/abi': 5.3.1
-  '@ethersproject/abstract-provider': 5.3.0
-  '@ethersproject/abstract-signer': 5.3.0
-  '@ethersproject/contracts': 5.3.0
-  '@ethersproject/providers': 5.3.1
-  '@ethersproject/wallet': 5.3.0
+  '@ethersproject/abi': 5.4.1
+  '@ethersproject/abstract-provider': 5.4.1
+  '@ethersproject/abstract-signer': 5.4.1
+  '@ethersproject/contracts': 5.4.1
+  '@ethersproject/providers': 5.4.5
+  '@ethersproject/wallet': 5.4.0
   '@hookform/resolvers': 2.8.2_react-hook-form@7.12.2
   '@jest/globals': 27.3.0
   '@material-ui/core': 5.0.0-beta.4_bdd072f4e114e18a9f7e3389a09272ff
@@ -100,7 +100,7 @@ dependencies:
   '@svgr/webpack': 5.5.0
   '@testing-library/jest-dom': 5.14.1
   '@testing-library/react': 12.1.0_react-dom@17.0.2+react@17.0.2
-  '@typechain/ethers-v5': 7.0.1_20aa694c999a09b43cd2d4cfb53d009a
+  '@typechain/ethers-v5': 7.0.1_2e9f1b33c87c63f7b72cdf1d003c2361
   '@types/bcryptjs': 2.4.2
   '@types/bn.js': 5.1.0
   '@types/body-parser': 1.19.1
@@ -170,7 +170,7 @@ dependencies:
   eslint-plugin-react: 7.25.3_eslint@7.32.0
   eslint-plugin-react-hooks: 4.2.0_eslint@7.32.0
   eth-sig-util: 2.5.4
-  ethers: 5.3.1
+  ethers: 5.4.7
   ethlint: 1.2.5
   express: 4.17.1
   form-data: 4.0.0
@@ -3760,6 +3760,20 @@ packages:
     dev: false
     resolution:
       integrity: sha512-F98FWTJG7nWWAQ4DcV6R0cSlrj67MWK3ylahuFbzkumem5cLWg1p7fZ3vIdRoS1c7TEf55Lvyx0w7ICR47IImw==
+  /@ethersproject/abi/5.4.1:
+    dependencies:
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/bignumber': 5.4.2
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/constants': 5.4.0
+      '@ethersproject/hash': 5.4.0
+      '@ethersproject/keccak256': 5.4.0
+      '@ethersproject/logger': 5.4.1
+      '@ethersproject/properties': 5.4.1
+      '@ethersproject/strings': 5.4.0
+    dev: false
+    resolution:
+      integrity: sha512-9mhbjUk76BiSluiiW4BaYyI58KSbDMMQpCLdsAR+RsT2GyATiNYxVv+pGWRrekmsIdY3I+hOqsYQSTkc8L/mcg==
   /@ethersproject/abstract-provider/5.3.0:
     dependencies:
       '@ethersproject/bignumber': 5.4.2
@@ -3905,6 +3919,21 @@ packages:
     dev: false
     resolution:
       integrity: sha512-eDyQ8ltykvyQqnGZxb/c1e0OnEtzqXhNNC4BX8nhYBCaoBrYYuK/1fLmyEvc5+XUMoxNhwpYkoSSwvPLci7/Zg==
+  /@ethersproject/contracts/5.4.1:
+    dependencies:
+      '@ethersproject/abi': 5.4.1
+      '@ethersproject/abstract-provider': 5.4.1
+      '@ethersproject/abstract-signer': 5.4.1
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/bignumber': 5.4.2
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/constants': 5.4.0
+      '@ethersproject/logger': 5.4.1
+      '@ethersproject/properties': 5.4.1
+      '@ethersproject/transactions': 5.4.0
+    dev: false
+    resolution:
+      integrity: sha512-m+z2ZgPy4pyR15Je//dUaymRUZq5MtDajF6GwFbGAVmKz/RF+DNIPwF0k5qEcL3wPGVqUjFg2/krlCRVTU4T5w==
   /@ethersproject/hash/5.3.0:
     dependencies:
       '@ethersproject/abstract-signer': 5.4.1
@@ -4085,6 +4114,30 @@ packages:
     dev: false
     resolution:
       integrity: sha512-HC63vENTrur6/JKEhcQbA8PRDj1FAesdpX98IW+xAAo3EAkf70ou5fMIA3KCGzJDLNTeYA4C2Bonz849tVLekg==
+  /@ethersproject/providers/5.4.5:
+    dependencies:
+      '@ethersproject/abstract-provider': 5.4.1
+      '@ethersproject/abstract-signer': 5.4.1
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/basex': 5.4.0
+      '@ethersproject/bignumber': 5.4.2
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/constants': 5.4.0
+      '@ethersproject/hash': 5.4.0
+      '@ethersproject/logger': 5.4.1
+      '@ethersproject/networks': 5.4.2
+      '@ethersproject/properties': 5.4.1
+      '@ethersproject/random': 5.4.0
+      '@ethersproject/rlp': 5.4.0
+      '@ethersproject/sha2': 5.4.0
+      '@ethersproject/strings': 5.4.0
+      '@ethersproject/transactions': 5.4.0
+      '@ethersproject/web': 5.4.0
+      bech32: 1.1.4
+      ws: 7.4.6
+    dev: false
+    resolution:
+      integrity: sha512-1GkrvkiAw3Fj28cwi1Sqm8ED1RtERtpdXmRfwIBGmqBSN5MoeRUHuwHPppMtbPayPgpFcvD7/Gdc9doO5fGYgw==
   /@ethersproject/random/5.3.0:
     dependencies:
       '@ethersproject/bytes': 5.3.0
@@ -4251,6 +4304,26 @@ packages:
     dev: false
     resolution:
       integrity: sha512-boYBLydG6671p9QoG6EinNnNzbm7DNOjVT20eV8J6HQEq4aUaGiA2CytF2vK+2rOEWbzhZqoNDt6AlkE1LlsTg==
+  /@ethersproject/wallet/5.4.0:
+    dependencies:
+      '@ethersproject/abstract-provider': 5.4.1
+      '@ethersproject/abstract-signer': 5.4.1
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/bignumber': 5.4.2
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/hash': 5.4.0
+      '@ethersproject/hdnode': 5.4.0
+      '@ethersproject/json-wallets': 5.4.0
+      '@ethersproject/keccak256': 5.4.0
+      '@ethersproject/logger': 5.4.1
+      '@ethersproject/properties': 5.4.1
+      '@ethersproject/random': 5.4.0
+      '@ethersproject/signing-key': 5.4.0
+      '@ethersproject/transactions': 5.4.0
+      '@ethersproject/wordlists': 5.4.0
+    dev: false
+    resolution:
+      integrity: sha512-wU29majLjM6AjCjpat21mPPviG+EpK7wY1+jzKD0fg3ui5fgedf2zEu1RDgpfIMsfn8fJHJuzM4zXZ2+hSHaSQ==
   /@ethersproject/web/5.3.0:
     dependencies:
       '@ethersproject/base64': 5.3.0
@@ -10383,11 +10456,11 @@ packages:
       node: '>=10.13.0'
     resolution:
       integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
-  /@typechain/ethers-v5/7.0.1_20aa694c999a09b43cd2d4cfb53d009a:
+  /@typechain/ethers-v5/7.0.1_2e9f1b33c87c63f7b72cdf1d003c2361:
     dependencies:
-      '@ethersproject/abi': 5.3.1
-      '@ethersproject/providers': 5.3.1
-      ethers: 5.3.1
+      '@ethersproject/abi': 5.4.1
+      '@ethersproject/providers': 5.4.5
+      ethers: 5.4.7
       typechain: 5.2.0_typescript@4.4.4
       typescript: 4.4.4
     dev: false
@@ -18957,6 +19030,41 @@ packages:
     dev: false
     resolution:
       integrity: sha512-xCKmC0gsZ9gks89ZfK3B1y6LlPdvX5fxDtu9SytnpdDJR1M7pmJI+4H0AxQPMgUYr7GtQdmECLR0gWdJQ+lZYw==
+  /ethers/5.4.7:
+    dependencies:
+      '@ethersproject/abi': 5.4.1
+      '@ethersproject/abstract-provider': 5.4.1
+      '@ethersproject/abstract-signer': 5.4.1
+      '@ethersproject/address': 5.4.0
+      '@ethersproject/base64': 5.4.0
+      '@ethersproject/basex': 5.4.0
+      '@ethersproject/bignumber': 5.4.2
+      '@ethersproject/bytes': 5.4.0
+      '@ethersproject/constants': 5.4.0
+      '@ethersproject/contracts': 5.4.1
+      '@ethersproject/hash': 5.4.0
+      '@ethersproject/hdnode': 5.4.0
+      '@ethersproject/json-wallets': 5.4.0
+      '@ethersproject/keccak256': 5.4.0
+      '@ethersproject/logger': 5.4.1
+      '@ethersproject/networks': 5.4.2
+      '@ethersproject/pbkdf2': 5.4.0
+      '@ethersproject/properties': 5.4.1
+      '@ethersproject/providers': 5.4.5
+      '@ethersproject/random': 5.4.0
+      '@ethersproject/rlp': 5.4.0
+      '@ethersproject/sha2': 5.4.0
+      '@ethersproject/signing-key': 5.4.0
+      '@ethersproject/solidity': 5.4.0
+      '@ethersproject/strings': 5.4.0
+      '@ethersproject/transactions': 5.4.0
+      '@ethersproject/units': 5.4.0
+      '@ethersproject/wallet': 5.4.0
+      '@ethersproject/web': 5.4.0
+      '@ethersproject/wordlists': 5.4.0
+    dev: false
+    resolution:
+      integrity: sha512-iZc5p2nqfWK1sj8RabwsPM28cr37Bpq7ehTQ5rWExBr2Y09Sn1lDKZOED26n+TsZMye7Y6mIgQ/1cwpSD8XZew==
   /ethjs-unit/0.1.6:
     dependencies:
       bn.js: 4.11.6
@@ -39579,10 +39687,10 @@ packages:
     version: 0.0.0
   file:projects/exchange-io-erc1888.tgz_a1a1927f493b74a158dc37fb98bc1a63:
     dependencies:
-      '@ethersproject/abi': 5.3.1
-      '@ethersproject/abstract-provider': 5.3.0
-      '@ethersproject/contracts': 5.3.0
-      '@ethersproject/providers': 5.3.1
+      '@ethersproject/abi': 5.4.1
+      '@ethersproject/abstract-provider': 5.4.1
+      '@ethersproject/contracts': 5.4.1
+      '@ethersproject/providers': 5.4.5
       '@nestjs/cli': 8.1.4_eslint@7.32.0
       '@nestjs/common': 8.1.1_1fdee13e3150b5040b80a8c5c6d35d9b
       '@nestjs/config': 1.0.2_13adf4c855eac18d5ece2d7b1023f678
@@ -39598,7 +39706,7 @@ packages:
       chai: 4.3.0
       class-validator: 0.13.1
       eslint-plugin-jest: 24.7.0_f178490c6a6949e5c714e48d3ab36f98
-      ethers: 5.3.1
+      ethers: 5.4.7
       jest: 27.3.0_ts-node@9.1.1
       mocha: 9.1.3
       moment: 2.29.1
@@ -39620,7 +39728,7 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-f166nhCKLBOxU9iwStD2cN8KcUadvzwPLLgeBtKtbNV0jTpxRhGgoZQlGAuKwly2uFrXxLcM10egNZli3nCnbA==
+      integrity: sha512-pGvSljslqmySt1mt/QuoBmSnIPqCzwLhGtzzWxfvcxM4zRc4iSgo1C6DZdyy9L40WID8aGbmNorJfrXFAKNw3A==
       tarball: file:projects/exchange-io-erc1888.tgz
     version: 0.0.0
   file:projects/exchange-irec-client.tgz_4f6e83eb5a56fc26d57530296bd4b8aa:
@@ -39777,18 +39885,18 @@ packages:
     version: 0.0.0
   file:projects/exchange-token-account.tgz_react@17.0.2:
     dependencies:
-      '@ethersproject/abi': 5.3.1
-      '@ethersproject/contracts': 5.3.0
-      '@ethersproject/providers': 5.3.1
+      '@ethersproject/abi': 5.4.1
+      '@ethersproject/contracts': 5.4.1
+      '@ethersproject/providers': 5.4.5
       '@openzeppelin/cli': 2.8.2
       '@openzeppelin/contracts': 4.3.2
       '@openzeppelin/contracts-upgradeable': 4.3.2
       '@openzeppelin/upgrades': 2.8.0
-      '@typechain/ethers-v5': 7.0.1_20aa694c999a09b43cd2d4cfb53d009a
+      '@typechain/ethers-v5': 7.0.1_2e9f1b33c87c63f7b72cdf1d003c2361
       '@types/mocha': 9.0.0
       '@types/node': 14.17.27
       chai: 4.3.0
-      ethers: 5.3.1
+      ethers: 5.4.7
       mocha: 9.1.3
       solc: 0.8.4
       truffle: 5.4.15_5b8e5153cb50d992c492fb706aa93158
@@ -39801,7 +39909,7 @@ packages:
     peerDependencies:
       react: '*'
     resolution:
-      integrity: sha512-8kL42oQJQXSZxLxZEXYjZF8DXqWCIBkKvIwjj5qW4IzNhHMLC5QpUf4icQ6Y27CEizXEFdW3XWiL8eBTH4pMxg==
+      integrity: sha512-ItvsTgWxZvOwBS//7rUOZuT98K39zm7Rmbq98hMmbALhJcLFYkDMGybkKT35gscFs382E+yXlAb3tM+V8qrU1A==
       tarball: file:projects/exchange-token-account.tgz
     version: 0.0.0
   file:projects/exchange.tgz_827d1c1e37e4d5579cf739caaea44fba:
@@ -39832,7 +39940,7 @@ packages:
       class-transformer: 0.3.1
       class-validator: 0.13.1
       eslint-plugin-jest: 24.7.0_f178490c6a6949e5c714e48d3ab36f98
-      ethers: 5.3.1
+      ethers: 5.4.7
       ganache-cli: 6.12.2
       immutable: 4.0.0
       jest: 27.3.0_ts-node@9.1.1
@@ -39859,7 +39967,7 @@ packages:
       express: '*'
       passport: '*'
     resolution:
-      integrity: sha512-qXzGVu7fxhWatEneL1dEzJsUXD1cpojcFHdpaOzQdh7lrHJCB7uCF2Zn7b8YuWD3Tiovf97q+8TVXRfvWqeH+A==
+      integrity: sha512-7fUc86HYr/uSD7oWrenDyfEmakAcBhcX/PfnRh7MEmf42Q1gEpW4ast3YPVOu/2gpMmOptKHIo5KxpJ1WFc/0w==
       tarball: file:projects/exchange.tgz
     version: 0.0.0
   file:projects/issuer-api-client.tgz_4f6e83eb5a56fc26d57530296bd4b8aa:
@@ -39916,7 +40024,7 @@ packages:
       chai: 4.3.0
       class-validator: 0.13.1
       eslint-plugin-jest: 24.7.0_f178490c6a6949e5c714e48d3ab36f98
-      ethers: 5.3.1
+      ethers: 5.4.7
       ganache-cli: 6.12.2
       jest: 27.3.0_ts-node@9.1.1
       mocha: 9.1.3
@@ -39944,7 +40052,7 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-zd8o1ghGeg8D2RWEpS5DmUWef7SwXiknTv3dgMOf8ckHmrdL3odk1EGanm4jTpeDNL97wGZtOBTpAebKXTMAPQ==
+      integrity: sha512-i8UcURbAWim19jFvY/DzuOczOhOQGtohHskW68197PpwTEv0QrYS2UIuE46806lIm9V+nAkocLTYsbDI1ocNHA==
       tarball: file:projects/issuer-api.tgz
     version: 0.0.0
   file:projects/issuer-irec-api-client.tgz_4f6e83eb5a56fc26d57530296bd4b8aa:
@@ -40067,7 +40175,7 @@ packages:
       chai: 4.3.0
       class-transformer: 0.3.1
       class-validator: 0.13.1
-      ethers: 5.3.1
+      ethers: 5.4.7
       ganache-cli: 6.12.2
       mocha: 9.1.3
       moment: 2.29.1
@@ -40092,20 +40200,20 @@ packages:
       passport: '*'
       reflect-metadata: '*'
     resolution:
-      integrity: sha512-uJHaSIwtwM2l5wrDkJ+QRIaSKDrktU8nwtj0vSIdzkSrdOJ7KyAOCGU2K7GF3AfgGtoNrYChkoHMsondV5Wm7A==
+      integrity: sha512-wvKq/tuwjiYXmKy7dF8QPNSErsM3eBVqWmmG3kOHxrAz8RPeqwsFy6wKxwocIDk0yiFXsMB5jbHKPfmn3/h0kQ==
       tarball: file:projects/issuer-irec-api.tgz
     version: 0.0.0
   file:projects/issuer.tgz_react@17.0.2:
     dependencies:
-      '@ethersproject/abi': 5.3.1
-      '@ethersproject/abstract-signer': 5.3.0
-      '@ethersproject/contracts': 5.3.0
-      '@ethersproject/providers': 5.3.1
-      '@ethersproject/wallet': 5.3.0
+      '@ethersproject/abi': 5.4.1
+      '@ethersproject/abstract-signer': 5.4.1
+      '@ethersproject/contracts': 5.4.1
+      '@ethersproject/providers': 5.4.5
+      '@ethersproject/wallet': 5.4.0
       '@openzeppelin/contracts': 4.3.2
       '@openzeppelin/contracts-upgradeable': 4.3.2
       '@openzeppelin/truffle-upgrades': 1.9.1_truffle@5.4.15
-      '@typechain/ethers-v5': 7.0.1_20aa694c999a09b43cd2d4cfb53d009a
+      '@typechain/ethers-v5': 7.0.1_2e9f1b33c87c63f7b72cdf1d003c2361
       '@types/chai': 4.2.15
       '@types/dotenv': 6.1.1
       '@types/mocha': 9.0.0
@@ -40113,7 +40221,7 @@ packages:
       '@types/supertest': 2.0.11
       chai: 4.3.0
       dotenv: 10.0.0
-      ethers: 5.3.1
+      ethers: 5.4.7
       ethlint: 1.2.5
       ganache-cli: 6.12.2
       mocha: 9.1.3
@@ -40136,7 +40244,7 @@ packages:
     peerDependencies:
       react: '*'
     resolution:
-      integrity: sha512-o12sEB/RDYwdWrKfMUV9sKcfuzPvZeFsY/LLAQdA9ABZ+Ul3FwzgBTXhLc6eGfLrzBcZL1qhyrvz457dhNvm8Q==
+      integrity: sha512-5NeAdCxYtmEgKM6uW0TGkjkCes97QL3odbDj4gLH4AZbpOZ9vtRIl3/x3WsLxyqG3RBAlj3KYtekGDyfF1xdcA==
       tarball: file:projects/issuer.tgz
     version: 0.0.0
   file:projects/migrations-irec.tgz:
@@ -40146,7 +40254,7 @@ packages:
       '@types/pg': 8.6.1
       commander: 6.2.1
       dotenv: 10.0.0
-      ethers: 5.3.1
+      ethers: 5.4.7
       mocha: 9.1.3
       pg: 8.7.1
       typescript: 4.4.4
@@ -40157,7 +40265,7 @@ packages:
     dev: false
     name: '@rush-temp/migrations-irec'
     resolution:
-      integrity: sha512-vOX04JDY29J3PbHb57nV1390OopJdp9yO7qs3Npl+nG2odzkptEiE9CXGUd4VplCfTKALyDXkAlt9pkWKgv+JQ==
+      integrity: sha512-hP7DZefBRj6D+2+DtDbOuGuYob5os6n9fH+ADna6BbP/FDly4GM1u7n0cLrGAW5n2Lt/UCBK6n9c8aqBojbOmQ==
       tarball: file:projects/migrations-irec.tgz
     version: 0.0.0
   file:projects/origin-backend-client.tgz_45ce9132d60a2194bcd9ac42ae252cd7:
@@ -40197,13 +40305,13 @@ packages:
       '@types/node': 14.17.27
       class-transformer: 0.3.1
       class-validator: 0.13.1
-      ethers: 5.3.1
+      ethers: 5.4.7
       mocha: 9.1.3
       typescript: 4.4.4
     dev: false
     name: '@rush-temp/origin-backend-core'
     resolution:
-      integrity: sha512-nUFQDAZqrptotNtrpr1lBehMa3dns8Re2qOCnFR20Qr/cb4RazfIdbPUunQ3TD2igHRwnJnoFAthZqMcxx10wQ==
+      integrity: sha512-UDw2Bgt2Xxf2hJC2Te63V7V0G29PIx5An3BbxaaawwmDwyqSSNtsELYNFhr6LUl7fNV7Vg83C41AZWvfpC0QAQ==
       tarball: file:projects/origin-backend-core.tgz
     version: 0.0.0
   file:projects/origin-backend-irec-app.tgz_00d18492ab8f7b7da8d14bbe69048099:
@@ -40353,7 +40461,7 @@ packages:
       class-transformer: 0.3.1
       class-validator: 0.13.1
       dotenv: 10.0.0
-      ethers: 5.3.1
+      ethers: 5.4.7
       express: 4.17.1
       jest: 27.3.0_ts-node@9.1.1
       mocha: 9.1.3
@@ -40379,7 +40487,7 @@ packages:
       eslint: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-TE3eUQW7GCAqE/CpMTOFVA+tVZeCxccndQtaB4K9ZECwgLgFM2nj3KoO3WLHRQZVmKpOBj3jdnMFgoZTNNh2IA==
+      integrity: sha512-0DmQp8oCjefepyG59O//r6EVZhmtQOXNnd2DUXP5jVHi7cntvKl90081cRMbh0Vhj3RapqgSHhdWMFZ/2hkZgw==
       tarball: file:projects/origin-backend.tgz
     version: 0.0.0
   file:projects/origin-device-registry-api-client.tgz_24343e039ccaf2a68c00a04fbf944a2d:
@@ -40595,7 +40703,7 @@ packages:
       class-transformer: 0.3.1
       class-validator: 0.13.1
       dotenv: 10.0.0
-      ethers: 5.3.1
+      ethers: 5.4.7
       mocha: 9.1.3
       reflect-metadata: 0.1.13
       rxjs: 7.4.0
@@ -40614,7 +40722,7 @@ packages:
       passport: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-kcke87K03DTNiWneXtTdSBGY9Tvfb3XxCcGdS318XkmrfWHfOP6NDB24HiATNHsI9NDB9GXRcUqxKoXj8FOx0w==
+      integrity: sha512-ubhp2z3AmZj7+R4ttN9t3aj5J+ZOdGBwgtLyPUQ7JqJIqJ9fNoC0F7qJnBYg2rLrZgkIvR4WCP3RKb8J5fzPXg==
       tarball: file:projects/origin-device-registry-irec-local-api.tgz
     version: 0.0.0
   file:projects/origin-energy-api-client.tgz_24343e039ccaf2a68c00a04fbf944a2d:
@@ -40849,7 +40957,7 @@ packages:
       '@emotion/babel-preset-css-prop': 11.2.0_@babel+core@7.15.8
       '@emotion/react': 11.4.1_ff15dd6d31398a7b0fd1e8a2ec90acbe
       '@emotion/styled': 11.3.0_e4b07a256b684e681f9b067c41bfe917
-      '@ethersproject/providers': 5.3.1
+      '@ethersproject/providers': 5.4.5
       '@hookform/resolvers': 2.8.2_react-hook-form@7.12.2
       '@material-ui/core': 5.0.0-beta.4_bdd072f4e114e18a9f7e3389a09272ff
       '@material-ui/icons': 5.0.0-beta.4_36b1c13125b4e9e8d01909455fb9b1cf
@@ -40911,7 +41019,7 @@ packages:
       eslint-plugin-prettier: 4.0.0_6e975bd57c7acf028c1a9ddbbf60c898
       eslint-plugin-react: 7.25.3_eslint@7.32.0
       eslint-plugin-react-hooks: 4.2.0_eslint@7.32.0
-      ethers: 5.3.1
+      ethers: 5.4.7
       history: 5.0.1
       i18next: 21.3.2
       i18next-icu: 1.4.2
@@ -40953,7 +41061,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-E4kUSIE3anIiA6jJ1bpbNBDzFA7MetK5JAfMrSJyB0p9pFbsLRr8fKXXRmWZkXuqiqnsG0wT30NI+k0YFd9/rQ==
+      integrity: sha512-Vr1rAxNymROkk/vQ8gwHOSEjfi3thY1Ir4TsPq1P0nImYKEz+77NPh5+F6vPtECO6AmeuQImrR089mTR5oGOUA==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -40964,7 +41072,7 @@ packages:
       '@types/node': 14.17.27
       chai: 4.3.0
       eth-sig-util: 2.5.4
-      ethers: 5.3.1
+      ethers: 5.4.7
       jsonschema: 1.4.0
       mocha: 9.1.3
       moment: 2.29.1
@@ -40974,7 +41082,7 @@ packages:
     dev: false
     name: '@rush-temp/utils-general'
     resolution:
-      integrity: sha512-ydr7l6MVN3CMXj0eyPHw5OCNlTnsL/mn5PRpRAGrps3afVD5d5J2w8iPOsH2udmlKcgiAvOT8sCiN/BuPF8D9g==
+      integrity: sha512-71fqVKOQ5/b6N6GN9oqV47P+w0uHQGqRp7X/yhMrvoqV7upgQoTXNbukHxP4sQV6jOuiyo6LW9iKoJffS+Ps8g==
       tarball: file:projects/utils-general.tgz
     version: 0.0.0
   github.com/Digital-MOB-Filecoin/filecoin-signing-tools-js/8f8e92157cac2556d35cab866779e9a8ea8a4e25:
@@ -41039,12 +41147,12 @@ specifiers:
   '@emotion/react': 11.4.1
   '@emotion/styled': 11.3.0
   '@energyweb/energy-api-influxdb': 0.8.1
-  '@ethersproject/abi': 5.3.1
-  '@ethersproject/abstract-provider': 5.3.0
-  '@ethersproject/abstract-signer': 5.3.0
-  '@ethersproject/contracts': 5.3.0
-  '@ethersproject/providers': 5.3.1
-  '@ethersproject/wallet': 5.3.0
+  '@ethersproject/abi': 5.4.1
+  '@ethersproject/abstract-provider': 5.4.1
+  '@ethersproject/abstract-signer': 5.4.1
+  '@ethersproject/contracts': 5.4.1
+  '@ethersproject/providers': 5.4.5
+  '@ethersproject/wallet': 5.4.0
   '@hookform/resolvers': 2.8.2
   '@jest/globals': 27.3.0
   '@material-ui/core': 5.0.0-beta.4
@@ -41202,7 +41310,7 @@ specifiers:
   eslint-plugin-react: 7.25.3
   eslint-plugin-react-hooks: 4.2.0
   eth-sig-util: 2.5.4
-  ethers: 5.3.1
+  ethers: 5.4.7
   ethlint: 1.2.5
   express: 4.17.1
   form-data: 4.0.0

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import 'mocha';
 import moment from 'moment';
 import { Wallet, BigNumber } from 'ethers';
+import polly from 'polly-js';
 
 import { getProviderWithFallback } from '@energyweb/utils-general';
 
@@ -79,7 +80,12 @@ describe('Certificate tests', () => {
             metadata
         );
 
-        return await Certificate.fromTxHash(tx.hash, blockchainProperties);
+        return await polly()
+            .waitAndRetry(10)
+            .executeForPromise(
+                async (): Promise<Certificate> =>
+                    Certificate.fromTxHash(tx.hash, blockchainProperties)
+            );
     };
 
     it('migrates Registry and Issuer', async () => {
@@ -99,7 +105,7 @@ describe('Certificate tests', () => {
         await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
         const allCertificates = await CertificateUtils.getAllCertificates(blockchainProperties);
-        assert.equal(allCertificates.length, 2);
+        assert.lengthOf(allCertificates, 2);
     });
 
     it('gets all owned certificates', async () => {
@@ -246,7 +252,7 @@ describe('Certificate tests', () => {
 
         assert.isTrue(
             claims.some(
-                (claim) => JSON.stringify(claim.claimData) === JSON.stringify(emptyClaimData)
+                (claim: any) => JSON.stringify(claim.claimData) === JSON.stringify(emptyClaimData)
             )
         );
     });

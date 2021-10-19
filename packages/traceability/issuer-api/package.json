@@ -50,7 +50,7 @@
         "@nestjs/swagger": "5.1.1",
         "@nestjs/typeorm": "8.0.2",
         "class-validator": "0.13.1",
-        "ethers": "5.3.1",
+        "ethers": "5.4.7",
         "ganache-cli": "6.12.2",
         "moment": "2.29.1",
         "moment-range": "4.0.2",

@@ -18,14 +18,7 @@
      * After modifying this field, it's recommended to run "rush update --full" so that the package manager
      * will recalculate all version selections.
      */
-    "preferredVersions": {
-        "@ethersproject/abi": "5.3.1",
-        "@ethersproject/abstract-provider": "5.3.0",
-        "@ethersproject/abstract-signer": "5.3.0",
-        "@ethersproject/contracts": "5.3.0",
-        "@ethersproject/providers": "5.3.1",
-        "@ethersproject/wallet": "5.3.0"
-    },
+    "preferredVersions": {},
 
     /**
      * When set to true, for all projects in the repo, all dependencies will be automatically added as preferredVersions,
