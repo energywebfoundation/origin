@@ -63,13 +63,13 @@
         "passport-jwt": "4.0.0",
         "passport-local": "1.0.0",
         "reflect-metadata": "0.1.13",
-        "rxjs": "6.6.7",
+        "rxjs": "7.4.0",
         "typeorm": "0.2.34",
         "uuid": "8.3.2"
     },
     "devDependencies": {
         "@nestjs/cli": "8.1.4",
-        "@nestjs/schematics": "8.0.3",
+        "@nestjs/schematics": "8.0.4",
         "@nestjs/testing": "8.1.1",
         "@types/bcryptjs": "2.4.2",
         "@types/body-parser": "1.19.1",

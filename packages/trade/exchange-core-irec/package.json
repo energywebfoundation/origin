@@ -41,7 +41,7 @@
         "immutable": "4.0.0",
         "moment": "2.29.1",
         "moment-range": "4.0.2",
-        "rxjs": "6.6.7"
+        "rxjs": "7.4.0"
     },
     "devDependencies": {
         "@types/bn.js": "5.1.0",
