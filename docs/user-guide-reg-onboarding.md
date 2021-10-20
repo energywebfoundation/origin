@@ -64,7 +64,7 @@ Admin users can invite new users to joing their organization and assign them a s
 
 https://origin-ui-canary.herokuapp.com/account/profile
 
-Origin uses the Energy Web blockchain for traceability and verification of ownership. Certificates are issued on the blockchain as tokens (you can read more about the certificate structure [here](https://energyweb.atlassian.net/wiki/spaces/OD/pages/883916918/Certificate+structure)). If your organization's users has registered devices and wants to be issued certifcates, sell certificates or retire certificates, the organization will need an Exchange Deposit address and an Organization Blockchain Account address, which are explained below. The process of withdrawing, transfering and retiring certificates is explained in greater detail in the [Certificate user guide](./user-guide-certificate.md).    
+Origin uses the Energy Web blockchain for traceability and verification of ownership. Certificates are issued on the blockchain as tokens (you can read more about the certificate structure [here](https://energyweb.atlassian.net/wiki/spaces/OD/pages/883916918/Certificate+structure)). If your organization's users have registered devices on the Origin platform and want to be issued certifcates, sell certificates, trade certificates or retire certificates, the organization will need an Exchange Deposit address and an Organization Blockchain Account address, which are explained below. The process of withdrawing, transfering and retiring certificates is explained in greater detail in the [Certificate user guide](./user-guide-certificate.md).    
 
 If you are a member of a registered organization and you navigate to your user profile and connect to MetaMask, you will see two Blockchain Addresses:
 
