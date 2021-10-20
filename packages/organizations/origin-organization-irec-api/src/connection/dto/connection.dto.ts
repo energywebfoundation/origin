@@ -4,6 +4,10 @@ import { Connection } from '../connection.entity';
 
 export class ShortConnectionDTO {
     @Expose()
+    @ApiProperty({ type: String })
+    id: string;
+
+    @Expose()
     @ApiProperty({ type: Date })
     expiryDate: Date;
 
