@@ -8,6 +8,7 @@ COPY ./ /var/deployment
 WORKDIR /var/deployment/packages/
 
 CMD ["/bin/bash","-c", "apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config trade/exchange/dist/js/ormconfig.js && \
+                        apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config trade/exchange-irec/dist/js/ormconfig.js && \
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config origin-backend/dist/js/ormconfig.js && \
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config organizations/origin-organization-irec-api/dist/js/ormconfig.js && \
                         apps/origin-backend-irec-app/node_modules/.bin/typeorm migration:run --config traceability/issuer-api/dist/js/ormconfig.js && \
