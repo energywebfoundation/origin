@@ -1,6 +1,7 @@
 # User Guide - Device Management
+https://origin-ui-canary.herokuapp.com/device/all
 
-If you are a device manager, you can register and manage devices through the Origin marketplace.
+Source code on github: https://github.com/energywebfoundation/origin/tree/master/packages/devices
 
 ## Devices
 
@@ -66,7 +67,7 @@ Use this interface to view all of your organization's registered devices.
 Click anywhere else on the device card to request certificates for the device.
 
 ## Request Certification for Device
-Once your device is active on the platform (i.e., the device has been registered with the I-REC Standard and the platform), you can certify produced electricity for a given period of time with the I-REC Standard and request issuance of corresponding I-RECs.
+Once your device is active on the platform (i.e., the device has been registered with the I-REC Standard and the platform), you can certify produced electricity for a given period of time with the I-REC Standard and request issuance of corresponding I-RECs. Users can request the issuance of certificates for a specific generation device and a specific time frame. They must provide the issuer with generation evidence from the device at the defined time. Based on this evidence, the energy volume can be determined and thereby the number of certificates (e.g. each 1 MWh) that is requested. A specific address can be defined to issue the certificates to. The default is the address that called the function. Users can request public and private certificates. 
 
 <b>Monthly certification</b> is the most common practice in the market, however most standards allow for a daily granularity.
 
