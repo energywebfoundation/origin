@@ -16,6 +16,7 @@ import {
   SellAction,
   WithdrawAction,
   ExchangeTransferAction,
+  ExchangeExportAction,
 } from '../../containers';
 import { useTransactionPendingStore } from '../../context';
 
@@ -33,15 +34,11 @@ export const useExchangeInboxPageEffects = () => {
     exchangeDepositAddress,
   });
 
-  const {
-    exchangeCertificates,
-    isLoading: areCertificatesLoading,
-  } = useApiAllExchangeCertificates();
+  const { exchangeCertificates, isLoading: areCertificatesLoading } =
+    useApiAllExchangeCertificates();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllFuelTypes();
 
   const isLoading =
     areCertificatesLoading ||
@@ -61,6 +58,10 @@ export const useExchangeInboxPageEffects = () => {
     {
       name: t('certificate.exchangeInbox.transferActionTitle'),
       component: ExchangeTransferAction,
+    },
+    {
+      name: t('certificate.exchangeInbox.exportActionTitle'),
+      component: ExchangeExportAction,
     },
   ];
 

@@ -58,9 +58,7 @@ type TUseSellActionLogicArgs<Id> = {
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseSellActionLogic<Id> = (
-  args: TUseSellActionLogicArgs<Id>
-) => {
+export type TUseSellActionLogic<Id> = (args: TUseSellActionLogicArgs<Id>) => {
   title: string;
   buttonText: string;
   priceInputLabel: string;
@@ -108,4 +106,21 @@ export type TUseExchangeTransferActionLogic<Id> = (
   buttonText: string;
   addressInputLabel: string;
   selectedItems: SelectedItem<Id>[];
+};
+
+type TUseExchangeExportActionLogicArgs<Id> = {
+  selectedIds: Id[];
+  exchangeCertificates: AccountAssetDTO[];
+  allDevices: ComposedPublicDevice[];
+  allFuelTypes: CodeNameDTO[];
+};
+
+export type TUseExchangeExportActionLogic<Id> = (
+  args: TUseExchangeExportActionLogicArgs<Id>
+) => {
+  title: string;
+  buttonText: string;
+  addressInputLabel: string;
+  selectedItems: SelectedItem<Id>[];
+  inputHeader: string;
 };
