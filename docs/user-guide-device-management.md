@@ -4,7 +4,7 @@ If you are a device manager, you can register and manage devices through the Ori
 
 ## Devices
 
-‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine.) They must be registered in the system to provide their capacity, location and generation data. This data is used to provide trust in the validity of the certificates that are issued for their generation. A user that is associated with a registered organization can register a device within the system. 
+‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine.) They must be registered in the system to provide their capacity, location and generation data. This data is used to provide trust in the validity of the certificates that are issued for their generation. A user that is associated with a registered [organization](./user-guide-reg-onboarding.md#organizations) can [register a device](./user-guide-reg-onboarding.md#registering-devices) within the system if they have the necessary role permissions. Read more about role permissioning [here](./user-guide-reg-onboarding.md#user-roles-and-hierarchy). 
 
 ### Accessing Device Generation Data
 
@@ -13,6 +13,8 @@ Origin offers the possibility to connect an external metering system. In order f
 The local issuer receives the device registration and can verify the data and approve the device. Everything that involves additional processes of the registry, (e.g. if there is a need for an on-site visit or additional documents), is handled directly between the user and the registry.
 
 Once you have an active account in the Origin platform and are part of an organization, you can register your devices on the platform.
+
+### Managing Devices on the Origin Platform
 
 The Device interface has four views. The purpose and utility of each view is explained in detail below.
 
@@ -39,41 +41,8 @@ To view a device’s details, click the device image or image placeholder. If ho
 https://origin-ui-canary.herokuapp.com/device/detail-view/e3ac3a98-0739-4d14-afef-c51b0a03d282
 
 This view provides high-level generation capacity, certification overview and smart meter readings for a single device. 
+Device details are dependent on implementation needs. To see an overview of the fields provided in the reference implementation, see [Appendix A](#appendix-a) below.
 
-#### Device Details
-
-##### Device Overview 
-
-![Device Overview Fields](images/deviceMgmtImages/DeviceDetails.png)
-
-
-
-|           Field           |                                           Data                                                               |
-|:-------------------------:|:-------------------------------------------------------------------------------------------------------------------------------:|
-| Certified MW              | MWh of generation already certified                                                                                             |
-| Nameplate Capacity        | Maximum generation capacity in MW                                                                                               |
-| Certified by Registry     | The registration body that issues the device’s Energy Attribute Certificate(s) (i.e. IREC)                                      |
-| To Be Certified           | Generation in MWh Pending certification                                                                                         |
-| Other green attributes    | For example, labels associated with the device like EKOenergy                                                                   |
-| Public Support            | Any financial subsidies (e.g., feed-in-tariff) received by the generating asset from the government or other public institution |
-| Commercial Operation Date | Date of first commercial operation                                                                                              |
-
-<b>Device Owner and Location Details</b>
-
-![Device Location Fields](images/deviceMgmtImages/DeviceLocationInfo.png)
-
-|      Field      |                     Data                    |
-|:---------------:|:-------------------------------------------:|
-| Device Owner    | Organization ID of device owner             |
-| Device Location | Country flag indicator, region, city, state |
-| ![Coordinates](images/deviceMgmtImages/DeviceCoordinates.png)     | Geographic coordinates of device            |
-| ![Lat Long](images/deviceMgmtImages/DeviceLatLong.png)        | Longitude, latitude of device               |
-
-##### Smart Meter Readings
-
-![Smart Meter Readings](images/deviceMgmtImages/SmartMeterReadings.png)
-
-Use this interface to select a timeframe to view the device’s meter reading values in MWh. 
 
 ## Map View
 
@@ -159,6 +128,44 @@ Use this interface to register a new device under your organization(link). Note 
 ### Device Images
 
 Upload .png or .img files of device.
+
+## Appendix A
+### Reference Implementation Fields for Device Details
+
+##### Device Overview 
+
+![Device Overview Fields](images/deviceMgmtImages/DeviceDetails.png)
+
+
+
+|           Field           |                                           Data                                                               |
+|:-------------------------:|:-------------------------------------------------------------------------------------------------------------------------------:|
+| Certified MW              | MWh of generation already certified                                                                                             |
+| Nameplate Capacity        | Maximum generation capacity in MW                                                                                               |
+| Certified by Registry     | The registration body that issues the device’s Energy Attribute Certificate(s) (i.e. IREC)                                      |
+| To Be Certified           | Generation in MWh Pending certification                                                                                         |
+| Other green attributes    | For example, labels associated with the device like EKOenergy                                                                   |
+| Public Support            | Any financial subsidies (e.g., feed-in-tariff) received by the generating asset from the government or other public institution |
+| Commercial Operation Date | Date of first commercial operation                                                                                              |
+
+<b>Device Owner and Location Details</b>
+
+![Device Location Fields](images/deviceMgmtImages/DeviceLocationInfo.png)
+
+|      Field      |                     Data                    |
+|:---------------:|:-------------------------------------------:|
+| Device Owner    | Organization ID of device owner             |
+| Device Location | Country flag indicator, region, city, state |
+| ![Coordinates](images/deviceMgmtImages/DeviceCoordinates.png)     | Geographic coordinates of device            |
+| ![Lat Long](images/deviceMgmtImages/DeviceLatLong.png)        | Longitude, latitude of device               |
+
+##### Smart Meter Readings
+
+![Smart Meter Readings](images/deviceMgmtImages/SmartMeterReadings.png)
+
+Use this interface to select a timeframe to view the device’s meter reading values in MWh. 
+
+
 
 
 
