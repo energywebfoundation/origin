@@ -51,8 +51,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "7mb"
                 }
               ]
             }
@@ -62,10 +62,14 @@
           "executor": "@nrwl/web:dev-server",
           "options": {
             "buildTarget": "origin-ui:build",
+            "hmr": true,
             "webpackConfig": "webpack.config.js"
           },
           "configurations": {
-            "production": { "buildTarget": "origin-ui:build:production" }
+            "production": {
+              "buildTarget": "origin-ui:build:production",
+              "hmr": false
+            }
           }
         },
         "lint": {

@@ -19,7 +19,7 @@
     "build:device-ui": "nx run device-data:build && nx run device-logic:build && nx run device-view:build",
     "build:exchange-ui": "nx run exchange-data:build && nx run exchange-logic:build && nx run exchange-view:build",
     "build:all-packages": "yarn build:ui-utils && yarn build:ui-localization && yarn build:ui-shared-state && yarn build:ui-theme && yarn build:ui-assets && yarn build:ui-core && yarn build:ui-blockchain && yarn build:user-ui && yarn build:organization-ui && yarn build:certificate-ui && yarn build:device-ui && yarn build:exchange-ui",
-    "build:origin-ui": "cp apps/origin-ui/src/index.html.template apps/origin-ui/src/index.html && nx build",
+    "build:origin-ui": "cp apps/origin-ui/src/index.html.template apps/origin-ui/src/index.html && nx build --prod",
     "build": "yarn config-env && yarn build:origin-ui",
     "build:container:canary": "make build-canary",
     "build:container:latest": "make build-latest",
