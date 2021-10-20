@@ -1,5 +1,7 @@
 # Organization
-https://origin-ui-canary.herokuapp.com/organization/my  
+https://origin-ui-canary.herokuapp.com/organization/my
+
+Source code on github: https://github.com/energywebfoundation/origin/tree/master/packages/organizations
 
 An [Organization](./user-guide-reg-onboarding.md#organizations) is the top level of user-hierarchy in the Origin platform.  
 
