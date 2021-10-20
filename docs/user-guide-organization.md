@@ -76,7 +76,21 @@ When the invitation is sent, the invitee will receive the invitation in their in
 
 
 ## Create Beneficiary
+https://origin-ui-canary.herokuapp.com/organization/create-beneficiary
+
+This view allows admins to create beneficiaries or recipients for retired certificates. Certificates can be retired to the beneficiary's account at the time of retirement. You can read about the certificate retirement process [here](./user-guide-certificate.md#retire). 
+
 
 ## Connect I-REC
+https://origin-ui-canary.herokuapp.com/organization/connect-irec
+
+This view allows admins to enter their I-REC credentials to create an API connection with I-REC. The IREC API credentials come directly from I-REC. 
+The API connection is needed to perform the following functions on the Origin platform:
+
+//GET LIST
+
+[!irecConnection](images/organization/organization-irecconnection.png)
+
+
 
 
