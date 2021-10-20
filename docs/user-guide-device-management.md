@@ -23,7 +23,7 @@ The Device interface has four views. The purpose and utility of each view is exp
 1. <b>[All Devices:](##all-devices)</b> Allows any user to see all registered devices within a marketplace. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
 2. <b>[Map View:](##map-view)</b> Allows any user to see registered devices within a marketplace as locations on a map. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
 3. <b>[My Devices:](##my-devices)</b> Allows any logged in user to see their organization’s registered devices and each device’s status.
-4. <b>[Register Device:](##register-device)</b> Allows any logged in user that is registerd with an organization to register a device on behalf of that organization.
+4. <b>[Register Device:](##register-device)</b> Allows any logged in user that is registered with an organization to register a device on behalf of that organization.
 
 ## All Devices
 
@@ -41,7 +41,7 @@ To view a device’s details, click the device image or image placeholder. If ho
 https://origin-ui-canary.herokuapp.com/device/detail-view/e3ac3a98-0739-4d14-afef-c51b0a03d282
 
 This view provides high-level generation capacity, certification overview and smart meter readings for a single device. 
-Device details are dependent on implementation needs. To see an overview of the fields provided in the reference implementation, see [Appendix A](#appendix-a) below.
+Device details fields are dependent on implementation needs. To see an overview of the fields provided in the reference implementation, see [Appendix A](#appendix-a) below.
 
 
 ## Map View
@@ -91,7 +91,7 @@ The issuing body will be automatically notified about your request and will revi
 
 ## Register Device
 
-Use this interface to register a new device under your organization(link). Note that registered device details are public.
+Use this interface to register a new device under your [organization](./user-guide-reg-onboarding.md#organizations). Note that registered device details are public.
 
 ### Device Information
 
