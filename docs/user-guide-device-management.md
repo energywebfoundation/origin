@@ -92,7 +92,7 @@ The issuing body will be automatically notified about your request and will revi
 
 ## Register Device
 
-Use this interface to register a new device under your [organization](./user-guide-reg-onboarding.md#organizations). Note that registered device details are public.
+Use this interface to register a new device under your [organization](./user-guide-reg-onboarding.md#organizations). Note that registered device details are public once the device is approved by the Issuer.
 
 ### Device Information
 
