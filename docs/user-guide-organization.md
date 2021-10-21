@@ -15,7 +15,8 @@ The Organization portal has five views. The purpose and utility of each view is 
 2. **[Members:](#members)** Allows an admin user to view and manage organization members. 
 3. **[Invitations](#removing-a-member):** Allows an admin user to view a list of pending (sent) and accepted (received) invitations for membership. 
 4. **[Create Beneficiary:](#create-beneficiary)** Allows an admin user to designate a beneficiary to receive retired certificates
-5. **[Connect I-REC:](#connect-i-REC)** Allows an admin user to register a device.
+5. **[Register I-REC:](#connect-i-REC)** Allows an admin user to register with I-REC.
+6. **[Connect I-REC:](#connect-i-REC)** Allows an admin user to create an API connection with I-REC using their I-REC credentials.
 
 ## My Organization
 
@@ -83,20 +84,28 @@ This view allows admins to invite members to the organization. A role must be se
 
 When the invitation is sent, the invitee will receive the invitation in their inbox. You can view the invitation status in the Invitations list. It will be marked as “pending”, until the invitee has accepted using the email. After the invitee accepts, the invitation status will be “accepted.”
 
-
 ## Create Beneficiary
 https://origin-ui-canary.herokuapp.com/organization/create-beneficiary
 
 This view allows admins to create beneficiaries or recipients for retired certificates. Certificates can be retired to the beneficiary's account at the time of retirement. You can read about the certificate retirement process [here](./user-guide-certificate.md#retire). 
 
+## Register I-REC
+https://origin-ui-canary.herokuapp.com/organization/register-irec
+
+This view allows admins to enter their I-REC registration information to create an I-REC account. **Note that this interface is only visible if you have not yet registered with I-REC. Once you successfully reigster with I-REC, the 'Connect I-REC' interface will be shown.** 
+
+[!irecRegister](images/organization/organization-registerirec.png)
+
+When you register with I-REC, you will need to select an I-REC account type:
+[!iRECAccountType](images/organization/organization-irecaccounttype.png) 
+
+Once your registration is confirmed by I-REC, you will receive I-REC credentials via email that can be used to [connect to the I-REC API](#connect-i-REC). 
 
 ## Connect I-REC
 https://origin-ui-canary.herokuapp.com/organization/connect-irec
 
-This view allows admins to enter their I-REC credentials to create an API connection with I-REC. The IREC API credentials come directly from I-REC. 
+This view allows admins to enter their I-REC credentials to create an API connection with I-REC. The IREC API credentials come directly from I-REC. **Note that this interface is only visible if you have [registered with I-REC](#register-i-REC) through the Origin platform.** 
 The API connection is needed to perform the following functions on the Origin platform:
-
-//GET LIST
 
 [!irecConnection](images/organization/organization-irecconnection.png)
 
