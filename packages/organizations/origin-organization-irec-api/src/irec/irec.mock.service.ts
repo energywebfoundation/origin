@@ -95,6 +95,7 @@ export class IrecMockService implements IIrecService {
 
     public async getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO> {
         return {
+            id: 'someid',
             accessToken: 'access-token',
             refreshToken: 'refresh-token',
             clientId: 'oauth client id',

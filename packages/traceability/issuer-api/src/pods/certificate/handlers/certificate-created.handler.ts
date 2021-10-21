@@ -99,10 +99,10 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
                 await this.unminedCommitmentRepository.delete(txHash);
             }
 
+            await queryRunner.commitTransaction();
+
             this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
             this.eventBus.publish(new CertificateUpdatedEvent(certificate.id, byTxHash));
-
-            await queryRunner.commitTransaction();
         } catch (err) {
             await queryRunner.rollbackTransaction();
 
