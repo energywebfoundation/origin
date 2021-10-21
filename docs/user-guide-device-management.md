@@ -25,6 +25,7 @@ The Device interface has four views. The purpose and utility of each view is exp
 2. <b>[Map View:](##map-view)</b> Allows any user to see registered devices within a marketplace as locations on a map. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
 3. <b>[My Devices:](##my-devices)</b> Allows any logged in user to see their organization’s registered devices.
 4. <b>[Register Device:](##register-device)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to register a device on behalf of that organization.
+4. <b>[Import Device:](##import-device)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to import their organization's devices that are currently registered with I-REC and not registered on the Origin platform.
 
 ## All Devices
 
@@ -129,6 +130,14 @@ Use this interface to register a new device under your [organization](./user-gui
 ### Device Images
 
 Upload .png or .img files of device. Note that this step is optional. 
+
+## Import Device
+
+[!ImportDevices](images/deviceMgmtImages/devices-devicestoimport.png)
+
+Use this interface to import your organization's devices that are currently registered with I-REC and not registered on the Origin platform. **Note that you must have a User Role of Admin or Device Manager to view this interface and import devices.**
+
+In order to view your I-REC registered devices, you must [Connect I-REC](./user-guide-organization.md#connect-i-REC) (note that you must be an admin to do this). Once this connection is made, your devices to import will be automatically populated and you can import them into the Origin system.   
 
 ## Appendix A
 ### Reference Implementation Fields for Device Details
