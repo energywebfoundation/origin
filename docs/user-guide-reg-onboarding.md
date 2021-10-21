@@ -16,13 +16,18 @@ In order to mirror typical organizational structures, the Origin marketplace has
 
 [!UserHierarchy](images/onboarding/Onboarding1-Hierarchy.png)
 
-### Organizations  
-Organizations are registered businesses. They are registered in Origin by providing supporting documentation, and have multiple [users](#users) associated with them. View how to register organizations [here](#registering-organizations).
+### Organizations
+Users and their permissions in the Origin marketplace are tied to digital entities that are called organizations. Every organization has an admin user that has to provide a set of mandatory information to register the organization. All required information and documents are provided through a user interface.  After the organization is successfully registered, the admin user account can perform user management. New users can be invited to join the organization and can be given specific permissions. As the name suggests, organizations are mostly companies that specify permissions for the user accounts of their employees. To ensure that only registered users can perform actions in the system, every user has to be associated with an organization, be a lead user or go through a KYC process as a user. 
+
+If Origin is integrated into a certificate registry, organizations that own generation devices have to be authenticated as active members of the certificate registry to interact with the system. This means, that in order for users to be allowed to perform actions like device management or requesting certificates, their organization has to have a confirmed active membership in the registry. Accordingly, if the membership is suspended or terminated, this will prevent all the users associated with this organization from interacting with the Origin marketplace. 
 
 ### Users  
-Users are associated with an [organization](#organizations). A user can only be a member of one organization within the system at a time.   
-Users can have different permissions which typically reflect the rights and responsibilities of specific employees or departments within the organization.  
-Users can own / represent / manage generating devices (electricity generators), if they have the appropriate role in the system. View how to register users [below](#registering-users). Read more about devices in Origin [here](./user-guide-device-management.md/#devices). 
+
+To manage users and devices, request certificates, post supplies and demands, and claim certificates, users need to have an account in Origin. Users are associated with an [organization](#organizations). The main account of every organization is the lead user. Organizations use this account to create other user accounts and perform user management. The lead user sets permissions for all created users based on their roles in the organization. Roles and their permissions are explained [below](#user-roles). All users that are created by the organization's admin user are automatically associated to the organization and do not have to go through any additional KYC process. A user can only be a member of one organization within the system at a time. 
+
+Buyer organizations mostly do not require synchronization with a certificate registry (i.e. I-REC). As a result, they will not need an account in the compliance registry and Origin is the single point of truth for their user accounts. Buyers only have to register with Origin to interact with the marketplace.
+
+View how to register users [below](#registering-users). Read more about devices in Origin [here](./user-guide-device-management.md/#devices). 
 
 #### User Roles
 User’s have one of three roles:
@@ -41,7 +46,14 @@ User’s have one of three roles:
 *Note that if a user creates an organization, they are automatically an administrator. Otherwise, users are given a designated role when an administrator invites them to join the organization. Read more about how to invite members [here](./user-guide-organization.md#invite).
 
 ### Devices  
-Devices and their specific characteristics must be registered in the system to provide trust in the validity of certificates that they issue. However, __you do not need to be a registered user in order to see a list of registered devices or posted supplies and demands__. You will be asked to register once you want to interact with the system further. View how to register devices [below](#registering-devices). Read more about devices and device management in Origin [here](./user-guide-device-management.md). 
+
+‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine). Because [Energy Attribute Certificates](./user-guide-glossary.md#energy-attribute-certificate) are always tied to the device for which generation evidence was submitted, generation devices must be registered with Origin. The certificate inherits many characteristics from the generation device. As a result, it is essential to have certainty about which device the certificate came from and that the stated device characteristics are correct. Only allowing generation evidence from registered devices therefore facilitates traceability and prevents misconduct. If Origin is fully integrated with a certificate registry (i.e. I-REC), it relies on the registration process implemented by this registry. Only devices that have passed the rigorous requirements enforced by the registry, which often include on-site visits by independent device verifiers, can request certificates in Origin. 
+
+All necessary information and documents to register a device in Origin can be provided through a user interface. If Origin is integrated with a compliance registry, a registration request is automatically forwarded to the registry, where their registration process is initiated. Everything that involves the registration process of the registry, e.g. if there is a need for a on-site visit or additional documents, is handled directly between the user and the registry. Devices that are already registered with the compliance registry must to be imported into Origin (read about how to import devices [here](././user-guide-device-management.md#import-device)). Only users that are authenticated as active members of the certificate registry can import their devices. This way it is ensured that no one else can import devices and claim certificates in Origin but the verified owner of the device. 
+
+ __You do not need to be a registered user in order to see a list of registered devices in the Origin platform, or posted supplies and demands__. You will be asked to register once you want to interact with the system further.  
+ 
+ View how to register devices [below](#registering-devices). Read more about devices and device management in Origin [here](./user-guide-device-management.md). 
 
 ## Registering Users
 
