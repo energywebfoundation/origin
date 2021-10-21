@@ -11,9 +11,9 @@ Source code on github: https://github.com/energywebfoundation/origin/tree/master
 
 Origin offers the possibility to connect an external metering system. In order for this to work, a custom integration to the specific metering system is required. Devices have to be approved by the issuer in order to be used on the platform.
 
-The local issuer receives the device registration and can verify the data and approve the device. Everything that involves additional processes of the registry, (e.g. if there is a need for an on-site visit or additional documents), is handled directly between the user and the registry.
+The local issuer receives the device registration through Origin's [Register Device](#register-device) interface, and can verify the data and approve the device. Everything that involves additional processes of the registry, (e.g. if there is a need for an on-site visit or additional documents), is handled directly between the user and the registry.
 
-Once you have an active account in the Origin platform and are part of an organization, you can register your devices on the platform.
+Once you have an active account in the Origin platform and are part of an organization, you can register your devices on the platform (read more about steps for device registration [below](#register-device)).
 
 ### Managing Devices on the Origin Platform
 
@@ -61,7 +61,7 @@ Use this interface to view all of your organization's registered devices.
 
 ![My Devices](images/deviceMgmtImages/MyDevices.png)
 
-| ![View Device Details](images/deviceMgmtImages/MyDevices.png) | Click on <b>“View Details”</b> to view device details. |
+| ![View Device Details](images/deviceMgmtImages/MyDevices.png) | Click on **“View Details”** to view device details. |
 |-------|--------------------------------------------------------|
 
 Click anywhere else on the device card to request certificates for the device.

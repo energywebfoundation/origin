@@ -7,8 +7,15 @@ An [Organization](./user-guide-reg-onboarding.md#organizations) is the top level
 
 The Organization interface allows you to manage and invite members to your organization, and to request I-REC API access for your organization. **In the reference implementation, this interface is only visible to users with Admin privileges**. 
 
-See the Origin packages related to Organization management on github [here](https://github.com/energywebfoundation/origin/tree/master/packages/organizations). 
+The Organization portal has five views. The purpose and utility of each view is explained in detail below.
 
+[!organizationViews](images/organization/organization-views.png)
+
+1. **[My Organization:](#my-organization)** Allows an admin user to view their Organization Information.
+2. **[Members:](#members)** Allows an admin user to view and manage organization members. 
+3. **[Invitations](#removing-a-member):** Allows an admin user to view a list of pending (sent) and accepted (received) invitations for membership. 
+4. **[Create Beneficiary:](#create-beneficiary)** Allows an admin user to designate a beneficiary to receive retired certificates
+5. **[Connect I-REC:](#connect-i-REC)** Allows an admin user to register a device.
 
 ## My Organization
 
