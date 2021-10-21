@@ -137,6 +137,10 @@ Upload .png or .img files of device. Note that this step is optional.
 
 Use this interface to import your organization's devices that are currently registered with I-REC and not registered on the Origin platform. **Note that you must have a User Role of Admin or Device Manager to view this interface and import devices.**
 
+You will need to add additional device data before importing the device to the Origin platform:
+
+[!importDeviceDetails](images/deviceMgmtImages/devicemgmt-importdevicedetails.png)
+
 In order to view your I-REC registered devices, you must [Connect I-REC](./user-guide-organization.md#connect-i-REC) (note that you must be an admin to do this). Once this connection is made, your devices to import will be automatically populated and you can import them into the Origin system.   
 
 ## Appendix A
