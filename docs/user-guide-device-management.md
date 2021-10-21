@@ -5,11 +5,11 @@ Source code on github: https://github.com/energywebfoundation/origin/tree/master
 
 ## Devices
 
-‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine.) They must be registered in the system to provide their capacity, location and generation data. This data is used to provide trust in the validity of the certificates that are issued for their generation. A user that is associated with a registered [organization](./user-guide-reg-onboarding.md#organizations) can [register a device](./user-guide-reg-onboarding.md#registering-devices) within the system if they have the necessary role permissions. Read more about role permissioning [here](./user-guide-reg-onboarding.md#user-roles-and-hierarchy). 
+‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine.) They must be registered in the system to provide their capacity, location and generation data. This data is used to provide trust in the validity of the certificates that are issued for their generation. A user that is associated with a registered [organization](./user-guide-reg-onboarding.md#organizations) can [register a device](./user-guide-reg-onboarding.md#registering-devices) within the system if they have the necessary role permissions. In the Origin reference implementation, only the Admin and Device Manager roles can register devices. Read more about role permissioning [here](./user-guide-reg-onboarding.md#user-roles-and-hierarchy). 
 
 ### Accessing Device Generation Data
 
-Origin offers the possibility to connect an external metering system. In order for this to work, a custom integration to the specific metering system is required. Devices have to be approved by the issuer in order to be used on the platform.
+Origin offers the possibility to connect an external metering system. In order for this to work, a custom integration to the specific metering system is required. Devices must be approved by the issuer in order to be used on the platform.
 
 The local issuer receives the device registration through Origin's [Register Device](#register-device) interface, and can verify the data and approve the device. Everything that involves additional processes of the registry, (e.g. if there is a need for an on-site visit or additional documents), is handled directly between the user and the registry.
 
@@ -23,8 +23,8 @@ The Device interface has four views. The purpose and utility of each view is exp
 
 1. <b>[All Devices:](##all-devices)</b> Allows any user to see all registered devices within a marketplace. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
 2. <b>[Map View:](##map-view)</b> Allows any user to see registered devices within a marketplace as locations on a map. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
-3. <b>[My Devices:](##my-devices)</b> Allows any logged in user to see their organization’s registered devices and each device’s status.
-4. <b>[Register Device:](##register-device)</b> Allows any logged in user that is registered with an organization to register a device on behalf of that organization.
+3. <b>[My Devices:](##my-devices)</b> Allows any logged in user to see their organization’s registered devices.
+4. <b>[Register Device:](##register-device)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to register a device on behalf of that organization.
 
 ## All Devices
 
@@ -86,7 +86,7 @@ The local issuer receives the certification request, can verify the evidence and
 | Amount of energy in MWh                  | Input MWh generated in time selected period                                                      |
 | Drop files here or click to select files | Upload generation evidence (e.g., official settlement document(s) provided by the grid operator. |
 
-Once your request is processed, you will be able to see it under <b>Certificates -> Pending</b>. 
+Once your request is processed, you will be able to see it under <b>Certificates -> Pending</b>. Note that once you've requested a certificate for a certain device for a selected time period, it is not possible to request a certificate for the same period in the future if certificate request is successful. Certification is irreversible once it is written to the blockchain. 
 
 The issuing body will be automatically notified about your request and will review it within 5 working days. You will receive an email notification about any updates to your request. 
 
@@ -104,9 +104,9 @@ Use this interface to register a new device under your [organization](./user-gui
 |:---------------------------:|:---------------------------------------------------------------------------------------------:|
 | Facility Name               | Input name of generating device                                                               |
 | Fuel Type                   | Pre-populated dropdown of generator fuel types (or energy source). Select one.                |
-| Device Type                 | Pre-populated dropdown of device types for a given fuel type (or energy source). Select one.  |
+| Device Type                 | Pre-populated dropdown of device types for a given fuel type (or energy source). Data is based on selected Fuel Type. Select one.  |
 | Commercial Operation Date   | Select date of device’s first commercial operation                                            |
-| Registration Date           | Select date of device registration in I-REC marketplace Jonathan Waldenfels                   |
+| Registration Date           | Select date of device registration in I-REC marketplace                   |
 | Grid Operator               | Dropdown of grid operators in a given marketplace. Select one.                                |
 | Smart Meter Readings API ID |                                                                                               |
 | Description                 | Device and its impact description                                                             |
@@ -120,7 +120,7 @@ Use this interface to register a new device under your [organization](./user-gui
 |    Field    |                                 Data                                |
 |:-----------:|:-------------------------------------------------------------------:|
 | Region      | Pre-populated dropdown of device location’s region. <b>Select one</b>.     |
-| Subregion   | Pre-populated dropdown of device location’s sub-region. <b>Select one</b>. |
+| Subregion   | Pre-populated dropdown of device location’s sub-region (data is based on selected Region). <b>Select one</b>. |
 | Postal Code | Input device location’s postal code.                                |
 | Address     | Input device location’s street address.                             |
 | Latitude    | Input device location’s longitude string.                           |
@@ -128,7 +128,7 @@ Use this interface to register a new device under your [organization](./user-gui
 
 ### Device Images
 
-Upload .png or .img files of device.
+Upload .png or .img files of device. Note that this step is optional. 
 
 ## Appendix A
 ### Reference Implementation Fields for Device Details

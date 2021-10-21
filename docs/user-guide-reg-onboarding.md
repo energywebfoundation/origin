@@ -5,9 +5,9 @@ A guide for enrolling users, organizations and devices on the Origin platform.
 
 To perform actions in the Origin marketplace, you must be a registered user associated with a registered organization. User registration is necessary because actions like device registry and requesting and claiming certificates must be mapped to specific entities in the system. __Registration is the only way to ensure accountability and prevent double counting__.  
 
-Only registered users can:
-1. Register [devices](./user-guide-device-management.md#devices)
-2. Request [certificates](./user-guide-glossary.md#energy-attribute-certificate) issuance
+Only users registered with an Organization can:
+1. Register [devices](./user-guide-device-management.md#devices). User must have the role of Admin or Device Manager within an Organization (see [User Roles](#user-roles) below). 
+2. Request [certificates](./user-guide-glossary.md#energy-attribute-certificate) issuance. User must have the role of Admin or Device Manager within an Organization (see [User Roles](#user-roles) below). 
 3. Post [asks](./user-guide-glossary.md#ask) and bids(./user-guide-glossary.md#bid) on the [exchange](./user-guide-exchange.md)
 4. Claim certificates for different purposes such as sustainability reporting  
 
