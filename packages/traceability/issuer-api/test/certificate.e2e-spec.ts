@@ -27,7 +27,8 @@ const certificateTestData = {
     deviceId: 'ABC-123',
     fromTime: moment().subtract(2, 'month').unix(),
     toTime: moment().subtract(1, 'month').unix(),
-    energy: '1000000'
+    energy: '1000000',
+    metadata: 'data'
 };
 
 const claimData: IClaimData = {
@@ -138,7 +139,8 @@ describe('Certificate tests', () => {
             creationTime,
             creationTransactionHash,
             isOwned,
-            isClaimed
+            isClaimed,
+            metadata
         } = await createCertificate();
 
         expect(id).to.be.above(0);
@@ -149,6 +151,7 @@ describe('Certificate tests', () => {
         expect(creationTransactionHash);
         expect(isOwned).to.be.false;
         expect(isClaimed).to.be.false;
+        expect(metadata).to.equal('data');
 
         const [certificate1] = await getCertificates(TestUser.OrganizationDeviceManager);
 

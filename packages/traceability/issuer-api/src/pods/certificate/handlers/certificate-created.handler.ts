@@ -92,7 +92,8 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
                 creationTransactionHash: txHash,
                 owners: cert.owners,
                 issuedPrivately: !!privateInfo || !!unminedCommitment,
-                latestCommitment: unminedCommitment ?? latestCommitment
+                latestCommitment: unminedCommitment ?? latestCommitment,
+                metadata: cert.metadata
             });
 
             if (unminedCommitment) {
