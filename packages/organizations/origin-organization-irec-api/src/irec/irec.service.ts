@@ -18,6 +18,7 @@ import {
     ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
+    CreateAccountParams,
     Device,
     Device as IrecDevice,
     DeviceCreateParams,
@@ -90,6 +91,8 @@ export interface IIrecService {
     getTradeAccountCode(user: UserIdentifier): Promise<string>;
 
     getIssueAccountCode(user: UserIdentifier): Promise<string>;
+
+    createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void>;
 
     createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus>;
 
@@ -272,6 +275,11 @@ export class IrecService implements IIrecService {
     async getIssueAccountCode(user: UserIdentifier): Promise<string> {
         const accounts = await this.getAccountInfo(user);
         return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
+    }
+
+    async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {
+        const irecClient = await this.getIrecClient(user);
+        await irecClient.account.create(params);
     }
 
     async createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {

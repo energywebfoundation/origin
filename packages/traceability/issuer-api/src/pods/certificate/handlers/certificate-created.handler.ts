@@ -4,16 +4,20 @@ import {
     IOwnershipCommitmentProof,
     PreciseProofUtils
 } from '@energyweb/issuer';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
-import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { HttpStatus, Logger } from '@nestjs/common';
-import { CertificateCreatedEvent } from '../events/certificate-created-event';
+import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
+
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate.entity';
-import { CertificatePersistedEvent } from '../events/certificate-persisted.event';
-import { SyncCertificateEvent } from '../events/sync-certificate-event';
+import { UnminedCommitment } from '../unmined-commitment.entity';
+import {
+    CertificateCreatedEvent,
+    CertificatePersistedEvent,
+    CertificateUpdatedEvent,
+    SyncCertificateEvent
+} from '../events';
 
 @EventsHandler(CertificateCreatedEvent)
 export class CertificateCreatedHandler implements IEventHandler<CertificateCreatedEvent> {
@@ -22,11 +26,18 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
     constructor(
         @InjectRepository(Certificate)
         private readonly repository: Repository<Certificate>,
+        @InjectRepository(UnminedCommitment)
+        private readonly unminedCommitmentRepository: Repository<UnminedCommitment>,
+        private connection: Connection,
         private readonly blockchainPropertiesService: BlockchainPropertiesService,
         private readonly eventBus: EventBus
     ) {}
 
-    async handle({ id, privateInfo }: CertificateCreatedEvent): Promise<ISuccessResponse> {
+    async handle({
+        id,
+        byTxHash,
+        privateInfo
+    }: CertificateCreatedEvent): Promise<ISuccessResponse> {
         this.logger.log(`Detected a new certificate with ID ${id}`);
 
         const blockchainProperties = await this.blockchainPropertiesService.get();
@@ -38,7 +49,7 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
 
         if (existingCertificate) {
             // Re-sync the certificate to sync any eventual changes
-            this.eventBus.publish(new SyncCertificateEvent(id));
+            this.eventBus.publish(new SyncCertificateEvent(id, byTxHash));
 
             return ResponseFailure(
                 `Certificate with id ${id} already exists in the DB.`,
@@ -63,21 +74,50 @@ export class CertificateCreatedHandler implements IEventHandler<CertificateCreat
             });
         }
 
-        const certificate = await this.repository.save({
-            id: cert.id,
-            blockchain: blockchainProperties,
-            deviceId: cert.deviceId,
-            generationStartTime: cert.generationStartTime,
-            generationEndTime: cert.generationEndTime,
-            creationTime: cert.creationTime,
-            creationBlockHash: cert.creationBlockHash,
-            owners: cert.owners,
-            issuedPrivately: !!privateInfo,
-            latestCommitment
-        });
+        const txHash = cert.creationTransactionHash.toLowerCase();
+        const unminedCommitment = await this.checkCommitment(txHash);
 
-        this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
+        const queryRunner = this.connection.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+
+        try {
+            const certificate = await this.repository.save({
+                id: cert.id,
+                blockchain: blockchainProperties,
+                deviceId: cert.deviceId,
+                generationStartTime: cert.generationStartTime,
+                generationEndTime: cert.generationEndTime,
+                creationTime: cert.creationTime,
+                creationTransactionHash: txHash,
+                owners: cert.owners,
+                issuedPrivately: !!privateInfo || !!unminedCommitment,
+                latestCommitment: unminedCommitment ?? latestCommitment
+            });
+
+            if (unminedCommitment) {
+                await this.unminedCommitmentRepository.delete(txHash);
+            }
+
+            await queryRunner.commitTransaction();
+
+            this.eventBus.publish(new CertificatePersistedEvent(certificate.id));
+            this.eventBus.publish(new CertificateUpdatedEvent(certificate.id, byTxHash));
+        } catch (err) {
+            await queryRunner.rollbackTransaction();
+
+            this.logger.error(err);
+            return ResponseFailure(JSON.stringify(err), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            await queryRunner.release();
+        }
 
         return ResponseSuccess();
+    }
+
+    async checkCommitment(txHash: string): Promise<IOwnershipCommitmentProof | null> {
+        const unminedCommitment = await this.unminedCommitmentRepository.findOne(txHash);
+
+        return unminedCommitment?.commitment;
     }
 }

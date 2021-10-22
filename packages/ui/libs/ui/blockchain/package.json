@@ -26,7 +26,7 @@
     "@energyweb/origin-ui-utils": "0.1.0",
     "@energyweb/utils-general": "11.0.4",
     "@ethersproject/providers": "5.3.1",
-    "@hookform/resolvers": "2.8.1",
+    "@hookform/resolvers": "2.8.2",
     "@material-ui/core": "5.0.0-beta.4",
     "@material-ui/icons": "5.0.0-beta.4",
     "@material-ui/lab": "5.0.0-alpha.43",
@@ -39,7 +39,7 @@
     "dayjs": "1.10.7",
     "emotion-theming": "11.0.0",
     "ethers": "5.3.1",
-    "i18next": "21.2.4",
+    "i18next": "21.3.2",
     "i18next-icu": "1.4.2",
     "lodash": "4.17.21",
     "react-beautiful-dnd": "13.1.0",
@@ -50,7 +50,7 @@
     "react-router": "6.0.0-beta.4",
     "react-router-dom": "6.0.0-beta.4",
     "react-toastify": "8.0.2",
-    "yup": "0.32.9"
+    "yup": "0.32.11"
   },
   "peerDependencies": {
     "react": "17.0.2"

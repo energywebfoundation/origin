@@ -47,6 +47,7 @@ export class SyncCertificationRequestsTask {
                 this.eventBus.publish(
                     new CertificateCreatedEvent(
                         certificate.id,
+                        null,
                         certificate.issuedPrivately
                             ? { owner: certReq.owner, energy: certReq.energy }
                             : null

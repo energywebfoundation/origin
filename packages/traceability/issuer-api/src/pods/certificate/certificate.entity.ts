@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    PrimaryColumn,
+    CreateDateColumn,
+    UpdateDateColumn
+} from 'typeorm';
 import { IsBoolean, IsInt, IsPositive, IsString, Min } from 'class-validator';
 import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
@@ -48,9 +55,9 @@ export class Certificate {
     @ManyToOne(() => BlockchainProperties)
     blockchain: BlockchainProperties;
 
-    @Column({ nullable: true })
+    @Column()
     @IsString()
-    creationBlockHash: string;
+    creationTransactionHash: string;
 
     /* PRIVATE CERTIFICATES ONLY */
 
