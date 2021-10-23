@@ -27,7 +27,7 @@
     },
     "devDependencies": {
         "@energyweb/exchange": "1.11.0",
-        "@nestjs/swagger": "5.1.1",
+        "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",
         "@openapitools/openapi-generator-cli": "2.4.13",
