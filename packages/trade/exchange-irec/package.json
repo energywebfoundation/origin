@@ -54,7 +54,7 @@
         "@nestjs/cqrs": "8.0.0",
         "@nestjs/passport": "8.0.1",
         "@nestjs/platform-express": "8.1.1",
-        "@nestjs/swagger": "5.1.1",
+        "@nestjs/swagger": "5.1.4",
         "@nestjs/typeorm": "8.0.2",
         "bn.js": "5.2.0",
         "class-transformer": "0.3.1",

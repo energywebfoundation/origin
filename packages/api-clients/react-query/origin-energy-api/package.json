@@ -29,7 +29,7 @@
     },
     "devDependencies": {
         "@nestjs/passport": "8.0.1",
-        "@nestjs/swagger": "5.1.1",
+        "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",
         "@types/mocha": "9.0.0",
