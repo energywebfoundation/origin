@@ -128,7 +128,7 @@
     "@testing-library/jest-dom": "5.14.1",
     "@testing-library/react": "12.1.0",
     "@types/jest": "27.0.2",
-    "@types/lodash": "4.14.175",
+    "@types/lodash": "4.14.176",
     "@types/material-ui": "0.21.10",
     "@types/node": "14.17.27",
     "@types/react": "17.0.22",
