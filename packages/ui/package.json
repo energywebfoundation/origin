@@ -129,7 +129,7 @@
     "@testing-library/react": "12.1.0",
     "@types/jest": "27.0.2",
     "@types/lodash": "4.14.176",
-    "@types/material-ui": "0.21.10",
+    "@types/material-ui": "0.21.12",
     "@types/node": "14.17.27",
     "@types/react": "17.0.22",
     "@types/react-beautiful-dnd": "13.1.2",
