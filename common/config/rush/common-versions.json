@@ -24,7 +24,8 @@
         "@ethersproject/abstract-signer": "5.3.0",
         "@ethersproject/contracts": "5.3.0",
         "@ethersproject/providers": "5.3.1",
-        "@ethersproject/wallet": "5.3.0"
+        "@ethersproject/wallet": "5.3.0",
+        "ua-parser-js": "1.0.1"
     },
 
     /**
