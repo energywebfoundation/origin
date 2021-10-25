@@ -30,7 +30,8 @@ Buyer organizations mostly do not require synchronization with a certificate reg
 View how to register users [below](#registering-users). Read more about devices in Origin [here](./user-guide-device-management.md/#devices). 
 
 #### User Roles
-User’s have one of three roles:
+User’s have one of three roles:  
+
 1. Admin
 2. Device Manager 
 3. Member
@@ -112,7 +113,7 @@ These fields can be changed based on implementation needs.
 ## Registering Devices  
 To view the device registration interface, navigate to https://origin-ui-canary.herokuapp.com/device/register, or click on Device on the side panel and select 'Register Device':  
 
-[!registerDeviceSidePanel](images/onboarding/onboarding7-registerdevicesidepanel.png)
+![registerDeviceSidePanel](images/onboarding/onboarding7-registerdevicesidepanel.png)
 
 In order to register a device, the user must be registered with an existing organization. You can read more about registering organizations [here](#registering-organizations). 
 

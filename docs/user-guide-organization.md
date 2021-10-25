@@ -1,7 +1,7 @@
 # Organization
-https://origin-ui-canary.herokuapp.com/organization/my
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/my
 
-Source code on github: https://github.com/energywebfoundation/origin/tree/master/packages/organizations
+**Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/organizations
 
 An [Organization](./user-guide-reg-onboarding.md#organizations) is the top level of user-hierarchy in the Origin platform.  
 
@@ -20,7 +20,7 @@ The Organization portal has five views. The purpose and utility of each view is 
 
 ## My Organization
 
-https://origin-ui-canary.herokuapp.com/organization/my  
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/my  
 
 ### Organization Information
 
@@ -47,7 +47,7 @@ The contact details of the organization’s lead user. These details are generat
 ![leadUserInfo](images/organization/organization-leaduserinfo.png)
 
 ## Members
-https://origin-ui-canary.herokuapp.com/organization/members  
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/members  
 
 ![members](images/organization/organization-members.png)
 
@@ -69,14 +69,14 @@ To change a member’s role, “Edit role” and select their new role from the 
 
 
 ## Invitations
-https://origin-ui-canary.herokuapp.com/organization/invitations 
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/invitations 
 
 This view provides admins a list of member invitations that have been sent to email addresses. 
 
 Invitations are marked as “pending” if the invitee has not accepted. Invitations are marked as “accepted” if the invitee has accepted. 
 
 ## Invite  
-https://origin-ui-canary.herokuapp.com/organization/invite  
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/invite  
 
 This view allows admins to invite members to the organization. A role must be selected for the invitee when the invitation is created. You can see a list of the reference implementation's roles and their privileges [here](./user-guide-reg-onboarding.md#user-roles-and-hierarchy). 
 
@@ -85,12 +85,13 @@ This view allows admins to invite members to the organization. A role must be se
 When the invitation is sent, the invitee will receive the invitation in their inbox. You can view the invitation status in the Invitations list. It will be marked as “pending”, until the invitee has accepted using the email. After the invitee accepts, the invitation status will be “accepted.”
 
 ## Create Beneficiary
-https://origin-ui-canary.herokuapp.com/organization/create-beneficiary
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/create-beneficiary
 
 This view allows admins to create beneficiaries or recipients for retired certificates. Certificates can be retired to the beneficiary's account at the time of retirement. You can read about the certificate retirement process [here](./user-guide-certificate.md#retire). 
 
 ## Register I-REC
-https://origin-ui-canary.herokuapp.com/organization/register-irec
+
+**Reference Implementation:** **Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/register-irec
 
 This view allows admins to enter their I-REC registration information to create an I-REC account. **Note that this interface is only visible if you have not yet registered with I-REC. Once you successfully reigster with I-REC, the 'Connect I-REC' interface will be shown.** 
 
