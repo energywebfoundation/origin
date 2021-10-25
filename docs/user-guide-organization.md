@@ -1,5 +1,5 @@
 # Organization
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/my
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/organization/my  
 
 **Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/organizations
 

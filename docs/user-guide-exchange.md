@@ -1,7 +1,7 @@
 # Exchange
 **Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/view-market  
 
-Source code on github: https://github.com/energywebfoundation/origin/tree/master/packages/trade 
+**Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/trade 
 
 The Exchange interface enables efficient and transparent order book trading between sellers and buyers. It integrates with certificate issuance to allow for trading of [Energy Attribute Certificates (EACs)](./user-guide-glossary.md#energy-attribute-certificate) on the blockchain. 
 
