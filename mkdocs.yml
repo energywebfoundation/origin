@@ -5,7 +5,7 @@ nav:
     - Getting started: getting-started.md
     - Architecture: architecture.md
     - Packages: packages.md
-    - User guides:
+    - Platform User guides:
           - Glossary: user-guide-glossary.md
           - Onboarding and Registration: user-guide-reg-onboarding.md
           - Device Management: user-guide-device-management.md
