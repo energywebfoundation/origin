@@ -6,8 +6,11 @@ nav:
     - Architecture: architecture.md
     - Packages: packages.md
     - User guides:
-          - Onboarding: user-guide-onboarding.md
+          - Glossary: user-guide-glossary.md
+          - Onboarding and Registration: user-guide-reg-onboarding.md
           - Device Management: user-guide-device-management.md
+          - Organization Management: user-guide-device-organization.md
+          - Using the Exchange: user-guide-device-exchange.md
     - Configuration:
           - UI: configuration-ui.md
     - SDK:
@@ -21,7 +24,13 @@ nav:
           - How to deploy to Volta: volta-deployment.md
           - Run with Docker: docker.md
 
-theme: material
+theme:
+  name: material
+  logo: images/EWF-EWBrandmark-Knockout.png
+  palette:
+    primary: black
+repo_url: https://github.com/energywebfoundation/origin
+
 
 plugins:
     - mermaid2
