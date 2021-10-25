@@ -2,11 +2,11 @@
   <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
-
 # Origin Device Registry IREC Local API Client
 
 ## Description
-//TO DO - Overview of package. 
+
+//TO DO - Overview of package.
 API client for working with I-REC specific implementation of device registry.
 
 The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
@@ -14,6 +14,7 @@ The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentral
 See a reference implementation of Origin deployed [here](https://origin-ui-canary.herokuapp.com/device/all)
 
 ## Installation
+
 This is a Node.js module available through the npm registry.
 
 ### Requirements
@@ -24,60 +25,66 @@ Before installing, download and install Node.js. Node.js xxx or higher is requir
 
 Installation is done using the following commands:
 
-``` sh
+```sh
 $ yarn
 ```
 
 ## Build
-``` sh
+
+```sh
 $ yarn build
 ```
 
 ## Run
-``` sh
+
+```sh
 $ npm run start
 ```
+
 ## Testing (delete if not needed)
+
 Testing Strategy
 
 ### Integration Tests (delete if not needed)
-``` sh
+
+```sh
 $ npm run test
 ```
 
 ## Documentation
-- [Origin Documentation](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/)
-- [Device Management User Guide](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/user-guide-device-management/)
 
-## Contributing Guidelines 
+-   [Origin Documentation](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/)
+-   [Device Management User Guide](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/user-guide-device-management/)
+
+## Contributing Guidelines
+
 See [contributing.md](../../contributing.md)
 
 ## Questions and Support
-For questions and support please use Energy Web's [Discord channel](https://discord.com/channels/706103009205288990/843970822254362664) 
 
+For questions and support please use Energy Web's [Discord channel](https://discord.com/channels/706103009205288990/843970822254362664)
 
 # EW-DOS
-The Energy Web Decentralized Operating System is a blockchain-based, multi-layer digital infrastructure. 
 
-The purpose of EW-DOS is to develop and deploy an open and decentralized digital operating system for the energy sector in support of a low-carbon, customer-centric energy future. 
+The Energy Web Decentralized Operating System is a blockchain-based, multi-layer digital infrastructure.
+
+The purpose of EW-DOS is to develop and deploy an open and decentralized digital operating system for the energy sector in support of a low-carbon, customer-centric energy future.
 
 We develop blockchain technology, full-stack applications and middleware packages that facilitate participation of Distributed Energy Resources on the grid and create open market places for transparent and efficient renewable energy trading.
 
-- To learn about more about the EW-DOS tech stack and the energy-sector challenges our use cases address, see our [documentation](https://energy-web-foundation.gitbook.io/energy-web/).  
-
+-   To learn about more about the EW-DOS tech stack and the energy-sector challenges our use cases address, see our [documentation](https://energy-web-foundation.gitbook.io/energy-web/).
 
 For a deep-dive into the motivation and methodology behind our technical solutions, we encourage you to read our White Papers:
 
-- [Energy Web White Paper on Vision and Purpose](https://www.energyweb.org/reports/EWDOS-Vision-Purpose/)
-- [Energy Web  White Paper on Technology Detail](https://www.energyweb.org/wp-content/uploads/2020/06/EnergyWeb-EWDOS-PART2-TechnologyDetail-202006-vFinal.pdf)
-
+-   [Energy Web White Paper on Vision and Purpose](https://www.energyweb.org/reports/EWDOS-Vision-Purpose/)
+-   [Energy Web White Paper on Technology Detail](https://www.energyweb.org/wp-content/uploads/2020/06/EnergyWeb-EWDOS-PART2-TechnologyDetail-202006-vFinal.pdf)
 
 ## Connect with Energy Web
-- [Twitter](https://twitter.com/energywebx)
-- [Discord](https://discord.com/channels/706103009205288990/843970822254362664)
-- [Telegram](https://t.me/energyweb)
+
+-   [Twitter](https://twitter.com/energywebx)
+-   [Discord](https://discord.com/channels/706103009205288990/843970822254362664)
+-   [Telegram](https://t.me/energyweb)
 
 ## License
 
 This project is licensed under the GNU General Public License v3.0 or later - see the [LICENSE](LICENSE) file for details
-

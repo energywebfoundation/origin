@@ -25,12 +25,11 @@ nav:
           - Run with Docker: docker.md
 
 theme:
-  name: material
-  logo: images/EWF-EWBrandmark-Knockout.png
-  palette:
-    primary: black
+    name: material
+    logo: images/EWF-EWBrandmark-Knockout.png
+    palette:
+        primary: black
 repo_url: https://github.com/energywebfoundation/origin
-
 
 plugins:
     - mermaid2
