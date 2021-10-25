@@ -24,7 +24,7 @@
         "client:clean": "rm -rf src/client src/schema.yaml"
     },
     "dependencies": {
-        "axios": "0.21.4",
+        "axios": "0.24.0",
         "react-query": "3.24.3"
     },
     "devDependencies": {

@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "@energyweb/origin-energy-api": "1.0.4",
-        "axios": "0.21.4",
+        "axios": "0.24.0",
         "react-query": "3.24.3"
     },
     "devDependencies": {
