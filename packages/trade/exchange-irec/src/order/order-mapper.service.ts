@@ -8,8 +8,8 @@ import {
 } from '@energyweb/exchange-core-irec';
 import { LocationService } from '@energyweb/utils-general';
 import { Injectable, Logger } from '@nestjs/common';
-import { ProductDTO } from '../product/product.dto';
 
+import { ProductDTO } from '../product';
 import { DeviceTypeServiceWrapper } from '../runner';
 
 @Injectable()
@@ -24,18 +24,12 @@ export class OrderMapperService implements IOrderMapperService<IRECProduct, IREC
         this.logger.debug(`Mapping order to matching engine order: ${JSON.stringify(order)}`);
 
         const irecProduct = ProductDTO.toProduct(order.product);
+        const deviceTypeService = await this.deviceTypeServiceWrapper.getDeviceTypeService();
+
         const product =
             order.side === OrderSide.Ask
-                ? new AskProduct(
-                      irecProduct,
-                      this.deviceTypeServiceWrapper.deviceTypeService,
-                      this.locationService
-                  )
-                : new BidProduct(
-                      irecProduct,
-                      this.deviceTypeServiceWrapper.deviceTypeService,
-                      this.locationService
-                  );
+                ? new AskProduct(irecProduct, deviceTypeService, this.locationService)
+                : new BidProduct(irecProduct, deviceTypeService, this.locationService);
 
         return new MatchingEngineOrder(
             order.id,

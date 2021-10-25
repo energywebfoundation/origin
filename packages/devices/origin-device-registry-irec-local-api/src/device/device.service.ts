@@ -6,6 +6,7 @@ import {
     ConflictException,
     Inject,
     Injectable,
+    InternalServerErrorException,
     NotFoundException
 } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
@@ -52,6 +53,12 @@ export class DeviceService {
         const tradeAccount = await this.irecService.getTradeAccountCode(
             platformAdmin.organization.id
         );
+        if (!tradeAccount) {
+            throw new InternalServerErrorException(
+                'Platform admin IREC account does not have a trade account'
+            );
+        }
+
         const issuerOrg = await this.irecService.getUserOrganization(platformAdmin.organization.id);
         const registrantOrg = await this.irecService.getUserOrganization(user);
 
