@@ -1,7 +1,7 @@
 # Exchange
-https://origin-ui-canary.herokuapp.com/exchange/view-market  
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/view-market  
 
-Source code on github: https://github.com/energywebfoundation/origin/tree/master/packages/trade 
+**Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/trade 
 
 The Exchange interface enables efficient and transparent order book trading between sellers and buyers. It integrates with certificate issuance to allow for trading of [Energy Attribute Certificates (EACs)](./user-guide-glossary.md#energy-attribute-certificate) on the blockchain. 
 
@@ -16,7 +16,7 @@ The Exchange portal has seven views. The purpose and utility of each view is exp
 7. **[Supply](#supply):** Total energy supply (MWh) from your devices to be certified for current year
 
 ## View Market
-https://origin-ui-canary.herokuapp.com/exchange/view-market 
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/view-market 
 
 ## All Bundles
 
@@ -27,7 +27,7 @@ https://origin-ui-canary.herokuapp.com/exchange/view-market
 ## My Bundles
 
 ## My Orders
-https://origin-ui-canary.herokuapp.com/exchange/my-orders 
+**Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/my-orders 
 
 ## Supply
 

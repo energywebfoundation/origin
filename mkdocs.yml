@@ -5,12 +5,13 @@ nav:
     - Getting started: getting-started.md
     - Architecture: architecture.md
     - Packages: packages.md
-    - User guides:
+    - Platform User guides:
+          - Getting Started: user-guides.md
           - Glossary: user-guide-glossary.md
           - Onboarding and Registration: user-guide-reg-onboarding.md
           - Device Management: user-guide-device-management.md
-          - Organization Management: user-guide-device-organization.md
-          - Using the Exchange: user-guide-device-exchange.md
+          - Organization Management: user-guide-organization.md
+          - Using the Exchange: user-guide-exchange.md
     - Configuration:
           - UI: configuration-ui.md
     - SDK:
