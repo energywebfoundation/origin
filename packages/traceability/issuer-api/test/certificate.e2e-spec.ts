@@ -179,13 +179,19 @@ describe('Certificate tests', () => {
             });
     });
 
-    it('should batch issue certificates', async () => {
+    it('should batch issue certificates (with correct order)', async () => {
+        const orderedNumbers = new Array(10).fill(null).map((_, i) => i.toString());
+        const certificatesPayload = orderedNumbers.map((i) => ({
+            ...certificateTestData,
+            metadata: i
+        }));
+
         const {
             body: { txHash }
         } = await request(app.getHttpServer())
             .post(`/certificate-batch/issue`)
             .set({ 'test-user': TestUser.Issuer })
-            .send([certificateTestData, certificateTestData])
+            .send(certificatesPayload)
             .expect(HttpStatus.OK);
 
         expect(txHash).to.be.a('string');
@@ -196,6 +202,9 @@ describe('Certificate tests', () => {
             txHash,
             TestUser.OrganizationDeviceManager
         );
+
+        expect(certificates).to.have.length(10);
+        expect(certificates.map((c) => c.metadata)).to.have.ordered.members(orderedNumbers);
 
         expect(certificates[0].isOwned).to.be.true;
         expect(certificates[0].energy.publicVolume).to.equal(certificateTestData.energy);
