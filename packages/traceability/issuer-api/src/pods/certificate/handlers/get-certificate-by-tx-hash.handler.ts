@@ -13,7 +13,12 @@ export class GetCertificateByTxHashHandler implements IQueryHandler<GetCertifica
 
     async execute({ txHash }: GetCertificateByTxHashQuery): Promise<Certificate[]> {
         return this.repository.find({
-            creationTransactionHash: txHash.toLowerCase()
+            where: {
+                creationTransactionHash: txHash.toLowerCase()
+            },
+            order: {
+                id: 'ASC'
+            }
         });
     }
 }

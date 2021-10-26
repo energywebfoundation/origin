@@ -203,8 +203,6 @@ describe('Certificate tests', () => {
             TestUser.OrganizationDeviceManager
         );
 
-        certificates.sort((c1, c2) => c1.id - c2.id);
-
         expect(certificates).to.have.length(10);
         expect(certificates.map((c) => c.metadata)).to.have.ordered.members(orderedNumbers);
 
