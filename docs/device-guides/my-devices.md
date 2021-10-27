@@ -13,7 +13,7 @@ Click on **“View Details”** to view device details:
 ## Requesting Certification for Device
 Once your device has been registered, you can certify produced electricity for a given period of time with the I-REC Standard and request issuance of corresponding I-RECs.   
 
-Users can request the issuance of certificates for a specific generation device and a specific time frame. They must provide the issuer with generation evidence from the device at the defined time. Based on this evidence, the energy volume can be determined and thereby the number of certificates (e.g. each 1 MWh) that is requested. A specific address can be defined to issue the certificates to. The default is the address that called the function.
+Users can request the issuance of certificates for a specific generation device within a specific time frame. They must provide the issuer with generation evidence from the device at the defined time. Based on this evidence, the energy volume can be determined and thereby the number of certificates (e.g. each 1 MWh) that is requested. A specific address can be defined to issue the certificates to. The default is the address that called the function.
 
 <b>Monthly certification</b> is the most common practice in the market, however most standards allow for a daily granularity.
 
@@ -39,7 +39,7 @@ Once submitted through the Origin platform, the local issuer receives the certif
 
 Once your request is processed, you will be able to see it under [Certificates -> Requests](../certificate-guides/requests.md). **Note that once you've requested a certificate for a certain device for a selected time period, it is not possible to request a certificate for the same period in the future if certificate request is successful.** Certification is irreversible once it is written to the blockchain. 
 
-The issuing body will be automatically notified about your request and will review it within 5 working days. You will receive an email notification about any updates to your request.   
+The issuing body will be automatically notified about your request. You will receive an email notification about any updates to your request.   
 
 ## Accessing Your Certificates
 
