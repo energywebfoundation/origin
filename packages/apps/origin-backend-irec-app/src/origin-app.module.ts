@@ -49,7 +49,6 @@ import {
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
-import { RefreshAllTokensTask } from './cron';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -102,8 +101,7 @@ const OriginAppTypeOrmModule = () => {
         OrganizationMemberRoleChangedHandler,
         OrganizationStatusChangedHandler,
         RegistrationCreatedHandler,
-        OrganizationRegisteredHandler,
-        RefreshAllTokensTask
+        OrganizationRegisteredHandler
     ]
 })
 export class OriginAppModule {}
