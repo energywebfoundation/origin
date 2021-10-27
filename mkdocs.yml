@@ -5,13 +5,40 @@ nav:
     - Getting started: getting-started.md
     - Architecture: architecture.md
     - Packages: packages.md
-    - Platform User guides:
+    - Platform User Guides:
           - Getting Started: user-guides.md
+          - Accounts and User Management: user-guide-reg-onboarding.md
+          - Devices:
+              - Device Overview: device-guides/device-guide-intro.md
+              - All Devices: device-guides/all-devices.md
+              - Map View: device-guides/map-view.md
+              - My Devices: device-guides/my-devices.md
+              - Register Device: device-guides/reigster-device.md
+              - Import Device: device-guides/import-device.md
+          - Certificate:
+              - Certificate Overview: certificate-guides/cert-guide-intro.md
+              - Exchange Inbox: certificate-guides/exchange-inbox.md
+              - Blockchain Inbox: certificate-guides/blockchain-inbox.md
+              - Claims Report: certificate-guides/claims-report.md
+              - Requests: certificate-guides/requests.md
+              - Import Certificate: certificate-guides/import-certificate.md
+          - Exchange:
+              - Exchange Overview: exchange-guides/exchange-guide-intro.md
+              - View Market: exchange-guides/view-market.md
+              - All Bundles: exchange-guides/all-bundles.md
+              - Create Bundle: exchange-guides/create-bundle.md
+              - My Trades: exchange-guides/my-trades.md
+              - My Bundles: exchange-guides/my-bundles.md
+              - My Orders: exchange-guides/my-orders.md
+              - Supply: exchange-guides/supply.md
+          - Organization:
+              - Organization Overview: organization-guides/org-guide-intro.md
+              - My Organization: organization-guides/my-org.md
+              - Invitations: organization-guides/invitations.md
+              - Invite: organization-guides/invite.md
+              - Create Beneficiary: organization-guides/create-beneficiary.md
+              - Connect I-REC: organization-guides/connect-irec.md
           - Glossary: user-guide-glossary.md
-          - Onboarding and Registration: user-guide-reg-onboarding.md
-          - Device Management: user-guide-device-management.md
-          - Organization Management: user-guide-organization.md
-          - Using the Exchange: user-guide-exchange.md
     - Configuration:
           - UI: configuration-ui.md
     - SDK:
