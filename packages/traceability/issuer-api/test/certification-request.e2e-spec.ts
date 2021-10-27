@@ -142,7 +142,7 @@ describe('Certification Request tests', () => {
 
         expect(newCertificateId).to.be.above(0);
 
-        await sleep(1000);
+        await sleep(3000);
 
         const { body: certificate } = await request(app.getHttpServer())
             .get(`/certificate/${newCertificateId}`)
