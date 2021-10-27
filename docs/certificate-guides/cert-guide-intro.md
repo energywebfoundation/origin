@@ -3,7 +3,7 @@
 
 The Certificate interface allows you to manage your certificates and view certificate requests. 
 
-The certificate panel has five views:  
+The interface has five views:  
 
 1. **[Exchange Inbox:](./exchange-inbox.md)]** Manage certificates currently on the exchange. 
 2. **[Blockchain Inbox:](./blockchain-inbox.md)**  Manage certificates that in the organization blockchain account (certificates that are not currently active on the exchange)

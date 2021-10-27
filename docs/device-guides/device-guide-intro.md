@@ -18,7 +18,7 @@ Once you have an active account in the Origin platform and are part of an organi
 
 ## Managing Devices on the Origin Platform
 
-The Device interface has five views. The purpose and utility of each view is explained in detail below.  
+The Device interface has five views: 
 
 1. <b>[All Devices:](./all-devices.md)</b> Allows any user to see all registered devices within a marketplace. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
 2. <b>[Map View:](./map-view.md)</b> Allows any user to see registered devices within a marketplace as locations on a map. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.

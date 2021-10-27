@@ -13,7 +13,7 @@ nav:
               - All Devices: device-guides/all-devices.md
               - Map View: device-guides/map-view.md
               - My Devices: device-guides/my-devices.md
-              - Register Device: device-guides/reigster-device.md
+              - Register Device: device-guides/register-device.md
               - Import Device: device-guides/import-device.md
           - Certificate:
               - Certificate Overview: certificate-guides/cert-guide-intro.md

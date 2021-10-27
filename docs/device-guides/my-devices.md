@@ -1,12 +1,12 @@
 # My Devices
 **Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/my](https://origin-ui-canary.herokuapp.com/device/my)
 
-Use this interface to view all of your organization's registered devices. 
-
+Use this interface to view all of your organization's registered devices.   
 ![My Devices](../images/deviceMgmtImages/MyDevices.png)
 
-| ![View Device Details](../images/deviceMgmtImages/MyDevices.png) | Click on **“View Details”** to view device details. |
-|-------|--------------------------------------------------------|
+Click on **“View Details”** to view device details:  
+
+![View Device Details](../images/deviceMgmtImages/DeviceDetails.png)
 
 Click anywhere else on the device card to request certificates for the device.
 
