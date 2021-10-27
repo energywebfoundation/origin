@@ -3,6 +3,8 @@
 
 **Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/organizations
 
+![organization](images/panels/panel-organization.png)
+
 An [Organization](./user-guide-reg-onboarding.md#organizations) is the top level of user-hierarchy in the Origin platform.  
 
 The Organization interface allows you to manage and invite members to your organization, and to request I-REC API access for your organization. **In the reference implementation, this interface is only visible to users with Admin privileges**. 
@@ -36,13 +38,13 @@ These details are generated when I-REC registration is completed on the Origin P
 
 ### Primary Contact Details
 
-The contact details of the organization’s primary contact. These details are generated when I-REC registration is completed on the Origin Platform. **This table will not be visible if you have not registered your organization with I-REC on the platform**. Read about I-REC registration [here](#connect-i-REC).  
+The contact details of the organization’s primary contact. These details are generated when I-REC registration is completed on the Origin Platform. **This table will not be visible if you have not registered your organization with I-REC on the platform**. Read about I-REC registration [here](#connect-irec).  
 
 ![contactInfo](images/organization/organization-contactinfo.png)
 
 ### Lead User Details
 
-The contact details of the organization’s lead user. These details are generated when I-REC registration is completed on the Origin Platform. **This table will not be visible if you have not registered your organization with I-REC on the platform**. Read about I-REC registration [here](#connect-i-REC).  
+The contact details of the organization’s lead user. These details are generated when I-REC registration is completed on the Origin Platform. **This table will not be visible if you have not registered your organization with I-REC on the platform**. Read about I-REC registration [here](#connect-irec).  
 
 ![leadUserInfo](images/organization/organization-leaduserinfo.png)
 
@@ -102,7 +104,7 @@ When you register with I-REC, you will need to select an I-REC account type:
 
 Once your registration is confirmed by I-REC, you will receive I-REC credentials via email that can be used to [connect to the I-REC API](#connect-i-REC). 
 
-## Connect I-REC
+## Connect IREC
 https://origin-ui-canary.herokuapp.com/organization/connect-irec
 
 This view allows admins to enter their I-REC credentials to create an API connection with I-REC. The IREC API credentials come directly from I-REC. **Note that this interface is only visible if you have [registered with I-REC](#register-i-REC) through the Origin platform.** 
