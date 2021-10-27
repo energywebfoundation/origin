@@ -4,11 +4,11 @@
 
 With **asks**, sellers offer to sell a specific set of [Energy Attribute Certificates (EACs)](#energy-attribute-certificate) with a specific volume for a specific price. Users can define the volume and price when creating the ask. Asks are tied directly to the EACs that the seller owns and that are in the seller’s Exchange Inbox. Every EAC in the system is represented by the “asset” data structure that holds the EAC information, such as device ID and generation time. An ask is tied to one specific asset which means that it can only contain certificates from one device and a specific generation time frame. Users can only create asks for asset volumes that are currently in the active part of their Exchange Inbox. The one-to-one connection between ask and asset ensures that sellers can only offer EACs that they actually own and have locked on the Exchange.  
 
-By creating an ask, the specified EACs are offered for sale and the order becomes visible on the Exchange(./user-guide-exchange.md). The corresponding asset volumes are moved to the locked part of the Exchange Inbox. Locking the asset volume ensures that the EACs cannot be withdrawn from the exchange or offered for sale in a second ask. As a result, all buyers on the Exchange can be sure on a technical level that asks are backed by the correct amount of EACs. 
+By creating an ask, the specified EACs are offered for sale and the order becomes visible on the Exchange(./exchange-guides/view-market.md). The corresponding asset volumes are moved to the locked part of the Exchange Inbox. Locking the asset volume ensures that the EACs cannot be withdrawn from the exchange or offered for sale in a second ask. As a result, all buyers on the Exchange can be sure on a technical level that asks are backed by the correct amount of EACs. 
 
 The ask that appears on the Exchange only includes price, volume, and underlying EAC information. It does not disclose any information about the user that created the bid. All orders that are created on the Exchange are anonymous. This is possible because the Exchange operator keeps all the ownership information in the back-end and order matching is done through the operator’s system. 
 
-Asks that are not bought or matched can be canceled. Canceling an ask moves the offered asset value back to the active part of the Exchange Inbox. The underlying EACs can now be withdrawn again or be used to create another bid. Canceled asks can also be reactivated but only if the matching asset volume is available in the user’s Exchange Inbox. **Once made, asks cannot be updated**. To change parts of the ask like the price, the ask has to be canceled and a new ask has to be created.  
+Asks that are not bought or matched can be canceled. Canceling an ask moves the offered asset value back to the active part of the Exchange Inbox. The underlying EACs can now be withdrawn again or be used to create another bid. Canceled asks can also be reactivated but only if the matching asset volume is available in the user’s Exchange Inbox. **Once made, asks cannot be updated**. To change parts of the ask, such as the price, the ask has to be canceled and a new ask has to be created.  
 
 ### Requirements:
 - Every ask must be connected to exactly one renewable energy device
@@ -64,7 +64,7 @@ Energy Attribute Certificates (EACs) describe global instruments which certify t
 
 Globally there are various EAC systems to claim the use of renewable or low-carbon energy. Some well-known standards include Guarantees of Origin (EU), I-RECs (global), and RECs (US/Canada).  
 
-- Redeemed EAC: an EAC that has been bough by someone can't be resold to anyone else
+- Redeemed EAC: an EAC that has been bought by someone can't be resold to anyone else
 - Claimed or Cancelled EAC: other nomenclature for 'Redeemed EACs'
 - Bundled Certificates: contracts that sell consumable energy + EACs together
 - Unbundled (products): contracts that sell only energy OR EACs, not both together  
