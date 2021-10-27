@@ -15,4 +15,4 @@ The Exchange portal has seven views. The purpose and utility of each view is exp
 6. **[My Orders:](./my-orders.md):** View your organization’s [bids](../user-guide-glossary.md#bid), [asks](../user-guide-glossary.md#ask) and [demands](../user-guide-glossary.md#demand)
 7. **[Supply](./supply.md):** Automate certificate requests for your organization’s devices
 
-![exchange](images/panels/panel-exchange.png)
+![exchange](../images/panels/panel-exchange.png)

@@ -3,9 +3,9 @@
 
 Use this interface to view all of your organization's registered devices. 
 
-![My Devices](images/deviceMgmtImages/MyDevices.png)
+![My Devices](../images/deviceMgmtImages/MyDevices.png)
 
-| ![View Device Details](images/deviceMgmtImages/MyDevices.png) | Click on **“View Details”** to view device details. |
+| ![View Device Details](../images/deviceMgmtImages/MyDevices.png) | Click on **“View Details”** to view device details. |
 |-------|--------------------------------------------------------|
 
 Click anywhere else on the device card to request certificates for the device.
@@ -20,7 +20,7 @@ Requesting certificates for a specific generation device happens manually as mos
 The local issuer receives the certification request, can verify the evidence and approve the request. The request is recorded as a blockchain transaction on-chain.
 
 
-![Request Device Certificate](images/deviceMgmtImages/RequestCertificates.png)
+![Request Device Certificate](../images/deviceMgmtImages/RequestCertificates.png)
 
 ### Certificate Request Fields
 
@@ -33,7 +33,7 @@ The local issuer receives the certification request, can verify the evidence and
 
 **Note** that you can only request one certificate for a given time period. If you request a certificate for a time period in which you already have a pending or confirmed certificate request, you will receive an error message:
 
-![certRequestError](images/deviceMgmtImages/device-certrequest-error.png)
+![certRequestError](../images/deviceMgmtImages/device-certrequest-error.png)
 
 Once your request is processed, you will be able to see it under [Certificates -> Requests](../certificate-guides/requests.md). **Note that once you've requested a certificate for a certain device for a selected time period, it is not possible to request a certificate for the same period in the future if certificate request is successful.** Certification is irreversible once it is written to the blockchain. 
 

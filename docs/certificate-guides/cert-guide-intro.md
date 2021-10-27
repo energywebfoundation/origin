@@ -12,4 +12,4 @@ The certificate panel has five views:
 5. **[Import Certificate:](./import-certificate.md)** Import I-REC certificates into the Origin platform
 
 
-![certificate](images/panels/panel-organization.png)
+![certificate](../images/panels/panel-organization.png)

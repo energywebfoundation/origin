@@ -26,4 +26,4 @@ The Device interface has five views. The purpose and utility of each view is exp
 4. <b>[Register Device:](./register-device.md)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to register a device on behalf of that organization.
 5. <b>[Import Device:](./import-device.md)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to import their organization's devices that are currently registered with I-REC and not registered on the Origin platform.  
 
-![devices](images/panels/panel-devices.png)
+![devices](../images/panels/panel-devices.png)

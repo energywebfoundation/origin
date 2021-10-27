@@ -16,4 +16,4 @@ The Organization portal has five views. The purpose and utility of each view is 
 4. **[Create Beneficiary:](./create-beneficiary.md)** Designate a beneficiary to receive retired certificates
 5. **[Connect I-REC:](./connect-irec.md)** Create an API connection with I-REC using their I-REC API credentials.
 
-![organization](images/panels/panel-organization.png)
+![organization](../images/panels/panel-organization.png)

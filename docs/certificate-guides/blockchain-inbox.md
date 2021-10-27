@@ -1,7 +1,7 @@
 # Blockchain Inbox 
 **Reference Implementation:** [https://origin-ui-canary.herokuapp.com/certificate/blockchain-inbox](https://origin-ui-canary.herokuapp.com/certificate/blockchain-inbox)
 
-![Certificate-blockchaininbox](images/certificates/certificate-blockchaininbox.png)
+![Certificate-blockchaininbox](../images/certificates/certificate-blockchaininbox.png)
 
 The Blockchain Inbox interface shows all certificates for your organization’s devices that are currently in your Organization’s Blockchain Inbox. This inbox is associated with your [Organization's Blockchain Account Address](../user-guide-reg-onboarding.md#organization's-blockchain-account-address).  
 
@@ -13,7 +13,7 @@ The Blockchain Inbox interface shows all certificates for your organization’s 
 
 ## Deposit
 
-![Certificate-blockchaininbox-deposit](images/certificates/certificate-blockchaininbox-deposit/png)
+![Certificate-blockchaininbox-deposit](../images/certificates/certificate-blockchaininbox-deposit/png)
 
 To deposit Mwh into your organization’s Account Exchange Address, select the device and navigate to the Deposit tab. Once deposited, these Mwh can be active on the exchange and will be visible in your [Exchange Inbox](./exchange-inbox.md). 
 
@@ -23,7 +23,7 @@ Note that you can edit the number of Mwh you would like to deposit by clicking t
 
 Mwh from certificates are retired when you would like to use them for sustainability reporting. Once hours are retired, they will no longer be visible in your Blockchain Inbox. They are permanently locked in place and can no longer be revoked, transferred or placed back on the exchange. You can view retired certificate hours in the [Claims Report interface](./claims-report.md)
 
-![Certificate-blockchaininbox-retire](images/certificates/certificate-blockchaininbox-retire.png)
+![Certificate-blockchaininbox-retire](../images/certificates/certificate-blockchaininbox-retire.png)
 
 To retire Mwh, select the certificate you would like to retire and navigate to the Retire tab. 
 
@@ -41,7 +41,7 @@ Once you are satisfied with the number of Mwh to retire and have selected a bene
 
 A user can transfer certificate hours to another blockchain account by using the Transfer function. 
 
-![certificate-blockchainbox-transfer](images/certificates/certificate-blockchainbox-transfer.png)
+![certificate-blockchainbox-transfer](../images/certificates/certificate-blockchainbox-transfer.png)
 
 To transfer Mwh, select the certificate you would like to retire and navigate to the Transfer tab. 
 

@@ -3,7 +3,7 @@
 
 The Claims Report interface allows admin users to see all certificate hours from the organization’s generating devices that have been retired from the exchange and claimed for sustainability reporting. 
 
-![certificate-claimsreport](images/certificates/certificate-claimsreport.png)  
+![certificate-claimsreport](../images/certificates/certificate-claimsreport.png)  
 
 To view the details for each claim, click the row. You will be navigated to the certificate details for that claim including:
 - The certificate ID
@@ -17,4 +17,4 @@ To view the details for each claim, click the row. You will be navigated to the 
 - Claim beneficiaries
 - Blockchain Transaction History for certificate’s Mwh
 
-![certificate-certdetails](images/certificates/certificate-certdetails.png)
+![certificate-certdetails](../images/certificates/certificate-certdetails.png)
