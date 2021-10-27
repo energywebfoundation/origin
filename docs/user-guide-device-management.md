@@ -1,13 +1,13 @@
-# User Guide - Device Management
+# Devices
 **Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/all  
 
 **Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/devices
 
-## Devices
+![devices](images/panels/panel-devices.png)
 
 ‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine.) They must be registered in the system to provide their capacity, location and generation data. This data is used to provide trust in the validity of the certificates that are issued for their generation. A user that is associated with a registered [organization](./user-guide-reg-onboarding.md#organizations) can [register a device](./user-guide-reg-onboarding.md#registering-devices) within the system if they have the necessary role permissions. In the Origin reference implementation, only the Admin and Device Manager roles can register devices. Read more about role permissioning [here](./user-guide-reg-onboarding.md#user-roles-and-hierarchy). 
 
-### Accessing Device Generation Data
+## Accessing Device Generation Data
 
 Origin offers the possibility to connect an external metering system. In order for this to work, a custom integration to the specific metering system is required. Devices must be approved by the issuer in order to be used on the platform.
 
@@ -15,7 +15,7 @@ The local issuer receives the device registration through Origin's [Register Dev
 
 Once you have an active account in the Origin platform and are part of an organization, you can register your devices on the platform (read more about steps for device registration [below](#register-device)).
 
-### Managing Devices on the Origin Platform
+## Managing Devices on the Origin Platform
 
 The Device interface has four views. The purpose and utility of each view is explained in detail below.
 
@@ -40,7 +40,7 @@ To view a device’s details, click the device image or image placeholder. If ho
 
 ### Device Detail View
 
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/detail-view/e3ac3a98-0739-4d14-afef-c51b0a03d282
+**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/detail-view/e3ac3a98-0739-4d14-afef-c51b0a03d282](https://origin-ui-canary.herokuapp.com/device/detail-view/e3ac3a98-0739-4d14-afef-c51b0a03d282)  
 
 This view provides high-level generation capacity, certification overview and smart meter readings for a single device. 
 Device details fields are dependent on implementation needs. To see an overview of the fields provided in the reference implementation, see [Appendix A](#appendix-a) below.
@@ -78,6 +78,7 @@ Requesting certificates for a specific generation device happens manually as mos
 
 The local issuer receives the certification request, can verify the evidence and approve the request. The request is recorded as a blockchain transaction on-chain.
 
+
 ![Request Device Certificate](images/deviceMgmtImages/RequestCertificates.png)
 
 ### Certificate Request Fields
@@ -89,9 +90,15 @@ The local issuer receives the certification request, can verify the evidence and
 | Amount of energy in MWh                  | Input MWh generated in time selected period                                                      |
 | Drop files here or click to select files | Upload generation evidence (e.g., official settlement document(s) provided by the grid operator. |
 
-Once your request is processed, you will be able to see it under <b>Certificates -> Pending</b>. Note that once you've requested a certificate for a certain device for a selected time period, it is not possible to request a certificate for the same period in the future if certificate request is successful. Certification is irreversible once it is written to the blockchain. 
+**Note** that you can only request one certificate for a given time period. If you request a certificate for a time period in which you already have a pending or confirmed certificate request, you will receive an error message:
+
+![certRequestError](images/deviceMgmtImages/device-certrequest-error.png)
+
+Once your request is processed, you will be able to see it under <b>Certificates -> Requests</b>. Note that once you've requested a certificate for a certain device for a selected time period, it is not possible to request a certificate for the same period in the future if certificate request is successful. Certification is irreversible once it is written to the blockchain. 
 
 The issuing body will be automatically notified about your request and will review it within 5 working days. You will receive an email notification about any updates to your request. 
+
+Once a certificate has been approved by the issuing body, it will be deposited into your [Exchange Inbox](./user-guide-exchange.md#exchange-inbox), at which point it can be posted for sale on the exchange. Read more about this [here](./certificate-guides/exchange-inbox.md). 
 
 ## Register Device
 

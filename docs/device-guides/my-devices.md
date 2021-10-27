@@ -39,4 +39,4 @@ Once your request is processed, you will be able to see it under [Certificates -
 
 The issuing body will be automatically notified about your request and will review it within 5 working days. You will receive an email notification about any updates to your request.   
 
-Once a certificate has been approved by the issuing body, it will be deposited into your [Blockchain Inbox](../certificate-guides/blockchain-inbox.md), at which point it can be deposited onto the exchange for sale, or retired from the exchange and claimed for sustainability reporting purposes. Read more about this [here](../certificate-guides/blockchain-inbox.md).
+Once a certificate has been approved by the issuing body, it will be deposited into your [Exchange Inbox](./user-guide-exchange.md#exchange-inbox), at which point it can be posted for sale on the exchange. Read more about this [here](./certificate-guides/exchange-inbox.md). 

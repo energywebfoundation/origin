@@ -5,7 +5,7 @@
 
 The Blockchain Inbox interface shows all certificates for your organization’s devices that are currently in your Organization’s Blockchain Inbox. This inbox is associated with your [Organization's Blockchain Account Address](../user-guide-reg-onboarding.md#organization's-blockchain-account-address).  
 
-When the issuing body approves a certificate request, the certificate is first deposited into the Blockchain Inbox. Certificates in this inbox are not active on the exchange. Certificates must be in the Blockchain Inbox in order to be:  
+ Certificates in this inbox are not active on the exchange. Certificates must be in the Blockchain Inbox in order to be:  
 
 1. Deposited onto the exchange (at which point they are in the custody of the platform administrator and can be posted for sale)
 2. Retired for sustainability reporting
@@ -25,7 +25,7 @@ Mwh from certificates are retired when you would like to use them for sustainabi
 
 ![Certificate-blockchaininbox-retire](images/certificates/certificate-blockchaininbox-retire.png)
 
-To retire Mwh, select the certificate you would like to retire and navigate to the Retire tab. You can retire more than one certificate at a time by selecting multiple certificates in the Blockchain Inbox.   
+To retire Mwh, select the certificate you would like to retire and navigate to the Retire tab. 
 
 Note that you must select a beneficiary for the retired Mwh. Admin users can add beneficiaries in the [Create Beneficiaries](../organization-guides/create-beneficiary.md) interface. Once a beneficiary is added, they will show up in the “Select Beneficiary” dropdown in the Retire tab.   
 
@@ -43,7 +43,7 @@ A user can transfer certificate hours to another blockchain account by using the
 
 ![certificate-blockchainbox-transfer](images/certificates/certificate-blockchainbox-transfer.png)
 
-To transfer Mwh, select the certificate you would like to retire and navigate to the Transfer tab. You can transfer hours more than one certificate at a time by selecting multiple certificates in the Blockchain Inbox.
+To transfer Mwh, select the certificate you would like to retire and navigate to the Transfer tab. 
 
 
 

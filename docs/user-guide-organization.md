@@ -3,6 +3,8 @@
 
 **Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/organizations
 
+![organization](images/panels/panel-organization.png)
+
 An [Organization](./user-guide-reg-onboarding.md#organizations) is the top level of user-hierarchy in the Origin platform.  
 
 The Organization interface allows you to manage and invite members to your organization, and to request I-REC API access for your organization. **In the reference implementation, this interface is only visible to users with Admin privileges**. 

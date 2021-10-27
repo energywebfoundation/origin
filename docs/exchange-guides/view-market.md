@@ -38,7 +38,18 @@ The “Sell Offers” tab lists all of the Mwh for your organization’s certifi
 
 *Note that bundles are not included in “Sell” offers. They must be purchased directly from the seller using the “All Bundles”(#all-bundles) interface.
 
-//DO BUY OFFERS
+### Direct Buy
+
+For all sell offers that are not posted by your organization, there will be a "Direct Buy" option for each ask:
+
+![exchange-viewmarket-asks-directbuy](images/exchange/exchange-viewmarket-asks-directbuy.png)
+
+Click on "Buy" and edit the number of Mwh you would like to purchase. By default, the total number of Mwh for sale in the ask will be populated for the buy. 
+
+![exchange-viewmarket-asks-directbuy-input](images/exchange/exchange-viewmarket-asks-directbuy-input.png)
+
+Once the buy goes through, you will see the Mwh in your [Exchange Inbox](../certificate-guides/exchange-inbox.md), and a record of the buy in the [My Trades](./my-trades.md) interface. 
+
 ## Trading View
 
 ![exchange-market-tradingview](images/exchange/exchange-market-tradingview.png)
