@@ -7,7 +7,7 @@ The ‘All Bundles’ interface allows users to see all [bundles](../user-guide-
 
 ## Bundle Details/Buy Bundle
 
-To see bundle details and purchase a bundle, select a bundle that is listed. The Bundle Details interface presents possible bundle offers based on the ratios defined by the seller. The buyer can specify a budget using the slidable price range so that possible offerings are filtered and the buyer can easily choose the package that fulfills the requirements and purchase it directly. To buy a package, select the desired package and click “Buy” (shown below).
+To see bundle details and purchase a bundle, select a bundle that is listed. The Bundle Details interface presents possible bundle offers based on the ratios defined by the seller. The buyer can specify a budget using the slidable price range so that possible offerings are filtered and the buyer can choose the package that fulfills the requirements and purchase it directly. To buy a package, select the desired package and click “Buy” (shown below).
 
 ![exchange-allbundles-bundledetails](images/exchange/exchange-allbundles-bundledetails.png)
 

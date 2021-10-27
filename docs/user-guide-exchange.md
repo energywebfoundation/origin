@@ -3,7 +3,7 @@
 
 **Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/trade 
 
-The Exchange interface handles the platform’s market activity ([bids](./user-guide-glossary.md#bids), [asks](./user-guide-glossary.md#bids), trades and sales) for buyers and sellers. It integrates with certificate issuance to allow for trading of [Energy Attribute Certificates (EACs)](./user-guide-glossary.md#energy-attribute-certificate) on the blockchain. 
+The Exchange interface handles the platform’s market activity ([bids](./user-guide-glossary.md#bid), [asks](./user-guide-glossary.md#ask), trades and sales) for buyers and sellers. It integrates with certificate issuance to allow for trading of [Energy Attribute Certificates (EACs)](./user-guide-glossary.md#energy-attribute-certificate) on the blockchain. 
 
 The Exchange portal has seven views. The purpose and utility of each view is explained in detail below.
 
@@ -12,7 +12,7 @@ The Exchange portal has seven views. The purpose and utility of each view is exp
 3. **[Create bundle:](#create-bundle)** Create a bundle of your certificates to sell
 4. **[My Trades:](#my-trades):** View your organization’s sales and purchases
 5. **[My Bundles:](#my-bundles):** View and manage your organization's certificate bundles
-6. **[My Orders:](#my-orders):** View your organization’s [bids](./user-guide-glossary.md#bids), [asks](./user-guide-glossary.md#asks) and [demands](./user-guide-glossary.md#demand)
+6. **[My Orders:](#my-orders):** View your organization’s [bids](./user-guide-glossary.md#bid), [asks](./user-guide-glossary.md#ask) and [demands](./user-guide-glossary.md#demand)
 7. **[Supply](#supply):** Automate certificate requests for your organization’s devices
 
 ![exchange](images/panels/panel-exchange.png)
@@ -21,7 +21,7 @@ The Exchange portal has seven views. The purpose and utility of each view is exp
 **Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/view-market 
 
 ### Market
-The Market form is where a buyer makes a purchase request ([bid](./user-guide-glossary.md#bids)) for certificates for a given volume, time period and other specifications. 
+The Market form is where a buyer makes a purchase request ([bid](./user-guide-glossary.md#bid)) for certificates for a given volume, time period and other specifications. 
 
 ![Exchange-marketinterface](images/exchange/exchange-marketinterface.png)
 
