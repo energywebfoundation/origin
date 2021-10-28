@@ -9,4 +9,4 @@ Three fields are required to create a beneficiary:
   
 1. Full name of the beneficiary
 2. Country of the benficiary
-3. Location of beneficiary. This is additional location information of the beneficiary (for example, city, state or region).
+3. Location of beneficiary. This is additional location information of the beneficiary (e.g. city, state or region).
