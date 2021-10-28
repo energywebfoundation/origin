@@ -16,8 +16,6 @@ In order to mirror typical organizational structures, the Origin marketplace has
 
 Devices must be registered by a user. Users must be associated with a registered organization and have a specific role in order to register a device.
 
-![UserHierarchy](images/onboarding/Onboarding1-Hierarchy.png)
-
 ### Organizations
 Users and their permissions in the Origin marketplace are tied to digital entities that are called 'organizations'. In order to perform actions on the marketplace like register devices or trade certificates you have to belong to an approved organization. If you are managing the marketplace for your company, you should register a new organization.  
 
