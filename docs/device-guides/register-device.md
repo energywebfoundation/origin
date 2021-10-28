@@ -6,7 +6,7 @@ Use this interface to register a new device under your [organization](../user-gu
 
 ## Device Information
 
-![My Devices](images/deviceMgmtImages/DeviceInformation.png)
+![My Devices](../images/deviceMgmtImages/DeviceInformation.png)
 
 ### Device Information Fields
 
@@ -23,7 +23,7 @@ Use this interface to register a new device under your [organization](../user-gu
 
 ## Device Location
 
-![Device Location Fields](images/deviceMgmtImages/DeviceLocation.png)
+![Device Location Fields](../images/deviceMgmtImages/DeviceLocation.png)
 
 ### Device Location Fields
 

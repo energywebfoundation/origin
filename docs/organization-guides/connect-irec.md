@@ -6,4 +6,4 @@ The API connection is needed to perform the following functions on the Origin pl
 
 //To Do. 
 
-![irecConnection](images/organization/organization-irecconnection.png)
+![irecConnection](../images/organization/organization-irecconnection.png)

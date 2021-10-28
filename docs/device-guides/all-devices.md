@@ -3,11 +3,11 @@
 
 This view provides a tile view of all devices registered within a marketplace:
 
-![All Devices](images/deviceMgmtImages/AllDevices.png)
+![All Devices](../images/deviceMgmtImages/AllDevices.png)
 
 To view a device’s details, click the device image or image placeholder. If hovered over, you will see “View Details”:
 
-![View Device Details](images/deviceMgmtImages/ViewDeviceDetails.png)
+![View Device Details](../images/deviceMgmtImages/ViewDeviceDetails.png)
 
 ## Device Detail View
 
@@ -19,7 +19,7 @@ Device details fields are dependent on implementation needs. The following is an
 
 #### Device Overview 
 
-![Device Overview Fields](images/deviceMgmtImages/DeviceDetails.png)
+![Device Overview Fields](../images/deviceMgmtImages/DeviceDetails.png)
 
 
 
@@ -35,17 +35,17 @@ Device details fields are dependent on implementation needs. The following is an
 
 <b>Device Owner and Location Details</b>
 
-![Device Location Fields](images/deviceMgmtImages/DeviceLocationInfo.png)
+![Device Location Fields](../images/deviceMgmtImages/DeviceLocationInfo.png)
 
 |      Field      |                     Data                    |
 |:---------------:|:-------------------------------------------:|
 | Device Owner    | Organization ID of device owner             |
 | Device Location | Country flag indicator, region, city, state |
-| ![Coordinates](images/deviceMgmtImages/DeviceCoordinates.png)     | Geographic coordinates of device            |
-| ![Lat Long](images/deviceMgmtImages/DeviceLatLong.png)        | Longitude, latitude of device               |
+| ![Coordinates](../images/deviceMgmtImages/DeviceCoordinates.png)     | Geographic coordinates of device            |
+| ![Lat Long](../images/deviceMgmtImages/DeviceLatLong.png)        | Longitude, latitude of device               |
 
 ##### Smart Meter Readings
 
-![Smart Meter Readings](images/deviceMgmtImages/SmartMeterReadings.png)
+![Smart Meter Readings](../images/deviceMgmtImages/SmartMeterReadings.png)
 
 Use this interface to select a timeframe to view the device’s meter reading values in MWh.
