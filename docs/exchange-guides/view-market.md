@@ -31,7 +31,7 @@ You can also see your Buy Offers in the [‘My Orders’](./my-orders.md) view u
 ![exchange-myorders-demands](../images/exchange/exchange-myorders-demands.png)
 
 ## Sell Offers
-The 'Sell Offers' tab lists all of the Mwh for your organization’s certificates that are actively for sale on the exchange. Users can put certificate  up for sale in the [Exchange Inbox interface](../certificate-guides/exchange-inbox.md) using the ['Sell' tab](../certificate-guides/exchange-inbox.md#sell). 
+The 'Sell Offers' tab lists all of the Mwh that are actively for sale on the exchange. Users can put certificates up for sale in the [Exchange Inbox interface](../certificate-guides/exchange-inbox.md) using the ['Sell' tab](../certificate-guides/exchange-inbox.md#sell). 
 
 ![Exchange-viewmarket-selloffers](../images/exchange/exchange-viewmarket-selloffers.png)
 
