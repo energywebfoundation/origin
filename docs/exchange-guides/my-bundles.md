@@ -3,17 +3,17 @@
 
 Use this interface to view your organization’s bundles that were created using the [Create Bundle](./create-bundle.md) interface. 
 
-![exchange-mybundles](../images/exchange/exchange-mybundles.md)
+![exchange-mybundles](../images/exchange/exchange-mybundles.png)
 
 You can remove a bundle by selecting the ellipses and selecting “Remove Bundle”:
 
-//FIND IMAGE!!!
+![exchange-removebundle](../images/exchange/exchange-removebundle.png)
 
 ## Bundle Details
 
 Click on any bundle to view the bundle details:
 
-![exchange-bundledetails](../images/exchange/exchange-bundledetails.md)
+![exchange-bundledetails](../images/exchange/exchange-bundledetails.png)
 
 ### Buy Bundle
 

@@ -32,7 +32,7 @@ Note that by default, all of the Mwh that the certificate represents will be for
 
 When you are satisfied with the price and number of Mwh to sell, click ‘Sell Certificate’. This will create an [ask](../user-guide-glossary.md#ask) on the exchange:
 
-![exchange-ask](../images/certificates/exchange-ask.png)
+![exchange-ask](../images/exchange/exchange-ask.png)
 
 ## Withdraw
 
@@ -42,7 +42,7 @@ To withdraw certificates from the exchange to your organization’s Blockchain I
 
 Note that by default, all of the Mwh that the certificate represents will be up for withdrawal. You can edit the amount of Mwh that you want to withdraw by clicking on the edit icon and entering in the desired number.   
 
-Once you withdraw the Mwh, they  will be transferred to your Blockchain Inbox under the generation device(LINK)
+Once you withdraw the Mwh, they  will be transferred to your [Blockchain Inbox](./blockchain-inbox.md) under the generation device.
 
 ## Transfer
 

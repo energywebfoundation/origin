@@ -17,11 +17,11 @@ You can update or remove a demand using this interface. Click on the ellipses fo
 
  You can pause this demand by toggling the ‘Activate Demand’ toggle. If you choose to pause the demand, you can reactivate it through this same interface at any time.
 
- ## Bids
+## Bid
 
  You can view your organization's current bids in the 'Bids' list. 
 
- ### View Bid
+### View Bid
 
  To view bid details double click on the bid or click on the ellipses next to the bid and select ‘View’:
 
@@ -36,7 +36,7 @@ You can update or remove a demand using this interface. Click on the ellipses fo
  ![exchange-myorders-bid-viewmarket](../images/exchange/exchange-myorders-bid-viewmarket.png)  
 
 
- ## Asks
+## Asks
 
 You can view your organization's current bids in the 'Asks' list. 
 

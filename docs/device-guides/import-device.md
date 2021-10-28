@@ -9,4 +9,4 @@ You will need to add additional device data before importing the device to the O
 
 ![importDeviceDetails](../images/deviceMgmtImages/devicemgmt-importdevicedetails.png)
 
-In order to view your I-REC registered devices, you must [Connect to I-REC using your I-REC API credentials](./user-guide-organization.md#connect-i-REC) (note that you must be an admin to do this). Once this connection is made, your devices to import will be automatically populated and you can import them into the Origin system. 
+In order to view your I-REC registered devices, you must [Connect to I-REC using your I-REC API credentials](../organization-guides/connect-irec.md) (note that you must be an admin to do this). Once this connection is made, your devices to import will be automatically populated and you can import them into the Origin system. 
