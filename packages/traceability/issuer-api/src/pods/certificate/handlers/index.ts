@@ -1,7 +1,7 @@
 import { BatchClaimCertificatesHandler } from './batch-claim-certificates.handler';
 import { BatchIssueCertificatesHandler } from './batch-issue-certificates.handler';
 import { BatchTransferCertificatesHandler } from './batch-transfer-certificates.handler';
-import { CertificateCreatedHandler } from './certificate-created.handler';
+import { CertificatesCreatedHandler } from './certificates-created.handler';
 import { ClaimCertificateHandler } from './claim-certificate.handler';
 import { GetAggregateCertifiedEnergyDeviceIdHandler } from './get-aggregate-certified-energy-by-device.handler';
 import { GetAllCertificateEventsHandler } from './get-all-certificate-events.handler';
@@ -18,7 +18,7 @@ export {
     BatchClaimCertificatesHandler,
     BatchIssueCertificatesHandler,
     BatchTransferCertificatesHandler,
-    CertificateCreatedHandler,
+    CertificatesCreatedHandler as CertificateCreatedHandler,
     ClaimCertificateHandler,
     GetAggregateCertifiedEnergyDeviceIdHandler,
     GetAllCertificateEventsHandler,
@@ -34,7 +34,7 @@ export const CertificateHandlers = [
     BatchClaimCertificatesHandler,
     BatchIssueCertificatesHandler,
     BatchTransferCertificatesHandler,
-    CertificateCreatedHandler,
+    CertificatesCreatedHandler,
     ClaimCertificateHandler,
     GetAggregateCertifiedEnergyDeviceIdHandler,
     GetAllCertificateEventsHandler,

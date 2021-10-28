@@ -5,7 +5,7 @@ import { EventBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { CertificateCreatedEvent } from '../events/certificate-created-event';
+import { CertificatesCreatedEvent } from '../events/certificates-created-event';
 import { SyncCertificateEvent } from '../events/sync-certificate-event';
 import { BlockchainEventType } from '../types';
 import { NewTransactionProcessedEvent } from '../events/new-transaction-processed.event';
@@ -96,18 +96,14 @@ export class OnChainCertificateWatcher implements OnModuleInit {
         switch (eventType) {
             case BlockchainEventType.IssuanceSingle:
                 logEvent(BlockchainEventType.IssuanceSingle, [event._id.toNumber()]);
-                this.eventBus.publish(
-                    new CertificateCreatedEvent(event._id.toNumber(), event.transactionHash)
-                );
+                this.eventBus.publish(new CertificatesCreatedEvent([event._id.toNumber()]));
                 break;
 
             case BlockchainEventType.IssuanceBatch:
-                event._ids.forEach((id: any) => {
-                    logEvent(BlockchainEventType.IssuanceBatch, [id.toNumber()]);
-                    this.eventBus.publish(
-                        new CertificateCreatedEvent(id.toNumber(), event.transactionHash)
-                    );
-                });
+                const ids = event._ids.map((id: any) => id.toNumber());
+                logEvent(BlockchainEventType.IssuanceBatch, ids);
+
+                this.eventBus.publish(new CertificatesCreatedEvent(ids));
                 break;
 
             case BlockchainEventType.TransferSingle:
