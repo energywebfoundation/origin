@@ -9,7 +9,7 @@ import { HttpStatus, Logger } from '@nestjs/common';
 import { ApproveCertificationRequestCommand } from '../commands/approve-certification-request.command';
 import { CertificationRequest } from '../certification-request.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { CertificateCreatedEvent } from '../../certificate/events/certificate-created-event';
+import { CertificatesCreatedEvent } from '../../certificate/events/certificates-created-event';
 import { CertificateRequestApprovedEvent } from '../events';
 
 @CommandHandler(ApproveCertificationRequestCommand)
@@ -65,11 +65,7 @@ export class ApproveCertificationRequestHandler
         });
 
         this.eventBus.publish(
-            new CertificateCreatedEvent(
-                newCertificateId,
-                null,
-                isPrivate ? { owner, energy } : null
-            )
+            new CertificatesCreatedEvent([newCertificateId], isPrivate ? { owner, energy } : null)
         );
 
         this.eventBus.publish(new CertificateRequestApprovedEvent(id));
