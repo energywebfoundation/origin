@@ -3,7 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertificateBatchOperations } from '@energyweb/issuer';
 import { BigNumber, ContractTransaction } from 'ethers';
-import { ForbiddenException, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import {
+    ForbiddenException,
+    HttpException,
+    HttpStatus,
+    NotFoundException,
+    BadRequestException
+} from '@nestjs/common';
 
 import { BatchClaimCertificatesCommand } from '../commands/batch-claim-certificates.command';
 import { Certificate } from '../certificate.entity';
@@ -21,6 +27,10 @@ export class BatchClaimCertificatesHandler
 
     async execute({ claims }: BatchClaimCertificatesCommand): Promise<ContractTransaction> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
+
+        if (claims.length === 0) {
+            throw new BadRequestException('Cannot process empty claims request');
+        }
 
         for (const { id, amount, from } of claims) {
             if (!amount) {
