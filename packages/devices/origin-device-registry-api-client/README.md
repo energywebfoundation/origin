@@ -1,16 +1,13 @@
 <p align="center">
-  <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
 # Origin Device Registry API Client
 
 ## Description
 
-//TO DO Overview of package.
-The Device Registry API Client library implements the [Device Registry API](../../api-clients/react-query/origin-device-registry-api/README.md).
+The Device Registry API client library implements the [Device Registry API](../../api-clients/react-query/origin-device-registry-api/README.md).
 
-//TO DO Overview of package:
-//Purpose of package, sdk, etc.
 
 The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 

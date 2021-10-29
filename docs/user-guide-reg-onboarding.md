@@ -126,7 +126,7 @@ Once you sign into MetaMask and connect to the Volta Test Network, you can click
 
 Once connected, you will see two Blockchain Addresses:
 
-#### 1. Exchange Deposit Address
+#### Exchange Deposit Address
 
 ![exchangeDepositAddress](images/onboarding/onboarding5-exchangedepositaddress.png)
 
@@ -145,11 +145,11 @@ As common practice for blockchain exchanges, this deposit account is tied to the
 
 You can view your certificates that are in the Exchange account in the [Exchange Inbox interface](./certificate-guides/exchange-inbox.md).
 
-#### 2. Organization Blockchain Account Address
+#### Organization Blockchain Account Address
 
 ![orgBlockchainAcccountAddress](images/onboarding/onboarding6-orgblockchain.png)
 
-**If you want to withdraw certificates from the exchange in order to retire or claim them for sustainability reporting purposes, they must be in the Blockchain account, which is tied to your Organization's Blockchain Account Address.** You can choose to deposit your EACs from the Blockchain account to your Exchange account (which is tied to your [Organization's Exchange Deposit Address](#organization-blockchain-account-address)) if you want to [make the certificate eligible for sale](./certificate-guides/exchange-inbox.md#sell) on the exchange.  
+**If you want to withdraw certificates from the exchange in order to retire or claim them for sustainability reporting purposes, they must be in the Blockchain account, which is tied to your Organization's Blockchain Account Address.** You can choose to deposit your EACs from the Blockchain account to your Exchange account (which is tied to your [Organization's Exchange Deposit Address](#exchange-deposit-address)) if you want to [make the certificate eligible for sale](./certificate-guides/exchange-inbox.md#sell) on the exchange.  
 
 You can view your certificates that are in the Blockchain account in the [Blockchain Inbox interface](./certificate-guides/blockchain-inbox.md).  
 
