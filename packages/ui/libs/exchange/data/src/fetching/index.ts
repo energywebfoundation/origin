@@ -16,3 +16,4 @@ export * from './userAndAccount';
 export * from './user';
 export * from './assetById';
 export * from './iRecDeviceById';
+export * from './adminTrades';
