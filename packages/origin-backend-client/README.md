@@ -2,11 +2,15 @@
   <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
-# Origin IEC API Client
+# Origin Backend Client
 
 ## Description
 
-An API for I-REC based organizations.
+/* 
+
+TO DO: Insert Description
+
+*/
 
 The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 

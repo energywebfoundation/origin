@@ -2,7 +2,7 @@
   <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
-# Origin IEC API Client
+# Origin Organization IREC API
 
 ## Description
 

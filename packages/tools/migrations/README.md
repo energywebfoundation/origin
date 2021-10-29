@@ -1,11 +1,6 @@
-<h1 align="center">
-  <br>
-  <a href="https://www.energyweb.org/"><img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150"></a>
-  <br>
-  EnergyWeb Origin
-  <br>
-  <br>
-</h1>
+<p align="center">
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+</p>
 
 # @energyweb/migrations
 
