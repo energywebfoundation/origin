@@ -7,6 +7,7 @@ export * from './product';
 export * from './runner';
 export * from './trade';
 export * from './utils';
+export * from './admin';
 
 export { entities as IssuerIRECEntities } from '@energyweb/issuer-irec-api';
 
