@@ -1,12 +1,11 @@
 <p align="center">
-  <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
 # Origin Device Registry IREC Form API Client
 
 ## Description
 
-//TO DO: Overview of package.
 A client library to implement the [Origin I-REC device registry form API](../origin-device-registry-irec-form-api/README.md)
 
 The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)

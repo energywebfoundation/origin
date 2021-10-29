@@ -1,13 +1,12 @@
 <p align="center">
-  <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
 # Origin Device Registry API
 
 ## Description
 
-//TO DO: Overview of package.
-The Device Registry API is a generic API implementation for Origin device registry. It does not conform to any specific certificate standard or issuing body (such as I-REC).
+A generic API implementation for Origin device registry. It does not conform to any specific certificate standard or issuing body (such as I-REC).
 
 The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 

@@ -1,15 +1,12 @@
 <p align="center">
-  <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png"width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
 # Origin Device Registry IREC Form API
 
 ## Description
 
-//TO DO: Overview of package.
-An API for I-REC's form-based device registry
-
-//Purpose of package, sdk, etc.
+An API for I-REC's form-based device registry.
 
 The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 
