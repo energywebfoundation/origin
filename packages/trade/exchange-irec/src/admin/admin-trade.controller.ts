@@ -6,7 +6,7 @@ import {
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ProductDTO, ProductFilterDTO } from '../product';
 
 

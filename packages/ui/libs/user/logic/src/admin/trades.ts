@@ -1,7 +1,7 @@
 import { TradeDTO } from '@energyweb/exchange-irec-react-query-client';
 import { TableComponentProps, TableRowData } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
-import { formatDate, PowerFormatter } from '@energyweb/origin-ui-utils';
+import { formatDate } from '@energyweb/origin-ui-utils';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-user-data';
 
 type TUseAdminTradesTableLogicArgs = {
