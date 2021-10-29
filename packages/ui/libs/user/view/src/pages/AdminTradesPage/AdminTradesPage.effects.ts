@@ -1,5 +1,4 @@
-import { useFetchAllDevices } from '@energyweb/origin-ui-user-data';
-import { useApiAdminTrades } from '@energyweb/origin-ui-exchange-data';
+import { useFetchAllDevices, useApiAdminTrades } from '@energyweb/origin-ui-user-data';
 import { useAdminTradesTableLogic } from '@energyweb/origin-ui-user-logic';
 
 export const useAdminTradesPageEffects = () => {
