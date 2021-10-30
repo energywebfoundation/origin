@@ -111,7 +111,7 @@
     "@nrwl/eslint-plugin-nx": "12.10.0",
     "@nrwl/jest": "12.10.0",
     "@nrwl/linter": "12.10.0",
-    "@nrwl/react": "12.9.0",
+    "@nrwl/react": "13.1.2",
     "@nrwl/storybook": "12.10.0",
     "@nrwl/tao": "12.10.0",
     "@nrwl/web": "12.10.0",
