@@ -1,13 +1,18 @@
 {
   "implicitDependencies": {
     "workspace.json": "*",
-    "package.json": { "dependencies": "*", "devDependencies": "*" },
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
     "tsconfig.base.json": "*",
     "tslint.json": "*",
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
-  "affected": { "defaultBase": "chore/origin-ui-v2" },
+  "affected": {
+    "defaultBase": "chore/origin-ui-v2"
+  },
   "npmScope": "ui-packages",
   "tasksRunnerOptions": {
     "default": {
@@ -24,29 +29,81 @@
     }
   },
   "projects": {
-    "origin-ui": { "tags": [] },
-    "origin-ui-e2e": { "tags": [], "implicitDependencies": ["origin-ui"] },
-    "ui-core": { "tags": [] },
-    "ui-utils": { "tags": [] },
-    "ui-localization": { "tags": [] },
-    "ui-theme": { "tags": [] },
-    "ui-assets": { "tags": [] },
-    "ui-blockchain": { "tags": [] },
-    "ui-shared-state": { "tags": [] },
-    "exchange-data": { "tags": [] },
-    "exchange-view": { "tags": [] },
-    "exchange-logic": { "tags": [] },
-    "certificate-view": { "tags": [] },
-    "certificate-logic": { "tags": [] },
-    "certificate-data": { "tags": [] },
-    "user-data": { "tags": [] },
-    "user-view": { "tags": [] },
-    "user-logic": { "tags": [] },
-    "device-data": { "tags": [] },
-    "device-logic": { "tags": [] },
-    "device-view": { "tags": [] },
-    "organization-view": { "tags": [] },
-    "organization-data": { "tags": [] },
-    "organization-logic": { "tags": [] }
+    "certificate-data": {
+      "tags": []
+    },
+    "certificate-logic": {
+      "tags": []
+    },
+    "certificate-view": {
+      "tags": []
+    },
+    "device-data": {
+      "tags": []
+    },
+    "device-logic": {
+      "tags": []
+    },
+    "device-view": {
+      "tags": []
+    },
+    "exchange-data": {
+      "tags": []
+    },
+    "exchange-logic": {
+      "tags": []
+    },
+    "exchange-view": {
+      "tags": []
+    },
+    "organization-data": {
+      "tags": []
+    },
+    "organization-logic": {
+      "tags": []
+    },
+    "organization-view": {
+      "tags": []
+    },
+    "origin-ui": {
+      "tags": []
+    },
+    "origin-ui-e2e": {
+      "tags": [],
+      "implicitDependencies": ["origin-ui"]
+    },
+    "ui-assets": {
+      "tags": []
+    },
+    "ui-blockchain": {
+      "tags": []
+    },
+    "ui-core": {
+      "tags": []
+    },
+    "ui-localization": {
+      "tags": []
+    },
+    "ui-shared-state": {
+      "tags": []
+    },
+    "ui-theme": {
+      "tags": []
+    },
+    "ui-utils": {
+      "tags": []
+    },
+    "ui-web3": {
+      "tags": []
+    },
+    "user-data": {
+      "tags": []
+    },
+    "user-logic": {
+      "tags": []
+    },
+    "user-view": {
+      "tags": []
+    }
   }
 }

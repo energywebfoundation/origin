@@ -23,5 +23,6 @@ module.exports = {
     '<rootDir>/libs/organization/view',
     '<rootDir>/libs/organization/data',
     '<rootDir>/libs/organization/logic',
+    '<rootDir>/libs/ui/web3',
   ],
 };
