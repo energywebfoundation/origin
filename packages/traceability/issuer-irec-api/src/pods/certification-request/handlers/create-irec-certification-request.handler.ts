@@ -16,7 +16,6 @@ import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { CreateIrecCertificationRequestCommand } from '../commands';
 import { FullCertificationRequestDTO } from '../full-certification-request.dto';
 import { IrecCertificationRequest } from '../irec-certification-request.entity';
-import { LoggedInUser } from '@energyweb/origin-backend-core';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateIrecCertificationRequestHandler
@@ -41,9 +40,9 @@ export class CreateIrecCertificationRequestHandler
     async execute(
         params: CreateIrecCertificationRequestCommand
     ): Promise<FullCertificationRequestDTO> {
-        const { user, files, deviceId } = params;
+        const { user, dto } = params;
 
-        const irecDevice = await this.deviceService.findOne(deviceId);
+        const irecDevice = await this.deviceService.findOne(dto.deviceId);
         if (!irecDevice || irecDevice.status !== DeviceState.Approved) {
             throw new ForbiddenException('IREC Device is not approved');
         }
@@ -51,9 +50,9 @@ export class CreateIrecCertificationRequestHandler
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         let fileIds: string[] = [];
-        if (files?.length) {
+        if (dto.files?.length) {
             const list = await Promise.all(
-                files.map((fileId) => this.fileService.get(fileId, user))
+                dto.files.map((fileId) => this.fileService.get(fileId, user))
             );
             fileIds = await this.irecService.uploadFiles(
                 user.organizationId,
@@ -61,28 +60,28 @@ export class CreateIrecCertificationRequestHandler
             );
         }
 
-        const platformTradeAccount = await this.irecService.getTradeAccountCode(
-            platformAdmin.organization.id
-        );
+        const tradeAccount =
+            dto.irecTradeAccountCode ||
+            (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
         const irecIssue = await this.irecService.createIssueRequest(platformAdmin.organization.id, {
             device: irecDevice.code,
             fuelType: irecDevice.fuelType,
-            recipient: platformTradeAccount,
-            start: new Date(params.fromTime * 1e3),
-            end: new Date(params.toTime * 1e3),
-            production: Number(params.energy) / 1e6,
+            recipient: tradeAccount,
+            start: new Date(dto.fromTime * 1e3),
+            end: new Date(dto.toTime * 1e3),
+            production: Number(dto.energy) / 1e6,
             files: fileIds
         });
 
         const certificationRequest: CertificationRequest = await this.commandBus.execute(
             new CreateCertificationRequestCommand(
-                params.to,
-                params.energy,
-                params.fromTime,
-                params.toTime,
-                params.deviceId,
-                params.files,
-                params.isPrivate
+                dto.to,
+                dto.energy,
+                dto.fromTime,
+                dto.toTime,
+                dto.deviceId,
+                dto.files,
+                dto.isPrivate
             )
         );
 
@@ -94,42 +93,5 @@ export class CreateIrecCertificationRequestHandler
         await this.irecRepository.save(irecCertificationRequest);
 
         return { ...certificationRequest, organizationId: irecCertificationRequest.organizationId };
-    }
-
-    async createIrecIssuanceRequest(
-        request: CertificationRequest,
-        user: LoggedInUser
-    ): Promise<void> {
-        const irecCertificationRequest = await this.irecRepository.findOne({
-            certificationRequestId: request.id
-        });
-
-        const platformAdmin = await this.userService.getPlatformAdmin();
-
-        let fileIds: string[] = [];
-        if (request.files?.length) {
-            const files = await Promise.all(
-                request.files.map((fileId) => this.fileService.get(fileId, user))
-            );
-            fileIds = await this.irecService.uploadFiles(
-                user,
-                files.map((file) => file.data)
-            );
-        }
-
-        const irecDevice = await this.deviceService.findOne(request.deviceId);
-        const platformTradeAccount = await this.irecService.getTradeAccountCode(platformAdmin.id);
-        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.id, {
-            device: request.deviceId,
-            fuelType: irecDevice.fuelType,
-            recipient: platformTradeAccount,
-            start: new Date(request.fromTime),
-            end: new Date(request.toTime),
-            production: Number(request.energy),
-            files: fileIds
-        });
-        await this.irecRepository.update(irecCertificationRequest.certificationRequestId, {
-            irecIssueRequestId: irecIssue.code
-        });
     }
 }
