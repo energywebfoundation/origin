@@ -114,6 +114,13 @@
             "summary": "Build all UI packages without root origin-ui app",
             "shellCommand": "cd packages/ui && rushx build:all-packages",
             "safeForSimultaneousRushProcesses": false
+        },
+        {
+            "commandKind": "global",
+            "name": "build:ui:prod",
+            "summary": "Build root origin-ui app in production mode",
+            "shellCommand": "cd packages/ui && rushx build:prod",
+            "safeForSimultaneousRushProcesses": false
         }
         // {
         //   /**

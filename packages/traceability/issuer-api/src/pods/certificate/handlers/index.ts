@@ -1,7 +1,7 @@
 import { BatchClaimCertificatesHandler } from './batch-claim-certificates.handler';
 import { BatchIssueCertificatesHandler } from './batch-issue-certificates.handler';
 import { BatchTransferCertificatesHandler } from './batch-transfer-certificates.handler';
-import { CertificateCreatedHandler } from './certificate-created.handler';
+import { CertificatesCreatedHandler } from './certificates-created.handler';
 import { ClaimCertificateHandler } from './claim-certificate.handler';
 import { GetAggregateCertifiedEnergyDeviceIdHandler } from './get-aggregate-certified-energy-by-device.handler';
 import { GetAllCertificateEventsHandler } from './get-all-certificate-events.handler';
@@ -12,12 +12,13 @@ import { NewTransactionProcessedHandler } from './new-transaction-processed.hand
 import { SyncCertificateHandler } from './sync-certificate.handler';
 import { TransferCertificateHandler } from './transfer-certificate.handler';
 import { GetCertificatesWithLogsHandler } from './get-certificates-with-logs.handler';
+import { GetCertificateByTxHashHandler } from './get-certificate-by-tx-hash.handler';
 
 export {
     BatchClaimCertificatesHandler,
     BatchIssueCertificatesHandler,
     BatchTransferCertificatesHandler,
-    CertificateCreatedHandler,
+    CertificatesCreatedHandler as CertificateCreatedHandler,
     ClaimCertificateHandler,
     GetAggregateCertifiedEnergyDeviceIdHandler,
     GetAllCertificateEventsHandler,
@@ -25,14 +26,15 @@ export {
     GetCertificateHandler,
     IssueCertificateHandler,
     SyncCertificateHandler,
-    TransferCertificateHandler
+    TransferCertificateHandler,
+    GetCertificateByTxHashHandler
 };
 
 export const CertificateHandlers = [
     BatchClaimCertificatesHandler,
     BatchIssueCertificatesHandler,
     BatchTransferCertificatesHandler,
-    CertificateCreatedHandler,
+    CertificatesCreatedHandler,
     ClaimCertificateHandler,
     GetAggregateCertifiedEnergyDeviceIdHandler,
     GetAllCertificateEventsHandler,
@@ -40,7 +42,8 @@ export const CertificateHandlers = [
     GetCertificateHandler,
     IssueCertificateHandler,
     SyncCertificateHandler,
-    TransferCertificateHandler
+    TransferCertificateHandler,
+    GetCertificateByTxHashHandler
 ];
 
 /** Because of irec-issuer-api using handlers above, and we don't want to migrate it yet to transaction logs */

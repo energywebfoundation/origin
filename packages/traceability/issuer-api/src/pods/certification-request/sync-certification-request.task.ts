@@ -4,7 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Certificate } from '../certificate/certificate.entity';
-import { CertificateCreatedEvent } from '../certificate/events/certificate-created-event';
+import { CertificatesCreatedEvent } from '../certificate/events/certificates-created-event';
 import { CertificationRequest } from './certification-request.entity';
 import { ApproveCertificationRequestCommand } from './commands/approve-certification-request.command';
 
@@ -45,8 +45,8 @@ export class SyncCertificationRequestsTask {
                 );
 
                 this.eventBus.publish(
-                    new CertificateCreatedEvent(
-                        certificate.id,
+                    new CertificatesCreatedEvent(
+                        [certificate.id],
                         certificate.issuedPrivately
                             ? { owner: certReq.owner, energy: certReq.energy }
                             : null

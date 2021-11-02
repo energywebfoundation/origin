@@ -70,6 +70,10 @@ jobs:
     - name: Build application
       run: |
         node common/scripts/install-run-rush.js rebuild -v
+      
+    - name: Build UI for production
+      run: |
+        node common/scripts/install-run-rush.js build:ui:prod
 
     - name: Deploy application
       run: |

@@ -2,6 +2,7 @@ import { useImportDeviceFormLogic } from '@energyweb/origin-ui-device-logic';
 import {
   fileUploadHandler,
   useApiDeviceImportHandler,
+  useApiRegionsConfiguration,
 } from '@energyweb/origin-ui-device-data';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import {
   useDeviceModalsDispatch,
   useDeviceModalsStore,
 } from '../../../context';
+import { Countries } from '@energyweb/utils-general';
 
 export const useImportDeviceModalEffects = () => {
   const { t } = useTranslation();
@@ -37,11 +39,22 @@ export const useImportDeviceModalEffects = () => {
     });
   };
 
-  const formLogic = useImportDeviceFormLogic(handleModalClose, smartMeterId);
+  const { allRegions, country, isLoading } = useApiRegionsConfiguration();
+  const platformCountryCode = Countries.find(
+    (cntr) => cntr.name === country
+  )?.code;
+
+  const formLogic = useImportDeviceFormLogic(
+    handleModalClose,
+    smartMeterId,
+    allRegions,
+    platformCountryCode
+  );
   const submitHandler = useApiDeviceImportHandler(
     importDevice?.deviceToImport,
     imageIds,
-    handleModalClose
+    handleModalClose,
+    platformCountryCode
   );
   const formProps = {
     ...formLogic,
@@ -55,5 +68,5 @@ export const useImportDeviceModalEffects = () => {
     onChange: onDeviceImageChange,
   };
 
-  return { formProps, fileUploadProps, isOpen, handleModalClose };
+  return { formProps, fileUploadProps, isOpen, handleModalClose, isLoading };
 };

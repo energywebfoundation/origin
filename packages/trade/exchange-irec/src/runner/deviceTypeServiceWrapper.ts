@@ -10,6 +10,14 @@ export class DeviceTypeServiceWrapper implements OnModuleInit {
     constructor(private readonly moduleRef: ModuleRef) {}
 
     public async onModuleInit() {
+        await this.initDeviceTypeService();
+    }
+
+    private async initDeviceTypeService() {
+        if (this._deviceTypeService) {
+            return;
+        }
+
         const configService = this.moduleRef.get<IExchangeConfigurationService>(
             IExchangeConfigurationService,
             {
@@ -22,7 +30,11 @@ export class DeviceTypeServiceWrapper implements OnModuleInit {
         this._deviceTypeService = new DeviceTypeService(deviceTypes);
     }
 
-    public get deviceTypeService() {
+    public async getDeviceTypeService() {
+        if (!this._deviceTypeService) {
+            await this.initDeviceTypeService();
+        }
+
         return this._deviceTypeService;
     }
 }

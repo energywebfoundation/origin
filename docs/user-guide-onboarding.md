@@ -50,7 +50,7 @@ If you are using the demo deployment, feel free to input dummy data and write a 
 
 ## Organization invitations
 
-As an organization admin you can invite new users to the marketplace. You can enter the email and specify the role that the new organization user should have. The user will receive and email and can accept the invitation after registration.
+As an organization admin, you can invite new users to the marketplace. You can enter the email and specify the role that the new organization user should have. The user will receive and email and can accept the invitation after registration.
 
 ## Blockchain Address
 

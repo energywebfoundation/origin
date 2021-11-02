@@ -202,7 +202,8 @@ export const getAllCertificateEvents = async (
 
 export const calculateOwnership = async (
     certificateId: ICertificate['id'],
-    blockchainProperties: IBlockchainProperties
+    blockchainProperties: IBlockchainProperties,
+    creationBlockNumber = 0
 ): Promise<IShareInCertificate> => {
     const ownedShares: IShareInCertificate = {};
     const { registry } = blockchainProperties;
@@ -210,21 +211,24 @@ export const calculateOwnership = async (
     const transferSingleEvents = (
         await getEventsFromContract(
             registry,
-            registry.filters.TransferSingle(null, null, null, null, null)
+            registry.filters.TransferSingle(null, null, null, null, null),
+            creationBlockNumber
         )
     ).filter((event) => event.id.eq(certificateId));
 
     const transferBatchEvents = (
         await getEventsFromContract(
             registry,
-            registry.filters.TransferBatch(null, null, null, null, null)
+            registry.filters.TransferBatch(null, null, null, null, null),
+            creationBlockNumber
         )
     ).filter((e) => e.ids.some((id: BigNumber) => id.eq(certificateId)));
 
     const transferBatchMultipleEvents = (
         await getEventsFromContract(
             registry,
-            registry.filters.TransferBatchMultiple(null, null, null, null, null)
+            registry.filters.TransferBatchMultiple(null, null, null, null, null),
+            creationBlockNumber
         )
     ).filter((e) => e.ids.some((id: BigNumber) => id.eq(certificateId)));
 
@@ -251,7 +255,8 @@ export const calculateOwnership = async (
 
 export const calculateClaims = async (
     certificateId: ICertificate['id'],
-    blockchainProperties: IBlockchainProperties
+    blockchainProperties: IBlockchainProperties,
+    creationBlockNumber = 0
 ): Promise<IShareInCertificate> => {
     const claimedShares: IShareInCertificate = {};
     const { registry } = blockchainProperties;
@@ -259,21 +264,24 @@ export const calculateClaims = async (
     const claimSingleEvents = (
         await getEventsFromContract(
             registry,
-            registry.filters.ClaimSingle(null, null, null, null, null, null)
+            registry.filters.ClaimSingle(null, null, null, null, null, null),
+            creationBlockNumber
         )
     ).filter((event) => event._id.eq(certificateId));
 
     const claimBatchEvents = (
         await getEventsFromContract(
             registry,
-            registry.filters.ClaimBatch(null, null, null, null, null, null)
+            registry.filters.ClaimBatch(null, null, null, null, null, null),
+            creationBlockNumber
         )
     ).filter((e) => e._ids.some((id: BigNumber) => id.eq(certificateId)));
 
     const claimBatchMultipleEvents = (
         await getEventsFromContract(
             registry,
-            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null)
+            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null),
+            creationBlockNumber
         )
     ).filter((e) => e._ids.some((id: BigNumber) => id.eq(certificateId)));
 

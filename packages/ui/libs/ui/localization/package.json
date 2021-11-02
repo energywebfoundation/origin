@@ -16,11 +16,14 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/ui-localization.umd.js",
   "module": "dist/ui-localization.esm.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "i18next": "20.6.1",
+    "i18next": "21.3.3",
     "i18next-icu": "1.4.2",
     "react-i18next": "11.12.0"
   }

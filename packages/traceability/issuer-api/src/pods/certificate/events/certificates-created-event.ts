@@ -3,9 +3,9 @@ interface IPrivateCertificateInfo {
     energy: string;
 }
 
-export class CertificateCreatedEvent {
+export class CertificatesCreatedEvent {
     constructor(
-        public readonly id: number,
+        public readonly ids: number[],
         public readonly privateInfo?: IPrivateCertificateInfo
     ) {}
 }

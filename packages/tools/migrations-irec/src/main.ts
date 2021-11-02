@@ -8,7 +8,9 @@ import { Test } from '@nestjs/testing';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IContractsLookup } from '@energyweb/issuer';
+import { getDBConnectionOptions } from '@energyweb/origin-backend-utils';
 import { AccountModule, AccountService, entities } from '@energyweb/exchange';
+
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
 
@@ -24,23 +26,8 @@ program.option(
 
 program.parse(process.argv);
 
-function getPostgresConfig() {
-    return process.env.DATABASE_URL
-        ? {
-              connectionString: process.env.DATABASE_URL,
-              ssl: { rejectUnauthorized: false }
-          }
-        : {
-              host: process.env.DB_HOST ?? 'localhost',
-              port: Number(process.env.DB_PORT) || 5432,
-              user: process.env.DB_USERNAME ?? 'postgres',
-              password: process.env.DB_PASSWORD ?? 'postgres',
-              database: process.env.DB_DATABASE ?? 'origin'
-          };
-}
-
 async function connectToDB() {
-    const postgresConfig = getPostgresConfig();
+    const postgresConfig = getDBConnectionOptions() as ClientConfig;
     const client = new Client(postgresConfig);
 
     await client.connect();
