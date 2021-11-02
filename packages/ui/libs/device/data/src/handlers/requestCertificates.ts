@@ -1,5 +1,5 @@
 import {
-  CreateCertificationRequestDTO,
+  CreateIrecCertificationRequestDTO,
   useCertificationRequestControllerCreate,
 } from '@energyweb/issuer-irec-api-react-query-client';
 import { useAccountControllerGetAccount } from '@energyweb/exchange-react-query-client';
@@ -56,7 +56,7 @@ export const useRequestCertificatesHandler = ({
       throw Error(t('device.my.notifications.onlyUsersWithExchangeAddress'));
     }
 
-    const formattedValues: CreateCertificationRequestDTO = {
+    const formattedValues: CreateIrecCertificationRequestDTO = {
       energy: energyInBaseUnit.toString(),
       to: !isLoading && address,
       deviceId: deviceId,
@@ -64,6 +64,7 @@ export const useRequestCertificatesHandler = ({
       toTime: dayjs(values.toTime).endOf('day').unix(),
       files: files.map((f) => f.uploadedName),
       isPrivate: false,
+      irecTradeAccountCode: undefined,
     };
     mutate(
       { data: formattedValues },
