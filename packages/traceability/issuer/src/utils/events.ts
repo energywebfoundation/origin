@@ -10,11 +10,12 @@ export interface IBlockchainEvent {
 
 export const getEventsFromContract = async (
     contract: Contract,
-    eventFilter: EventFilter
+    eventFilter: EventFilter,
+    creationBlockNumber = 0
 ): Promise<IBlockchainEvent[]> => {
     const logs = await contract.provider.getLogs({
         ...eventFilter,
-        fromBlock: 0,
+        fromBlock: creationBlockNumber,
         toBlock: 'latest'
     });
 
