@@ -88,10 +88,17 @@ export class CreateIrecCertificationRequestHandler
         const irecCertificationRequest = this.irecRepository.create({
             certificationRequestId: certificationRequest.id,
             organizationId: String(user.organizationId),
-            irecIssueRequestId: irecIssue.code
+            irecIssueRequestId: irecIssue.code,
+            irecTradeAccountCode: tradeAccount
         });
         await this.irecRepository.save(irecCertificationRequest);
 
-        return { ...certificationRequest, organizationId: irecCertificationRequest.organizationId };
+        return {
+            ...certificationRequest,
+            irecIssueRequestId: irecCertificationRequest.irecIssueRequestId,
+            organizationId: irecCertificationRequest.organizationId,
+            irecAssetId: irecCertificationRequest.irecAssetId,
+            irecTradeAccountCode: irecCertificationRequest.irecTradeAccountCode
+        };
     }
 }

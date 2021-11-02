@@ -65,7 +65,7 @@ export const testUsers = new Map([
     [
         TestUser.OrganizationDeviceManager,
         {
-            id: 1,
+            id: Number(TestUser.OrganizationDeviceManager),
             organization: {
                 id: 1000,
                 status: OrganizationStatus.Active,
@@ -78,7 +78,7 @@ export const testUsers = new Map([
     [
         TestUser.UserWithoutBlockchainAccount,
         {
-            id: 2,
+            id: Number(TestUser.UserWithoutBlockchainAccount),
             organization: { id: 1001, status: OrganizationStatus.Active },
             status: UserStatus.Active,
             rights: Role.OrganizationAdmin
@@ -87,7 +87,7 @@ export const testUsers = new Map([
     [
         TestUser.Issuer,
         {
-            id: 3,
+            id: Number(TestUser.Issuer),
             organization: {
                 id: 1003,
                 status: OrganizationStatus.Active,
@@ -100,7 +100,7 @@ export const testUsers = new Map([
     [
         TestUser.OtherOrganizationDeviceManager,
         {
-            id: 1,
+            id: Number(TestUser.OtherOrganizationDeviceManager),
             organization: {
                 id: 1000,
                 status: OrganizationStatus.Active,
@@ -170,6 +170,9 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         .useValue({
             getPlatformAdmin() {
                 return testUsers.get(TestUser.PlatformAdmin);
+            },
+            findOne(userId: TestUser) {
+                return testUsers.get(userId);
             }
         })
         .overrideProvider(FileService)
