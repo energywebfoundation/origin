@@ -936,7 +936,7 @@
           "executor": "@nrwl/web:package",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "outputPath": "dist/libs/ui/web3",
+            "outputPath": "libs/ui/web3/dist",
             "tsConfig": "libs/ui/web3/tsconfig.lib.json",
             "project": "libs/ui/web3/package.json",
             "entryFile": "libs/ui/web3/src/index.ts",

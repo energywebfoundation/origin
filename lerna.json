@@ -44,7 +44,7 @@
         "packages/ui/libs/ui/theme",
         "packages/ui/libs/ui/utils",
         "packages/ui/libs/ui/core",
-        "packages/ui/libs/ui/blockchain",
+        "packages/ui/libs/ui/web3",
         "packages/ui/libs/certificate/data",
         "packages/ui/libs/certificate/logic",
         "packages/ui/libs/certificate/view",
