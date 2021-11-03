@@ -7,7 +7,6 @@ module.exports = {
     '<rootDir>/libs/ui/theme',
     '<rootDir>/libs/ui/shared-state',
     '<rootDir>/libs/ui/assets',
-    '<rootDir>/libs/ui/blockchain',
     '<rootDir>/libs/exchange/data',
     '<rootDir>/libs/exchange/view',
     '<rootDir>/libs/exchange/logic',

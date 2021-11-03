@@ -682,51 +682,6 @@
         }
       }
     },
-    "ui-blockchain": {
-      "root": "libs/ui/blockchain",
-      "sourceRoot": "libs/ui/blockchain",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "libs/ui/blockchain/dist",
-            "tsConfig": "libs/ui/blockchain/tsconfig.lib.json",
-            "project": "libs/ui/blockchain/package.json",
-            "entryFile": "libs/ui/blockchain/src/index.ts",
-            "external": [
-              "react",
-              "react-dom",
-              "react-is",
-              "@emotion/styled",
-              "@emotion/react",
-              "react/jsx-runtime",
-              "react/jsx-dev-runtime"
-            ],
-            "rollupConfig": "rollup.config.js",
-            "assets": [
-              "libs/ui/blockchain/LICENSE",
-              "libs/ui/blockchain/README.md"
-            ]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/ui/blockchain/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/ui/blockchain"],
-          "options": {
-            "jestConfig": "libs/ui/blockchain/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      }
-    },
     "ui-core": {
       "root": "libs/ui/core",
       "sourceRoot": "libs/ui/core",

@@ -24,7 +24,6 @@
     "baseUrl": ".",
     "paths": {
       "@energyweb/origin-ui-assets": ["libs/ui/assets/src/index.ts"],
-      "@energyweb/origin-ui-blockchain": ["libs/ui/blockchain/src/index.ts"],
       "@energyweb/origin-ui-certificate-data": [
         "libs/certificate/data/src/index.ts"
       ],
