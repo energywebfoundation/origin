@@ -941,14 +941,8 @@
             "project": "libs/ui/web3/package.json",
             "entryFile": "libs/ui/web3/src/index.ts",
             "external": ["react/jsx-runtime", "@emotion/styled/base"],
-            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
-            "assets": [
-              {
-                "glob": "libs/ui/web3/README.md",
-                "input": ".",
-                "output": "."
-              }
-            ]
+            "rollupConfig": "rollup.config.js",
+            "assets": ["libs/ui/web3/README.md"]
           }
         },
         "lint": {
