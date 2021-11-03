@@ -1,9 +1,10 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
+import { withMetamask } from '@energyweb/origin-ui-web3';
 import { CircularProgress } from '@material-ui/core';
-import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
+import { ConnectMetamaskBlockchainInbox } from '../../metamask';
 import { useDepositActionEffects } from './DepositAction.effects';
 
 type DepositActionProps = ListActionComponentProps<CertificateDTO['id']>;
@@ -29,4 +30,7 @@ const Component: TDepositAction = ({ selectedIds, resetIds }) => {
   );
 };
 
-export const DepositAction = withMetamask(Component);
+export const DepositAction = withMetamask(
+  Component,
+  ConnectMetamaskBlockchainInbox
+);

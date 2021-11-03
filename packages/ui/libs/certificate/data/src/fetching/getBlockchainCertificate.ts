@@ -1,6 +1,5 @@
 import { useBlockchainPropertiesControllerGet } from '@energyweb/issuer-irec-api-react-query-client';
-import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
+import { useWeb3 } from '@energyweb/origin-ui-web3';
 import {
   Certificate,
   Contracts,
@@ -8,13 +7,10 @@ import {
 } from '@energyweb/issuer';
 
 export const useGetBlockchainCertificateHandler = () => {
-  const {
-    data: blockchainProperties,
-    isLoading,
-  } = useBlockchainPropertiesControllerGet();
+  const { data: blockchainProperties, isLoading } =
+    useBlockchainPropertiesControllerGet();
 
-  const web3Interface = useWeb3React<Web3Provider>();
-  const { library: web3 } = web3Interface;
+  const { web3 } = useWeb3();
 
   const getBlockchainCertificate = async (id: number) => {
     const configuration: IBlockchainProperties = {

@@ -1,9 +1,10 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
-import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
+import { withMetamask } from '@energyweb/origin-ui-web3';
 import { CircularProgress, TextField } from '@material-ui/core';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
+import { ConnectMetamaskBlockchainInbox } from '../../metamask';
 import { useBlockchainTransferActionEffects } from './BlockchainTransferAction.effects';
 import { useStyles } from './BlockchainTransferAction.styles';
 
@@ -58,4 +59,7 @@ const Component: TBlockchainTransferAction = ({ selectedIds, resetIds }) => {
   );
 };
 
-export const BlockchainTransferAction = withMetamask(Component);
+export const BlockchainTransferAction = withMetamask(
+  Component,
+  ConnectMetamaskBlockchainInbox
+);
