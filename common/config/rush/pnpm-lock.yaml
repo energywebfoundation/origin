@@ -11,9 +11,11 @@ dependencies:
   '@ethersproject/abi': 5.3.1
   '@ethersproject/abstract-provider': 5.3.0
   '@ethersproject/abstract-signer': 5.3.0
+  '@ethersproject/address': 5.5.0
   '@ethersproject/bignumber': 5.5.0
   '@ethersproject/contracts': 5.3.0
   '@ethersproject/providers': 5.3.1
+  '@ethersproject/units': 5.5.0
   '@ethersproject/wallet': 5.3.0
   '@hookform/resolvers': 2.8.2_react-hook-form@7.12.2
   '@jest/globals': 27.3.1
@@ -139,8 +141,6 @@ dependencies:
   '@types/ws': 8.2.0
   '@typescript-eslint/eslint-plugin': 4.33.0_cc617358c89d3f38c52462f6d809db4c
   '@typescript-eslint/parser': 4.33.0_eslint@7.32.0+typescript@4.4.4
-  '@web3-react/core': 6.1.9_react@17.0.2
-  '@web3-react/injected-connector': 6.0.7
   axios: 0.24.0
   babel-jest: 27.3.1_@babel+core@7.16.0
   babel-loader: 8.2.3_1bd60a6cd0f7024f034efd75ae733a3f
@@ -4838,6 +4838,30 @@ packages:
     dev: false
     resolution:
       integrity: sha512-HC63vENTrur6/JKEhcQbA8PRDj1FAesdpX98IW+xAAo3EAkf70ou5fMIA3KCGzJDLNTeYA4C2Bonz849tVLekg==
+  /@ethersproject/providers/5.5.0:
+    dependencies:
+      '@ethersproject/abstract-provider': 5.5.1
+      '@ethersproject/abstract-signer': 5.5.0
+      '@ethersproject/address': 5.5.0
+      '@ethersproject/basex': 5.5.0
+      '@ethersproject/bignumber': 5.5.0
+      '@ethersproject/bytes': 5.5.0
+      '@ethersproject/constants': 5.5.0
+      '@ethersproject/hash': 5.5.0
+      '@ethersproject/logger': 5.5.0
+      '@ethersproject/networks': 5.5.0
+      '@ethersproject/properties': 5.5.0
+      '@ethersproject/random': 5.5.0
+      '@ethersproject/rlp': 5.5.0
+      '@ethersproject/sha2': 5.5.0
+      '@ethersproject/strings': 5.5.0
+      '@ethersproject/transactions': 5.5.0
+      '@ethersproject/web': 5.5.0
+      bech32: 1.1.4
+      ws: 7.4.6
+    dev: false
+    resolution:
+      integrity: sha512-xqMbDnS/FPy+J/9mBLKddzyLLAQFjrVff5g00efqxPzcAwXiR+SiCGVy6eJ5iAIirBOATjx7QLhDNPGV+AEQsw==
   /@ethersproject/random/5.3.0:
     dependencies:
       '@ethersproject/bytes': 5.3.0
@@ -40443,8 +40467,10 @@ packages:
       '@emotion/babel-preset-css-prop': 11.2.0_@babel+core@7.16.0
       '@emotion/react': 11.4.1_e31fffb5400c7da11146f2dd792d5e09
       '@emotion/styled': 11.3.0_e5dcd10f613a37e7117202c0eeedba15
+      '@ethersproject/address': 5.5.0
       '@ethersproject/bignumber': 5.5.0
-      '@ethersproject/providers': 5.3.1
+      '@ethersproject/providers': 5.5.0
+      '@ethersproject/units': 5.5.0
       '@hookform/resolvers': 2.8.2_react-hook-form@7.12.2
       '@material-ui/core': 5.0.0-beta.4_bdd072f4e114e18a9f7e3389a09272ff
       '@material-ui/icons': 5.0.0-beta.4_36b1c13125b4e9e8d01909455fb9b1cf
@@ -40550,7 +40576,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-fCFKTeVb+9/e1IpeE+khEIQeyX9EWcHLIek9wTum9RjLl4obZEMyFmbOtaVcDTgKsYYW0zXNoqkXVxA9szjTpQ==
+      integrity: sha512-lpp47RjaEMMNIx+vSVGL8sj3xhAfA1XRdv/0niOktgDPjWm3dPoUKm7IhVC0nA3iObK3sARFsr5/PadOrcDWVQ==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -40640,9 +40666,11 @@ specifiers:
   '@ethersproject/abi': 5.3.1
   '@ethersproject/abstract-provider': 5.3.0
   '@ethersproject/abstract-signer': 5.3.0
+  '@ethersproject/address': 5.5.0
   '@ethersproject/bignumber': 5.5.0
   '@ethersproject/contracts': 5.3.0
   '@ethersproject/providers': 5.3.1
+  '@ethersproject/units': 5.5.0
   '@ethersproject/wallet': 5.3.0
   '@hookform/resolvers': 2.8.2
   '@jest/globals': 27.3.1
@@ -40768,8 +40796,6 @@ specifiers:
   '@types/ws': 8.2.0
   '@typescript-eslint/eslint-plugin': 4.33.0
   '@typescript-eslint/parser': 4.33.0
-  '@web3-react/core': 6.1.9
-  '@web3-react/injected-connector': 6.0.7
   axios: 0.24.0
   babel-jest: 27.3.1
   babel-loader: 8.2.3

@@ -1,7 +1,8 @@
 import { DetailedCertificate } from '@energyweb/origin-ui-certificate-data';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import dayjs from 'dayjs';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
+import { getAddress } from '@ethersproject/address';
 import { useTranslation } from 'react-i18next';
 
 export const useCertificateBlockchainEventsLogic = (
@@ -13,7 +14,7 @@ export const useCertificateBlockchainEventsLogic = (
 
   const transformAddress = (address: string) => {
     if (address) {
-      switch (utils.getAddress(address)) {
+      switch (getAddress(address)) {
         case exchangeWalletPublicKey:
           return t('certificate.detailView.events.exchangeWallet');
         case exchangeAddress:
