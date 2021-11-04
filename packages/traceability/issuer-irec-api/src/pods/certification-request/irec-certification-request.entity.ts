@@ -23,4 +23,8 @@ export class IrecCertificationRequest
     @Column({ default: '' })
     @IsOptional()
     irecAssetId: string;
+
+    @Column({ default: '' })
+    @IsOptional()
+    irecTradeAccountCode: string;
 }
