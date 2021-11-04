@@ -1,6 +1,6 @@
-import { Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
 
-declare module '@material-ui/styles' {
+declare module '@mui/styles' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }

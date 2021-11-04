@@ -1,7 +1,7 @@
 import { DetailedCertificate } from '@energyweb/origin-ui-certificate-data';
 import { SmallTitleWithText } from '@energyweb/origin-ui-core';
 import { formatDate } from '@energyweb/origin-ui-utils';
-import { CircularProgress, Grid, Paper, Typography } from '@material-ui/core';
+import { CircularProgress, Grid, Paper, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { StyledTitleAndText } from '../StyledTitleAndText';
 import { useCertificateDetailsEffects } from './CertificateDetails.effects';

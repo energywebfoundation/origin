@@ -10,7 +10,7 @@ import {
   PRIMARY_STORY,
 } from '@storybook/addon-docs';
 import { useForm } from 'react-hook-form';
-import { Check, EmailOutlined } from '@material-ui/icons';
+import { Check, EmailOutlined } from '@mui/icons-material';
 import { FormInput, FormInputProps } from './FormInput';
 
 const description = 'Input for using inside `react-hook-form` forms.';

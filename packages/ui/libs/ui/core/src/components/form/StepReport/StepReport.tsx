@@ -1,10 +1,4 @@
-import {
-  Step,
-  StepLabel,
-  Stepper,
-  Theme,
-  useMediaQuery,
-} from '@material-ui/core';
+import { Step, StepLabel, Stepper, Theme, useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
 import { useStyles } from './StepReport.styles';
 

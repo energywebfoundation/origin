@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { OrderBookOrderDTO } from '@energyweb/exchange-irec-react-query-client';
 import { TableComponent } from '@energyweb/origin-ui-core';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { useBuyOffersEffects } from './BuyOffers.effects';
 
 interface BuyOffersProps {

@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import { periodTypeOptions } from '../utils';
 import React from 'react';
 import { TimeFrame } from '@energyweb/utils-general';
-import { TextFieldProps } from '@material-ui/core';
+import { TextFieldProps } from '@mui/material';
 import { TUseRepeatedPurchaseFormLogic } from './types';
 
 export const useRepeatedPurchaseFormLogic: TUseRepeatedPurchaseFormLogic = (

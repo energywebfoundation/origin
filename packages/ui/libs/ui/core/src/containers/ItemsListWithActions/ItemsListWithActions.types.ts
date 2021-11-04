@@ -1,4 +1,4 @@
-import { GridProps, ListItemProps, TabsProps } from '@material-ui/core';
+import { GridProps, ListItemProps, TabsProps } from '@mui/material';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { GenericItemsListProps, ListAction } from '../../components/list';
 import { ActionsEnum } from './ItemsListWithActions.reducer';

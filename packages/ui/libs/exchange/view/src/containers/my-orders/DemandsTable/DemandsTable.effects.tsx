@@ -10,7 +10,7 @@ import {
   useCachedAllFuelTypes,
 } from '@energyweb/origin-ui-exchange-data';
 import { useDemandsTableLogic } from '@energyweb/origin-ui-exchange-logic';
-import { Edit, Remove } from '@material-ui/icons';
+import { Edit, Remove } from '@mui/icons-material';
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

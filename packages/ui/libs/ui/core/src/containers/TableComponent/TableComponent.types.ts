@@ -1,5 +1,5 @@
 import { PropsWithChildren, ReactElement, ReactNode, FC } from 'react';
-import { TypographyProps } from '@material-ui/core';
+import { TypographyProps } from '@mui/material';
 
 export type TableHeaderData = Record<string, string>;
 

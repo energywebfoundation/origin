@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Paper, Skeleton } from '@material-ui/core';
+import { Paper, Skeleton } from '@mui/material';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useStyles } from './InvitePage.styles';
 import { useInvitePageEffects } from './InvitePage.effects';

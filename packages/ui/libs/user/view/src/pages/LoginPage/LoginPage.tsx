@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 
-import { Box, Button, Paper, Typography } from '@material-ui/core';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import {
   EnergyWebLogo,
   EnergyWebBackground,
@@ -18,11 +18,8 @@ export interface LoginPageProps {
 export const LoginPage: FC<LoginPageProps> = ({ bgImage, formIcon }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const {
-    formProps,
-    navigateToRegister,
-    navigateToResetPassword,
-  } = useLogInPageEffects();
+  const { formProps, navigateToRegister, navigateToResetPassword } =
+    useLogInPageEffects();
 
   return (
     <>

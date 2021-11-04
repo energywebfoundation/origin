@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Clear } from '@material-ui/icons';
+import { Check, Clear } from '@mui/icons-material';
 import {
   useApiPendingRequests,
   useApiHandlersForPendingRequests,
