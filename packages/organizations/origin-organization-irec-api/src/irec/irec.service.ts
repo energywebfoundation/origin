@@ -4,8 +4,7 @@ import {
     ForbiddenException,
     Injectable,
     NotFoundException,
-    UnauthorizedException,
-    UnprocessableEntityException
+    UnauthorizedException
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
@@ -117,7 +116,8 @@ export interface IIrecService {
     transferCertificate(
         fromUser: UserIdentifier,
         toTradeAccount: string,
-        assetId: string
+        assetId: string,
+        fromTradeAccount?: string
     ): Promise<TransactionResult>;
 
     redeem(
@@ -350,11 +350,11 @@ export class IrecService implements IIrecService {
         fromUser: UserIdentifier,
         toTradeAccount: string,
         assetId: string,
-        amount?: number
+        fromTradeAccount?: string
     ): Promise<TransactionResult> {
         const fromUserClient = await this.getIrecClient(fromUser);
         const fromUserConnectionInfo = await this.getConnectionInfo(fromUser);
-        const fromUserTradeAccount = await this.getTradeAccountCode(fromUser);
+        const fromUserTradeAccount = fromTradeAccount || (await this.getTradeAccountCode(fromUser));
 
         const items = await fromUserClient.account.getItems(fromUserTradeAccount);
         const item = items.find((i) => i.asset === assetId);
@@ -363,17 +363,9 @@ export class IrecService implements IIrecService {
             throw new NotFoundException('IREC item not found');
         }
 
-        if (amount) {
-            if (amount > item.volume) {
-                throw new UnprocessableEntityException(
-                    `Requesting transfer for ${amount}, but I-REC item ${item.code} only has ${item.volume}`
-                );
-            }
-        }
-
         const transferItem = new ReservationItem();
         transferItem.code = item.code;
-        transferItem.amount = amount ?? item.volume;
+        transferItem.amount = item.volume;
 
         return fromUserClient.transfer({
             sender: fromUserTradeAccount,
