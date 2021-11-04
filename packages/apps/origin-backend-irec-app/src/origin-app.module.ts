@@ -1,6 +1,9 @@
 import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
 import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
-import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
+import {
+    AppModule as ExchangeIRECModule,
+    entities as ExchangeIRECEntities
+} from '@energyweb/exchange-irec';
 import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-irec-api';
 import {
     AppModule as OriginBackendModule,
@@ -29,6 +32,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { getDBConnectionOptions } from '@energyweb/origin-backend-utils';
 
 import {
     CertificateRequestApprovedHandler,
@@ -45,7 +49,6 @@ import {
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
-import { RefreshAllTokensTask } from './cron';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -54,29 +57,15 @@ const OriginAppTypeOrmModule = () => {
         ...IRECOrganizationEntities,
         ...IssuerEntities,
         ...OriginDeviceEntities,
-        ...IRECDeviceEntities
+        ...IRECDeviceEntities,
+        ...ExchangeIRECEntities
     ];
 
-    return process.env.DATABASE_URL
-        ? TypeOrmModule.forRoot({
-              type: 'postgres',
-              url: process.env.DATABASE_URL,
-              ssl: {
-                  rejectUnauthorized: false
-              },
-              entities,
-              logging: ['info']
-          })
-        : TypeOrmModule.forRoot({
-              type: 'postgres',
-              host: process.env.DB_HOST ?? 'localhost',
-              port: Number(process.env.DB_PORT) ?? 5432,
-              username: process.env.DB_USERNAME ?? 'postgres',
-              password: process.env.DB_PASSWORD ?? 'postgres',
-              database: process.env.DB_DATABASE ?? 'origin',
-              entities,
-              logging: ['info']
-          });
+    return TypeOrmModule.forRoot({
+        ...getDBConnectionOptions(),
+        entities,
+        logging: ['info']
+    });
 };
 
 @Module({
@@ -112,8 +101,7 @@ const OriginAppTypeOrmModule = () => {
         OrganizationMemberRoleChangedHandler,
         OrganizationStatusChangedHandler,
         RegistrationCreatedHandler,
-        OrganizationRegisteredHandler,
-        RefreshAllTokensTask
+        OrganizationRegisteredHandler
     ]
 })
 export class OriginAppModule {}

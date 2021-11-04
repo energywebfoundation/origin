@@ -46,7 +46,7 @@ export type TRegisterDeviceFormValues = {
   gridOperator: string;
   description: string;
   smartMeterId: string;
-  countryCode: FormSelectOption[];
+  timeZone?: FormSelectOption[];
   region: FormSelectOption[];
   subregion: FormSelectOption[];
   postalCode: string;

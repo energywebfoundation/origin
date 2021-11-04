@@ -34,7 +34,3 @@ export interface IOwnershipCommitmentProof {
     leafs: PreciseProofs.Leaf[];
     salts: string[];
 }
-
-export interface IOwnershipCommitmentProofWithTx extends IOwnershipCommitmentProof {
-    txHash: string;
-}

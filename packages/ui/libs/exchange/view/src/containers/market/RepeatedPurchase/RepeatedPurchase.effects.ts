@@ -59,7 +59,14 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
   const isValidDates =
     dayjs(values.startDate).isValid() && dayjs(values.endDate).isValid();
 
-  const buttonDisabled = !isValid || !isDirty || !isValidDates || isSubmitting;
+  const onlyFuelTypeSpecified =
+    filters.fuelType.length > 0 && filters.deviceType.length === 0;
+  const buttonDisabled =
+    !isValid ||
+    !isDirty ||
+    !isValidDates ||
+    isSubmitting ||
+    onlyFuelTypeSpecified;
 
   const buttonWithState: MarketButton[] = buttons?.map((button) => ({
     ...button,

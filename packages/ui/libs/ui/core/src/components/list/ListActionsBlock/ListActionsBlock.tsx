@@ -28,6 +28,8 @@ export type ListActionsBlockProps<ItemId = any> = {
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
+  selectedTab?: number;
+  setSelectedTab?: (value: number) => void;
 };
 
 export type TListActionsBlock = <ItemId>(
@@ -40,21 +42,26 @@ export const ListActionsBlock: TListActionsBlock = ({
   resetSelected,
   tabsProps,
   wrapperProps,
+  selectedTab,
+  setSelectedTab,
 }) => {
-  const { tabIndex, setTabIndex } = useListActionsBlockEffects();
+  const { selected, setSelected } = useListActionsBlockEffects(
+    selectedTab,
+    setSelectedTab
+  );
 
-  if (!actions[tabIndex]) {
+  if (!actions[selected]) {
     return null;
   }
 
-  const { content, component: Component } = actions[tabIndex];
+  const { content, component: Component } = actions[selected];
   return (
     <div {...wrapperProps}>
       {actions.length >= 2 && (
         <Tabs
-          value={tabIndex}
+          value={selected}
           onChange={(event: any, index: number) => {
-            setTabIndex(index);
+            setSelected(index);
           }}
           indicatorColor="primary"
           textColor="primary"

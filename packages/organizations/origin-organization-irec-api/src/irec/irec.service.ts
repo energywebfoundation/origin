@@ -4,7 +4,8 @@ import {
     ForbiddenException,
     Injectable,
     NotFoundException,
-    UnauthorizedException
+    UnauthorizedException,
+    UnprocessableEntityException
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
@@ -17,6 +18,7 @@ import {
     ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
+    CreateAccountParams,
     Device,
     Device as IrecDevice,
     DeviceCreateParams,
@@ -90,6 +92,8 @@ export interface IIrecService {
 
     getIssueAccountCode(user: UserIdentifier): Promise<string>;
 
+    createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void>;
+
     createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus>;
 
     updateIssueRequest(user: UserIdentifier, code: string, issue: Issue): Promise<IssueWithStatus>;
@@ -112,7 +116,7 @@ export interface IIrecService {
 
     transferCertificate(
         fromUser: UserIdentifier,
-        toUser: UserIdentifier,
+        toTradeAccount: string,
         assetId: string
     ): Promise<TransactionResult>;
 
@@ -273,6 +277,11 @@ export class IrecService implements IIrecService {
         return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
     }
 
+    async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {
+        const irecClient = await this.getIrecClient(user);
+        await irecClient.account.create(params);
+    }
+
     async createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {
         const irecClient = await this.getIrecClient(user);
         const irecIssue: IssueWithStatus = await irecClient.issue.create(issue);
@@ -339,14 +348,13 @@ export class IrecService implements IIrecService {
 
     async transferCertificate(
         fromUser: UserIdentifier,
-        toUser: UserIdentifier,
-        assetId: string
+        toTradeAccount: string,
+        assetId: string,
+        amount?: number
     ): Promise<TransactionResult> {
         const fromUserClient = await this.getIrecClient(fromUser);
         const fromUserConnectionInfo = await this.getConnectionInfo(fromUser);
-
         const fromUserTradeAccount = await this.getTradeAccountCode(fromUser);
-        const toUserTradeAccount = await this.getTradeAccountCode(toUser);
 
         const items = await fromUserClient.account.getItems(fromUserTradeAccount);
         const item = items.find((i) => i.asset === assetId);
@@ -355,17 +363,25 @@ export class IrecService implements IIrecService {
             throw new NotFoundException('IREC item not found');
         }
 
+        if (amount) {
+            if (amount > item.volume) {
+                throw new UnprocessableEntityException(
+                    `Requesting transfer for ${amount}, but I-REC item ${item.code} only has ${item.volume}`
+                );
+            }
+        }
+
         const transferItem = new ReservationItem();
         transferItem.code = item.code;
-        transferItem.amount = item.volume;
+        transferItem.amount = amount ?? item.volume;
 
         return fromUserClient.transfer({
             sender: fromUserTradeAccount,
-            recipient: toUserTradeAccount,
+            recipient: toTradeAccount,
             approver: fromUserConnectionInfo.userName,
             volume: transferItem.amount,
             items: [transferItem],
-            notes: ''
+            notes: 'Transfer certificate from origin to third-party organization'
         });
     }
 

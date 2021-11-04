@@ -6,12 +6,14 @@ import {
     BlockchainPropertiesModule,
     Certificate,
     CertificateBatchController,
-    OnChainCertificateWatcher
+    OnChainCertificateWatcher,
+    UnminedCommitment
 } from '@energyweb/issuer-api';
 import { IrecModule } from '@energyweb/origin-organization-irec-api';
 import { DeviceModule } from '@energyweb/origin-device-registry-irec-local-api';
 import { DeviceRegistryModule } from '@energyweb/origin-device-registry-api';
 import { UserModule } from '@energyweb/origin-backend';
+import { ConfigModule } from '@nestjs/config';
 
 import { CertificationRequestModule, IrecCertificationRequest } from '../certification-request';
 import { IrecCertificateController } from './certificate.controller';
@@ -20,13 +22,14 @@ import { CertificateHandlers } from './handler';
 @Module({
     imports: [
         CqrsModule,
-        TypeOrmModule.forFeature([Certificate, IrecCertificationRequest]),
+        TypeOrmModule.forFeature([Certificate, IrecCertificationRequest, UnminedCommitment]),
         BlockchainPropertiesModule,
         IrecModule,
         DeviceRegistryModule,
         DeviceModule,
         UserModule,
-        forwardRef(() => CertificationRequestModule)
+        forwardRef(() => CertificationRequestModule),
+        ConfigModule
     ],
     controllers: [IrecCertificateController, CertificateBatchController],
     providers: [...CertificateHandlers, OnChainCertificateWatcher],

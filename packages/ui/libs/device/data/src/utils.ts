@@ -9,6 +9,8 @@ import {
   CreateDeviceDTO as IRecCreateDeviceDTO,
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
+import { TimeZone, TimeZones } from '@energyweb/utils-general';
+import { uniqBy } from 'lodash';
 import {
   ComposedDevice,
   ComposedPublicDevice,
@@ -54,15 +56,26 @@ export function composeMyDevices(
   return composedResult;
 }
 
-export function decomposeForIRec(
-  newDevice: TRegisterDeviceFormValues,
-  organization: FullOrganizationInfoDTO
-): IRecCreateDeviceDTO {
+export type TDecomposeForIRecArgs = {
+  newDevice: TRegisterDeviceFormValues;
+  organization: FullOrganizationInfoDTO;
+  platformCountryCode: string;
+  moreThanOneTimeZone: boolean;
+  timeZones: TimeZone[];
+};
+
+export function decomposeForIRec({
+  newDevice,
+  organization,
+  platformCountryCode,
+  moreThanOneTimeZone,
+  timeZones,
+}: TDecomposeForIRecArgs): IRecCreateDeviceDTO {
   const iRecCreateDevice: IRecCreateDeviceDTO = {
     name: newDevice.facilityName,
     deviceType: newDevice.deviceType[0].value.toString(),
     fuelType: newDevice.fuelType[0].value.toString(),
-    countryCode: newDevice.countryCode[0].value.toString(),
+    countryCode: platformCountryCode,
     capacity: PowerFormatter.getBaseValueFromValueInDisplayUnit(
       parseFloat(newDevice.capacity)
     ),
@@ -72,7 +85,9 @@ export function decomposeForIRec(
     latitude: newDevice.latitude,
     longitude: newDevice.longitude,
     notes: newDevice.description,
-    timezone: 'Asia/Bangkok',
+    timezone: moreThanOneTimeZone
+      ? newDevice.timeZone[0].value.toString()
+      : timeZones[0].timeZone,
     gridOperator: newDevice.gridOperator,
     postalCode: organization.zipCode,
     region: newDevice.region[0].value.toString(),
@@ -93,3 +108,15 @@ export function decomposeForOrigin(
     imageIds: newDevice.imageIds,
   };
 }
+
+export const getCountriesTimeZones = (platformCountryCode: string) => {
+  const countryTimezones = uniqBy(
+    TimeZones.filter(
+      (timezone) => timezone.countryCode === platformCountryCode
+    ),
+    'utcOffset'
+  );
+  const moreThanOneTimeZone = countryTimezones.length > 1;
+
+  return { countryTimezones, moreThanOneTimeZone };
+};

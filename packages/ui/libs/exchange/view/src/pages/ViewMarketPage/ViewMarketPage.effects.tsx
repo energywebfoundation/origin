@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ListAction, ListActionsBlockProps } from '@energyweb/origin-ui-core';
@@ -33,6 +33,7 @@ import {
 
 export const useViewMarketPageEffects = () => {
   const [state, dispatch] = useReducer(filtersReducer, initialFiltersState);
+  const [currentMarketTable, setCurrentMarketTable] = useState(0);
   const { t } = useTranslation();
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
     useAllDeviceFuelTypes();
@@ -90,14 +91,17 @@ export const useViewMarketPageEffects = () => {
 
   useEffect(() => {
     return () => {
-      dispatch({ type: MarketFilterActionEnum.RESET_MARKET_FILTERS_STATE });
+      dispatch({
+        type: MarketFilterActionEnum.RESET_MARKET_FILTERS_STATE,
+      });
     };
   }, []);
 
   const { user, userLoading } = useUser();
   const { orderBookData, isLoading: isOrderbookLoading } = useApiOrderbookPoll(
     state,
-    user
+    user,
+    currentMarketTable === 1
   );
 
   const isLoading =
@@ -136,6 +140,8 @@ export const useViewMarketPageEffects = () => {
 
   const tablesActionsProps: ListActionsBlockProps = {
     actions: [sellOffers, buyOffers, tradingView],
+    selectedTab: currentMarketTable,
+    setSelectedTab: setCurrentMarketTable,
   };
 
   const formTitle = t('exchange.viewMarket.market');

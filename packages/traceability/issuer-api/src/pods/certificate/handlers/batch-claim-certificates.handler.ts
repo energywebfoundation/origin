@@ -2,9 +2,15 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CertificateBatchOperations } from '@energyweb/issuer';
-import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
-import { BigNumber } from 'ethers';
-import { HttpStatus } from '@nestjs/common';
+import { BigNumber, ContractTransaction } from 'ethers';
+import {
+    ForbiddenException,
+    HttpException,
+    HttpStatus,
+    NotFoundException,
+    BadRequestException
+} from '@nestjs/common';
+
 import { BatchClaimCertificatesCommand } from '../commands/batch-claim-certificates.command';
 import { Certificate } from '../certificate.entity';
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
@@ -19,8 +25,12 @@ export class BatchClaimCertificatesHandler
         private readonly blockchainPropertiesService: BlockchainPropertiesService
     ) {}
 
-    async execute({ claims }: BatchClaimCertificatesCommand): Promise<ISuccessResponse> {
+    async execute({ claims }: BatchClaimCertificatesCommand): Promise<ContractTransaction> {
         const blockchainProperties = await this.blockchainPropertiesService.get();
+
+        if (claims.length === 0) {
+            throw new BadRequestException('Cannot process empty claims request');
+        }
 
         for (const { id, amount, from } of claims) {
             if (!amount) {
@@ -29,39 +39,32 @@ export class BatchClaimCertificatesHandler
 
             const cert = await this.repository.findOne(id);
 
+            if (!cert) {
+                throw new NotFoundException(
+                    `Requested claim of certificate ${id}, but such doesn't exist`
+                );
+            }
+
             if (
                 !cert.owners[from] ||
                 BigNumber.from(cert.owners[from] ?? 0).isZero() ||
                 BigNumber.from(cert.owners[from] ?? 0).lt(amount)
             ) {
-                return ResponseFailure(
+                throw new ForbiddenException(
                     `Requested claiming of certificate ${id} with amount ${amount.toString()}, but you only own ${
                         cert.owners[from] ?? 0
-                    }`,
-                    HttpStatus.FORBIDDEN
+                    }`
                 );
             }
         }
 
         try {
-            const batchClaimTx = await CertificateBatchOperations.claimCertificates(
+            return await CertificateBatchOperations.claimCertificates(
                 claims,
                 blockchainProperties.wrap()
             );
-
-            const receipt = await batchClaimTx.wait();
-
-            if (receipt.status === 0) {
-                throw new Error(
-                    `ClaimBatch tx ${receipt.transactionHash} on certificate with id ${claims.map(
-                        (claim) => claim.id
-                    )} failed.`
-                );
-            }
         } catch (error) {
-            return ResponseFailure(JSON.stringify(error), HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(JSON.stringify(error), HttpStatus.FAILED_DEPENDENCY);
         }
-
-        return ResponseSuccess();
     }
 }

@@ -9,7 +9,7 @@ import {
     UserModule
 } from '@energyweb/origin-backend';
 
-import { IrecModule, IrecService } from '../irec';
+import { IrecModule } from '../irec';
 import { Beneficiary } from './beneficiary.entity';
 import { BeneficiaryHandlers } from './handlers';
 import { BeneficiaryController } from './beneficiary.controller';
@@ -25,7 +25,7 @@ import { BeneficiaryController } from './beneficiary.controller';
         OrganizationModule,
         OriginBackendModule
     ],
-    providers: [...BeneficiaryHandlers, IrecService],
+    providers: [...BeneficiaryHandlers],
     exports: [...BeneficiaryHandlers],
     controllers: [BeneficiaryController]
 })

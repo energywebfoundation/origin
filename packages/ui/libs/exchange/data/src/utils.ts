@@ -93,22 +93,40 @@ export type OrderBookFilters = {
   location: string[];
 };
 
-export const getProductFilterConfig = ({
-  deviceType,
-  gridOperator,
-  generationDateStart,
-  generationDateEnd,
-  location,
-}: OrderBookFilters): ProductFilterDTO => {
+export const getProductFilterConfig = (
+  {
+    deviceType,
+    gridOperator,
+    generationDateStart,
+    generationDateEnd,
+    location,
+  }: OrderBookFilters,
+  filterAll: boolean
+): ProductFilterDTO => {
   return {
     deviceTypeFilter:
-      deviceType.length > 0 ? Filter.Specific : Filter.Unspecified,
-    locationFilter: location.length > 0 ? Filter.Specific : Filter.Unspecified,
+      deviceType.length > 0
+        ? Filter.Specific
+        : filterAll
+        ? Filter.All
+        : Filter.Unspecified,
+    locationFilter:
+      location.length > 0
+        ? Filter.Specific
+        : filterAll
+        ? Filter.All
+        : Filter.Unspecified,
     gridOperatorFilter:
-      gridOperator.length > 0 ? Filter.Specific : Filter.Unspecified,
+      gridOperator.length > 0
+        ? Filter.Specific
+        : filterAll
+        ? Filter.All
+        : Filter.Unspecified,
     generationTimeFilter:
       generationDateStart && generationDateEnd
         ? Filter.Specific
+        : filterAll
+        ? Filter.All
         : Filter.Unspecified,
     deviceVintageFilter: Filter.Unspecified,
     deviceType: deviceType.length > 0 ? deviceType : undefined,

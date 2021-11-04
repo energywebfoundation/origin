@@ -2,13 +2,13 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { constants, providers } from 'ethers';
 import { CertificateUtils, IBlockchainProperties } from '@energyweb/issuer';
 import { EventBus } from '@nestjs/cqrs';
+import { ConfigService } from '@nestjs/config';
+
 import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
-import { CertificateCreatedEvent } from '../events/certificate-created-event';
+import { CertificatesCreatedEvent } from '../events/certificates-created-event';
 import { SyncCertificateEvent } from '../events/sync-certificate-event';
 import { BlockchainEventType } from '../types';
 import { NewTransactionProcessedEvent } from '../events/new-transaction-processed.event';
-
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 @Injectable()
 export class OnChainCertificateWatcher implements OnModuleInit {
@@ -19,6 +19,7 @@ export class OnChainCertificateWatcher implements OnModuleInit {
     public registry: IBlockchainProperties['registry'];
 
     constructor(
+        private readonly configService: ConfigService,
         private readonly blockchainPropertiesService: BlockchainPropertiesService,
         private readonly eventBus: EventBus
     ) {}
@@ -31,6 +32,10 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
         this.provider = web3;
         this.registry = registry;
+
+        this.provider.pollingInterval =
+            Number(this.configService.get<string>('BLOCKCHAIN_POLLING_INTERVAL')) ||
+            this.provider.pollingInterval;
 
         this.provider.on(
             this.registry.filters.IssuanceSingle(null, null, null),
@@ -85,24 +90,20 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
         const event = await CertificateUtils.decodeEvent(eventType, rawEvent, this.registry);
 
-        // Allow some time for the backend controllers to finish processing
-        // before processing blockchain events
-        await sleep(2000);
-
         const logEvent = (type: BlockchainEventType, ids: number[]) =>
             this.logger.log(`Detected a new event: ${type} on Certificate ${JSON.stringify(ids)}`);
 
         switch (eventType) {
             case BlockchainEventType.IssuanceSingle:
                 logEvent(BlockchainEventType.IssuanceSingle, [event._id.toNumber()]);
-                this.eventBus.publish(new CertificateCreatedEvent(event._id.toNumber()));
+                this.eventBus.publish(new CertificatesCreatedEvent([event._id.toNumber()]));
                 break;
 
             case BlockchainEventType.IssuanceBatch:
-                event._ids.forEach((id: any) => {
-                    logEvent(BlockchainEventType.IssuanceBatch, [id.toNumber()]);
-                    this.eventBus.publish(new CertificateCreatedEvent(id.toNumber()));
-                });
+                const ids = event._ids.map((id: any) => id.toNumber());
+                logEvent(BlockchainEventType.IssuanceBatch, ids);
+
+                this.eventBus.publish(new CertificatesCreatedEvent(ids));
                 break;
 
             case BlockchainEventType.TransferSingle:
@@ -115,7 +116,9 @@ export class OnChainCertificateWatcher implements OnModuleInit {
                     break;
                 }
 
-                this.eventBus.publish(new SyncCertificateEvent(event.id.toNumber()));
+                this.eventBus.publish(
+                    new SyncCertificateEvent(event.id.toNumber(), event.transactionHash)
+                );
                 break;
 
             case BlockchainEventType.TransferBatch:
@@ -131,20 +134,26 @@ export class OnChainCertificateWatcher implements OnModuleInit {
 
                 event.ids.forEach((id: any) => {
                     logEvent(BlockchainEventType.TransferBatch, [id.toNumber()]);
-                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
+                    this.eventBus.publish(
+                        new SyncCertificateEvent(id.toNumber(), event.transactionHash)
+                    );
                 });
                 break;
 
             case BlockchainEventType.ClaimSingle:
                 logEvent(BlockchainEventType.ClaimSingle, [event._id.toNumber()]);
-                this.eventBus.publish(new SyncCertificateEvent(event._id.toNumber()));
+                this.eventBus.publish(
+                    new SyncCertificateEvent(event._id.toNumber(), event.transactionHash)
+                );
                 break;
 
             case BlockchainEventType.ClaimBatch:
             case BlockchainEventType.ClaimBatchMultiple:
                 event._ids.forEach((id: any) => {
                     logEvent(BlockchainEventType.ClaimBatch, [id.toNumber()]);
-                    this.eventBus.publish(new SyncCertificateEvent(id.toNumber()));
+                    this.eventBus.publish(
+                        new SyncCertificateEvent(id.toNumber(), event.transactionHash)
+                    );
                 });
                 break;
 
