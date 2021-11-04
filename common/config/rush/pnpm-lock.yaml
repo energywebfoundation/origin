@@ -68,7 +68,7 @@ dependencies:
   '@rush-temp/issuer-irec-api-client': file:projects/issuer-irec-api-client.tgz_4f6e83eb5a56fc26d57530296bd4b8aa
   '@rush-temp/issuer-irec-api-react-query-client': file:projects/issuer-irec-api-react-query-client.tgz_6a225ef46539980d06d6217bd708b3ad
   '@rush-temp/issuer-irec-api-wrapper': file:projects/issuer-irec-api-wrapper.tgz_rxjs@7.4.0
-  '@rush-temp/migrations-irec': file:projects/migrations-irec.tgz
+  '@rush-temp/migrations-irec': file:projects/migrations-irec.tgz_71d2a525e13a9243ecfb12e4aeccf888
   '@rush-temp/origin-backend': file:projects/origin-backend.tgz_e54cfe2738d8c922ca3d7ac3d5fafd21
   '@rush-temp/origin-backend-client': file:projects/origin-backend-client.tgz_45ce9132d60a2194bcd9ac42ae252cd7
   '@rush-temp/origin-backend-core': file:projects/origin-backend-core.tgz
@@ -39638,8 +39638,11 @@ packages:
       integrity: sha512-CYihiuWUKNdRUdubU8EihvOUfNDlIotoDLHZXyxrg5zGjAABd07828Q38vWCUB6dAVYSzyLG2QaH/0oMQMGvyA==
       tarball: file:projects/issuer.tgz
     version: 0.0.0
-  file:projects/migrations-irec.tgz:
+  file:projects/migrations-irec.tgz_71d2a525e13a9243ecfb12e4aeccf888:
     dependencies:
+      '@nestjs/core': 8.1.1_fd2a30749d40d79b96b1254a3e96f533
+      '@nestjs/testing': 8.1.1_89e103a9c7054b932bde2e86d9ce498a
+      '@nestjs/typeorm': 8.0.2_7188125e01b8706eec8b8640f6d924a6
       '@types/mocha': 9.0.0
       '@types/node': 14.17.32
       '@types/pg': 8.6.1
@@ -39654,9 +39657,16 @@ packages:
       write-json-file: 5.0.0
       yaeti: 1.0.2
     dev: false
+    id: file:projects/migrations-irec.tgz
     name: '@rush-temp/migrations-irec'
+    peerDependencies:
+      '@nestjs/common': '*'
+      '@nestjs/platform-express': '*'
+      reflect-metadata: '*'
+      rxjs: '*'
+      typeorm: '*'
     resolution:
-      integrity: sha512-t7QL+hsVn+XFptmqS9Q6y6GCcnQ/myRivsqnRdq1pTo7ZDtACNcHqJ8fDqGFBOXL2OpJbVsv59ccTZ8ZZ486ng==
+      integrity: sha512-k6+9Els+MzB4Nm5lToLwAbF6BIXzxwsmiRmV5kOpJsek9cxGOD+afedBygEyDh4hR+ibcks1veT6v/eB7WQl2Q==
       tarball: file:projects/migrations-irec.tgz
     version: 0.0.0
   file:projects/origin-backend-client.tgz_45ce9132d60a2194bcd9ac42ae252cd7:
@@ -39744,7 +39754,7 @@ packages:
       reflect-metadata: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-9RL3jjU5oulDeRLOxDXWY9JSdoSQ+Wt3b/N85HUDBKcYPyT3vIKqgySNRDQJlncMfWtJLSjv251AweSbMLSDZg==
+      integrity: sha512-lF3jUqRKRGSKiGq1mFYQqeN4pu2J1aPbzAxmaEMiny53jpHrDJfU+bGfHpC8pWj4HhobW3AWg9jKmbImnuA9IQ==
       tarball: file:projects/origin-backend-irec-app.tgz
     version: 0.0.0
   file:projects/origin-backend-react-query-client.tgz_72699da0fe6cf97c318b911c80cbe829:

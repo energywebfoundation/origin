@@ -9,6 +9,8 @@ export { OrganizationRegisteredHandler } from './notification/organization-regis
 export { DeviceCreatedHandler } from './notification/device-created.handler';
 export { CertificateRequestApprovedHandler } from './notification/certificate-request-approved.handler';
 export { IrecCertificateImportFailedHandler } from './notification/irec-certificate-import-failed.handler';
+export { ConnectionCreatedHandler } from './notification/connection-created.handler';
+export { OrganizationNameAlreadyTakenHandler } from './notification/organization-name-already-taken.handler';
 
 export { CreateExchangeDepositAddressHandler } from './organization/create-exchange-deposit-address.handler';
 export { CreateIrecBeneficiaryHandler } from './organization/create-irec-beneficiary.handler';

@@ -2,7 +2,6 @@ import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { OrganizationRegisteredEvent, UserService } from '@energyweb/origin-backend';
 import { AccountService } from '@energyweb/exchange';
-import { LoggedInUser } from '@energyweb/origin-backend-core';
 
 @EventsHandler(OrganizationRegisteredEvent)
 export class CreateExchangeDepositAddressHandler
@@ -15,11 +14,10 @@ export class CreateExchangeDepositAddressHandler
         private readonly accountService: AccountService
     ) {}
 
-    public async handle(event: OrganizationRegisteredEvent): Promise<void> {
-        const user = new LoggedInUser(event.member);
-        await this.accountService.create(user.ownerId);
+    public async handle({ organization }: OrganizationRegisteredEvent): Promise<void> {
         this.logger.log(
-            `Exchange deposit address created for ${event.organization.name} (id=${event.organization.id})`
+            `Creating exchange deposit address for "${organization.name}" (id=${organization.id})`
         );
+        await this.accountService.create(String(organization.id));
     }
 }

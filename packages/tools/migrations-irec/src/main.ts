@@ -2,14 +2,20 @@ import dotenv from 'dotenv';
 import program from 'commander';
 import fs from 'fs';
 import { ethers } from 'ethers';
-import { Client } from 'pg';
+import { Client, ClientConfig } from 'pg';
+import { ConnectionOptions } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Test } from '@nestjs/testing';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IContractsLookup } from '@energyweb/issuer';
 import { getDBConnectionOptions } from '@energyweb/origin-backend-utils';
-import { AccountModule, AccountService, entities } from '@energyweb/exchange';
+import {
+    AccountDeployerModule,
+    AccountModule,
+    AccountService,
+    entities
+} from '@energyweb/exchange';
 
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
@@ -125,7 +131,7 @@ async function createExchangeDepositAddresses(client: Client) {
         'SELECT id FROM public.platform_organization;'
     );
 
-    const postgresConfig = getPostgresConfig();
+    const postgresConfig = getDBConnectionOptions() as ConnectionOptions;
     const moduleFixture = await Test.createTestingModule({
         imports: [
             TypeOrmModule.forRoot({
@@ -134,21 +140,24 @@ async function createExchangeDepositAddresses(client: Client) {
                 logging: ['info'],
                 ...postgresConfig
             }),
-            AccountModule
+            AccountModule,
+            AccountDeployerModule
         ]
     }).compile();
 
     const app = moduleFixture.createNestApplication();
     const accountService = app.get(AccountService);
 
-    rows.forEach(({ id }) => {
-        accountService
+    for (const { id } of rows) {
+        await accountService
             .create(String(id))
-            .then(() => logger.info(`Exchange deposit address created for ${id}`))
+            .then(() => logger.info(`Exchange deposit address created for orgId=${id}`))
             .catch((e) =>
                 logger.error(`Unable to create exchange deposit address for ${id}: ${e.message}`)
             );
-    });
+    }
+
+    await new Promise((r) => setTimeout(r, 3000));
 }
 
 function initEnv() {
