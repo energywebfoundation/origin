@@ -16,6 +16,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/ui-utils.umd.js",
   "module": "dist/ui-utils.esm.js",
   "typings": "dist/index.d.ts",
@@ -24,6 +27,6 @@
     "dayjs": "1.10.7",
     "ethers": "5.3.1",
     "lodash": "4.17.21",
-    "react-router": "6.0.0-beta.5"
+    "react-router": "6.0.0"
   }
 }

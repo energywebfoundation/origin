@@ -9,3 +9,4 @@ export * from './certificate-batch.controller';
 export * from './certificate.entity';
 export * from './certificate.module';
 export * from './dto';
+export * from './unmined-commitment.entity';

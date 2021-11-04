@@ -24,18 +24,11 @@ import {
 } from '@energyweb/origin-backend-utils';
 import {
     CertificateBoundToCertificationRequestCommand,
-    CreateCertificationRequestDTO,
     GetAllCertificationRequestsQuery,
     GetCertificationRequestByCertificateQuery,
     GetCertificationRequestQuery,
     ValidateCertificationRequestCommand
 } from '@energyweb/issuer-api';
-import {
-    ApproveIrecCertificationRequestCommand,
-    CreateIrecCertificationRequestCommand,
-    RevokeIrecCertificationRequestCommand
-} from './commands';
-import { FullCertificationRequestDTO } from './full-certification-request.dto';
 import {
     ILoggedInUser,
     ISuccessResponse,
@@ -43,6 +36,14 @@ import {
     Role,
     ValidateDeviceOwnershipQuery
 } from '@energyweb/origin-backend-core';
+
+import {
+    ApproveIrecCertificationRequestCommand,
+    CreateIrecCertificationRequestCommand,
+    RevokeIrecCertificationRequestCommand
+} from './commands';
+import { FullCertificationRequestDTO } from './full-certification-request.dto';
+import { CreateIrecCertificationRequestDTO } from './create-irec-certification-request.dto';
 
 @ApiTags('irec-certification-requests')
 @ApiBearerAuth('access-token')
@@ -105,10 +106,10 @@ export class CertificationRequestController {
         type: FullCertificationRequestDTO,
         description: 'Creates a Certification Request'
     })
-    @ApiBody({ type: CreateCertificationRequestDTO })
+    @ApiBody({ type: CreateIrecCertificationRequestDTO })
     public async create(
         @UserDecorator() user: ILoggedInUser,
-        @Body() dto: CreateCertificationRequestDTO
+        @Body() dto: CreateIrecCertificationRequestDTO
     ): Promise<FullCertificationRequestDTO | SuccessResponseDTO> {
         const isOwnerOfTheDevice = await this.queryBus.execute(
             new ValidateDeviceOwnershipQuery(user.ownerId, dto.deviceId)
@@ -126,18 +127,7 @@ export class CertificationRequestController {
             return validationCheck;
         }
 
-        return this.commandBus.execute(
-            new CreateIrecCertificationRequestCommand(
-                user,
-                dto.to,
-                dto.energy,
-                dto.fromTime,
-                dto.toTime,
-                dto.deviceId,
-                dto.files,
-                dto.isPrivate
-            )
-        );
+        return this.commandBus.execute(new CreateIrecCertificationRequestCommand(user, dto));
     }
 
     @Put('/:id/approve')

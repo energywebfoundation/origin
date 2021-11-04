@@ -9,3 +9,5 @@ export * from './prepareRegionsOptions';
 export * from './prepareSubregionOptions';
 export * from './prepareFuelTypeOptions';
 export * from './prepareDeviceTypeOptions';
+export * from './getTimeZonesOptions';
+export * from './getCountriesTimeZones';

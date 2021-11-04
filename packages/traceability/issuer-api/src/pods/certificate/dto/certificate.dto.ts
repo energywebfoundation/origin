@@ -1,12 +1,12 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
     IsArray,
     IsBoolean,
     IsInt,
+    IsOptional,
     IsPositive,
     IsString,
     Min,
-    ValidateIf,
     ValidateNested
 } from 'class-validator';
 import { ClaimDTO } from './claim.dto';
@@ -53,27 +53,26 @@ export class CertificateDTO {
     @IsBoolean()
     isClaimed: boolean;
 
-    @ApiProperty({ required: false, type: [ClaimDTO] })
-    @ValidateIf((dto: CertificateDTO) => !!dto.myClaims)
+    @ApiPropertyOptional({ type: [ClaimDTO] })
+    @IsOptional()
     @IsArray()
     myClaims?: ClaimDTO[];
 
-    @ApiProperty({ required: false, type: [ClaimDTO] })
-    @ValidateIf((dto: CertificateDTO) => !!dto.claims)
+    @ApiPropertyOptional({ type: [ClaimDTO] })
+    @IsOptional()
     @IsArray()
     claims?: ClaimDTO[];
 
-    @ApiProperty({ required: false })
-    @ValidateIf((dto: CertificateDTO) => !!dto.blockchain)
+    @ApiPropertyOptional()
+    @IsOptional()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blockchain?: any;
 
-    @ApiProperty({ type: String, required: false })
-    @ValidateIf((dto: CertificateDTO) => !!dto.creationBlockHash)
-    creationBlockHash?: string;
+    @ApiProperty({ type: String })
+    creationTransactionHash?: string;
 
-    @ApiProperty({ type: Boolean, required: false })
-    @ValidateIf((dto: CertificateDTO) => !!dto.issuedPrivately)
+    @ApiPropertyOptional({ type: Boolean })
+    @IsOptional()
     @IsBoolean()
     issuedPrivately?: boolean;
 }

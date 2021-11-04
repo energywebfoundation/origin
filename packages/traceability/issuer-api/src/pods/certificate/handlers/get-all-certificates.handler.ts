@@ -12,6 +12,10 @@ export class GetAllCertificatesHandler implements IQueryHandler<GetAllCertificat
     ) {}
 
     async execute(): Promise<Certificate[]> {
-        return this.repository.find();
+        return this.repository.find({
+            order: {
+                id: 'ASC'
+            }
+        });
     }
 }

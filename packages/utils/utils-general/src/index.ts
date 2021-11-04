@@ -14,3 +14,4 @@ export { ILocationService, LocationService } from './blockchain-facade/LocationS
 export * from './Signing';
 export { getProviderWithFallback } from './blockchain-facade/FallbackProvider';
 export * from './OriginFeature';
+export { TimeZones, TimeZone } from './TimeZones';

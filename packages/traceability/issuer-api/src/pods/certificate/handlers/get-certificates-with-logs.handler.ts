@@ -36,6 +36,9 @@ export class GetCertificatesWithLogsHandler implements IQueryHandler<GetCertific
                     Math.floor(from.getTime() / 1000),
                     Math.floor(to.getTime() / 1000)
                 )
+            },
+            order: {
+                id: 'ASC'
             }
         });
 

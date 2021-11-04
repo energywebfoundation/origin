@@ -9,13 +9,17 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { TRegisterDeviceFormValues } from '../types';
-import { decomposeForIRec, decomposeForOrigin } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import {
+  decomposeForIRec,
+  decomposeForOrigin,
+  getCountriesTimeZones,
+} from '../utils';
+import { TRegisterDeviceFormValues } from '../types';
 
-export const useApiRegisterDevice = () => {
+export const useApiRegisterDevice = (platformCountryCode: string) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { mutate, isLoading: isOriginMutating } = useOriginCreateDevice();
@@ -25,8 +29,17 @@ export const useApiRegisterDevice = () => {
   const user: UserDTO = queryClient.getQueryData(userQueryKey);
   const isMutating = isIRecMutating || isOriginMutating;
 
+  const { moreThanOneTimeZone, countryTimezones } =
+    getCountriesTimeZones(platformCountryCode);
+
   const submitHandler = (values: TRegisterDeviceFormValues) => {
-    const iRecCreateData = decomposeForIRec(values, user.organization);
+    const iRecCreateData = decomposeForIRec({
+      newDevice: values,
+      organization: user.organization,
+      platformCountryCode,
+      moreThanOneTimeZone,
+      timeZones: countryTimezones,
+    });
     const originCreateData = decomposeForOrigin(values);
 
     mutateAsync({ data: iRecCreateData })

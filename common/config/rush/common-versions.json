@@ -24,7 +24,11 @@
         "@ethersproject/abstract-signer": "5.3.0",
         "@ethersproject/contracts": "5.3.0",
         "@ethersproject/providers": "5.3.1",
-        "@ethersproject/wallet": "5.3.0"
+        "@ethersproject/wallet": "5.3.0",
+        /**
+         Mitigate https://github.com/faisalman/ua-parser-js/issues/536
+         */
+        "ua-parser-js": "1.0.1"
     },
 
     /**

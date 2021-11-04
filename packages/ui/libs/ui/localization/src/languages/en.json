@@ -367,6 +367,7 @@
         "description": "Description",
 
         "deviceLocationFormTitle": "Device Location",
+        "timeZone": "Time zone",
         "country": "Country",
         "region": "Region",
         "subregion": "Subregion",
@@ -453,6 +454,7 @@
         "sellActionTitle": "Sell",
         "withdrawActionTitle": "Withdraw",
         "transferActionTitle": "Transfer",
+        "exportActionTitle": "Export",
         "generationTime": "Generation Time Frame",
         "selectedForSale": "Selected For Sale",
         "price": "Price per MWh",
@@ -463,13 +465,19 @@
         "selectedForTransfer": "Selected For Transfer",
         "exchangeAddress": "Exchange Deposit Address",
         "transferButton": "Transfer",
+        "selectedForExport": "Selected For Export",
+        "exportTo": "Export to",
+        "exportButton": "Export",
+        "iRecAccountId": "I-REC Account ID",
         "notifications": {
           "sellSuccess": "Certificate has been successfully posted to exchange",
           "sellError": "Error while posting certificate for sale",
           "withdrawSuccess": "Certificate has been successfully withdrawn",
           "withdrawError": "Error while withdrawing certificate",
           "transferSuccess": "Certificate has been successfully transfered",
-          "transferError": "Error while transfering certificate"
+          "transferError": "Error while transfering certificate",
+          "exportSuccess": "Certificate has been successfully exported",
+          "exportError": "Error while exporting certificate"
         }
       },
       "blockchainInbox": {
@@ -510,6 +518,7 @@
         "noCertificates": "You don't have any certificates in the inbox",
         "bulkActionsRestrictionsText": "Bulk certificate actions are currently unavailable. Please, select single certificate to continue",
         "enterValidAddress": "Please, enter valid address",
+        "enterValidId": "Please, enter valid ID",
         "transactionInProgress": "Transaction in progress"
       },
       "detailView": {

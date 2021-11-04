@@ -6,6 +6,8 @@ import { Client, ClientConfig } from 'pg';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IContractsLookup } from '@energyweb/issuer';
+import { getDBConnectionOptions } from '@energyweb/origin-backend-utils';
+
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
 
@@ -22,18 +24,7 @@ program.option(
 program.parse(process.argv);
 
 async function connectToDB() {
-    const postgresConfig: ClientConfig = process.env.DATABASE_URL
-        ? {
-              connectionString: process.env.DATABASE_URL,
-              ssl: { rejectUnauthorized: false }
-          }
-        : {
-              host: process.env.DB_HOST ?? 'localhost',
-              port: Number(process.env.DB_PORT) || 5432,
-              user: process.env.DB_USERNAME ?? 'postgres',
-              password: process.env.DB_PASSWORD ?? 'postgres',
-              database: process.env.DB_DATABASE ?? 'origin'
-          };
+    const postgresConfig = getDBConnectionOptions() as ClientConfig;
     const client = new Client(postgresConfig);
 
     await client.connect();
@@ -45,18 +36,11 @@ async function connectToDB() {
 
 async function importConfiguration(client: Client, configPath: string) {
     const parsedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8').toString());
-    const {
-        currencies,
-        countryName,
-        regions,
-        complianceStandard,
-        deviceTypes,
-        gridOperators
-    } = parsedConfig;
+    const { currencies, countryName, regions, complianceStandard, deviceTypes, gridOperators } =
+        parsedConfig;
 
-    const {
-        externalDeviceIdTypes
-    }: { externalDeviceIdTypes: ExternalDeviceIdType[] } = parsedConfig;
+    const { externalDeviceIdTypes }: { externalDeviceIdTypes: ExternalDeviceIdType[] } =
+        parsedConfig;
 
     if (currencies.length < 1) {
         throw new Error('At least one currency has to be specified: e.g. [ "USD" ]');
@@ -64,8 +48,7 @@ async function importConfiguration(client: Client, configPath: string) {
 
     logger.info(`Saving configuration...`);
     const newConfigurationQuery = {
-        text:
-            'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "complianceStandard", "deviceTypes", "gridOperators") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+        text: 'INSERT INTO public.configuration (id, "countryName", currencies, regions, "externalDeviceIdTypes", "complianceStandard", "deviceTypes", "gridOperators") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
         values: [
             '1',
             countryName,
@@ -89,8 +72,7 @@ async function importContracts(
 
     logger.info(`Saving contracts...`);
     const newContractsQuery = {
-        text:
-            'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback", "platformOperatorPrivateKey") VALUES ($1, $2, $3, $4, $5, $6)',
+        text: 'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback", "platformOperatorPrivateKey") VALUES ($1, $2, $3, $4, $5, $6)',
         values: [
             provider.network.chainId,
             contractsLookup.registry,

@@ -12,6 +12,7 @@ import {
     Account,
     AccountBalance,
     ApproveTransaction,
+    CreateAccountParams,
     RedeemTransaction,
     RedeemTransactionResult,
     Transaction,
@@ -93,6 +94,16 @@ export class IRECAPIClient {
         const accountManagementUrl = `${this.endPointUrl}/api/irec/v1/account-management`;
 
         return {
+            create: async (account: CreateAccountParams): Promise<void> => {
+                const accountParams =
+                    account instanceof CreateAccountParams
+                        ? account
+                        : plainToClass(CreateAccountParams, account);
+
+                await validateOrReject(accountParams);
+                const url = `${accountManagementUrl}/create`;
+                await this.axiosInstance.post(url, classToPlain(accountParams), this.config);
+            },
             getAll: async (): Promise<Account[]> => {
                 const response = await this.axiosInstance.get<unknown[]>(
                     accountManagementUrl,
@@ -350,7 +361,11 @@ export class IRECAPIClient {
                 await validateOrReject(dev);
 
                 const url = `${deviceManagementUrl}/create`;
-                const response = await this.axiosInstance.post(url, classToPlain(dev), this.config);
+                const response = await this.axiosInstance.post<{ device: Device }>(
+                    url,
+                    classToPlain(dev),
+                    this.config
+                );
 
                 return plainToClass(Device, response.data?.device);
             },
@@ -363,7 +378,11 @@ export class IRECAPIClient {
                 await validateOrReject(dev, { skipMissingProperties: true });
 
                 const url = `${deviceManagementUrl}/${code}/edit`;
-                const response = await this.axiosInstance.put(url, classToPlain(dev), this.config);
+                const response = await this.axiosInstance.put<{ device: Device }>(
+                    url,
+                    classToPlain(dev),
+                    this.config
+                );
                 return plainToClass(Device, response.data?.device);
             },
             getAll: async (): Promise<Device[]> => {
@@ -545,8 +564,6 @@ export class IRECAPIClient {
         );
 
         await this.onTokensRefreshed(this.accessTokens);
-
-        return this.accessTokens;
     }
 
     private async ensureNotExpired() {
@@ -566,7 +583,7 @@ export class IRECAPIClient {
         this.interceptorId = this.axiosInstance.interceptors.request.use(async (config) => {
             console.log(`${config.method} ${config.url} ${JSON.stringify(config.data) ?? ''}`);
             await this.ensureNotExpired();
-
+            config.headers = { ...config.headers, ...this.config.headers };
             return config;
         });
     }

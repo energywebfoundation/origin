@@ -69,7 +69,7 @@ describe('Certificate tests', () => {
         const generationEndTime = timestamp;
         const deviceId = '1';
 
-        return Certificate.create(
+        const tx = await Certificate.create(
             address,
             volume,
             generationStartTime,
@@ -78,6 +78,8 @@ describe('Certificate tests', () => {
             blockchainProperties,
             metadata
         );
+
+        return await Certificate.fromTxHash(tx.hash, blockchainProperties);
     };
 
     it('migrates Registry and Issuer', async () => {
@@ -270,8 +272,13 @@ describe('Certificate tests', () => {
             metadata: ''
         };
 
-        const certificateIds = await CertificateBatchOperations.issueCertificates(
+        const batchIssueTx = await CertificateBatchOperations.issueCertificates(
             [certInfo1, certInfo2],
+            blockchainProperties
+        );
+
+        const certificateIds = await CertificateBatchOperations.getIdsFromBatchIssuanceTx(
+            batchIssueTx.hash,
             blockchainProperties
         );
 
