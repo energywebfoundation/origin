@@ -4,7 +4,7 @@ import {
   SpecField,
   SpecFieldProps,
 } from '@energyweb/origin-ui-core';
-import { Box, Card, CardContent } from '@material-ui/core';
+import { Box, Card, CardContent } from '@mui/material';
 import React, { FC } from 'react';
 import { useStyles } from './DetailViewCard.styles';
 

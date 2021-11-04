@@ -1,7 +1,7 @@
 import { TopBarButtonData } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { HowToReg, AccountCircle, ExitToApp } from '@material-ui/icons';
+import { HowToReg, AccountCircle, ExitToApp } from '@mui/icons-material';
 
 export const useTopbarButtonList = (
   isAuthenticated: boolean,

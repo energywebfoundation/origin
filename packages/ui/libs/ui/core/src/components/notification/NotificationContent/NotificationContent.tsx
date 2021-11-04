@@ -1,4 +1,4 @@
-import { CheckCircle, Info, Cancel, Warning } from '@material-ui/icons';
+import { CheckCircle, Info, Cancel, Warning } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { NotificationTypeEnum } from '../showNotification';
 import { useStyles } from './NotificationContent.styles';

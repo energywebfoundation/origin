@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Drawer, DrawerProps, Box } from '@material-ui/core';
+import { Drawer, DrawerProps, Box } from '@mui/material';
 import { CloseButton } from '../../buttons';
 
 export interface ResponsiveSidebarProps {

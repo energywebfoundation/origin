@@ -1,5 +1,5 @@
-import { Chip } from '@material-ui/core';
-import { Cancel, Delete, Replay } from '@material-ui/icons';
+import { Chip } from '@mui/material';
+import { Cancel, Delete, Replay } from '@mui/icons-material';
 import React, { Dispatch, FC } from 'react';
 import { FileUploadAction, UploadedFile } from '../../../containers/FileUpload';
 import { useColors } from './UploadChip.colors';

@@ -1,6 +1,6 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';

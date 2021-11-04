@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { CardsListBlock, CardsListBlockProps } from './CardsListBlock';
 import { CardsListItem } from '../../components/list';
 

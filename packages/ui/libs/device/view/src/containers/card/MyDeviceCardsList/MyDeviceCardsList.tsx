@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { ResponsiveSidebar } from '@energyweb/origin-ui-core';
@@ -21,12 +21,8 @@ export const MyDeviceCardsList: React.FC<MyDeviceCardsListProps> = ({
   devices,
   allDeviceTypes,
 }) => {
-  const {
-    selected,
-    closeSidebar,
-    handleSelect,
-    selectedDevice,
-  } = useMyDeviceCardsListEffects(devices);
+  const { selected, closeSidebar, handleSelect, selectedDevice } =
+    useMyDeviceCardsListEffects(devices);
 
   const classes = useStyles();
   const listContentClass = `${classes.content} ${

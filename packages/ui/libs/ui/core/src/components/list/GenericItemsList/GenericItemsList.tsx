@@ -7,7 +7,7 @@ import {
   TypographyProps,
   Pagination,
   PaginationProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ListItemsContainer,
   ListItemsContainerProps,

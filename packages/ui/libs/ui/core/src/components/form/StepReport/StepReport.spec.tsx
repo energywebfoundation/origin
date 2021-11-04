@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import { FirstStep } from './StepReport.stories';
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 describe('StepReport', () => {
   it('should render StepReport with first step', () => {

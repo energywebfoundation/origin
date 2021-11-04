@@ -1,4 +1,4 @@
-import { Typography, TypographyVariant, ButtonProps } from '@material-ui/core';
+import { Typography, TypographyVariant, ButtonProps } from '@mui/material';
 import React, { PropsWithChildren, ReactElement, FC } from 'react';
 import { UnpackNestedValue } from 'react-hook-form';
 import { StepReport } from '../../components/form';
@@ -40,17 +40,15 @@ export const MultiStepForm: TMultiStepForm = ({
   backButtonProps,
   loading,
 }) => {
-  const {
-    stepperLabels,
-    activeStep,
-    getCurrentForm,
-  } = useMultiStepFormEffects({
-    forms,
-    submitHandler,
-    backButtonText,
-    backButtonProps,
-    loading,
-  });
+  const { stepperLabels, activeStep, getCurrentForm } = useMultiStepFormEffects(
+    {
+      forms,
+      submitHandler,
+      backButtonText,
+      backButtonProps,
+      loading,
+    }
+  );
   return (
     <>
       <Typography variant={headingVariant ?? 'h5'}>{heading}</Typography>

@@ -4,7 +4,7 @@ import {
   CircularProgress,
   Paper,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { SelectedItem, SelectedItemProps } from '../SelectedItem';
 import { useCertificateActionContentEffects } from './CertificateActionContent.effects';

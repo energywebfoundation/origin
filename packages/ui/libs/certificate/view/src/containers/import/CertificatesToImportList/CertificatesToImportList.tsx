@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { GenericItemsList } from '@energyweb/origin-ui-core';
 import { useCertificatesToImportListEffects } from './CertificatesToImportList.effects';

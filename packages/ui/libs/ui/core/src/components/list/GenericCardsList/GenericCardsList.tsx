@@ -10,7 +10,7 @@ import {
   BoxProps,
   TypographyProps,
   CheckboxProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { ListCard, CardsListItem } from '../ListCard';
 import { useStyles } from './GenericCardsList.styles';
