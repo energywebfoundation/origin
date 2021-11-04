@@ -108,7 +108,7 @@
     "@nrwl/cli": "12.10.0",
     "@nrwl/cypress": "12.10.0",
     "@nrwl/eslint-plugin-nx": "12.10.0",
-    "@nrwl/jest": "12.10.0",
+    "@nrwl/jest": "13.1.3",
     "@nrwl/linter": "12.10.0",
     "@nrwl/react": "12.10.0",
     "@nrwl/storybook": "12.10.0",
