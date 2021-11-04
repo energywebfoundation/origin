@@ -194,7 +194,7 @@ dependencies:
   moment-timezone: 0.5.33
   multer: 1.4.3
   nodemailer: 6.7.0
-  orval: 5.5.10
+  orval: 6.2.4
   passport: 0.5.0
   passport-jwt: 4.0.0
   passport-local: 1.0.0
@@ -6276,7 +6276,7 @@ packages:
       integrity: sha512-HFXOerq/6/6YisiTJwCOScwfNaXyGmX7ROAEUoKOrckK9+hJ/QLFm5EofQYEgX4aXkvHokLEbWBs4NMwZ6hQUw==
   /@stoplight/json-ref-readers/1.2.2:
     dependencies:
-      node-fetch: 2.6.1
+      node-fetch: 2.6.5
       tslib: 1.14.1
     dev: false
     engines:
@@ -13009,6 +13009,12 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-OAwfC5+emvA6R7pkYFVBTOtI5ruf9DahffGmIqUc9l6wEh0h7iAFP6dt/V9Ioqlr2zW5avX9U9/w1I4alTRHkA==
+  /cac/6.7.11:
+    dev: false
+    engines:
+      node: '>=8'
+    resolution:
+      integrity: sha512-m4xrA2MKfid6uDV2j2+0mXrtPGxlvAW0y+7Gnn2P8WVMSG+4e4tcoYX++94ZPblPfpBccJ5e7HvKdghlX5yiDA==
   /cacache/12.0.4:
     dependencies:
       bluebird: 3.7.2
@@ -14047,12 +14053,6 @@ packages:
       node: '>= 10'
     resolution:
       integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
-  /commander/8.2.0:
-    dev: false
-    engines:
-      node: '>= 12'
-    resolution:
-      integrity: sha512-LLKxDvHeL91/8MIyTAD5BFMNtoIwztGPMiM/7Bl8rIPmHCZXRxmSWr91h57dpOpnQ6jIUqEWdXE/uBYMfiVZDA==
   /commander/8.3.0:
     dev: false
     engines:
@@ -16258,6 +16258,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-p5um32HOTO1kP+w7PRnB+5lQ43Z6muuMuIMffvDN8ZB4GcnjLBV6zGStpbASIMk4DCAvEaamhe2zhyCb/QXXsA==
+  /esbuild/0.12.29:
+    dev: false
+    hasBin: true
+    requiresBuild: true
+    resolution:
+      integrity: sha512-w/XuoBCSwepyiZtIRsKsetiLDUVGPVw1E/R3VTFSecIy8UR7Cq3SOtwKHJMFoVqqVG36aGkzh4e8BvpO1Fdc7g==
   /escalade/3.1.1:
     dev: false
     engines:
@@ -26113,14 +26119,19 @@ packages:
     dev: false
     resolution:
       integrity: sha512-hyBVl6iqqUOJ8FqRe+l/gS8H+kKYjrEndd5Pm1MfBtsEKA038HkkdbAl/72EAXGyonD/PFsvmVG+EvcIpliMBg==
-  /orval/5.5.10:
+  /orval/6.2.4:
     dependencies:
       '@apidevtools/swagger-parser': 10.0.3
+      cac: 6.7.11
       chalk: 4.1.2
-      commander: 8.2.0
+      chokidar: 3.5.2
       cuid: 2.1.8
+      debug: 4.3.2
+      esbuild: 0.12.29
       esutils: 2.0.3
+      execa: 5.1.1
       fs-extra: 10.0.0
+      globby: 11.0.4
       ibm-openapi-validator: 0.46.4
       inquirer: 8.2.0
       lodash.get: 4.4.2
@@ -26136,7 +26147,7 @@ packages:
     dev: false
     hasBin: true
     resolution:
-      integrity: sha512-QNZa3JH54fpcIxRi4qCj46eZbNCEyme9xrihqFZQOoUlmiVHKS9AdGwkQu65AJCp/xqnBSegxzpE+iszaZFEQw==
+      integrity: sha512-Atob3OL2t5SMps2a15umOfKHe99OuPt1BTWC7bvz3g7mlVWW/ggk5iRZbSSKqFjkc0fvDM4ZAgsAZGFFRlcUWg==
   /os-browserify/0.3.0:
     dev: false
     resolution:
@@ -36964,7 +36975,7 @@ packages:
       barrelsby: 2.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.4
@@ -36985,7 +36996,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-9tlStvAikcpbsbkF+6oFWaY2lc8EB3AxuJ0+SYpfo68RWE+M5UKpemrz6VjFp5cC8XPNOvfVrlFk6HX5U3lUMw==
+      integrity: sha512-vGVzidGavLxkeXlbd23Vz59a18iKPxLYelPcLb3f90iH6Liaf8yKb0it2solr0ArxWROOxdAOwRJ13BstfzlLg==
       tarball: file:projects/exchange-irec-react-query-client.tgz
     version: 0.0.0
   file:projects/exchange-irec.tgz_db945b5df6f1d3eec75b28e70a54627d:
@@ -37050,7 +37061,7 @@ packages:
       barrelsby: 2.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.4
@@ -37071,7 +37082,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-Gc669se0nkhBQsozMHNzgS80K7Q/Ec9fgxP7vDAeP968DTQmbK3RFkWh0ZszXnfSE7Sf46Y8nff/xvKbl3OyZg==
+      integrity: sha512-agTSRmCYuwCc6IfSIQ/CVJMKcvDQ5ZxLA9xX1swxAXgnBm69UdWgETRpV0pXl83pcCAFTImewBbkZ1wF6l3c4g==
       tarball: file:projects/exchange-react-query-client.tgz
     version: 0.0.0
   file:projects/exchange-token-account.tgz_react@17.0.2:
@@ -37288,7 +37299,7 @@ packages:
       barrelsby: 2.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.4
@@ -37309,7 +37320,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-SnlXFs80aroHh8wCo2VMNnBKsfkPun77d5NYvROYY2T+7JZaq0PqFLT+RT+Omc6ogB90RxnTeJ/YTcSoZwhgCg==
+      integrity: sha512-mWBjgGb7uB8dTWJNYuHPQaKur+VMxhhLc+cJ0k/EO4ul24wOm4hT8UQdveqC0mdyXyYNjngtFHD48fZaJ9hXSw==
       tarball: file:projects/issuer-irec-api-react-query-client.tgz
     version: 0.0.0
   file:projects/issuer-irec-api-wrapper.tgz_rxjs@7.4.0:
@@ -37558,7 +37569,7 @@ packages:
       barrelsby: 2.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.4
@@ -37579,7 +37590,7 @@ packages:
       rxjs: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-tXL2lJG7QRWZCmvKs6o5ryXfXAwzBAnqZT/4XCBnVNFStxVWn0xtp03VmW5LRiHoxt7eZFvdL4q00HJRQMREZg==
+      integrity: sha512-QrKkFVIxvS0zmPYPSrO7pHbDUbCeWYw7KLCnbgkDxO8bcb54D1wuMG3bNIgVwczuT2UgRsPV1AkmmedlXXoV3Q==
       tarball: file:projects/origin-backend-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-backend-utils.tgz_2a17c88284d8d688902b984a9679d264:
@@ -37730,7 +37741,7 @@ packages:
       chai: 4.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.4
@@ -37752,7 +37763,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-lyDDK3jD97BNm8GcdRbC5Uz3kK5TXS6pVqT515T4yk8v3exjQvGuO8NTZ14wi+o9yQX1jzReiIHClPajSHLO7g==
+      integrity: sha512-v/759c1KXmtrr/UqBKHI7hv+R0eniu9HFROgnGvF80+0H4DCscq/26r29wAU0bQ/wIRlZu3u3yfg2OcRW7W2PA==
       tarball: file:projects/origin-device-registry-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-device-registry-api.tgz_c49a52c967530714ad656746352089cb:
@@ -37844,7 +37855,7 @@ packages:
       barrelsby: 2.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.4
@@ -37866,7 +37877,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-tfxmw9tdMzPbJUXw22ZeNYfH+970eCgReGyLVRG6XH6WE2z2Gffmht7YaS+jjAU6Dikwl5VbINQWbnSbQjOvdQ==
+      integrity: sha512-VutPpuDFdKBazNJz8Vw/DeHWxztyAd+U5PKqh8Uy/f6kegUvoUL4lfkb9nBIo2VVlwbfbTH6qtm62/fvPJ2kmg==
       tarball: file:projects/origin-device-registry-irec-local-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-device-registry-irec-local-api.tgz_c49a52c967530714ad656746352089cb:
@@ -37961,7 +37972,7 @@ packages:
       barrelsby: 2.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       ts-node: 9.1.1_typescript@4.4.4
@@ -37983,7 +37994,7 @@ packages:
       swagger-ui-express: '*'
       typeorm: '*'
     resolution:
-      integrity: sha512-+wkcoWDPDPb9Nn1RpZT3itNS2Xlh5sqkUZQggUiFTI0xIWZw+zoDTrmS+skLMIXhiJWrLsGGUoceZlxFyxyHeA==
+      integrity: sha512-m5lXOIM2/GQUU5nk8qWsOh8faU5yYGPpdlR0DZOhSLcg0IFf4TbEn05WHgZNjmfia+gtzp44b1z5RCwDtNTCzg==
       tarball: file:projects/origin-energy-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-energy-api.tgz_fe0acc816d13ad2afe75fde956d956d3:
@@ -38072,7 +38083,7 @@ packages:
       barrelsby: 2.3.0
       json-to-pretty-yaml: 1.2.2
       mocha: 9.1.3
-      orval: 5.5.10
+      orval: 6.2.4
       prettier: 2.4.1
       react-query: 3.24.3_react-dom@17.0.2+react@17.0.2
       supertest: 6.1.6
@@ -38093,7 +38104,7 @@ packages:
       rxjs: '*'
       swagger-ui-express: '*'
     resolution:
-      integrity: sha512-OGQpmTtfefv4G8+rkaTzlRYjwzitioT8rm2aYuDeDcLYOECDAksW3XtuxNmpXyUH4sBv6w/sYpIM6glI3YCr+g==
+      integrity: sha512-hzQ/+w9hpYUSN23B7/ZIyal1QHoKeB28j3f3+a5cmYD0cOGRPYYC9NSCMDTDaCzgQi+12EB9ZHw3Tg3pkyDCeg==
       tarball: file:projects/origin-organization-irec-api-react-query-client.tgz
     version: 0.0.0
   file:projects/origin-organization-irec-api.tgz_c49a52c967530714ad656746352089cb:
@@ -38525,7 +38536,7 @@ specifiers:
   moment-timezone: 0.5.33
   multer: 1.4.3
   nodemailer: 6.7.0
-  orval: 5.5.10
+  orval: 6.2.4
   passport: 0.5.0
   passport-jwt: 4.0.0
   passport-local: 1.0.0
