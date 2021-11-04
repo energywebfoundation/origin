@@ -5,7 +5,7 @@ import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { IsBoolean, IsInt, IsString, Min } from 'class-validator';
 import { User } from '../user/user.entity';
 
-@Entity()
+@Entity('email_confirmation')
 export class EmailConfirmation extends ExtendedBaseEntity implements IEmailConfirmation {
     @PrimaryGeneratedColumn()
     id: number;
