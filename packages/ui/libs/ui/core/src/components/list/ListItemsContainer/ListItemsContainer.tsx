@@ -5,7 +5,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ListItemComponent,
   ListItemComponentProps,

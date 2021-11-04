@@ -11,7 +11,7 @@ import {
   Grid,
   Typography,
   TypographyProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { CloseButton } from '../../buttons';
 import { ModalTextContent } from '../ModalTextContent';

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import { FileUpload, GenericForm } from '@energyweb/origin-ui-core';
 import { ComposedDevice } from '@energyweb/origin-ui-device-data';
@@ -17,13 +17,8 @@ export const RequestCertificateForm: FC<RequestCertificateFormProps> = ({
   closeForm,
 }) => {
   const classes = useStyles();
-  const {
-    formProps,
-    fileUploadProps,
-    isLoading,
-    isMutating,
-    formTitle,
-  } = useRequestCertificateFormEffects(device, closeForm);
+  const { formProps, fileUploadProps, isLoading, isMutating, formTitle } =
+    useRequestCertificateFormEffects(device, closeForm);
 
   if (isLoading) {
     return null;

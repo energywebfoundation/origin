@@ -1,5 +1,5 @@
 import { formatCurrencyComplete } from '@energyweb/origin-ui-utils';
-import { Box, Slider, Typography } from '@material-ui/core';
+import { Box, Slider, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { SliderLabel } from '../SliderLabel';
 import { useBundleSliderEffects } from './BundleSlider.effects';

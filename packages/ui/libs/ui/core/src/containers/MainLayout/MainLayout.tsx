@@ -1,4 +1,4 @@
-import { BoxProps, PaperProps, SwitchProps } from '@material-ui/core';
+import { BoxProps, PaperProps, SwitchProps } from '@mui/material';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import React, { ReactNode } from 'react';
 import { FC } from 'react';

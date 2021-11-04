@@ -5,7 +5,7 @@ import {
   CardMedia,
   CardContent,
   CardContentProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FallbackIcon } from '../../icons';
 import { useStyles } from './HorizontalCard.styles';
 

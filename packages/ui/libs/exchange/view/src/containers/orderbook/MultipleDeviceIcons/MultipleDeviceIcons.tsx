@@ -1,4 +1,4 @@
-import { Box, Button, Popover, Tooltip, Typography } from '@material-ui/core';
+import { Box, Button, Popover, Tooltip, Typography } from '@mui/material';
 import React, { FC, SyntheticEvent, useState } from 'react';
 import { useStyles } from './MultipleDeviceIcons.styles';
 

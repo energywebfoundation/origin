@@ -1,5 +1,5 @@
 import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper } from '@mui/material';
 import React, { FC } from 'react';
 import { SmartMeterChart } from '../SmartMeterChart';
 import { SmartMeterTable } from '../SmartMeterTable';

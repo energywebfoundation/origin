@@ -2,7 +2,7 @@ import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { TableActionData } from '@energyweb/origin-ui-core';
 import { useApiAdminFetchUsers } from '@energyweb/origin-ui-user-data';
 import { useAdminUsersTableLogic } from '@energyweb/origin-ui-user-logic';
-import { PermIdentityOutlined } from '@material-ui/icons';
+import { PermIdentityOutlined } from '@mui/icons-material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';

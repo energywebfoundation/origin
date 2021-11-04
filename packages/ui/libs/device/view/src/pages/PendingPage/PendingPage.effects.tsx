@@ -6,7 +6,7 @@ import {
   useApiPendingDevices,
 } from '@energyweb/origin-ui-device-data';
 import { useLogicPendingDevices } from '@energyweb/origin-ui-device-logic';
-import { Check, Clear } from '@material-ui/icons';
+import { Check, Clear } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { TableActionData } from '@energyweb/origin-ui-core';
 import { DeviceDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';

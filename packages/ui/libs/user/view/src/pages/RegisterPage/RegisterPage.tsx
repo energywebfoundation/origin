@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useStyles } from './RegisterPage.styles';
-import { Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useRegisterPageEffects } from './RegisterPage.effects';
 

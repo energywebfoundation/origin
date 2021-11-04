@@ -1,12 +1,6 @@
 import React, { FC, memo } from 'react';
-import {
-  AppBar,
-  IconButton,
-  Toolbar,
-  Box,
-  SwitchProps,
-} from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
+import { AppBar, IconButton, Toolbar, Box, SwitchProps } from '@mui/material';
+import { Menu } from '@mui/icons-material';
 import clsx from 'clsx';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { ThemeSwitcher } from '../ThemeSwitcher';

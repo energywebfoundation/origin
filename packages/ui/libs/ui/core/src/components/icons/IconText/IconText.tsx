@@ -1,4 +1,4 @@
-import { Grid, GridProps, Typography } from '@material-ui/core';
+import { Grid, GridProps, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useStyles } from './IconText.styles';
 

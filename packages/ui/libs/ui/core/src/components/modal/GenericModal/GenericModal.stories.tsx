@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
 import { GenericModal, GenericModalProps } from './GenericModal';
-import { EmailOutlined } from '@material-ui/icons';
+import { EmailOutlined } from '@mui/icons-material';
 
 export default {
   title: 'Modal / GenericModal',

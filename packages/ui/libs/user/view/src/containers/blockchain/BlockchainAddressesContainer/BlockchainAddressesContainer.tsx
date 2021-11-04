@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import { UserExchangeDepositAddress } from '../UserExchangeDepositAddress';

@@ -1,15 +1,12 @@
 import React, { FC } from 'react';
-import { CircularProgress, Grid } from '@material-ui/core';
+import { CircularProgress, Grid } from '@mui/material';
 import { NoPublicDevices, PublicDeviceCard } from '../../containers';
 import { useStyles } from './AllDevicesPage.styles';
 import { useAllDevicesPageEffects } from './AllDevicesPage.effects';
 
 export const AllDevicesPage: FC = () => {
-  const {
-    allActiveDevices,
-    allDeviceTypes,
-    isLoading,
-  } = useAllDevicesPageEffects();
+  const { allActiveDevices, allDeviceTypes, isLoading } =
+    useAllDevicesPageEffects();
   const classes = useStyles();
 
   if (isLoading) {

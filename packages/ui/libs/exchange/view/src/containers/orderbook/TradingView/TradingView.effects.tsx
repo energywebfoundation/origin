@@ -6,7 +6,7 @@ import {
   useAsksTableLogic,
   useBidsTableLogic,
 } from '@energyweb/origin-ui-exchange-logic';
-import { Theme, useMediaQuery } from '@material-ui/core';
+import { Theme, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { MultipleDeviceIcons } from '../MultipleDeviceIcons';

@@ -3,7 +3,7 @@ import React, { FC, memo } from 'react';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useUpdateUserDataEffects } from './UpdateUserData.effects';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { UserResendConfirmationEmail } from '../UserResendConfirmationEmail';
 
