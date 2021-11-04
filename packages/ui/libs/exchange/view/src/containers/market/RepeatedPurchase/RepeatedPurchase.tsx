@@ -1,4 +1,4 @@
-import { Divider, InputAdornment, TextField } from '@material-ui/core';
+import { Divider, InputAdornment, TextField } from '@mui/material';
 import React, { FC } from 'react';
 import {
   FormInput,

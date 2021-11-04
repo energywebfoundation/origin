@@ -3,7 +3,7 @@ import {
   formatDate,
   PowerFormatter,
 } from '@energyweb/origin-ui-utils';
-import { Button, useTheme, Tooltip } from '@material-ui/core';
+import { Button, useTheme, Tooltip } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {

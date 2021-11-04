@@ -1,4 +1,4 @@
-import { MenuItem, TextField, TextFieldProps } from '@material-ui/core';
+import { MenuItem, TextField, TextFieldProps } from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { isEmpty } from 'lodash';

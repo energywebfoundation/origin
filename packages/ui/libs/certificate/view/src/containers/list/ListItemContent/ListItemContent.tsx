@@ -1,4 +1,4 @@
-import { Button, Typography, useTheme, useMediaQuery } from '@material-ui/core';
+import { Button, Typography, useTheme, useMediaQuery } from '@mui/material';
 import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStyles } from './ListItemContent.styles';

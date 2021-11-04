@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { TableComponent } from '@energyweb/origin-ui-core';
 import { Link } from 'react-router-dom';
-import { Fab, Tooltip } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
+import { Fab, Tooltip } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import { useAllBundlesPageEffects } from './AllBundlesPage.effects';
 import { useStyles } from './AllBundlesPage.styles';
 

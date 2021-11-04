@@ -20,7 +20,7 @@ const description =
   'Component is wrapped into `dayjs` LocalizationProvider. <br/>' +
   'Works as standalone component by providing `value` and `onChange` properties. <br/>' +
   'Can be used inside `react-hook-form` by wrapping into `<Controller />`, receiving `value` and `onChange` from its `render` prop. <br/>' +
-  'Has default styles and configuration. For more custom solution - please use original DatePicker from `@material-ui/lab`.';
+  'Has default styles and configuration. For more custom solution - please use original DatePicker from `@mui/lab`.';
 
 const fieldTypeDescription = `{
   name: keyof FormValuesType;

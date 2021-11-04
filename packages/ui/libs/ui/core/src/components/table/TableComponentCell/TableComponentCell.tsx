@@ -1,4 +1,4 @@
-import { TableCell } from '@material-ui/core';
+import { TableCell } from '@mui/material';
 import React, { FC } from 'react';
 
 interface TableComponentCellProps {

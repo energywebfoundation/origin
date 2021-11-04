@@ -1,18 +1,13 @@
 import { GenericModal } from '@energyweb/origin-ui-core';
-import { HowToReg } from '@material-ui/icons';
+import { HowToReg } from '@mui/icons-material';
 import React from 'react';
 import { useUserRegisteredEffects } from './UserRegistered.effects';
 import { useStyles } from './UserRegistered.styles';
 
 export const UserRegistered = () => {
   const classes = useStyles();
-  const {
-    open,
-    title,
-    text,
-    buttons,
-    dialogProps,
-  } = useUserRegisteredEffects();
+  const { open, title, text, buttons, dialogProps } =
+    useUserRegisteredEffects();
 
   return (
     <GenericModal

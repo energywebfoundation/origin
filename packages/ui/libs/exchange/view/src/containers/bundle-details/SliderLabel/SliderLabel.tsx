@@ -1,4 +1,4 @@
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 import React, { FC, ReactElement } from 'react';
 import { useStyles } from './SliderLabel.styles';
 

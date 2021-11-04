@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Skeleton } from '@material-ui/core';
+import { Skeleton } from '@mui/material';
 import { MyDeviceCardsList } from '../../containers';
 import { Requirements } from '@energyweb/origin-ui-core';
 import { useMyDevicePageEffects } from './MyDevicesPage.effects';

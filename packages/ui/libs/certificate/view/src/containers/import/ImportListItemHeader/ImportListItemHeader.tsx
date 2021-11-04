@@ -1,5 +1,5 @@
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useImportListItemHeaderEffects } from './ImportListItemHeader.effects';

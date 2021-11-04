@@ -4,7 +4,7 @@ import {
   FormInputField,
   FormSelectProps,
 } from '@energyweb/origin-ui-core';
-import { ButtonProps } from '@material-ui/core';
+import { ButtonProps } from '@mui/material';
 import { Dayjs } from 'dayjs';
 import * as yup from 'yup';
 
@@ -16,9 +16,7 @@ type DemandFormValues = {
   price: number;
 };
 
-export type TUseRepeatedPurchaseFormLogic = (
-  mobileView: boolean
-) => {
+export type TUseRepeatedPurchaseFormLogic = (mobileView: boolean) => {
   initialValues: DemandFormValues;
   validationSchema: yup.AnyObjectSchema;
   fields: {

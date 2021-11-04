@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, IconButton } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { Box, IconButton } from '@mui/material';
+import { Close } from '@mui/icons-material';
 import { FC } from 'react';
 import { useStyles } from './CloseButton.styles';
 
