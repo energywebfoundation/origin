@@ -1,6 +1,6 @@
 # Map View
 
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/map 
+**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/map](https://origin-ui-canary.herokuapp.com/device/map)
 
 ![Map View](../images/deviceMgmtImages/Map.png)
 

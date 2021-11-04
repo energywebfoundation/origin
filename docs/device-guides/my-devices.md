@@ -10,7 +10,7 @@ Click on **“View Details”** to view device details:
 
 **Click anywhere else on the device card to request certificates for the device**.
 
-## Requesting Certification for Device
+## Request Certification for Device
 Once your device has been registered and approved, you can certify produced electricity for a given period of time with the I-REC Standard and request issuance of corresponding I-RECs.   
 
 Users can request the issuance of certificates for a specific generation device within a specific time frame. They must provide the issuer with generation evidence from the device at the defined time. Based on this evidence, the energy volume can be determined and thereby the number of certificates (e.g. each 1 MWh) that is requested. A specific address can be defined to issue the certificates to. The default is the address that called the function.
@@ -43,4 +43,4 @@ The issuing body will be automatically notified about your request.
 
 ## Accessing Your Certificates
 
-Once a certificate has been approved by the issuing body, it will be deposited into your [Exchange Inbox](./user-guide-exchange.md#exchange-inbox), at which point it can be posted for sale on the exchange. Read more about this [here](./certificate-guides/exchange-inbox.md). 
+Once a certificate has been approved by the issuing body, it will be deposited into your Exchange Inbox, at which point it can be posted for sale on the exchange. Read more about this [here](../certificate-guides/exchange-inbox.md). 

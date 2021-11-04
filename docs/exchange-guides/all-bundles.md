@@ -1,7 +1,7 @@
-# All Bundles
+#    
 **Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/all-bundles]( https://origin-ui-canary.herokuapp.com/exchange/all-bundles) 
 
-![Exchange-allbundles](../images/exchange/exchange-allbundles)
+![Exchange-allbundles](../images/exchange/exchange-allbundles.png)
 
 The ‘All Bundles’ interface allows users to see all [bundles](../user-guide-glossary.md#certificate-bundle) that are currently posted. **Posted bundles do not appear on the [Market](./view-market.md#market) interface for purchase. The buyer must explicitly select and buy the bundle using the “All Bundles” interface.** The reason for this is mainly the complexity and number of possible EAC combinations. As bundle ratios are defined by the seller through selecting EACs, they can be completely arbitrary (e.g. 23% solar, 36% hydro, 41% wind). With the low number of expected offered bundles, automated matching would not provide a good user experience. A buyer would have to specify the exact ratios for the exchange matching to work. Instead, buyers can manually search through offered bundles and find the ones that fit their requirements.
 

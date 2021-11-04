@@ -199,9 +199,7 @@ export class Certificate implements ICertificate {
 
         const { registry } = this.blockchainProperties;
 
-        const issuanceTransaction = this.creationTransactionHash
-            ? await registry.provider.getTransactionReceipt(this.creationTransactionHash)
-            : await this.getIssuanceTransaction();
+        const issuanceTransaction = await this.getIssuanceTransaction();
 
         const certOnChain = await registry.getCertificate(this.id);
 
@@ -218,8 +216,16 @@ export class Certificate implements ICertificate {
         this.creationTime = Number(creationBlock.timestamp);
         this.creationTransactionHash = issuanceTransaction.transactionHash;
 
-        this.owners = await calculateOwnership(this.id, this.blockchainProperties);
-        this.claimers = await calculateClaims(this.id, this.blockchainProperties);
+        this.owners = await calculateOwnership(
+            this.id,
+            this.blockchainProperties,
+            issuanceTransaction.blockNumber
+        );
+        this.claimers = await calculateClaims(
+            this.id,
+            this.blockchainProperties,
+            issuanceTransaction.blockNumber
+        );
 
         this.initialized = true;
 
@@ -299,9 +305,12 @@ export class Certificate implements ICertificate {
     async isRevoked(): Promise<boolean> {
         const { issuer } = this.blockchainProperties;
 
+        const issuanceTransaction = await this.getIssuanceTransaction();
+
         const revokedEvents = await getEventsFromContract(
             issuer,
-            issuer.filters.CertificateRevoked(this.id)
+            issuer.filters.CertificateRevoked(this.id),
+            issuanceTransaction.blockNumber
         );
 
         return revokedEvents.length > 0;
@@ -310,11 +319,14 @@ export class Certificate implements ICertificate {
     async getClaimedData(): Promise<IClaim[]> {
         const { registry } = this.blockchainProperties;
 
+        const issuanceTransaction = await this.getIssuanceTransaction();
+
         const claims: IClaim[] = [];
 
         const claimSingleEvents = await getEventsFromContract(
             registry,
-            registry.filters.ClaimSingle(null, null, null, null, null, null)
+            registry.filters.ClaimSingle(null, null, null, null, null, null),
+            issuanceTransaction.blockNumber
         );
 
         for (const claimEvent of claimSingleEvents) {
@@ -335,7 +347,8 @@ export class Certificate implements ICertificate {
 
         const claimBatchEvents = await getEventsFromContract(
             registry,
-            registry.filters.ClaimBatch(null, null, null, null, null, null)
+            registry.filters.ClaimBatch(null, null, null, null, null, null),
+            issuanceTransaction.blockNumber
         );
 
         for (const claimBatchEvent of claimBatchEvents) {
@@ -362,7 +375,8 @@ export class Certificate implements ICertificate {
 
         const claimBatchMultipleEvents = await getEventsFromContract(
             registry,
-            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null)
+            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null),
+            issuanceTransaction.blockNumber
         );
 
         for (const claimBatchMultipleEvent of claimBatchMultipleEvents) {
@@ -393,6 +407,10 @@ export class Certificate implements ICertificate {
 
     private async getIssuanceTransaction(): Promise<providers.TransactionReceipt> {
         const { registry } = this.blockchainProperties;
+
+        if (this.creationTransactionHash) {
+            return await registry.provider.getTransactionReceipt(this.creationTransactionHash);
+        }
 
         const allIssuanceLogs = await getEventsFromContract(
             registry,
