@@ -6,7 +6,7 @@ import {
   Marker,
   InfoWindow,
 } from '@react-google-maps/api';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { useGenericMapEffects } from './GenericMap.effects';
 import { useStyles } from './GenericMap.styles';
 

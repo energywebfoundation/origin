@@ -25,6 +25,6 @@
   "dependencies": {
     "i18next": "21.3.3",
     "i18next-icu": "1.4.2",
-    "react-i18next": "11.12.0"
+    "react-i18next": "11.13.0"
   }
 }

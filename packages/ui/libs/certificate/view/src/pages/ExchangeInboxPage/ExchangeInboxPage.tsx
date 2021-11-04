@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ItemsListWithActions, Requirements } from '@energyweb/origin-ui-core';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography } from '@mui/material';
 import { useExchangeInboxPageEffects } from './ExchangeInboxPage.effects';
 
 export const ExchangeInboxPage: FC = () => {

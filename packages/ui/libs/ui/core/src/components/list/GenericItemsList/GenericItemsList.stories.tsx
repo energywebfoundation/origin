@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Meta } from '@storybook/react';
 import { GenericItemsList, GenericItemsListProps } from './GenericItemsList';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 export default {
   title: 'List / GenericItemsList',

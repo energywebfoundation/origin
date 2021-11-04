@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ListActionsBlock } from '@energyweb/origin-ui-core';
-import { Box, Paper, Typography } from '@material-ui/core';
+import { Box, Paper, Typography } from '@mui/material';
 import { MarketFilters } from '../../containers';
 import { useViewMarketPageEffects } from './ViewMarketPage.effects';
 import { useStyles } from './ViewMarketPage.styles';

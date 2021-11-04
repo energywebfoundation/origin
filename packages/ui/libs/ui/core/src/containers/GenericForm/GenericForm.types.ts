@@ -6,7 +6,7 @@ import {
   BoxProps,
   ButtonProps,
   TypographyVariant,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   DeepPartial,
   Path,
@@ -14,7 +14,7 @@ import {
   UseFormReset,
   ValidationMode,
 } from 'react-hook-form';
-import { DatePickerProps } from '@material-ui/lab';
+import { DatePickerProps } from '@mui/lab';
 
 export type GenericFormField<FormValuesType> = {
   name: keyof FormValuesType;

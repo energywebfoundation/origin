@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { Check } from '@material-ui/icons';
+import { Check } from '@mui/icons-material';
 import { IconLink, IconLinkProps } from './IconLink';
 
 export default {

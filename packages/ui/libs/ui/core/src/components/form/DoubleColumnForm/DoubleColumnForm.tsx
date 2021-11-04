@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { SingleColumnForm, SingleColumnFormProps } from '../SingleColumnForm';
 import { useDoubleColumnFormEffects } from './DoubleColumnForm.effects';

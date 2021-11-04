@@ -5,7 +5,7 @@ import {
   SpecField,
   SpecFieldProps,
 } from '@energyweb/origin-ui-core';
-import { Box, Button, Card, CardContent } from '@material-ui/core';
+import { Box, Button, Card, CardContent } from '@mui/material';
 import React, { FC } from 'react';
 import { useDeviceDetailCardEffects } from './DeviceDetailCard.effects';
 import { useStyles } from './DeviceDetailCard.styles';
@@ -21,9 +21,8 @@ export const DeviceDetailCard: FC<DeviceDetailCardProps> = ({
   specFields,
   deviceId,
 }) => {
-  const { viewDeviceText, handleViewDevice } = useDeviceDetailCardEffects(
-    deviceId
-  );
+  const { viewDeviceText, handleViewDevice } =
+    useDeviceDetailCardEffects(deviceId);
   const classes = useStyles();
 
   return (

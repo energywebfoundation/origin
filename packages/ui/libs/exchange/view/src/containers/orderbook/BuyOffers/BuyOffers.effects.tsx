@@ -4,7 +4,7 @@ import {
   useCachedUser,
 } from '@energyweb/origin-ui-exchange-data';
 import { useBuyOffersTableLogic } from '@energyweb/origin-ui-exchange-logic';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery, useTheme } from '@mui/material';
 import React from 'react';
 import { MultipleDeviceIcons } from '../MultipleDeviceIcons';
 import { useStyles } from './BuyOffers.styles';

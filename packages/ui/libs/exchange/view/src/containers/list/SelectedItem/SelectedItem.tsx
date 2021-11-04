@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren, ReactElement } from 'react';
-import { Button, IconButton, TextField, Typography } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
+import { Button, IconButton, TextField, Typography } from '@mui/material';
+import { Edit } from '@mui/icons-material';
 import { useStyles } from './SelectedItem.styles';
 import { useSelectedItemEffects } from './SelectedItem.effects';
 
