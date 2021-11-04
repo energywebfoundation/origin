@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { GenericCardsListProps, GenericCardsList } from '../../components';
 import { useCardsListBlockEffects } from './CardsListBlock.effects';
 
@@ -36,12 +36,8 @@ export const CardsListBlock: TCardsListBlock = ({
   selectAllCheckboxProps,
   dragNdrop,
 }) => {
-  const {
-    checkedIds,
-    handleCheck,
-    allChecked,
-    handleAllCheck,
-  } = useCardsListBlockEffects(allItems);
+  const { checkedIds, handleCheck, allChecked, handleAllCheck } =
+    useCardsListBlockEffects(allItems);
   return (
     <Grid container>
       <Grid item>

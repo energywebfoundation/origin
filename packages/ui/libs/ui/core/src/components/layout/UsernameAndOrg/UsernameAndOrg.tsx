@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@material-ui/core';
+import { Box, BoxProps } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { TextWithPendingDot } from '../../text';
 import { useStyles } from './UsernameAndOrg.styles';

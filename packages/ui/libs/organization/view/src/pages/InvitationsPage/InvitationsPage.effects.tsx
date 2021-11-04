@@ -9,7 +9,7 @@ import {
   useReceivedInvitationsTableLogic,
   useSentInvitationsTableLogic,
 } from '@energyweb/origin-ui-organization-logic';
-import { Check, Clear } from '@material-ui/icons';
+import { Check, Clear } from '@mui/icons-material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {

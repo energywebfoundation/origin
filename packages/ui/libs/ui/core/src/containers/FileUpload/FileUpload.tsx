@@ -1,4 +1,4 @@
-import { Box, Typography, TypographyProps } from '@material-ui/core';
+import { Box, Typography, TypographyProps } from '@mui/material';
 import React, { FC } from 'react';
 import { UploadChip } from '../../components/file';
 import {
@@ -27,13 +27,8 @@ export const FileUpload: FC<FileUploadProps> = ({
   wrapperProps,
   dropzoneClassName,
 }) => {
-  const {
-    getRootProps,
-    getInputProps,
-    files,
-    state,
-    dispatch,
-  } = useFileUploadEffects({ apiUploadFunction, onChange });
+  const { getRootProps, getInputProps, files, state, dispatch } =
+    useFileUploadEffects({ apiUploadFunction, onChange });
   const classes = useStyles();
   const dropzoneClasses = `${classes.dropzone} ${dropzoneClassName}`;
 

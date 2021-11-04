@@ -1,4 +1,4 @@
-import { Box, BoxProps, PaperProps } from '@material-ui/core';
+import { Box, BoxProps, PaperProps } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { UsernameAndOrgProps } from '../../layout';
 import { DesktopNav } from '../DesktopNav';

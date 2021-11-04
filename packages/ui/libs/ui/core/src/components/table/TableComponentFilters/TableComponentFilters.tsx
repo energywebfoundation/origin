@@ -7,8 +7,8 @@ import {
   Grid,
   useTheme,
   useMediaQuery,
-} from '@material-ui/core';
-import { FilterList } from '@material-ui/icons';
+} from '@mui/material';
+import { FilterList } from '@mui/icons-material';
 import { useStyles } from './TableComponentFilters.styles';
 import { CloseButton } from '../../buttons';
 import { TableFilter } from '../../../containers/TableComponent';

@@ -1,5 +1,5 @@
 import { GenericMap } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import React, { FC } from 'react';
 import { ItemHighlightedContent } from '../../containers';
 import { useMapViewPageEffects } from './MapViewPage.effects';

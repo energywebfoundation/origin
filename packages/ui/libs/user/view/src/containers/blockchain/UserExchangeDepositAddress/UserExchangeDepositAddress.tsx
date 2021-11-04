@@ -5,11 +5,11 @@ import {
   Grid,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
 import { useStyles } from './UserExchangeDepositAddress.styles';
 import { useUserExchangeDepositAddressEffects } from './UserExchangeDepositAddress.effects';
-import { Info } from '@material-ui/icons';
+import { Info } from '@mui/icons-material';
 
 export const UserExchangeDepositAddress: FC = () => {
   const classes = useStyles();

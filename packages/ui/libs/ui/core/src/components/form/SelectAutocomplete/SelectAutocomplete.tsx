@@ -1,10 +1,5 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import {
-  TextField,
-  Autocomplete,
-  Chip,
-  TextFieldProps,
-} from '@material-ui/core';
+import { TextField, Autocomplete, Chip, TextFieldProps } from '@mui/material';
 import { useSelectAutocompleteEffects } from './SelectAutocomplete.effects';
 import { useStyles } from './SelectAutocomplete.styles';
 import { FormSelectOption } from '../FormSelect';

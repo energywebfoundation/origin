@@ -4,8 +4,8 @@ import {
   SpeedDialAction,
   SpeedDialIcon,
   TableCell,
-} from '@material-ui/core';
-import { MoreHoriz } from '@material-ui/icons';
+} from '@mui/material';
+import { MoreHoriz } from '@mui/icons-material';
 import React, { PropsWithChildren, ReactElement, SyntheticEvent } from 'react';
 import { TableActionData } from '../../../containers';
 import { useStyles } from './TableComponentActions.styles';

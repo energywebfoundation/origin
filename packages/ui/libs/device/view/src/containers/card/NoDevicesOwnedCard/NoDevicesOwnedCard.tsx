@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Typography, Button, Box } from '@material-ui/core';
+import { Paper, Typography, Button, Box } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { useStyles } from './NoDevicesOwnedCard.styles';
 import { useTranslation } from 'react-i18next';

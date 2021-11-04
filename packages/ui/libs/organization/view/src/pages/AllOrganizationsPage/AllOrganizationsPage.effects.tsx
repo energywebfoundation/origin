@@ -5,7 +5,7 @@ import {
   useOrgApproveHandler,
 } from '@energyweb/origin-ui-organization-data';
 import { useAllOrganizationsTableLogic } from '@energyweb/origin-ui-organization-logic';
-import { Check } from '@material-ui/icons';
+import { Check } from '@mui/icons-material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

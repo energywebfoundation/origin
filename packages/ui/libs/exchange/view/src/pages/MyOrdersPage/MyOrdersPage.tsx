@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress } from '@material-ui/core';
+import { Box, CircularProgress } from '@mui/material';
 import { Requirements } from '@energyweb/origin-ui-core';
 import { DemandsTable, BidsTable, AsksTable } from '../../containers';
 import { useMyOrdersPageEffects } from './MyOrdersPage.effects';

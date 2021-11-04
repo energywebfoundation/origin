@@ -1,5 +1,5 @@
-import { Typography } from '@material-ui/core';
-import { TypographyProps } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import { TypographyProps } from '@mui/material';
 import React, { FC } from 'react';
 import { GenericModalProps } from '../GenericModal';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
 import { ListActionsBlock, ListActionsBlockProps } from './ListActionsBlock';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 export default {
   title: 'List / ListActionsBlock',

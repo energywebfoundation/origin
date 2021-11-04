@@ -1,5 +1,5 @@
 import { FormInputField } from '@energyweb/origin-ui-core';
-import { ButtonProps, TextFieldProps } from '@material-ui/core';
+import { ButtonProps, TextFieldProps } from '@mui/material';
 import * as yup from 'yup';
 
 type BidFormValues = {
@@ -7,9 +7,7 @@ type BidFormValues = {
   price: number;
 };
 
-export type TUseOneTimePurchaseFormLogic = (
-  mobileView: boolean
-) => {
+export type TUseOneTimePurchaseFormLogic = (mobileView: boolean) => {
   initialValues: BidFormValues;
   validationSchema: yup.AnyObjectSchema;
   fields: {

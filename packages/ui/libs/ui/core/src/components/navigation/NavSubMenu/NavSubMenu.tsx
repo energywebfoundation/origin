@@ -1,4 +1,4 @@
-import { Collapse, List } from '@material-ui/core';
+import { Collapse, List } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MenuItem } from '../MenuItem';

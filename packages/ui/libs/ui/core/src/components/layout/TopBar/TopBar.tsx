@@ -1,4 +1,4 @@
-import { Box, SwitchProps } from '@material-ui/core';
+import { Box, SwitchProps } from '@mui/material';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import React, { FC } from 'react';
 import { DesktopTopBar } from '../DesktopTopBar';

@@ -1,6 +1,6 @@
 import { IconText, IconTextProps } from '@energyweb/origin-ui-core';
 import { ComposedDevice } from '@energyweb/origin-ui-device-data';
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 import React, { FC } from 'react';
 import { useStyles } from './MyDeviceCardContent.styles';
 

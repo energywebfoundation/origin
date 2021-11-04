@@ -3,7 +3,7 @@ import {
   GenericFormSecondaryButton,
 } from '@energyweb/origin-ui-core';
 import { DocsUploadFormValues } from '@energyweb/origin-ui-organization-logic';
-import { Box, Button, CircularProgress, Divider } from '@material-ui/core';
+import { Box, Button, CircularProgress, Divider } from '@mui/material';
 import React, { FC } from 'react';
 import { UnpackNestedValue } from 'react-hook-form';
 import { useRegisterOrgDocsEffects } from './RegisterOrgDocs.effects';

@@ -7,7 +7,7 @@ import {
   useCachedAllDevices,
 } from '@energyweb/origin-ui-exchange-data';
 import { formatDate } from '@energyweb/origin-ui-utils';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { BundleDevices } from '../BundleDevices';
 import { SplitContents } from '../SplitContents';
