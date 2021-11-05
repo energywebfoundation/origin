@@ -1,5 +1,6 @@
 import { useConnectMetamaskBlockchainInboxLogic } from '@energyweb/origin-ui-certificate-logic';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import { useCertificateAppEnv } from '../../../context';
 
 export const useConnectMetamaskPlaceHolderEffects = () => {

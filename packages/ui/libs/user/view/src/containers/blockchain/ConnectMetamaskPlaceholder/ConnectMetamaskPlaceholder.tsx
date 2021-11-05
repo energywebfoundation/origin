@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box, Typography } from '@material-ui/core';
+import { Button, Box, Typography } from '@mui/material';
 import { useConnectMetamaskPlaceHolderEffects } from './ConnectMetamaskPlaceholder.effects';
 
 export const ConnectMetamaskPlaceholder = () => {

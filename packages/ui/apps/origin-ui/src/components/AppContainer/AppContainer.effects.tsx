@@ -65,20 +65,24 @@ export const useAppContainerEffects = () => {
     isExchangeTabActive,
     isCertificateTabActive,
   } = useActiveMenuTab();
+
   const { data: userInvitations, isLoading: areInvitationsLoading } =
     useInvitationControllerGetInvitations({
       query: { enabled: isAuthenticated },
-    });
-  const { data: iRecConnection, isLoading: isIRecOrgLoading } =
-    useConnectionControllerGetMyConnection({
-      query: {
-        enabled: isAuthenticated && Boolean(user?.organization?.id),
-      },
     });
   const { data: iRecRegistrations, isLoading: isIRecRegistrationsLoading } =
     useRegistrationControllerGetRegistrations({
       query: {
         enabled: isAuthenticated && Boolean(user?.organization?.id),
+      },
+    });
+  const { data: iRecConnection, isLoading: isIRecOrgLoading } =
+    useConnectionControllerGetMyConnection({
+      query: {
+        enabled:
+          isAuthenticated &&
+          Boolean(user?.organization?.id) &&
+          iRecRegistrations?.length > 0,
       },
     });
 

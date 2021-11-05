@@ -1,6 +1,7 @@
 import React, { FC, memo, Suspense, lazy } from 'react';
 import { CircularProgress } from '@mui/material';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import {
   MainLayout,
   PageNotFound,

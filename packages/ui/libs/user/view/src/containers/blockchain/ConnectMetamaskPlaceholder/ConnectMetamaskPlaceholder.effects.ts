@@ -1,5 +1,6 @@
 import { useConnectMetamaskPlaceholderLogic } from '@energyweb/origin-ui-user-logic';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import { useUserAppEnv } from '../../../context';
 
 export const useConnectMetamaskPlaceHolderEffects = () => {

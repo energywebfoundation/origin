@@ -14,7 +14,8 @@ export const MyDeviceCardContent: FC<MyDeviceCardContentProps> = ({
   iconsProps,
 }) => {
   const classes = useStyles();
-  const theme = useTheme();
+  // to ignore build errors
+  const theme: any = useTheme();
 
   return (
     <div className={classes.contentWrapper}>

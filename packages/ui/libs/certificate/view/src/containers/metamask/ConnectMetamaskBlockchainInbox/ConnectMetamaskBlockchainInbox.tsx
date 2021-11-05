@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box, Typography, Paper } from '@material-ui/core';
+import { Button, Box, Typography, Paper } from '@mui/material';
 import { useConnectMetamaskPlaceHolderEffects } from './ConnectMetamaskBlockchainInbox.effects';
 import { useStyles } from './ConnectMetamaskBlockchainInbox.styles';
 

@@ -978,7 +978,7 @@
     },
     "ui-web3": {
       "root": "libs/ui/web3",
-      "sourceRoot": "libs/ui/web3/src",
+      "sourceRoot": "libs/ui/web3",
       "projectType": "library",
       "targets": {
         "build": {
@@ -991,7 +991,7 @@
             "entryFile": "libs/ui/web3/src/index.ts",
             "external": ["react/jsx-runtime", "@emotion/styled/base"],
             "rollupConfig": "rollup.config.js",
-            "assets": ["libs/ui/web3/README.md"]
+            "assets": ["libs/ui/web3/LICENSE.md", "libs/ui/web3/README.md"]
           }
         },
         "lint": {

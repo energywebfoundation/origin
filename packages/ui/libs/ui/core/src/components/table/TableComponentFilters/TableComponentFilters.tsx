@@ -5,9 +5,9 @@ import {
   Typography,
   Paper,
   Grid,
-  useTheme,
   useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import { FilterList } from '@mui/icons-material';
 import { useStyles } from './TableComponentFilters.styles';
 import { CloseButton } from '../../buttons';

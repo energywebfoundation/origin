@@ -1,4 +1,5 @@
-import { Button, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { Button, Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStyles } from './ListItemContent.styles';
@@ -28,6 +29,7 @@ export const ListItemContent: TListItemContent = ({
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+
   const theme = useTheme();
   const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
 
