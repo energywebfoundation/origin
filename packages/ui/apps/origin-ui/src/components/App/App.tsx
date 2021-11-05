@@ -1,4 +1,6 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, Suspense, lazy } from 'react';
+import { CircularProgress } from '@mui/material';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import {
   MainLayout,
   PageNotFound,
@@ -10,25 +12,22 @@ import {
   useThemeModeDispatch,
   useThemeModeStore,
 } from '@energyweb/origin-ui-theme';
-import { Routes, Route, Navigate } from 'react-router-dom';
 import { initializeI18N } from '@energyweb/origin-ui-localization';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
-import {
-  AuthApp,
-  AdminApp,
-  AccountApp,
-  ConfirmEmailApp,
-  LoginApp,
-} from '@energyweb/origin-ui-user-view';
-import { OrganizationApp } from '@energyweb/origin-ui-organization-view';
-import { DeviceApp } from '@energyweb/origin-ui-device-view';
-import { CertificateApp } from '@energyweb/origin-ui-certificate-view';
-import { ExchangeApp } from '@energyweb/origin-ui-exchange-view';
 import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { RoutesConfig } from '../AppContainer';
 import { useStyles } from './App.styles';
-import { CircularProgress } from '@mui/material';
+
+const DeviceApp = lazy(() => import('../../routes/Device'));
+const CertificateApp = lazy(() => import('../../routes/Certificate'));
+const ExchangeApp = lazy(() => import('../../routes/Exchange'));
+const OrganizationApp = lazy(() => import('../../routes/Organization'));
+const AccountApp = lazy(() => import('../../routes/Account'));
+const AdminApp = lazy(() => import('../../routes/Admin'));
+const AuthApp = lazy(() => import('../../routes/Auth'));
+const LoginApp = lazy(() => import('../../routes/Login'));
+const ConfirmEmailApp = lazy(() => import('../../routes/ConfirmEmail'));
 
 export interface AppProps {
   isAuthenticated: boolean;
@@ -64,6 +63,10 @@ export const App: FC<AppProps> = memo(
     const isLightTheme = themeMode === ThemeModeEnum.Light;
     const changeThemeMode = useThemeModeDispatch();
 
+    // No routes matched locatation "**/*"
+    // Ignore for now until warning is resolved:
+    // https://github.com/remix-run/react-router/issues/8095
+
     return (
       <Routes>
         <Route
@@ -92,65 +95,101 @@ export const App: FC<AppProps> = memo(
               <Route
                 path="device/*"
                 element={
-                  <DeviceApp
-                    routesConfig={deviceRoutes}
-                    envVariables={{
-                      googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
-                      smartMeterId: process.env.NX_SMART_METER_ID,
-                    }}
-                  />
+                  <Suspense fallback={<CircularProgress />}>
+                    <DeviceApp
+                      routesConfig={deviceRoutes}
+                      envVariables={{
+                        googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
+                        smartMeterId: process.env.NX_SMART_METER_ID,
+                      }}
+                    />
+                  </Suspense>
                 }
               />
               <Route
                 path="exchange/*"
-                element={<ExchangeApp routesConfig={exchangeRoutes} />}
+                element={
+                  <Suspense fallback={<CircularProgress />}>
+                    <ExchangeApp routesConfig={exchangeRoutes} />
+                  </Suspense>
+                }
               />
               <Route
                 path="certificate/*"
                 element={
-                  <CertificateApp
-                    routesConfig={certificateRoutes}
-                    envVariables={{
-                      googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
-                      exchangeWalletPublicKey:
-                        process.env.NX_EXCHANGE_WALLET_PUB,
-                    }}
-                  />
+                  <Suspense fallback={<CircularProgress />}>
+                    <CertificateApp
+                      routesConfig={certificateRoutes}
+                      envVariables={{
+                        googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
+                        exchangeWalletPublicKey:
+                          process.env.NX_EXCHANGE_WALLET_PUB,
+                      }}
+                    />
+                  </Suspense>
                 }
               />
               <Route
                 path="organization/*"
-                element={<OrganizationApp routesConfig={orgRoutes} />}
+                element={
+                  <Suspense fallback={<CircularProgress />}>
+                    <OrganizationApp routesConfig={orgRoutes} />
+                  </Suspense>
+                }
               />
               <Route
                 path="account/*"
                 element={
-                  <AccountApp
-                    routesConfig={accountRoutes}
-                    envVariables={{
-                      registrationMessage:
-                        process.env.NX_REGISTRATION_MESSAGE_TO_SIGN,
-                    }}
-                  />
+                  <Suspense fallback={<CircularProgress />}>
+                    <AccountApp
+                      routesConfig={accountRoutes}
+                      envVariables={{
+                        registrationMessage:
+                          process.env.NX_REGISTRATION_MESSAGE_TO_SIGN,
+                      }}
+                    />
+                  </Suspense>
                 }
               />
               <Route
                 path="admin/*"
-                element={<AdminApp routesConfig={adminRoutes} />}
+                element={
+                  <Suspense fallback={<CircularProgress />}>
+                    <AdminApp routesConfig={adminRoutes} />
+                  </Suspense>
+                }
               />
               <Route
                 path="auth/*"
                 element={
-                  <AuthApp routesConfig={{ showRegister: !isAuthenticated }} />
+                  <Suspense fallback={<CircularProgress />}>
+                    <AuthApp
+                      routesConfig={{ showRegister: !isAuthenticated }}
+                    />
+                  </Suspense>
                 }
               />
 
-              <Route element={<Navigate to="device/all" />} />
+              <Route path="/" element={<Navigate to="device/all" />} />
             </>
           )}
         </Route>
-        <Route path="/login" element={<LoginApp />} />
-        <Route path="/confirm-email" element={<ConfirmEmailApp />} />
+        <Route
+          path="/login"
+          element={
+            <Suspense fallback={<CircularProgress />}>
+              <LoginApp />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/confirm-email"
+          element={
+            <Suspense fallback={<CircularProgress />}>
+              <ConfirmEmailApp />
+            </Suspense>
+          }
+        />
         {!loading && <Route path="*" element={<PageNotFound />} />}
       </Routes>
     );
