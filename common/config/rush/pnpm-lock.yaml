@@ -145,6 +145,7 @@ dependencies:
   bcryptjs: 2.4.3
   bn.js: 5.2.0
   body-parser: 1.19.0
+  buffer: 6.0.3
   chai: 4.3.0
   chart.js: 3.6.0
   class-sanitizer: 1.0.1
@@ -154,6 +155,7 @@ dependencies:
   commander: 6.2.1
   core-js: 3.19.0
   cors: 2.8.5
+  crypto-browserify: 3.12.0
   cypress: 7.3.0
   dayjs: 1.10.7
   dotenv: 10.0.0
@@ -194,6 +196,7 @@ dependencies:
   multer: 1.4.3
   nodemailer: 6.7.0
   orval: 6.2.4
+  os-browserify: 0.3.0
   passport: 0.5.0
   passport-jwt: 4.0.0
   passport-local: 1.0.0
@@ -224,6 +227,7 @@ dependencies:
   solc-0.8: /solc/0.8.4
   solidity-docgen: 0.5.16
   storybook-dark-mode: 1.0.8_4c91c1d57a4f12a3f24f0c14aaa4e1ca
+  stream-browserify: 3.0.0
   superagent-use: 0.1.0
   supertest: 6.1.6
   supertest-capture-error: 1.0.0
@@ -33116,6 +33120,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-nX6hmklHs/gr2FuxYDltq8fJA1GDlxKQCz8O/IM4atRqBH8OORmBNgfvW5gG10GT/qQ9u0CzIvr2X5Pkt6ntqg==
+  /stream-browserify/3.0.0:
+    dependencies:
+      inherits: 2.0.4
+      readable-stream: 3.6.0
+    dev: false
+    resolution:
+      integrity: sha512-H73RAHsVBapbim0tU2JwwOiXUj+fikfiaoYAKHF3VJfA0pe2BCzkhAHBlLG6REzE+2WNZcxOXjK7lkso+9euLA==
   /stream-each/1.2.3:
     dependencies:
       end-of-stream: 1.4.4
@@ -39937,9 +39948,11 @@ packages:
       babel-jest: 27.3.1_@babel+core@7.16.0
       babel-loader: 8.2.3_27ba53a5d4d1393445550229adea0ad0
       babel-plugin-styled-components: 1.13.3
+      buffer: 6.0.3
       chart.js: 3.6.0
       clsx: 1.1.1
       core-js: 3.19.0
+      crypto-browserify: 3.12.0
       cypress: 7.3.0
       dayjs: 1.10.7
       emotion-theming: 11.0.0
@@ -39960,6 +39973,7 @@ packages:
       jest-fetch-mock: 3.0.3
       jest-localstorage-mock: 2.4.18
       lodash: 4.17.21
+      os-browserify: 0.3.0
       prettier: 2.4.1
       react: 17.0.2
       react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
@@ -39977,6 +39991,7 @@ packages:
       react-use: 17.3.1_react-dom@17.0.2+react@17.0.2
       regenerator-runtime: 0.13.9
       storybook-dark-mode: 1.0.8_4c91c1d57a4f12a3f24f0c14aaa4e1ca
+      stream-browserify: 3.0.0
       test-react-hooks: 3.0.4_react@17.0.2
       ts-jest: 27.0.7_e434e3e164214785864136607a30c33e
       ts-node: 9.1.1_typescript@4.4.4
@@ -39994,7 +40009,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-OlRgxeuMkxyZ2F8D7/3vA4mIpkmGmAUF93GGKVbwnzjpwI24nBTBCSwZPoPe23WzXzr0RsnUcSK+ic4XysdoVw==
+      integrity: sha512-YhHd6Q9f5odz11+G5JX0DCS5uU0I1xs83Kttf43QJghnZCoQaLj2VPpTYla98syD9gX/6X+H2C20vdkG/qxOLg==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -40218,6 +40233,7 @@ specifiers:
   bcryptjs: 2.4.3
   bn.js: 5.2.0
   body-parser: 1.19.0
+  buffer: 6.0.3
   chai: 4.3.0
   chart.js: 3.6.0
   class-sanitizer: 1.0.1
@@ -40227,6 +40243,7 @@ specifiers:
   commander: 6.2.1
   core-js: 3.19.0
   cors: 2.8.5
+  crypto-browserify: 3.12.0
   cypress: 7.3.0
   dayjs: 1.10.7
   dotenv: 10.0.0
@@ -40267,6 +40284,7 @@ specifiers:
   multer: 1.4.3
   nodemailer: 6.7.0
   orval: 6.2.4
+  os-browserify: 0.3.0
   passport: 0.5.0
   passport-jwt: 4.0.0
   passport-local: 1.0.0
@@ -40297,6 +40315,7 @@ specifiers:
   solc-0.8: npm:solc@0.8.4
   solidity-docgen: 0.5.16
   storybook-dark-mode: 1.0.8
+  stream-browserify: 3.0.0
   superagent-use: 0.1.0
   supertest: 6.1.6
   supertest-capture-error: 1.0.0
