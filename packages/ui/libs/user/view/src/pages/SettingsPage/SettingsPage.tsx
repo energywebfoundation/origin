@@ -71,3 +71,5 @@ export const SettingsPage: FC = () => {
     </Paper>
   );
 };
+
+export default SettingsPage;

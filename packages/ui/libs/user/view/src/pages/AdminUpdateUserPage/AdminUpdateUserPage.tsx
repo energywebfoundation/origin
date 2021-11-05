@@ -18,3 +18,5 @@ export const AdminUpdateUserPage = () => {
     </Paper>
   );
 };
+
+export default AdminUpdateUserPage;
