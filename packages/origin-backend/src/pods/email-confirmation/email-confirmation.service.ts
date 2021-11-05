@@ -24,7 +24,10 @@ export class EmailConfirmationService {
     ) {}
 
     public async create(user: User): Promise<EmailConfirmation> {
-        const exists = await this.repository.findOne({ user: { email: user.email } });
+        const exists = await this.repository.findOne({
+            relations: ['user'],
+            where: { user: { email: user.email } }
+        });
 
         if (exists) {
             throw new ConflictException({
@@ -105,7 +108,7 @@ export class EmailConfirmationService {
             const newToken = this.generateEmailToken();
             await this.repository.update(id, newToken);
 
-            ({ token, expiryTimestamp } = newToken);
+            ({ token } = newToken);
         }
 
         this.eventBus.publish(new EmailConfirmationRequestedEvent(email.toLowerCase(), token));
