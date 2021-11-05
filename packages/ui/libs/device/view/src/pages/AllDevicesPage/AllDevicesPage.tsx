@@ -27,3 +27,5 @@ export const AllDevicesPage: FC = () => {
     </Grid>
   );
 };
+
+export default AllDevicesPage;

@@ -31,3 +31,5 @@ export const MyDevicesPage: FC = () => {
     <MyDeviceCardsList allDeviceTypes={allDeviceTypes} devices={myDevices} />
   );
 };
+
+export default MyDevicesPage;

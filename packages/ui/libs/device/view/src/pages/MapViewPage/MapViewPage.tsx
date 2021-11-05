@@ -19,3 +19,5 @@ export const MapViewPage: FC = () => {
     />
   );
 };
+
+export default MapViewPage;

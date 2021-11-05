@@ -34,3 +34,5 @@ export const DetailViewPage: FC = () => {
     </div>
   );
 };
+
+export default DetailViewPage;
