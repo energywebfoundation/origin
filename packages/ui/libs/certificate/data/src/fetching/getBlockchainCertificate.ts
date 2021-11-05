@@ -1,5 +1,6 @@
 import { useBlockchainPropertiesControllerGet } from '@energyweb/issuer-irec-api-react-query-client';
 import { useWeb3 } from '@energyweb/origin-ui-web3';
+// This is the reason why Certificate App bundle weighs > 2mb
 import {
   Certificate,
   Contracts,
