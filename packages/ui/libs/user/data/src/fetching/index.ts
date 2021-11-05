@@ -5,3 +5,4 @@ export * from './blockchainCertificates';
 export * from './exchangeAddress';
 export * from './pollExchangeAddress';
 export * from './user';
+export * from './adminTrades';

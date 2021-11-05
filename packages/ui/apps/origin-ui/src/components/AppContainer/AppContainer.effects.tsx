@@ -215,6 +215,7 @@ export const useAppContainerEffects = () => {
   const adminRoutesConfig: RoutesConfig['adminRoutes'] = {
     showClaims: userIsAdminOrSupport,
     showUsers: userIsAdminOrSupport,
+    showTrades: userIsAdminOrSupport,
   };
   const adminMenu = getAdminMenu({
     t,

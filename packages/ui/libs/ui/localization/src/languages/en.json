@@ -56,7 +56,8 @@
       "admin": {
         "sectionTitle": "Admin",
         "users": "Users",
-        "claims": "Claims"
+        "claims": "Claims",
+        "trades": "Trades"
       },
       "layout": {
         "userPendingTooltip": "Your user account status is pending",
@@ -976,6 +977,15 @@
           "userUpdateSuccess": "User successfully updated",
           "userUpdateError": "Error while updating user"
         }
+      },
+      "trades": {
+        "date": "Date",
+        "buyer": "Buyer",
+        "seller": "Seller",
+        "device": "Device",
+        "quantity": "Quantity",
+        "price": "Price",
+        "total": "Total"
       }
     },
     "general": {
