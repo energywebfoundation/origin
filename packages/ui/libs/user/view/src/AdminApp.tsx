@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router';
 import { AdminUsersPage, AdminUpdateUserPage, AdminClaimsPage } from './pages';
 
-interface AdminAppProps {
+export interface AdminAppProps {
   routesConfig: {
     showClaims: boolean;
     showUsers: boolean;

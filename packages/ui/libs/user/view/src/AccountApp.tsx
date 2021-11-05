@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router';
 import { UserAppEnvProvider, UserEnvVariables } from './context';
 import { SettingsPage, ProfilePage } from './pages';
 
-interface AccountAppProps {
+export interface AccountAppProps {
   routesConfig: {
     showUserProfile: boolean;
     showSettings: boolean;
