@@ -5,7 +5,7 @@ import {
   CardProps,
   Checkbox,
   CheckboxProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { useStyles } from './ListCard.styles';
 

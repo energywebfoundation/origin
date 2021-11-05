@@ -28,7 +28,7 @@ import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { RoutesConfig } from '../AppContainer';
 import { useStyles } from './App.styles';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 
 export interface AppProps {
   isAuthenticated: boolean;

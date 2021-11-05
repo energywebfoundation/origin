@@ -7,16 +7,14 @@ import {
 } from '@energyweb/origin-ui-organization-data';
 import { useConnectIRecFormLogic } from '@energyweb/origin-ui-organization-logic';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 export const useConnectIRecPageEffects = () => {
   const { t } = useTranslation();
 
-  const {
-    iRecConnection,
-    isLoading: iRecConnectionLoading,
-  } = useMyIRecConnection();
+  const { iRecConnection, isLoading: iRecConnectionLoading } =
+    useMyIRecConnection();
   const { organization, organizationLoading } = useMyOrganizationData();
 
   const { submitHandler, isMutating } = useConnectIRecHandler();

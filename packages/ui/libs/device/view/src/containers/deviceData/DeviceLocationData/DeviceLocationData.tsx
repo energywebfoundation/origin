@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { ThailandFlag, CoordinatesLogo } from '@energyweb/origin-ui-assets';
 import React, { FC } from 'react';
 import { IconText } from '@energyweb/origin-ui-core';

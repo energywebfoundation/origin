@@ -5,7 +5,7 @@ import {
   useApiCancelOrderHandler,
 } from '@energyweb/origin-ui-exchange-data';
 import { useMyOrdersBidsTableLogic } from '@energyweb/origin-ui-exchange-logic';
-import { Remove, Search, Visibility } from '@material-ui/icons';
+import { Remove, Search, Visibility } from '@mui/icons-material';
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

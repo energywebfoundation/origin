@@ -1,5 +1,5 @@
-import { IconButton, InputAdornment, TextField } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
+import { Close } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

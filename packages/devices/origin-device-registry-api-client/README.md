@@ -8,7 +8,6 @@
 
 The Device Registry API client library implements the [Device Registry API](../../api-clients/react-query/origin-device-registry-api/README.md).
 
-
 The [Origin SDK](../../../README.md) is a component of the [Energy Web Decentralized Operating System](#ew-dos)
 
 See a reference implementation of Origin deployed [here](https://origin-ui-canary.herokuapp.com/device/all)

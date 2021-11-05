@@ -1,4 +1,4 @@
-import { Tabs, Tab, TabsProps } from '@material-ui/core';
+import { Tabs, Tab, TabsProps } from '@mui/material';
 import React, {
   DetailedHTMLProps,
   HTMLAttributes,

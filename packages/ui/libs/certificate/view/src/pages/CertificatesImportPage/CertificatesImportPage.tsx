@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress } from '@material-ui/core';
+import { Box, CircularProgress } from '@mui/material';
 import { CertificatesToImportList } from '../../containers';
 import { useCertificatesImportPageEffects } from './CertificatesImportPage.effects';
 import { useStyles } from './CertificatesImportPage.styles';

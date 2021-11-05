@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { GenericItemsList } from '@energyweb/origin-ui-core';
 import { useDevicesInSystemListEffects } from './DevicesInSystemList.effects';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 
 export interface DevicesInSystemListProps {
   allFuelTypes: CodeNameDTO[];
@@ -11,9 +11,8 @@ export interface DevicesInSystemListProps {
 export const DevicesInSystemList: FC<DevicesInSystemListProps> = ({
   allFuelTypes,
 }) => {
-  const { listItems, isLoading, listTitle } = useDevicesInSystemListEffects(
-    allFuelTypes
-  );
+  const { listItems, isLoading, listTitle } =
+    useDevicesInSystemListEffects(allFuelTypes);
 
   if (isLoading) {
     return <CircularProgress />;

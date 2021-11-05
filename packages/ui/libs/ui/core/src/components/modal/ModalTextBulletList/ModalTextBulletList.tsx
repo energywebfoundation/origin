@@ -10,8 +10,8 @@ import {
   SvgIconProps,
   Typography,
   TypographyProps,
-} from '@material-ui/core';
-import { Brightness1 } from '@material-ui/icons';
+} from '@mui/material';
+import { Brightness1 } from '@mui/icons-material';
 import React, { FC } from 'react';
 
 export interface ModalTextBulletListProps {
