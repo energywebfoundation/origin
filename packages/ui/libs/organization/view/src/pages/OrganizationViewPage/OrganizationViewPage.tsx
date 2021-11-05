@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import { DisabledFormView } from '@energyweb/origin-ui-core';
-import { Box, CircularProgress, Typography } from '@material-ui/core';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 import { useOrganizationViewPageEffects } from './OrganizationViewPage.effects';
 import { useStyles } from './OrganizationViewPage.styles';
@@ -60,3 +60,5 @@ export const OrganizationViewPage: FC = () => {
     </Box>
   );
 };
+
+export default OrganizationViewPage;

@@ -1,7 +1,7 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
 import { withMetamask } from '@energyweb/origin-ui-web3';
-import { CircularProgress, TextField } from '@material-ui/core';
+import { CircularProgress, TextField } from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { ConnectMetamaskBlockchainInbox } from '../../metamask';

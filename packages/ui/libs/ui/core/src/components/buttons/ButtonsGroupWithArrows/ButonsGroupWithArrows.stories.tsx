@@ -1,7 +1,7 @@
 /* deepscan-disable */
 import React, { useState } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import {
   ButtonsGroupWithArrows,
   ButtonsGroupWithArrowsProps,

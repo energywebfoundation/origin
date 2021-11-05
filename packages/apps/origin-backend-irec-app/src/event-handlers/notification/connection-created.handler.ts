@@ -23,7 +23,9 @@ export class ConnectionCreatedHandler implements IEventHandler<ConnectionCreated
                 organization: organizationId
             }
         });
-        const emails = [registration.leadUserEmail] || organizationAdmins.map((a) => a.email);
+        const emails = registration.leadUserEmail
+            ? [registration.leadUserEmail]
+            : organizationAdmins.map((a) => a.email);
 
         const result = await this.mailService.send({
             to: emails,

@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@mui/styles';
 import { LightenColor, HexToRGBA } from '@energyweb/origin-ui-theme';
 
 export const useStyles = makeStyles((theme) => ({

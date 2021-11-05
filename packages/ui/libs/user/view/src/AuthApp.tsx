@@ -6,7 +6,7 @@ import { UserModalsProvider } from './context';
 import { UserModalsCenter } from './containers/modals';
 import { PageNotFound } from '@energyweb/origin-ui-core';
 
-interface AuthAppProps {
+export interface AuthAppProps {
   routesConfig: {
     showRegister: boolean;
   };

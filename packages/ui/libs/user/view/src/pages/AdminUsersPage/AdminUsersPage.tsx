@@ -8,3 +8,5 @@ export const AdminUsersPage: FC = () => {
 
   return <TableComponent {...tableProps} />;
 };
+
+export default AdminUsersPage;

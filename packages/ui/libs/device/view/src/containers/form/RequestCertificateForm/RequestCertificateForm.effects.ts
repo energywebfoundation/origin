@@ -16,15 +16,12 @@ export const useRequestCertificateFormEffects = (
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
   const formLogic = useRequestCertificatesLogic();
-  const {
-    requestHandler,
-    isLoading,
-    isMutating,
-  } = useRequestCertificatesHandler({
-    files,
-    deviceId: device.externalRegistryId,
-    closeForm,
-  });
+  const { requestHandler, isLoading, isMutating } =
+    useRequestCertificatesHandler({
+      files,
+      deviceId: device.externalRegistryId,
+      closeForm,
+    });
   const formProps = {
     ...formLogic,
     submitHandler: requestHandler,

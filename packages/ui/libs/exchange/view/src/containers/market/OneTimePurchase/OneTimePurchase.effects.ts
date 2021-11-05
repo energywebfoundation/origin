@@ -9,7 +9,7 @@ import {
 } from '../../../reducer';
 import { Dayjs } from 'dayjs';
 import { Dispatch } from 'react';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery, useTheme } from '@mui/material';
 import { MarketButton } from '../TotalAndButtons';
 
 type BidFormValues = {

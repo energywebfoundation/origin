@@ -6,7 +6,7 @@ import {
 import { useMembersTableLogic } from '@energyweb/origin-ui-organization-logic';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DeleteOutline, PermIdentityOutlined } from '@material-ui/icons';
+import { DeleteOutline, PermIdentityOutlined } from '@mui/icons-material';
 import {
   User,
   userControllerGet,

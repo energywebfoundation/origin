@@ -9,7 +9,7 @@ import {
   PRIMARY_STORY,
   Stories,
 } from '@storybook/addon-docs';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { WindSelected } from '@energyweb/origin-ui-assets';
 import { HorizontalCard, HorizontalCardProps } from './HorizontalCard';
 

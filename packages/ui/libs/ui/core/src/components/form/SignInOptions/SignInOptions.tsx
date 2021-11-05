@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Checkbox, Grid, GridProps, Typography } from '@material-ui/core';
+import { Checkbox, Grid, GridProps, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useStyles } from './SignInOptions.styles';
 

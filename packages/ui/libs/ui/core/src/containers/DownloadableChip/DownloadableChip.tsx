@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Chip } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
+import { Chip } from '@mui/material';
+import { GetApp } from '@mui/icons-material';
 import {
   ApiDownloadFunction,
   useDownloadableChipEffects,

@@ -108,7 +108,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "certificate-view": {
       "root": "libs/certificate/view",
@@ -152,7 +153,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "device-data": {
       "root": "libs/device/data",
@@ -186,7 +188,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "device-logic": {
       "root": "libs/device/logic",
@@ -230,7 +233,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "device-view": {
       "root": "libs/device/view",
@@ -271,7 +275,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "exchange-data": {
       "root": "libs/exchange/data",
@@ -316,7 +321,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "exchange-logic": {
       "root": "libs/exchange/logic",
@@ -360,7 +366,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "exchange-view": {
       "root": "libs/exchange/view",
@@ -404,7 +411,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "organization-data": {
       "root": "libs/organization/data",
@@ -449,7 +457,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "organization-logic": {
       "root": "libs/organization/logic",
@@ -494,7 +503,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "organization-view": {
       "root": "libs/organization/view",
@@ -539,7 +549,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "origin-ui": {
       "root": "apps/origin-ui",
@@ -613,7 +624,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "origin-ui-e2e": {
       "root": "apps/origin-ui-e2e",
@@ -680,7 +692,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "ui-core": {
       "root": "libs/ui/core",
@@ -753,7 +766,8 @@
             }
           }
         }
-      }
+      },
+      "tags": []
     },
     "ui-localization": {
       "root": "libs/ui/localization",
@@ -797,8 +811,40 @@
             "jestConfig": "libs/ui/localization/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "storybook": {
+          "executor": "@nrwl/storybook:storybook",
+          "options": {
+            "uiFramework": "@storybook/react",
+            "port": 4400,
+            "config": {
+              "configFolder": "libs/ui/core/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        },
+        "build-storybook": {
+          "executor": "@nrwl/storybook:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "uiFramework": "@storybook/react",
+            "outputPath": "dist/storybook/ui-core",
+            "config": {
+              "configFolder": "libs/ui/core/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
         }
-      }
+      },
+      "tags": []
     },
     "ui-shared-state": {
       "root": "libs/ui/shared-state",
@@ -842,7 +888,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "ui-theme": {
       "root": "libs/ui/theme",
@@ -883,7 +930,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "ui-utils": {
       "root": "libs/ui/utils",
@@ -925,7 +973,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "ui-web3": {
       "root": "libs/ui/web3",
@@ -960,7 +1009,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "user-data": {
       "root": "libs/user/data",
@@ -1002,7 +1052,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "user-logic": {
       "root": "libs/user/logic",
@@ -1043,7 +1094,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "user-view": {
       "root": "libs/user/view",
@@ -1084,7 +1136,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     }
   }
 }

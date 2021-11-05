@@ -2,7 +2,7 @@ import {
   FileUpload,
   GenericFormSecondaryButton,
 } from '@energyweb/origin-ui-core';
-import { Box, Button, CircularProgress } from '@material-ui/core';
+import { Box, Button, CircularProgress } from '@mui/material';
 import { DeviceImagesFormValues } from '@energyweb/origin-ui-device-logic';
 import React, { FC } from 'react';
 import { useDeviceImagesUploadEffects } from './DeviceImagesUpload.effects';

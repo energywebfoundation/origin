@@ -3,13 +3,8 @@ import React, { FC } from 'react';
 import { useRegisterThankYouEffects } from './RegisterThankYou.effects';
 
 export const RegisterThankYou: FC = () => {
-  const {
-    open,
-    title,
-    text,
-    buttons,
-    dialogProps,
-  } = useRegisterThankYouEffects();
+  const { open, title, text, buttons, dialogProps } =
+    useRegisterThankYouEffects();
 
   return (
     <GenericModal

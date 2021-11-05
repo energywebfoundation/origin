@@ -9,7 +9,7 @@ import {
   Select,
   Switch,
   Grid,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useStyles } from './SettingsPage.styles';
 import { useSettingsPageEffects } from './SettingsPage.effects';
 
@@ -71,3 +71,5 @@ export const SettingsPage: FC = () => {
     </Paper>
   );
 };
+
+export default SettingsPage;

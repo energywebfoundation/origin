@@ -11,8 +11,7 @@ export const SingleParagraph = (args: ModalTextContentProps) => (
   <ModalTextContent {...args} />
 );
 SingleParagraph.args = {
-  text:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
 };
 
 export const MultipleParagraphs = (args: ModalTextContentProps) => (

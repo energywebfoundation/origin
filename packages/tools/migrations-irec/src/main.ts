@@ -3,10 +3,19 @@ import program from 'commander';
 import fs from 'fs';
 import { ethers } from 'ethers';
 import { Client, ClientConfig } from 'pg';
+import { ConnectionOptions } from 'typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Test } from '@nestjs/testing';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { ExternalDeviceIdType } from '@energyweb/origin-backend-core';
 import { IContractsLookup } from '@energyweb/issuer';
 import { getDBConnectionOptions } from '@energyweb/origin-backend-utils';
+import {
+    AccountDeployerModule,
+    AccountModule,
+    AccountService,
+    entities
+} from '@energyweb/exchange';
 
 import { deployContracts } from './deployContracts';
 import { logger } from './Logger';
@@ -116,6 +125,41 @@ async function importSeed(client: Client, seedFile: string) {
     await client.query(seedSql);
 }
 
+async function createExchangeDepositAddresses(client: Client) {
+    logger.info(`Creating exchange deposit addresses...`);
+    const { rows } = await client.query<{ id: number }>(
+        'SELECT id FROM public.platform_organization;'
+    );
+
+    const postgresConfig = getDBConnectionOptions() as ConnectionOptions;
+    const moduleFixture = await Test.createTestingModule({
+        imports: [
+            TypeOrmModule.forRoot({
+                type: 'postgres',
+                entities: entities,
+                logging: ['info'],
+                ...postgresConfig
+            }),
+            AccountModule,
+            AccountDeployerModule
+        ]
+    }).compile();
+
+    const app = moduleFixture.createNestApplication();
+    const accountService = app.get(AccountService);
+
+    for (const { id } of rows) {
+        await accountService
+            .create(String(id))
+            .then(() => logger.info(`Exchange deposit address created for orgId=${id}`))
+            .catch((e) =>
+                logger.error(`Unable to create exchange deposit address for ${id}: ${e.message}`)
+            );
+    }
+
+    await new Promise((r) => setTimeout(r, 3000));
+}
+
 function initEnv() {
     if (program.env) {
         dotenv.config({
@@ -165,6 +209,7 @@ try {
         await importSeed(dbClient, program.seedFile);
         await importConfiguration(dbClient, program.config);
         await importContracts(dbClient, provider, contractsLookup);
+        await createExchangeDepositAddresses(dbClient);
 
         process.exit(0);
     })();

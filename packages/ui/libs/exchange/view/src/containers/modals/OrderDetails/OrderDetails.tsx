@@ -1,17 +1,14 @@
 import React from 'react';
 import { GenericModal } from '@energyweb/origin-ui-core';
-import { Box, Divider, Typography } from '@material-ui/core';
-import { ArrowRightAlt } from '@material-ui/icons';
+import { Box, Divider, Typography } from '@mui/material';
+import { ArrowRightAlt } from '@mui/icons-material';
 import { useStyles } from './OrderDetails.styles';
 import { useOrderDetailsEffects } from './OrderDetails.effects';
 
 export const OrderDetails = () => {
   const classes = useStyles();
-  const {
-    genericModalProps,
-    modalFields,
-    fieldLabels,
-  } = useOrderDetailsEffects();
+  const { genericModalProps, modalFields, fieldLabels } =
+    useOrderDetailsEffects();
 
   const {
     validFrom,

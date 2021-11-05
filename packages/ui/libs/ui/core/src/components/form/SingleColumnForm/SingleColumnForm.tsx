@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { Control, DeepMap, FieldError, UseFormRegister } from 'react-hook-form';
-import { TextFieldProps } from '@material-ui/core';
+import { TextFieldProps } from '@mui/material';
 import { isEmpty } from 'lodash';
 import { GenericFormField } from '../../../containers';
 import { FormInput, FormInputProps } from '../FormInput';

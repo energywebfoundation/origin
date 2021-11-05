@@ -5,10 +5,8 @@ import { useParams } from 'react-router';
 export const useDetailedPageViewEffects = () => {
   const { id } = useParams();
 
-  const {
-    certificate,
-    isLoading: isCertificateLoading,
-  } = useCertificateDetailedData(id);
+  const { certificate, isLoading: isCertificateLoading } =
+    useCertificateDetailedData(id);
   const { device, isLoading: isDeviceLoading } = useDeviceByExternalRegistryId(
     certificate?.blockchainPart?.deviceId
   );

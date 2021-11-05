@@ -23,7 +23,7 @@ export class GetIrecCertificatesToImportHandler
     ) {}
 
     async execute({ user }: GetIrecCertificatesToImportCommand): Promise<IrecAccountItemDto[]> {
-        const irecCertificates = await this.irecService.getCertificates(user);
+        const irecCertificates = await this.irecService.getCertificates(user.ownerId);
         const devices = await this.deviceRegistryService.find({ where: { owner: user.ownerId } });
         const irecDevices = await this.irecDeviceService.findAll({
             where: { ownerId: user.ownerId }

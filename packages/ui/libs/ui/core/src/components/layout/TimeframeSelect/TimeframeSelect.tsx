@@ -6,7 +6,7 @@ import {
   GridProps,
   Typography,
   TypographyProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { MaterialDatepicker, MaterialDatepickerProps } from '../../form';
 import { useStyles } from './TimeframeSelect.styles';
 

@@ -10,9 +10,7 @@
     ".eslintrc.json": "*",
     "nx.json": "*"
   },
-  "affected": {
-    "defaultBase": "chore/origin-ui-v2"
-  },
+  "affected": { "defaultBase": "master" },
   "npmScope": "ui-packages",
   "tasksRunnerOptions": {
     "default": {
@@ -28,79 +26,24 @@
       }
     }
   },
-  "projects": {
-    "certificate-data": {
-      "tags": []
-    },
-    "certificate-logic": {
-      "tags": []
-    },
-    "certificate-view": {
-      "tags": []
-    },
-    "device-data": {
-      "tags": []
-    },
-    "device-logic": {
-      "tags": []
-    },
-    "device-view": {
-      "tags": []
-    },
-    "exchange-data": {
-      "tags": []
-    },
-    "exchange-logic": {
-      "tags": []
-    },
-    "exchange-view": {
-      "tags": []
-    },
-    "organization-data": {
-      "tags": []
-    },
-    "organization-logic": {
-      "tags": []
-    },
-    "organization-view": {
-      "tags": []
-    },
-    "origin-ui": {
-      "tags": []
-    },
-    "origin-ui-e2e": {
-      "tags": [],
-      "implicitDependencies": ["origin-ui"]
-    },
-    "ui-assets": {
-      "tags": []
-    },
-    "ui-core": {
-      "tags": []
-    },
-    "ui-localization": {
-      "tags": []
-    },
-    "ui-shared-state": {
-      "tags": []
-    },
-    "ui-theme": {
-      "tags": []
-    },
-    "ui-utils": {
-      "tags": []
-    },
-    "ui-web3": {
-      "tags": []
-    },
-    "user-data": {
-      "tags": []
-    },
-    "user-logic": {
-      "tags": []
-    },
-    "user-view": {
-      "tags": []
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "@emotion/styled",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "@emotion/styled"
+      },
+      "library": {
+        "style": "@emotion/styled",
+        "linter": "eslint"
+      }
     }
-  }
+  },
+  "defaultProject": "origin-ui"
 }

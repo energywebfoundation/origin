@@ -1,10 +1,13 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
-import React, { FC } from 'react';
+import { CircularProgress } from '@mui/material';
+import React, { FC, lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import { UserAppEnvProvider, UserEnvVariables } from './context';
-import { SettingsPage, ProfilePage } from './pages';
 
-interface AccountAppProps {
+const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage/SettingsPage'));
+
+export interface AccountAppProps {
   routesConfig: {
     showUserProfile: boolean;
     showSettings: boolean;
@@ -20,8 +23,26 @@ export const AccountApp: FC<AccountAppProps> = ({
   return (
     <UserAppEnvProvider variables={envVariables}>
       <Routes>
-        {showUserProfile && <Route path="profile" element={<ProfilePage />} />}
-        {showSettings && <Route path="settings" element={<SettingsPage />} />}
+        {showUserProfile && (
+          <Route
+            path="profile"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <ProfilePage />
+              </Suspense>
+            }
+          />
+        )}
+        {showSettings && (
+          <Route
+            path="settings"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <SettingsPage />
+              </Suspense>
+            }
+          />
+        )}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </UserAppEnvProvider>

@@ -26,7 +26,7 @@ export class GetBeneficiaryHandler implements ICommandHandler<GetBeneficiaryComm
             ...beneficiary,
             organization: beneficiary.organizationId
                 ? await this.commandBus.execute(
-                      new GetOrganizationCommand(String(beneficiary.ownerId))
+                      new GetOrganizationCommand(String(beneficiary.organizationId))
                   )
                 : null
         });

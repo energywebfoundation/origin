@@ -5,9 +5,9 @@ import {
   Grid,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import { Info } from '@mui/icons-material';
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
-import { Info } from '@material-ui/icons';
 import { withMetamask } from '@energyweb/origin-ui-web3';
 import { ConnectMetamaskPlaceholder } from '../ConnectMetamaskPlaceholder';
 import { useOrganizationBlockchainAddressEffects } from './OrganizationBlockchainAddress.effects';

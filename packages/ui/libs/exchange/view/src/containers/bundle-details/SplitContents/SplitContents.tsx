@@ -8,8 +8,8 @@ import {
   getMainFuelType,
 } from '@energyweb/origin-ui-exchange-logic';
 import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
-import { Box, Button, IconButton, Typography } from '@material-ui/core';
-import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
+import { Box, Button, IconButton, Typography } from '@mui/material';
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { useStyles } from './SplitContent.styles';
 import { useSplitContentsEffects } from './SplitContents.effects';

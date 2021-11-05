@@ -3,11 +3,8 @@ import { TableComponent, Requirements } from '@energyweb/origin-ui-core';
 import { useSupplyPageEffects } from './SupplyPage.effects';
 
 export const SupplyPage: FC = () => {
-  const {
-    tableData,
-    canAccessPage,
-    requirementsProps,
-  } = useSupplyPageEffects();
+  const { tableData, canAccessPage, requirementsProps } =
+    useSupplyPageEffects();
 
   if (!canAccessPage) {
     return <Requirements {...requirementsProps} />;
@@ -15,3 +12,5 @@ export const SupplyPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default SupplyPage;

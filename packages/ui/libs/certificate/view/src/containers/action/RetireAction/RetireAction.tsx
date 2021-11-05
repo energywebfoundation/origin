@@ -6,7 +6,7 @@ import {
   FormInput,
 } from '@energyweb/origin-ui-core';
 import { withMetamask } from '@energyweb/origin-ui-web3';
-import { CircularProgress, Grid, Box } from '@material-ui/core';
+import { CircularProgress, Grid, Box } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';

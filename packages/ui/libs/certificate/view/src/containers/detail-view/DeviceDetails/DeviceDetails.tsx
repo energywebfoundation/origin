@@ -1,5 +1,5 @@
 import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import React, { FC } from 'react';
 
 import { DetailViewCarousel } from '../../carousel';
@@ -15,12 +15,8 @@ export interface DeviceDetailsProps {
 
 export const DeviceDetails: FC<DeviceDetailsProps> = ({ device }) => {
   const classes = useStyles();
-  const {
-    locationProps,
-    cardProps,
-    isLoading,
-    allTypes,
-  } = useDetailViewPageEffects(device);
+  const { locationProps, cardProps, isLoading, allTypes } =
+    useDetailViewPageEffects(device);
 
   if (isLoading) return <CircularProgress />;
 

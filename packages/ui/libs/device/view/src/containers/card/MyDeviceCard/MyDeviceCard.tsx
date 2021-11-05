@@ -23,12 +23,8 @@ export const MyDeviceCard: React.FC<MyDeviceCardProps> = ({
   selected,
   onClick,
 }) => {
-  const {
-    imageUrl,
-    fallbackIcon,
-    cardHeaderProps,
-    cardContentProps,
-  } = useMyDeviceCardEffects(device, allDeviceTypes);
+  const { imageUrl, fallbackIcon, cardHeaderProps, cardContentProps } =
+    useMyDeviceCardEffects(device, allDeviceTypes);
   const classes = useStyles();
 
   return (

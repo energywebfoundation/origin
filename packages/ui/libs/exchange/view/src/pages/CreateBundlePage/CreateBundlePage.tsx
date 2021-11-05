@@ -1,6 +1,6 @@
 import React from 'react';
 import { ItemsListWithActions, Requirements } from '@energyweb/origin-ui-core';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography } from '@mui/material';
 import { useCreateBundlePageEffects } from './CreateBundlePage.effects';
 
 export const CreateBundlePage = () => {
@@ -25,3 +25,5 @@ export const CreateBundlePage = () => {
     />
   );
 };
+
+export default CreateBundlePage;

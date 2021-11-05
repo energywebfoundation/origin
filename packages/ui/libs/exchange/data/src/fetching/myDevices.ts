@@ -3,15 +3,11 @@ import { useDeviceControllerGetMyDevices } from '@energyweb/origin-device-regist
 import { composeMyDevices, ComposedDevice } from '../utils';
 
 export const useApiMyDevices = () => {
-  const {
-    data: allOriginDevices,
-    isLoading: isOriginDevicesLoading,
-  } = useDeviceRegistryControllerGetMyDevices();
+  const { data: allOriginDevices, isLoading: isOriginDevicesLoading } =
+    useDeviceRegistryControllerGetMyDevices();
 
-  const {
-    data: allIRecDevices,
-    isLoading: isIRecDevicesLoading,
-  } = useDeviceControllerGetMyDevices();
+  const { data: allIRecDevices, isLoading: isIRecDevicesLoading } =
+    useDeviceControllerGetMyDevices();
 
   const isLoading = isOriginDevicesLoading || isIRecDevicesLoading;
   const myDevices =

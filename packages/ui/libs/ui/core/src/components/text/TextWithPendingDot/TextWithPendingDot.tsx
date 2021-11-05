@@ -4,7 +4,7 @@ import {
   Typography,
   TypographyVariant,
   TypographyProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { Dot } from '../../icons';
 import { useStyles } from './TextWithPendingDot.styles';
 

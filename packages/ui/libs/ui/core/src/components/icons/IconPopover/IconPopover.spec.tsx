@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 
 import { IconPopover, IconSize } from './IconPopover';
-import { Info } from '@material-ui/icons';
+import { Info } from '@mui/icons-material';
 
 describe('IconPopover', () => {
   it('should render successfully', () => {
