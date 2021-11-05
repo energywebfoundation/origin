@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useReducer } from 'react';
 import { MetamaskAdapter } from '../adapters';
 import { Web3ActionsEnum } from './actions';
-import { IWeb3State, UpdateWeb3Values, Web3Action } from './types';
+import type {
+  IWeb3State,
+  UpdateWeb3Values,
+  UseWeb3State,
+  Web3Action,
+} from './types';
 
 const reducer = (state: IWeb3State, action: Web3Action): IWeb3State => {
   switch (action.type) {
@@ -14,7 +19,7 @@ const reducer = (state: IWeb3State, action: Web3Action): IWeb3State => {
   }
 };
 
-export const useWeb3State = () => {
+export const useWeb3State: UseWeb3State = () => {
   const [state, dispatch] = useReducer(reducer, {});
 
   const handleUpdate = useCallback((payload: UpdateWeb3Values) => {
