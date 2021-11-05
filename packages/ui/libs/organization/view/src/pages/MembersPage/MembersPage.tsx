@@ -13,3 +13,5 @@ export const MembersPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default MembersPage;

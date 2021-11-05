@@ -1,19 +1,31 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
-import React, { FC } from 'react';
+import { CircularProgress } from '@mui/material';
+import React, { FC, lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { OrganizationModalsCenter } from './containers';
 import { OrganizationModalsProvider } from './context';
-import {
-  RegisterPage,
-  RegisterIRecPage,
-  OrganizationViewPage,
-  InvitationsPage,
-  MembersPage,
-  InvitePage,
-  AllOrganizationsPage,
-  CreateBeneficiaryPage,
-  ConnectIRecPage,
-} from './pages';
+
+const OrganizationViewPage = lazy(
+  () => import('./pages/OrganizationViewPage/OrganizationViewPage')
+);
+const InvitationsPage = lazy(
+  () => import('./pages/InvitationsPage/InvitationsPage')
+);
+const InvitePage = lazy(() => import('./pages/InvitePage/InvitePage'));
+const MembersPage = lazy(() => import('./pages/MembersPage/MembersPage'));
+const AllOrganizationsPage = lazy(
+  () => import('./pages/AllOrganizationsPage/AllOrganizationsPage')
+);
+const RegisterPage = lazy(() => import('./pages/RegisterPage/RegisterPage'));
+const RegisterIRecPage = lazy(
+  () => import('./pages/RegisterIRecPage/RegisterIRecPage')
+);
+const CreateBeneficiaryPage = lazy(
+  () => import('./pages/CreateBeneficiaryPage/CreateBeneficiaryPage')
+);
+const ConnectIRecPage = lazy(
+  () => import('./pages/ConnectIRecPage/ConnectIRecPage')
+);
 
 export interface OrganizationAppProps {
   routesConfig: {
@@ -45,27 +57,95 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
   return (
     <OrganizationModalsProvider>
       <Routes>
-        {showMyOrg && <Route path="my" element={<OrganizationViewPage />} />}
-        {showInvitations && (
-          <Route path="invitations" element={<InvitationsPage />} />
+        {showMyOrg && (
+          <Route
+            path="my"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <OrganizationViewPage />
+              </Suspense>
+            }
+          />
         )}
-        {showInvite && <Route path="invite" element={<InvitePage />} />}
-        {showMembers && <Route path="members" element={<MembersPage />} />}
-        {showAllOrgs && <Route path="all" element={<AllOrganizationsPage />} />}
+        {showInvitations && (
+          <Route
+            path="invitations"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <InvitationsPage />
+              </Suspense>
+            }
+          />
+        )}
+        {showInvite && (
+          <Route
+            path="invite"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <InvitePage />
+              </Suspense>
+            }
+          />
+        )}
+        {showMembers && (
+          <Route
+            path="members"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <MembersPage />
+              </Suspense>
+            }
+          />
+        )}
+        {showAllOrgs && (
+          <Route
+            path="all"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <AllOrganizationsPage />
+              </Suspense>
+            }
+          />
+        )}
         {showRegisterOrg && (
-          <Route path="register" element={<RegisterPage />} />
+          <Route
+            path="register"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <RegisterPage />
+              </Suspense>
+            }
+          />
         )}
         {showRegisterIRec && (
-          <Route path="register-irec" element={<RegisterIRecPage />} />
+          <Route
+            path="register-irec"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <RegisterIRecPage />
+              </Suspense>
+            }
+          />
         )}
         {showCreateBeneficiary && (
           <Route
             path="create-beneficiary"
-            element={<CreateBeneficiaryPage />}
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <CreateBeneficiaryPage />
+              </Suspense>
+            }
           />
         )}
         {showConnectIRec && (
-          <Route path="connect-irec" element={<ConnectIRecPage />} />
+          <Route
+            path="connect-irec"
+            element={
+              <Suspense fallback={<CircularProgress />}>
+                <ConnectIRecPage />
+              </Suspense>
+            }
+          />
         )}
 
         <Route path="*" element={<PageNotFound />} />

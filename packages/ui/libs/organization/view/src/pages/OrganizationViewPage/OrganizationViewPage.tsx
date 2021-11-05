@@ -60,3 +60,5 @@ export const OrganizationViewPage: FC = () => {
     </Box>
   );
 };
+
+export default OrganizationViewPage;
