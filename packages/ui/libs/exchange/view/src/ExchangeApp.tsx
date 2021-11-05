@@ -1,23 +1,17 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@mui/material';
-import React, { FC, lazy, Suspense } from 'react';
+import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ExchangeModals } from './containers';
 import { ExchangeModalsProvider } from './context';
-
-const ViewMarketPage = lazy(
-  () => import('./pages/ViewMarketPage/ViewMarketPage')
-);
-const AllBundlesPage = lazy(
-  () => import('./pages/AllBundlesPage/AllBundlesPage')
-);
-const CreateBundlePage = lazy(
-  () => import('./pages/CreateBundlePage/CreateBundlePage')
-);
-const MyBundlesPage = lazy(() => import('./pages/MyBundlesPage/MyBundlesPage'));
-const MyTradesPage = lazy(() => import('./pages/MyTradesPage/MyTradesPage'));
-const SupplyPage = lazy(() => import('./pages/SupplyPage/SupplyPage'));
-const MyOrdersPage = lazy(() => import('./pages/MyOrdersPage/MyOrdersPage'));
+import {
+  AllBundlesPage,
+  CreateBundlePage,
+  MyBundlesPage,
+  MyOrdersPage,
+  MyTradesPage,
+  SupplyPage,
+  ViewMarketPage,
+} from './pages';
 
 export interface ExchangeAppProps {
   routesConfig: {
@@ -45,75 +39,20 @@ export const ExchangeApp: FC<ExchangeAppProps> = ({ routesConfig }) => {
     <ExchangeModalsProvider>
       <Routes>
         {showViewMarket && (
-          <Route
-            path="/view-market"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <ViewMarketPage />
-              </Suspense>
-            }
-          />
+          <Route path="/view-market" element={<ViewMarketPage />} />
         )}
         {showAllBundles && (
-          <Route
-            path="/all-bundles"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <AllBundlesPage />
-              </Suspense>
-            }
-          />
+          <Route path="/all-bundles" element={<AllBundlesPage />} />
         )}
         {showCreateBundle && (
-          <Route
-            path="/create-bundle"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <CreateBundlePage />
-              </Suspense>
-            }
-          />
+          <Route path="/create-bundle" element={<CreateBundlePage />} />
         )}
         {showMyBundles && (
-          <Route
-            path="/my-bundles"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <MyBundlesPage />
-              </Suspense>
-            }
-          />
+          <Route path="/my-bundles" element={<MyBundlesPage />} />
         )}
-        {showMyTrades && (
-          <Route
-            path="/my-trades"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <MyTradesPage />
-              </Suspense>
-            }
-          />
-        )}
-        {showSupply && (
-          <Route
-            path="/supply"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <SupplyPage />
-              </Suspense>
-            }
-          />
-        )}
-        {showMyOrders && (
-          <Route
-            path="/my-orders"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <MyOrdersPage />
-              </Suspense>
-            }
-          />
-        )}
+        {showMyTrades && <Route path="/my-trades" element={<MyTradesPage />} />}
+        {showSupply && <Route path="/supply" element={<SupplyPage />} />}
+        {showMyOrders && <Route path="/my-orders" element={<MyOrdersPage />} />}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <ExchangeModals />

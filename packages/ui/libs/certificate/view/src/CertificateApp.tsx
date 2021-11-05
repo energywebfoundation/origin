@@ -1,6 +1,5 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@mui/material';
-import React, { FC, lazy, Suspense } from 'react';
+import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { CertificateModalsCenter } from './containers';
 import {
@@ -9,25 +8,16 @@ import {
   CertificateModalsProvider,
   TransactionPendingProvider,
 } from './context';
-
-const ExchangeInboxPage = lazy(
-  () => import('./pages/ExchangeInboxPage/ExchangeInboxPage')
-);
-const BlockchainInboxPage = lazy(
-  () => import('./pages/BlockchainInboxPage/BlockchainInboxPage')
-);
-const ClaimsReportPage = lazy(
-  () => import('./pages/ClaimsReportPage/ClaimsReportPage')
-);
-const RequestsPage = lazy(() => import('./pages/RequestsPage/RequestsPage'));
-const PendingPage = lazy(() => import('./pages/PendingPage/PendingPage'));
-const ApprovedPage = lazy(() => import('./pages/ApprovedPage/ApprovedPage'));
-const DetailViewPage = lazy(
-  () => import('./pages/DetailViewPage/DetailViewPage')
-);
-const CertificatesImportPage = lazy(
-  () => import('./pages/CertificatesImportPage/CertificatesImportPage')
-);
+import {
+  ApprovedPage,
+  BlockchainInboxPage,
+  CertificatesImportPage,
+  ClaimsReportPage,
+  DetailViewPage,
+  ExchangeInboxPage,
+  PendingPage,
+  RequestsPage,
+} from './pages';
 
 export interface CertificateAppProps {
   routesConfig: {
@@ -65,9 +55,7 @@ export const CertificateApp: FC<CertificateAppProps> = ({
               path="exchange-inbox"
               element={
                 <TransactionPendingProvider>
-                  <Suspense fallback={<CircularProgress />}>
-                    <ExchangeInboxPage />
-                  </Suspense>
+                  <ExchangeInboxPage />
                 </TransactionPendingProvider>
               }
             />
@@ -77,71 +65,21 @@ export const CertificateApp: FC<CertificateAppProps> = ({
               path="blockchain-inbox"
               element={
                 <TransactionPendingProvider>
-                  <Suspense fallback={<CircularProgress />}>
-                    <BlockchainInboxPage />
-                  </Suspense>
+                  <BlockchainInboxPage />
                 </TransactionPendingProvider>
               }
             />
           )}
           {showClaimsReport && (
-            <Route
-              path="claims-report"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <ClaimsReportPage />
-                </Suspense>
-              }
-            />
+            <Route path="claims-report" element={<ClaimsReportPage />} />
           )}
-          {showRequests && (
-            <Route
-              path="requests"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <RequestsPage />
-                </Suspense>
-              }
-            />
-          )}
-          {showPending && (
-            <Route
-              path="pending"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <PendingPage />
-                </Suspense>
-              }
-            />
-          )}
-          {showApproved && (
-            <Route
-              path="approved"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <ApprovedPage />
-                </Suspense>
-              }
-            />
-          )}
+          {showRequests && <Route path="requests" element={<RequestsPage />} />}
+          {showPending && <Route path="pending" element={<PendingPage />} />}
+          {showApproved && <Route path="approved" element={<ApprovedPage />} />}
           {showImport && (
-            <Route
-              path="import"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <CertificatesImportPage />
-                </Suspense>
-              }
-            />
+            <Route path="import" element={<CertificatesImportPage />} />
           )}
-          <Route
-            path="detail-view/:id"
-            element={
-              <Suspense fallback={<CircularProgress />}>
-                <DetailViewPage />
-              </Suspense>
-            }
-          />
+          <Route path="detail-view/:id" element={<DetailViewPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
         <CertificateModalsCenter />
