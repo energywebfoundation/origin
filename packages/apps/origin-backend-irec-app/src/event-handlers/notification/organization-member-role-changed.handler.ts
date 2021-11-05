@@ -1,13 +1,14 @@
-import { OrganizationMemberRoleChangedEvent } from '@energyweb/origin-backend';
-import { Role } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { OrganizationMemberRoleChangedEvent } from '@energyweb/origin-backend';
+import { Role } from '@energyweb/origin-backend-core';
 
 import { MailService } from '../../mail';
 
 @EventsHandler(OrganizationMemberRoleChangedEvent)
 export class OrganizationMemberRoleChangedHandler
-    implements IEventHandler<OrganizationMemberRoleChangedEvent> {
+    implements IEventHandler<OrganizationMemberRoleChangedEvent>
+{
     private readonly logger = new Logger(OrganizationMemberRoleChangedHandler.name);
 
     constructor(private readonly mailService: MailService) {}

@@ -55,7 +55,6 @@
         "@nestjs/core": "8.1.1",
         "@nestjs/cqrs": "8.0.0",
         "@nestjs/passport": "8.0.1",
-        "@nestjs/schedule": "1.0.1",
         "@nestjs/swagger": "5.1.4",
         "@nestjs/typeorm": "8.0.2",
         "body-parser": "1.19.0",

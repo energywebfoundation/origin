@@ -44,9 +44,7 @@ export class AccountController {
     public async getAccount(@UserDecorator() { ownerId }: ILoggedInUser): Promise<AccountDTO> {
         const account = await this.accountService.getAccount(ownerId);
 
-        const response = account || { address: '' };
-
-        return response;
+        return account || { address: '' };
     }
 
     @Post()

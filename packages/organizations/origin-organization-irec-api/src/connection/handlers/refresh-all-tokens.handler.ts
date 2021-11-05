@@ -37,7 +37,7 @@ export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokens
 
         const results = await Promise.allSettled(
             expiredConnections.map(async (irecConnection) => {
-                const accessToken: AccessTokens = {
+                const accessTokens: AccessTokens = {
                     accessToken: irecConnection.accessToken,
                     refreshToken: irecConnection.refreshToken,
                     expiryDate: irecConnection.expiryDate
@@ -46,13 +46,14 @@ export class RefreshAllTokensHandler implements ICommandHandler<RefreshAllTokens
                     irecApiUrl,
                     irecConnection.clientId,
                     irecConnection.clientSecret,
-                    async (accessTokens: AccessTokens) => {
+                    async (newTokens: AccessTokens) => {
                         await this.repository.update(irecConnection.id, {
-                            ...accessTokens,
+                            ...newTokens,
+                            active: true,
                             attempts: 0
                         });
                     },
-                    accessToken
+                    accessTokens
                 );
 
                 await client.organisation.get().catch(async (): Promise<void> => {

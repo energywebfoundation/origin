@@ -1,8 +1,8 @@
+import { Logger } from '@nestjs/common';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { Role } from '@energyweb/origin-backend-core';
 import { UserService } from '@energyweb/origin-backend';
 import { RegistrationCreatedEvent } from '@energyweb/origin-organization-irec-api';
-import { Logger } from '@nestjs/common';
-import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { MailService } from '../../mail';
 
 @EventsHandler(RegistrationCreatedEvent)

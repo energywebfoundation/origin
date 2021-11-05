@@ -1,13 +1,14 @@
-import { OrganizationNameAlreadyTakenEvent, UserService } from '@energyweb/origin-backend';
-import { Role } from '@energyweb/origin-backend-core';
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { OrganizationNameAlreadyTakenEvent, UserService } from '@energyweb/origin-backend';
+import { Role } from '@energyweb/origin-backend-core';
 
 import { MailService } from '../../mail';
 
 @EventsHandler(OrganizationNameAlreadyTakenEvent)
 export class OrganizationNameAlreadyTakenHandler
-    implements IEventHandler<OrganizationNameAlreadyTakenEvent> {
+    implements IEventHandler<OrganizationNameAlreadyTakenEvent>
+{
     private readonly logger = new Logger(OrganizationNameAlreadyTakenHandler.name);
 
     constructor(

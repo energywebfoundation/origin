@@ -26,22 +26,24 @@ export class CreateOrganizationBeneficiaryHandler
         organization
     }: CreateOrganizationBeneficiaryCommand): Promise<BeneficiaryDTO> {
         const platformAdmin = await this.userService.getPlatformAdmin();
-
         const irecBeneficiary = await this.irecService.createBeneficiary(
             platformAdmin.organization.id,
             {
                 name: organization.name,
                 countryCode: organization.country,
-                location: `${organization.city}. ${organization.address}`
+                location: `${organization.city}, ${organization.address}`
             }
         );
 
         const beneficiary = this.repository.create({
             irecBeneficiaryId: irecBeneficiary.id,
             organizationId: organization.id,
-            ownerId: null
+            ownerId: null,
+            name: irecBeneficiary.name,
+            countryCode: irecBeneficiary.countryCode,
+            active: irecBeneficiary.active,
+            location: irecBeneficiary.location
         });
-
         const storedBeneficiary = await this.repository.save(beneficiary);
 
         return this.commandBus.execute(new GetBeneficiaryCommand(storedBeneficiary.id));

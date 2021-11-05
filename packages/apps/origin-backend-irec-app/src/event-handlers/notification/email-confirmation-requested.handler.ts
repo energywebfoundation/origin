@@ -1,6 +1,6 @@
-import { EmailConfirmationRequestedEvent } from '@energyweb/origin-backend';
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { EmailConfirmationRequestedEvent } from '@energyweb/origin-backend';
 import { MailService } from '../../mail';
 
 @EventsHandler(EmailConfirmationRequestedEvent)

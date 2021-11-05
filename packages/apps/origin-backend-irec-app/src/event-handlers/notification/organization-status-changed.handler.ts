@@ -1,11 +1,12 @@
-import { OrganizationStatusChangedEvent } from '@energyweb/origin-backend';
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { OrganizationStatusChangedEvent } from '@energyweb/origin-backend';
 import { MailService } from '../../mail';
 
 @EventsHandler(OrganizationStatusChangedEvent)
 export class OrganizationStatusChangedHandler
-    implements IEventHandler<OrganizationStatusChangedEvent> {
+    implements IEventHandler<OrganizationStatusChangedEvent>
+{
     private readonly logger = new Logger(OrganizationStatusChangedHandler.name);
 
     constructor(private readonly mailService: MailService) {}
