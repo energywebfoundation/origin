@@ -18,3 +18,5 @@ export const MyBundlesPage: FC = () => {
     </div>
   );
 };
+
+export default MyBundlesPage;

@@ -24,3 +24,5 @@ export const AllBundlesPage: FC = () => {
     </div>
   );
 };
+
+export default AllBundlesPage;

@@ -12,3 +12,5 @@ export const SupplyPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default SupplyPage;

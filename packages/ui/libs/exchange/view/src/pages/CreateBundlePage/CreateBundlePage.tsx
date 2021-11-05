@@ -25,3 +25,5 @@ export const CreateBundlePage = () => {
     />
   );
 };
+
+export default CreateBundlePage;

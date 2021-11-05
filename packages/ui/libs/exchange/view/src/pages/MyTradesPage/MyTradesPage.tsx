@@ -12,3 +12,5 @@ export const MyTradesPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default MyTradesPage;

@@ -30,3 +30,5 @@ export const MyOrdersPage = () => {
     </Box>
   );
 };
+
+export default MyOrdersPage;
