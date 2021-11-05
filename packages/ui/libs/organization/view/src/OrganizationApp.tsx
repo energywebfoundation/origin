@@ -15,7 +15,7 @@ import {
   ConnectIRecPage,
 } from './pages';
 
-interface OrganizationAppProps {
+export interface OrganizationAppProps {
   routesConfig: {
     showRegisterOrg: boolean;
     showMyOrg: boolean;
