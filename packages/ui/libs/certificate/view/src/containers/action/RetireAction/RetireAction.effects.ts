@@ -25,25 +25,19 @@ export const useRetireActionEffects = (
   const allFuelTypes = useCachedAllFuelTypes();
   const setTxPending = useTransactionPendingDispatch();
 
-  const {
-    platformBeneficiaries,
-    isLoading: areBeneficiariesLoading,
-  } = usePlatformBeneficiaries();
+  const { platformBeneficiaries, isLoading: areBeneficiariesLoading } =
+    usePlatformBeneficiaries();
 
   const { initialValues, fields, validationSchema } = useBeneficiaryFormLogic({
     allBeneficiaries: platformBeneficiaries,
   });
 
-  const {
-    register,
-    control,
-    watch,
-    formState,
-  } = useForm<BeneficiaryFormValues>({
-    defaultValues: initialValues,
-    mode: 'onChange',
-    resolver: yupResolver(validationSchema),
-  });
+  const { register, control, watch, formState } =
+    useForm<BeneficiaryFormValues>({
+      defaultValues: initialValues,
+      mode: 'onChange',
+      resolver: yupResolver(validationSchema),
+    });
   const { isValid, isDirty, errors } = formState;
 
   const { beneficiary, startDate, endDate, purpose } = watch();
@@ -54,17 +48,15 @@ export const useRetireActionEffects = (
     [platformBeneficiaries, beneficiary]
   );
 
-  const {
-    retireHandler,
-    isLoading: isHandlerLoading,
-  } = useRetireCertificateHandler(
-    selectedBeneficiary,
-    resetIds,
-    startDate,
-    endDate,
-    purpose,
-    setTxPending
-  );
+  const { retireHandler, isLoading: isHandlerLoading } =
+    useRetireCertificateHandler(
+      selectedBeneficiary,
+      resetIds,
+      startDate,
+      endDate,
+      purpose,
+      setTxPending
+    );
 
   const actionLogic = useRetireActionLogic({
     selectedIds,

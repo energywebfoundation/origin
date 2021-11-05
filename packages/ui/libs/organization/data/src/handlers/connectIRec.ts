@@ -14,7 +14,8 @@ import { useQueryClient } from 'react-query';
 export const useConnectIRecHandler = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const iRecConnectionQueryKey = getConnectionControllerGetMyConnectionQueryKey();
+  const iRecConnectionQueryKey =
+    getConnectionControllerGetMyConnectionQueryKey();
   const { mutate, isLoading } = useConnectionControllerRegister();
 
   const submitHandler = (

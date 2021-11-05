@@ -31,7 +31,7 @@ export const useSellCertificateHandler = (
     setTxPending(true);
     const assetId = exchangeCertificates.find(
       (cert) =>
-        cert.asset.id === ((id as unknown) as AccountAssetDTO['asset']['id'])
+        cert.asset.id === (id as unknown as AccountAssetDTO['asset']['id'])
     ).asset?.id;
 
     const data: CreateAskDTO = {

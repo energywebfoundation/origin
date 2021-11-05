@@ -8,10 +8,8 @@ import {
 } from '@energyweb/issuer';
 
 export const useGetBlockchainCertificateHandler = () => {
-  const {
-    data: blockchainProperties,
-    isLoading,
-  } = useBlockchainPropertiesControllerGet();
+  const { data: blockchainProperties, isLoading } =
+    useBlockchainPropertiesControllerGet();
 
   const web3Interface = useWeb3React<Web3Provider>();
   const { library: web3 } = web3Interface;

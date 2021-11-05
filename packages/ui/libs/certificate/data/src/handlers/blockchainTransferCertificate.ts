@@ -20,17 +20,16 @@ export const useBlockchainTransferCertificateHandler = (
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const blockchainCertificatesQueryKey = getIrecCertificateControllerGetAllQueryKey();
+  const blockchainCertificatesQueryKey =
+    getIrecCertificateControllerGetAllQueryKey();
 
-  const {
-    getBlockchainCertificate,
-    isLoading: isGetBlockchainLoading,
-  } = useGetBlockchainCertificateHandler();
+  const { getBlockchainCertificate, isLoading: isGetBlockchainLoading } =
+    useGetBlockchainCertificateHandler();
 
   const transferHandler = async <Id>(id: Id, amount: string) => {
     try {
       const onChainCertificate = await getBlockchainCertificate(
-        (id as unknown) as CertificateDTO['id']
+        id as unknown as CertificateDTO['id']
       );
       const formattedAmount = BigNumber.from(
         PowerFormatter.getBaseValueFromValueInDisplayUnit(Number(amount))
