@@ -12,3 +12,5 @@ export const ClaimsReportPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default ClaimsReportPage;

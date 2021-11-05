@@ -27,3 +27,5 @@ export const ExchangeInboxPage: FC = () => {
     />
   );
 };
+
+export default ExchangeInboxPage;

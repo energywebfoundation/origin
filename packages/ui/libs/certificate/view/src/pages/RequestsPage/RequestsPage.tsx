@@ -12,3 +12,5 @@ export const RequestsPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default RequestsPage;
