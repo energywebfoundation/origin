@@ -21,3 +21,5 @@ export const CreateBeneficiaryPage: FC = () => {
     </Paper>
   );
 };
+
+export default CreateBeneficiaryPage;

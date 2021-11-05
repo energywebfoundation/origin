@@ -67,3 +67,5 @@ export const ConnectIRecPage: FC = () => {
     </Paper>
   );
 };
+
+export default ConnectIRecPage;

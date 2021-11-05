@@ -17,7 +17,7 @@ export const formatSelectedExchangeItems: TFormatSelectedExchangeItems = ({
     const certificate = exchangeCertificates.find(
       (item) =>
         item.asset.id ===
-        ((selectedId as unknown) as AccountAssetDTO['asset']['id'])
+        (selectedId as unknown as AccountAssetDTO['asset']['id'])
     );
     const matchingDevice = allDevices.find(
       (device) => device.externalRegistryId === certificate.asset.deviceId

@@ -56,3 +56,5 @@ export const ViewMarketPage: FC = () => {
     </Box>
   );
 };
+
+export default ViewMarketPage;

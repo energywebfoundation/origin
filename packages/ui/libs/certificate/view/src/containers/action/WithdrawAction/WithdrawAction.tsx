@@ -13,12 +13,8 @@ export type TWithdrawAction = (
 ) => ReactElement;
 
 export const WithdrawAction: TWithdrawAction = ({ selectedIds, resetIds }) => {
-  const {
-    title,
-    buttonText,
-    selectedItems,
-    withdrawHandler,
-  } = useWithdrawActionEffects(selectedIds, resetIds);
+  const { title, buttonText, selectedItems, withdrawHandler } =
+    useWithdrawActionEffects(selectedIds, resetIds);
 
   return (
     <CertificateActionContent

@@ -17,3 +17,5 @@ export const DetailViewPage = () => {
     </div>
   );
 };
+
+export default DetailViewPage;

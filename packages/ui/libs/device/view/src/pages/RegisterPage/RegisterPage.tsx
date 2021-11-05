@@ -23,3 +23,5 @@ export const RegisterPage: React.FC = () => {
     </Paper>
   );
 };
+
+export default RegisterPage;

@@ -6,12 +6,10 @@ import {
 export const useSentOrgInvitationsData = () => {
   const { data: user, isLoading: userLoading } = useUserControllerMe();
 
-  const {
-    data: invitations,
-    isLoading: invitationsLoading,
-  } = useOrganizationControllerGetInvitationsForOrganization(
-    user?.organization?.id
-  );
+  const { data: invitations, isLoading: invitationsLoading } =
+    useOrganizationControllerGetInvitationsForOrganization(
+      user?.organization?.id
+    );
 
   return { isLoading: userLoading || invitationsLoading, invitations };
 };

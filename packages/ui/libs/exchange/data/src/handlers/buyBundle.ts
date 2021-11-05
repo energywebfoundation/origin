@@ -25,9 +25,8 @@ export const useBuyBundleHandler = (
   const allBundlesQueryKey = getBundleControllerGetAvailableBundlesQueryKey();
 
   return (bundleId: BundlePublicDTO['id']) => {
-    const bundleSplitsQueryKey = getBundleControllerAvailableBundleSplitsQueryKey(
-      bundleId
-    );
+    const bundleSplitsQueryKey =
+      getBundleControllerAvailableBundleSplitsQueryKey(bundleId);
 
     const data: BuyBundleDTO = {
       bundleId,

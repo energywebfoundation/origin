@@ -7,3 +7,5 @@ export const AdminClaimsPage = () => {
 
   return <TableComponent {...tableProps} />;
 };
+
+export default AdminClaimsPage;

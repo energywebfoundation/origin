@@ -17,14 +17,8 @@ export const useApiCreateExchangeBlockchainAddress = (
   setIsCreating: (value: boolean) => void,
   isMountedRef: MutableRefObject<boolean>
 ) => {
-  const {
-    mutateAsync,
-    isLoading,
-    error,
-    isError,
-    isSuccess,
-    status,
-  } = useAccountControllerCreate();
+  const { mutateAsync, isLoading, error, isError, isSuccess, status } =
+    useAccountControllerCreate();
 
   const { user } = useUser();
   const { t } = useTranslation();

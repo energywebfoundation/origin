@@ -22,13 +22,8 @@ export const useUpdateBlockchainAddress = (
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const userQuerykey = getUserControllerMeQueryKey();
-  const {
-    mutate,
-    error,
-    isError,
-    isSuccess,
-    status,
-  } = useOrganizationControllerSetBlockchainAddress();
+  const { mutate, error, isError, isSuccess, status } =
+    useOrganizationControllerSetBlockchainAddress();
 
   const { user, userLoading } = useUser();
   const blockchainAddress = user?.organization?.blockchainAccountAddress;

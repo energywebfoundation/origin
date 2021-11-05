@@ -21,14 +21,8 @@ type TRegisterUserFormValues = {
 export const useApiRegisterUser = (showRegisteredModal: () => void) => {
   const { t } = useTranslation();
 
-  const {
-    mutate,
-    status,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useUserControllerRegister();
+  const { mutate, status, isLoading, isSuccess, isError, error } =
+    useUserControllerRegister();
 
   const submitHandler = (values: TRegisterUserFormValues) => {
     const data: RegisterUserDTO = {

@@ -14,3 +14,5 @@ export const RegisterIRecPage: FC = () => {
     </Paper>
   );
 };
+
+export default RegisterIRecPage;

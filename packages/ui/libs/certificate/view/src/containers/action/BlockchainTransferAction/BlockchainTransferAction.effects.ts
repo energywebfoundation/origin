@@ -28,14 +28,12 @@ export const useBlockchainTransferActionEffects = (
   const allFuelTypes = useCachedAllFuelTypes();
   const setTxPending = useTransactionPendingDispatch();
 
-  const {
-    transferHandler,
-    isLoading,
-  } = useBlockchainTransferCertificateHandler(
-    recipientAddress,
-    resetIds,
-    setTxPending
-  );
+  const { transferHandler, isLoading } =
+    useBlockchainTransferCertificateHandler(
+      recipientAddress,
+      resetIds,
+      setTxPending
+    );
 
   const actionLogic = useBlockchainTransferActionLogic({
     selectedIds,

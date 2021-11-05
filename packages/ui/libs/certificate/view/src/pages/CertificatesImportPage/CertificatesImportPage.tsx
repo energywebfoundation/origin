@@ -18,3 +18,5 @@ export const CertificatesImportPage = () => {
     </div>
   );
 };
+
+export default CertificatesImportPage;

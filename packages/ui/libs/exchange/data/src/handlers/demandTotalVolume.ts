@@ -20,9 +20,8 @@ export const calculateDemandTotalVolume = async (
 
   if (volume > 0 && period && startDate && endDate) {
     const summary = await demandControllerSummary({
-      volumePerPeriod: PowerFormatter.getBaseValueFromValueInDisplayUnit(
-        volume
-      ).toString(),
+      volumePerPeriod:
+        PowerFormatter.getBaseValueFromValueInDisplayUnit(volume).toString(),
       periodTimeFrame: period,
       start: startDate.toISOString(),
       end: endDate.toISOString(),

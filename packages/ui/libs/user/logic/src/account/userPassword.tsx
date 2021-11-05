@@ -19,46 +19,49 @@ const INITIAL_FORM_VALUES = {
   newPasswordConfirm: '',
 };
 
-export const useUpdateUserAccountPasswordFormConfig: TUseUpdateUserAccountPasswordFormConfig = () => {
-  const { t } = useTranslation();
+export const useUpdateUserAccountPasswordFormConfig: TUseUpdateUserAccountPasswordFormConfig =
+  () => {
+    const { t } = useTranslation();
 
-  return {
-    buttonText: t('general.buttons.change'),
-    fields: [
-      {
-        type: 'password',
-        label: t('user.profile.currentPassword'),
-        name: 'oldPassword',
-        required: true,
-      },
-      {
-        type: 'password',
-        label: t('user.profile.newPassword'),
-        name: 'newPassword',
-        required: true,
-      },
-      {
-        type: 'password',
-        label: t('user.profile.newPasswordConfirm'),
-        name: 'newPasswordConfirm',
-        required: true,
-      },
-    ],
-    buttonWrapperProps: { justifyContent: 'flex-start' },
-    initialValues: INITIAL_FORM_VALUES,
-    inputsVariant: 'filled' as any,
-    validationSchema: Yup.object().shape({
-      oldPassword: Yup.string()
-        .label(t('user.profile.currentPassword'))
-        .required(),
-      newPassword: Yup.string().label(t('user.profile.newPassword')).required(),
-      newPasswordConfirm: Yup.string()
-        .oneOf(
-          [Yup.ref('newPassword'), null],
-          t('user.profile.confirmDoesntMatch')
-        )
-        .label(t('user.profile.confirmPassword'))
-        .required(),
-    }),
+    return {
+      buttonText: t('general.buttons.change'),
+      fields: [
+        {
+          type: 'password',
+          label: t('user.profile.currentPassword'),
+          name: 'oldPassword',
+          required: true,
+        },
+        {
+          type: 'password',
+          label: t('user.profile.newPassword'),
+          name: 'newPassword',
+          required: true,
+        },
+        {
+          type: 'password',
+          label: t('user.profile.newPasswordConfirm'),
+          name: 'newPasswordConfirm',
+          required: true,
+        },
+      ],
+      buttonWrapperProps: { justifyContent: 'flex-start' },
+      initialValues: INITIAL_FORM_VALUES,
+      inputsVariant: 'filled' as any,
+      validationSchema: Yup.object().shape({
+        oldPassword: Yup.string()
+          .label(t('user.profile.currentPassword'))
+          .required(),
+        newPassword: Yup.string()
+          .label(t('user.profile.newPassword'))
+          .required(),
+        newPasswordConfirm: Yup.string()
+          .oneOf(
+            [Yup.ref('newPassword'), null],
+            t('user.profile.confirmDoesntMatch')
+          )
+          .label(t('user.profile.confirmPassword'))
+          .required(),
+      }),
+    };
   };
-};

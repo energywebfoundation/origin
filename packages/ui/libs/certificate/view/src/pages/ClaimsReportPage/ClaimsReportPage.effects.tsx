@@ -26,15 +26,11 @@ export const useClaimsReportPageEffects = () => {
     isLoading: areClaimedLoading,
   } = useClaimedCertificates();
 
-  const {
-    allDevices: devices,
-    isLoading: areDevicesLoading,
-  } = useApiAllDevices();
+  const { allDevices: devices, isLoading: areDevicesLoading } =
+    useApiAllDevices();
 
-  const {
-    allTypes: allFuelTypes,
-    isLoading: isFuelTypesloading,
-  } = useAllFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
+    useAllFuelTypes();
 
   const loading =
     areClaimedLoading ||

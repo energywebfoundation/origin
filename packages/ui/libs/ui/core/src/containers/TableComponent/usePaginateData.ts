@@ -7,10 +7,9 @@ export const usePaginateData = <T>(data: T[], pageSize: number) => {
   return {
     setActivePage,
     activePage,
-    paginatedData: useMemo(() => data.slice(startIndex, endIndex), [
-      data,
-      startIndex,
-      endIndex,
-    ]),
+    paginatedData: useMemo(
+      () => data.slice(startIndex, endIndex),
+      [data, startIndex, endIndex]
+    ),
   };
 };

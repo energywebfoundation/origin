@@ -27,3 +27,5 @@ export const BlockchainInboxPage: FC = () => {
     />
   );
 };
+
+export default BlockchainInboxPage;

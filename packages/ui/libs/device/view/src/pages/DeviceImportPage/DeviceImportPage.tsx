@@ -21,3 +21,5 @@ export const DeviceImportPage = () => {
     </div>
   );
 };
+
+export default DeviceImportPage;

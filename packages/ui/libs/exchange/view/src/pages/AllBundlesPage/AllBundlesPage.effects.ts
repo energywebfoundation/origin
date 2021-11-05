@@ -20,10 +20,8 @@ export const useAllBundlesPageEffects = () => {
   const { allBundles, isLoading: areAllBundlesLoading } = useApiAllBundles();
   const { myBundles, isLoading: areMyBundlesLoading } = useApiMyBundles(!!user);
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllDeviceFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
 
   const dispatchModals = useExchangeModalsDispatch();
 

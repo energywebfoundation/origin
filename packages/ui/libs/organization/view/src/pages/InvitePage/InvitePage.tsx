@@ -25,3 +25,5 @@ export const InvitePage: FC = () => {
     </Paper>
   );
 };
+
+export default InvitePage;

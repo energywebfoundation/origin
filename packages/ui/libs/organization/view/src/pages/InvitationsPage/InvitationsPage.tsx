@@ -47,3 +47,5 @@ export const InvitationsPage: FC = () => {
     </Grid>
   );
 };
+
+export default InvitationsPage;
