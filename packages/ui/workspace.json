@@ -1,5 +1,25 @@
 {
   "version": 2,
+  "cli": {
+    "defaultCollection": "@nrwl/react"
+  },
+  "defaultProject": "origin-ui",
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "@emotion/styled",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "@emotion/styled"
+      },
+      "library": {
+        "style": "@emotion/styled",
+        "linter": "eslint"
+      }
+    }
+  },
   "projects": {
     "certificate-data": {
       "root": "libs/certificate/data",
@@ -44,8 +64,7 @@
             "passWithNoTests": true
           }
         }
-      },
-      "tags": []
+      }
     },
     "certificate-logic": {
       "root": "libs/certificate/logic",
@@ -632,9 +651,7 @@
             "lintFilePatterns": ["apps/origin-ui-e2e/**/*.{js,ts}"]
           }
         }
-      },
-      "tags": [],
-      "implicitDependencies": ["origin-ui"]
+      }
     },
     "ui-assets": {
       "root": "libs/ui/assets",
@@ -672,52 +689,6 @@
           "outputs": ["coverage/libs/ui/assets"],
           "options": {
             "jestConfig": "libs/ui/assets/jest.config.js",
-            "passWithNoTests": true
-          }
-        }
-      },
-      "tags": []
-    },
-    "ui-blockchain": {
-      "root": "libs/ui/blockchain",
-      "sourceRoot": "libs/ui/blockchain",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/web:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "libs/ui/blockchain/dist",
-            "tsConfig": "libs/ui/blockchain/tsconfig.lib.json",
-            "project": "libs/ui/blockchain/package.json",
-            "entryFile": "libs/ui/blockchain/src/index.ts",
-            "external": [
-              "react",
-              "react-dom",
-              "react-is",
-              "@emotion/styled",
-              "@emotion/react",
-              "react/jsx-runtime",
-              "react/jsx-dev-runtime"
-            ],
-            "rollupConfig": "rollup.config.js",
-            "assets": [
-              "libs/ui/blockchain/LICENSE",
-              "libs/ui/blockchain/README.md"
-            ]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "options": {
-            "lintFilePatterns": ["libs/ui/blockchain/**/*.{ts,tsx,js,jsx}"]
-          }
-        },
-        "test": {
-          "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/ui/blockchain"],
-          "options": {
-            "jestConfig": "libs/ui/blockchain/jest.config.js",
             "passWithNoTests": true
           }
         }
@@ -839,6 +810,37 @@
           "options": {
             "jestConfig": "libs/ui/localization/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "storybook": {
+          "executor": "@nrwl/storybook:storybook",
+          "options": {
+            "uiFramework": "@storybook/react",
+            "port": 4400,
+            "config": {
+              "configFolder": "libs/ui/core/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        },
+        "build-storybook": {
+          "executor": "@nrwl/storybook:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "uiFramework": "@storybook/react",
+            "outputPath": "dist/storybook/ui-core",
+            "config": {
+              "configFolder": "libs/ui/core/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
           }
         }
       },
@@ -968,6 +970,42 @@
           "outputs": ["coverage/libs/ui/utils"],
           "options": {
             "jestConfig": "libs/ui/utils/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "ui-web3": {
+      "root": "libs/ui/web3",
+      "sourceRoot": "libs/ui/web3",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "libs/ui/web3/dist",
+            "tsConfig": "libs/ui/web3/tsconfig.lib.json",
+            "project": "libs/ui/web3/package.json",
+            "entryFile": "libs/ui/web3/src/index.ts",
+            "external": ["react/jsx-runtime", "@emotion/styled/base"],
+            "rollupConfig": "rollup.config.js",
+            "assets": ["libs/ui/web3/LICENSE.md", "libs/ui/web3/README.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/ui/web3/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui/web3"],
+          "options": {
+            "jestConfig": "libs/ui/web3/jest.config.js",
             "passWithNoTests": true
           }
         }

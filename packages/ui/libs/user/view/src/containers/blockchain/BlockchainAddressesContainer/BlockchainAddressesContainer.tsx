@@ -2,12 +2,11 @@ import React from 'react';
 
 import { Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import { UserExchangeDepositAddress } from '../UserExchangeDepositAddress';
 import { OrganizationBlockchainAddress } from '../OrganizationBlockchainAddress';
 import { useStyles } from './BlockchainAddressesContainer.styles';
 
-const Component = () => {
+export const BlockchainAddressesContainer = () => {
   const { t } = useTranslation();
   const classes = useStyles();
   return (
@@ -20,5 +19,3 @@ const Component = () => {
     </Paper>
   );
 };
-
-export const BlockchainAddressesContainer = withMetamask(Component);

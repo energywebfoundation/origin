@@ -1,6 +1,5 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@mui/material';
-import React, { FC, lazy, Suspense } from 'react';
+import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { DeviceModalsCenter } from './containers';
 import {
@@ -8,20 +7,15 @@ import {
   DeviceEnvVariables,
   DeviceModalsProvider,
 } from './context';
-
-const AllDevicesPage = lazy(
-  () => import('./pages/AllDevicesPage/AllDevicesPage')
-);
-const MapViewPage = lazy(() => import('./pages/MapViewPage/MapViewPage'));
-const MyDevicesPage = lazy(() => import('./pages/MyDevicesPage/MyDevicesPage'));
-const PendingPage = lazy(() => import('./pages/PendingPage/PendingPage'));
-const RegisterPage = lazy(() => import('./pages/RegisterPage/RegisterPage'));
-const DetailViewPage = lazy(
-  () => import('./pages/DetailViewPage/DetailViewPage')
-);
-const DeviceImportPage = lazy(
-  () => import('./pages/DeviceImportPage/DeviceImportPage')
-);
+import {
+  AllDevicesPage,
+  DetailViewPage,
+  DeviceImportPage,
+  MapViewPage,
+  MyDevicesPage,
+  PendingPage,
+  RegisterPage,
+} from './pages';
 
 export interface DeviceAppProps {
   routesConfig: {
@@ -51,75 +45,20 @@ export const DeviceApp: FC<DeviceAppProps> = ({
     <DeviceAppEnvProvider variables={envVariables}>
       <DeviceModalsProvider>
         <Routes>
-          {showAllDevices && (
-            <Route
-              path="all"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <AllDevicesPage />
-                </Suspense>
-              }
-            />
-          )}
-          {showMapView && (
-            <Route
-              path="map"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <MapViewPage />
-                </Suspense>
-              }
-            />
-          )}
-          {showMyDevices && (
-            <Route
-              path="my"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <MyDevicesPage />
-                </Suspense>
-              }
-            />
-          )}
+          {showAllDevices && <Route path="all" element={<AllDevicesPage />} />}
+          {showMapView && <Route path="map" element={<MapViewPage />} />}
+          {showMyDevices && <Route path="my" element={<MyDevicesPage />} />}
           {showPendingDevices && (
-            <Route
-              path="pending"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <PendingPage />
-                </Suspense>
-              }
-            />
+            <Route path="pending" element={<PendingPage />} />
           )}
           {showRegisterDevice && (
-            <Route
-              path="register"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <RegisterPage />
-                </Suspense>
-              }
-            />
+            <Route path="register" element={<RegisterPage />} />
           )}
           {showAllDevices && (
-            <Route
-              path="detail-view/:id"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <DetailViewPage />
-                </Suspense>
-              }
-            />
+            <Route path="detail-view/:id" element={<DetailViewPage />} />
           )}
           {showDeviceImport && (
-            <Route
-              path="import"
-              element={
-                <Suspense fallback={<CircularProgress />}>
-                  <DeviceImportPage />
-                </Suspense>
-              }
-            />
+            <Route path="import" element={<DeviceImportPage />} />
           )}
           <Route path="*" element={<PageNotFound />} />
         </Routes>

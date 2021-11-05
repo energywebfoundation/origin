@@ -1,15 +1,16 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
-import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import {
   ListActionComponentProps,
   FormSelect,
   FormDatePicker,
   FormInput,
 } from '@energyweb/origin-ui-core';
+import { withMetamask } from '@energyweb/origin-ui-web3';
 import { CircularProgress, Grid, Box } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
+import { ConnectMetamaskBlockchainInbox } from '../../metamask';
 import { useRetireActionEffects } from './RetireAction.effects';
 import { useStyles } from './RetireAction.styles';
 
@@ -81,4 +82,7 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
   );
 };
 
-export const RetireAction = withMetamask(Component);
+export const RetireAction = withMetamask(
+  Component,
+  ConnectMetamaskBlockchainInbox
+);

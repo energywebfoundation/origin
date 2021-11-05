@@ -1037,6 +1037,15 @@
       "upload": {
         "dropOrClick": "Drop files here or click to select files"
       }
+    },
+    "metamask": {
+      "installMetamask": "Install Metamask",
+      "connectMetamask": "Connect Metamask",
+      "blockRequireInstalledAndConnected": "This block requires Metamask to be installed and connected",
+      "notifications": {
+        "unsupportedNetwork": "You are connected to the unsupported network.",
+        "unknownError": "Unknown error while connecting wallet. Please reload the page"
+      }
     }
   }
 }

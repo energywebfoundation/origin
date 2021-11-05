@@ -1,6 +1,7 @@
 import React, { FC, memo, Suspense, lazy } from 'react';
 import { CircularProgress } from '@mui/material';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import {
   MainLayout,
   PageNotFound,
@@ -15,7 +16,6 @@ import {
 import { initializeI18N } from '@energyweb/origin-ui-localization';
 import { getOriginLanguage } from '@energyweb/origin-ui-shared-state';
 import { useUserAndOrgData } from '@energyweb/origin-ui-user-logic';
-import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import { RoutesConfig } from '../AppContainer';
 import { useStyles } from './App.styles';
 
@@ -62,6 +62,9 @@ export const App: FC<AppProps> = memo(
     const themeMode = useThemeModeStore();
     const isLightTheme = themeMode === ThemeModeEnum.Light;
     const changeThemeMode = useThemeModeDispatch();
+    const allowedChainIds = (window as any).config.SUPPORTED_NETWORK_IDS.split(
+      ';'
+    ).map((id: string) => Number(id));
 
     // No routes matched locatation "**/*"
     // Ignore for now until warning is resolved:
@@ -121,6 +124,7 @@ export const App: FC<AppProps> = memo(
                     <CertificateApp
                       routesConfig={certificateRoutes}
                       envVariables={{
+                        allowedChainIds,
                         googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
                         exchangeWalletPublicKey:
                           process.env.NX_EXCHANGE_WALLET_PUB,
@@ -144,6 +148,7 @@ export const App: FC<AppProps> = memo(
                     <AccountApp
                       routesConfig={accountRoutes}
                       envVariables={{
+                        allowedChainIds,
                         registrationMessage:
                           process.env.NX_REGISTRATION_MESSAGE_TO_SIGN,
                       }}

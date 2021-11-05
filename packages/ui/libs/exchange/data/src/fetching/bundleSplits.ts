@@ -4,7 +4,7 @@ import {
   BundleSplitItemDTO,
   useBundleControllerAvailableBundleSplits,
 } from '@energyweb/exchange-react-query-client';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export type BundleSplit = {
   volume: BigNumber;

@@ -10,7 +10,7 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 

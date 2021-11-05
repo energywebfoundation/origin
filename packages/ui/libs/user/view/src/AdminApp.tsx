@@ -1,17 +1,7 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@mui/material';
-import React, { FC, lazy, Suspense } from 'react';
+import React, { FC } from 'react';
 import { Route, Routes } from 'react-router';
-
-const AdminUsersPage = lazy(
-  () => import('./pages/AdminUsersPage/AdminUsersPage')
-);
-const AdminUpdateUserPage = lazy(
-  () => import('./pages/AdminUpdateUserPage/AdminUpdateUserPage')
-);
-const AdminClaimsPage = lazy(
-  () => import('./pages/AdminClaimsPage/AdminClaimsPage')
-);
+import { AdminClaimsPage, AdminUpdateUserPage, AdminUsersPage } from './pages';
 
 export interface AdminAppProps {
   routesConfig: {
@@ -24,36 +14,11 @@ export const AdminApp: FC<AdminAppProps> = ({ routesConfig }) => {
   const { showClaims, showUsers } = routesConfig;
   return (
     <Routes>
+      {showUsers && <Route path="users" element={<AdminUsersPage />} />}
       {showUsers && (
-        <Route
-          path="users"
-          element={
-            <Suspense fallback={<CircularProgress />}>
-              <AdminUsersPage />
-            </Suspense>
-          }
-        />
+        <Route path="update-user/:id" element={<AdminUpdateUserPage />} />
       )}
-      {showUsers && (
-        <Route
-          path="update-user/:id"
-          element={
-            <Suspense fallback={<CircularProgress />}>
-              <AdminUpdateUserPage />
-            </Suspense>
-          }
-        />
-      )}
-      {showClaims && (
-        <Route
-          path="claims"
-          element={
-            <Suspense fallback={<CircularProgress />}>
-              <AdminClaimsPage />
-            </Suspense>
-          }
-        />
-      )}
+      {showClaims && <Route path="claims" element={<AdminClaimsPage />} />}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
