@@ -23,7 +23,7 @@
   "module": "dist/ui-localization.esm.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
-    "i18next": "21.3.3",
+    "i18next": "21.4.0",
     "i18next-icu": "1.4.2",
     "react-i18next": "11.13.0"
   }
