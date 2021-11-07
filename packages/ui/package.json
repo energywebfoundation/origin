@@ -168,7 +168,7 @@
     "tsconfig-paths-webpack-plugin": "3.5.1",
     "typescript": "4.4.4",
     "url-loader": "4.1.1",
-    "webpack": "5.61.0",
+    "webpack": "5.62.1",
     "webpack-bundle-analyzer": "4.5.0"
   },
   "workspaces": [
