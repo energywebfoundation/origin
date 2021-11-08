@@ -15,11 +15,11 @@ export class ClaimDataDTO implements IClaimData {
     @IsString()
     countryCode: string;
 
-    @ApiProperty({ type: String, example: "	2021-11-06", description: "ISO String"})
+    @ApiProperty({ type: String, example: "2021-11-08T17:11:11.883Z", description: "ISO String"})
     @IsDateString()
     periodStartDate: string;
 
-    @ApiProperty({ type: String, example: "	2021-11-06", description: "ISO String" })
+    @ApiProperty({ type: String, example: "2021-11-08T17:11:11.883Z", description: "ISO String" })
     @IsDateString()
     periodEndDate: string;
 
