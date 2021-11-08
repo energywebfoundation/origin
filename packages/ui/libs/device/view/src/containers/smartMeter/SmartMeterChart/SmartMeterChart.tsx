@@ -39,7 +39,7 @@ export const SmartMeterChart: FC<SmartMeterChartProps> = ({ meterId }) => {
         </div>
       )}
       <div className={classes.chartWrapper}>
-        <Bar type="bar" data={chartData} options={smartMeterChartOptions} />
+        <Bar data={chartData} options={smartMeterChartOptions} />
       </div>
     </>
   );

@@ -1,5 +1,12 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { Control, DeepMap, FieldError, UseFormRegister } from 'react-hook-form';
+import {
+  Control,
+  DeepMap,
+  DeepPartial,
+  FieldError,
+  UnionLike,
+  UseFormRegister,
+} from 'react-hook-form';
 import { TextFieldProps } from '@mui/material';
 import { isEmpty } from 'lodash';
 import { GenericFormField } from '../../../containers';
@@ -11,8 +18,8 @@ export interface SingleColumnFormProps<FormValuesType> {
   fields: GenericFormField<FormValuesType>[];
   control: Control<FormValuesType>;
   register: UseFormRegister<FormValuesType>;
-  errors: DeepMap<FormValuesType, FieldError>;
-  dirtyFields: DeepMap<FormValuesType, true>;
+  errors: DeepMap<DeepPartial<UnionLike<FormValuesType>>, FieldError>;
+  dirtyFields: DeepMap<DeepPartial<UnionLike<FormValuesType>>, true>;
   inputsVariant?: FormInputProps<FormValuesType>['variant'];
   formInputsProps?: TextFieldProps;
   disabled?: boolean;
@@ -32,6 +39,8 @@ export const SingleColumnForm: TSingleColumnForm = ({
   formInputsProps,
   disabled,
 }) => {
+  // (errors as any) & (dirtyFields as any) added until react-hook-form
+  // allows to index those objects by field.name
   return (
     <>
       {fields.map(
@@ -41,8 +50,8 @@ export const SingleColumnForm: TSingleColumnForm = ({
               key={field.label}
               field={field}
               control={control}
-              errorExists={!isEmpty(errors[field.name])}
-              errorText={(errors[field.name] as any)?.message ?? ''}
+              errorExists={!isEmpty((errors as any)[field.name])}
+              errorText={(errors as any)[field.name]?.message ?? ''}
               variant={inputsVariant}
               disabled={disabled}
               register={register}
@@ -54,8 +63,8 @@ export const SingleColumnForm: TSingleColumnForm = ({
               key={field.label}
               field={field}
               control={control}
-              errorExists={!isEmpty(errors[field.name])}
-              errorText={(errors[field.name] as any)?.message ?? ''}
+              errorExists={!isEmpty((errors as any)[field.name])}
+              errorText={(errors as any)[field.name]?.message ?? ''}
               variant={inputsVariant}
             />
           )) || (
@@ -64,9 +73,9 @@ export const SingleColumnForm: TSingleColumnForm = ({
               field={field}
               disabled={disabled}
               register={register}
-              errorExists={!isEmpty(errors[field.name])}
-              errorText={(errors[field.name] as any)?.message ?? ''}
-              isDirty={!!dirtyFields[field.name]}
+              errorExists={!isEmpty((errors as any)[field.name])}
+              errorText={(errors as any)[field.name]?.message ?? ''}
+              isDirty={!!(dirtyFields as any)[field.name]}
               variant={inputsVariant}
               {...formInputsProps}
             />

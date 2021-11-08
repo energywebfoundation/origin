@@ -8,13 +8,13 @@ import {
 import {
   useBeneficiaryFormLogic,
   useRetireActionLogic,
-  BeneficiaryFormValues,
 } from '@energyweb/origin-ui-certificate-logic';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { useTransactionPendingDispatch } from '../../../context';
+import { Dayjs } from 'dayjs';
 
 export const useRetireActionEffects = (
   selectedIds: CertificateDTO['id'][],
@@ -32,12 +32,11 @@ export const useRetireActionEffects = (
     allBeneficiaries: platformBeneficiaries,
   });
 
-  const { register, control, watch, formState } =
-    useForm<BeneficiaryFormValues>({
-      defaultValues: initialValues,
-      mode: 'onChange',
-      resolver: yupResolver(validationSchema),
-    });
+  const { register, control, watch, formState } = useForm({
+    defaultValues: initialValues,
+    mode: 'onChange',
+    resolver: yupResolver(validationSchema),
+  });
   const { isValid, isDirty, errors } = formState;
 
   const { beneficiary, startDate, endDate, purpose } = watch();
@@ -52,8 +51,8 @@ export const useRetireActionEffects = (
     useRetireCertificateHandler(
       selectedBeneficiary,
       resetIds,
-      startDate,
-      endDate,
+      startDate as Dayjs,
+      endDate as Dayjs,
       purpose,
       setTxPending
     );

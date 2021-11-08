@@ -46,6 +46,7 @@ export const UpdateDemand = () => {
             />
           </Box>
           <Box width="95%" mx={'auto'}>
+            {/* @ts-ignore */}
             <GenericForm {...formProps} />
           </Box>
         </Box>

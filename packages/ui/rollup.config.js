@@ -70,7 +70,6 @@ module.exports = (config) => {
         'react-hook-form': 'reactHookForm',
         '@hookform/resolvers': 'hookformResolvers',
         '@hookform/resolvers/yup': 'hookformResolversYup',
-        'react-material-ui-carousel': 'reactMaterialUiCarousel',
         'react-toastify': 'reactToastify',
         'react-dropzone': 'reactDropzone',
         'react-beautiful-dnd': 'reactBeautifulDnd',
