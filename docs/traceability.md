@@ -24,5 +24,6 @@ Package contains all the facades and entities that concern the on-chain presence
 
 -   [ERC-1888](traceability/contracts/ERC1888/ERC1888.md)
 -   [Registry](traceability/contracts/Registry.md)
+-   [Registry Extended](traceability/contracts/RegistryExtended.md)
 -   [Issuer](traceability/contracts/Issuer.md)
 -   [PrivateIssuer](traceability/contracts/PrivateIssuer.md)
