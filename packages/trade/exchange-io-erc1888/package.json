@@ -4,7 +4,7 @@
     "description": "ERC1888 withdwaral/deposit processing for exchange",
     "author": "EnergyWeb DevHub GmbH; Aleksandr Marenin, aleksandr.marenin@energyweb.org",
     "homepage": "https://github.com/energywebfoundation/origin#readme",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "main": "dist/js/src/index.js",
     "files": [
         "dist",

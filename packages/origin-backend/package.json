@@ -1,7 +1,7 @@
 {
     "name": "@energyweb/origin-backend",
     "version": "11.0.1",
-    "description": "",
+    "description": "API for managing users, certificate, requests and devices in the Origin project",
     "main": "dist/js/src/index.js",
     "scripts": {
         "lint": "eslint \"src/**/*{.ts,.tsx}\" --quiet",
@@ -36,7 +36,7 @@
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "dependencies": {
         "@energyweb/origin-backend-core": "8.0.3",
         "@energyweb/origin-backend-utils": "1.6.1",

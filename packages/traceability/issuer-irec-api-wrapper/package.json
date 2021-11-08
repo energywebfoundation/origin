@@ -10,7 +10,7 @@
         "url": "git+https://github.com/energywebfoundation/origin.git"
     },
     "author": "EnergyWeb DevHub GmbH; Piotr Kosiński, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "scripts": {
         "build": "yarn build:ts",
         "build:ts": "tsc -b tsconfig.json",

@@ -2,7 +2,7 @@
     "name": "@energyweb/exchange-core-irec",
     "description": "An IREC based EACs product and matching",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-core#readme",
     "repository": {
         "type": "git",
