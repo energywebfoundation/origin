@@ -28,22 +28,22 @@
     "@react-google-maps/api": "2.5.0",
     "axios": "0.24.0",
     "dayjs": "1.10.7",
-    "ethers": "5.3.1",
     "lodash": "4.17.21",
     "react-beautiful-dnd": "13.1.0",
     "react-dropzone": "11.4.2",
-    "react-hook-form": "7.18.1",
-    "react-material-ui-carousel": "2.3.8",
-    "react-router": "6.0.0",
-    "react-router-dom": "6.0.0",
+    "react-hook-form": "7.19.1",
     "react-toastify": "8.1.0",
-    "yup": "0.32.11"
+    "yup": "0.32.11",
+    "@ethersproject/bignumber": "5.3.0",
+    "@ethersproject/units": "5.3.0"
   },
   "peerDependencies": {
     "@emotion/react": "11.5.0",
     "@emotion/styled": "11.3.0",
     "emotion-theming": "11.0.0",
-    "react": "17.0.2"
+    "react": "17.0.2",
+    "react-router": "6.0.0",
+    "react-router-dom": "6.0.0"
   },
   "main": "dist/ui-core.umd.js",
   "module": "dist/ui-core.esm.js",

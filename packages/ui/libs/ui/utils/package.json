@@ -25,7 +25,8 @@
   "dependencies": {
     "@energyweb/utils-general": "11.0.4",
     "dayjs": "1.10.7",
-    "ethers": "5.3.1",
+    "@ethersproject/bignumber": "5.3.0",
+    "@ethersproject/units": "5.3.0",
     "lodash": "4.17.21",
     "react-router": "6.0.0"
   }

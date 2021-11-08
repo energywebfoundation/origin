@@ -14,9 +14,9 @@ import { AppContainer } from './components/AppContainer';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeModeProvider>
-      <OriginThemeProvider>
-        <ErrorBoundary FallbackComponent={CustomErrorFallback}>
+    <ErrorBoundary FallbackComponent={CustomErrorFallback}>
+      <ThemeModeProvider>
+        <OriginThemeProvider>
           <BrowserRouter>
             <Web3ContextProvider>
               <OriginQueryClientProvider>
@@ -24,9 +24,9 @@ ReactDOM.render(
               </OriginQueryClientProvider>
             </Web3ContextProvider>
           </BrowserRouter>
-        </ErrorBoundary>
-      </OriginThemeProvider>
-    </ThemeModeProvider>
+        </OriginThemeProvider>
+      </ThemeModeProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
   document.getElementById('root')
 );
