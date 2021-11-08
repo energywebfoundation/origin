@@ -79,7 +79,6 @@
     "emotion-theming": "11.0.0",
     "history": "5.1.0",
     "i18next": "21.4.0",
-    "i18next-icu": "2.0.3",
     "lodash": "4.17.21",
     "react": "17.0.2",
     "react-beautiful-dnd": "13.1.0",

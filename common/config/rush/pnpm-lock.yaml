@@ -182,7 +182,7 @@ dependencies:
   ganache-core: 2.13.2
   history: 5.1.0
   i18next: 21.4.0
-  i18next-icu: 1.4.2
+  i18next-icu: 2.0.3
   immutable: 4.0.0
   influx: 5.9.2
   jest: 27.3.1_ts-node@9.1.1
@@ -19099,12 +19099,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==
-  /i18next-icu/1.4.2:
-    dependencies:
-      intl-messageformat: 2.2.0
+  /i18next-icu/2.0.3:
     dev: false
+    peerDependencies:
+      intl-messageformat: ^9.0.0
     resolution:
-      integrity: sha512-EqHafx/sL8eoEowwqi5P6cXtLrzJXBKI4RmV+UaMXlpIJNfckVsq873F2KkMKkApxiw2ATj46C8MurmhMsHQGw==
+      integrity: sha512-sZ0VCWDnHysUYQL8j/0rVOxv6rLR+SBoaqQQ2UVNfLyJCuf/bAjYPkoUQgyuDkWFo1xZjeCf4G6GBNr7gD61bQ==
   /i18next/21.4.0:
     dependencies:
       '@babel/runtime': 7.16.0
@@ -19524,17 +19524,6 @@ packages:
       node: '>= 0.10'
     resolution:
       integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==
-  /intl-messageformat-parser/1.4.0:
-    deprecated: We've written a new parser that's 6x faster and is backwards compatible. Please use @formatjs/icu-messageformat-parser
-    dev: false
-    resolution:
-      integrity: sha1-tD1FqXRoytvkQzHXS7Ho3qRPwHU=
-  /intl-messageformat/2.2.0:
-    dependencies:
-      intl-messageformat-parser: 1.4.0
-    dev: false
-    resolution:
-      integrity: sha1-NFvNRt5jC3aDMwwuUhd/9eq0hPw=
   /invariant/2.2.4:
     dependencies:
       loose-envify: 1.4.0
@@ -37436,7 +37425,7 @@ packages:
       eslint-plugin-react-hooks: 4.2.0_eslint@7.32.0
       history: 5.1.0
       i18next: 21.4.0
-      i18next-icu: 1.4.2
+      i18next-icu: 2.0.3
       jest: 27.3.1_ts-node@9.1.1
       jest-fetch-mock: 3.0.3
       jest-localstorage-mock: 2.4.18
@@ -37477,7 +37466,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-MA+YREaPj/RvniOLXaZVzEyVwUuQoAsevaj8yDflOxWWHndLMpES9ih7HkrJpDTYomh0iQfDyaHDTZ62ZXFPZQ==
+      integrity: sha512-UYXXMfWs2hk0CwplHvXJkyggPlYah/onu81vAY+fY7RaM5C0c3Q5O7796fIJOCYhHQejs3y1msEAdGcznOlYTg==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -37738,7 +37727,7 @@ specifiers:
   ganache-core: 2.13.2
   history: 5.1.0
   i18next: 21.4.0
-  i18next-icu: 1.4.2
+  i18next-icu: 2.0.3
   immutable: 4.0.0
   influx: 5.9.2
   jest: 27.3.1

@@ -25,7 +25,6 @@
   "dependencies": {
     "@energyweb/origin-ui-localization": "0.1.0",
     "i18next": "21.4.0",
-    "i18next-icu": "2.0.3",
     "react-i18next": "11.13.0"
   }
 }

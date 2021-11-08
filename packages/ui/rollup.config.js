@@ -23,7 +23,6 @@ module.exports = (config) => {
         'react/jsx-runtime': 'jsxRuntime',
         'react-chartjs-2': 'reactChartjs2',
         'react-i18next': 'reactI18next',
-        'i18next-icu': 'i18nICU',
         '@energyweb/utils-general': 'utilsGeneral',
         '@energyweb/origin-backend-core': 'originBackendCore',
         '@energyweb/issuer': 'issuer',
