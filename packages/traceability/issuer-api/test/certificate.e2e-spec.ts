@@ -59,6 +59,21 @@ describe('Certificate tests', () => {
         return body;
     };
 
+    const getAllCertificates = async (
+        user: TestUser,
+        generationEndFrom: Date = new Date(0),
+        generationEndTo: Date = new Date()
+    ): Promise<CertificateDTO[]> => {
+        const { body } = await request(app.getHttpServer())
+            .get(
+                `/certificate?generationEndFrom=${generationEndFrom.toISOString()}&generationEndTo=${generationEndTo.toISOString()}`
+            )
+            .set({ 'test-user': user })
+            .expect(HttpStatus.OK);
+
+        return body;
+    };
+
     const getCertificatesByTxHash = async (
         txHash: ContractTransaction['hash'],
         user: TestUser
@@ -82,6 +97,7 @@ describe('Certificate tests', () => {
     const createCertificate = async (options?: {
         toUser?: TestUser;
         isPrivate?: boolean;
+        toTime?: Date;
     }): Promise<CertificateDTO> => {
         const {
             body: { txHash }
@@ -93,7 +109,8 @@ describe('Certificate tests', () => {
                 to: options?.toUser
                     ? getUserBlockchainAddress(options.toUser)
                     : certificateTestData.to,
-                isPrivate: options?.isPrivate ?? false
+                isPrivate: options?.isPrivate ?? false,
+                toTime: options?.toTime ? moment(options.toTime).unix() : certificateTestData.toTime
             })
             .expect(HttpStatus.OK);
 
@@ -647,6 +664,21 @@ describe('Certificate tests', () => {
             .expect(HttpStatus.OK);
 
         expect(events.length).to.be.above(0);
+    });
+
+    it('should get all certificates within given generation timeframe', async () => {
+        const cert1 = await createCertificate({ toTime: new Date('2021-11-07T14:00:00.000Z') });
+        const cert2 = await createCertificate({ toTime: new Date('2021-11-07T16:00:00.000Z') });
+        const cert3 = await createCertificate({ toTime: new Date('2021-11-07T18:00:00.000Z') });
+
+        const certificates = await getAllCertificates(
+            TestUser.OrganizationDeviceManager,
+            new Date('2021-11-07T15:00:00.000Z'),
+            new Date('2021-11-07T17:00:00.000Z')
+        );
+
+        expect(certificates.length).to.be.eql(1);
+        expect(certificates[0].id).to.be.eql(cert2.id);
     });
 
     it('should get certificates without a blockchain account attached', async () => {
