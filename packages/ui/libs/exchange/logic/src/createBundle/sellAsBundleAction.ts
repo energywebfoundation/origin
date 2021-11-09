@@ -8,16 +8,15 @@ export const useSellAsBundleActionLogic: TUseSellAsBundleActionLogic<
 > = ({ selectedIds, exchangeCertificates, allDevices, allFuelTypes }) => {
   const { t } = useTranslation();
 
-  const selectedItems: SelectedItem<
-    AccountAssetDTO['asset']['id']
-  >[] = selectedIds
-    ? formatSelectedItems({
-        selectedIds,
-        exchangeCertificates,
-        allDevices,
-        allFuelTypes,
-      })
-    : [];
+  const selectedItems: SelectedItem<AccountAssetDTO['asset']['id']>[] =
+    selectedIds
+      ? formatSelectedItems({
+          selectedIds,
+          exchangeCertificates,
+          allDevices,
+          allFuelTypes,
+        })
+      : [];
 
   return {
     title: t('exchange.createBundle.selectedForSale'),

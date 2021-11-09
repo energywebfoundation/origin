@@ -1,5 +1,5 @@
 import { Unit } from '@energyweb/utils-general';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export class PowerFormatter {
   static readonly displayUnit: string = 'MW';

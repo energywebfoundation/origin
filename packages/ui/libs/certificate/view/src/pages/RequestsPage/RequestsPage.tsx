@@ -3,11 +3,8 @@ import { TableComponent, Requirements } from '@energyweb/origin-ui-core';
 import { useRequestsPageEffects } from './RequestsPage.effects';
 
 export const RequestsPage: FC = () => {
-  const {
-    tableData,
-    canAccessPage,
-    requirementsProps,
-  } = useRequestsPageEffects();
+  const { tableData, canAccessPage, requirementsProps } =
+    useRequestsPageEffects();
 
   if (!canAccessPage) {
     return <Requirements {...requirementsProps} />;
@@ -15,3 +12,5 @@ export const RequestsPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default RequestsPage;

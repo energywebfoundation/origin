@@ -1,4 +1,4 @@
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import React, { FC } from 'react';
 import { useStyles } from './ProgressLine.styles';
 

@@ -1,4 +1,4 @@
-import { Box, Button, Typography, CircularProgress } from '@material-ui/core';
+import { Box, Button, Typography, CircularProgress } from '@mui/material';
 import React, { memo } from 'react';
 import { DoubleColumnForm, SingleColumnForm } from '../../components';
 import { useGenericFormEffects } from './GenericForm.effects';

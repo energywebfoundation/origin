@@ -5,7 +5,7 @@ import {
   variables_darkTheme,
   variables_lightTheme,
 } from '@energyweb/origin-ui-theme';
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 
 export const OriginGlobalStyles: FC = () => {
   const theme = useTheme();

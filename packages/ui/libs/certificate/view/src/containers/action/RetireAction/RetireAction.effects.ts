@@ -8,13 +8,13 @@ import {
 import {
   useBeneficiaryFormLogic,
   useRetireActionLogic,
-  BeneficiaryFormValues,
 } from '@energyweb/origin-ui-certificate-logic';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { useTransactionPendingDispatch } from '../../../context';
+import { Dayjs } from 'dayjs';
 
 export const useRetireActionEffects = (
   selectedIds: CertificateDTO['id'][],
@@ -25,21 +25,14 @@ export const useRetireActionEffects = (
   const allFuelTypes = useCachedAllFuelTypes();
   const setTxPending = useTransactionPendingDispatch();
 
-  const {
-    platformBeneficiaries,
-    isLoading: areBeneficiariesLoading,
-  } = usePlatformBeneficiaries();
+  const { platformBeneficiaries, isLoading: areBeneficiariesLoading } =
+    usePlatformBeneficiaries();
 
   const { initialValues, fields, validationSchema } = useBeneficiaryFormLogic({
     allBeneficiaries: platformBeneficiaries,
   });
 
-  const {
-    register,
-    control,
-    watch,
-    formState,
-  } = useForm<BeneficiaryFormValues>({
+  const { register, control, watch, formState } = useForm({
     defaultValues: initialValues,
     mode: 'onChange',
     resolver: yupResolver(validationSchema),
@@ -54,17 +47,15 @@ export const useRetireActionEffects = (
     [platformBeneficiaries, beneficiary]
   );
 
-  const {
-    retireHandler,
-    isLoading: isHandlerLoading,
-  } = useRetireCertificateHandler(
-    selectedBeneficiary,
-    resetIds,
-    startDate,
-    endDate,
-    purpose,
-    setTxPending
-  );
+  const { retireHandler, isLoading: isHandlerLoading } =
+    useRetireCertificateHandler(
+      selectedBeneficiary,
+      resetIds,
+      startDate as Dayjs,
+      endDate as Dayjs,
+      purpose,
+      setTxPending
+    );
 
   const actionLogic = useRetireActionLogic({
     selectedIds,

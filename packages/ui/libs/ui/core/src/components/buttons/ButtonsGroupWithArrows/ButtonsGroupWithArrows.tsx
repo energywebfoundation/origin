@@ -1,5 +1,5 @@
-import { IconButton, ToggleButtonGroup, ToggleButton } from '@material-ui/core';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { IconButton, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { useStyles } from './ButtonsGroupWithArrows.styles';
 

@@ -7,18 +7,12 @@ import {
 import { useApprovedCertificatesLogic } from '@energyweb/origin-ui-certificate-logic';
 
 export const useApprovedPageEffects = () => {
-  const {
-    allDevices: devices,
-    isLoading: areDevicesLoading,
-  } = useApiAllDevices();
-  const {
-    allTypes: allFuelTypes,
-    isLoading: isFuelTypesloading,
-  } = useAllFuelTypes();
-  const {
-    approvedCertificates,
-    isLoading: areRequestsLoading,
-  } = useApiApprovedCertificates();
+  const { allDevices: devices, isLoading: areDevicesLoading } =
+    useApiAllDevices();
+  const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
+    useAllFuelTypes();
+  const { approvedCertificates, isLoading: areRequestsLoading } =
+    useApiApprovedCertificates();
 
   const loading = isFuelTypesloading || areDevicesLoading || areRequestsLoading;
 

@@ -7,3 +7,5 @@ export const PendingPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default PendingPage;

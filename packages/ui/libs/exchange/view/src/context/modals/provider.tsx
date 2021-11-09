@@ -3,9 +3,8 @@ import { exchangeModalsInitialState, exchangeModalsReducer } from './reducer';
 import { IExchangeModalsStore, TExchangeModalsAction } from './types';
 
 const ExchangeModalsStore = createContext<IExchangeModalsStore>(null);
-const ExchangeModalsDispatch = createContext<
-  React.Dispatch<TExchangeModalsAction>
->(null);
+const ExchangeModalsDispatch =
+  createContext<React.Dispatch<TExchangeModalsAction>>(null);
 
 export const ExchangeModalsProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(

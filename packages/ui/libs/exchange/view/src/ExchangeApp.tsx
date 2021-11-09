@@ -7,10 +7,10 @@ import {
   AllBundlesPage,
   CreateBundlePage,
   MyBundlesPage,
-  MyTradesPage,
-  ViewMarketPage,
-  SupplyPage,
   MyOrdersPage,
+  MyTradesPage,
+  SupplyPage,
+  ViewMarketPage,
 } from './pages';
 
 export interface ExchangeAppProps {

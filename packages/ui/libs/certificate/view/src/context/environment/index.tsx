@@ -4,6 +4,7 @@ import { FC } from 'react';
 export type CertificateEnvVariables = {
   googleMapsApiKey: string;
   exchangeWalletPublicKey: string;
+  allowedChainIds: number[];
 };
 
 const CertificateAppEnv = createContext<CertificateEnvVariables>(null);

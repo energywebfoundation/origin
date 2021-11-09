@@ -4,7 +4,7 @@ import {
   BundleSplitItemDTO,
   useBundleControllerAvailableBundleSplits,
 } from '@energyweb/exchange-react-query-client';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 
 export type BundleSplit = {
   volume: BigNumber;
@@ -17,10 +17,8 @@ export type BundleSplit = {
 export const useApiBundleSplits = (
   id: Bundle['id'] | BundlePublicDTO['id']
 ) => {
-  const {
-    data: bundleSplit,
-    isLoading,
-  } = useBundleControllerAvailableBundleSplits(id);
+  const { data: bundleSplit, isLoading } =
+    useBundleControllerAvailableBundleSplits(id);
 
   const splits: BundleSplit[] = bundleSplit?.splits?.map((split) => ({
     volume: BigNumber.from(split.volume),

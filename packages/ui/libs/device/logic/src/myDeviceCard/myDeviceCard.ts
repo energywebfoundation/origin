@@ -19,29 +19,31 @@ export const useSpecsForMyDeviceCard: TUseSpecsForMyDeviceCard = ({
     mainType.toLowerCase() as EnergyTypeEnum
   );
 
-  const cardHeaderProps: TUseSpecsForMyDeviceCardReturnType['cardHeaderProps'] = {
-    deviceName: device.name,
-    buttonText: t('device.card.viewDetailsButton'),
-    buttonLink: `/device/detail-view/${device.id}`,
-    specFieldProps: {
-      label: t('device.card.capacity'),
-      value: PowerFormatter.format(device.capacity),
-    },
-  };
+  const cardHeaderProps: TUseSpecsForMyDeviceCardReturnType['cardHeaderProps'] =
+    {
+      deviceName: device.name,
+      buttonText: t('device.card.viewDetailsButton'),
+      buttonLink: `/device/detail-view/${device.id}`,
+      specFieldProps: {
+        label: t('device.card.capacity'),
+        value: PowerFormatter.format(device.capacity),
+      },
+    };
 
-  const cardContentProps: TUseSpecsForMyDeviceCardReturnType['cardContentProps'] = {
-    iconsProps: [
-      {
-        icon: deviceIconRegular,
-        title: mainType,
-        subtitle: restType,
-      },
-      {
-        icon: ThailandFlag,
-        title: `${device.region}, ${device.subregion}`,
-      },
-    ],
-  };
+  const cardContentProps: TUseSpecsForMyDeviceCardReturnType['cardContentProps'] =
+    {
+      iconsProps: [
+        {
+          icon: deviceIconRegular,
+          title: mainType,
+          subtitle: restType,
+        },
+        {
+          icon: ThailandFlag,
+          title: `${device.region}, ${device.subregion}`,
+        },
+      ],
+    };
 
   return {
     imageUrl,

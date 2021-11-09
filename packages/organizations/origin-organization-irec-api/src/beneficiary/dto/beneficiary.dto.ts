@@ -14,7 +14,7 @@ export class BeneficiaryDTO {
     organization?: PublicOrganizationInfoDTO;
 
     @ApiProperty({ type: Number })
-    ownerId?: number;
+    ownerId?: number | null;
 
     @ApiProperty({ type: String })
     name: string;

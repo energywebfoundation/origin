@@ -1,5 +1,5 @@
 import { GenericForm } from '@energyweb/origin-ui-core';
-import { Box, Dialog, DialogContent } from '@material-ui/core';
+import { Box, Dialog, DialogContent } from '@mui/material';
 import React from 'react';
 import { useDirectBuyEffects } from './DirectBuy.effects';
 

@@ -7,7 +7,7 @@ import {
   ListItemIcon,
   Checkbox,
   ListItemText,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useStyles } from './Requirements.styles';
 
 interface IPermissionRule {

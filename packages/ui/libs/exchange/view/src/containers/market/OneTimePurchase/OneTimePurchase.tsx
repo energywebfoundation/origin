@@ -1,4 +1,4 @@
-import { Divider } from '@material-ui/core';
+import { Divider } from '@mui/material';
 import React, { Dispatch, FC } from 'react';
 import { FormInput, MaterialDatepicker } from '@energyweb/origin-ui-core';
 import { isEmpty } from 'lodash';

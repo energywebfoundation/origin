@@ -1,5 +1,5 @@
 import { ItemsListWithActions, Requirements } from '@energyweb/origin-ui-core';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useBlockchainInboxPageEffects } from './BlockchainInboxPage.effects';
 
@@ -27,3 +27,5 @@ export const BlockchainInboxPage: FC = () => {
     />
   );
 };
+
+export default BlockchainInboxPage;

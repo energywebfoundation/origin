@@ -1,4 +1,4 @@
-import { BoxProps, Drawer, List, PaperProps } from '@material-ui/core';
+import { BoxProps, Drawer, List, PaperProps } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { TMenuSection, NavBarSection } from '../NavBarSection';
 import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';

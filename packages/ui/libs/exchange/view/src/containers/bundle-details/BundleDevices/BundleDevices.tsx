@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React, { FC } from 'react';
 import { StyledTitleAndText } from '../StyledTitleAndText';
 import { useStyles } from './BundleDevices.styles';

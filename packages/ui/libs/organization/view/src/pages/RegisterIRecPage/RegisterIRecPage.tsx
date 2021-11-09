@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
 import { MultiStepForm } from '@energyweb/origin-ui-core';
 import { useStyles } from './RegisterIRecPage.styles';
 import { useRegisterIRecPageEffects } from './RegisterIRecPage.effects';
@@ -14,3 +14,5 @@ export const RegisterIRecPage: FC = () => {
     </Paper>
   );
 };
+
+export default RegisterIRecPage;

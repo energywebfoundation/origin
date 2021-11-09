@@ -1,8 +1,8 @@
 import { TimeFrame } from '@energyweb/exchange-irec-react-query-client';
 import { SelectRegular } from '@energyweb/origin-ui-core';
 import { periodTypeOptions } from '@energyweb/origin-ui-exchange-logic';
-import { IconButton, InputAdornment } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { IconButton, InputAdornment } from '@mui/material';
+import { Close } from '@mui/icons-material';
 import React from 'react';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';

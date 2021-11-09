@@ -7,3 +7,5 @@ export const ApprovedPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default ApprovedPage;

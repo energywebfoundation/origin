@@ -1,6 +1,5 @@
 import { initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
-import ICU from 'i18next-icu';
 
 import en from './languages/en.json';
 import pl from './languages/pl.json';
@@ -20,18 +19,15 @@ export const initializeI18N = (
   language: TOriginLanguage = 'en',
   fallbackLanguage: TOriginLanguage = 'en'
 ) => {
-  i18n
-    .use(new ICU())
-    .use(initReactI18next)
-    .init({
-      resources: ORIGIN_TRANSLATIONS,
-      lng: language,
-      fallbackLng: fallbackLanguage,
+  i18n.use(initReactI18next).init({
+    resources: ORIGIN_TRANSLATIONS,
+    lng: language,
+    fallbackLng: fallbackLanguage,
 
-      interpolation: {
-        escapeValue: false,
-      },
-    });
+    interpolation: {
+      escapeValue: false,
+    },
+  });
 
   return i18n;
 };

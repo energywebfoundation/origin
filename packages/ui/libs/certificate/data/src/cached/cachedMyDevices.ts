@@ -12,7 +12,8 @@ import { composeMyDevices } from '../utils';
 
 export const useCachedMyDevices = () => {
   const queryClient = useQueryClient();
-  const myOriginDevicesQueryKey = getDeviceRegistryControllerGetMyDevicesQueryKey();
+  const myOriginDevicesQueryKey =
+    getDeviceRegistryControllerGetMyDevicesQueryKey();
   const myIRecDevicesQueryKey = getDeviceControllerGetMyDevicesQueryKey();
 
   const cachedOriginDevices = queryClient.getQueryData<OriginDeviceDTO[]>(

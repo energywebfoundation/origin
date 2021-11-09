@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { ButtonsGroupWithArrows } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -39,7 +39,7 @@ export const SmartMeterChart: FC<SmartMeterChartProps> = ({ meterId }) => {
         </div>
       )}
       <div className={classes.chartWrapper}>
-        <Bar type="bar" data={chartData} options={smartMeterChartOptions} />
+        <Bar data={chartData} options={smartMeterChartOptions} />
       </div>
     </>
   );

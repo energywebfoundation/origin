@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { GenericItemsList, ListActionsBlock } from '../../components';
 import { TItemsListWithActions } from './ItemsListWithActions.types';
 import { useItemsListWithActionsEffects } from './ItemsListWithActions.effects';

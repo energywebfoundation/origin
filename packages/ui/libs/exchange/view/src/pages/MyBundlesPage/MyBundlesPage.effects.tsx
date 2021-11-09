@@ -11,7 +11,7 @@ import {
   useMyBundlesTablesLogic,
   usePermissionsLogic,
 } from '@energyweb/origin-ui-exchange-logic';
-import { Cancel } from '@material-ui/icons';
+import { Cancel } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import {
   ExchangeModalsActionsEnum,

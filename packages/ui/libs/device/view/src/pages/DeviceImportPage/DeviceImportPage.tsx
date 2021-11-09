@@ -1,4 +1,4 @@
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import React from 'react';
 import { DevicesInSystemList, DevicesToImportList } from '../../containers';
 import { useDeviceImportPageEffects } from './DeviceImportPage.effects';
@@ -21,3 +21,5 @@ export const DeviceImportPage = () => {
     </div>
   );
 };
+
+export default DeviceImportPage;

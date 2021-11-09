@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { CircularProgress, Typography } from '@material-ui/core';
+import { CircularProgress, Typography } from '@mui/material';
 
 import {
   DetailViewCard,
@@ -13,13 +13,8 @@ import { useStyles } from './DetailViewPage.styles';
 
 export const DetailViewPage: FC = () => {
   const classes = useStyles();
-  const {
-    locationProps,
-    cardProps,
-    device,
-    isLoading,
-    allTypes,
-  } = useDetailViewPageEffects();
+  const { locationProps, cardProps, device, isLoading, allTypes } =
+    useDetailViewPageEffects();
 
   if (isLoading) {
     return <CircularProgress />;
@@ -39,3 +34,5 @@ export const DetailViewPage: FC = () => {
     </div>
   );
 };
+
+export default DetailViewPage;
