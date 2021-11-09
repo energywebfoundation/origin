@@ -7,7 +7,6 @@ module.exports = {
     '<rootDir>/libs/ui/theme',
     '<rootDir>/libs/ui/shared-state',
     '<rootDir>/libs/ui/assets',
-    '<rootDir>/libs/ui/blockchain',
     '<rootDir>/libs/exchange/data',
     '<rootDir>/libs/exchange/view',
     '<rootDir>/libs/exchange/logic',
@@ -23,5 +22,6 @@ module.exports = {
     '<rootDir>/libs/organization/view',
     '<rootDir>/libs/organization/data',
     '<rootDir>/libs/organization/logic',
+    '<rootDir>/libs/ui/web3',
   ],
 };

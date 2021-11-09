@@ -19,13 +19,8 @@ export const BundleDetailsModalContent: FC<BundleDetailsModalContentProps> = ({
   splits,
   isOwner,
 }) => {
-  const {
-    filteredSplits,
-    minPrice,
-    maxPrice,
-    priceRange,
-    setPriceRange,
-  } = useBundleDetailsModalContentEffects(splits, bundle?.price);
+  const { filteredSplits, minPrice, maxPrice, priceRange, setPriceRange } =
+    useBundleDetailsModalContentEffects(splits, bundle?.price);
 
   return (
     <>

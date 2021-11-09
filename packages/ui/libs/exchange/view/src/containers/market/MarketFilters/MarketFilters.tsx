@@ -1,5 +1,5 @@
 import { SelectAutocomplete } from '@energyweb/origin-ui-core';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import React, { Dispatch, FC } from 'react';
 import { MarketFiltersActions, MarketFiltersState } from '../../../reducer';
 import { useMarketFiltersEffects } from './MarketFilters.effects';

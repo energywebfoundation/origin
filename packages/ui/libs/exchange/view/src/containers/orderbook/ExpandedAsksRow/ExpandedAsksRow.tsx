@@ -1,6 +1,6 @@
 import { OrderBookOrderDTO } from '@energyweb/exchange-irec-react-query-client';
 import { SmallTitleWithText } from '@energyweb/origin-ui-core';
-import { Box, CircularProgress, Grid } from '@material-ui/core';
+import { Box, CircularProgress, Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useExpandedAsksRowEffects } from './ExpandedAsksRow.effects';
 

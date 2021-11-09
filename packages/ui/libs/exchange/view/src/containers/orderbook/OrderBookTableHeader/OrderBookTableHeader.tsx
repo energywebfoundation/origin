@@ -1,6 +1,6 @@
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
-import { Grid, Typography } from '@material-ui/core';
-import { Info } from '@material-ui/icons';
+import { Grid, Typography } from '@mui/material';
+import { Info } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStyles } from './OrderBookTableHeader.styles';

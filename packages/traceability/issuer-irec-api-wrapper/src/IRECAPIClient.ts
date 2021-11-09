@@ -563,7 +563,9 @@ export class IRECAPIClient {
             response.data.expires_in
         );
 
-        await this.onTokensRefreshed(this.accessTokens);
+        if (this.onTokensRefreshed) {
+            await this.onTokensRefreshed(this.accessTokens);
+        }
     }
 
     private async ensureNotExpired() {
@@ -604,7 +606,8 @@ export class IRECAPIClient {
                 const status = err?.response?.data?.status ?? err?.response?.status ?? 500;
                 return Promise.reject(
                     new HttpException(
-                        err?.response?.data?.msg ?? err?.response?.data?.title ?? err.message,
+                        'IREC API Error:' +
+                            (err?.response?.data?.msg ?? err?.response?.data?.title ?? err.message),
                         status
                     )
                 );

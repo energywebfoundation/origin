@@ -1,10 +1,5 @@
 import { FileUpload, GenericForm } from '@energyweb/origin-ui-core';
-import {
-  Box,
-  CircularProgress,
-  Dialog,
-  DialogContent,
-} from '@material-ui/core';
+import { Box, CircularProgress, Dialog, DialogContent } from '@mui/material';
 import React from 'react';
 import { useImportDeviceModalEffects } from './ImportDeviceModal.effects';
 import { useStyles } from './ImportDeviceModal.styles';

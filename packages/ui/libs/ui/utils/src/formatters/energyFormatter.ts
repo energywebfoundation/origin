@@ -1,5 +1,6 @@
 import { Unit } from '@energyweb/utils-general';
-import { utils, BigNumber, BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { commify } from '@ethersproject/units';
 
 export class EnergyFormatter {
   public static readonly displayUnit = 'MWh';
@@ -24,7 +25,7 @@ export class EnergyFormatter {
   }
 
   static format(baseValue: BigNumberish, includeDisplayUnit?: boolean): string {
-    const commifiedValue = utils.commify(
+    const commifiedValue = commify(
       String(EnergyFormatter.getValueInDisplayUnit(BigNumber.from(baseValue)))
     );
     return String(commifiedValue).concat(

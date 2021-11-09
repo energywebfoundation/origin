@@ -1,4 +1,4 @@
-import { TableCell, TableRow } from '@material-ui/core';
+import { TableCell, TableRow } from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { TableRowData, TableHeaderData } from '../../../containers';
 import { TableComponentActions } from '../TableComponentActions';

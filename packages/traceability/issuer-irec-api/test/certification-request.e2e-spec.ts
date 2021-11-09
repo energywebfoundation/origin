@@ -74,7 +74,11 @@ describe('Certification Request tests', () => {
                     approved,
                     revoked,
                     files,
-                    energy
+                    energy,
+                    irecTradeAccountCode,
+                    irecIssueRequestId,
+                    organizationId,
+                    irecAssetId
                 }
             } = await request(app.getHttpServer())
                 .post('/irec/certification-request')
@@ -91,6 +95,10 @@ describe('Certification Request tests', () => {
             expect(revoked).to.be.false;
             expect(JSON.stringify(files)).to.equal(JSON.stringify(certReqData.files));
             expect(energy).to.equal(certReqData.energy);
+            expect(irecIssueRequestId).to.be.a('string');
+            expect(organizationId).to.be.a('string');
+            expect(irecAssetId).to.be.a('string');
+            expect(irecTradeAccountCode).to.be.a('string');
 
             const { body: requests } = await request(app.getHttpServer())
                 .get(`/irec/certification-request`)
@@ -101,6 +109,10 @@ describe('Certification Request tests', () => {
                 (req: FullCertificationRequestDTO) => req.owner === getAddress(certReqData.to)
             );
             expect(cr).to.be.not.empty;
+            expect(cr.irecIssueRequestId).to.be.a('string');
+            expect(cr.organizationId).to.be.a('string');
+            expect(cr.irecAssetId).to.be.a('string');
+            expect(cr.irecTradeAccountCode).to.be.a('string');
         });
     });
 

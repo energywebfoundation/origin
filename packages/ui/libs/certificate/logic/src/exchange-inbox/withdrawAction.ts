@@ -8,16 +8,15 @@ export const useWithdrawActionLogic: TUseWithdrawActionLogic<
 > = ({ selectedIds, exchangeCertificates, allDevices, allFuelTypes }) => {
   const { t } = useTranslation();
 
-  const selectedItems: SelectedItem<
-    AccountAssetDTO['asset']['id']
-  >[] = selectedIds
-    ? formatSelectedExchangeItems({
-        selectedIds,
-        exchangeCertificates,
-        allDevices,
-        allFuelTypes,
-      })
-    : [];
+  const selectedItems: SelectedItem<AccountAssetDTO['asset']['id']>[] =
+    selectedIds
+      ? formatSelectedExchangeItems({
+          selectedIds,
+          exchangeCertificates,
+          allDevices,
+          allFuelTypes,
+        })
+      : [];
 
   return {
     title: t('certificate.exchangeInbox.selectedForWithdraw'),

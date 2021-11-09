@@ -22,25 +22,17 @@ export const useRequestsPageEffects = () => {
     exchangeDepositAddress,
   });
 
-  const {
-    myDevices: devices,
-    isLoading: areDevicesLoading,
-  } = useApiMyDevices();
+  const { myDevices: devices, isLoading: areDevicesLoading } =
+    useApiMyDevices();
 
-  const {
-    allTypes: allFuelTypes,
-    isLoading: isFuelTypesloading,
-  } = useAllFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
+    useAllFuelTypes();
 
-  const {
-    requests,
-    isLoading: allRequestsLoading,
-  } = useCertificationRequests();
+  const { requests, isLoading: allRequestsLoading } =
+    useCertificationRequests();
 
-  const {
-    exchangeAddress,
-    isLoading: isExchangeAddressLoading,
-  } = useExchangeAddress();
+  const { exchangeAddress, isLoading: isExchangeAddressLoading } =
+    useExchangeAddress();
 
   const loading =
     isFuelTypesloading ||

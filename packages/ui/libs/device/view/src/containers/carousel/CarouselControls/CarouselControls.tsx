@@ -1,5 +1,5 @@
 import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
-import { ToggleButton, ToggleButtonGroup, Typography } from '@material-ui/core';
+import { ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStyles } from './CarouselControls.styles';

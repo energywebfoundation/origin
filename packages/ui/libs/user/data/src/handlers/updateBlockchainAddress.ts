@@ -4,15 +4,15 @@ import {
   useOrganizationControllerSetBlockchainAddress,
   UserStatus,
 } from '@energyweb/origin-backend-react-query-client';
+import { useQueryClient } from 'react-query';
 import { useTranslation } from 'react-i18next';
 import { signTypedMessage } from '@energyweb/utils-general';
 import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { useWeb3React } from '@web3-react/core';
+import { useWeb3 } from '@energyweb/origin-ui-web3';
 import { useUser } from '../fetching';
-import { useQueryClient } from 'react-query';
 import { userApiErrorHandler } from './errorHandler';
 
 export const useUpdateBlockchainAddress = (
@@ -22,17 +22,12 @@ export const useUpdateBlockchainAddress = (
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const userQuerykey = getUserControllerMeQueryKey();
-  const {
-    mutate,
-    error,
-    isError,
-    isSuccess,
-    status,
-  } = useOrganizationControllerSetBlockchainAddress();
+  const { mutate, error, isError, isSuccess, status } =
+    useOrganizationControllerSetBlockchainAddress();
 
   const { user, userLoading } = useUser();
   const blockchainAddress = user?.organization?.blockchainAccountAddress;
-  const { library: web3, account } = useWeb3React();
+  const { web3, account } = useWeb3();
 
   const submitHandler = () => {
     try {

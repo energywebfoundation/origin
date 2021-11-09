@@ -9,26 +9,25 @@ import {
   TUseRetireActionLogic,
 } from './types';
 
-export const useRetireActionLogic: TUseRetireActionLogic<
-  CertificateDTO['id']
-> = ({ selectedIds, blockchainCertificates, allDevices, allFuelTypes }) => {
-  const { t } = useTranslation();
+export const useRetireActionLogic: TUseRetireActionLogic<CertificateDTO['id']> =
+  ({ selectedIds, blockchainCertificates, allDevices, allFuelTypes }) => {
+    const { t } = useTranslation();
 
-  const selectedItems: SelectedItem<CertificateDTO['id']>[] = selectedIds
-    ? formatSelectedBlockchainItems({
-        selectedIds,
-        allDevices,
-        blockchainCertificates,
-        allFuelTypes,
-      })
-    : [];
+    const selectedItems: SelectedItem<CertificateDTO['id']>[] = selectedIds
+      ? formatSelectedBlockchainItems({
+          selectedIds,
+          allDevices,
+          blockchainCertificates,
+          allFuelTypes,
+        })
+      : [];
 
-  return {
-    title: t('certificate.blockchainInbox.selectedForRetirement'),
-    buttonText: t('certificate.blockchainInbox.retireButton'),
-    selectedItems,
+    return {
+      title: t('certificate.blockchainInbox.selectedForRetirement'),
+      buttonText: t('certificate.blockchainInbox.retireButton'),
+      selectedItems,
+    };
   };
-};
 
 export const useBeneficiaryFormLogic: TUseBeneficiaryFormLogic = ({
   allBeneficiaries,

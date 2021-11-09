@@ -1,3 +1,7 @@
+import { Dayjs } from 'dayjs';
+import { Dispatch } from 'react';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useOneTimePurchaseFormLogic } from '@energyweb/origin-ui-exchange-logic';
@@ -7,9 +11,6 @@ import {
   MarketFiltersActions,
   MarketFiltersState,
 } from '../../../reducer';
-import { Dayjs } from 'dayjs';
-import { Dispatch } from 'react';
-import { useMediaQuery, useTheme } from '@material-ui/core';
 import { MarketButton } from '../TotalAndButtons';
 
 type BidFormValues = {

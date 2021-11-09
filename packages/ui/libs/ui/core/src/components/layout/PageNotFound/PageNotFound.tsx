@@ -1,4 +1,4 @@
-import { Button, Paper, Typography } from '@material-ui/core';
+import { Button, Paper, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useStyles } from './PageNotFound.styles';

@@ -1,9 +1,4 @@
-import {
-  Paper,
-  PaperProps,
-  Typography,
-  TypographyProps,
-} from '@material-ui/core';
+import { Paper, PaperProps, Typography, TypographyProps } from '@mui/material';
 import { Global, css } from '@emotion/react';
 import React, { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import { useStyles } from './ErrorFallback.styles';

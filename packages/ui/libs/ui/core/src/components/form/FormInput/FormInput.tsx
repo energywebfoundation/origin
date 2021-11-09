@@ -1,5 +1,5 @@
 import React, { memo, PropsWithChildren, ReactElement, ReactNode } from 'react';
-import { InputAdornment, TextField, TextFieldProps } from '@material-ui/core';
+import { InputAdornment, TextField, TextFieldProps } from '@mui/material';
 import { UseFormRegister } from 'react-hook-form';
 
 export type FormInputField<FormValuesType> = {

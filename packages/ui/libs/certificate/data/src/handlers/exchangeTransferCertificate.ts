@@ -30,7 +30,7 @@ export const useExchangeTransferCertificateHandler = (
     ).toString();
 
     const preparedData: RequestSendDTO = {
-      assetId: (id as unknown) as AccountAssetDTO['asset']['id'],
+      assetId: id as unknown as AccountAssetDTO['asset']['id'],
       amount: formattedAmount,
       address: receiverAddress,
     };

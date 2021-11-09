@@ -1,5 +1,5 @@
 import React, { ElementType } from 'react';
-import { Popover, Typography, Button } from '@material-ui/core';
+import { Popover, Typography, Button } from '@mui/material';
 import { useStyles } from './IconPopover.styles';
 import { useIconPopoverEffects } from './IconPopover.effects';
 

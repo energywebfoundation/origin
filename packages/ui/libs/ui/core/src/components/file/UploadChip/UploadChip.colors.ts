@@ -1,5 +1,5 @@
 import { LightenColor } from '@energyweb/origin-ui-theme';
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 
 export const useColors = () => {
   const theme = useTheme();

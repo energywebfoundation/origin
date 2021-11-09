@@ -1,4 +1,4 @@
-import { Typography, TypographyProps } from '@material-ui/core';
+import { Typography, TypographyProps } from '@mui/material';
 import React, { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import { useStyles } from './SpecField.styles';
 

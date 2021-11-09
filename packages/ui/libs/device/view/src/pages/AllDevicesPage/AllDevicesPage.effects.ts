@@ -6,10 +6,8 @@ import {
 
 export const useAllDevicesPageEffects = () => {
   const { allDevices, isLoading: isAllDevicesLoading } = useApiAllDevices();
-  const {
-    allTypes: allDeviceTypes,
-    isLoading: allTypesLoading,
-  } = useAllDeviceFuelTypes();
+  const { allTypes: allDeviceTypes, isLoading: allTypesLoading } =
+    useAllDeviceFuelTypes();
 
   const allActiveDevices = allDevices.filter(
     (device) => device.status === DeviceState.Approved

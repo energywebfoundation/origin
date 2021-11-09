@@ -7,3 +7,5 @@ export const AllOrganizationsPage = () => {
 
   return <TableComponent {...tableProps} />;
 };
+
+export default AllOrganizationsPage;

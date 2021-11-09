@@ -4,15 +4,11 @@ import { composeMyDevices } from '../utils';
 import { ComposedDevice } from '../types';
 
 export const useApiMyDevices = () => {
-  const {
-    data: allOriginDevices,
-    isLoading: isOriginDevicesLoading,
-  } = useDeviceRegistryControllerGetMyDevices();
+  const { data: allOriginDevices, isLoading: isOriginDevicesLoading } =
+    useDeviceRegistryControllerGetMyDevices();
 
-  const {
-    data: allIRecDevices,
-    isLoading: isIRecDevicesLoading,
-  } = useDeviceControllerGetMyDevices();
+  const { data: allIRecDevices, isLoading: isIRecDevicesLoading } =
+    useDeviceControllerGetMyDevices();
 
   const isLoading = isOriginDevicesLoading || isIRecDevicesLoading;
   const myDevices =
