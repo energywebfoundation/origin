@@ -12,7 +12,7 @@ export class BatchCertificateClaimDTO
     @IsObject()
     claimData: IClaimData;
 
-    @ApiPropertyOptional({ type: String })
+    @ApiPropertyOptional({ type: String, description: "Public blockchain address", example: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8' })
     @IsEthereumAddress()
     to?: string;
 }
