@@ -56,7 +56,7 @@ describe('Invitation e2e tests', () => {
         );
 
         const newUserEmail = 'newuser@example.com';
-        const password = 'password';
+        const password = 'password123';
 
         await request(app.getHttpServer())
             .post('/invitation')

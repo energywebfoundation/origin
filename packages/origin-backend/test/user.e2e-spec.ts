@@ -25,7 +25,7 @@ export const userToRegister: UserRegistrationData = {
     firstName: 'John',
     lastName: 'Rambo',
     email: 'john@example.com',
-    password: 'FirstBlood',
+    password: 'FirstBlood2',
     telephone: '+11'
 };
 
@@ -37,13 +37,8 @@ describe('User e2e tests', () => {
     let emailConfirmationService: EmailConfirmationService;
 
     before(async () => {
-        ({
-            app,
-            databaseService,
-            userService,
-            organizationService,
-            emailConfirmationService
-        } = await bootstrapTestInstance());
+        ({ app, databaseService, userService, organizationService, emailConfirmationService } =
+            await bootstrapTestInstance());
 
         await app.init();
     });
