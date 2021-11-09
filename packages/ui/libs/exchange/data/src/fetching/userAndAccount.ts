@@ -3,10 +3,8 @@ import { useAccountControllerGetAccount } from '@energyweb/exchange-react-query-
 
 export const useApiUserAndAccount = () => {
   const { data: userData, isLoading: userLoading } = useUserControllerMe();
-  const {
-    data: account,
-    isLoading: exchangeAddressLoading,
-  } = useAccountControllerGetAccount();
+  const { data: account, isLoading: exchangeAddressLoading } =
+    useAccountControllerGetAccount();
 
   const exchangeDepositAddress = account?.address || '';
   const user = userData || null;

@@ -1,6 +1,6 @@
 import { TableComponent } from '@energyweb/origin-ui-core';
 import { TOrderBookData } from '@energyweb/origin-ui-exchange-data';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { OrderBookAsksProvider } from '../../../context';
 import { OrderBookTableHeader } from '../OrderBookTableHeader';

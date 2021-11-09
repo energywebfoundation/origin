@@ -4,3 +4,4 @@ export * from './retireAction';
 export * from './blockchainTransferAction';
 export * from './permissions';
 export * from './types';
+export * from './connectMetamask';

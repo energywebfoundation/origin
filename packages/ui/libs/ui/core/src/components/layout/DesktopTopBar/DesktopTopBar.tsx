@@ -1,6 +1,6 @@
 import React, { FC, memo } from 'react';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
-import { Box, Button, SwitchProps, Toolbar } from '@material-ui/core';
+import { Box, Button, SwitchProps, Toolbar } from '@mui/material';
 import { useStyles } from './DesktopTopBar.styles';
 import { TopBarButtonData } from '../TopBar';
 import { ThemeSwitcher } from '../ThemeSwitcher/ThemeSwitcher';

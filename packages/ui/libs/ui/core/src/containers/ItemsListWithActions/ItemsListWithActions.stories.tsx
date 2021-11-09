@@ -2,7 +2,7 @@ import React from 'react';
 import { Meta } from '@storybook/react';
 import { ItemsListWithActions } from './ItemsListWithActions';
 import { ItemsListWithActionsProps } from './ItemsListWithActions.types';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 export default {
   title: 'Containers / ItemsListWithActions',
@@ -12,10 +12,8 @@ export default {
 export const WithoutCheckboxes = (
   args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
 ) => {
-  const containers: ItemsListWithActionsProps<
-    number,
-    string
-  >['containers'] = new Map();
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
+    new Map();
 
   containers.set(1, {
     containerComponent: <Typography>First container</Typography>,
@@ -61,10 +59,8 @@ WithoutCheckboxes.args = {
 export const WithCheckboxes = (
   args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
 ) => {
-  const containers: ItemsListWithActionsProps<
-    number,
-    string
-  >['containers'] = new Map();
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
+    new Map();
 
   containers.set(1, {
     containerComponent: <Typography>First container</Typography>,
@@ -111,10 +107,8 @@ WithCheckboxes.args = {
 export const WithPagination = (
   args: Omit<ItemsListWithActionsProps<number, number>, 'containers'>
 ) => {
-  const containers: ItemsListWithActionsProps<
-    number,
-    string
-  >['containers'] = new Map();
+  const containers: ItemsListWithActionsProps<number, string>['containers'] =
+    new Map();
 
   containers.set(1, {
     containerComponent: <Typography>First container</Typography>,

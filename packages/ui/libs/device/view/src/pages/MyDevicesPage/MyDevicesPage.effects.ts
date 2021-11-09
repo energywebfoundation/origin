@@ -17,10 +17,8 @@ export const useMyDevicePageEffects = () => {
   });
 
   const { myDevices, isLoading: myDevicesLoading } = useApiMyDevices();
-  const {
-    allTypes: allDeviceTypes,
-    isLoading: allTypesLoading,
-  } = useAllDeviceFuelTypes();
+  const { allTypes: allDeviceTypes, isLoading: allTypesLoading } =
+    useAllDeviceFuelTypes();
 
   const isLoading =
     myDevicesLoading || allTypesLoading || userAndAccountLoading;

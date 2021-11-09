@@ -16,7 +16,7 @@ import {
   ExchangeModalsActionsEnum,
 } from '../../context';
 import { useTranslation } from 'react-i18next';
-import { Edit, Remove } from '@material-ui/icons';
+import { Edit, Remove } from '@mui/icons-material';
 import { TableActionData } from '@energyweb/origin-ui-core';
 
 export const useSupplyPageEffects = () => {

@@ -1,10 +1,9 @@
 import { PageNotFound } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
-
 import { Route, Routes } from 'react-router';
-import { AdminUsersPage, AdminUpdateUserPage, AdminClaimsPage } from './pages';
+import { AdminClaimsPage, AdminUpdateUserPage, AdminUsersPage } from './pages';
 
-interface AdminAppProps {
+export interface AdminAppProps {
   routesConfig: {
     showClaims: boolean;
     showUsers: boolean;

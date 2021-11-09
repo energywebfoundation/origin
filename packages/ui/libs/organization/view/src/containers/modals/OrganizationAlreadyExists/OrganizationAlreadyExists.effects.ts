@@ -17,9 +17,8 @@ export const useOrganizationAlreadyExistsEffects = () => {
     });
   };
 
-  const { title, text, buttons } = useOrganizationAlreadyExistsLogic(
-    closeModal
-  );
+  const { title, text, buttons } =
+    useOrganizationAlreadyExistsLogic(closeModal);
 
   const dialogProps: GenericModalProps['dialogProps'] = {
     maxWidth: 'sm',

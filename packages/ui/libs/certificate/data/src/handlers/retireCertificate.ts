@@ -1,3 +1,4 @@
+// This is the reason why Certificate App bundle weighs > 2mb
 import { IClaimData } from '@energyweb/issuer';
 import {
   CertificateDTO,
@@ -10,7 +11,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
 import { Dayjs } from 'dayjs';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
@@ -26,17 +27,16 @@ export const useRetireCertificateHandler = (
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const blockchainCertificatesQueryKey = getIrecCertificateControllerGetAllQueryKey();
+  const blockchainCertificatesQueryKey =
+    getIrecCertificateControllerGetAllQueryKey();
 
-  const {
-    getBlockchainCertificate,
-    isLoading: isGetBlockchainLoading,
-  } = useGetBlockchainCertificateHandler();
+  const { getBlockchainCertificate, isLoading: isGetBlockchainLoading } =
+    useGetBlockchainCertificateHandler();
 
   const retireHandler = async <Id>(id: Id, amount: string) => {
     try {
       const onChainCertificate = await getBlockchainCertificate(
-        (id as unknown) as CertificateDTO['id']
+        id as unknown as CertificateDTO['id']
       );
       const formattedAmount = BigNumber.from(
         PowerFormatter.getBaseValueFromValueInDisplayUnit(Number(amount))

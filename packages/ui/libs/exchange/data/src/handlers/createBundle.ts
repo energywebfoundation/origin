@@ -28,7 +28,7 @@ export const useCreateBundleHandler = (
 
   return <Id>(energyAmounts: EnergyAmounts<Id>[]) => {
     const bundleItems: BundleItemDTO[] = energyAmounts.map((item) => ({
-      assetId: (item.id as unknown) as AccountAssetDTO['asset']['id'],
+      assetId: item.id as unknown as AccountAssetDTO['asset']['id'],
       volume: PowerFormatter.getBaseValueFromValueInDisplayUnit(
         parseInt(item.amount)
       ).toString(),

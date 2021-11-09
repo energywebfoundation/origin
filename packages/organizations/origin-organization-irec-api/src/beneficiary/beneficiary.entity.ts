@@ -14,9 +14,9 @@ export class Beneficiary extends ExtendedBaseEntity {
     @IsOptional()
     organizationId?: number;
 
-    @Column()
+    @Column({ nullable: true, type: 'integer' })
     @IsOptional()
-    ownerId?: number;
+    ownerId?: number | null;
 
     @Column()
     name: string;

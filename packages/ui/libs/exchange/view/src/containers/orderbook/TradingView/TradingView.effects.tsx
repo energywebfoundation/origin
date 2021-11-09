@@ -6,13 +6,14 @@ import {
   useAsksTableLogic,
   useBidsTableLogic,
 } from '@energyweb/origin-ui-exchange-logic';
-import { Theme, useMediaQuery } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { MultipleDeviceIcons } from '../MultipleDeviceIcons';
 import { ExpandedAsksRow } from '../ExpandedAsksRow';
 import { TradingViewProps } from './TradingView';
 import { useStyles } from './TradingView.styles';
+import { useTheme } from '@mui/styles';
 
 export const useTradingViewEffects = ({
   orderBookData,
@@ -22,9 +23,9 @@ export const useTradingViewEffects = ({
   const allFuelTypes = useCachedAllFuelTypes();
   const user = useCachedUser();
   const classes = useStyles();
-  const mobileView = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('md')
-  );
+
+  const theme = useTheme();
+  const mobileView = useMediaQuery(theme.breakpoints.down('md'));
 
   const asksTableProps = useAsksTableLogic({
     asks: orderBookData.asks,

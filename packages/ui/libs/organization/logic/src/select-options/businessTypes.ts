@@ -14,7 +14,7 @@ export const BUSINESS_LEGAL_TYPE_OPTIONS = [
       value: item,
       label:
         IRECBusinessLegalStatusLabelsMap[
-          (item as unknown) as keyof typeof IRECBusinessLegalStatusLabelsMap
+          item as unknown as keyof typeof IRECBusinessLegalStatusLabelsMap
         ],
     })),
   {

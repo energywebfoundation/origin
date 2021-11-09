@@ -7,7 +7,7 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
@@ -20,17 +20,16 @@ export const useBlockchainTransferCertificateHandler = (
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const blockchainCertificatesQueryKey = getIrecCertificateControllerGetAllQueryKey();
+  const blockchainCertificatesQueryKey =
+    getIrecCertificateControllerGetAllQueryKey();
 
-  const {
-    getBlockchainCertificate,
-    isLoading: isGetBlockchainLoading,
-  } = useGetBlockchainCertificateHandler();
+  const { getBlockchainCertificate, isLoading: isGetBlockchainLoading } =
+    useGetBlockchainCertificateHandler();
 
   const transferHandler = async <Id>(id: Id, amount: string) => {
     try {
       const onChainCertificate = await getBlockchainCertificate(
-        (id as unknown) as CertificateDTO['id']
+        id as unknown as CertificateDTO['id']
       );
       const formattedAmount = BigNumber.from(
         PowerFormatter.getBaseValueFromValueInDisplayUnit(Number(amount))

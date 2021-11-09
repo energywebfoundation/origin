@@ -1,5 +1,6 @@
 import { useState, SyntheticEvent } from 'react';
-import { useTheme, useMediaQuery } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 
 export const useTableActionsEffects = () => {
   const [open, setOpen] = useState(false);

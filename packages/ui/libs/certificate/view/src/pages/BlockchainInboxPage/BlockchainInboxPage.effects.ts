@@ -28,23 +28,17 @@ export const useBlockchainInboxPageEffects = () => {
     exchangeDepositAddress,
     isLoading: userAndAccountLoading,
   } = useApiUserAndAccount();
-  const {
-    canAccessPage,
-    requirementsProps,
-  } = useBlockchainInboxPermissionsLogic({
-    user,
-    exchangeDepositAddress,
-  });
+  const { canAccessPage, requirementsProps } =
+    useBlockchainInboxPermissionsLogic({
+      user,
+      exchangeDepositAddress,
+    });
 
-  const {
-    blockchainCertificates,
-    isLoading: areCertificatesLoading,
-  } = useAllBlockchainCertificates();
+  const { blockchainCertificates, isLoading: areCertificatesLoading } =
+    useAllBlockchainCertificates();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllFuelTypes();
 
   const isLoading =
     areCertificatesLoading ||

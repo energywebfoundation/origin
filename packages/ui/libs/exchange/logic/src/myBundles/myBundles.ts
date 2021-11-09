@@ -6,7 +6,7 @@ import {
 } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-exchange-data';
 import { EnergyTypeEnum } from '@energyweb/origin-ui-utils';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { useTranslation } from 'react-i18next';
 import { getBundleEnergyShares } from '../utils';
 

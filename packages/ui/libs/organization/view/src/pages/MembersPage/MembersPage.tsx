@@ -1,5 +1,5 @@
 import { TableComponent } from '@energyweb/origin-ui-core';
-import { Skeleton } from '@material-ui/core';
+import { Skeleton } from '@mui/material';
 import React from 'react';
 import { FC } from 'react';
 import { useMembersPageEffects } from './MembersPage.effects';
@@ -13,3 +13,5 @@ export const MembersPage: FC = () => {
 
   return <TableComponent {...tableData} />;
 };
+
+export default MembersPage;

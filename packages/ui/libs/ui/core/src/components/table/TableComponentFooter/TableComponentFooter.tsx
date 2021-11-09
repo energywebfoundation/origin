@@ -1,4 +1,4 @@
-import { TableFooter, TablePagination, TableRow } from '@material-ui/core';
+import { TableFooter, TablePagination, TableRow } from '@mui/material';
 import React, { memo } from 'react';
 import { FC } from 'react';
 

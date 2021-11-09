@@ -6,7 +6,8 @@ import { useQueryClient } from 'react-query';
 
 export const useCachedBlockchainCertificates = () => {
   const queryClient = useQueryClient();
-  const blockchainCertificatesQueryKey = getIrecCertificateControllerGetAllQueryKey();
+  const blockchainCertificatesQueryKey =
+    getIrecCertificateControllerGetAllQueryKey();
 
   return queryClient.getQueryData<CertificateDTO[]>(
     blockchainCertificatesQueryKey

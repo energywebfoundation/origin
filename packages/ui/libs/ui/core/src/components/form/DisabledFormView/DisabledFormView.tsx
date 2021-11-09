@@ -6,7 +6,7 @@ import {
   TextFieldProps,
   Typography,
   TypographyProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { useStyles } from './DisabledFormView.styles';
 
 export type DisabledFormData = {

@@ -2,9 +2,9 @@ import { PageNotFound } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router';
 import { UserAppEnvProvider, UserEnvVariables } from './context';
-import { SettingsPage, ProfilePage } from './pages';
+import { ProfilePage, SettingsPage } from './pages';
 
-interface AccountAppProps {
+export interface AccountAppProps {
   routesConfig: {
     showUserProfile: boolean;
     showSettings: boolean;

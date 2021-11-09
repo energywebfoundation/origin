@@ -1,5 +1,5 @@
 import { TableComponent } from '@energyweb/origin-ui-core';
-import { Grid, Skeleton, Typography } from '@material-ui/core';
+import { Grid, Skeleton, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useInvitationsPageEffects } from './InvitationsPage.effects';
 
@@ -47,3 +47,5 @@ export const InvitationsPage: FC = () => {
     </Grid>
   );
 };
+
+export default InvitationsPage;

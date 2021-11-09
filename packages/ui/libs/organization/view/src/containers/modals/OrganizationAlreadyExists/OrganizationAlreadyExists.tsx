@@ -4,13 +4,8 @@ import { OrganizationAdded } from '@energyweb/origin-ui-assets';
 import { useOrganizationAlreadyExistsEffects } from './OrganizationAlreadyExists.effects';
 
 export const OrganizationAlreadyExists: FC = () => {
-  const {
-    open,
-    title,
-    text,
-    buttons,
-    dialogProps,
-  } = useOrganizationAlreadyExistsEffects();
+  const { open, title, text, buttons, dialogProps } =
+    useOrganizationAlreadyExistsEffects();
 
   return (
     <GenericModal

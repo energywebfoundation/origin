@@ -1,0 +1,32 @@
+{
+  "name": "@energyweb/origin-ui-web3",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/origin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/origin/issues"
+  },
+  "author": "EnergyWeb DevHub GmbH; Alexander Popadyuk, alexander.popadyuk@energyweb.org",
+  "description": "React library for managing connection to blockchain wallet",
+  "homepage": "https://github.com/energywebfoundation/origin/blob/master/packages/ui/libs/ui/web3/README.md",
+  "license": "MIT",
+  "dependencies": {
+    "@ethersproject/bignumber": "5.3.0",
+    "@ethersproject/providers": "5.3.1"
+  },
+  "peerDependencies": {
+    "react": "17.0.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "main": "dist/ui-web3.umd.js",
+  "module": "dist/ui-web3.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ]
+}

@@ -5,7 +5,7 @@ import {
   useCachedAllDevices,
   useCachedAllFuelTypes,
 } from '@energyweb/origin-ui-exchange-data';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { useState } from 'react';
 import {
   ExchangeModalsActionsEnum,

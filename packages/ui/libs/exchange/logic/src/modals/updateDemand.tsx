@@ -4,6 +4,7 @@ import {
 } from '@energyweb/exchange-irec-react-query-client';
 import { GenericFormProps } from '@energyweb/origin-ui-core';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
+import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
@@ -11,8 +12,8 @@ import { periodTypeOptions } from '../utils';
 
 export type TUpdateDemandFormValues = {
   period: TimeFrame;
-  startDate: Date;
-  endDate: Date;
+  startDate: Dayjs;
+  endDate: Dayjs;
   volume: number;
   price: number;
 };
@@ -30,8 +31,8 @@ export const useUpdateDemandFormLogic: TUseUpdateDemandFormLogic = (
 
   const initialFormData = {
     period: demand?.periodTimeFrame,
-    startDate: demand?.start,
-    endDate: demand?.end,
+    startDate: dayjs(demand?.start),
+    endDate: dayjs(demand?.end),
     volume: parseInt(EnergyFormatter.format(demand?.volumePerPeriod || '0')),
     price: demand?.price / 100,
   };

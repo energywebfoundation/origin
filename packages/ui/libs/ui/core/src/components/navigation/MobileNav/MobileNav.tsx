@@ -1,5 +1,5 @@
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
-import { BoxProps, Drawer, List, PaperProps } from '@material-ui/core';
+import { BoxProps, Drawer, List, PaperProps } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { CloseButton } from '../../buttons';
 import { IconLink } from '../../icons';

@@ -3,9 +3,8 @@ import { orgModalsInitialState, orgModalsReducer } from './reducer';
 import { IOrganizationModalsStore, TOrganizationModalsAction } from './types';
 
 const OrganizationModalsStore = createContext<IOrganizationModalsStore>(null);
-const OrganizationModalsDispatch = createContext<
-  React.Dispatch<TOrganizationModalsAction>
->(null);
+const OrganizationModalsDispatch =
+  createContext<React.Dispatch<TOrganizationModalsAction>>(null);
 
 export const OrganizationModalsProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(orgModalsReducer, orgModalsInitialState);

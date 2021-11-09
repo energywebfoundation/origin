@@ -9,12 +9,12 @@ import {
 } from './context';
 import {
   AllDevicesPage,
+  DetailViewPage,
+  DeviceImportPage,
+  MapViewPage,
   MyDevicesPage,
   PendingPage,
   RegisterPage,
-  MapViewPage,
-  DetailViewPage,
-  DeviceImportPage,
 } from './pages';
 
 export interface DeviceAppProps {

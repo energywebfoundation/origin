@@ -4,18 +4,18 @@ import { Routes, Route } from 'react-router-dom';
 import { OrganizationModalsCenter } from './containers';
 import { OrganizationModalsProvider } from './context';
 import {
-  RegisterPage,
-  RegisterIRecPage,
-  OrganizationViewPage,
-  InvitationsPage,
-  MembersPage,
-  InvitePage,
   AllOrganizationsPage,
-  CreateBeneficiaryPage,
   ConnectIRecPage,
+  CreateBeneficiaryPage,
+  InvitationsPage,
+  InvitePage,
+  MembersPage,
+  OrganizationViewPage,
+  RegisterIRecPage,
+  RegisterPage,
 } from './pages';
 
-interface OrganizationAppProps {
+export interface OrganizationAppProps {
   routesConfig: {
     showRegisterOrg: boolean;
     showMyOrg: boolean;

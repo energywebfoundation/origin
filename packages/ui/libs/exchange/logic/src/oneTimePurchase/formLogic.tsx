@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextFieldProps } from '@material-ui/core';
+import { TextFieldProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { TUseOneTimePurchaseFormLogic } from './types';

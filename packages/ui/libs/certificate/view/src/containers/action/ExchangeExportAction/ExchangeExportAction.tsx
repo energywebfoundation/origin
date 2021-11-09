@@ -1,6 +1,6 @@
 import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { ListActionComponentProps } from '@energyweb/origin-ui-core';
-import { TextField, Typography } from '@material-ui/core';
+import { TextField, Typography } from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { useExchangeExportActionEffects } from './ExchangeExportAction.effects';

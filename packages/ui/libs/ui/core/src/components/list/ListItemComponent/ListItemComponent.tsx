@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Checkbox,
-  ListItem,
-  ListItemIcon,
-  ListItemProps,
-} from '@material-ui/core';
+import { Checkbox, ListItem, ListItemIcon, ListItemProps } from '@mui/material';
 import { useStyles } from './ListItemComponent.styles';
 
 export interface ListItemComponentProps<Id> {

@@ -8,16 +8,15 @@ export const useExchangeTransferActionLogic: TUseExchangeTransferActionLogic<
 > = ({ selectedIds, exchangeCertificates, allDevices, allFuelTypes }) => {
   const { t } = useTranslation();
 
-  const selectedItems: SelectedItem<
-    AccountAssetDTO['asset']['id']
-  >[] = selectedIds
-    ? formatSelectedExchangeItems({
-        selectedIds,
-        allDevices,
-        exchangeCertificates,
-        allFuelTypes,
-      })
-    : [];
+  const selectedItems: SelectedItem<AccountAssetDTO['asset']['id']>[] =
+    selectedIds
+      ? formatSelectedExchangeItems({
+          selectedIds,
+          allDevices,
+          exchangeCertificates,
+          allFuelTypes,
+        })
+      : [];
 
   return {
     title: t('certificate.exchangeInbox.selectedForTransfer'),

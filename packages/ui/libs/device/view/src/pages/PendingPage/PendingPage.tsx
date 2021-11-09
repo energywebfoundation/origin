@@ -6,3 +6,5 @@ export const PendingPage: FC = () => {
   const tableProps = usePendingPageEffects();
   return <TableComponent {...tableProps} />;
 };
+
+export default PendingPage;
