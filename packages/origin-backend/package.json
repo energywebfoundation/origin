@@ -64,7 +64,7 @@
         "passport-local": "1.0.0",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.4.0",
-        "typeorm": "0.2.38",
+        "typeorm": "0.2.39",
         "uuid": "8.3.2"
     },
     "devDependencies": {
