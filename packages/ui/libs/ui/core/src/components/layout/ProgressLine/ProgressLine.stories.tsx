@@ -1,5 +1,5 @@
 import { ProgressLine } from './ProgressLine';
-import { Meta } from '@storybook/react';
+import { Meta, Story } from '@storybook/react';
 import React from 'react';
 
 export default {
@@ -7,4 +7,4 @@ export default {
   component: ProgressLine,
 } as Meta;
 
-export const Default = (args) => <ProgressLine {...args} />;
+export const Default: Story = () => <ProgressLine />;

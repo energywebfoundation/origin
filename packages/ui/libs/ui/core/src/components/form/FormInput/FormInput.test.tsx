@@ -12,31 +12,41 @@ import {
   StartAdornment,
   EndAdornment,
   BothAdornments,
+  TestFormValues,
 } from './FormInput.stories';
+import { FormInputProps } from './FormInput';
 
 describe('FormInput', () => {
   it('should render default form input', () => {
-    const { baseElement } = render(<Standard {...Standard.args} />);
+    const { baseElement } = render(
+      <Standard {...(Standard.args as FormInputProps<TestFormValues>)} />
+    );
     expect(baseElement).toBeInTheDocument();
     expect(baseElement.querySelector('.Mui-error')).not.toBeInTheDocument();
   });
 
   it('should render filled form input', () => {
-    const { baseElement } = render(<Filled {...Filled.args} />);
+    const { baseElement } = render(
+      <Filled {...(Filled.args as FormInputProps<TestFormValues>)} />
+    );
     expect(
       baseElement.querySelector('.MuiFilledInput-root')
     ).toBeInTheDocument();
   });
 
   it('should render outlined form input', () => {
-    const { baseElement } = render(<Outlined {...Outlined.args} />);
+    const { baseElement } = render(
+      <Outlined {...(Outlined.args as FormInputProps<TestFormValues>)} />
+    );
     expect(
       baseElement.querySelector('.MuiOutlinedInput-root')
     ).toBeInTheDocument();
   });
 
   it('should render form input with error state', () => {
-    const { baseElement } = render(<Error {...Error.args} />);
+    const { baseElement } = render(
+      <Error {...(Error.args as FormInputProps<TestFormValues>)} />
+    );
     expect(baseElement).toBeInTheDocument();
     expect(baseElement.querySelector('.Mui-error')).toBeInTheDocument();
 
@@ -45,7 +55,9 @@ describe('FormInput', () => {
   });
 
   it('should render form input of password type', () => {
-    const { baseElement } = render(<Password {...Password.args} />);
+    const { baseElement } = render(
+      <Password {...(Password.args as FormInputProps<TestFormValues>)} />
+    );
     expect(baseElement).toBeInTheDocument();
     expect(baseElement.querySelector('input')).toHaveAttribute(
       'type',
@@ -54,7 +66,9 @@ describe('FormInput', () => {
   });
 
   it('should render form input of number type', () => {
-    const { baseElement } = render(<Number {...Number.args} />);
+    const { baseElement } = render(
+      <Number {...(Number.args as FormInputProps<TestFormValues>)} />
+    );
     expect(baseElement).toBeInTheDocument();
     expect(baseElement.querySelector('input')).toHaveAttribute(
       'type',
@@ -63,7 +77,11 @@ describe('FormInput', () => {
   });
 
   it('should render form input with start adornment', () => {
-    const { baseElement } = render(<StartAdornment {...StartAdornment.args} />);
+    const { baseElement } = render(
+      <StartAdornment
+        {...(StartAdornment.args as FormInputProps<TestFormValues>)}
+      />
+    );
     expect(baseElement).toBeInTheDocument();
 
     const adornmentWrapper = baseElement.querySelector(
@@ -74,7 +92,11 @@ describe('FormInput', () => {
   });
 
   it('should render form input with end adornment', () => {
-    const { baseElement } = render(<EndAdornment {...EndAdornment.args} />);
+    const { baseElement } = render(
+      <EndAdornment
+        {...(EndAdornment.args as FormInputProps<TestFormValues>)}
+      />
+    );
     expect(baseElement).toBeInTheDocument();
 
     const adornmentWrapper = baseElement.querySelector(
@@ -85,7 +107,11 @@ describe('FormInput', () => {
   });
 
   it('should render form input with both start and end adornments', () => {
-    const { baseElement } = render(<BothAdornments {...BothAdornments.args} />);
+    const { baseElement } = render(
+      <BothAdornments
+        {...(BothAdornments.args as FormInputProps<TestFormValues>)}
+      />
+    );
     expect(baseElement).toBeInTheDocument();
 
     const startAdornmentWrapper = baseElement.querySelector(

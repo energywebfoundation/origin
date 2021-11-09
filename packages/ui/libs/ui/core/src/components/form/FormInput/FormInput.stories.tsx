@@ -111,11 +111,11 @@ export default {
   },
 } as Meta;
 
-type TFormValues = {
+export type TestFormValues = {
   test: string;
 };
 
-const Template: Story<FormInputProps<TFormValues>> = (args) => {
+const Template: Story<FormInputProps<TestFormValues>> = (args) => {
   const { register } = useForm();
   return <FormInput register={register} {...args} />;
 };

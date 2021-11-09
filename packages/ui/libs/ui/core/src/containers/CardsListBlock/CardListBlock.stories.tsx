@@ -111,6 +111,6 @@ WithDragNDrop.args = {
   listTitle: '',
   checkAllText: '',
   selectOnCardClick: true,
-  handleDrag: (reorderedList) => console.log(reorderedList),
+  handleDrag: (reorderedList: any) => console.log(reorderedList),
   dragNdrop: true,
 };
