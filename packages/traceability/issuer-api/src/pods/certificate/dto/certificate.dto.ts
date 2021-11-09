@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { ClaimDTO } from './claim.dto';
 import { EnergyDTO } from './energy.dto';
-//LOOK FOR EXAMPLE
+
 export class CertificateDTO {
     @ApiProperty({ type: Number, description: "Certificate Id" })
     @IsInt()
@@ -68,7 +68,7 @@ export class CertificateDTO {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blockchain?: any;
 
-    @ApiProperty({ type: String, example: "x8888"})
+    @ApiProperty({ type: String, example: "0x2b8da531e46cff1e217abc113495befac9384339feb10816b0f7f2ffa02fadd4"})
     creationTransactionHash?: string;
 
     @ApiPropertyOptional({ type: Boolean })
