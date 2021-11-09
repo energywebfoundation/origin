@@ -11,7 +11,7 @@ import { TableActionData } from '../../../containers';
 import { useStyles } from './TableComponentActions.styles';
 import { useTableActionsEffects } from './TableComponentsActions.effects';
 
-interface TableComponentActionsProps<Id> {
+export interface TableComponentActionsProps<Id> {
   id: Id;
   actions: TableActionData<Id>[];
 }

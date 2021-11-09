@@ -6,7 +6,7 @@ import { TableComponentCell } from '../TableComponentCell';
 import { useTableComponentRowEffects } from './TableComponentRow.effects';
 import { useStyles } from './TableComponentRow.styles';
 
-interface TableComponentRowProps<Id> {
+export interface TableComponentRowProps<Id> {
   row: TableRowData<Id>;
   headerData: TableHeaderData;
   onRowClick?: (id: Id) => void;
