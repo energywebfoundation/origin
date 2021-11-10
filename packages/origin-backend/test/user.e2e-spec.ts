@@ -91,6 +91,17 @@ describe('User e2e tests', () => {
             });
     });
 
+    it('should not be able to register user with password which doesn`t match requirements', async () => {
+        const newUserToRegister: UserRegistrationData = {
+            ...userToRegister,
+            password: 'test'
+        };
+        await request(app.getHttpServer())
+            .post(`/user/register`)
+            .send(newUserToRegister)
+            .expect(HttpStatus.BAD_REQUEST);
+    });
+
     it('should not be able to register user with the same email', async () => {
         await request(app.getHttpServer())
             .post(`/user/register`)
