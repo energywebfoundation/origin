@@ -1,4 +1,4 @@
-import { CardTableItem, TVerticalHeader } from '../../components';
+import { CardTableItem, TVerticalHeader } from '../../components/cardTable';
 
 export const useCardsTableEffects = <VerticalHeaderId, HeaderId>(
   verticalHeaders: TVerticalHeader<VerticalHeaderId>[],

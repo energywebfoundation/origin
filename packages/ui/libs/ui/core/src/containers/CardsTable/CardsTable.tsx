@@ -4,7 +4,7 @@ import {
   CardTableContent,
   CardTableTotalColumn,
   CardTableVerticalHeaders,
-} from '../../components';
+} from '../../components/cardTable';
 import { useCardsTableEffects } from './CardsTable.effects';
 import { TCardsTable } from './CardsTable.types';
 

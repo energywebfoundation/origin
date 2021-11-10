@@ -5,7 +5,7 @@ import {
   CardTableItem,
   TTotalItem,
   TVerticalHeader,
-} from '../../components';
+} from '../../components/cardTable';
 
 const VerticalHeaderComponent: React.FC<{ id: number }> = ({ id }) => {
   return (

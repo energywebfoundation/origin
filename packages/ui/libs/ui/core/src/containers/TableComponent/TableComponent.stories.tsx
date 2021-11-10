@@ -78,7 +78,6 @@ export default {
     data: {
       description:
         'Array containing table data. Data should be grouped on a row basis.',
-      required: true,
       table: {
         type: {
           detail: dataTypeDescription,
