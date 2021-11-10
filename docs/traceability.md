@@ -13,26 +13,26 @@ A specific address can be defined to issue the certificates to. The default is t
 ### 2. **Certificate approval** 
 Issuers receive the issuance request, defining the the device and time frame, together with the generation evidence. Based on this information, the issuer can define the number of certificates to be issued and initiate the issuance.  
 
-After the issuance request is approved, [a multi-token](#energy-attribute-certificates-on-the-blockchain) is minted on-chain** that contains the data given in the request. In the case of a public certificate, the energy volume generated is disclosed. In the case of a private certificate, the energy volume remains undisclosed on the blockchain and is stored off-chain. 
+After the issuance request is approved, [a multi-token](#energy-attribute-certificates-on-the-blockchain) is minted on-chain that contains the data given in the request. In the case of a public certificate, the energy volume generated is disclosed. In the case of a private certificate, the energy volume remains undisclosed on the blockchain and is stored off-chain. 
 
 ### 3. **Direct certificate issuance** 
 Issuers under some circumstances issue certificates without a request being made. Examples could be the direct import of certificates from other registry systems or the need for corrections in the unlikely event of a mistake made by the user or issuer.  
 
 ### 4. **Certificate transfer** 
-Public certificates can be transferred between users on the platform or external accounts without any additional information, however private certificates must first be made public to transfer, or the transaction must be approved by the issuer. Note that **transferring certificates is not the same as trading certificates** on the exchange. 
+Public certificates can be transferred between users on the platform or external accounts without any additional information, however private certificates must first be made public to transfer, or the transaction must be approved by the issuer. **Note that transferring certificates is not the same as trading certificates on the exchange.** 
 
 ### 5. **Certificate validation** 
-The issuing body can validate certificate validity.
+The issuing body can confirm certificate validity.
 
 ### 6. **Certificate Revocation**
 The issuer can under some circumstances revoke certificates. Reasons could be that it is uncovered that there was a problem with the provided generation evidence, or the user did not pay the registry fee. As a result, the issuer has the power to revoke certificates and certificate requests. Once a certificate is revoked, it can no longer be claimed or transferred because its validityData() callback function will return that it is invalid.  
 
-To revoke a certificate, the issuer has to revoke the issuance request made by the device owner by calling the revoke() function on the certificate object or request object. Revoking a certificate will automatically revoke the issuance request and invalidate its validity data. Revoking works for both public and private certificates. 
+Revoking a certificate will automatically revoke the issuance request and invalidate its validity data. Revoking works for both public and private certificates. 
 
 ### 7. **Certificate Claiming/Redemption**
 Certificate owners can claim or redeem their certificates for reporting purposes. The 'claimed' state is the final stage of the certificate lifecycle. 
 
-Claimed certificates cannot be moved to the exchange or be transferred to another user. Claiming permits any other entity from performing any action with the certificate. The issuer, for example, cannot suspend or revoke a claimed certificate. Certificates that have been kept private by the owner, concealing volume information, are made public before they are claimed. Only public certificates can be claimed to ensure transparency and prevent double counting. 
+Claimed certificates cannot be moved on to the exchange or be transferred to another user. Claiming prevents any other entity from performing any action with the certificate. The issuer, for example, cannot suspend or revoke a claimed certificate. Certificates that have been kept private by the owner, concealing volume information, are made public before they are claimed. Only public certificates can be claimed to ensure transparency and prevent double counting. 
 
 ## Energy Attribute Certificates on the Blockchain  
 

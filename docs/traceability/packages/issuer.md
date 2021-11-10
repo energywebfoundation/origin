@@ -5,12 +5,13 @@
 The Issuer package has four components:  
 1. [Contracts:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts) The smart contracts for Certificate management on the blockchain. Smart contracts are documented [below](#smart-contracts). All smart contracts are written in Solidity](https://docs.soliditylang.org/en/v0.8.10/). 
 2. [Migrations:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/migrations) Methods for deploying the smart contracts to the blockchain using the [OpenZeppelin Truffle Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades).    
-3. [Blockchain-facade:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade) Interfaces and strongly-typed classes with methods to interact with Issuer smart contracts. Blockchain facades are documented [below](#blockchain-facade)   
+3. [Blockchain-facade:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade) Interfaces and strongly-typed classes with methods to interact with Issuer smart contracts. Blockchain facades are documented [below](#blockchain-facade).   
 4. Utilities
     a. Events
     b. Precise Proof Utilities  
 
-## Smart Contracts 
+## Smart Contracts
+**All contracts on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts)  
 
 -   [ERC-1888](../contracts/ERC1888/ERC1888.md)
 -   [Registry](../contracts/Registry.md)
@@ -33,6 +34,11 @@ As its name suggests, the Registry contract manages and interacts with certifica
 
 Certificates are stored in the [certificateStorage map](https://github.com/energywebfoundation/origin/blob/2881ba2e04739c99eb8d6f48a53d15afe4844c3e/packages/traceability/issuer/contracts/Registry.sol#L13) in this contract, and are accessed by their Certificate Id.  
 
+### RegistryExtended  
+- **Source code on GitHub**: [https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol)  
+
+The methods in this contract handle batch issuance, batch transfer and batch transfer and claim for multiple _to and _from addresses. (Batch methods in the [Registry.sol](#registry) contract only support issuing and transferring certificates for one address.) 
+
 ### Issuer
 - **Source code on GitHub**: [https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol) 
 - [Full API documentation](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/)  
@@ -47,14 +53,12 @@ The Issuer smart contract is dependent on the [Registry smart contract](#registr
 
 When new Certificates are issued, they are stored in [Registry’s certificate storage map](https://github.com/energywebfoundation/origin/blob/645333ed50e6135159d21e6592afd2183ba13636/packages/traceability/issuer/contracts/Registry.sol#L13) and accessed by their Certificate Id. 
 
-### RegistryExtended  
-- **Source code on GitHub**: [https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol)  
-
-The methods in this contract handle batch issuance, batch transfer and batch transfer and claim for multiple _to and _from addresses. (Batch methods in the [Registry.sol](#registry) contract only support issuing and transferring certificates for one address.) 
-
-## Blockchain Facade  
+## Blockchain Facade
+- **Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade)  
 
 The Blockchain Facade exposes methods that call the [Issuer SDK's smart contract](#smart-contracts) public methods. The facade methods use the [ethers.js](https://docs.ethers.io/v5/) API to interact with the smart contracts. If you’re unfamiliar with how API client libraries connect to and interact with the blockchain, you can read more in our documentation [here(https://energy-web-foundation.gitbook.io/energy-web/how-tos-and-tutorials/interacting-with-a-smart-contract). 
+
+### Implementing Facades in the Issuer API
 
 Facades are imported and instantiated in the Issuer API, where methods are called to interact with smart contracts on the blockchain. See the below implementation in the [Issue Certificate Handler](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/issue-certificate.handler.ts)
 
