@@ -84,26 +84,26 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
         await queryRunner.startTransaction();
 
         try {
-            await Promise.all(
-                newCertificates.map(async (cert) => {
-                    await this.repository.save({
-                        id: cert.id,
-                        blockchain: blockchainProperties,
-                        deviceId: cert.deviceId,
-                        generationStartTime: cert.generationStartTime,
-                        generationEndTime: cert.generationEndTime,
-                        creationTime: cert.creationTime,
-                        creationTransactionHash: txHash,
-                        owners: cert.owners,
-                        issuedPrivately: !!privateInfo || !!unminedCommitment,
-                        latestCommitment: unminedCommitment ?? latestCommitment,
-                        metadata: cert.metadata
-                    });
+            const certificateEntities = newCertificates.map((cert) =>
+                this.repository.create({
+                    id: cert.id,
+                    blockchain: blockchainProperties,
+                    deviceId: cert.deviceId,
+                    generationStartTime: cert.generationStartTime,
+                    generationEndTime: cert.generationEndTime,
+                    creationTime: cert.creationTime,
+                    creationTransactionHash: txHash,
+                    owners: cert.owners,
+                    issuedPrivately: !!privateInfo || !!unminedCommitment,
+                    latestCommitment: unminedCommitment ?? latestCommitment,
+                    metadata: cert.metadata
                 })
             );
 
+            await queryRunner.manager.save(certificateEntities);
+
             if (unminedCommitment) {
-                await this.unminedCommitmentRepository.delete(txHash);
+                await queryRunner.manager.delete(UnminedCommitment, { txHash });
             }
 
             await queryRunner.commitTransaction();
