@@ -60,7 +60,7 @@ The Blockchain Facade exposes methods that call the [Issuer SDK's smart contract
 
 ### Implementing Facades in the Issuer API
 
-Facades are imported and instantiated in the Issuer API, where methods are called to interact with smart contracts on the blockchain. See the below implementation in the Issue Certificate Handler (source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/issue-certificate.handler.ts).
+Facades are imported and instantiated in the [Issuer API](./issuer-api.md), where methods are called to interact with smart contracts on the blockchain. See the below implementation in the Issue Certificate Handler (source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/issue-certificate.handler.ts).
 
 ```
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
