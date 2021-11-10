@@ -9,15 +9,15 @@ An [Organization](./user-guide-reg-onboarding.md#organizations) is the top level
 
 The Organization interface allows you to manage and invite members to your organization, and to request I-REC API access for your organization. **In the reference implementation, this interface is only visible to users with Admin privileges**. 
 
-The Organization portal has five views. The purpose and utility of each view is explained in detail below.
+The Organization portal has five views:
 
 [!organizationViews](images/organization/organization-views.png)
 
-1. **[My Organization:](#my-organization)** Allows an admin user to view their Organization Information.
-2. **[Members:](#members)** Allows an admin user to view and manage organization members. 
-3. **[Invitations](#removing-a-member):** Allows an admin user to view a list of pending (sent) and accepted (received) invitations for membership. 
+1. **[My Organization:](#my-organization)** Allows an admin user to view their Organization Information
+2. **[Members:](#members)** Allows an admin user to view and manage organization members
+3. **[Invitations](#removing-a-member):** Allows an admin user to view a list of pending (sent) and accepted (received) invitations for membership
 4. **[Create Beneficiary:](#create-beneficiary)** Allows an admin user to designate a beneficiary to receive retired certificates
-5. **[Register I-REC:](#connect-i-REC)** Allows an admin user to register with I-REC.
+5. **[Register I-REC:](#connect-i-REC)** Allows an admin user to register with I-REC
 6. **[Connect I-REC:](#connect-i-REC)** Allows an admin user to create an API connection with I-REC using their I-REC credentials.
 
 ## My Organization
