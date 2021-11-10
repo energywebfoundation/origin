@@ -121,6 +121,26 @@ export class CertificateController {
         name: 'generationEndTo',
         description: 'Date-alike filter for `generationEnd` field (upper boundary)'
     })
+    @ApiQuery({
+        name: 'generationStartTo',
+        description: 'Date-alike filter for `generationStart` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'generationStartTo',
+        description: 'Date-alike filter for `generationStart` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'creationTimeTo',
+        description: 'Date-alike filter for `creationTime` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'creationTimeTo',
+        description: 'Date-alike filter for `creationTime` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'deviceId',
+        description: 'Filter for deviceId field'
+    })
     public async getAll(
         @BlockchainAccountDecorator() blockchainAddress: string,
         @Query('generationEndFrom') generationEndFrom?: string,
