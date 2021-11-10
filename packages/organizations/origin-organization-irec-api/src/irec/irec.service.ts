@@ -91,6 +91,8 @@ export interface IIrecService {
 
     getIssueAccountCode(user: UserIdentifier): Promise<string>;
 
+    getRedemptionAccountCode(user: UserIdentifier): Promise<string>;
+
     createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void>;
 
     createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus>;
@@ -277,6 +279,11 @@ export class IrecService implements IIrecService {
         return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
     }
 
+    async getRedemptionAccountCode(user: UserIdentifier): Promise<string> {
+        const accounts = await this.getAccountInfo(user);
+        return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
+    }
+
     async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {
         const irecClient = await this.getIrecClient(user);
         await irecClient.account.create(params);
@@ -380,12 +387,15 @@ export class IrecService implements IIrecService {
     async redeem(
         user: UserIdentifier,
         assetId: string,
-        claimData: IClaimData
+        claimData: IClaimData,
+        fromTradeAccount?: string,
+        toRedemptionAccount?: string
     ): Promise<RedeemTransactionResult> {
         const userClient = await this.getIrecClient(user);
         const userConnectionInfo = await this.getConnectionInfo(user);
 
-        const userTradeAccount = await this.getTradeAccountCode(user);
+        const userTradeAccount = fromTradeAccount || (await this.getTradeAccountCode(user));
+        const accountTo = toRedemptionAccount || (await this.getRedemptionAccountCode(user));
 
         const items = await userClient.account.getItems(userTradeAccount);
         const item = items.find((i) => i.asset === assetId);
@@ -400,7 +410,7 @@ export class IrecService implements IIrecService {
 
         return userClient.redeem({
             sender: userTradeAccount,
-            recipient: userTradeAccount,
+            recipient: accountTo,
             approver: userConnectionInfo.userName,
             volume: claimItem.amount,
             items: [claimItem],

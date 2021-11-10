@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumberString, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class ExportAssetDTO {
     @ApiProperty({ type: String })
@@ -15,4 +15,9 @@ export class ExportAssetDTO {
     @ApiProperty({ type: String })
     @IsNumberString()
     readonly amount: string;
+
+    @ApiProperty({ type: String, required: false })
+    @IsOptional()
+    @IsString()
+    readonly fromTradeAccount?: string;
 }
