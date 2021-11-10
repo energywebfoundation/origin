@@ -123,13 +123,25 @@ export class CertificateController {
     })
     public async getAll(
         @BlockchainAccountDecorator() blockchainAddress: string,
-        @Query('generationEndFrom') generationEndFrom: string,
-        @Query('generationEndTo') generationEndTo: string
+        @Query('generationEndFrom') generationEndFrom?: string,
+        @Query('generationEndTo') generationEndTo?: string,
+        @Query('generationStartFrom') generationStartFrom?: string,
+        @Query('generationStartTo') generationStartTo?: string,
+        @Query('creationTimeFrom') creationTimeFrom?: string,
+        @Query('creationTimeTo') creationTimeTo?: string,
+        @Query('deviceId') deviceId?: string
     ): Promise<CertificateDTO[]> {
         const certificates = await this.queryBus.execute<GetAllCertificatesQuery, Certificate[]>(
             new GetAllCertificatesQuery({
                 generationEndFrom: generationEndFrom ? new Date(generationEndFrom) : undefined,
-                generationEndTo: generationEndTo ? new Date(generationEndTo) : undefined
+                generationEndTo: generationEndTo ? new Date(generationEndTo) : undefined,
+                generationStartFrom: generationStartFrom
+                    ? new Date(generationStartFrom)
+                    : undefined,
+                generationStartTo: generationStartTo ? new Date(generationStartTo) : undefined,
+                creationTimeFrom: creationTimeFrom ? new Date(creationTimeFrom) : undefined,
+                creationTimeTo: creationTimeTo ? new Date(creationTimeTo) : undefined,
+                deviceId
             })
         );
         return certificates.map((certificate) => certificateToDto(certificate, blockchainAddress));

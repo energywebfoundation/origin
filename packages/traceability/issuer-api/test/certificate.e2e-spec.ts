@@ -2,6 +2,7 @@
 import { IClaimData } from '@energyweb/issuer';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
+import { URLSearchParams } from 'url';
 import { expect } from 'chai';
 import { BigNumber, constants, ContractTransaction } from 'ethers';
 import moment from 'moment';
@@ -18,7 +19,7 @@ import {
     TestUser,
     testUsers
 } from './issuer-api';
-import { ClaimDTO } from '../src';
+import { ClaimDTO, IGetAllCertificatesOptions } from '../src';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -61,13 +62,11 @@ describe('Certificate tests', () => {
 
     const getAllCertificates = async (
         user: TestUser,
-        generationEndFrom: Date = new Date(0),
-        generationEndTo: Date = new Date()
+        query: Partial<Record<keyof IGetAllCertificatesOptions, string>>
     ): Promise<CertificateDTO[]> => {
+        const queryString = new URLSearchParams(query).toString();
         const { body } = await request(app.getHttpServer())
-            .get(
-                `/certificate?generationEndFrom=${generationEndFrom.toISOString()}&generationEndTo=${generationEndTo.toISOString()}`
-            )
+            .get(`/certificate?${queryString}`)
             .set({ 'test-user': user })
             .expect(HttpStatus.OK);
 
@@ -98,6 +97,8 @@ describe('Certificate tests', () => {
         toUser?: TestUser;
         isPrivate?: boolean;
         toTime?: Date;
+        fromTime?: Date;
+        deviceId?: string;
     }): Promise<CertificateDTO> => {
         const {
             body: { txHash }
@@ -110,7 +111,13 @@ describe('Certificate tests', () => {
                     ? getUserBlockchainAddress(options.toUser)
                     : certificateTestData.to,
                 isPrivate: options?.isPrivate ?? false,
-                toTime: options?.toTime ? moment(options.toTime).unix() : certificateTestData.toTime
+                toTime: options?.toTime
+                    ? moment(options.toTime).unix()
+                    : certificateTestData.toTime,
+                fromTime: options?.fromTime
+                    ? moment(options.fromTime).unix()
+                    : certificateTestData.fromTime,
+                deviceId: options?.deviceId ?? certificateTestData.deviceId
             })
             .expect(HttpStatus.OK);
 
@@ -666,19 +673,49 @@ describe('Certificate tests', () => {
         expect(events.length).to.be.above(0);
     });
 
-    it('should get all certificates within given generation timeframe', async () => {
-        const cert1 = await createCertificate({ toTime: new Date('2021-11-07T14:00:00.000Z') });
-        const cert2 = await createCertificate({ toTime: new Date('2021-11-07T16:00:00.000Z') });
-        const cert3 = await createCertificate({ toTime: new Date('2021-11-07T18:00:00.000Z') });
+    it('should get all certificates within given generationEnd timeframe', async () => {
+        await createCertificate({ toTime: new Date('2021-11-07T14:00:00.000Z') });
+        const expectedCert = await createCertificate({
+            toTime: new Date('2021-11-07T16:00:00.000Z')
+        });
+        await createCertificate({ toTime: new Date('2021-11-07T18:00:00.000Z') });
 
-        const certificates = await getAllCertificates(
-            TestUser.OrganizationDeviceManager,
-            new Date('2021-11-07T15:00:00.000Z'),
-            new Date('2021-11-07T17:00:00.000Z')
-        );
+        const certificates = await getAllCertificates(TestUser.OrganizationDeviceManager, {
+            generationEndFrom: new Date('2021-11-07T15:00:00.000Z').toISOString(),
+            generationEndTo: new Date('2021-11-07T17:00:00.000Z').toISOString()
+        });
 
         expect(certificates.length).to.be.eql(1);
-        expect(certificates[0].id).to.be.eql(cert2.id);
+        expect(certificates[0].id).to.be.eql(expectedCert.id);
+    });
+
+    it('should get all certificates within given generationStart timeframe', async () => {
+        await createCertificate({ fromTime: new Date('2021-11-07T14:00:00.000Z') });
+        const expectedCert = await createCertificate({
+            fromTime: new Date('2021-11-07T16:00:00.000Z')
+        });
+        await createCertificate({ fromTime: new Date('2021-11-07T18:00:00.000Z') });
+
+        const certificates = await getAllCertificates(TestUser.OrganizationDeviceManager, {
+            generationStartFrom: new Date('2021-11-07T15:00:00.000Z').toISOString(),
+            generationStartTo: new Date('2021-11-07T17:00:00.000Z').toISOString()
+        });
+
+        expect(certificates.length).to.be.eql(1);
+        expect(certificates[0].id).to.be.eql(expectedCert.id);
+    });
+
+    it('should get all certificates of given deviceId', async () => {
+        await createCertificate({ deviceId: 'device1' });
+        const expectedCert = await createCertificate({ deviceId: 'device2' });
+        await createCertificate({ deviceId: 'device3' });
+
+        const certificates = await getAllCertificates(TestUser.OrganizationDeviceManager, {
+            deviceId: 'device2'
+        });
+
+        expect(certificates.length).to.be.eql(1);
+        expect(certificates[0].id).to.be.eql(expectedCert.id);
     });
 
     it('should get certificates without a blockchain account attached', async () => {
