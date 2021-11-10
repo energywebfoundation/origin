@@ -199,6 +199,13 @@ export class IrecMockService implements IIrecService {
         return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
     }
 
+    async getRedemptionAccountCode(user: UserIdentifier): Promise<string> {
+        const accounts = await this.getAccountInfo(user);
+        return (
+            accounts.find((account: Account) => account.type === AccountType.Redemption)?.code || ''
+        );
+    }
+
     async createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {
         const issueRequest = {
             ...issue,

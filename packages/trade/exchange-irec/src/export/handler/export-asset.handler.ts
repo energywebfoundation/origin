@@ -44,7 +44,8 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
         user,
         assetId,
         recipientTradeAccount,
-        amount
+        amount,
+        fromTradeAccount
     }: ExportAssetCommand): Promise<void> {
         this.logger.debug(`Checking certificate ownership user=${user.id} assetId=${assetId}`);
         const { available } = await this.accountBalanceService.getAccountBalance(user.ownerId);
@@ -80,7 +81,8 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
         const result = await this.irecService.transferCertificate(
             platformOrganization.id,
             recipientTradeAccount,
-            irecCertificate.asset
+            irecCertificate.asset,
+            fromTradeAccount
         );
 
         if (!result) {
