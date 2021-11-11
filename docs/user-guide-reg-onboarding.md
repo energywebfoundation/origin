@@ -67,7 +67,7 @@ Each role has varying access to the interfaces on the platform:
 
 #### Registering Users
 
-To view the user registration interface, click  “Register” in the top right hand corner of the Origin interface:  
+To view the user registration interface, click 'Register' in the top right hand corner of the Origin interface:  
 
 ![register](images/onboarding/onboarding2-register.png)  
 
