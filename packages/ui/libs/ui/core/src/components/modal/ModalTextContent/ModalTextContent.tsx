@@ -16,13 +16,17 @@ export const ModalTextContent: FC<ModalTextContentProps> = ({
     <div>
       {typeof text === 'string' ? (
         <Typography {...textProps}>{text}</Typography>
-      ) : (
-        text.map((paragraph, idx) => (
-          <Typography key={'dialogText' + idx} gutterBottom {...textProps}>
+      ) : text ? (
+        text.map((paragraph) => (
+          <Typography
+            key={'dialogText-' + paragraph}
+            gutterBottom
+            {...textProps}
+          >
             {paragraph}
           </Typography>
         ))
-      )}
+      ) : null}
     </div>
   );
 };
