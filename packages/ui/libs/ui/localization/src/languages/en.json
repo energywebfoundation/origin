@@ -276,17 +276,17 @@
       },
       "modals": {
         "roleChanged": {
-          "title": "Successfully joined {organizationName}",
-          "text": "You have successfully joined {organizationName} organization.",
+          "title": "Successfully joined {{organizationName}}",
+          "text": "You have successfully joined {{organizationName}} organization.",
           "asMemberYouCan": "As an Organization Member you can:",
           "canPlaceOrder": "Place orders on the exchange",
-          "canBuyCertificates": "Directly buy {certificateType}",
-          "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
-          "canRedeemCertificates": "Redeem {certificateType}",
-          "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
+          "canBuyCertificates": "Directly buy {{certificateType}}",
+          "canCreateAndBuyCertificateBundles": "Create and buy {{certificateType}} bundles",
+          "canRedeemCertificates": "Redeem {{certificateType}}",
+          "canWithdrawCertificates": "Withdraw {{certificateType}} to organization’s own participant account",
           "asDeviceManagerYouCan": "As a Device Manager you have permission to:",
           "canRegisterDevices": "Register devices and device groups",
-          "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
+          "canRequestIssuenceOfCertificates": "Request the issuance of {{certificateType}}",
           "canConfigureAutomatedOrderCreation": "Configure automated order creation",
           "asOrgAdminYouCan": "As an Organization Admin you have permission to:",
           "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
@@ -392,8 +392,8 @@
         "deviceType": "Device Type",
         "nameplateCapacity": "Nameplate capacity (MW)",
         "status": "Status",
-        "certifiedFor": "Certified for {yearToDisplay} (MWh)",
-        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "certifiedFor": "Certified for {{yearToDisplay}} (MWh)",
+        "toBeCertifiedFor": "To be certified for {{yearToDisplay}} (MWh)",
         "approve": "Approve",
         "reject": "Reject",
         "notifications": {
@@ -544,12 +544,12 @@
           "claimedTitle": "Certificate claimed",
           "requestedTitle": "Requested certification",
           "certificationRequestApproved": "Local issuer approved the certification request",
-          "transferred": "Transferred {amount} from {oldOwner} to {newOwner}",
-          "claimedContent": "Claimed {amount} by {claimer}",
-          "requestedContent": "{requestor} requested certification of {amount}",
+          "transferred": "Transferred {{amount}} from {{oldOwner}} to {{newOwner}}",
+          "claimedContent": "Claimed {{amount}} by {{claimer}}",
+          "requestedContent": "{{requestor}} requested certification of {{amount}}",
           "requestedClaimTitle": "Requested claim",
-          "requestedClaimContent": "For {amount} by {claimer}",
-          "transferedToInitialOwner": "Transfered {amount} to the {address} of the initial owner"
+          "requestedClaimContent": "For {{amount}} by {{claimer}}",
+          "transferedToInitialOwner": "Transfered {{amount}} to the {{address}} of the initial owner"
         }
       },
       "requests": {
@@ -623,7 +623,7 @@
       "modals": {
         "confirmImport": {
           "title": "Confirm certificate import",
-          "text": "Please, confirm that you want to import certificate with {volume} MWh of {deviceName} for the period of {timeFrame}."
+          "text": "Please, confirm that you want to import certificate with {{volume}} MWh of {{deviceName}} for the period of {{timeFrame}}."
         }
       }
     },
@@ -768,7 +768,7 @@
           }
         },
         "notifications": {
-          "orderRemoveSuccess": "{orderSide} has been successfully removed",
+          "orderRemoveSuccess": "{{orderSide}} has been successfully removed",
           "orderRemoveError": "Error while removing order",
           "demandRemoveSuccess": "Demand has been successfully removed",
           "demandRemoveError": "Error while removing demand",
@@ -787,7 +787,7 @@
         "facilityName": "Facility Name",
         "price": "Price",
         "status": "Status",
-        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "toBeCertifiedFor": "To be certified for {{yearToDisplay}} (MWh)",
         "update": "Update",
         "remove": "Remove",
         "cancel": "Cancel",
@@ -929,7 +929,7 @@
         },
         "pendingInvitation": {
           "title": "Invitation to join the organization on marketplace",
-          "text": "{admin} has invited you to join the marketplace as a {role} for {orgName}. Click accept to join the organization",
+          "text": "{{admin}} has invited you to join the marketplace as a {{role}} for {{orgName}}. Click accept to join the organization",
           "acceptSuccess": "Invitation accepted",
           "acceptError": "Could not accept invitation",
           "declineSuccess": "Invitation rejected",
