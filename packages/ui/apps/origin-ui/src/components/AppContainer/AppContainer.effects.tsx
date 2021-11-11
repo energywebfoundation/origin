@@ -121,8 +121,7 @@ export const useAppContainerEffects = () => {
     showRegisterIRec: userHasOrg && userIsOrgAdmin && !Boolean(iRecOrg),
     showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
     showConnectIRec:
-      (userHasOrg && userIsOrgAdmin && Boolean(iRecOrg)) ||
-      userIsAdminOrSupport,
+      userHasOrg && userIsOrgAdmin && Boolean(iRecOrg) && !userIsAdminOrSupport,
   };
   const orgMenu = getOrganizationMenu({
     t,
@@ -180,7 +179,8 @@ export const useAppContainerEffects = () => {
   const certificateMenu = getCertificateMenu({
     t,
     isOpen: isCertificateTabActive,
-    showSection: (userIsActive && userHasOrg) || userIsIssuer,
+    showSection:
+      (userIsActive && userHasOrg && !userIsAdminOrSupport) || userIsIssuer,
     menuButtonClass: isLightTheme ? classes.menuButton : undefined,
     selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...certificateRoutesConfig,
@@ -198,7 +198,7 @@ export const useAppContainerEffects = () => {
   const exchangeMenu = getExchangeMenu({
     t,
     isOpen: isExchangeTabActive,
-    showSection: true,
+    showSection: !userIsAdminOrSupport,
     menuButtonClass: isLightTheme ? classes.menuButton : undefined,
     selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
     ...exchangeRoutesConfig,
