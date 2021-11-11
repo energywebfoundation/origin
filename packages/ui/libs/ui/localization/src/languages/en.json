@@ -42,7 +42,6 @@
         "members": "Members",
         "invitations": "Invitations",
         "invite": "Invite",
-        "all": "All Organizations",
         "registerIRec": "Register I-REC",
         "createBeneficiary": "Create Beneficiary",
         "connectIRec": "Connect I-REC"
@@ -56,6 +55,7 @@
       "admin": {
         "sectionTitle": "Admin",
         "users": "Users",
+        "allOrganizations": "All Organizations",
         "claims": "Claims"
       },
       "layout": {

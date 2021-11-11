@@ -117,7 +117,6 @@ export const useAppContainerEffects = () => {
         ? true
         : !!userInvitations && userInvitations.length > 0,
     showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
-    showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
     showRegisterIRec: userHasOrg && userIsOrgAdmin && !Boolean(iRecOrg),
     showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
     showConnectIRec:
@@ -218,6 +217,7 @@ export const useAppContainerEffects = () => {
   });
   const adminRoutesConfig: RoutesConfig['adminRoutes'] = {
     showClaims: userIsAdminOrSupport,
+    showAllOrgs: userIsAdminOrSupport,
     showUsers: userIsAdminOrSupport,
   };
   const adminMenu = getAdminMenu({
