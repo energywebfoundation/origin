@@ -10,7 +10,7 @@ export class ClaimCertificateDTO {
     @ValidateNested()
     claimData?: ClaimDataDTO;
 
-    @ApiPropertyOptional({ type: String })
+    @ApiPropertyOptional({ type: String, example: '1000000' })
     @IsOptional()
     @Validate(PositiveBNStringValidator)
     @Validate(IntUnitsOfEnergy)

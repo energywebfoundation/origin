@@ -2,7 +2,7 @@ FROM node:14-alpine
 
 ARG VERSION=latest
 
-RUN apk --no-cache add make gcc g++ python bash
+RUN apk --no-cache add make gcc g++ python3 bash
 RUN mkdir -p /var/db
 
 RUN mkdir -p /var/deployment

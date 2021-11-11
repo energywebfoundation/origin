@@ -9,3 +9,4 @@ export * from './pending';
 export * from './utils';
 export * from './deviceImport';
 export * from './permissions';
+export * from './editDevice';

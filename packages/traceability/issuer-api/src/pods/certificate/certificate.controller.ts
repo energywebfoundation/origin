@@ -27,7 +27,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Role } from '@energyweb/origin-backend-core';
 
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import moment from 'moment';
 import { BigNumber } from 'ethers';
 import { CertificateEvent } from '../../types';
@@ -113,11 +113,56 @@ export class CertificateController {
         type: [CertificateDTO],
         description: 'Returns all Certificates'
     })
+    @ApiQuery({
+        name: 'generationEndFrom',
+        description: 'Date-alike filter for `generationEnd` field (lower boundary)'
+    })
+    @ApiQuery({
+        name: 'generationEndTo',
+        description: 'Date-alike filter for `generationEnd` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'generationStartTo',
+        description: 'Date-alike filter for `generationStart` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'generationStartTo',
+        description: 'Date-alike filter for `generationStart` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'creationTimeTo',
+        description: 'Date-alike filter for `creationTime` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'creationTimeTo',
+        description: 'Date-alike filter for `creationTime` field (upper boundary)'
+    })
+    @ApiQuery({
+        name: 'deviceId',
+        description: 'Filter for deviceId field'
+    })
     public async getAll(
-        @BlockchainAccountDecorator() blockchainAddress: string
+        @BlockchainAccountDecorator() blockchainAddress: string,
+        @Query('generationEndFrom') generationEndFrom?: string,
+        @Query('generationEndTo') generationEndTo?: string,
+        @Query('generationStartFrom') generationStartFrom?: string,
+        @Query('generationStartTo') generationStartTo?: string,
+        @Query('creationTimeFrom') creationTimeFrom?: string,
+        @Query('creationTimeTo') creationTimeTo?: string,
+        @Query('deviceId') deviceId?: string
     ): Promise<CertificateDTO[]> {
         const certificates = await this.queryBus.execute<GetAllCertificatesQuery, Certificate[]>(
-            new GetAllCertificatesQuery()
+            new GetAllCertificatesQuery({
+                generationEndFrom: generationEndFrom ? new Date(generationEndFrom) : undefined,
+                generationEndTo: generationEndTo ? new Date(generationEndTo) : undefined,
+                generationStartFrom: generationStartFrom
+                    ? new Date(generationStartFrom)
+                    : undefined,
+                generationStartTo: generationStartTo ? new Date(generationStartTo) : undefined,
+                creationTimeFrom: creationTimeFrom ? new Date(creationTimeFrom) : undefined,
+                creationTimeTo: creationTimeTo ? new Date(creationTimeTo) : undefined,
+                deviceId
+            })
         );
         return certificates.map((certificate) => certificateToDto(certificate, blockchainAddress));
     }
