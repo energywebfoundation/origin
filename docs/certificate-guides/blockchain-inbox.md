@@ -1,5 +1,4 @@
 # Blockchain Inbox 
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/certificate/blockchain-inbox](https://origin-ui-canary.herokuapp.com/certificate/blockchain-inbox)
 
 ![Certificate-blockchaininbox](../images/certificates/certificate-blockchaininbox.png)
 

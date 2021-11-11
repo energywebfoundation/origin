@@ -1,5 +1,4 @@
 # Claims Report
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/certificate/claims-report](https://origin-ui-canary.herokuapp.com/certificate/claims-report)
 
 The Claims Report interface allows admin users to see all certificate hours from the organization’s generating devices that have been retired from the exchange and claimed for sustainability reporting. 
 

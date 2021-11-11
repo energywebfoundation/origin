@@ -1,5 +1,4 @@
 # Exchange
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/view-market](https://origin-ui-canary.herokuapp.com/exchange/view-market)  
 
 **Source code on github:** [https://github.com/energywebfoundation/origin/tree/master/packages/trade](https://github.com/energywebfoundation/origin/tree/master/packages/trade) 
 

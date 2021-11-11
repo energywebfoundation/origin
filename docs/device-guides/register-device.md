@@ -1,6 +1,4 @@
-# Register Device
-
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/register](https://origin-ui-canary.herokuapp.com/device/register)
+# Register Device  
 
 Use this interface to register a new device under your [organization](../user-guide-reg-onboarding.md#organizations). Note that registered device details are public once the device is approved by the Issuer.
 

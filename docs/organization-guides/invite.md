@@ -1,5 +1,4 @@
 # Invite  
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/organization/invite](https://origin-ui-canary.herokuapp.com/organization/invite)
 
 This view allows admins to invite members to the organization. A role must be selected for the invitee when the invitation is created. You can see a list of the reference implementation's roles and their privileges [here](../user-guide-reg-onboarding.md#user-roles-and-hierarchy). 
 

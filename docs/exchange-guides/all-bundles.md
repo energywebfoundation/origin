@@ -1,5 +1,4 @@
-#    
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/all-bundles]( https://origin-ui-canary.herokuapp.com/exchange/all-bundles) 
+# All Bundles   
 
 ![Exchange-allbundles](../images/exchange/exchange-allbundles.png)
 

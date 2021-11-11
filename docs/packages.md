@@ -67,7 +67,7 @@ Organization registration and management related packages.
 | @energyweb/origin-organization-irec-api | I-REC organizations API            |
 | @energyweb/origin-ui-irec-core          | Core component for Origin based UI |
 
-### Traceability
+### [Traceability](./traceability.md)
 
 Issuance and transparency related packages.
 

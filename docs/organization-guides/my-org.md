@@ -1,7 +1,5 @@
 # My Organization
 
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/organization/my](https://origin-ui-canary.herokuapp.com/organization/my)  
-
 ## Organization Information
 
 The information provided when the organization was registered on the Origin platform. You can read more about Organization Registration [here](../user-guide-reg-onboarding.md#registering-organizations)

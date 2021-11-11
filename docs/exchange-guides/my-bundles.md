@@ -1,5 +1,4 @@
 # My Bundles
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/my-bundles](https://origin-ui-canary.herokuapp.com/exchange/my-bundles)
 
 Use this interface to view your organization’s bundles that were created using the [Create Bundle](./create-bundle.md) interface. 
 
