@@ -76,7 +76,13 @@ export class Certificate implements ICertificate {
     public claimers: IShareInCertificate;
 
     constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
-
+    
+     /**
+     * 
+     *
+     * @description Uses the Issuer contract to allow direct issuance of a certificate
+     *
+     */
     public static async create(
         to: string,
         value: BigNumber,
@@ -107,6 +113,12 @@ export class Certificate implements ICertificate {
         return await issuerWithSigner.issue(properChecksumToAddress, value, data);
     }
 
+      /**
+     * 
+     *
+     * @description Returns the Certificate that was created in a given transaction
+     *
+     */
     public static async fromTxHash(
         txHash: string,
         blockchainProperties: IBlockchainProperties
@@ -147,6 +159,12 @@ export class Certificate implements ICertificate {
         return newCertificate.sync();
     }
 
+       /**
+     * 
+     *
+     * @description Uses Private Issuer contract to allow issuance of a private Certificate
+     *
+     */
     public static async createPrivate(
         to: string,
         value: BigNumber,
@@ -192,6 +210,12 @@ export class Certificate implements ICertificate {
         };
     }
 
+     /**
+     * 
+     *
+     * @description Retrieves current data for a Certificate 
+     *
+     */
     async sync(): Promise<Certificate> {
         if (this.id === null) {
             return this;
@@ -232,6 +256,12 @@ export class Certificate implements ICertificate {
         return this;
     }
 
+    /**
+     * 
+     *
+     * @description Uses Registry contract to allow user to claim all or part of a Certificate's volume units
+     *
+     */
     async claim(
         claimData: IClaimData,
         amount?: BigNumber,
@@ -264,6 +294,12 @@ export class Certificate implements ICertificate {
         );
     }
 
+     /**
+     * 
+     *
+     * @description Uses Registry contract to allow user to transfer part or all of a Certificate's volume units to another address 
+     *
+     */
     async transfer(to: string, amount?: BigNumber, from?: string): Promise<ContractTransaction> {
         if (await this.isRevoked()) {
             throw new Error(`Unable to transfer Certificate #${this.id}. It has been revoked.`);
@@ -285,7 +321,12 @@ export class Certificate implements ICertificate {
             utils.defaultAbiCoder.encode([], []) // TO-DO: Store more meaningful transfer data?
         );
     }
-
+     /**
+     * 
+     *
+     * @description Uses Issuer contract to allow issuer to mint more volumes of energy units for an existing Certificate 
+     *
+     */
     async mint(to: string, volume: BigNumber): Promise<ContractTransaction> {
         const toAddress = ethers.utils.getAddress(to);
 
@@ -295,6 +336,12 @@ export class Certificate implements ICertificate {
         return issuerWithSigner.mint(toAddress, this.id, volume);
     }
 
+      /**
+     * 
+     *
+     * @description Uses Issuer contract to allow issuer to revoke a Certificate 
+     *
+     */
     async revoke(): Promise<ContractTransaction> {
         const { issuer } = this.blockchainProperties;
         const issuerWithSigner = issuer.connect(this.blockchainProperties.activeUser);
@@ -302,6 +349,12 @@ export class Certificate implements ICertificate {
         return issuerWithSigner.revokeCertificate(this.id);
     }
 
+    /**
+     * 
+     *
+     * @description Allows issuer to see if Certificate has been revoked
+     * @returns boolean
+     */
     async isRevoked(): Promise<boolean> {
         const { issuer } = this.blockchainProperties;
 
@@ -316,6 +369,12 @@ export class Certificate implements ICertificate {
         return revokedEvents.length > 0;
     }
 
+     /**
+     * 
+     *
+     * @description Returns all claim data for a Certificate
+     *
+     */
     async getClaimedData(): Promise<IClaim[]> {
         const { registry } = this.blockchainProperties;
 
@@ -405,6 +464,12 @@ export class Certificate implements ICertificate {
         return claims;
     }
 
+     /**
+     * 
+     *
+     * @description Returns the Issuance transaction for a Certificate
+     *
+     */
     private async getIssuanceTransaction(): Promise<providers.TransactionReceipt> {
         const { registry } = this.blockchainProperties;
 
