@@ -39,6 +39,11 @@ export const useStyles = makeStyles((theme) => ({
   buttonEndIcon: {
     marginLeft: 0,
   },
+  smallEndIcon: {
+    '& > *:first-child': {
+      fontSize: 14,
+    },
+  },
   specFieldGrid: {
     alignItems: 'center',
   },
