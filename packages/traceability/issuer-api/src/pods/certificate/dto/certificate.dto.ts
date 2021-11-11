@@ -13,31 +13,31 @@ import { ClaimDTO } from './claim.dto';
 import { EnergyDTO } from './energy.dto';
 
 export class CertificateDTO {
-    @ApiProperty({ type: Number, description: "Certificate Id" })
+    @ApiProperty({ type: Number, description: 'Certificate Id' })
     @IsInt()
     @Min(1)
     id: number;
 
-    @ApiProperty({ type: String, example: "DeviceB-789"})
+    @ApiProperty({ type: String, example: 'DeviceB-789' })
     @IsString()
     deviceId: string;
 
-    @ApiProperty({ type: Number, description: "Unix timestamp", example: 1636154471})
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154471 })
     @IsInt()
     @IsPositive()
     generationStartTime: number;
 
-    @ApiProperty({ type: Number, description: "Unix timestamp", example: 1636154471})
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154471 })
     @IsInt()
     @IsPositive()
     generationEndTime: number;
 
-    @ApiProperty({ type: Number, description: "Unix timestamp", example: 1636154471})
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154471 })
     @IsInt()
     @IsPositive()
     creationTime: number;
 
-    @ApiProperty({ type: String, example: "Additional Details" })
+    @ApiProperty({ type: String, example: 'Additional Details' })
     @IsString()
     metadata: string;
 
@@ -68,7 +68,10 @@ export class CertificateDTO {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blockchain?: any;
 
-    @ApiProperty({ type: String, example: "0x2b8da531e46cff1e217abc113495befac9384339feb10816b0f7f2ffa02fadd4"})
+    @ApiProperty({
+        type: String,
+        example: '0x2b8da531e46cff1e217abc113495befac9384339feb10816b0f7f2ffa02fadd4'
+    })
     creationTransactionHash?: string;
 
     @ApiPropertyOptional({ type: Boolean })

@@ -2,13 +2,13 @@ import { TableFooter, TablePagination, TableRow } from '@mui/material';
 import React, { memo } from 'react';
 import { FC } from 'react';
 
-interface TableComponentFooterProps {
-  totalPages?: number;
+export interface TableComponentFooterProps {
   pageSize: number;
   handlePageChange: (currentPage: number) => void;
   currentPage: number;
-  rowsPerPageOptions?: Array<number>;
   totalRows: number;
+  rowsPerPageOptions?: Array<number>;
+  totalPages?: number;
 }
 
 export const TableComponentFooter: FC<TableComponentFooterProps> = memo(

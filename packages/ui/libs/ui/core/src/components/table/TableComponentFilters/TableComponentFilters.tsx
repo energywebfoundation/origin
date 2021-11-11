@@ -13,7 +13,7 @@ import { useStyles } from './TableComponentFilters.styles';
 import { CloseButton } from '../../buttons';
 import { TableFilter } from '../../../containers/TableComponent';
 
-interface TableComponentFiltersProps {
+export interface TableComponentFiltersProps {
   filters: TableFilter[];
   setFilters: (newValues: TableFilter[]) => void;
 }

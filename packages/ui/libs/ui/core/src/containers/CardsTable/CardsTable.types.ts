@@ -13,7 +13,7 @@ import {
   CardTableItem,
   TTotalItem,
   TVerticalHeader,
-} from '../../components';
+} from '../../components/cardTable';
 
 export interface CardsTableProps<VerticalHeaderId, HeaderId> {
   // vertical headers table props
