@@ -4,21 +4,21 @@
 ## Overview of Components
 The Issuer package has four components:      
 
-1. [Contracts:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts) The smart contracts for Certificate management on the blockchain. Smart contracts are documented [below](#smart-contracts). All smart contracts are written in [Solidity](https://docs.soliditylang.org/en/v0.8.10/).  
-2. [Migrations:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/migrations) Methods for deploying the smart contracts to the blockchain using the [OpenZeppelin Truffle Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades).      
-3. [Blockchain-facade:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade) Interfaces and strongly-typed classes with methods to interact with Issuer smart contracts. Blockchain facades are documented [below](#blockchain-facade).   
-4. Utilities  
-    a. Events
-    b. Precise Proof Utilities  
+1. [Contracts:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts) The smart contracts for Certificate management on the blockchain. Smart contracts are documented [below](#smart-contracts). All smart contracts are written in [Solidity](https://docs.soliditylang.org/en/v0.8.10/).    
+2. [Migrations:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/migrations) Methods for deploying the smart contracts to the blockchain using the [OpenZeppelin Truffle Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades).        
+3. [Blockchain-facade:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade) Interfaces and strongly-typed classes with methods to interact with Issuer smart contracts. Blockchain facades are documented [below](#blockchain-facade).     
+4. Utilities     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. Events
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. Precise Proof Utilities  
 
 ## Smart Contracts
 **All contracts on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts)  
 
--   [ERC-1888](../contracts/ERC1888/ERC1888.md)
--   [Registry](../contracts/Registry.md)
--   [Registry Extended](../contracts/RegistryExtended.md)
--   [Issuer](../contracts/Issuer.md)
--   [PrivateIssuer](../contracts/PrivateIssuer.md)
+-   [ERC-1888](../contracts/ERC1888/ERC1888.md)  
+-   [Registry](../contracts/Registry.md)  
+-   [Registry Extended](../contracts/RegistryExtended.md)  
+-   [Issuer](../contracts/Issuer.md)  
+-   [PrivateIssuer](../contracts/PrivateIssuer.md)  
 
 ### IERC1888  
 - **Source code on GitHub**: [https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/ERC1888/IERC1888.sol](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/ERC1888/IERC1888.sol)  
