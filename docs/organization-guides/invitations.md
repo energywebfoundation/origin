@@ -1,5 +1,4 @@
 # Invitations
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/organization/invitations](https://origin-ui-canary.herokuapp.com/organization/invitations)
 
 This view provides admins a list of member invitations that have been sent to email addresses. 
 

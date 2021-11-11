@@ -1,5 +1,4 @@
 # Certificate
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/certificate/exchange-inbox](https://origin-ui-canary.herokuapp.com/certificate/exchange-inbox)
 
 The Certificate interface allows you to manage your certificates and view certificate requests. 
 

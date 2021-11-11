@@ -1,5 +1,4 @@
 # Import Device
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/import](https://origin-ui-canary.herokuapp.com/device/import)
 
 ![ImportDevices](../images/deviceMgmtImages/devices-devicestoimport.png)
 

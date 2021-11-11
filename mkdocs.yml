@@ -41,7 +41,7 @@ nav:
           - Glossary: user-guide-glossary.md
     - Configuration:
           - UI: configuration-ui.md
-    - SDK:
+    - SDKs:
           - Traceability:
                 - Traceability SDK Overview: traceability.md
                 - Issuer: traceability/packages/issuer.md

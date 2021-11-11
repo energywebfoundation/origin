@@ -1,5 +1,4 @@
 # All Devices
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/all](https://origin-ui-canary.herokuapp.com/device/all)
 
 This view provides a tile view of all devices registered within a marketplace:
 

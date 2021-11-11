@@ -1,5 +1,4 @@
 # Supply
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/supply](https://origin-ui-canary.herokuapp.com/exchange/supply)
 
 ![exchange-supply](../images/exchange/exchange-supply.png)
 

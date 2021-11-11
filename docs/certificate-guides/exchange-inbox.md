@@ -1,5 +1,4 @@
-# Exchange Inbox
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/certificate/exchange-inbox](https://origin-ui-canary.herokuapp.com/certificate/exchange-inbox)  
+# Exchange Inbox 
 
 The Exchange Inbox allows admin users to sell, withdraw, transfer and export certificates that are currently in the organization’s Exchange Deposit Address.  Certificates in this inbox are in the custody of the platform operator and are active on the exchange. This inbox is associated with your Organization's [Exchange Deposit Address](../user-guide-reg-onboarding.md#exchange-deposit-address).   
 

@@ -1,5 +1,4 @@
 # Requests
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/certificate/requests](https://origin-ui-canary.herokuapp.com/certificate/requests)
 
 ![certificate-requests](../images/certificates/certificate-requests.png)
 

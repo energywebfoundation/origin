@@ -1,5 +1,4 @@
 # Devices
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/all](https://origin-ui-canary.herokuapp.com/device/all)  
 
 **Source code on github:** [https://github.com/energywebfoundation/origin/tree/master/packages/devices](https://github.com/energywebfoundation/origin/tree/master/packages/devices)
 

@@ -1,5 +1,4 @@
 # Devices
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/all  
 
 **Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/devices
 
@@ -29,8 +28,6 @@ The Device interface has four views. The purpose and utility of each view is exp
 
 ## All Devices
 
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/all
-
 This view provides a tile view of all devices registered within a marketplace:
 ![All Devices](images/deviceMgmtImages/AllDevices.png)
 
@@ -38,17 +35,13 @@ To view a device’s details, click the device image or image placeholder. If ho
 
 ![View Device Details](images/deviceMgmtImages/ViewDeviceDetails.png)
 
-### Device Detail View
-
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/detail-view/e3ac3a98-0739-4d14-afef-c51b0a03d282](https://origin-ui-canary.herokuapp.com/device/detail-view/e3ac3a98-0739-4d14-afef-c51b0a03d282)  
+### Device Detail View 
 
 This view provides high-level generation capacity, certification overview and smart meter readings for a single device. 
 Device details fields are dependent on implementation needs. To see an overview of the fields provided in the reference implementation, see [Appendix A](#appendix-a) below.
 
 
 ## Map View
-
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/map 
 
 ![Map View](images/deviceMgmtImages/Map.png)
 
@@ -57,8 +50,6 @@ Use this interface to see devices registered within a marketplace across geograp
 ![Map See More](images/deviceMgmtImages/MapHover.png)
 
 ## My Devices
-
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/my
 
 Use this interface to view all of your organization's registered devices. 
 
@@ -102,8 +93,6 @@ Once a certificate has been approved by the issuing body, it will be deposited i
 
 ## Register Device
 
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/register
-
 Use this interface to register a new device under your [organization](./user-guide-reg-onboarding.md#organizations). Note that registered device details are public once the device is approved by the Issuer.
 
 ### Device Information
@@ -143,8 +132,6 @@ Use this interface to register a new device under your [organization](./user-gui
 Upload .png or .img files of device. Note that this step is optional. 
 
 ## Import Device
-
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/device/import
 
 ![ImportDevices](images/deviceMgmtImages/devices-devicestoimport.png)
 

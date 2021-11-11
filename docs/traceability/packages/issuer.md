@@ -1,23 +1,24 @@
 # Issuer  
 **Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer)  
 
-## Overview  
-The Issuer package has four components:  
-1. [Contracts:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts) The smart contracts for Certificate management on the blockchain. Smart contracts are documented [below](#smart-contracts). All smart contracts are written in Solidity](https://docs.soliditylang.org/en/v0.8.10/). 
-2. [Migrations:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/migrations) Methods for deploying the smart contracts to the blockchain using the [OpenZeppelin Truffle Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades).    
-3. [Blockchain-facade:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade) Interfaces and strongly-typed classes with methods to interact with Issuer smart contracts. Blockchain facades are documented [below](#blockchain-facade).   
-4. Utilities
-    a. Events
-    b. Precise Proof Utilities  
+## Overview of Components
+The Issuer package has four components:      
+
+1. [Contracts:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts) The smart contracts for Certificate management on the blockchain. Smart contracts are documented [below](#smart-contracts). All smart contracts are written in [Solidity](https://docs.soliditylang.org/en/v0.8.10/).    
+2. [Migrations:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/migrations) Methods for deploying the smart contracts to the blockchain using the [OpenZeppelin Truffle Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades).        
+3. [Blockchain-facade:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade) Interfaces and strongly-typed classes with methods to interact with Issuer smart contracts. Blockchain facades are documented [below](#blockchain-facade).     
+4. Utilities     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. Events
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. Precise Proof Utilities  
 
 ## Smart Contracts
 **All contracts on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts)  
 
--   [ERC-1888](../contracts/ERC1888/ERC1888.md)
--   [Registry](../contracts/Registry.md)
--   [Registry Extended](../contracts/RegistryExtended.md)
--   [Issuer](../contracts/Issuer.md)
--   [PrivateIssuer](../contracts/PrivateIssuer.md)
+-   [ERC-1888](../contracts/ERC1888/ERC1888.md)  
+-   [Registry](../contracts/Registry.md)  
+-   [Registry Extended](../contracts/RegistryExtended.md)  
+-   [Issuer](../contracts/Issuer.md)  
+-   [PrivateIssuer](../contracts/PrivateIssuer.md)  
 
 ### IERC1888  
 - **Source code on GitHub**: [https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/ERC1888/IERC1888.sol](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/ERC1888/IERC1888.sol)  
@@ -26,11 +27,11 @@ Interface for IERC-1888 Certificate/Claim.
 
 ### Registry
 - **Source code on GitHub**: [https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Registry.sol](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Registry.sol)   
-- [Full API documentation](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/).   
+- [Full API documentation](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/)
 
-This contract implements the ERC-1888 and ERC-1155 methods in the context of the Origin platform.
+This contract implements the ERC-1888 and ERC-1155 methods in the context of the Origin platform. You can read more about ERC-1888 and ERC-1155 [here](../../traceability.md#energy-attribute-certificates-on-the-blockchain ).
 
-As its name suggests, the Registry contract manages and interacts with certificates directly. It handles the [issuing](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#issueaddress-_to-bytes-_validitydata-uint256-_topic-uint256-_value-bytes-_data-uint256-id-external), [minting](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#mintuint256-_id-address-_to-uint256-_quantity-external), [transferring](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safetransferandclaimfromaddress-_from-address-_to-uint256-_id-uint256-_value-bytes-_data-bytes-_claimdata-external) and [claiming](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safebatchtransferandclaimfromaddress-_from-address-_to-uint256-_ids-uint256-_values-bytes-_data-bytes-_claimdata-external) of certificates, and returns certificate data and [certificate owner’s claimed balances](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#claimedbalanceofaddress-_owner-uint256-_id-uint256-external) for a given certificate(s). 
+As its name suggests, the Registry contract manages stores and manages certificates. It handles the [issuing](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#issueaddress-_to-bytes-_validitydata-uint256-_topic-uint256-_value-bytes-_data-uint256-id-external), [minting](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#mintuint256-_id-address-_to-uint256-_quantity-external), [transferring](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safetransferandclaimfromaddress-_from-address-_to-uint256-_id-uint256-_value-bytes-_data-bytes-_claimdata-external) and [claiming](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safebatchtransferandclaimfromaddress-_from-address-_to-uint256-_ids-uint256-_values-bytes-_data-bytes-_claimdata-external) of certificates, and returns certificate data and [certificate owner’s claimed balances](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#claimedbalanceofaddress-_owner-uint256-_id-uint256-external) for a given certificate(s). 
 
 Certificates are stored in the [certificateStorage map](https://github.com/energywebfoundation/origin/blob/2881ba2e04739c99eb8d6f48a53d15afe4844c3e/packages/traceability/issuer/contracts/Registry.sol#L13) in this contract, and are accessed by their Certificate Id.  
 
@@ -56,7 +57,7 @@ When new Certificates are issued, they are stored in [Registry’s certificate s
 ## Blockchain Facade
 - **Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade)  
 
-The Blockchain Facade exposes methods that call the [Issuer SDK's smart contract](#smart-contracts) public methods. The facade methods use the [ethers.js](https://docs.ethers.io/v5/) API to interact with the smart contracts. If you’re unfamiliar with how API client libraries connect to and interact with the blockchain, you can read more in our documentation [here(https://energy-web-foundation.gitbook.io/energy-web/how-tos-and-tutorials/interacting-with-a-smart-contract). 
+The Blockchain facade exposes methods that call the [Issuer module's smart contract](#smart-contracts) public methods. The facade methods use the [ethers.js](https://docs.ethers.io/v5/) API to interact with the smart contracts. If you’re unfamiliar with how API client libraries connect to and interact with the blockchain, you can read more in our documentation [here](https://energy-web-foundation.gitbook.io/energy-web/how-tos-and-tutorials/interacting-with-a-smart-contract). 
 
 ### Implementing Facades in the Issuer API
 
