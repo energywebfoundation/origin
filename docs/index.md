@@ -5,7 +5,7 @@
 Energy Web (EW) Origin is a set of software development kits (SDKs) that together provide a system for the issuance, management and trading of [Energy Attribute Certificates (EACs)](./user-guide-glossary.md#energy-attribute-certificate). 
 
 
-This site provides technical documentation for each SDK, as well as [user guides](./user-guides.md) on how to navigate and use the platform's user interface. 
+This site provides technical documentation for each SDK, as well as [user guides](./user-guides.md) on how to navigate the platform's user interface.   
 
 We provide documentation on how to install, build and run the Origin platform [here](getting-started.md). 
 
@@ -13,7 +13,8 @@ We provide documentation on how to install, build and run the Origin platform [h
 
 An Energy Attribute Certificate (EAC) is an official document that guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles.
 
-The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs are mostly used to address sustainability reports regarding [Scope 2 emissions](https://ghgprotocol.org/scope_2_guidance).
+The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs can be traded and purchased on a marketplace so they can be used to address sustainability reports regarding [Scope 2 emissions](https://ghgprotocol.org/scope_2_guidance).
+
 
 We provide more information on EACs in the glossary [here](./user-guide-glossary.md#energy-attribute-certificate). 
 
@@ -31,7 +32,7 @@ The registry enables both on- and off-chain storage capabilities. The off-chain 
 
 ### [Traceability](./traceability.md)
 
-The Traceability SDK is used to enable issuers to mint EAC's upon request based on provided generation evidence.  
+The Traceability SDK is used to enable certificate issuers (i.e. I-REC) to mint EAC's upon request based on provided generation evidence.  
 
 In addition to minting new EAC’s, the Traceability SDK also ensures that the certificate lifecycle and its owners are in compliance with  regulation at all times. Each issuing standard (e.g. I-REC) has its own implementation of the traceability SDK to meet its regulatory needs. To ensure compliance with widely adopted standards EW Origin team is working directly with regulators and standardization bodies.
 
