@@ -340,7 +340,8 @@
         "otherGreenAttr": "Other green attributes",
         "publicSupport": "Public support",
         "vintageCOD": "Vintage / (Commercial Operation Date)",
-        "viewDetailsButton": "View Details"
+        "viewDetailsButton": "View Details",
+        "editButton": "Edit"
       },
       "detailView": {
         "photo": "Photo",
@@ -414,6 +415,7 @@
           "toTime": "To",
           "energy": "Amount of energy in MW"
         },
+        "deviceStatusTooltip": "Device status: {{status}}",
         "notifications": {
           "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates.",
           "certificateRequestSuccess": "Certificate has been successfully requested",
@@ -445,6 +447,27 @@
         "notifications": {
           "importSuccess": "Device has been successfully imported",
           "importError": "Error while importing device"
+        }
+      },
+      "edit": {
+        "formTitle": "Editing {{deviceName}}",
+        "name": "Device name",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "capacity": "Capacity",
+        "commissioningDate": "Vintage / Commercial Operation Date",
+        "registrationDate": "Registration Date",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Description",
+        "notifications": {
+          "editSuccess": "Request for editing device information successfully submitted to I-REC",
+          "editError": "Error while submitting edit device request"
+        }
+      },
+      "modals": {
+        "editConfirm": {
+          "title": "Plese confirm editing of the device information"
         }
       }
     },
