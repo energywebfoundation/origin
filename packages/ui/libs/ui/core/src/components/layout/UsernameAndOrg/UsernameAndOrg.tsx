@@ -31,7 +31,7 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
             textContent={username}
             pending={userPending}
             tooltipText={userTooltip}
-            variant="h6"
+            typographyProps={{ variant: 'h6', component: 'span' }}
           />
           <TextWithPendingDot
             textContent={orgName}
