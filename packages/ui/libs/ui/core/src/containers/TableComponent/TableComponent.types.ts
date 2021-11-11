@@ -37,7 +37,7 @@ export interface TableComponentProps<Id> {
   tableTitle?: string;
   tableTitleProps?: TypographyProps;
   pageSize?: number;
-  onRowClick?: (id: Id) => void;
+  onRowClick?: (id: Id) => void | Promise<void>;
   getCustomRowClassName?: (id: Id) => string;
 }
 

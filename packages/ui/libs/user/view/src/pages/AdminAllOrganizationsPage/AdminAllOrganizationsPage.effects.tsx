@@ -3,13 +3,13 @@ import { TableActionData } from '@energyweb/origin-ui-core';
 import {
   useAllOrganizations,
   useOrgApproveHandler,
-} from '@energyweb/origin-ui-organization-data';
-import { useAllOrganizationsTableLogic } from '@energyweb/origin-ui-organization-logic';
+} from '@energyweb/origin-ui-user-data';
+import { useAllOrganizationsTableLogic } from '@energyweb/origin-ui-user-logic';
 import { Check } from '@mui/icons-material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const useAllOrganizationsPageEffects = () => {
+export const useAdminAllOrganizationsPageEffects = () => {
   const { allOrganizations, isLoading } = useAllOrganizations();
   const { t } = useTranslation();
 

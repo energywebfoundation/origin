@@ -25,11 +25,13 @@ export const useUserLogInFormConfig = (
       {
         label: t('user.login.email'),
         name: 'username',
+        required: true,
       },
       {
         label: t('user.login.password'),
         type: 'password',
         name: 'password',
+        required: true,
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
@@ -37,9 +39,6 @@ export const useUserLogInFormConfig = (
     submitHandler: formSubmitHandler,
     validationMode: 'onTouched',
     inputsVariant: 'filled',
-    validationSchema: Yup.object().shape({
-      username: Yup.string().email().label(t('user.login.email')).required(),
-      password: Yup.string().label(t('user.login.password')).required(),
-    }),
+    validationSchema: Yup.object().shape({}),
   };
 };

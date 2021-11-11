@@ -1,7 +1,26 @@
 import { OrganizationStatus } from '@energyweb/origin-backend-core';
 import { Countries } from '@energyweb/utils-general';
 import { useTranslation } from 'react-i18next';
-import { TFormatAllOrgs, TUseAllOrganizationsTableLogic } from './types';
+import { FullOrganizationInfoDTO } from '@energyweb/origin-backend-react-query-client';
+import {
+  TableActionData,
+  TableComponentProps,
+  TableRowData,
+} from '@energyweb/origin-ui-core';
+
+export type TUseAllOrganizationsTableArgs = {
+  allOrganizations: FullOrganizationInfoDTO[];
+  actions: TableActionData<FullOrganizationInfoDTO['id']>[];
+  isLoading: boolean;
+};
+
+export type TFormatAllOrgs = (
+  props: Omit<TUseAllOrganizationsTableArgs, 'isLoading'>
+) => TableRowData<FullOrganizationInfoDTO['id']>[];
+
+export type TUseAllOrganizationsTableLogic = (
+  props: TUseAllOrganizationsTableArgs
+) => TableComponentProps<FullOrganizationInfoDTO['id']>;
 
 const formatOrganizations: TFormatAllOrgs = ({ allOrganizations, actions }) => {
   return allOrganizations?.map((org) => ({
