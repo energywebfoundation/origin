@@ -10,7 +10,6 @@ export type TGetOrganizationMenuArgs = {
   showMembers: boolean;
   showInvitations: boolean;
   showInvite: boolean;
-  showAllOrgs: boolean;
   showRegisterIRec: boolean;
   showCreateBeneficiary: boolean;
   showConnectIRec: boolean;
@@ -29,7 +28,6 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
   showMembers,
   showInvitations,
   showInvite,
-  showAllOrgs,
   showRegisterIRec,
   showCreateBeneficiary,
   showConnectIRec,
@@ -61,11 +59,6 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
       url: 'invite',
       label: t('navigation.organization.invite'),
       show: showInvite,
-    },
-    {
-      url: 'all',
-      label: t('navigation.organization.all'),
-      show: showAllOrgs,
     },
     {
       url: 'register-irec',

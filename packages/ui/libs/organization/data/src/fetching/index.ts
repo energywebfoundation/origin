@@ -1,4 +1,3 @@
-export * from './allOrganizations';
 export * from './sentInvitations';
 export * from './receivedInvitations';
 export * from './orgMembers';
