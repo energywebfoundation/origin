@@ -36,7 +36,7 @@ The Traceability SDK is used to enable certificate issuers (i.e. I-REC) to mint 
 
 In addition to minting new EAC’s, the Traceability SDK also ensures that the certificate lifecycle and its owners are in compliance with  regulation at all times. Each issuing standard (e.g. I-REC) has its own implementation of the traceability SDK to meet its regulatory needs. To ensure compliance with widely adopted standards EW Origin team is working directly with regulators and standardization bodies.
 
-### Trade
+### [Trade](./trade.md)
 
 The Trade SDK is used to facilitate trading between buyers and sellers of EACs.   
 
