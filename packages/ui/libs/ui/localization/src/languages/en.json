@@ -836,6 +836,7 @@
         "email": "Email",
         "telephone": "Telephone",
         "password": "Password",
+        "passwordValidation": "Password length should be minimum 6 characters and consist of latin letters and at least one number",
         "notifications": {
           "registerSuccess": "User registered",
           "registerError": "Error while registering user"
