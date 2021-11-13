@@ -34,7 +34,7 @@
         "@nestjs/typeorm": "8.0.2",
         "@types/chai": "4.2.15",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.17.32",
+        "@types/node": "14.17.33",
         "barrelsby": "2.3.0",
         "chai": "4.3.0",
         "json-to-pretty-yaml": "1.2.2",
