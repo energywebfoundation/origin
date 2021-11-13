@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "axios": "0.24.0",
-        "react-query": "3.32.1"
+        "react-query": "3.32.3"
     },
     "devDependencies": {
         "@energyweb/exchange": "1.11.0",

@@ -21,7 +21,7 @@
     "@energyweb/origin-ui-shared-state": "0.1.0",
     "@mui/material": "5.0.6",
     "i18next": "21.4.0",
-    "react-i18next": "11.13.0"
+    "react-i18next": "11.14.2"
   },
   "peerDependencies": {
     "react": "17.0.2"
