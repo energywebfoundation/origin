@@ -37,7 +37,7 @@
         "pg": "8.7.1",
         "polly-js": "1.8.2",
         "rxjs": "7.4.0",
-        "typeorm": "0.2.39"
+        "typeorm": "0.2.40"
     },
     "peerDependencies": {
         "@nestjs/common": "8.1.1",
