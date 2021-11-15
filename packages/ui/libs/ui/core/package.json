@@ -42,8 +42,8 @@
     "@emotion/styled": "11.6.0",
     "emotion-theming": "11.0.0",
     "react": "17.0.2",
-    "react-router": "6.0.2",
-    "react-router-dom": "6.0.2"
+    "react-router": "6.0.0",
+    "react-router-dom": "6.0.0"
   },
   "main": "dist/ui-core.umd.js",
   "module": "dist/ui-core.esm.js",
