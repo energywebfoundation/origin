@@ -64,7 +64,7 @@
         "passport-local": "1.0.0",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.4.0",
-        "typeorm": "0.2.39",
+        "typeorm": "0.2.40",
         "uuid": "8.3.2"
     },
     "devDependencies": {
@@ -80,7 +80,7 @@
         "@types/jsonwebtoken": "8.5.5",
         "@types/mocha": "9.0.0",
         "@types/multer": "1.4.7",
-        "@types/node": "14.17.32",
+        "@types/node": "14.17.33",
         "@types/nodemailer": "6.4.4",
         "@types/passport": "1.0.7",
         "@types/passport-jwt": "3.0.6",

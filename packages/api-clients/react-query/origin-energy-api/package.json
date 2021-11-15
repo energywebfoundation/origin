@@ -25,7 +25,7 @@
     "dependencies": {
         "@energyweb/origin-energy-api": "1.0.4",
         "axios": "0.24.0",
-        "react-query": "3.32.1"
+        "react-query": "3.32.3"
     },
     "devDependencies": {
         "@nestjs/passport": "8.0.1",
@@ -33,11 +33,11 @@
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.17.32",
+        "@types/node": "14.17.33",
         "barrelsby": "2.3.0",
         "json-to-pretty-yaml": "1.2.2",
         "mocha": "9.1.3",
-        "orval": "6.2.4",
+        "orval": "6.3.0",
         "prettier": "2.4.1",
         "ts-node": "9.1.1",
         "typescript": "4.4.4"
