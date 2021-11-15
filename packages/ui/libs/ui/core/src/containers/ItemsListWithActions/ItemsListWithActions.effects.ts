@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import {
   ActionsEnum,
   initialState,
@@ -12,40 +12,34 @@ import {
 export const useItemsListWithActionsEffects: TUseItemsListWithActionsEffects =
   ({ containers }) => {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const allSelected = state.allChecked;
-    const containerIds = containers.keys();
-
-    useEffect(() => {
-      const checkedContainersLength = state.containersChecked.length;
-      const isDifferentSize = checkedContainersLength !== containers.size;
-
-      if (isDifferentSize && state.allChecked) {
-        dispatch({ type: ActionsEnum.CHECK_ALL });
-      } else if (!isDifferentSize && !state.allChecked) {
-        dispatch({ type: ActionsEnum.CHECK_ALL });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.containersChecked]);
+    const allSelected = containers.size === state.containersChecked.length;
 
     const checkContainerHandler = <ContainerId>(id: ContainerId) => {
       const containerWasChecked = state.containersChecked.includes(id);
       const itemsState = [...state.itemsChecked];
-
-      dispatch({
-        type: ActionsEnum.CHECK_CONTAINER,
-        payload: id,
-      });
 
       const items = containers.get(id as any).items;
       const itemsIds = items.map((item) => item.id);
       const itemsStateWithoutThisContainer = itemsState.filter(
         (item) => !itemsIds.includes(item as any)
       );
+      const itemsStateWithThisContainer = [
+        ...itemsStateWithoutThisContainer,
+        ...itemsIds,
+      ];
+
       dispatch({
-        type: ActionsEnum.CHECK_ITEM,
-        payload: containerWasChecked
-          ? itemsStateWithoutThisContainer
-          : [...itemsStateWithoutThisContainer, ...itemsIds],
+        type: ActionsEnum.CHECK_CONTAINER_OR_ITEM,
+        payload: {
+          containers: containerWasChecked
+            ? state.containersChecked.filter(
+                (containerId) => containerId !== id
+              )
+            : [...state.containersChecked, id],
+          items: containerWasChecked
+            ? itemsStateWithoutThisContainer
+            : itemsStateWithThisContainer,
+        },
       });
     };
 
@@ -62,40 +56,57 @@ export const useItemsListWithActionsEffects: TUseItemsListWithActionsEffects =
           (item) => item !== id
         );
 
-        dispatch({
-          type: ActionsEnum.CHECK_ITEM,
-          payload: itemChecked
-            ? stateWithoutThisItem
-            : stateWithThisItemChecked,
-        });
-
         const parentChecked = state.containersChecked.includes(containerId);
         const allItemsFromContainerChecked = itemsIds.every((itemId) =>
           stateWithThisItemChecked.includes(itemId)
         );
 
-        if (parentChecked) {
-          dispatch({
-            type: ActionsEnum.CHECK_CONTAINER,
-            payload: containerId,
-          });
-        } else if (allItemsFromContainerChecked && !parentChecked) {
-          dispatch({
-            type: ActionsEnum.CHECK_CONTAINER,
-            payload: containerId,
-          });
-        }
+        dispatch({
+          type: ActionsEnum.CHECK_CONTAINER_OR_ITEM,
+          payload: {
+            containers: parentChecked
+              ? state.containersChecked.filter(
+                  (stateId) => stateId !== containerId
+                )
+              : allItemsFromContainerChecked
+              ? [...state.containersChecked, containerId]
+              : state.containersChecked,
+            items: itemChecked
+              ? stateWithoutThisItem
+              : stateWithThisItemChecked,
+          },
+        });
       };
-    };
-
-    const selectAllHandler = () => {
-      for (const id of containerIds) {
-        checkContainerHandler(id);
-      }
     };
 
     const resetState = () => {
       dispatch({ type: ActionsEnum.RESET_STATE });
+    };
+
+    const selectAllHandler = () => {
+      if (allSelected) {
+        resetState();
+      } else {
+        const containersKeys = containers.keys();
+        const containersIds = Array.from(containersKeys);
+        const itemsIds = containersIds.flatMap((id) => {
+          const currentContainerItems = containers.get(id);
+          const currentContainerItemIds = currentContainerItems?.items?.map(
+            (item) => item.id
+          );
+          if (currentContainerItemIds) {
+            return currentContainerItemIds;
+          }
+        });
+
+        dispatch({
+          type: ActionsEnum.CHECK_CONTAINER_OR_ITEM,
+          payload: {
+            containers: containersIds,
+            items: itemsIds,
+          },
+        });
+      }
     };
 
     const listContainers = [];
