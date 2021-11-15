@@ -16,9 +16,9 @@ export interface ListItemsContainerProps<ContainerId, ItemId> {
   id: ContainerId;
   containerHeader: React.ReactNode;
   containerItems: ListItemComponentProps<ItemId>[];
+  checkboxes?: boolean;
   isChecked?: boolean;
   handleContainerCheck?: (id: ContainerId) => void;
-  checkboxes?: boolean;
   containerListItemProps?: ListItemProps;
   itemListItemProps?: ListItemProps;
   disabled?: boolean;
@@ -30,14 +30,14 @@ type TListItemsContainer = <ContainerId, ItemId>(
 
 export const ListItemsContainer: TListItemsContainer = ({
   id,
-  isChecked,
   handleContainerCheck,
   containerHeader,
   containerItems,
-  checkboxes,
+  checkboxes = false,
+  isChecked = false,
+  disabled = false,
   containerListItemProps,
   itemListItemProps,
-  disabled = false,
 }) => {
   const classes = useStyles();
   return (

@@ -19,7 +19,7 @@ export interface CardsListItem<Id> {
   contentWrapperProps?: BoxProps;
 }
 
-interface ListCardProps<Id> {
+export interface ListCardProps<Id> {
   item: CardsListItem<Id>;
   selected: boolean;
   handleSelect: (id: Id) => void;

@@ -1,4 +1,10 @@
-import { GridProps, ListItemProps, TabsProps } from '@mui/material';
+import {
+  GridProps,
+  ListItemProps,
+  PaginationProps,
+  TabsProps,
+  TypographyProps,
+} from '@mui/material';
 import { PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { GenericItemsListProps, ListAction } from '../../components/list';
 import { ActionsEnum } from './ItemsListWithActions.reducer';
@@ -20,17 +26,14 @@ export type TItemsListWithActionsContainers<ContainerId, ItemId> = Map<
 
 export interface ItemsListWithActionsProps<ContainerId, ItemId> {
   containers: TItemsListWithActionsContainers<ContainerId, ItemId>;
-  actions: ListAction[];
+  actions: ListAction<ItemId>[];
   listTitle?: string;
-  listTitleProps?: GenericItemsListProps<ContainerId, ItemId>['titleProps'];
+  listTitleProps?: TypographyProps;
   selectAllText?: string;
-  checkboxes?: GenericItemsListProps<ContainerId, ItemId>['checkboxes'];
-  pagination?: GenericItemsListProps<ContainerId, ItemId>['pagination'];
-  pageSize?: GenericItemsListProps<ContainerId, ItemId>['pageSize'];
-  paginationProps?: GenericItemsListProps<
-    ContainerId,
-    ItemId
-  >['paginationProps'];
+  checkboxes?: boolean;
+  pagination?: boolean;
+  pageSize?: number;
+  paginationProps?: PaginationProps;
   itemsGridProps?: GridProps;
   actionsGridProps?: GridProps;
   emptyListComponent?: ReactNode;

@@ -22,13 +22,13 @@ export interface GenericCardsListProps<Id> {
   checkedIds: Id[];
   handleCheck: (id: Id) => void;
   allItems: CardsListItem<Id>[];
-  loading: boolean;
+  loading?: boolean;
   listTitle?: string;
   listTitleProps?: TypographyProps;
   checkAllText?: string;
   allChecked?: boolean;
   handleAllCheck?: () => void;
-  handleDrag?: (newOrder: CardsListItem<Id>[]) => Promise<void>;
+  handleDrag?: (newOrder: CardsListItem<Id>[]) => void | Promise<void>;
   selectOnCardClick?: boolean;
   dragNdrop?: boolean;
   listWrapperProps?: BoxProps;

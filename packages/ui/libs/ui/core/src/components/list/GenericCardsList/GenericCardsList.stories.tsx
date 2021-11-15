@@ -1,9 +1,7 @@
 /* deepscan-disable */
-import React from 'react';
+import React, { useState } from 'react';
 import { Meta, Story } from '@storybook/react';
 import { Box, Typography } from '@mui/material';
-import { CardsListBlock, CardsListBlockProps } from './CardsListBlock';
-import { CardsListItem } from '../../components/list';
 import {
   ArgsTable,
   Description,
@@ -12,9 +10,11 @@ import {
   Stories,
   Title,
 } from '@storybook/addon-docs';
+import { CardsListItem } from '../ListCard';
+import { GenericCardsList, GenericCardsListProps } from './GenericCardsList';
 
 const description =
-  'Component with selectable cards and custom content to be displayed to the right.';
+  'Component allowing to build a list of selectable and rotatable cards.';
 
 const allItemsTypeDetail = `{
   // item id
@@ -40,8 +40,8 @@ const allItemsTypeDetail = `{
 }`;
 
 export default {
-  title: 'List / CardsListBlock',
-  component: CardsListBlock,
+  title: 'List / GenericCardsList',
+  component: GenericCardsList,
   parameters: {
     docs: {
       page: () => (
@@ -56,42 +56,49 @@ export default {
     },
   },
   argTypes: {
+    checkedIds: {
+      description: 'And array of selected ids. Normally a state variable.',
+      control: null,
+    },
+    handleCheck: {
+      description: 'Function handling a single card select.',
+      control: null,
+    },
     allItems: {
-      description: 'Array of items to be displayed as cards',
+      description: 'An array of all items to be rendered in the list.',
+      control: null,
       table: {
         type: {
           detail: allItemsTypeDetail,
         },
       },
-      control: null,
     },
-    Content: {
-      description: 'React component rendered to the right of the cards list',
-      table: {
-        type: {
-          summary: 'React.FC<{ selectedIds: Id[] }>',
-        },
-      },
-      control: null,
+    checkAllText: {
+      description:
+        'If supplied - will add a Check All checkbox at the top of the cards list with text located to the right.',
+    },
+    allChecked: {
+      description:
+        'Prop displaying if all cards are checked. Should be used with `checkAllText`.',
+    },
+    handleAllCheck: {
+      description:
+        'Function for handling click on Select All checkbox for selecting all of the available cards. Should be used with `checkAllText`.',
     },
     loading: {
-      description: 'Loading state supplied for the cards',
+      description: 'Loading state supplied for the cards.',
     },
     listTitle: {
-      description: 'Optional title of the component',
+      description: 'Optional title of the component.',
     },
     listTitleProps: {
-      description: 'Props supplied to the `Typography` component of the title',
+      description: 'Props supplied to the `Typography` component of the title.',
       table: {
         type: {
           summary: 'TypographyProps',
         },
       },
       control: null,
-    },
-    checkAllText: {
-      description:
-        'If supplied - will add a Check All checkbox at the top of the cards list with text located to the right',
     },
     selectOnCardClick: {
       description:
@@ -133,18 +140,6 @@ export default {
   },
 } as Meta;
 
-const BlockContent: CardsListBlockProps<number>['Content'] = ({
-  selectedIds,
-}) => {
-  return (
-    <Box m={4}>
-      <Typography>
-        {`Currently selected ID's: ${selectedIds.join(', ')}`}
-      </Typography>
-    </Box>
-  );
-};
-
 const CardItemContent: CardsListItem<number>['content'] = ({ id }) => {
   return (
     <Box>
@@ -154,8 +149,39 @@ const CardItemContent: CardsListItem<number>['content'] = ({ id }) => {
   );
 };
 
-const Template: Story<CardsListBlockProps<number>> = (args) => {
-  return <CardsListBlock {...args} />;
+const Template: Story<GenericCardsListProps<number>> = (args) => {
+  const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
+  const handleCheck = (id: number) => {
+    if (checkedIds.includes(id)) {
+      const newChecked = [...checkedIds].filter(
+        (checkedId) => checkedId !== id
+      );
+      return setCheckedIds(newChecked);
+    }
+    const newChecked = [...checkedIds, id];
+    setCheckedIds(newChecked);
+  };
+
+  const allChecked = checkedIds.length === args.allItems.length;
+
+  const handleAllCheck = () => {
+    if (allChecked) {
+      return setCheckedIds([]);
+    }
+    const newChecked = args.allItems.map((item) => item.id);
+    setCheckedIds(newChecked);
+  };
+
+  return (
+    <GenericCardsList
+      checkedIds={checkedIds}
+      handleCheck={handleCheck}
+      allChecked={allChecked}
+      handleAllCheck={handleAllCheck}
+      {...args}
+    />
+  );
 };
 
 export const WithoutCheckboxes = Template.bind({});
@@ -174,7 +200,6 @@ WithoutCheckboxes.args = {
       content: CardItemContent,
     },
   ],
-  Content: BlockContent,
   loading: false,
   listTitle: '',
   checkAllText: '',
@@ -201,7 +226,6 @@ WithCheckboxes.args = {
       checkbox: true,
     },
   ],
-  Content: BlockContent,
   loading: false,
   listTitle: '',
   checkAllText: 'Select all',
@@ -225,7 +249,6 @@ WithDragNDrop.args = {
       content: CardItemContent,
     },
   ],
-  Content: BlockContent,
   loading: false,
   listTitle: '',
   checkAllText: '',
