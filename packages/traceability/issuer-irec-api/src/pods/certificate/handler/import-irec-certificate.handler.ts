@@ -32,7 +32,10 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
     ) {}
 
     async execute({ user, certificateToImport }: ImportIrecCertificateCommand): Promise<void> {
-        const irecCertificates = await this.irecService.getCertificates(user);
+        const irecCertificates = await this.irecService.getCertificates(
+            user,
+            certificateToImport.fromIrecAccountCode
+        );
         const irecCertificate = irecCertificates.find(
             (c) => c.asset === certificateToImport.assetId
         );
@@ -59,10 +62,15 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
+        const toTradeAccount =
+            certificateToImport.toIrecAccountCode ||
+            (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
+
         const transaction = await this.irecService.transferCertificate(
             user,
-            platformAdmin.organization.id.toString(),
-            certificateToImport.assetId
+            toTradeAccount,
+            certificateToImport.assetId,
+            certificateToImport.fromIrecAccountCode
         );
 
         if (!transaction) {
@@ -88,7 +96,8 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
             this.irecCertificationRequestRepository.create({
                 certificationRequestId: certificationRequest.id,
                 irecAssetId: certificateToImport.assetId,
-                organizationId: String(user.organizationId)
+                organizationId: String(user.organizationId),
+                irecTradeAccountCode: toTradeAccount
             })
         );
 
