@@ -1,7 +1,7 @@
 /* deepscan-disable */
-import React from 'react';
+import React, { useState } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { GenericItemsList, GenericItemsListProps } from './GenericItemsList';
 import {
   ArgsTable,
@@ -9,7 +9,7 @@ import {
   Primary,
   PRIMARY_STORY,
   Stories,
-  Title,
+  Title as StoryTitle,
 } from '@storybook/addon-docs';
 
 const description =
@@ -36,7 +36,7 @@ export default {
     docs: {
       page: () => (
         <>
-          <Title />
+          <StoryTitle />
           <Description>{description}</Description>
           <Primary />
           <ArgsTable story={PRIMARY_STORY} />
@@ -151,54 +151,215 @@ export default {
   },
 } as Meta;
 
+const containers = [
+  {
+    id: 1,
+    containerHeader: <Typography>Container Header 1</Typography>,
+    containerItems: [
+      {
+        id: 'a1',
+        itemContent: <Typography>Item A1</Typography>,
+      },
+    ],
+  },
+  {
+    id: 2,
+    containerHeader: <Typography>Container Header 2</Typography>,
+    containerItems: [
+      {
+        id: 'a2',
+        itemContent: <Typography>Item A2</Typography>,
+      },
+      {
+        id: 'b2',
+        itemContent: <Typography>Item B2</Typography>,
+      },
+    ],
+  },
+  {
+    id: 3,
+    containerHeader: <Typography>Container Header 3</Typography>,
+    containerItems: [
+      {
+        id: 'a3',
+        itemContent: <Typography>Item A3</Typography>,
+      },
+      {
+        id: 'b3',
+        itemContent: <Typography>Item B3</Typography>,
+      },
+      {
+        id: 'c3',
+        itemContent: <Typography>Item C3</Typography>,
+      },
+    ],
+  },
+];
+
+const EmptyList = () => {
+  return (
+    <Box
+      height={'100px'}
+      display={'flex'}
+      alignItems={'center'}
+      justifyContent={'center'}
+    >
+      <Typography component="span" variant="h5" color="primary">
+        List is empty
+      </Typography>
+    </Box>
+  );
+};
+
 const Template: Story<GenericItemsListProps<number, string>> = (args) => {
-  return <GenericItemsList {...args} />;
+  const [state, setState] = useState<{ containers: number[]; items: string[] }>(
+    {
+      containers: [],
+      items: [],
+    }
+  );
+  const allSelected = state.containers.length === args.listContainers.length;
+
+  const selectAllHandler = () => {
+    if (allSelected) {
+      setState({ containers: [], items: [] });
+    } else {
+      setState({
+        containers: args.listContainers.map((container) => container.id),
+        items: args.listContainers.flatMap((container) =>
+          container.containerItems.map((item) => item.id)
+        ),
+      });
+    }
+  };
+
+  const handleContainerCheck = (id: number) => {
+    const alreadyChecked = state.containers.includes(id);
+    const containerItemsIds = args.listContainers.flatMap((container) => {
+      if (container.id === id) {
+        return container.containerItems.map((item) => item.id);
+      }
+    });
+
+    if (alreadyChecked) {
+      setState({
+        containers: state.containers.filter(
+          (containerId) => containerId !== id
+        ),
+        items: state.items.filter(
+          (itemId) => !containerItemsIds.includes(itemId)
+        ),
+      });
+    } else {
+      setState({
+        containers: [...state.containers, id],
+        items: [...state.items, ...containerItemsIds],
+      });
+    }
+  };
+
+  const handleItemCheck = (id: string) => {
+    const isItemChecked = state.items.includes(id);
+    const parentContainer = args.listContainers.find((container) => {
+      return (
+        container.containerItems.filter((item) => item.id === id)?.length > 0
+      );
+    });
+
+    if (!isItemChecked) {
+      const allItemsIdsFromContainer = parentContainer.containerItems.map(
+        (item) => item.id
+      );
+      const stateWithThisIdAdded = [...state.items, id];
+      const willAllItemsOfContainerBeCheckedAfterThisCheck =
+        allItemsIdsFromContainer.every((itemId) => {
+          return stateWithThisIdAdded.includes(itemId);
+        });
+
+      if (willAllItemsOfContainerBeCheckedAfterThisCheck) {
+        setState({
+          containers: [...state.containers, parentContainer.id],
+          items: stateWithThisIdAdded,
+        });
+      } else {
+        setState({
+          ...state,
+          items: stateWithThisIdAdded,
+        });
+      }
+    } else {
+      const isContainerChecked = state.containers.includes(parentContainer.id);
+      const stateItemsWithoutThisItem = state.items.filter(
+        (itemId) => itemId !== id
+      );
+
+      if (isContainerChecked) {
+        setState({
+          containers: state.containers.filter(
+            (containerId) => containerId !== parentContainer.id
+          ),
+          items: stateItemsWithoutThisItem,
+        });
+      } else {
+        setState({
+          ...state,
+          items: stateItemsWithoutThisItem,
+        });
+      }
+    }
+  };
+
+  const enrichedContainers = args.checkboxes
+    ? args.listContainers.map((container) => ({
+        ...container,
+        isChecked: state.containers.includes(container.id),
+        handleContainerCheck: handleContainerCheck,
+        containerItems: container.containerItems.map((item) => ({
+          ...item,
+          itemChecked: state.items.includes(item.id),
+          handleItemCheck: handleItemCheck,
+        })),
+      }))
+    : args.listContainers;
+
+  return (
+    <GenericItemsList
+      {...args}
+      allSelected={allSelected}
+      selectAllHandler={selectAllHandler}
+      listContainers={enrichedContainers}
+    />
+  );
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  listContainers: [
-    {
-      id: 1,
-      containerHeader: <Typography>Container Header 1</Typography>,
-      containerItems: [
-        {
-          id: 'a1',
-          itemContent: <Typography>Item A1</Typography>,
-        },
-      ],
-    },
-    {
-      id: 2,
-      containerHeader: <Typography>Container Header 2</Typography>,
-      containerItems: [
-        {
-          id: 'a2',
-          itemContent: <Typography>Item A2</Typography>,
-        },
-        {
-          id: 'b2',
-          itemContent: <Typography>Item B2</Typography>,
-        },
-      ],
-    },
-    {
-      id: 3,
-      containerHeader: <Typography>Container Header 3</Typography>,
-      containerItems: [
-        {
-          id: 'a3',
-          itemContent: <Typography>Item A3</Typography>,
-        },
-        {
-          id: 'b3',
-          itemContent: <Typography>Item B3</Typography>,
-        },
-        {
-          id: 'c3',
-          itemContent: <Typography>Item C3</Typography>,
-        },
-      ],
-    },
-  ],
+  listContainers: containers,
+};
+
+export const Title = Template.bind({});
+Title.args = {
+  listContainers: containers,
+  listTitle: 'Items list title',
+  titleProps: { color: 'textSecondary' },
+};
+
+export const Checkboxes = Template.bind({});
+Checkboxes.args = {
+  listContainers: containers,
+  checkboxes: true,
+  selectAllText: 'Select all',
+};
+
+export const Pagination = Template.bind({});
+Pagination.args = {
+  listContainers: containers,
+  pagination: true,
+  pageSize: 1,
+};
+
+export const EmptyListFallback = Template.bind({});
+EmptyListFallback.args = {
+  listContainers: [],
+  emptyListComponent: <EmptyList />,
 };

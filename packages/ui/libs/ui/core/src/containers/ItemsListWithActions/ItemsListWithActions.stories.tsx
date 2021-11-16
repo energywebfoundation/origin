@@ -8,7 +8,7 @@ import {
   Primary,
   PRIMARY_STORY,
   Stories,
-  Title,
+  Title as StoryTitle,
 } from '@storybook/addon-docs';
 import { ItemsListWithActions } from './ItemsListWithActions';
 import { ItemsListWithActionsProps } from './ItemsListWithActions.types';
@@ -58,7 +58,7 @@ export default {
     docs: {
       page: () => (
         <>
-          <Title />
+          <StoryTitle />
           <Description>{description}</Description>
           <Primary />
           <ArgsTable story={PRIMARY_STORY} />
@@ -155,113 +155,118 @@ export default {
   },
 } as Meta;
 
-const Template: Story<ItemsListWithActionsProps<number, number>> = (args) => {
-  const containers: ItemsListWithActionsProps<number, string>['containers'] =
-    new Map();
+const containers: ItemsListWithActionsProps<number, string>['containers'] =
+  new Map();
 
-  containers.set(1, {
-    containerComponent: <Typography>First container</Typography>,
-    items: [
-      {
-        id: '1',
-        component: (
-          <Typography>This is the first item of first container</Typography>
-        ),
-      },
-    ],
-  });
-  containers.set(2, {
-    containerComponent: <Typography>Second container</Typography>,
-    items: [
-      {
-        id: '2',
-        component: (
-          <Typography>This is the first item of second container</Typography>
-        ),
-      },
-      {
-        id: '3',
-        component: (
-          <Typography>This is the second item of second container</Typography>
-        ),
-      },
-    ],
-  });
-
-  return <ItemsListWithActions containers={containers} {...args} />;
-};
-
-export const WithCheckboxes = Template.bind({});
-WithCheckboxes.args = {
-  actions: [
+containers.set(1, {
+  containerComponent: <Typography>First container</Typography>,
+  items: [
     {
-      name: 'Sell',
-      content: (
-        <Box p={'20px'}>
-          <Typography>Sell action text</Typography>
-        </Box>
-      ),
-    },
-    {
-      name: 'Buy',
-      content: (
-        <Box p={'20px'}>
-          <Typography>Buy action text</Typography>
-        </Box>
+      id: '1',
+      component: (
+        <Typography>This is the first item of first container</Typography>
       ),
     },
   ],
-  listTitle: 'Items list with Actions',
-  selectAllText: 'Select all items and containers',
+});
+containers.set(2, {
+  containerComponent: <Typography>Second container</Typography>,
+  items: [
+    {
+      id: '2',
+      component: (
+        <Typography>This is the first item of second container</Typography>
+      ),
+    },
+    {
+      id: '3',
+      component: (
+        <Typography>This is the second item of second container</Typography>
+      ),
+    },
+  ],
+});
+
+const actions = [
+  {
+    name: 'Sell',
+    content: (
+      <Box p={'20px'}>
+        <Typography>Sell action text</Typography>
+      </Box>
+    ),
+  },
+  {
+    name: 'Buy',
+    content: (
+      <Box p={'20px'}>
+        <Typography>Buy action text</Typography>
+      </Box>
+    ),
+  },
+];
+
+const EmptyList = () => {
+  return (
+    <Box
+      height={'200px'}
+      display={'flex'}
+      alignItems={'center'}
+      justifyContent={'center'}
+    >
+      <Typography textAlign={'center'} component="span" variant="h4">
+        List is empty
+      </Typography>
+    </Box>
+  );
+};
+
+const Template: Story<ItemsListWithActionsProps<number, string>> = (args) => {
+  return <ItemsListWithActions {...args} />;
+};
+
+export const Default = Template.bind({});
+Default.args = {
+  containers: containers,
+  actions: actions,
+};
+
+export const Title = Template.bind({});
+Title.args = {
+  containers: containers,
+  actions: actions,
+  listTitle: 'Items list with actions',
+  listTitleProps: { color: 'primary' },
+};
+
+export const Checkboxes = Template.bind({});
+Checkboxes.args = {
+  containers: containers,
+  actions: actions,
   checkboxes: true,
-};
-
-export const WithoutCheckboxes = Template.bind({});
-WithoutCheckboxes.args = {
-  actions: [
-    {
-      name: 'Sell',
-      content: (
-        <Box p={'20px'}>
-          <Typography>Sell action text</Typography>
-        </Box>
-      ),
-    },
-    {
-      name: 'Buy',
-      content: (
-        <Box p={'20px'}>
-          <Typography>Buy action text</Typography>
-        </Box>
-      ),
-    },
-  ],
-  listTitle: 'Items list with Actions',
   selectAllText: 'Select all items and containers',
 };
 
-export const WithPagination = Template.bind({});
-WithPagination.args = {
-  actions: [
-    {
-      name: 'Sell',
-      content: (
-        <Box p={'20px'}>
-          <Typography>Sell action text</Typography>
-        </Box>
-      ),
-    },
-    {
-      name: 'Buy',
-      content: (
-        <Box p={'20px'}>
-          <Typography>Buy action text</Typography>
-        </Box>
-      ),
-    },
-  ],
-  listTitle: 'Items list with Actions',
-  selectAllText: 'Select all items and containers',
+export const Disabled = Template.bind({});
+Disabled.args = {
+  containers: containers,
+  actions: actions,
+  checkboxes: true,
+  selectAllText: 'Select all',
+  disabled: true,
+};
+
+export const Pagination = Template.bind({});
+Pagination.args = {
+  containers: containers,
+  actions: actions,
   pagination: true,
   pageSize: 1,
+};
+
+export const EmptyListFallback = Template.bind({});
+EmptyListFallback.args = {
+  containers: new Map(),
+  actions: actions,
+  emptyListComponent: <EmptyList />,
 };

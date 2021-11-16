@@ -96,24 +96,26 @@ const Template: Story<ListActionsBlockProps> = (args) => (
   <ListActionsBlock {...args} />
 );
 
+const actions = [
+  {
+    name: 'Sell',
+    content: (
+      <Box p="20px">
+        <Typography>Sell action text</Typography>
+      </Box>
+    ),
+  },
+  {
+    name: 'Buy',
+    content: (
+      <Box p="20px">
+        <Typography>Buy action text</Typography>
+      </Box>
+    ),
+  },
+];
+
 export const Default = Template.bind({});
 Default.args = {
-  actions: [
-    {
-      name: 'Sell',
-      content: (
-        <Box p="20px">
-          <Typography>Sell action text</Typography>
-        </Box>
-      ),
-    },
-    {
-      name: 'Buy',
-      content: (
-        <Box p="20px">
-          <Typography>Buy action text</Typography>
-        </Box>
-      ),
-    },
-  ],
+  actions,
 };

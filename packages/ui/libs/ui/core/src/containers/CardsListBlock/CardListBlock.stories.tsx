@@ -10,7 +10,7 @@ import {
   Primary,
   PRIMARY_STORY,
   Stories,
-  Title,
+  Title as StoriesTitle,
 } from '@storybook/addon-docs';
 
 const description =
@@ -46,7 +46,7 @@ export default {
     docs: {
       page: () => (
         <>
-          <Title />
+          <StoriesTitle />
           <Description>{description}</Description>
           <Primary />
           <ArgsTable story={PRIMARY_STORY} />
@@ -154,84 +154,80 @@ const CardItemContent: CardsListItem<number>['content'] = ({ id }) => {
   );
 };
 
+const items = [
+  {
+    id: 1,
+    content: CardItemContent,
+  },
+  {
+    id: 2,
+    content: CardItemContent,
+  },
+  {
+    id: 3,
+    content: CardItemContent,
+  },
+];
+
+const itemsWithCheckboxes = [
+  {
+    id: 1,
+    content: CardItemContent,
+    checkbox: true,
+  },
+  {
+    id: 2,
+    content: CardItemContent,
+    checkbox: true,
+  },
+  {
+    id: 3,
+    content: CardItemContent,
+    checkbox: true,
+  },
+];
+
 const Template: Story<CardsListBlockProps<number>> = (args) => {
   return <CardsListBlock {...args} />;
 };
 
-export const WithoutCheckboxes = Template.bind({});
-WithoutCheckboxes.args = {
-  allItems: [
-    {
-      id: 1,
-      content: CardItemContent,
-    },
-    {
-      id: 2,
-      content: CardItemContent,
-    },
-    {
-      id: 3,
-      content: CardItemContent,
-    },
-  ],
+export const Default = Template.bind({});
+Default.args = {
+  allItems: items,
   Content: BlockContent,
-  loading: false,
-  listTitle: '',
-  checkAllText: '',
-  selectOnCardClick: true,
-  dragNdrop: false,
 };
 
-export const WithCheckboxes = Template.bind({});
-WithCheckboxes.args = {
-  allItems: [
-    {
-      id: 1,
-      content: CardItemContent,
-      checkbox: true,
-    },
-    {
-      id: 2,
-      content: CardItemContent,
-      checkbox: true,
-    },
-    {
-      id: 3,
-      content: CardItemContent,
-      checkbox: true,
-    },
-  ],
+export const Checkboxes = Template.bind({});
+Checkboxes.args = {
+  allItems: itemsWithCheckboxes,
   Content: BlockContent,
-  loading: false,
-  listTitle: '',
   checkAllText: 'Select all',
   selectOnCardClick: false,
   dragNdrop: false,
 };
 
-export const WithDragNDrop = Template.bind({});
-WithDragNDrop.args = {
-  allItems: [
-    {
-      id: 1,
-      content: CardItemContent,
-    },
-    {
-      id: 2,
-      content: CardItemContent,
-    },
-    {
-      id: 3,
-      content: CardItemContent,
-    },
-  ],
+export const DragNDrop = Template.bind({});
+DragNDrop.args = {
+  allItems: items,
   Content: BlockContent,
-  loading: false,
-  listTitle: '',
-  checkAllText: '',
   selectOnCardClick: true,
   handleDrag: (reorderedList) => {
     console.log(reorderedList);
   },
   dragNdrop: true,
+};
+
+export const Loading = Template.bind({});
+Loading.args = {
+  allItems: items,
+  Content: BlockContent,
+  loading: true,
+};
+
+export const Title = Template.bind({});
+Title.args = {
+  allItems: items,
+  Content: BlockContent,
+  listTitle: 'Selectable cards',
+  listTitleProps: { mb: '15px' },
 };

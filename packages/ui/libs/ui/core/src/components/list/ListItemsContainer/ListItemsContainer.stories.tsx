@@ -170,18 +170,49 @@ const Template: Story<ListItemsContainerProps<number, string>> = (args) => {
   return <ListItemsContainer {...args} />;
 };
 
+const items = [
+  {
+    id: 'abc',
+    itemContent: <Typography>First item of container</Typography>,
+  },
+  {
+    id: 'efg',
+    itemContent: <Typography>Second item of container</Typography>,
+  },
+];
+
+const header = <Typography>Container header</Typography>;
+
 export const Default = Template.bind({});
 Default.args = {
   id: 1,
-  containerHeader: <Typography>Container header</Typography>,
-  containerItems: [
-    {
-      id: 'abc',
-      itemContent: <Typography>First item of container</Typography>,
-    },
-    {
-      id: 'efg',
-      itemContent: <Typography>Second item of container</Typography>,
-    },
-  ],
+  containerHeader: header,
+  containerItems: items,
+};
+
+export const Checkboxes = Template.bind({});
+Checkboxes.args = {
+  id: 1,
+  containerHeader: header,
+  containerItems: items,
+  checkboxes: true,
+};
+
+export const Checked = Template.bind({});
+Checked.args = {
+  id: 1,
+  containerHeader: header,
+  containerItems: items,
+  checkboxes: true,
+  isChecked: true,
+};
+
+export const Disabled = Template.bind({});
+Disabled.args = {
+  id: 1,
+  containerHeader: header,
+  containerItems: items,
+  checkboxes: true,
+  isChecked: true,
+  disabled: true,
 };

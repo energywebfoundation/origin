@@ -91,3 +91,25 @@ Default.args = {
   selected: false,
   handleSelect: (id: number) => alert(`Card number ${id} selected`),
 };
+
+export const Selected = Template.bind({});
+Selected.args = {
+  item: {
+    id: 1,
+    content: CardContent,
+  },
+  selected: true,
+  handleSelect: (id: number) => alert(`Card number ${id} selected`),
+};
+
+export const Checkbox = Template.bind({});
+Checkbox.args = {
+  item: {
+    id: 1,
+    content: CardContent,
+    checkbox: true,
+  },
+  selected: false,
+  selectOnCardClick: false,
+  handleSelect: (id: number) => alert(`Card number ${id} selected`),
+};
