@@ -34,7 +34,7 @@ export const ListCard: TListCard = ({
   item,
   selected,
   handleSelect,
-  selectOnCardClick,
+  selectOnCardClick = true,
 }) => {
   const handleCardSelect = () => handleSelect(item.id);
   const { content: ItemContent } = item;

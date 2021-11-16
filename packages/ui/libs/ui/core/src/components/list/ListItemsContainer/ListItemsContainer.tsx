@@ -63,6 +63,7 @@ export const ListItemsContainer: TListItemsContainer = ({
             checkboxes={checkboxes}
             disabled={disabled}
             listItemProps={itemListItemProps}
+            itemChecked={item.itemChecked || isChecked}
             {...item}
           />
         ))}

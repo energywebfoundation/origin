@@ -5,8 +5,8 @@ import { useCardsListBlockEffects } from './CardsListBlock.effects';
 
 export interface CardsListBlockProps<Id> {
   allItems: CardsListItem<Id>[];
-  loading: boolean;
   Content: React.FC<{ selectedIds: Id[] }>;
+  loading?: boolean;
   listTitle?: string;
   listTitleProps?: TypographyProps;
   handleDrag?: (newOrder: CardsListItem<Id>[]) => void | Promise<void>;
@@ -24,17 +24,17 @@ export type TCardsListBlock = <Id>(
 
 export const CardsListBlock: TCardsListBlock = ({
   allItems,
-  loading,
   Content,
-  listTitle,
+  loading = false,
+  listTitle = '',
   listTitleProps,
   handleDrag,
   checkAllText,
-  selectOnCardClick,
+  selectOnCardClick = true,
   listWrapperProps,
   headerWrapperProps,
   selectAllCheckboxProps,
-  dragNdrop,
+  dragNdrop = false,
 }) => {
   const { checkedIds, handleCheck, allChecked, handleAllCheck } =
     useCardsListBlockEffects(allItems);
