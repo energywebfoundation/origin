@@ -28,6 +28,6 @@
     "@ethersproject/bignumber": "5.3.0",
     "@ethersproject/units": "5.3.0",
     "lodash": "4.17.21",
-    "react-router": "6.0.2"
+    "react-router": "6.0.0"
   }
 }
