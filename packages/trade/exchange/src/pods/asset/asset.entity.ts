@@ -21,29 +21,30 @@ export class Asset extends ExtendedBaseEntity implements IAsset {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, description: 'Public blockchain address',
+    example: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8'})
     @Column()
     @IsNotEmpty()
     @IsString()
     address: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "1"})
     @Column()
     @IsNotEmpty()
     @IsString()
     tokenId: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "Dev1-A"})
     @Column()
     @IsNotEmpty()
     @IsString()
     deviceId: string;
 
-    @ApiProperty({ type: Date })
+    @ApiProperty({ type: Date, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
     @Column({ type: 'timestamptz' })
     generationFrom: Date;
 
-    @ApiProperty({ type: Date })
+    @ApiProperty({ type: Date, example: "Tue Nov 17 2021 16:09:43 GMT-0500" })
     @Column({ type: 'timestamptz' })
     generationTo: Date;
 }

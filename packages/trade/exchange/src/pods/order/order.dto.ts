@@ -14,10 +14,10 @@ export class OrderDTO<TProduct> {
     @ApiProperty({ enum: OrderStatus, enumName: 'OrderStatus' })
     status: OrderStatus;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "400"})
     startVolume: BN;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "400" })
     currentVolume: BN;
 
     @ApiProperty({ enum: OrderSide, enumName: 'OrderSide' })
@@ -32,7 +32,7 @@ export class OrderDTO<TProduct> {
     @ApiProperty({ type: String })
     directBuyId: string;
 
-    @ApiProperty({ type: Date })
+    @ApiProperty({ type: Date, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
     validFrom: Date;
 
     @ApiProperty({ type: String })

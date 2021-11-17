@@ -21,11 +21,11 @@ export class BundlePublicItemDTO {
     @ApiProperty({ type: Asset })
     asset: Asset;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "5000"})
     @Transform((v: BN) => v.toString(10))
     startVolume: BN;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "5000"})
     @Transform((v: BN) => v.toString(10))
     currentVolume: BN;
 }
@@ -45,14 +45,14 @@ export class BundlePublicDTO {
     @ApiProperty({ type: [BundlePublicItemDTO] })
     items: BundlePublicItemDTO[];
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "500"})
     @Transform((v: BN) => v.toString(10))
     available: BN;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "500"})
     @Transform((v: BN) => v.toString(10))
     volume: BN;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: 100})
     price: number;
 }

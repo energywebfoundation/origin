@@ -13,7 +13,7 @@ import { Bundle } from './bundle.entity';
 
 @Entity({ name: `${DB_TABLE_PREFIX}_bundle_item` })
 export class BundleItem extends ExtendedBaseEntity {
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, description: "UUID string identifier", example: "123e4567-e89b-12d3-a456-426614174000"})
     @PrimaryGeneratedColumn('uuid')
     @IsUUID()
     id: string;
@@ -22,12 +22,12 @@ export class BundleItem extends ExtendedBaseEntity {
     @ManyToOne(() => Asset, { eager: true })
     asset: Asset;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "5000"})
     @Column('varchar', { transformer: BNTransformer })
     @Transform((v: BN) => v.toString(10))
     startVolume: BN;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "5000"})
     @Column('varchar', { transformer: BNTransformer })
     @Transform((v: BN) => v.toString(10))
     currentVolume: BN;

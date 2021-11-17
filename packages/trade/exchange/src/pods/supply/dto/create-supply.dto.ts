@@ -3,7 +3,7 @@ import { IsBoolean, IsInt, IsNotEmpty, IsPositive, IsString } from 'class-valida
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateSupplyDto {
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "Dev1-A"})
     @IsNotEmpty()
     @IsString()
     @Expose()

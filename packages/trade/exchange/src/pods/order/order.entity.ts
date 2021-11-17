@@ -29,7 +29,7 @@ export class Order extends ExtendedBaseEntity {
         Object.assign(this, order);
     }
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, description: "UUID string identifier", example: "123e4567-e89b-12d3-a456-426614174000" })
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -45,12 +45,12 @@ export class Order extends ExtendedBaseEntity {
     @IsEnum(OrderStatus)
     status: OrderStatus;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "500"})
     @Column('bigint', { transformer: BNTransformer })
     @Transform((v: BN) => v.toString(10))
     startVolume: BN;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "500"})
     @Column('bigint', { transformer: BNTransformer })
     @Transform((v: BN) => v.toString(10))
     currentVolume: BN;
@@ -78,7 +78,7 @@ export class Order extends ExtendedBaseEntity {
     @IsString()
     directBuyId: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
     @Column({ type: 'timestamptz' })
     validFrom: Date;
 
