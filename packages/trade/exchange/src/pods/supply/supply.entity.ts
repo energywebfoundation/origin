@@ -11,7 +11,7 @@ export class Supply extends ExtendedBaseEntity {
         Object.assign(this, supply);
     }
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, description: "UUID string identifier", example: "123e4567-e89b-12d3-a456-426614174000" })
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -19,7 +19,7 @@ export class Supply extends ExtendedBaseEntity {
     @Column()
     ownerId: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "Dev1-A" })
     @Column()
     deviceId: string;
 

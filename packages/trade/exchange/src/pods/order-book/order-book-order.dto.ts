@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class OrderBookOrderDTO<TProduct> {
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, description: "UUID string identifier", example: "123e4567-e89b-12d3-a456-426614174000" })
     @IsNotEmpty()
     @IsUUID()
     id: string;
@@ -13,7 +13,7 @@ export class OrderBookOrderDTO<TProduct> {
     @IsNumber()
     price: number;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "500"  })
     @IsString()
     volume: string;
 

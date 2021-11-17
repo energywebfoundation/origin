@@ -16,7 +16,7 @@ export class Bundle extends ExtendedBaseEntity {
         Object.assign(this, bundle);
     }
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, description: "UUID string identifier", example: "123e4567-e89b-12d3-a456-426614174000" })
     @PrimaryGeneratedColumn('uuid')
     @IsUUID()
     id: string;
@@ -27,7 +27,7 @@ export class Bundle extends ExtendedBaseEntity {
     @IsString()
     userId: string;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, example: "100"})
     @Column()
     @IsNotEmpty()
     @IsNumber()

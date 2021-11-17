@@ -15,15 +15,15 @@ export class Trade extends ExtendedBaseEntity {
         Object.assign(this, partial);
     }
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, description: "UUID string identifier", example: "123e4567-e89b-12d3-a456-426614174000" })
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
     @Column('timestamptz')
     created: Date;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "500" })
     @Column('bigint', { transformer: BNTransformer })
     volume: BN;
 

@@ -5,13 +5,14 @@ The Traceability SDK is responsible for the **request**, **issuance** and **exch
 
 ## Traceability SDK Packages  
 The Traceability SDK has two core packages:  
-### 1. **[Issuer:](./traceability/packages/issuer.md)**  
-The issuer package handles the management of certificates on the blockchain. It has two primary components:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. Smart contracts that execute the on-chain lifecycle of certificates  
+### 1. **[Issuer](./traceability/packages/issuer.md)**  
+The issuer package handles the management of certificates on the blockchain. It has two primary components:   
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. Smart contracts that execute the on-chain lifecycle of certificates      
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. Facades for interacting with smart contract methods. The Issuer API uses these facades rather than interacting with the blockchain directly. 
 
-### 2. **[Issuer API:](./traceability/packages/issuer-api.md)** 
+### 2. **[Issuer API](./traceability/packages/issuer-api.md)** 
 Restful endpoints for managing Certificate operations. Implements [Issuer blockchain facade](./traceability/contracts/Issuer.md#blockchain-facade) for managing certificate lifecycle. 
 
 ![TraceabilityPacakges](./images/traceability/TraceabilityPackages.png)
