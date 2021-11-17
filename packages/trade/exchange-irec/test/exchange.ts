@@ -11,8 +11,8 @@ import {
     TransferService
 } from '@energyweb/exchange';
 import { CertificateUtils, Contracts } from '@energyweb/issuer';
-import { BlockchainPropertiesService } from '@energyweb/issuer-irec-api';
-import { IUser, UserStatus } from '@energyweb/origin-backend-core';
+import { BlockchainPropertiesService, IrecCertificationRequest } from '@energyweb/issuer-irec-api';
+import { IUser, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService, RolesGuard } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 
@@ -26,7 +26,10 @@ import { entities as ExchangeIRECEntities, IssuerIRECEntities } from '../src';
 
 import { AppModule as ExchangeIRECModule } from '../src/app.module';
 
-import { ProductDTO } from '../src/product';
+import { ProductDTO } from '../src';
+import { UserService } from '@energyweb/origin-backend';
+import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
+import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 
 const web3 = 'http://localhost:8545';
 const provider = getProviderWithFallback(web3);
@@ -70,6 +73,74 @@ const authGuard: CanActivate = {
         return true;
     }
 };
+
+export enum TestUser {
+    UserWithoutBlockchainAccount = '1',
+    OrganizationDeviceManager = '2',
+    Issuer = '3',
+    OtherOrganizationDeviceManager = '4',
+    PlatformAdmin = '5'
+}
+
+export const testUsers = new Map([
+    [
+        TestUser.OrganizationDeviceManager,
+        {
+            id: Number(TestUser.OrganizationDeviceManager),
+            organization: {
+                id: 1000,
+                status: OrganizationStatus.Active,
+                blockchainAccountAddress: deviceManager.address
+            },
+            status: UserStatus.Active,
+            rights: Role.OrganizationDeviceManager
+        } as IUser
+    ],
+    [
+        TestUser.UserWithoutBlockchainAccount,
+        {
+            id: Number(TestUser.UserWithoutBlockchainAccount),
+            organization: { id: 1001, status: OrganizationStatus.Active },
+            status: UserStatus.Active,
+            rights: Role.OrganizationAdmin
+        } as IUser
+    ],
+    [
+        TestUser.Issuer,
+        {
+            id: Number(TestUser.Issuer),
+            organization: {
+                id: 1003,
+                status: OrganizationStatus.Active,
+                blockchainAccountAddress: registryDeployer.address
+            },
+            status: UserStatus.Active,
+            rights: Role.Issuer
+        } as IUser
+    ],
+    [
+        TestUser.OtherOrganizationDeviceManager,
+        {
+            id: Number(TestUser.OtherOrganizationDeviceManager),
+            organization: {
+                id: 1000,
+                status: OrganizationStatus.Active,
+                blockchainAccountAddress: otherDeviceManager.address
+            },
+            status: UserStatus.Active,
+            rights: Role.OrganizationDeviceManager
+        } as IUser
+    ],
+    [
+        TestUser.PlatformAdmin,
+        {
+            id: 5,
+            organization: { id: 1002 },
+            status: UserStatus.Active,
+            rights: Role.Admin
+        } as IUser
+    ]
+]);
 
 const deviceTypes = [
     ['Solar'],
@@ -119,7 +190,12 @@ export const bootstrapTestInstance = async (
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [...ExchangeEntities, ...ExchangeIRECEntities, ...IssuerIRECEntities],
+                entities: [
+                    ...ExchangeEntities,
+                    ...ExchangeIRECEntities,
+                    ...IssuerIRECEntities,
+                    IrecCertificationRequest
+                ],
                 logging: ['info']
             }),
             ConfigModule,
@@ -169,6 +245,46 @@ export const bootstrapTestInstance = async (
         .useValue(authGuard)
         .overrideGuard(RolesGuard)
         .useValue(authGuard)
+        .overrideProvider(UserService)
+        .useValue({
+            getPlatformAdmin() {
+                return testUsers.get(TestUser.PlatformAdmin);
+            },
+            findOne(userId: TestUser) {
+                return testUsers.get(userId);
+            }
+        })
+        .overrideProvider(DeviceService)
+        .useValue({
+            findOne: () => ({ fuelType: '', status: 'Approved' }),
+            findAll: (): object[] => [
+                {
+                    id: 1,
+                    ownerId: 1000,
+                    address: '1 Wind Farm Avenue, London',
+                    capacity: 500,
+                    commissioningDate: new Date('2001-08-10'),
+                    countryCode: 'GB',
+                    defaultAccount: 'someTradeAccount',
+                    deviceType: 'TC110',
+                    fuelType: 'ES200',
+                    issuer: 'someIssuerCode',
+                    latitude: '53.405088',
+                    longitude: '-1.744222',
+                    name: 'DeviceXYZ',
+                    notes: 'Lorem ipsum dolor sit amet',
+                    registrantOrganization: 'someRegistrantCode',
+                    registrationDate: new Date('2001-09-20'),
+                    status: 'Approved',
+                    code: 'mockDeviceCode',
+                    active: true
+                }
+            ]
+        })
+        .overrideProvider(DeviceRegistryService)
+        .useValue({
+            find: () => [{ id: 1, externalRegistryId: 1 }]
+        })
         .compile();
 
     const app = moduleFixture.createNestApplication();

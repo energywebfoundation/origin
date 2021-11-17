@@ -1,20 +1,19 @@
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { BadRequestException, Inject, InternalServerErrorException } from '@nestjs/common';
 
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 import { UserService } from '@energyweb/origin-backend';
-
-import { ImportIrecCertificateCommand } from '../command';
-import { IrecCertificateImportFailedEvent } from '../event';
 import {
     ApproveCertificationRequestCommand,
-    CreateCertificationRequestCommand
-} from '@energyweb/issuer-api';
+    CreateCertificationRequestCommand,
+    IrecCertificationRequest
+} from '@energyweb/issuer-irec-api';
 import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { IrecCertificationRequest } from '../../certification-request';
+import { ImportIrecCertificateCommand } from '../command';
+import { IrecCertificateImportFailedEvent } from '../event';
 
 @CommandHandler(ImportIrecCertificateCommand)
 export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecCertificateCommand> {

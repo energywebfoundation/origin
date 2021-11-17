@@ -3,12 +3,12 @@ import { Inject } from '@nestjs/common';
 
 import { GetAllCertificationRequestsQuery } from '@energyweb/issuer-api';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
-
-import { GetIrecCertificatesToImportCommand } from '../command';
-import { FullCertificationRequestDTO } from '../../certification-request';
-import { IrecAccountItemDto } from '../dto';
 import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
+import { FullCertificationRequestDTO } from '@energyweb/issuer-irec-api';
+
+import { GetIrecCertificatesToImportCommand } from '../command';
+import { IrecAccountItemDto } from '../dto';
 
 @CommandHandler(GetIrecCertificatesToImportCommand)
 export class GetIrecCertificatesToImportHandler

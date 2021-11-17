@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
-import { IrecCertificateImportFailedEvent } from '@energyweb/issuer-irec-api';
 import { UserService } from '@energyweb/origin-backend';
 import { Role } from '@energyweb/origin-backend-core';
 

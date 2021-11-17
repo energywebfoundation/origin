@@ -1,6 +1,7 @@
 export * from './app.module';
 export * from './demand';
 export * from './export';
+export * from './import';
 export * from './order';
 export * from './order-book';
 export * from './product';

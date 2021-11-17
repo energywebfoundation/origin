@@ -4,7 +4,7 @@ import { Inject, InternalServerErrorException } from '@nestjs/common';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 import { ClaimCertificateCommand } from '@energyweb/issuer-api';
 
-import { ClaimIRECCertificateCommand } from '../command/claim-irec-certificate.command';
+import { ClaimIRECCertificateCommand } from '../command';
 
 @CommandHandler(ClaimIRECCertificateCommand)
 export class ClaimIRECCertificateHandler implements ICommandHandler<ClaimIRECCertificateCommand> {
@@ -16,12 +16,16 @@ export class ClaimIRECCertificateHandler implements ICommandHandler<ClaimIRECCer
     async execute({
         user,
         certificateId,
-        claimData
+        claimData,
+        fromTradeAccount,
+        toRedemptionAccount
     }: ClaimIRECCertificateCommand): Promise<ContractTransaction> {
         const redemptionResult = await this.irecService.redeem(
             user,
             certificateId.toString(),
-            claimData
+            claimData,
+            fromTradeAccount,
+            toRedemptionAccount
         );
 
         if (!redemptionResult) {

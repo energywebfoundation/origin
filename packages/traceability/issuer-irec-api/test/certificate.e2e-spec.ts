@@ -41,7 +41,7 @@ describe('Certificate tests', () => {
         txHash: ContractTransaction['hash'],
         user: TestUser
     ): Promise<CertificateDTO[]> => {
-        const certificates = await polly()
+        return await polly()
             .waitAndRetry(10)
             .executeForPromise(async (): Promise<CertificateDTO[]> => {
                 const res = await request(app.getHttpServer())
@@ -53,8 +53,6 @@ describe('Certificate tests', () => {
                 }
                 return res.body;
             });
-
-        return certificates;
     };
 
     const createCertificate = async (options?: {
@@ -80,15 +78,6 @@ describe('Certificate tests', () => {
         const certs = await getCertificatesByTxHash(txHash, TestUser.Issuer);
 
         return certs.pop();
-    };
-
-    const getCertificates = async (user: TestUser): Promise<CertificateDTO[]> => {
-        const { body } = await request(app.getHttpServer())
-            .get(`/irec/certificate`)
-            .set({ 'test-user': user })
-            .expect(HttpStatus.OK);
-
-        return body;
     };
 
     const getCertificate = async (
@@ -181,28 +170,5 @@ describe('Certificate tests', () => {
                     claim.value === amountToClaim
             )
         ).to.be.true;
-    });
-
-    it('should import certificate', async () => {
-        let certificates = await getCertificates(TestUser.OrganizationDeviceManager);
-        expect(certificates.length).to.equal(0);
-
-        const {
-            body: [certificateToImport]
-        } = await request(app.getHttpServer())
-            .get(`/irec/certificate/importable`)
-            .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .expect(HttpStatus.OK);
-
-        expect(certificateToImport.asset).to.equal('test-asset-id');
-        expect(certificateToImport.isDeviceImported).to.equal(true);
-
-        await request(app.getHttpServer())
-            .post(`/irec/certificate/import`)
-            .send({ assetId: certificateToImport.asset })
-            .set({ 'test-user': TestUser.OrganizationDeviceManager })
-            .expect(HttpStatus.CREATED);
-
-        await sleep(10000);
     });
 });
