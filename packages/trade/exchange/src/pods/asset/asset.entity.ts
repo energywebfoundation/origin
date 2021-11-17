@@ -28,8 +28,7 @@ export class Asset extends ExtendedBaseEntity implements IAsset {
     @IsString()
     address: string;
 
-    //Get Example
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: "1"})
     @Column()
     @IsNotEmpty()
     @IsString()
