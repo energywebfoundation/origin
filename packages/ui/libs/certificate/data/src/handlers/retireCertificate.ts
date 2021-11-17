@@ -1,4 +1,3 @@
-// This is the reason why Certificate App bundle weighs > 2mb
 import { IClaimData } from '@energyweb/issuer';
 import {
   CertificateDTO,
