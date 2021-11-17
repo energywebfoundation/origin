@@ -45,7 +45,8 @@
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "bundle-report": "webpack-bundle-analyzer dist/apps/origin-ui/stats.json"
   },
   "dependencies": {
     "@emotion/react": "11.5.0",
