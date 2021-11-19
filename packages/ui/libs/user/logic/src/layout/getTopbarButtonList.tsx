@@ -1,15 +1,14 @@
 import { TopBarButtonData } from '@energyweb/origin-ui-core';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { TFunction } from 'react-i18next';
+import { NavigateFunction } from 'react-router';
 import { HowToReg, AccountCircle, ExitToApp } from '@mui/icons-material';
 
-export const useTopbarButtonList = (
+export const getTopbarButtonList = (
   isAuthenticated: boolean,
-  onLogout: () => void
+  onLogout: () => void,
+  t: TFunction,
+  navigate: NavigateFunction
 ): TopBarButtonData[] => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-
   return [
     {
       label: t('navigation.topbar.register'),

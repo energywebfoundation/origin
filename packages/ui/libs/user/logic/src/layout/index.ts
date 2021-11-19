@@ -1,2 +1,2 @@
-export * from './useTopbarButtonList';
+export * from './getTopbarButtonList';
 export * from './useUserAndOrgData';
