@@ -58,7 +58,7 @@
         "@nestjs/typeorm": "8.0.2",
         "bn.js": "5.2.0",
         "class-transformer": "0.3.1",
-        "class-validator": "0.13.1",
+        "class-validator": "0.13.2",
         "immutable": "4.0.0",
         "moment": "2.29.1",
         "pg": "8.7.1",
