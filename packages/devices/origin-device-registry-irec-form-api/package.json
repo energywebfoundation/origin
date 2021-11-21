@@ -46,7 +46,7 @@
         "ethers": "5.3.1",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.4.0",
-        "typeorm": "0.2.40",
+        "typeorm": "0.2.41",
         "uuid": "8.3.2"
     },
     "devDependencies": {
