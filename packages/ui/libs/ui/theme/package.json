@@ -19,7 +19,7 @@
   "dependencies": {
     "@energyweb/origin-ui-localization": "0.1.0",
     "@energyweb/origin-ui-shared-state": "0.1.0",
-    "@mui/material": "5.1.0",
+    "@mui/material": "5.1.1",
     "i18next": "21.4.2",
     "react-i18next": "11.14.2"
   },
