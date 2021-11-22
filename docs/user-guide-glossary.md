@@ -18,6 +18,15 @@ Asks that are not bought or matched can be canceled. Canceling an ask moves the 
 - Only asks that have not been matched or bought can be canceled
 - An ask can only be reactivated if the user has a matching amount of asset volume in the active part of the user Exchange Inbox
 
+## Asset
+Assets represent [Energy Attribute Certificates](#energy-attribute-certificate) that are active on the exchange. Every asset is tied to one specific device and a specific generation time frame. The Asset contains the most important EAC information, such as:  
+
+  - The address of the EAC token smart contract
+  - The id of the non-fungible part of the EAC token
+  - The id of the generation device and the time frame of the generation.  
+
+Storing EAC token data this way allows efficient information handling and trading on the Exchange. 
+
 ## Bid  
 
 **Bids** are the buy offers that are posted by buyers to express their desire to buy [Energy Attribute Certificates (EACs)](#energy-attribute-certificate) on the Exchange. Unlike [asks](#ask), bids are not tied to specific EACs. Bids are entirely defined by the buyer’s needs, which vary in terms of their respective proof of impact needs. Bids include a maximum price, a volume, and a requirement specification that we call “product”. The maximum price is the highest price that a buyer is willing to pay per EAC. The volume defines the amount of EACs (i.e., the volume of MWh) that a buyer wants to buy.     
@@ -68,6 +77,19 @@ Globally there are various EAC systems to claim the use of renewable or low-carb
 - Claimed or Cancelled EAC: other nomenclature for 'Redeemed EACs'
 - Bundled Certificates: contracts that sell consumable energy + EACs together
 - Unbundled (products): contracts that sell only energy OR EACs, not both together  
+
+## Exchange Deposit Account  
+
+A blockchain address is created for every organization and is the address of the smart contract wallet that represents the organization's Exchange Deposit account. Every organization is tied to exactly one account and one blockchain address to allow for easy accounting within the Origin Exchange.  
+
+Every Exchange Deposit account has a balance that stores the information on which and how many [Energy Attribute Certificate's](#energy-attribute-certificate) are currently being held by the organization in the account. The balance is divided into an 'active' and 'locked component', with assets that are currently being traded on the exchange being 'locked'. 
+
+Users deposit [Energy Attribute Certificate's](#energy-attribute-certificate) onto the Exchange by sending them to their Exchange Deposit account. Once they are on the Exchange, the EACs are tokenized [assets](#asset), and they can be:  
+
+- Actively posted for sale
+- Transferred to another Exchange Deposit account
+- Withdrawn from the exchange
+
 
 ## Demand
 
