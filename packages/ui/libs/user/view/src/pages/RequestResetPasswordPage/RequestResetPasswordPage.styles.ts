@@ -5,8 +5,8 @@ export const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     width: '100%',
     top: '50%',
-    right: '5%',
-    transform: 'translateY(-50%)',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
     opacity: 0.9,
     maxWidth: '450px',
     [theme.breakpoints.down('md')]: {

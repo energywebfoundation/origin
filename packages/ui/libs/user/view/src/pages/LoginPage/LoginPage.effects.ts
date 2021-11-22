@@ -1,8 +1,8 @@
+import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
 import { useUserLogInFormConfig } from '@energyweb/origin-ui-user-logic';
 import { useUserLogin } from '@energyweb/origin-ui-user-data';
 import { useNavigate } from 'react-router';
 import { UserModalsActionsEnum, useUserModalsDispatch } from '../../context';
-import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
 
 export const useLogInPageEffects = () => {
   const navigate = useNavigate();
@@ -37,15 +37,15 @@ export const useLogInPageEffects = () => {
     openInvitationModal,
     openExchangeAddressModal
   );
-  const formConfig = useUserLogInFormConfig(submitHandler);
+  const formProps = useUserLogInFormConfig(submitHandler);
 
   const navigateToResetPassword = () => {
-    navigate('/auth/reset-password');
+    navigate('/login/request-password-reset');
   };
 
   const navigateToRegister = () => {
     navigate('/auth/register');
   };
 
-  return { formProps: formConfig, navigateToResetPassword, navigateToRegister };
+  return { formProps, navigateToResetPassword, navigateToRegister };
 };
