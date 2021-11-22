@@ -876,6 +876,15 @@
           "loginError": "Could not log in with supplied credentials"
         }
       },
+      "requestResetPassword": {
+        "formTitle": "Please, enter your email to receive a link for reseting password",
+        "email": "Email"
+      },
+      "resetPassword": {
+        "formTitle": "Please, create new password",
+        "newPassword": "New Password",
+        "passwordConfirm": "Confirm password"
+      },
       "confirmEmail": {
         "alreadyConfirmed": "Email has been already confirmed",
         "success": "Email successfully confirmed",
@@ -1042,6 +1051,9 @@
         "mrs": "Mrs",
         "ms": "Ms",
         "other": "Other"
+      },
+      "validations": {
+        "passwordMatch": "Passwords don't match"
       }
     },
     "error": {
