@@ -9,6 +9,8 @@ export const useDeviceFirstImageUrl = (
   const [imageUrl, setImageUrl] = useState('');
 
   const getAndSetImage = async (id: string) => {
+    if (id === 'null') return;
+
     const response = await publicFileDownloadHandler(id);
     const imageType = (response as any).headers['content-type'];
     const blob = new Blob(
