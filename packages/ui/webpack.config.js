@@ -1,5 +1,7 @@
 const nrwlConfig = require('@nrwl/react/plugins/webpack');
 const webpack = require('webpack');
+/* Enable when needed */
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (config) => {
   nrwlConfig(config);
@@ -23,6 +25,18 @@ module.exports = (config) => {
       new webpack.ProvidePlugin({
         process: 'process/browser',
       }),
+      /* Enable when needed. If enabled - starts the server on each build.
+
+      Currently generated stats.json file is incomplete, thus disallowing the usage of
+      { "analyzerMode": "disabled" } and serving it later via "bundle-report" script.
+
+      */
+
+      // new BundleAnalyzerPlugin({
+      //   analyzerMode: 'server',
+      //   generateStatsFile: true,
+      //   statsOptions: { source: false },
+      // }),
     ],
   };
 };

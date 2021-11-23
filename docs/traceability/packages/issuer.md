@@ -1,10 +1,10 @@
 # Issuer  
-**Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer)  
+**Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer) 
 
 ## Overview of Components
 The Issuer package has four components:      
 
-1. [Contracts:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts) The smart contracts for Certificate management on the blockchain. Smart contracts are documented [below](#smart-contracts). All smart contracts are written in [Solidity](https://docs.soliditylang.org/en/v0.8.10/).    
+1. [Smart Contracts:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/contracts) The smart contracts for Certificate management on the blockchain. Smart contracts are documented [below](#smart-contracts). All smart contracts are written in [Solidity](https://docs.soliditylang.org/en/v0.8.10/).    
 2. [Migrations:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/migrations) Methods for deploying the smart contracts to the blockchain using the [OpenZeppelin Truffle Upgrades API](https://docs.openzeppelin.com/upgrades-plugins/1.x/api-truffle-upgrades).        
 3. [Blockchain-facade:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer/src/blockchain-facade) Interfaces and strongly-typed classes with methods to interact with Issuer smart contracts. Blockchain facades are documented [below](#blockchain-facade).     
 4. Utilities     
@@ -31,7 +31,7 @@ Interface for IERC-1888 Certificate/Claim.
 
 This contract implements the ERC-1888 and ERC-1155 methods in the context of the Origin platform. You can read more about ERC-1888 and ERC-1155 [here](../../traceability.md#energy-attribute-certificates-on-the-blockchain ).
 
-As its name suggests, the Registry contract manages stores and manages certificates. It handles the [issuing](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#issueaddress-_to-bytes-_validitydata-uint256-_topic-uint256-_value-bytes-_data-uint256-id-external), [minting](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#mintuint256-_id-address-_to-uint256-_quantity-external), [transferring](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safetransferandclaimfromaddress-_from-address-_to-uint256-_id-uint256-_value-bytes-_data-bytes-_claimdata-external) and [claiming](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safebatchtransferandclaimfromaddress-_from-address-_to-uint256-_ids-uint256-_values-bytes-_data-bytes-_claimdata-external) of certificates, and returns certificate data and [certificate owner’s claimed balances](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#claimedbalanceofaddress-_owner-uint256-_id-uint256-external) for a given certificate(s). 
+As its name suggests, the Registry contract stores and manages certificates. It handles the [issuing](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#issueaddress-_to-bytes-_validitydata-uint256-_topic-uint256-_value-bytes-_data-uint256-id-external), [minting](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#mintuint256-_id-address-_to-uint256-_quantity-external), [transferring](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safetransferandclaimfromaddress-_from-address-_to-uint256-_id-uint256-_value-bytes-_data-bytes-_claimdata-external) and [claiming](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#safebatchtransferandclaimfromaddress-_from-address-_to-uint256-_ids-uint256-_values-bytes-_data-bytes-_claimdata-external) of certificates, and returns certificate data and [certificate owner’s claimed balances](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Registry/#claimedbalanceofaddress-_owner-uint256-_id-uint256-external) for a given certificate(s). 
 
 Certificates are stored in the [certificateStorage map](https://github.com/energywebfoundation/origin/blob/2881ba2e04739c99eb8d6f48a53d15afe4844c3e/packages/traceability/issuer/contracts/Registry.sol#L13) in this contract, and are accessed by their Certificate Id.  
 
@@ -45,10 +45,11 @@ The methods in this contract handle batch issuance, batch transfer and batch tra
 - [Full API documentation](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/)  
 
 This smart contract contains the methods for the **Certificate request and approval workflow** for issuing ERC-1888 Transferable Certificates, including:  
-- [Requesting certification](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#requestcertificationforbytes-_data-address-_owner-uint256-public) from the issuer  
-- [Approving certification](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#approvecertificationrequestuint256-_requestid-uint256-_value-uint256-public) requests 
-- [Revoking certificate requests](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#revokerequestuint256-_requestid-external) requests 
-- [Revoking issued certificates](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#revokecertificateuint256-_certificateid-external)
+
+- [Requesting certification](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#requestcertificationforbytes-_data-address-_owner-uint256-public) from the issuer    
+- [Approving certification](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#approvecertificationrequestuint256-_requestid-uint256-_value-uint256-public) requests     
+- [Revoking certificate requests](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#revokerequestuint256-_requestid-external) requests   
+- [Revoking issued certificates](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/#revokecertificateuint256-_certificateid-external)  
 
 The Issuer smart contract is dependent on the [Registry smart contract](#registry) for issuing certificates and minting energy production values for certificates.  
 

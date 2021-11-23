@@ -4,6 +4,7 @@ import {
   removeAuthenticationToken,
 } from '@energyweb/origin-ui-shared-state';
 import axios from 'axios';
+import { useCallback, useMemo } from 'react';
 import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';
 
@@ -11,7 +12,7 @@ export const useUser = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const clearUser = () => {
+  const logout = useCallback(() => {
     const token = getAuthenticationToken();
     if (token) {
       removeAuthenticationToken();
@@ -19,7 +20,7 @@ export const useUser = () => {
       queryClient.clear();
       navigate('/');
     }
-  };
+  }, []);
 
   const tokenExists = Boolean(getAuthenticationToken());
 
@@ -33,10 +34,11 @@ export const useUser = () => {
     },
   });
 
-  const logout = () => clearUser();
-
   const user = data || null;
-  const isAuthenticated = Boolean(tokenExists && isSuccess);
+  const isAuthenticated = useMemo(
+    () => Boolean(tokenExists && isSuccess),
+    [tokenExists, isSuccess]
+  );
 
   return {
     user,

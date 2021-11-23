@@ -5,7 +5,7 @@ import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-b
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBidDTO<TProduct> {
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: '500' })
     @IsNotEmpty()
     @Validate(PositiveBNStringValidator)
     @Validate(IntUnitsOfEnergy)
@@ -17,7 +17,7 @@ export class CreateBidDTO<TProduct> {
     @IsPositive()
     readonly price: number;
 
-    @ApiProperty({ type: Date })
+    @ApiProperty({ type: Date, example: 'Tue Nov 16 2021 16:09:43 GMT-0500' })
     @IsNotEmpty()
     @IsDate()
     @Type(() => Date)

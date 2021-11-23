@@ -115,31 +115,38 @@ export class CertificateController {
     })
     @ApiQuery({
         name: 'generationEndFrom',
-        description: 'Date-alike filter for `generationEnd` field (lower boundary)'
+        description: 'Date-alike filter for `generationEnd` field (lower boundary)',
+        required: false
     })
     @ApiQuery({
         name: 'generationEndTo',
-        description: 'Date-alike filter for `generationEnd` field (upper boundary)'
+        description: 'Date-alike filter for `generationEnd` field (upper boundary)',
+        required: false
+    })
+    @ApiQuery({
+        name: 'generationStartFrom',
+        description: 'Date-alike filter for `generationStart` field (upper boundary)',
+        required: false
     })
     @ApiQuery({
         name: 'generationStartTo',
-        description: 'Date-alike filter for `generationStart` field (upper boundary)'
+        description: 'Date-alike filter for `generationStart` field (upper boundary)',
+        required: false
     })
     @ApiQuery({
-        name: 'generationStartTo',
-        description: 'Date-alike filter for `generationStart` field (upper boundary)'
+        name: 'creationTimeFrom',
+        description: 'Date-alike filter for `creationTime` field (upper boundary)',
+        required: false
     })
     @ApiQuery({
         name: 'creationTimeTo',
-        description: 'Date-alike filter for `creationTime` field (upper boundary)'
-    })
-    @ApiQuery({
-        name: 'creationTimeTo',
-        description: 'Date-alike filter for `creationTime` field (upper boundary)'
+        description: 'Date-alike filter for `creationTime` field (upper boundary)',
+        required: false
     })
     @ApiQuery({
         name: 'deviceId',
-        description: 'Filter for deviceId field'
+        description: 'Filter for deviceId field',
+        required: false
     })
     public async getAll(
         @BlockchainAccountDecorator() blockchainAddress: string,

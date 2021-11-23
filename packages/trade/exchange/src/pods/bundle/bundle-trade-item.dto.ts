@@ -18,7 +18,7 @@ export class BundleTradeItemDTO {
         return this.asset.id;
     }
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: '500' })
     @Transform((v: BN) => v.toString(10))
     volume: BN;
 }

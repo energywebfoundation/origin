@@ -22,13 +22,13 @@ export interface GenericCardsListProps<Id> {
   checkedIds: Id[];
   handleCheck: (id: Id) => void;
   allItems: CardsListItem<Id>[];
-  loading: boolean;
+  loading?: boolean;
   listTitle?: string;
   listTitleProps?: TypographyProps;
   checkAllText?: string;
   allChecked?: boolean;
   handleAllCheck?: () => void;
-  handleDrag?: (newOrder: CardsListItem<Id>[]) => Promise<void>;
+  handleDrag?: (newOrder: CardsListItem<Id>[]) => void | Promise<void>;
   selectOnCardClick?: boolean;
   dragNdrop?: boolean;
   listWrapperProps?: BoxProps;
@@ -46,13 +46,13 @@ export const GenericCardsList: TGenericCardsList = ({
   checkAllText,
   listTitle,
   listTitleProps,
-  allChecked,
+  allChecked = false,
   handleAllCheck,
-  loading,
+  loading = false,
   allItems,
   handleDrag,
-  selectOnCardClick,
-  dragNdrop,
+  selectOnCardClick = true,
+  dragNdrop = false,
   listWrapperProps,
   headerWrapperProps,
   selectAllCheckboxProps,
