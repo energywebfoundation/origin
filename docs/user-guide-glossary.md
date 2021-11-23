@@ -105,6 +105,24 @@ __Demands do not have to be canceled because they have a limited duration__. Aft
 - The system should automatically create a bid once every defined demand time frame with the right specifications
 - The system should periodically create bids from the start until the end of the demand duration
 
+## Order
+
+An order can be either a sell offer or a buy offer. Orders are collected in a a digital [order book](#order-book). A buy order is called a ['bid'](#bid) and a sell order is called an ['ask'](#ask). 
+
+## Order Book
+
+An exchange where the buy orders, called ['bids'](#bid), and sell orders, called ['asks'](#ask), are openly displayed with offered volumes and ordered by price.  
+
+The bid price is the highest price a buyer is willing to pay for a commodity, while the ask price is the lowest price that a seller is willing to accept. A trade occurs when the seller and buyer agree on a price. This means that either a buyer matches the lowest ask price available in the order book by posting a bid with the same price (or higher) or a seller matches the lowest available bid price by posting an ask of the same price (or lower).  
+
+The idea behind an order book exchange is to create an open and transparent marketplace. A marketplace should enable efficient and discrimination-free trading between interested parties. Because of the open order book, all market participants have information about the offered prices, volumes, and liquidity of the commodity at all times. This is in stark contrast to over-the-counter (OTC) trading which relies on bilateral deals and intransparent broker-dealer networks to facilitate trades.  
+
+Order book exchanges are an effective way to define the market price of some commodity, as there is constant price discovery happening by transparently matching supply and demand. The settlement price of the last trade that was created by buyers and sellers defines the market price of a commodity. Instead of bilateral trades that are mostly kept private and where the price discovery is a result of bargaining, an order book exchange is often a very good reflection of the actual demand and supply that exists on the market. The market price is a good indicator of the value a commodity has to all participants, as anyone could have bought the commodity for this price on the exchange. 
+
+Next to the market price, there is other information available in the open order book. There is, for example, the spread. Bids are ordered from the highest to the lowest price and asks are ordered from lowest to highest price. The spread is the difference between the highest bid price and the lowest ask price. The spread has to be closed for a trade to happen. The spread is usually an indicator of the liquidity of the commodity. If there are a lot of trades, the spread is usually small because many people put in bids and asks that are close to the last settlement price. 
+
+
+
 
 
 

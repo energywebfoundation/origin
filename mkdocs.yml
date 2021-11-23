@@ -2,6 +2,7 @@ site_name: EW-Origin
 
 nav:
     - Introduction: index.md
+    - Glossary: user-guide-glossary.md
     - Getting started: getting-started.md
     - Architecture: architecture.md
     - Packages: packages.md
@@ -38,15 +39,15 @@ nav:
                 - Invite: organization-guides/invite.md
                 - Create Beneficiary: organization-guides/create-beneficiary.md
                 - Connect I-REC: organization-guides/connect-irec.md
-          - Glossary: user-guide-glossary.md
     - Configuration:
           - UI: configuration-ui.md
     - SDKs:
           - Traceability:
                 - Traceability SDK Overview: traceability.md
-                - Issuer: traceability/packages/issuer.md
-                - Issuer API: traceability/packages/issuer-api.md
+                - Issuer Package: traceability/packages/issuer.md
+                - Issuer API Package: traceability/packages/issuer-api.md
           - Trade: trade.md
+                - Exchange Package: trade/exchange.md
           - Device Registry: device-registry.md
           - Organizations: organizations.md
     - SDK Reference:

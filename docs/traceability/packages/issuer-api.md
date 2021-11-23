@@ -12,7 +12,7 @@ Certificate data is persisted in two locations:
 
 The Issuer API uses a database for certificate data because it is more performant than querying the blockchain each time data is needed.  
 
-When a certificate is requested, issued, or updated (i.e. if it has been transferred, claimed or revoked), this is reflected in the certificate’s record in the database as well as on the blockchain. The Issuer API queries the blockchain using the [Blockchain facade](../contracts/Issuer.md#blockchain-facade), and queries the database repository using a connection through [typeorm](https://typeorm.io/#/). 
+When a certificate is requested, issued, or updated (i.e. if it has been transferred, claimed or revoked), this is reflected in the certificate’s record in the database as well as on the blockchain. The Issuer API queries the blockchain using the [Blockchain facade](../contracts/Issuer.md#blockchain-facade), and queries the database repository using a connection through [TypeORM](https://typeorm.io/#/). 
 
 Consider the code snippet below from the CreateCertificateRequestHandler class. The certificate is first created on the blockchain using the CertificationRequestFacade, and then created in the database using the repository service. You can see the source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/handlers/create-certification-request.handler.ts). 
 
