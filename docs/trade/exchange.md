@@ -68,7 +68,7 @@ export class AccountService {
 ``` 
 You can read more about dependency injection in NestJS [here](https://docs.nestjs.com/providers#dependency-injection). You can read more about using the repository design pattern with TypeORM in NestJS applications [here](https://docs.nestjs.com/recipes/sql-typeorm). 
 
-## Exchange Components
+## Exchange Architecture
 This NestJS applicaton is broken down into 'pods' that manage different features of the Exchange (i.e. orders, demands, accounts, transfers etc). In general, each pod has:  
   + A controller that manages requests and responses to the client
   + An entity file that maps an entity to a database repository
@@ -76,7 +76,13 @@ This NestJS applicaton is broken down into 'pods' that manage different features
   + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
   + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application
 
-To learn more about the architecture patterns of this SDK, see the [NestJS](https://docs.nestjs.com/) and [TypeORM](https://typeorm.io/#/) documentation. 
+The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture and [TypeORM](https://typeorm.io/#/) integration that may help to understand the elements of this application:
+- [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
+- [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
+- [CQRS module](https://docs.nestjs.com/recipes/cqrs)
+- [Modules](https://docs.nestjs.com/modules)
+- [NestJS TypeORM Integration](https://docs.nestjs.com/techniques/database)
+- [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
 ### Account  
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/account)
