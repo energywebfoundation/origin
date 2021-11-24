@@ -5,7 +5,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { CertificateUtils, Contracts } from '@energyweb/issuer';
 import {
     IUser,

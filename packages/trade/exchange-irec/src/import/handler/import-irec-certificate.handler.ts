@@ -15,6 +15,7 @@ import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 import { ImportIrecCertificateCommand } from '../command';
 import { IrecCertificateImportFailedEvent } from '../event';
 import { ExportAccountingService } from '../../export/export-accounting.service';
+import { AccountService } from '@energyweb/exchange';
 
 @CommandHandler(ImportIrecCertificateCommand)
 export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecCertificateCommand> {
@@ -29,7 +30,8 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
         private readonly userService: UserService,
         @InjectRepository(IrecCertificationRequest)
         private readonly irecCertificationRequestRepository: Repository<IrecCertificationRequest>,
-        private readonly exportAccountingService: ExportAccountingService
+        private readonly exportAccountingService: ExportAccountingService,
+        private readonly accountService: AccountService
     ) {}
 
     async execute({ user, certificateToImport }: ImportIrecCertificateCommand): Promise<void> {
@@ -86,9 +88,10 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
             throw new InternalServerErrorException('IREC API refuses to transfer certificate');
         }
 
+        const userExchangeAddress = await this.accountService.getAccount(user.ownerId);
         const certificationRequest = await this.commandBus.execute(
             new CreateCertificationRequestCommand(
-                user.blockchainAccountAddress,
+                userExchangeAddress?.address || user.blockchainAccountAddress,
                 String(irecCertificate.volume * 1e6),
                 new Date(irecCertificate.startDate).getTime() / 1000,
                 new Date(irecCertificate.endDate).getTime() / 1000,

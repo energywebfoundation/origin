@@ -1,22 +1,15 @@
-import { DatabaseService } from '@energyweb/origin-backend-utils';
-import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { bootstrapTestInstance } from './exchange';
 import { expect } from 'chai';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { TestUser } from '@energyweb/issuer-irec-api/dist/js/test/issuer-irec-api';
-import { CertificateDTO, CERTIFICATES_TABLE_NAME } from '@energyweb/issuer-irec-api';
+import { CERTIFICATES_TABLE_NAME } from '@energyweb/issuer-irec-api';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
+
+import { bootstrapTestInstance } from './exchange';
 
 describe('import tests', () => {
     let app: INestApplication;
     let databaseService: DatabaseService;
-    const getCertificates = async (user: TestUser): Promise<CertificateDTO[]> => {
-        const { body } = await request(app.getHttpServer())
-            .get(`/irec/certificate`)
-            .set({ 'test-user': user })
-            .expect(HttpStatus.OK);
-
-        return body;
-    };
 
     before(async () => {
         ({ databaseService, app } = await bootstrapTestInstance());
@@ -35,13 +28,10 @@ describe('import tests', () => {
     });
 
     it('should import certificate', async () => {
-        let certificates = await getCertificates(TestUser.OrganizationDeviceManager);
-        expect(certificates.length).to.equal(0);
-
         const {
             body: [certificateToImport]
         } = await request(app.getHttpServer())
-            .get(`/irec/certificate/importable`)
+            .get(`/irec/import`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
@@ -49,7 +39,7 @@ describe('import tests', () => {
         expect(certificateToImport.isDeviceImported).to.equal(true);
 
         await request(app.getHttpServer())
-            .post(`/irec/certificate/import`)
+            .post(`/irec/import`)
             .send({ assetId: certificateToImport.asset })
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.CREATED);

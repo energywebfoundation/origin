@@ -63,17 +63,6 @@ const deployPrivateIssuer = async (issuer: string) => {
     return Contracts.migratePrivateIssuer(provider, registryDeployer.privateKey, issuer);
 };
 
-export const authenticatedUser = { id: 1, organization: { id: '1000' }, status: UserStatus.Active };
-
-const authGuard: CanActivate = {
-    canActivate: (context: ExecutionContext) => {
-        const req = context.switchToHttp().getRequest();
-        req.user = authenticatedUser;
-
-        return true;
-    }
-};
-
 export enum TestUser {
     UserWithoutBlockchainAccount = '1',
     OrganizationDeviceManager = '2',
@@ -141,6 +130,16 @@ export const testUsers = new Map([
         } as IUser
     ]
 ]);
+
+export const authenticatedUser = testUsers.get(TestUser.OrganizationDeviceManager);
+
+const authGuard: CanActivate = {
+    canActivate: (context: ExecutionContext) => {
+        const req = context.switchToHttp().getRequest();
+        req.user = testUsers.get(req.headers['test-user']);
+        return true;
+    }
+};
 
 const deviceTypes = [
     ['Solar'],
