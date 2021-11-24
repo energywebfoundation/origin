@@ -1,8 +1,10 @@
 import { Repository } from 'typeorm';
+import { ModuleRef } from '@nestjs/core';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ForbiddenException, Inject } from '@nestjs/common';
+import { ForbiddenException, Inject, OnModuleInit } from '@nestjs/common';
 
+import { IExchangeConfigurationService } from '@energyweb/exchange';
 import {
     BlockchainPropertiesService,
     CertificationRequest,
@@ -19,8 +21,10 @@ import { IrecCertificationRequest } from '../irec-certification-request.entity';
 
 @CommandHandler(CreateIrecCertificationRequestCommand)
 export class CreateIrecCertificationRequestHandler
-    implements ICommandHandler<CreateIrecCertificationRequestCommand>
+    implements ICommandHandler<CreateIrecCertificationRequestCommand>, OnModuleInit
 {
+    private configService: IExchangeConfigurationService;
+
     constructor(
         @InjectRepository(CertificationRequest)
         private readonly repository: Repository<CertificationRequest>,
@@ -34,8 +38,22 @@ export class CreateIrecCertificationRequestHandler
         private readonly irecService: IrecService,
         private readonly userService: UserService,
         private readonly fileService: FileService,
-        private readonly deviceService: DeviceService
+        private readonly deviceService: DeviceService,
+        private readonly moduleRef: ModuleRef
     ) {}
+
+    public async onModuleInit() {
+        if (this.configService) {
+            return;
+        }
+
+        this.configService = this.moduleRef.get<IExchangeConfigurationService>(
+            IExchangeConfigurationService,
+            {
+                strict: false
+            }
+        );
+    }
 
     async execute(
         params: CreateIrecCertificationRequestCommand
@@ -48,6 +66,9 @@ export class CreateIrecCertificationRequestHandler
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
+        const exchangeBlockchainAddress = await this.configService.getExchangeAccountAddress(
+            user.ownerId
+        );
 
         let fileIds: string[] = [];
         if (dto.files?.length) {
@@ -63,6 +84,7 @@ export class CreateIrecCertificationRequestHandler
         const tradeAccount =
             dto.irecTradeAccountCode ||
             (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
+
         const irecIssue = await this.irecService.createIssueRequest(platformAdmin.organization.id, {
             device: irecDevice.code,
             fuelType: irecDevice.fuelType,
@@ -75,7 +97,7 @@ export class CreateIrecCertificationRequestHandler
 
         const certificationRequest: CertificationRequest = await this.commandBus.execute(
             new CreateCertificationRequestCommand(
-                dto.to,
+                exchangeBlockchainAddress || dto.to,
                 dto.energy,
                 dto.fromTime,
                 dto.toTime,
