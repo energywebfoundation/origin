@@ -3,6 +3,7 @@ import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
 import { UserService } from '@energyweb/origin-backend';
 import { Role } from '@energyweb/origin-backend-core';
+import { IrecCertificateImportFailedEvent } from '@energyweb/exchange-irec';
 
 import { MailService } from '../../mail';
 

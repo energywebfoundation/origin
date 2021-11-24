@@ -16,6 +16,7 @@ import { UserModule } from '@energyweb/origin-backend';
 import { GetIrecCertificatesToImportHandler, ImportIrecCertificateHandler } from './handler';
 import { ImportController } from './import.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ExportModule } from '../export';
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         BlockchainProperties,
         CertificationRequestModule,
         CertificateModule,
-        ConfigModule
+        ConfigModule,
+        ExportModule
     ],
     controllers: [ImportController],
     providers: [GetIrecCertificatesToImportHandler, ImportIrecCertificateHandler],

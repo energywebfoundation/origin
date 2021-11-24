@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { entities as ExchangeEntities } from '@energyweb/exchange';
 import {
     AppModule,
-    IssuerIRECEntities,
-    entities as ExchangeIRECEntities
+    entities as ExchangeIRECEntities,
+    usedEntities as ExchangeIRECUsedEntities
 } from '@energyweb/exchange-irec';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -22,7 +22,11 @@ export const generateSchema = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [...ExchangeEntities, ...IssuerIRECEntities, ...ExchangeIRECEntities],
+                entities: [
+                    ...ExchangeEntities,
+                    ...ExchangeIRECEntities,
+                    ...ExchangeIRECUsedEntities
+                ],
                 logging: ['info']
             }),
             AppModule

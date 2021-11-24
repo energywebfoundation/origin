@@ -14,6 +14,7 @@ import {
 import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 import { ImportIrecCertificateCommand } from '../command';
 import { IrecCertificateImportFailedEvent } from '../event';
+import { ExportAccountingService } from '../../export/export-accounting.service';
 
 @CommandHandler(ImportIrecCertificateCommand)
 export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecCertificateCommand> {
@@ -27,7 +28,8 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
         private readonly deviceRegistryService: DeviceRegistryService,
         private readonly userService: UserService,
         @InjectRepository(IrecCertificationRequest)
-        private readonly irecCertificationRequestRepository: Repository<IrecCertificationRequest>
+        private readonly irecCertificationRequestRepository: Repository<IrecCertificationRequest>,
+        private readonly exportAccountingService: ExportAccountingService
     ) {}
 
     async execute({ user, certificateToImport }: ImportIrecCertificateCommand): Promise<void> {
@@ -58,6 +60,11 @@ export class ImportIrecCertificateHandler implements ICommandHandler<ImportIrecC
         });
         if (!originDevice) {
             throw new BadRequestException('Unknown IREC device');
+        }
+
+        const exportedCertificates = await this.exportAccountingService.findByOwner(user.ownerId);
+        if (exportedCertificates.some((e) => e.irecAssetId === certificateToImport.assetId)) {
+            throw new BadRequestException('The certificate is exported before');
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();

@@ -7,12 +7,12 @@ export class ImportIrecCertificateDTO {
     @Expose()
     assetId: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, required: false })
     @IsOptional()
     @Expose()
     fromIrecAccountCode?: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, required: false })
     @IsOptional()
     @Expose()
     toIrecAccountCode?: string;

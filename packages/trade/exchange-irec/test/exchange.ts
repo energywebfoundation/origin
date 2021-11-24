@@ -22,7 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
-import { entities as ExchangeIRECEntities, IssuerIRECEntities } from '../src';
+import { entities as ExchangeIRECEntities, usedEntities } from '../src';
 
 import { AppModule as ExchangeIRECModule } from '../src/app.module';
 
@@ -193,7 +193,7 @@ export const bootstrapTestInstance = async (
                 entities: [
                     ...ExchangeEntities,
                     ...ExchangeIRECEntities,
-                    ...IssuerIRECEntities,
+                    ...usedEntities,
                     IrecCertificationRequest
                 ],
                 logging: ['info']
