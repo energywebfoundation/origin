@@ -9,21 +9,24 @@ export const useDeviceFirstImageUrl = (
   const [imageUrl, setImageUrl] = useState('');
 
   const getAndSetImage = async (id: string) => {
-    if (id === 'null') return;
+    if (!id) return;
+    try {
+      const response = await publicFileDownloadHandler(id);
+      const imageType = (response as any).headers['content-type'];
+      const blob = new Blob(
+        [Buffer.from((response.data as any).data as unknown as string)],
+        {
+          type: imageType,
+        }
+      );
+      const urlCreator = window.URL || window.webkitURL;
+      const imageUrl = urlCreator.createObjectURL(blob);
 
-    const response = await publicFileDownloadHandler(id);
-    const imageType = (response as any).headers['content-type'];
-    const blob = new Blob(
-      [Buffer.from((response.data as any).data as unknown as string)],
-      {
-        type: imageType,
+      if (isMountedRef.current === true) {
+        setImageUrl(imageUrl);
       }
-    );
-    const urlCreator = window.URL || window.webkitURL;
-    const imageUrl = urlCreator.createObjectURL(blob);
-
-    if (isMountedRef.current === true) {
-      setImageUrl(imageUrl);
+    } catch (error) {
+      console.error(error);
     }
   };
 

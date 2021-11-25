@@ -8,19 +8,22 @@ export const useDeviceImageUrls = (
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   const getImageUrl = async (id: string) => {
-    if (id === 'null') return;
-
-    const response = await publicFileDownloadHandler(id);
-    const imageType = (response as any).headers['content-type'];
-    const blob = new Blob(
-      [Buffer.from((response.data as any).data as unknown as string)],
-      {
-        type: imageType,
-      }
-    );
-    const urlCreator = window.URL || window.webkitURL;
-    const imageUrl = urlCreator.createObjectURL(blob);
-    return imageUrl;
+    if (!id) return;
+    try {
+      const response = await publicFileDownloadHandler(id);
+      const imageType = (response as any).headers['content-type'];
+      const blob = new Blob(
+        [Buffer.from((response.data as any).data as unknown as string)],
+        {
+          type: imageType,
+        }
+      );
+      const urlCreator = window.URL || window.webkitURL;
+      const imageUrl = urlCreator.createObjectURL(blob);
+      return imageUrl;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const getAndSetAllImages = async (imageIds: string[]) => {
