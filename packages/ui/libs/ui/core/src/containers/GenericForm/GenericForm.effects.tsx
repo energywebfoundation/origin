@@ -74,13 +74,15 @@ export const useGenericFormEffects: TGenericFormEffects = ({
       ? !isValid
       : acceptInitialValues
       ? false
-      : !isDirty;
+      : validationMode === 'onSubmit'
+      ? false
+      : !isDirty || !isValid;
 
   return {
     control,
     register,
     onSubmit,
-    errors,
+    errors: !isValid ? errors : ({} as any),
     submitButtonDisabled,
     dirtyFields,
   };

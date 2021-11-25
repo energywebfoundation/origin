@@ -174,7 +174,7 @@ export const App: FC<AppProps> = memo(
               <Route path="*" element={<PageNotFound />} />
             </Route>
             <Route
-              path="/login"
+              path="/login/*"
               element={
                 <Suspense fallback={<CircularProgress />}>
                   <LoginApp />

@@ -1,14 +1,12 @@
 import React, { FC, ReactNode } from 'react';
 
 import { Box, Button, Paper, Typography } from '@mui/material';
-import {
-  EnergyWebLogo,
-  EnergyWebBackground,
-} from '@energyweb/origin-ui-assets';
+import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import { useStyles } from './LoginPage.styles';
 import { useLogInPageEffects } from './LoginPage.effects';
+import { LoginPageLayout } from '../../containers';
 
 export interface LoginPageProps {
   bgImage?: string;
@@ -22,12 +20,7 @@ export const LoginPage: FC<LoginPageProps> = ({ bgImage, formIcon }) => {
     useLogInPageEffects();
 
   return (
-    <>
-      <img
-        className={classes.background}
-        src={bgImage || EnergyWebBackground}
-        alt="login page background"
-      />
+    <LoginPageLayout bgImage={bgImage}>
       <Paper className={classes.paper}>
         {formIcon || <EnergyWebLogo />}
         <GenericForm {...formProps}>
@@ -44,6 +37,6 @@ export const LoginPage: FC<LoginPageProps> = ({ bgImage, formIcon }) => {
           </Button>
         </Box>
       </Paper>
-    </>
+    </LoginPageLayout>
   );
 };
