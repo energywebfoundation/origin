@@ -50,7 +50,9 @@ export const useGenericMapEffects = (items: any[]) => {
     targetMap.fitBounds(bounds, 80);
   };
 
-  const showWindowForItem = async (item: any) => setItemHighllighted(item);
+  const showWindowForItem = (item: any) => {
+    setItemHighllighted(item);
+  };
 
   const defaultCenter =
     items.length > 0
