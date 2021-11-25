@@ -1,9 +1,9 @@
 # Trade SDK
-**Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/trade](https://github.com/energywebfoundation/origin/tree/master/packages/trade)
+[**Source code on GitHub** ](https://github.com/energywebfoundation/origin/tree/master/packages/trade)
 
 ## Overview
 
-The Trade SDK is responsible for enabling an order book style exchange for [Energy Attribute Certificates](./user-guide-glossary.md#energy-attribute-certificates). It was designed to support different types of EACs and matching scenarios and criteria. This SDK integrates with the [Traceability SDK](./traceability.md) to allow for trading of EACs (Energy Attribute Certificates) on the blockchain.  
+The Trade SDK is responsible for enabling an order book style exchange for [Energy Attribute Certificates](./user-guide-glossary.md#energy-attribute-certificates). It was designed to support different types of EACs and matching scenarios and criteria. This SDK integrates with the [Traceability SDK](./traceability.md) to allow for trading of Energy Attribute Certificates on the blockchain.  
 
 <div class="admonition note">
   <p class="first admonition-title">Note</p>
@@ -18,12 +18,14 @@ The Trade SDK has 4 primary packages:
 ### 1. Exchange Core - @energyweb/exchange-core 
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-core) 
 
-The Exchance Core package contains the implementation of the Exchange's order book based matching engine. 
+The Exchance Core package contains the implementation of the Exchange's [order book](./user-guide-glossary.md#order-book)-based matching engine.
 
 ### [2. Exchange - @energyweb/exchange](./trade/exchange.md)  
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange) 
 
-The Exchange package is a [NestJS](https://docs.nestjs.com/) application that provides backend services to manage the Exchange's functionality (account management and buying, selling and transferring [Energy Attribute Certificates](../user-guide-glossary.md#energy-attribute-certificate) and [bundles](../user-guide-glossary.md#bundle)). See the full documentation for this package [here](./trade/exchange.md). 
+The Exchange package is a [NestJS](https://docs.nestjs.com/) application that provides backend services to manage the Exchange's functionality (account management and buying, selling and transferring [Energy Attribute Certificates](../user-guide-glossary.md#energy-attribute-certificate) and [bundles](../user-guide-glossary.md#bundle)).  
+
+See the full documentation for this package [here](./trade/exchange.md). 
 
 ### 3. Exchange Token Account - @energyweb/exchange-token-account  
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-token-account)  
