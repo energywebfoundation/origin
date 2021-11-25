@@ -5,6 +5,7 @@ import {
   GoogleMapProps,
   Marker,
   InfoWindow,
+  MarkerProps,
 } from '@react-google-maps/api';
 import { CircularProgress } from '@mui/material';
 import { useGenericMapEffects } from './GenericMap.effects';
@@ -16,6 +17,7 @@ export interface GenericMapProps {
   infoWindowContent?: FC<any>;
   containerClassName?: string;
   mapProps?: GoogleMapProps;
+  markerProps?: Omit<MarkerProps, 'position' | 'onClick'>;
 }
 
 export const GenericMap: FC<GenericMapProps> = ({
@@ -24,6 +26,7 @@ export const GenericMap: FC<GenericMapProps> = ({
   infoWindowContent: InfoWindowContent,
   containerClassName,
   mapProps,
+  markerProps,
 }) => {
   const {
     defaultCenter,
@@ -55,6 +58,7 @@ export const GenericMap: FC<GenericMapProps> = ({
                 lng: parseFloat(item.longitude),
               }}
               onClick={() => showWindowForItem(item)}
+              {...markerProps}
             />
           </React.Fragment>
         ))}
