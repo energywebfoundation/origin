@@ -1,11 +1,10 @@
 import {
   IrecAccountItemDto,
-  useIrecCertificateControllerGetIrecCertificateToImport,
-} from '@energyweb/issuer-irec-api-react-query-client';
+  useImportControllerGetIrecCertificateToImport,
+} from '@energyweb/exchange-irec-react-query-client';
 
 export const useApiCertificateToImport = () => {
-  const { data, isLoading } =
-    useIrecCertificateControllerGetIrecCertificateToImport();
+  const { data, isLoading } = useImportControllerGetIrecCertificateToImport();
 
   const certificates = data ?? ([] as IrecAccountItemDto[]);
 

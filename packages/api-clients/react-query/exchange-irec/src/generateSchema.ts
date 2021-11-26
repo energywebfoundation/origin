@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { entities as ExchangeEntities } from '@energyweb/exchange';
 import {
     AppModule,
-    IssuerIRECEntities,
+    usedEntities as IssuerIRECEUsedEntities,
     entities as ExchangeIRECEntities
 } from '@energyweb/exchange-irec';
 
@@ -22,7 +22,11 @@ export const generateSchema = async () => {
                 username: process.env.DB_USERNAME ?? 'postgres',
                 password: process.env.DB_PASSWORD ?? 'postgres',
                 database: process.env.DB_DATABASE ?? 'origin',
-                entities: [...ExchangeEntities, ...IssuerIRECEntities, ...ExchangeIRECEntities],
+                entities: [
+                    ...ExchangeEntities,
+                    ...IssuerIRECEUsedEntities,
+                    ...ExchangeIRECEntities
+                ],
                 logging: ['info']
             }),
             AppModule

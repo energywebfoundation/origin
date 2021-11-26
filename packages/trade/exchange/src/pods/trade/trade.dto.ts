@@ -5,17 +5,21 @@ import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-b
 import { Trade } from './trade.entity';
 
 export class TradeDTO<TProduct> {
-    @ApiProperty({ type: String, description: "UUID string identifier", example: "123e4567-e89b-12d3-a456-426614174000" })
+    @ApiProperty({
+        type: String,
+        description: 'UUID string identifier',
+        example: '123e4567-e89b-12d3-a456-426614174000'
+    })
     @IsUUID()
     @IsNotEmpty()
     public id: string;
 
-    @ApiProperty({ type: String, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
+    @ApiProperty({ type: String, example: 'Tue Nov 16 2021 16:09:43 GMT-0500' })
     @IsDateString()
     @IsNotEmpty()
     public created: string;
 
-    @ApiProperty({ type: String, example: "500" })
+    @ApiProperty({ type: String, example: '500' })
     @Validate(PositiveBNStringValidator)
     @Validate(IntUnitsOfEnergy)
     public volume: string;

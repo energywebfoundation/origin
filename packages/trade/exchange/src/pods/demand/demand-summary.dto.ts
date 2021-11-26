@@ -14,7 +14,7 @@ export class DemandSummaryDTO<TProduct> {
     @Expose()
     bids: CreateBidDTO<TProduct>[];
 
-    @ApiProperty({ type: String, example: "500" })
+    @ApiProperty({ type: String, example: '500' })
     @Transform((v: BN) => v.toString(10))
     @Expose()
     get volume(): BN {

@@ -1,11 +1,13 @@
 import * as Moment from 'moment';
 import { extendMoment } from 'moment-range';
+import { Repository } from 'typeorm';
+import { isAddress } from 'ethers/lib/utils';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
-import { HttpStatus } from '@nestjs/common';
-import { ValidateCertificationRequestCommand } from '../commands/validate-certification-request.command';
+
+import { ValidateCertificationRequestCommand } from '../commands';
 import { CertificationRequest } from '../certification-request.entity';
 
 @CommandHandler(ValidateCertificationRequestCommand)
@@ -18,10 +20,14 @@ export class ValidateCertificationRequestHandler
     ) {}
 
     async execute({
-        dto: { fromTime, toTime, deviceId }
+        dto: { to, fromTime, toTime, deviceId }
     }: ValidateCertificationRequestCommand): Promise<ISuccessResponse> {
         const moment = extendMoment(Moment);
         const unix = (timestamp: number) => moment.unix(timestamp);
+
+        if (to && !isAddress(to)) {
+            throw new BadRequestException('Invalid recipient address');
+        }
 
         const deviceCertificationRequests = await this.repository.find({
             where: {

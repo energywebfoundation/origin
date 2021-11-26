@@ -1,4 +1,4 @@
-import { IExchangeConfigurationService } from '@energyweb/exchange';
+import { AccountService, IExchangeConfigurationService } from '@energyweb/exchange';
 import { ConfigurationService } from '@energyweb/origin-backend';
 import { BlockchainPropertiesService } from '@energyweb/issuer-irec-api';
 import { IDeviceType } from '@energyweb/origin-backend-core';
@@ -10,6 +10,8 @@ export class ExchangeConfigurationService implements IExchangeConfigurationServi
     private _configService: ConfigurationService;
 
     private _blockchainPropertiesService: BlockchainPropertiesService;
+
+    private _exchangeAccountService: AccountService;
 
     constructor(private readonly moduleRef: ModuleRef) {}
 
@@ -40,6 +42,18 @@ export class ExchangeConfigurationService implements IExchangeConfigurationServi
         return this._blockchainPropertiesService;
     }
 
+    private get exchangeAccountService() {
+        if (this._exchangeAccountService) {
+            return this._exchangeAccountService;
+        }
+
+        this._exchangeAccountService = this.moduleRef.get<AccountService>(AccountService, {
+            strict: false
+        });
+
+        return this._exchangeAccountService;
+    }
+
     public async getDeviceTypes(): Promise<IDeviceType[]> {
         const { deviceTypes } = await this.configService.get();
         return deviceTypes;
@@ -58,5 +72,10 @@ export class ExchangeConfigurationService implements IExchangeConfigurationServi
     public async getIssuerAddress(): Promise<string> {
         const { issuer } = await this.blockchainPropertiesService.get();
         return issuer;
+    }
+
+    public async getExchangeAccountAddress(ownerId: string): Promise<string> {
+        const { address } = await this.exchangeAccountService.getAccount(ownerId);
+        return address;
     }
 }

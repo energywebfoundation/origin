@@ -1,4 +1,4 @@
-import { IrecAccountItemDto } from '@energyweb/issuer-irec-api-react-query-client';
+import { IrecAccountItemDto } from '@energyweb/exchange-irec-react-query-client';
 import { CertificateModalsActionsEnum } from './reducer';
 
 export interface ICertificateModalsStore {

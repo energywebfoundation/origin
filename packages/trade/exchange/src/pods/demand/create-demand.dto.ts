@@ -31,13 +31,13 @@ export class CreateDemandDTO<TProduct> {
     @IsEnum(TimeFrame)
     public readonly periodTimeFrame: TimeFrame;
 
-    @ApiProperty({ type: Date, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
+    @ApiProperty({ type: Date, example: 'Tue Nov 16 2021 16:09:43 GMT-0500' })
     @IsNotEmpty()
     @IsDate()
     @Type(() => Date)
     public readonly start: Date;
 
-    @ApiProperty({ type: Date, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
+    @ApiProperty({ type: Date, example: 'Tue Nov 16 2021 16:09:43 GMT-0500' })
     @IsNotEmpty()
     @IsDate()
     @Type(() => Date)

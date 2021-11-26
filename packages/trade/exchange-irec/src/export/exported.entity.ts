@@ -19,4 +19,8 @@ export class ExportedAsset extends ExtendedBaseEntity {
     @ApiProperty({ type: String })
     @Column('bigint')
     amount: string;
+
+    @ApiProperty({ type: String })
+    @Column()
+    irecAssetId: string;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
-import { IrecAccountItemDto } from '@energyweb/issuer-irec-api-react-query-client';
+import { IrecAccountItemDto } from '@energyweb/exchange-irec-react-query-client';
 import { ListItemsContainerProps } from '@energyweb/origin-ui-core';
 import { useApiCertificateToImport } from '@energyweb/origin-ui-certificate-data';
 import { formatDate, PowerFormatter } from '@energyweb/origin-ui-utils';

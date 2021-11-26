@@ -9,6 +9,7 @@ import { ProductModule } from './product';
 import { RunnerModule } from './runner';
 import { TradeModule } from './trade';
 import { ExportModule } from './export';
+import { ImportModule } from './import';
 
 @Module({
     imports: [
@@ -19,7 +20,8 @@ import { ExportModule } from './export';
         RunnerModule,
         DemandModule,
         TradeModule,
-        ExportModule
+        ExportModule,
+        ImportModule
     ],
     providers: [IntUnitsOfEnergy]
 })

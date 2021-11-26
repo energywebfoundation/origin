@@ -68,7 +68,10 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
             );
         }
 
-        const irecCertificates = await this.irecService.getCertificates(platformOrganization.id);
+        const irecCertificates = await this.irecService.getCertificates(
+            platformOrganization.id,
+            fromTradeAccount
+        );
         const irecCertificate = irecCertificates.find(
             // Uncomment the end of the line for testing with I-REC mock service
             (c) => c.asset === certificationRequest.irecAssetId // || c.asset === 'test-asset-id'
@@ -95,7 +98,8 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
         await this.repository.save({
             assetId: asset.asset.id,
             ownerId: user.ownerId,
-            amount
+            amount,
+            irecAssetId: result.code
         });
     }
 }
