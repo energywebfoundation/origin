@@ -24,7 +24,7 @@
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@energyweb/origin-ui-localization": "0.1.0",
-    "i18next": "21.5.2",
+    "i18next": "21.5.3",
     "react-i18next": "11.14.2"
   }
 }
