@@ -31,14 +31,14 @@
     "lodash": "4.17.21",
     "react-beautiful-dnd": "13.1.0",
     "react-dropzone": "11.4.2",
-    "react-hook-form": "7.20.2",
+    "react-hook-form": "7.20.4",
     "react-toastify": "8.1.0",
     "yup": "0.32.11",
     "@ethersproject/bignumber": "5.3.0",
     "@ethersproject/units": "5.3.0"
   },
   "peerDependencies": {
-    "@emotion/react": "11.6.0",
+    "@emotion/react": "11.7.0",
     "@emotion/styled": "11.6.0",
     "emotion-theming": "11.0.0",
     "react": "17.0.2",
