@@ -31,12 +31,12 @@ See the full documentation for this package [here](./trade/exchange.md).
 ### 3. Exchange Token Account - @energyweb/exchange-token-account  
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-token-account)  
 
-This package provides the smart contract wallet for deposits using ERC-1888 tokens.
+This package provides the smart contract wallet for deposits using [the ERC-1888 Certificate standard](https://github.com/ethereum/EIPs/issues/1888).
 
 ### 4. Exchange IO ERC1888 - @energyweb/exchange-io-erc1888    
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888)  
 
-By design, The Trade SDK allows different type of assets to be used for trading. @energyweb/exchange-io-erc1888 provides the implementation for the ERC-1888 Certificate deposits and withdrawals. You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain). 
+By design, The Trade SDK allows different type of assets to be used for trading. @energyweb/exchange-io-erc1888 provides the implementation for the [ERC-1888 Certificate deposits](https://github.com/ethereum/EIPs/issues/1888) and withdrawals. You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain). 
 
 ### Additional Reading
 For more context and detail on the Trade SDK:  
