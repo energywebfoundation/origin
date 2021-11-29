@@ -1,11 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, Unique } from 'typeorm';
-import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Asset } from '../asset/asset.entity';
+import { IClaimData } from '@energyweb/issuer';
+import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
+
+import { Asset } from '../asset';
+import { DB_TABLE_PREFIX } from '../../utils';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
-
-import { DB_TABLE_PREFIX } from '../../utils/tablePrefix';
 
 @Entity({ name: `${DB_TABLE_PREFIX}_transfer` })
 @Unique(['direction', 'transactionHash'])
@@ -53,4 +55,8 @@ export class Transfer extends ExtendedBaseEntity {
     @ApiProperty({ enum: TransferDirection, enumName: 'TransferDirection' })
     @Column()
     direction: TransferDirection;
+
+    @Column('simple-json', { nullable: true })
+    @IsOptional()
+    claimData?: IClaimData;
 }
