@@ -146,7 +146,6 @@ dependencies:
   axios: 0.24.0
   babel-jest: 27.3.1_@babel+core@7.16.0
   babel-loader: 8.2.3_d888b76bb52891dbb46d1b9f7384ff34
-  babel-plugin-styled-components: 1.13.3
   barrelsby: 2.3.0
   bcryptjs: 2.4.3
   bn.js: 5.2.0
@@ -212,7 +211,7 @@ dependencies:
   qs: 6.10.1
   react: 17.0.2
   react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
-  react-chartjs-2: 3.3.0_chart.js@3.6.0+react@17.0.2
+  react-chartjs-2: 4.0.0_chart.js@3.6.0+react@17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-dropzone: 11.4.2_react@17.0.2
   react-error-boundary: 3.1.4_react@17.0.2
@@ -3912,8 +3911,8 @@ packages:
   /@jest/console/27.3.1:
     dependencies:
       '@jest/types': 27.2.5
-      '@types/node': 14.17.33
-      chalk: 4.1.0
+      '@types/node': 14.17.34
+      chalk: 4.1.2
       jest-message-util: 27.3.1
       jest-util: 27.3.1
       slash: 3.0.0
@@ -10218,7 +10217,7 @@ packages:
     hasBin: true
     optional: true
     optionalDependencies:
-      prettier: 2.5.0
+      prettier: 2.4.1
       prettier-plugin-solidity: 1.0.0-alpha.59
     resolution:
       integrity: sha512-enN9SED82+Sz/ddJp81hyinRlbehA4FajHCZaG0QQqJsfLzjVfSsB1cEbJE3ZB9xcNbcagwJ2AlPuWt2rXtkcQ==
@@ -21997,7 +21996,7 @@ packages:
     dependencies:
       '@jest/types': 27.2.5
       '@types/graceful-fs': 4.1.5
-      '@types/node': 14.17.33
+      '@types/node': 14.17.34
       anymatch: 3.1.2
       fb-watchman: 2.0.1
       graceful-fs: 4.2.8
@@ -22300,7 +22299,7 @@ packages:
       integrity: sha512-S5wqyz0DXnNJPd/xfIzZ5Xnp1HrJWBczg8mMfMpN78OJ5eDxXyf+Ygld9wX1DnUWbIbhM1YDY95NjR4CBXkb2g==
   /jest-serializer/27.0.6:
     dependencies:
-      '@types/node': 14.17.33
+      '@types/node': 14.17.34
       graceful-fs: 4.2.8
     dev: false
     engines:
@@ -28315,7 +28314,7 @@ packages:
       emoji-regex: 9.2.2
       escape-string-regexp: 4.0.0
       extract-comments: 1.1.0
-      prettier: 2.5.0
+      prettier: 2.4.1
       semver: 7.3.5
       string-width: 4.2.3
     dev: false
@@ -28331,6 +28330,13 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
+  /prettier/2.4.1:
+    dev: false
+    engines:
+      node: '>=10.13.0'
+    hasBin: true
+    resolution:
+      integrity: sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==
   /prettier/2.5.0:
     dev: false
     engines:
@@ -29013,7 +29019,7 @@ packages:
       react-dom: ^16.8.5 || ^17.0.0
     resolution:
       integrity: sha512-aGvblPZTJowOWUNiwd6tNfEpgkX5OxmpqxHKNW/4VmvZTNTbeiq7bA3bn5T+QSF2uibXB0D1DmJsb1aC/+3cUA==
-  /react-chartjs-2/3.3.0_chart.js@3.6.0+react@17.0.2:
+  /react-chartjs-2/4.0.0_chart.js@3.6.0+react@17.0.2:
     dependencies:
       chart.js: 3.6.0
       react: 17.0.2
@@ -29022,7 +29028,7 @@ packages:
       chart.js: ^3.5.0
       react: ^16.8.0 || ^17.0.0
     resolution:
-      integrity: sha512-4Mt0SR2aiUbWi/4762odRBYSnbNKSs4HWc0o3IW43py5bMfmfpeZU95w6mbvtuLZH/M3GsPJMU8DvDc+5U9blQ==
+      integrity: sha512-0kx41EVO6wIoeU6zvdwovX9kKcdrs7O62DGTSNmwAXZeLGJ3U+n4XijO1kxcMmAi4I6PQJWGD5oRwxVixHSp6g==
   /react-colorful/5.5.0_react-dom@17.0.2+react@17.0.2:
     dependencies:
       react: 17.0.2
@@ -33600,7 +33606,7 @@ packages:
       js-sha3: 0.8.0
       lodash: 4.17.21
       mkdirp: 1.0.4
-      prettier: 2.5.0
+      prettier: 2.4.1
       ts-essentials: 7.0.3_typescript@4.5.2
       typescript: 4.5.2
     dev: false
@@ -38774,7 +38780,7 @@ packages:
       prettier: 2.5.0
       react: 17.0.2
       react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
-      react-chartjs-2: 3.3.0_chart.js@3.6.0+react@17.0.2
+      react-chartjs-2: 4.0.0_chart.js@3.6.0+react@17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-dropzone: 11.4.2_react@17.0.2
       react-error-boundary: 3.1.4_react@17.0.2
@@ -38806,7 +38812,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-sp+TSgO9yQRUQEKuzjjkoeG0NvReV3eeJ4+nfpQqEQ+2z0pRI0y2/++05v+CHboyHGbJNUZpQg+xPv70kqbQYQ==
+      integrity: sha512-XF6b3KmAdGqjisVeOW5kW6yAYboWLmQcs7X56bKbaZE1HpvXM5qimL49p5rm3L8YAQQacLy3T8lHaThriDuEbQ==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -39031,7 +39037,6 @@ specifiers:
   axios: 0.24.0
   babel-jest: 27.3.1
   babel-loader: 8.2.3
-  babel-plugin-styled-components: 1.13.3
   barrelsby: 2.3.0
   bcryptjs: 2.4.3
   bn.js: 5.2.0
@@ -39097,7 +39102,7 @@ specifiers:
   qs: 6.10.1
   react: 17.0.2
   react-beautiful-dnd: 13.1.0
-  react-chartjs-2: 3.3.0
+  react-chartjs-2: 4.0.0
   react-dom: 17.0.2
   react-dropzone: 11.4.2
   react-error-boundary: 3.1.4

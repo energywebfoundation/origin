@@ -347,8 +347,8 @@
         "photo": "Photo",
         "map": "Map",
         "smartMeter": {
-          "tableTime": "Time ({timezone})",
-          "tableMeterValue": "Meter value ({unit})",
+          "tableTime": "Time ({{timezone}})",
+          "tableMeterValue": "Meter value ({{unit}})",
           "day": "Day",
           "week": "Week",
           "month": "Month",
