@@ -124,3 +124,16 @@ export type TUseExchangeExportActionLogic<Id> = (
   selectedItems: SelectedItem<Id>[];
   inputHeader: string;
 };
+
+type TUseClaimActionLogicArgs<Id> = {
+  selectedIds: Id[];
+  exchangeCertificates: AccountAssetDTO[];
+  allDevices: ComposedPublicDevice[];
+  allFuelTypes: CodeNameDTO[];
+};
+
+export type TUseClaimActionLogic<Id> = (args: TUseClaimActionLogicArgs<Id>) => {
+  title: string;
+  buttonText: string;
+  selectedItems: SelectedItem<Id>[];
+};
