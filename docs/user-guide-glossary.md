@@ -67,6 +67,12 @@ In the most extreme case, it is hoped to at least receive a very small price per
 
 Sellers can also use bundles for targeted marketing of their EACs. Bundles allow sellers to sell a story that can result in a price premium. They could, for example, bundle all EACs from one region and offer this to buyers from that region. Or they could bundle EACs from one technology but multiple generation devices, for example, multiple different solar farms and market this to buyers that are especially interested in this technology. The goal here is also to increase the price per certificate by making the packaged offering more attractive.  
 
+## Direct Buy 
+Instead of creating a [bid](#bid), buyers can also browse the exchange and directly buy the [Energy Attribute Certificates](#energy-attribute-certificate) offered in an [ask](#ask). Users are expected to make use of this feature if they see an ask that exactly meets their requirements or after being notified about an ask by a configured notification.  
+
+Direct buying simplifies the process of buying an EAC in the case that there is already a fitting ask on the market. The buyer does not have to create a bid and ensure it is matched by configuring it in so that it exactly matches the ask. Direct buy allows users to purchase EACs from an existing ask in a simple one-click solution.
+
+Even though it represents a special case, the underlying logic of direct buys follows the bid model. A direct buy triggers the creation of a bid that exactly matches the specifications of the ask. Such a bid does not differ from regular bids in any way and is matched through the exact same matching system. Every bid that is created through a direct buy holds information about the direct buy request for clear traceability. 
 ## Energy Attribute Certificate  
 
 Energy Attribute Certificates (EACs) describe global instruments which certify that a specific unit (historically 1 MWh, but sometimes 1 KWh) of electricity was produced from a renewable source.  

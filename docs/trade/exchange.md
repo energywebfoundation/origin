@@ -166,7 +166,7 @@ User Guides on demands:
 - [Exchange - Market: Create Demand](../exchange-guides/view-market.md#repeated-purchase)
 - [Exchange - My Orders: View/Update Demands](../exchange-guides/my-orders.md#demands)
 
-### Matching Engine
+### Matching Engine Service
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/matching-engine)  
 
 The matching engine service initializes the [Matching Engine](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts) from the @energyweb/exchange-core module and sends order submissions, queries and cancellations to the Matching Engine. The Matching Engine is initialized with the price strategy, which is set in the configuration file. There are two price strategies:  

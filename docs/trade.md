@@ -18,7 +18,9 @@ The Trade SDK has 4 primary packages:
 ### 1. Exchange Core - @energyweb/exchange-core 
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-core) 
 
-The Exchance Core package contains the implementation of the Exchange's [order book](./user-guide-glossary.md#order-book)-based matching engine.
+The Exchance Core package contains the implementation of the Exchange's [order book](./user-guide-glossary.md#order-book)-based matching engine. The Exchange package submits bids and asks to the Matching Engine, which checks for matches against existing orders in the order book, and executes trades. It also handles [direct buys](./user-guide-glossary.md#direct-buy).  
+
+See the full documentation for this package [here](./trade/exchange-core.md). 
 
 ### [2. Exchange - @energyweb/exchange](./trade/exchange.md)  
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange) 
