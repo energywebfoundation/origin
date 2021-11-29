@@ -28,10 +28,12 @@ The Exchange package is a [NestJS](https://docs.nestjs.com/) application that pr
 
 See the full documentation for this package [here](./trade/exchange.md). 
 
-### 3. Exchange Token Account - @energyweb/exchange-token-account  
+### 3. [Exchange Token Account - @energyweb/exchange-token-account](./trade/exchange-token-account.md)
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-token-account)  
 
-This package provides the smart contract wallet for deposits using [the ERC-1888 Certificate standard](https://github.com/ethereum/EIPs/issues/1888).
+This package provides the smart contract wallet for deposits using [the ERC-1888 Certificate standard](https://github.com/ethereum/EIPs/issues/1888). 
+
+See the full documentation for this package [here](./trade/exchange-token-account.md). 
 
 ### 4. [Exchange IO ERC1888 - @energyweb/exchange-io-erc1888](./trade/exchange-io-erc1888.md)  
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888)  
