@@ -43,9 +43,9 @@ export const SettingsPage: FC = () => {
             label={notificationsLabel}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={4} sx={{ mt: 2 }}>
           <FormControl fullWidth>
-            <InputLabel>{languageLabel}</InputLabel>
+            <InputLabel sx={{ ml: -2 }}>{languageLabel}</InputLabel>
             <Select
               value={language}
               onChange={handleLanguageChange}
