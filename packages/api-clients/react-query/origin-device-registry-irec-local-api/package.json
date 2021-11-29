@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "axios": "0.24.0",
-        "react-query": "3.33.2"
+        "react-query": "3.33.7"
     },
     "devDependencies": {
         "@energyweb/origin-device-registry-irec-local-api": "0.4.0",
@@ -38,8 +38,8 @@
         "barrelsby": "2.3.0",
         "json-to-pretty-yaml": "1.2.2",
         "mocha": "9.1.3",
-        "orval": "6.3.0",
-        "prettier": "2.4.1",
+        "orval": "6.4.0",
+        "prettier": "2.5.0",
         "ts-node": "9.1.1",
         "typescript": "4.5.2"
     },
