@@ -67,7 +67,7 @@ In the most extreme case, it is hoped to at least receive a very small price per
 
 Sellers can also use bundles for targeted marketing of their EACs. Bundles allow sellers to sell a story that can result in a price premium. They could, for example, bundle all EACs from one region and offer this to buyers from that region. Or they could bundle EACs from one technology but multiple generation devices, for example, multiple different solar farms and market this to buyers that are especially interested in this technology. The goal here is also to increase the price per certificate by making the packaged offering more attractive.  
 
-## Direct Buy 
+d## Direct Buy 
 Instead of creating a [bid](#bid), buyers can also browse the exchange and directly buy the [Energy Attribute Certificates](#energy-attribute-certificate) offered in an [ask](#ask). Users are expected to make use of this feature if they see an ask that exactly meets their requirements or after being notified about an ask by a configured notification.  
 
 Direct buying simplifies the process of buying an EAC in the case that there is already a fitting ask on the market. The buyer does not have to create a bid and ensure it is matched by configuring it in so that it exactly matches the ask. Direct buy allows users to purchase EACs from an existing ask in a simple one-click solution.
@@ -86,13 +86,15 @@ Globally there are various EAC systems to claim the use of renewable or low-carb
 
 ## Exchange Deposit Account  
 
-A blockchain address is created for every organization and is the address of the smart contract wallet that represents the organization's Exchange Deposit account. Every organization is tied to exactly one account and one blockchain address to allow for easy accounting within the Origin Exchange.  
+[Energy Attribute Certificates (EACs)](#energy-attribute-certificate) are represented as blockchain tokens, so they must be transferred on to the blockchain in order to be deposited to the Exchange. The Origin Exchange creates a unique smart contract wallet for each organization that wants to trade on the exchange, which is the Exchange Deposit account. Every organization is tied to exactly one account to allow for easy accounting within the Origin Exchange. This wallet acts as a deposit account on the exchange. As common practice for blockchain exchanges, this deposit account is tied to the organization but owned by the Exchange operator on-chain.  
+
+By depositing EACs to the Exchange, users put them in the custody of this operator. All operations that users can usually do with the on-chain EACs, like transferring and claiming them independently of a single application, are restricted this way. This ensures that all operations that are performed on the Origin Exchange are valid. 
 
 Every Exchange Deposit account has a balance that stores the information on which and how many [Energy Attribute Certificate's](#energy-attribute-certificate) are currently being held by the organization in the account. The balance is divided into an 'active' and 'locked component', with assets that are currently being traded on the exchange being 'locked'. 
 
 Users deposit [Energy Attribute Certificate's](#energy-attribute-certificate) onto the Exchange by sending them to their Exchange Deposit account. Once they are on the Exchange, the EACs are tokenized [assets](#asset), and they can be:  
 
-- Actively posted for sale
+- Posted for sale on the Exchange
 - Transferred to another Exchange Deposit account
 - Withdrawn from the exchange
 
