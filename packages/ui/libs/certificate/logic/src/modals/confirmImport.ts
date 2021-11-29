@@ -1,4 +1,4 @@
-import { IrecAccountItemDto } from '@energyweb/issuer-irec-api-react-query-client';
+import { IrecAccountItemDto } from '@energyweb/exchange-irec-react-query-client';
 import { GenericModalProps } from '@energyweb/origin-ui-core';
 import { formatDate, PowerFormatter } from '@energyweb/origin-ui-utils';
 import { useTranslation } from 'react-i18next';

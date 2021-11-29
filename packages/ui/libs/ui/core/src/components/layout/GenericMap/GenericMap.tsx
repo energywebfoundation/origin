@@ -11,13 +11,21 @@ import { CircularProgress } from '@mui/material';
 import { useGenericMapEffects } from './GenericMap.effects';
 import { useStyles } from './GenericMap.styles';
 
+export type MapItem = {
+  id: string;
+  latitude: string;
+  longitude: string;
+  label?: string;
+  [key: string]: any;
+};
+
 export interface GenericMapProps {
   apiKey: string;
-  allItems: any[];
+  allItems: MapItem[];
   infoWindowContent?: FC<any>;
   containerClassName?: string;
   mapProps?: GoogleMapProps;
-  markerProps?: Omit<MarkerProps, 'position' | 'onClick'>;
+  markerProps?: Omit<MarkerProps, 'position' | 'onClick' | 'label'>;
 }
 
 export const GenericMap: FC<GenericMapProps> = ({
@@ -58,6 +66,7 @@ export const GenericMap: FC<GenericMapProps> = ({
                 lng: parseFloat(item.longitude),
               }}
               onClick={() => showWindowForItem(item)}
+              label={item.label}
               {...markerProps}
             />
           </React.Fragment>

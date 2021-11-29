@@ -8,7 +8,7 @@ export class TradePriceInfoDTO<TProduct> {
         Object.assign(this, partial);
     }
 
-    @ApiProperty({ type: Date, example: "Tue Nov 16 2021 16:09:43 GMT-0500" })
+    @ApiProperty({ type: Date, example: 'Tue Nov 16 2021 16:09:43 GMT-0500' })
     @IsNotEmpty()
     @IsDate()
     public created: Date;

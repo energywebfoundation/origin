@@ -40,7 +40,11 @@ export class DeviceService {
         return this.repository.findOne(id);
     }
 
-    async create(user: ILoggedInUser, newDevice: CreateDeviceDTO): Promise<Device> {
+    async create(
+        user: ILoggedInUser,
+        newDevice: CreateDeviceDTO,
+        irecAccountCode?: string
+    ): Promise<Device> {
         if (!this.isValidDeviceType(newDevice.deviceType)) {
             throw new BadRequestException('Invalid device type');
         }
@@ -50,9 +54,10 @@ export class DeviceService {
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
-        const tradeAccount = await this.irecService.getTradeAccountCode(
-            platformAdmin.organization.id
-        );
+        const tradeAccount =
+            irecAccountCode ||
+            (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
+
         if (!tradeAccount) {
             throw new InternalServerErrorException(
                 'Platform admin IREC account does not have a trade account'

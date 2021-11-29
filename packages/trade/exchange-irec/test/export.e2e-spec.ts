@@ -2,7 +2,7 @@ import { AccountService, CreateAssetDTO, TransferService, testUtils } from '@ene
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import { authenticatedUser, bootstrapTestInstance, TestUser } from './exchange';
 import { expect } from 'chai';
 
 describe('export tests', () => {
@@ -11,7 +11,7 @@ describe('export tests', () => {
     let databaseService: DatabaseService;
     let accountService: AccountService;
 
-    const user1Id = authenticatedUser.organization.id;
+    const user1Id = String(authenticatedUser.organization.id);
 
     const windAsset: CreateAssetDTO = {
         address: '0x9876',
@@ -68,11 +68,15 @@ describe('export tests', () => {
                 recipientTradeAccount: 'TESTREDEMPTIONACCOUNT',
                 amount: availableBefore[0].amount
             })
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect(HttpStatus.OK);
 
         const {
             body: { locked }
-        } = await request(app.getHttpServer()).get('/account-balance').expect(HttpStatus.OK);
+        } = await request(app.getHttpServer())
+            .get('/account-balance')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
+            .expect(HttpStatus.OK);
 
         expect(locked).to.have.length(1);
         expect(locked[0].asset.id).to.equal(availableBefore[0].asset.id);

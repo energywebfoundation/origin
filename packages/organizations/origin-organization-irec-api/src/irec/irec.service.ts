@@ -113,7 +113,7 @@ export interface IIrecService {
 
     rejectIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void>;
 
-    getCertificates(user: UserIdentifier): Promise<AccountItem[]>;
+    getCertificates(user: UserIdentifier, accountCode?: string): Promise<AccountItem[]>;
 
     transferCertificate(
         fromUser: UserIdentifier,
@@ -347,10 +347,9 @@ export class IrecService implements IIrecService {
         return irecClient.issue.reject(issueRequestCode);
     }
 
-    async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
+    async getCertificates(user: UserIdentifier, accountCode?: string): Promise<AccountItem[]> {
         const irecClient = await this.getIrecClient(user);
-        const tradeAccountCode = await this.getTradeAccountCode(user);
-        return irecClient.account.getItems(tradeAccountCode);
+        return irecClient.account.getItems(accountCode || (await this.getTradeAccountCode(user)));
     }
 
     async transferCertificate(
