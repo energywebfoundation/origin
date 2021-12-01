@@ -37,8 +37,8 @@ export class TransferService {
         private readonly queryBus: QueryBus
     ) {}
 
-    public async getAll(userId: string) {
-        return this.repository.find({ where: { userId } });
+    public async getAll(userId: string, transferDirection?: TransferDirection) {
+        return this.repository.find({ where: { userId, transferDirection } });
     }
 
     public async getAllCompleted(userId: string) {

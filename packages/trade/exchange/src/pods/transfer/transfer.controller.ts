@@ -1,10 +1,10 @@
 import { ILoggedInUser, Role } from '@energyweb/origin-backend-core';
 import {
+    ActiveUserGuard,
+    NullOrUndefinedResultInterceptor,
     Roles,
     RolesGuard,
-    UserDecorator,
-    ActiveUserGuard,
-    NullOrUndefinedResultInterceptor
+    UserDecorator
 } from '@energyweb/origin-backend-utils';
 import {
     Body,
@@ -48,6 +48,19 @@ export class TransferController {
     @ApiResponse({ status: HttpStatus.OK, type: [Transfer], description: 'Get my transfers' })
     public async getMyTransfers(@UserDecorator() { ownerId }: ILoggedInUser): Promise<Transfer[]> {
         return this.transferService.getAll(ownerId);
+    }
+
+    @Get('all/claimed')
+    @UseGuards(AuthGuard(), ActiveUserGuard)
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: [Transfer],
+        description: 'Get claimed my transfers'
+    })
+    public async getMyClaimTransfers(
+        @UserDecorator() { ownerId }: ILoggedInUser
+    ): Promise<Transfer[]> {
+        return this.transferService.getAll(ownerId, TransferDirection.Claim);
     }
 
     @Post('withdrawal')
