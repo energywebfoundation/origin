@@ -37,8 +37,8 @@ export class TransferService {
         private readonly queryBus: QueryBus
     ) {}
 
-    public async getAll(userId: string, transferDirection?: TransferDirection) {
-        return this.repository.find({ where: { userId, transferDirection } });
+    public async getAll(userId: string, direction?: TransferDirection) {
+        return this.repository.find({ where: { userId, direction } });
     }
 
     public async getAllCompleted(userId: string) {
@@ -97,7 +97,7 @@ export class TransferService {
 
     public async requestClaim(
         userId: string,
-        { amount, assetId }: RequestClaimDTO,
+        { amount, assetId, claimData }: RequestClaimDTO,
         transaction?: EntityManager
     ): Promise<Transfer['id']> {
         await this.validateEnoughFunds(userId, assetId, amount);
@@ -111,7 +111,8 @@ export class TransferService {
                 address,
                 asset: { id: assetId } as Asset,
                 status: TransferStatus.Accepted,
-                direction: TransferDirection.Claim
+                direction: TransferDirection.Claim,
+                claimData
             },
             transaction
         );
@@ -119,7 +120,7 @@ export class TransferService {
 
     public async requestBatchClaim(
         userId: string,
-        { assetIds }: RequestBatchClaimDTO,
+        { assetIds, claimData }: RequestBatchClaimDTO,
         transaction?: EntityManager
     ): Promise<Transfer['id'][]> {
         const { address } = await this.accountService.getAccount(userId);
@@ -144,7 +145,8 @@ export class TransferService {
                     address,
                     asset: { id: assetId } as Asset,
                     status: TransferStatus.Accepted,
-                    direction: TransferDirection.Claim
+                    direction: TransferDirection.Claim,
+                    claimData
                 },
                 transaction
             );
