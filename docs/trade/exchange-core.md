@@ -1,7 +1,9 @@
 # Exchange Core - @energyweb/exchange-core
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-core) 
 
-The Exchange Core package provides the Matching Engine class, which contains the Exchange's matching engine functionality. It processes [orders](../user-guide-glossary.md#order) (which can be [bids](../user-guide-glossary.md#bid) or [asks](../user-guide-glossary.md#ask) and [direct buys](../user-guide-glossary.md#direct-buy) from the exchange. In the case of a new bid or ask, the Matching Engine will compare it to all active orders in the [order book](../user-guide-glossary.md#order-book) to see if there is a match, and if so, will execute a trade. See the source code for the Matching Engine class [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85).  
+The Exchange Core package provides the [Matching Engine class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts), which contains the Exchange's matching engine functionality. It processes [orders](../user-guide-glossary.md#order) (which can be [bids](../user-guide-glossary.md#bid) or [asks](../user-guide-glossary.md#ask) and [direct buys](../user-guide-glossary.md#direct-buy) from the exchange.  
+
+When a new bid or ask is submitted, the Matching Engine will compare it to all active orders in the [order book](../user-guide-glossary.md#order-book) to see if there is a match, and if so, will execute a trade. See the source code for the Matching Engine class [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85).  
 
 The Matching Engine is a [generic class](https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-classes) that takes in two parameters, **TProduct** and **TProductFilter**. The parameters are generic so that developers can provide their own implementation of Product and Product Filters based on implementation needs. 
 
@@ -11,10 +13,10 @@ export class MatchingEngine<TProduct, TProductFilter>
 [source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L24)
 
 ## Product
-TProduct represents the product being traded - in this use case, an [Energy Attribute Certificate (EAC)](../user-guide-glossary.md#energy-attribute-certificate) - so the implemented product type could contain EAC attributes such as device type, location, generation time, grid operator etc, however it can support any product interface. 
+TProduct represents the product being traded - in the case of the Origin reference implementation, an [Energy Attribute Certificate (EAC)](../user-guide-glossary.md#energy-attribute-certificate) - so the implemented product type contains EAC attributes such as device type, location, generation time, grid operator etc. The interface can change according to implementation requirements. 
 
 ## Product Filter
-//add
+TProductFilter represents the product filters in a bid or ask. Products can be filtered by, for example, a specific fuel type or a specific region where the energy represented by an EAC was produced. These filters can change according to implememntation requirements. 
 
 ## Order Book
 The Matching Engine [creates the order book](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85), which contains all of the current bids and asks: 

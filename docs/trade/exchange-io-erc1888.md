@@ -70,9 +70,14 @@ this.eventBus.publish(new DepositDiscoveredEvent(deposit));
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/withdrawal-processor) 
 
 ### Withdrawing EACs from the Exchange
-As long as EACs are not currently being traded on the Exchange, they can be withdrawn from the user’s [Exchange Deposit account](../user-guide-glossary.md#exchange-deposit-account). Users can choose to only withdraw parts of the EAC volume while keeping a part on the exchange. Once the certificates are withdrawn from the Exchange, the asset amounts in the user’s Exchange account are reduced accordingly.
+As long as EACs are not currently being traded between users (i.e. are in an active ask) on the Exchange, they can be withdrawn from the user’s [Exchange Deposit account](../user-guide-glossary.md#exchange-deposit-account). Users can choose to only withdraw parts of the EAC volume while keeping a part on the exchange. Once the certificates are withdrawn from the Exchange, the asset amounts in the user’s Exchange account are reduced accordingly.
 
-The assets that are in the active part of the exchange user account and that can be withdrawn are calculated as follows: You get all deposits and subtract the withdrawals and all ingoing trades and subtract the outgoing trades. Now you have the EACs that are in possession of the user. But not all EACs that are in the user’s possession can be withdrawn. All EACs that have been published for sale in an ask are locked to ensure that they can be directly sent to the buyer once a match is made. This means that the EACs that are currently in an active ask have to be subtracted from all the EACs in the user’s possession to get to the active, withdrawable part of the exchange user account. Inversely, all EACs locked in active asks represent the locked part of the exchange user account which cannot be withdrawn. 
+
+//EDIT THIS:
+#### Calculating Asset Volumes Eligible for Withdrawal: 
+The assets that are in the active part of the Exchange Deposit account and that can be withdrawn are calculated as follows:  
+You get all deposits and subtract the withdrawals and all ingoing trades and subtract the outgoing trades.  
+Now you have the EACs that are in possession of the user. But not all EACs that are in the user’s possession can be withdrawn. All EACs that have been published for sale in an ask are locked to ensure that they can be directly sent to the buyer once a match is made. This means that the EACs that are currently in an active ask have to be subtracted from all the EACs in the user’s possession to get to the active, withdrawable part of the exchange user account. Inversely, all EACs locked in active asks represent the locked part of the exchange user account which cannot be withdrawn. 
 
 Organizations can define any blockchain address to release the tokens to their withdrawal requests. In the user interface, this is known as the [Blockchain Account Address](../user-guide-reg-onboarding.md#organization-blockchain-account-address). If successful, the EAC tokens are transferred from the Exchange's wallet to this blockchain address. The EAC is now no longer in the custody of the Exchange operator but is owned by the user on-chain. The same EACs now would have to be re-deposited to be traded on the Exchange again.
 
