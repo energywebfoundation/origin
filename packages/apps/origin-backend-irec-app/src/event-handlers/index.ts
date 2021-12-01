@@ -11,6 +11,7 @@ export { CertificateRequestApprovedHandler } from './notification/certificate-re
 export { IrecCertificateImportFailedHandler } from './notification/irec-certificate-import-failed.handler';
 export { ConnectionCreatedHandler } from './notification/connection-created.handler';
 export { OrganizationNameAlreadyTakenHandler } from './notification/organization-name-already-taken.handler';
+export { ResetPasswordRequestedHandler } from './notification/reset-password-requested.handler';
 
 export { CreateExchangeDepositAddressHandler } from './organization/create-exchange-deposit-address.handler';
 export { CreateIrecBeneficiaryHandler } from './organization/create-irec-beneficiary.handler';

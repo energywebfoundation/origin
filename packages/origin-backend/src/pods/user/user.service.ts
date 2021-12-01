@@ -26,7 +26,11 @@ import { EmailConfirmationService } from '../email-confirmation';
 import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 import { UpdateUserDTO } from '../admin/dto/update-user.dto';
 
-export type TUserBaseEntity = ExtendedBaseEntity & IUser;
+export interface IUserPassword {
+    password: string;
+}
+
+export type TUserBaseEntity = ExtendedBaseEntity & IUser & IUserPassword;
 
 @Injectable()
 export class UserService {
@@ -60,7 +64,7 @@ export class UserService {
             title: data.title,
             firstName: data.firstName,
             lastName: data.lastName,
-            email: data.email,
+            email: data.email.toLowerCase().trim(),
             telephone: data.telephone,
             password: this.hashPassword(data.password),
             notifications: true,
@@ -85,7 +89,7 @@ export class UserService {
     }
 
     async findByEmail(email: string) {
-        const lowerCaseEmail = email.toLowerCase();
+        const lowerCaseEmail = email.toLowerCase().trim();
 
         return this.findOne({ email: lowerCaseEmail });
     }
@@ -211,6 +215,10 @@ export class UserService {
             success: false,
             errors: `Incorrect current password.`
         });
+    }
+
+    public async setPassword(email: string, password: string): Promise<void> {
+        await this.repository.update({ email }, { password: this.hashPassword(password) });
     }
 
     public async getUsersBy(filter: IUserFilter) {

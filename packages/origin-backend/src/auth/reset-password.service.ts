@@ -1,8 +1,9 @@
-import { Injectable, Inject, BadRequestException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { UserService } from '../pods/user';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { IMailService, MAIL_SERVICE_TOKEN } from '../pods/mail/mail.service.interface';
+import { ResetPasswordRequestedEvent } from './events';
+import { EventBus } from '@nestjs/cqrs';
 
 interface IJwtPayload {
     email: string;
@@ -14,10 +15,10 @@ export class ResetPasswordService {
     private readonly logger = new Logger(ResetPasswordService.name);
 
     constructor(
-        @Inject(MAIL_SERVICE_TOKEN) private mailService: IMailService,
         private userService: UserService,
         private configService: ConfigService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private eventBus: EventBus
     ) {}
 
     public async requestPasswordReset(email: string): Promise<string | null> {
@@ -35,15 +36,8 @@ export class ResetPasswordService {
                 expiresIn: '12h'
             })
         ).toString('base64');
-        const host = this.configService.get<string>('FRONTEND_HOST');
-        const url = `${host}/reset-password?token=${jwtToken}`;
-        const message = `Request for resetting your password was submitted.\nTo reset your password follow the URL (valid for 12 hours): ${url}\nIf you didn't request resetting password ignore this message.`;
 
-        await this.mailService.sendEmail({
-            to: user.email,
-            subject: `Password reset requested`,
-            text: message
-        });
+        this.eventBus.publish(new ResetPasswordRequestedEvent(email, jwtToken));
 
         return jwtToken;
     }
@@ -66,7 +60,7 @@ export class ResetPasswordService {
                 );
             }
 
-            await this.userService.updatePassword(email, newPassword);
+            await this.userService.setPassword(email, newPassword);
         } catch (e) {
             if (e instanceof BadRequestException) {
                 throw e;

@@ -1,3 +1,4 @@
+import { Request as ExpressRequest } from 'express';
 import {
     Controller,
     Request,
@@ -9,15 +10,17 @@ import {
     Body
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request as ExpressRequest } from 'express';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IUser } from '@energyweb/origin-backend-core';
 
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthService } from './auth/auth.service';
-import { LoginReturnDataDTO } from './auth/login-return-data.dto';
-import { LoginDataDTO } from './auth/login-data.dto';
-import { PasswordResetDTO, RequestPasswordResetDTO } from './auth/reset-password.dto';
-import { ResetPasswordService } from './auth/reset-password.service';
+import {
+    AuthService,
+    LoginReturnDataDTO,
+    LoginDataDTO,
+    PasswordResetDTO,
+    RequestPasswordResetDTO,
+    ResetPasswordService
+} from './auth';
 
 @ApiTags('auth')
 @ApiBearerAuth('access-token')
