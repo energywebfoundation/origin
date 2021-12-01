@@ -150,14 +150,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
                 );
             } else if (transfer.direction === TransferDirection.Claim) {
                 result = await certificate.claim(
-                    {
-                        beneficiary: transfer.address,
-                        location: '',
-                        countryCode: '',
-                        periodStartDate: '',
-                        periodEndDate: '',
-                        purpose: 'GHG Accounting'
-                    },
+                    transfer.claimData,
                     BigNumber.from(transfer.amount)
                 );
             } else {
