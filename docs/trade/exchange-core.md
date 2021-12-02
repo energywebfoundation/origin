@@ -6,7 +6,6 @@ The Exchange Core package provides the [Matching Engine class](https://github.co
 When a new bid or ask is submitted, the Matching Engine will compare it to all active orders in the [order book](../user-guide-glossary.md#order-book) to see if there is a match, and if so, will execute a trade. In order to create a trade, an ask and bid have to be matched. An ask can only be matched with a bid if all the matching criteria explained above are met. See the source code for the Matching Engine class [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85).  
 
 ## Matching Engine Parameters and Initialization
-
 The Matching Engine is a [generic class](https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-classes) that takes in two parameters, **TProduct** and **TProductFilter**. The parameters are generic so that developers can provide their own implementation of Product and Product Filters based on implementation needs. 
 
 ```
@@ -238,7 +237,7 @@ Adding orders can result in the creation of a trade if the order matches with an
         return executed;
     }
 ```
- If not, the order is just added to the order book and stays there until matched or canceled. If a match is found, a trade event is created and collected by the matching engine. 
+ If not, the order is just added to the order book and stays there until matched or canceled. If a match is found, a trade event occurs. 
 
 ```
          if (!trades.isEmpty()) {
@@ -248,7 +247,7 @@ Adding orders can result in the creation of a trade if the order matches with an
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-core/src/MatchingEngine.ts#L180)
 
  ### 5. Broadcast Events
-The trade and status change events that have been collected in the matching engine trigger operations in other parts of the system using events and event listeners. 
+The trade and status change events that have been collected in the matching engine trigger operations in other parts of the system using asynchronous events and event listeners. Events and event  are facilitated by the [NestJS CQRS module](https://docs.nestjs.com/recipes/cqrs). 
 
 The [Matching Engine Service](./exchange.md#matching-engine-service) in the Exchange package [subscribes to trade execution events](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L63). 
 
@@ -260,12 +259,14 @@ When a trade occurs, the Matching Engine Service's event bus publishes a Bulk Tr
 
         const trades = tradeEvents.map<Trade>((t) => t.trade);
 
-        this.eventBus.publish(new BulkTradeExecutedEvent(trades));
+        this.publish(new BulkTradeExecutedEvent(trades));
     }
 ```
 [source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L122)
 
-[The Bulk Trade Executed Event event handler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/trade/trade-executed-event.handler.ts) is responsible for calling the the trade service, which handles the trade event by peristing the trade (shown below), which updates the bid and ask. For every trade event, the order volume of the bid and ask is updated depending on the traded volume and a trade is created. Each trade contains corresponding volume and price information and a reference to the bid and ask. Orders with filled volumes disappear from the exchange completely while partially filled remain on the order book but with an updated volume. 
+[The Bulk Trade Executed Event event handler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/trade/trade-executed-event.handler.ts) is responsible for calling the the trade service method that handles the trade event by updating the the bid and ask and persisting the new values in the Trade Repository.  
+
+For every trade event, the order volume of the bid and ask is updated depending on the traded volume and a trade is created. Each trade contains corresponding volume and price information and a reference to the bid and ask. Orders with filled volumes disappear from the exchange completely while partially filled remain on the order book but with an updated volume. 
 
 ```
     public async persist(event: List<Trade>) {
@@ -308,7 +309,7 @@ When a trade occurs, the Matching Engine Service's event bus publishes a Bulk Tr
 ```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/trade/trade.service.ts)
 
-Created trades represent ownership changes in the exchange application. However, there is no ownership change on the blockchain until a user withdraws the EACs from the exchange. At this point, the EAC is no longer in the user's Exchange Account 
+Created trades represent ownership changes in the exchange application. However, **there is no ownership change on the blockchain until a user withdraws the EACs from the exchange**. At this point, the EAC is no longer in the user's Exchange Account 
 
 Orders with volumes that are not filled or only partially filled are active, while orders that are filled or canceled are no longer active. For every status change event, the order status is updated. If an order is canceled, the order status is changed to 'canceled' and is removed from the order book.   
 

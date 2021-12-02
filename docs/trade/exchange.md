@@ -87,12 +87,11 @@ The below gives an overview the of the package architecture, however the NestJS 
 ### Account  
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/account)
 
-The Account pod provides services to manage (find, deploy, create) [Exchange Deposit Accounts](../user-guide-glossary.md#exchange-deposit-account). 
+The Account pod provides services to manage (find, deploy) [Exchange Deposit Accounts](../user-guide-glossary.md#exchange-deposit-account). 
 
-Each organization has one Exchange Deposit Account that is linked to a blockchain address (the Exchange Deposit Address). Each user must belong to one organization. Once they are a member of the organization, they are linked to the organization's exchange deposit address.
+Each organization has one Exchange Deposit Account, which is a deployed instance of the [TokenAccount smart contract](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/contracts/TokenAccount.sol). Once a user is a member of the organization, they are linked to the organization's exchange deposit address.
 
 #### Persistence
-
 The user id and their associated blockchain address are persisted in the Account repository. You can view the Account entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/account/account.entity.ts). 
 ```
  const address = await this.accountDeployerService.deployAccount();
