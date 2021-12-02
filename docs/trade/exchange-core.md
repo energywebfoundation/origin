@@ -1,9 +1,11 @@
 # Exchange Core - @energyweb/exchange-core
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-core) 
 
-The Exchange Core package provides the [Matching Engine class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts), which contains the Exchange's matching engine functionality. It processes [orders](../user-guide-glossary.md#order) (which can be [bids](../user-guide-glossary.md#bid) or [asks](../user-guide-glossary.md#ask) and [direct buys](../user-guide-glossary.md#direct-buy) from the exchange.  
+The Exchange Core package provides the [Matching Engine class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts), which contains the Exchange's matching engine functionality. It processes [orders](../user-guide-glossary.md#order) (which can be [bids](../user-guide-glossary.md#bid), [asks](../user-guide-glossary.md#ask), or [direct buys](../user-guide-glossary.md#direct-buy) from the exchange.  
 
-When a new bid or ask is submitted, the Matching Engine will compare it to all active orders in the [order book](../user-guide-glossary.md#order-book) to see if there is a match, and if so, will execute a trade. See the source code for the Matching Engine class [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85).  
+When a new bid or ask is submitted, the Matching Engine will compare it to all active orders in the [order book](../user-guide-glossary.md#order-book) to see if there is a match, and if so, will execute a trade. In order to create a trade, an ask and bid have to be matched. An ask can only be matched with a bid if all the matching criteria explained above are met. See the source code for the Matching Engine class [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85).  
+
+## Matching Engine Parameters and Initialization
 
 The Matching Engine is a [generic class](https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-classes) that takes in two parameters, **TProduct** and **TProductFilter**. The parameters are generic so that developers can provide their own implementation of Product and Product Filters based on implementation needs. 
 
@@ -12,11 +14,44 @@ export class MatchingEngine<TProduct, TProductFilter>
 ```
 [source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L24)
 
-## Product
+### Product
 TProduct represents the product being traded - in the case of the Origin reference implementation, an [Energy Attribute Certificate (EAC)](../user-guide-glossary.md#energy-attribute-certificate) - so the implemented product type contains EAC attributes such as device type, location, generation time, grid operator etc. The interface can change according to implementation requirements. 
 
-## Product Filter
+### Product Filter
 TProductFilter represents the product filters in a bid or ask. Products can be filtered by, for example, a specific fuel type or a specific region where the energy represented by an EAC was produced. These filters can change according to implememntation requirements. 
+
+### Price Strategy
+The Matching Engine is instantiated with a price strategy:
+   constructor(
+        private readonly priceStrategy: IPriceStrategy,
+        private logger: LoggerService = new Logger(MatchingEngine.name)
+    ) 
+[source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-core/src/MatchingEngine.ts#L55)  
+
+The price strategy is [fetched from the config file's EXCHANGE_PRICE_STRATEGY key in the Matching Engine service](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L48). **It must be set, otherwise an error will be thrown.** 
+
+Both price strategy classes have a pickPrice method that allows the Matching Engine to determine the trade price:
+
+#### Ask Price Strategy
+Always use the [ask](../user-guide-glossary.md#ask) price:
+
+
+export class AskPriceStrategy implements IPriceStrategy {
+    pickPrice(ask: IOrder, bid: IOrder): number {
+        return ask.price;
+    }
+}
+[source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/strategy/AskPriceStrategy.ts)
+
+#### Order Creation TimePick Strategy
+If the [bid](../user-guide-glossary.md#ask) price was created first, use the bid price. Otherwise, use the ask price: 
+
+export class OrderCreationTimePickStrategy implements IPriceStrategy {
+    pickPrice(ask: IOrder, bid: IOrder): number {
+        return ask.createdAt > bid.createdAt ? bid.price : ask.price;
+    }
+}
+[source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/strategy/OrderCreationTimePickStrategy.ts)
 
 ## Order Book
 The Matching Engine [creates the order book](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85), which contains all of the current bids and asks: 
@@ -146,7 +181,7 @@ When a new order is added, it is inserted into the order book on either the ask 
 [source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange-core/src/MatchingEngine.ts#L116)
 
 ### 3. Check for Match
-The Matching Engine checks if the new order matches with any existing orders in the order book. The matching works by comparing each existing ask and bid in the order book to see if they match based on the established matching criteria. You can read more detail about the matching criteria in the reference implementation [here](./matching-criteria):
+The Matching Engine checks if the new order matches with any existing orders in the order book. The matching works by comparing each existing ask and bid in the order book to see if they match based on the established matching criteria. You can read more detail about the matching criteria in the reference implementation [here](./matching-criteria). You can read more detail about Exchange scenarios and logic [here](https://energyweb.atlassian.net/wiki/spaces/OD/pages/1138360384/Exchange+scenarios).
 
 ```
 private matches(
@@ -172,7 +207,7 @@ private matches(
 [source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange-core/src/MatchingEngine.ts#L319) 
 
 ### 4. Handle Trade Scenario
-Adding orders can result in the creation of a trade if the order matches with another one on the exchange. //ADD IN WHAT HAPPENS IF TRADE
+Adding orders can result in the creation of a trade if the order matches with another one on the exchange. The bid and the ask's volumes are updated accordng to what amount was filled by the trade.
 
 ```
     private generateTrades(
@@ -205,12 +240,19 @@ Adding orders can result in the creation of a trade if the order matches with an
 ```
  If not, the order is just added to the order book and stays there until matched or canceled. If a match is found, a trade event is created and collected by the matching engine. 
 
+```
+         if (!trades.isEmpty()) {
+            this.trades.next(trades.map((trade) => new TradeExecutedEvent(trade)));
+        }
+```
+[source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-core/src/MatchingEngine.ts#L180)
+
  ### 5. Broadcast Events
 The trade and status change events that have been collected in the matching engine trigger operations in other parts of the system using events and event listeners. 
 
 The [Matching Engine Service](./exchange.md#matching-engine-service) in the Exchange package [subscribes to trade execution events](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L63). 
 
-The Matching Engine Service's event bus publishes a Bulk Trade Executed event:
+When a trade occurs, the Matching Engine Service's event bus publishes a Bulk Trade Executed event:
 
 ```
     private async onTradeExecutedEvent(tradeEvents: List<TradeExecutedEvent>) {
