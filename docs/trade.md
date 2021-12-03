@@ -31,7 +31,7 @@ See the full documentation for this package [here](./trade/exchange.md).
 ### 3. [Exchange Token Account - @energyweb/exchange-token-account](./trade/exchange-token-account.md)
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-token-account)  
 
-This package **provides the smart contract wallet for Exchange Deposit accounts using [the ERC-1888 Certificate standard](https://github.com/ethereum/EIPs/issues/1888)**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain))
+This package **provides the smart contract for Exchange Deposit accounts using [the ERC-1888 Certificate standard](https://github.com/ethereum/EIPs/issues/1888)**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain))
 
 See the full documentation for this package [here](./trade/exchange-token-account.md). 
 
