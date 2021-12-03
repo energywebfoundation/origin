@@ -111,14 +111,14 @@ Certificate requests are persisted in the Certification Request repository. You 
 ## Certificate Persistence  
 Certificate data is persisted in two locations:  
 
-1. On the blockchain in the form of an ERC-1888 token. Read more about this in the Issuer documentation [here](../../traceability.md#energy-attribute-certificates-on-the-blockchain).
+1. On the blockchain in the form of an [ERC-1888 Transferable Certificate](https://github.com/ethereum/EIPs/issues/1888). Read more about this in the Issuer documentation [here](../../traceability.md#energy-attribute-certificates-on-the-blockchain).
 2. In a relational database. Origin’s reference implementation uses [PostgreSQL](https://www.postgresql.org/), however other registries can be used according to implementation needs. 
 
 The Issuer API uses a database for certificate data because it is more performant than querying the blockchain each time data is needed.  
 
 When a certificate is requested, issued, or updated (i.e. if it has been transferred, claimed or revoked), this is reflected in the certificate’s record in the database as well as on the blockchain. The Issuer API makes updates to the Certificates on the blockchain using the [Blockchain facade](../contracts/Issuer.md#blockchain-facade) methods, and queries the database repository using a connection through [TypeORM](https://typeorm.io/#/). 
 
-Consider the code snippet below from the CreateCertificateRequestHandler class. The certificate is first created on the blockchain using the CertificationRequestFacade, and then created in the database using the repository service. You can see the source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/handlers/create-certification-request.handler.ts). 
+Consider the code snippet below from the CreateCertificateRequestHandler class. The certificate is first created on the blockchain using the [CertificationRequest facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/CertificationRequest.ts), and then created in the database using the repository service. You can see the source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/handlers/create-certification-request.handler.ts). 
 
 ```
 async execute({
