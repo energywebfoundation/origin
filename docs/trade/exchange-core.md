@@ -21,10 +21,12 @@ TProductFilter represents the product filters in a bid or ask. Products can be f
 
 ### Price Strategy
 The Matching Engine is instantiated with a price strategy:
+```
    constructor(
         private readonly priceStrategy: IPriceStrategy,
         private logger: LoggerService = new Logger(MatchingEngine.name)
     ) 
+```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-core/src/MatchingEngine.ts#L55)  
 
 The price strategy is [fetched from the config file's EXCHANGE_PRICE_STRATEGY key in the Matching Engine service](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L48). **It must be set, otherwise an error will be thrown.** 
@@ -33,23 +35,24 @@ Both price strategy classes have a pickPrice method that allows the Matching Eng
 
 #### Ask Price Strategy
 Always use the [ask](../user-guide-glossary.md#ask) price:
-
-
+```
 export class AskPriceStrategy implements IPriceStrategy {
     pickPrice(ask: IOrder, bid: IOrder): number {
         return ask.price;
     }
 }
+```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/strategy/AskPriceStrategy.ts)
 
 #### Order Creation TimePick Strategy
 If the [bid](../user-guide-glossary.md#ask) price was created first, use the bid price. Otherwise, use the ask price: 
-
+```
 export class OrderCreationTimePickStrategy implements IPriceStrategy {
     pickPrice(ask: IOrder, bid: IOrder): number {
         return ask.createdAt > bid.createdAt ? bid.price : ask.price;
     }
 }
+```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/strategy/OrderCreationTimePickStrategy.ts)
 
 ## Order Book
@@ -75,7 +78,7 @@ public orderBook(): OrderBook<TProduct, TProductFilter> {
 ### 1. Submit Order
 The [Exchange module's matching engine service submits orders](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L71) to the Matching Egnine. Orders that are submitted to the Matching Engine order book must be of type [IMatchableOrder](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/IMatchableOrder.ts). The [OrderMapperService] in the Exchange package (https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/test/order/order-mapper.service.ts) maps orders to instances of the [Order class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/Order.ts), which implements the IMatchableOrder interface.  
 
-Once mapped, the [SubmitOrderHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/matching-engine/handlers/submit-order.handler.ts) posts the Order to the Matching Engine. Once submitted to the Matching Engine, Orders are placed in the Pending Actions queue:
+After mapping, the [SubmitOrderHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/matching-engine/handlers/submit-order.handler.ts) posts the Order to the Matching Engine. Once submitted to the Matching Engine, Orders are placed in the Pending Actions queue:
 
 ```
    public submitOrder(order: IMatchableOrder<TProduct, TProductFilter>): void {
@@ -104,7 +107,7 @@ private pendingActions = List<OrderBookAction<TProduct, TProductFilter>>();
 ```
 [source]
 
- The action is of type [OrderBookAction](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange-core/src/MatchingEngine.ts#L32), and it consists of the Action Type (in the below code snippet, "ActionKind") and the Order itself. The Action Type can be 'add order', 'add direct buy', or 'cancel order'. With every tick, all queued actions are executed one after the other:
+ The action is of type [OrderBookAction](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange-core/src/MatchingEngine.ts#L32), and it consists of the Action Type (in the below code snippet, "ActionKind") and the Order itself. The Action Type can be 'add order', 'add direct buy', or 'cancel order', each of which are handled differently by the Matching Engine. With every tick, all queued actions are executed one after the other:
 
 ```
 public tick(): void {
@@ -165,8 +168,8 @@ private trigger() {
 ```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts)  
 
-### 2. Add Order
-When a new order is added, it is inserted into the order book on either the ask or bid side: 
+### 2. Add/Insert Order
+When a new order (not a direct buy) is added, it is inserted into the order book on either the ask or bid side: 
 
 ```
   private insertOrder(order: IMatchableOrder<TProduct, TProductFilter>) {
@@ -378,21 +381,3 @@ The main action that results in a status change event is canceling an order. An 
         };
     }
 ```
-
-
-
-<!-- The order book is re-ordered by price every time that a new order (that is not a direct buy) is posted to the [matching engine service](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/matching-engine):
- ```
-    public async submit(order: Order) {
-        this.logger.log(`Submitting order ${order.id}`);
-
-        if (order.type === OrderType.Limit) {
-            const mappedOrder = await this.orderMapperService.map(order);
-
-            this.matchingEngine.submitOrder(mappedOrder);
-        } else if (order.type === OrderType.Direct) {
-            this.matchingEngine.submitDirectBuy(this.toDirectBuy(order));
-        }
-}
-```
-[source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L71)   -->

@@ -38,7 +38,7 @@ See the full documentation for this package [here](./trade/exchange-token-accoun
 ### 4. [Exchange IO ERC1888 - @energyweb/exchange-io-erc1888](./trade/exchange-io-erc1888.md)  
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888)  
 
-By design, The Trade SDK allows different type of assets to be used for trading. @energyweb/exchange-io-erc1888 **provides the implementation for the [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) monitoring deposits into the Exchage Deposit account, and executing withdrawals and transfers**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain)).  
+By design, The Trade SDK allows different type of assets to be used for trading. @energyweb/exchange-io-erc1888 **monitors for deposits of [ERC-1888 Certificates](https://github.com/ethereum/EIPs/issues/1888) onto the Exchange, and executes withdrawals and transfers**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain)).  
 
 See the full documentation for this package [here](./trade/exchange-io-erc1888.md).
 

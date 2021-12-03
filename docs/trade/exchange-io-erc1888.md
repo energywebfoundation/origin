@@ -2,7 +2,7 @@
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888) 
 
 
-@energyweb/exchange-io-erc1888 provides the implementation for [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) deposits onto and withdrawals from the Energy Web blockchain. You can read more about the ERC-1888 in the context of Origin [here](../traceability.md#energy-attribute-certificates-on-the-blockchain).
+@energyweb/exchange-io-erc1888 monitors for deposits of [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) volumes onto the Exchange (into the Exchange's hot wallet), and executes withdrawals and transfers. You can read more about the ERC-1888 in the context of Origin [here](../traceability.md#energy-attribute-certificates-on-the-blockchain).
 
 This package is a NestJS application that uses [ethers.js](https://docs.ethers.io/v5/) to interact with the smart contracts on blockchain. It is tightly coupled with the [Exchange module](./exchange.md). 
 
@@ -13,8 +13,7 @@ The package has two core NestJS modules:
 ## deposit-watcher
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/deposit-watcher)
 
-The [deposit-watcher service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts) sets up a listener for deposits and emits events to the DepositDiscoveredEventHandler when they occur. 
-
+The [deposit-watcher service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts) sets up a listener for transfers (deposits) of [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) from the Registry to the Exchange's hot wallet, and emits events to the DepositDiscoveredEventHandler when they occur. 
 
 When the deposit-watcher module initializes, The service does the following: 
 
@@ -32,14 +31,25 @@ See the ethers.js documentation for the Interface class [here](https://docs.ethe
 this.provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
 ```
 [source](https://github.com/energywebfoundation/origin/blob/a1c3332ec263b26cbd1b89768c03328658c18226/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts#L56)
-3. Defines the "topic" or event that the service needs to listen for:
+
+3. Instantiates the instance of the Registry from which we are monitoring events:
+```
+  this.registry = new Contract(
+            this.registryAddress,
+            Contracts.RegistryExtendedJSON.abi,
+            this.provider
+        );
+```
+[source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts#L58)
+
+4. Defines the "topic" or event that the service needs to listen for:
 ```
         const topics = [
             this.tokenInterface.getEventTopic(this.tokenInterface.getEvent('TransferSingle'))
         ];
 ```
 
-4. Provides an event listener. Each time the specified event occurs, the processEvent method is called with the event:
+5. Provides an event listener. Each time the specified event occurs, the processEvent method is called with the event:
 
 ```      
 this.provider.on(
@@ -56,15 +66,16 @@ The [processEvent method](https://github.com/energywebfoundation/origin/blob/a1c
 ```
 const receipt = await this.provider.waitForTransaction(transactionHash);
 ```
+[source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts#L112)
 
-The receipt is used to create the [CreateDeposit Data Transfer Object (DTO)](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/dto/create-deposit.dto.ts). Once created, the event bus publishes a DepositDiscoveredEvent with the DTO: 
+The event log and the receipt are used to create the [CreateDeposit Data Transfer Object (DTO)](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/dto/create-deposit.dto.ts). Once created, the event bus publishes a DepositDiscoveredEvent with the DTO: 
 
 ```
 this.eventBus.publish(new DepositDiscoveredEvent(deposit));
 ```
 [source](https://github.com/energywebfoundation/origin/blob/a1c3332ec263b26cbd1b89768c03328658c18226/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts#L128)
 
-[The event's handler in the Exchange package](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/handlers/deposit-discovered-event.handler.ts) stores the deposit in the Deposit Repostory and posts the deposited certificate for sale on the exchange. 
+[The event's handler in the Exchange package](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/handlers/deposit-discovered-event.handler.ts) stores the deposit in the Deposit Repository and posts the deposited certificate for sale as an [ask](../user-guide-glossary.md#ask) on the exchange. 
 
 ## withdrawal-processor
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/withdrawal-processor) 
@@ -91,10 +102,9 @@ The transfer request is piped through the transfer queue, which is facilitated b
 
 
 Depending on the transfer's direction, the service uses the methods from the [Certificate facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/Certificate.ts) to:
-- Withdrawal a certificate from the exchange (from the organization's exchange deposit account) to the organization's Blockchain Acount Address
+- Withdrawal a certificate from the exchange (i.e. from the exchange's hot wallet address) to the organization's Blockchain Acount Address
 - Transfer a certificate to another blockchain address
 - Claim (retire) a certificate
-
 ```
         try {
             const certificate = await new Certificate(
