@@ -1,7 +1,6 @@
 # @energyweb/exchange-io-erc1888
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888) 
 
-
 @energyweb/exchange-io-erc1888 monitors for deposits of [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) volumes onto the Exchange (into the Exchange's hot wallet), and executes withdrawals and transfers. You can read more about the ERC-1888 in the context of Origin [here](../traceability.md#energy-attribute-certificates-on-the-blockchain).
 
 This package is a NestJS application that uses [ethers.js](https://docs.ethers.io/v5/) to interact with the smart contracts on blockchain. It is tightly coupled with the [Exchange module](./exchange.md). 
@@ -81,9 +80,9 @@ this.eventBus.publish(new DepositDiscoveredEvent(deposit));
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/withdrawal-processor) 
 
 ### Withdrawing EACs from the Exchange
-As long as EACs are not currently being traded between users (i.e. are in an active ask) on the Exchange, they can be withdrawn from the Exchange to the user's Blockchain account. Users can choose to only withdraw parts of the EAC volume while keeping a part of the volume on the exchange. Once the certificates are withdrawn from the Exchange, the asset amounts in the user’s Exchange account are reduced accordingly.  
+As long as EACs are not currently in an active ask (i.e. posted for sale) on the Exchange, they can be withdrawn from the Exchange to the user's Blockchain account. Users can choose to only withdraw parts of the EAC volume while keeping a part of the volume on the exchange. Once the certificates are withdrawn from the Exchange, the asset amounts in the user’s Exchange account are reduced accordingly.  
 
-Any EAC volumes that are in an active ask are locked so that they can be sent to a buyer once a match is made. A user can cancel an ask, and then withdraw those volumes from the exchange, but the ask must be cancelled first. 
+Any EAC volumes that are in an active ask (posted for sale) are locked so that they can be sent to a buyer once a match is made. A user can cancel an ask, and *then* withdraw those volumes from the exchange, but the ask must be cancelled first. 
 
 Organizations can define any blockchain address to release the tokens to their withdrawal requests. In the user interface, this is known as the [Blockchain Account Address](../user-guide-reg-onboarding.md#organization-blockchain-account-address). If successful, the EAC tokens are transferred from the Exchange's hot wallet to this blockchain address. The EAC is now no longer in the custody of the Exchange operator but is owned by the user on-chain. The same EACs now would have to be re-deposited to be traded on the Exchange again.
 
@@ -146,7 +145,7 @@ Depending on the transfer's direction, the service uses the methods from the [Ce
             this.logger.error(`[Transfer ${id}] Error trace: ${JSON.stringify(error)}`);
         }
 ```
-[source]((https://github.com/energywebfoundation/origin/blob/a1c3332ec263b26cbd1b89768c03328658c18226/packages/trade/exchange-io-erc1888/src/withdrawal-processor/withdrawal-processor.service.ts#L138))
+[source](https://github.com/energywebfoundation/origin/blob/a1c3332ec263b26cbd1b89768c03328658c18226/packages/trade/exchange-io-erc1888/src/withdrawal-processor/withdrawal-processor.service.ts#L138)
 
 
 

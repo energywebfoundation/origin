@@ -180,7 +180,7 @@ User Guides on order matching:
 ### Order
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/order)  
 
-‘Orders’ can be either a sell offer (ask) or a buy offer (bid). Read more about orders in the glossary here(link). The Order pod provides services that manage:  
+‘Orders’ can be either a sell offer (ask) or a buy offer (bid). Read more about orders in the glossary [here](../user-guide-glossary.md#order). The Order pod provides services that manage:  
 
 + Creating [bids](../user-guide-glossary.md#bid)
 + Creating [asks](../user-guide-glossary.md#ask)
