@@ -17,7 +17,7 @@ This functionality includes:
 + Persisting concerns for the above functionalities 
 
 ## Persistence  
-The Trade SDK uses a relational database for Persistence with [TypeORM](https://typeorm.io/#/) as a databse integration library. The application creates a repository for each entity.Entities are defined in the entity.ts files in each pod, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities).)
+The Trade SDK uses a relational database for Persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the entity.ts files in each pod, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)).
 
 ```
 @Entity({ name: `${DB_TABLE_PREFIX}_account` })
@@ -69,7 +69,20 @@ export class AccountService {
 You can read more about dependency injection in NestJS [here](https://docs.nestjs.com/providers#dependency-injection). You can read more about using the repository design pattern with TypeORM in NestJS applications [here](https://docs.nestjs.com/recipes/sql-typeorm). 
 
 ## Exchange Architecture
-This NestJS applicaton is broken down into 'pods' that manage different features of the Exchange (i.e. orders, demands, accounts, transfers etc). In general, each pod has:  
+This NestJS applicaton is broken down into NestJS modules or 'pods' that manage different features/functionalities of the Exchange: 
+- [Account](#account)
+- [Asset](#asset)
+- [Bundle](#bundle)
+- [Demand](#demand)
+- [Matching Engine Service](#matching-engine-service)
+- [Order](#order)
+- [Order Book](#order-book)
+- [Post-for-sale](#post-for-sale)
+- [Supply](#supply)
+- [Trade](#trade)
+- [Transfer](#transfer)
+
+In general, each 'pod' or NestJS module has:  
   + A controller that manages requests and responses to the client
   + An entity file that maps an entity to a database repository
   + A service file that provides methods to fetch and transform data

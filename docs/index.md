@@ -40,7 +40,7 @@ In addition to minting new EAC’s, the Traceability SDK also ensures that the c
 
 The Trade SDK is used to facilitate trading between buyers and sellers of EACs.   
 
-This SDK is built on the basis of the order book system, where sellers post [asks](./user-guide-glossary.md#ask) and buyers post [bids](./user-guide-glossary.md#bid). When there is a match based on EAC criteria and price, the trade is executed.
+This SDK is built on the basis of the order book system, where sellers post [asks](./user-guide-glossary.md#ask) and buyers post [bids](./user-guide-glossary.md#bid). When there is a match based on EAC criteria and price, the trade is executed. 
 
 ### UI Module
 

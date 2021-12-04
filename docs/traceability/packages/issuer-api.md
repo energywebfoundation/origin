@@ -1,19 +1,39 @@
 # Issuer API
 [**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api)
 
-The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling Certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about certificate operations [here](../../traceability.md). 
+The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling all Certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about certificate operations [here](../../traceability.md). 
 
 The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:
 - [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
 - [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
-- [CQRS module](https://docs.nestjs.com/recipes/cqrs)
+- [CQRS (Command and Query Responsibility Segregation)](https://docs.nestjs.com/recipes/cqrs)
 - [Modules](https://docs.nestjs.com/modules)
 - [NestJS TypeORM Integration](https://docs.nestjs.com/techniques/database)
 - [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
 ## Issuer API Architecture
 
-The Issuer API is broken down into [three pods](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods):   
+The Issuer API package is broken down into three NestJS modules or [three 'pods'](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods):  
+
++ [Blockchain])(#blockchain)
++ [Certificate](#certificate)
++ [Certification-Request](#certification-request)  
+
+In general, each 'pod' or NestJS module has:  
+  + A controller that manages requests and responses to the client
+  + An entity file that maps an entity to a database repository
+  + A service file that provides methods to fetch and transform data
+  + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
+  + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application
+
+The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture and [TypeORM](https://typeorm.io/#/) integration that may help to understand the elements of this application:
+- [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
+- [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
+- [CQRS module](https://docs.nestjs.com/recipes/cqrs)
+- [Modules](https://docs.nestjs.com/modules)
+- [NestJS TypeORM Integration](https://docs.nestjs.com/techniques/database)
+- [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
+  
 
 ### blockchain
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/blockchain)
