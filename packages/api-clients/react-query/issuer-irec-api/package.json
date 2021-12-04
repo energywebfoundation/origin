@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "axios": "0.24.0",
-        "react-query": "3.33.7"
+        "react-query": "3.34.0"
     },
     "devDependencies": {
         "@energyweb/issuer-irec-api": "0.3.0",

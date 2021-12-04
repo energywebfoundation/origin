@@ -31,7 +31,7 @@
     "lodash": "4.17.21",
     "react-beautiful-dnd": "13.1.0",
     "react-dropzone": "11.4.2",
-    "react-hook-form": "7.20.4",
+    "react-hook-form": "7.20.5",
     "react-toastify": "8.1.0",
     "yup": "0.32.11",
     "@ethersproject/bignumber": "5.3.0",
