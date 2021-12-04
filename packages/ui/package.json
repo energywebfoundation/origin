@@ -66,7 +66,7 @@
     "@ethersproject/bignumber": "5.3.0",
     "@ethersproject/address": "5.3.0",
     "@ethersproject/units": "5.3.0",
-    "@hookform/resolvers": "2.8.3",
+    "@hookform/resolvers": "2.8.4",
     "@mui/material": "5.2.1",
     "@mui/icons-material": "5.2.0",
     "@mui/lab": "5.0.0-alpha.57",
