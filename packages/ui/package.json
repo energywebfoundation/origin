@@ -75,7 +75,7 @@
     "axios": "0.24.0",
     "chart.js": "3.6.1",
     "clsx": "1.1.1",
-    "core-js": "3.19.1",
+    "core-js": "3.19.2",
     "dayjs": "1.10.7",
     "emotion-theming": "11.0.0",
     "history": "5.1.0",
