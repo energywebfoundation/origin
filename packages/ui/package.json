@@ -73,7 +73,7 @@
     "@mui/styles": "5.2.1",
     "@react-google-maps/api": "2.7.0",
     "axios": "0.24.0",
-    "chart.js": "3.6.0",
+    "chart.js": "3.6.1",
     "clsx": "1.1.1",
     "core-js": "3.19.1",
     "dayjs": "1.10.7",
