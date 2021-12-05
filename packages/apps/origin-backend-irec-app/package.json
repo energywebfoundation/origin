@@ -61,7 +61,7 @@
         "class-validator": "0.13.2",
         "cors": "2.8.5",
         "mandrill-nodemailer-transport": "1.2.1",
-        "swagger-ui-express": "4.1.6",
+        "swagger-ui-express": "4.2.0",
         "typeorm": "0.2.41"
     },
     "devDependencies": {

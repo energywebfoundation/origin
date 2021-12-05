@@ -64,7 +64,7 @@
         "polly-js": "1.8.2",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.4.0",
-        "swagger-ui-express": "4.1.6",
+        "swagger-ui-express": "4.2.0",
         "typeorm": "0.2.41"
     },
     "devDependencies": {
