@@ -12,7 +12,7 @@ The Trade SDK is responsible for enabling an order book style exchange for [Ener
 </div>
 
 ## Trade SDK Packages  
-The Trade SDK has four primary packages:
+The Trade SDK has four core packages:
 
 ### 1. [Exchange Core - @energyweb/exchange-core](./trade/exchange-core.md)
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-core) 
@@ -38,7 +38,7 @@ See the full documentation for this package [here](./trade/exchange-token-accoun
 ### 4. [Exchange IO ERC1888 - @energyweb/exchange-io-erc1888](./trade/exchange-io-erc1888.md)  
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888)  
 
-By design, The Trade SDK allows different type of assets to be used for trading. @energyweb/exchange-io-erc1888 **monitors for deposits of [ERC-1888 Certificates](https://github.com/ethereum/EIPs/issues/1888) onto the Exchange, and executes withdrawals and transfers**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain)).  
+By design, The Trade SDK allows different type of assets to be used for trading. The @energyweb/exchange-io-erc1888 package **monitors specifically for deposits of [ERC-1888 Certificates](https://github.com/ethereum/EIPs/issues/1888) onto the Exchange, and executes withdrawals and transfers**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain)).  
 
 See the full documentation for this package [here](./trade/exchange-io-erc1888.md).
 
