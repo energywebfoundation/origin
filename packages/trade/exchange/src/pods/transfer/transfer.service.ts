@@ -38,7 +38,7 @@ export class TransferService {
     ) {}
 
     public async getAll(userId: string, direction?: TransferDirection) {
-        return this.repository.find({ where: { userId, direction } });
+        return this.repository.find({ where: { userId, ...(direction ? { direction } : {}) } });
     }
 
     public async getAllCompleted(userId: string) {

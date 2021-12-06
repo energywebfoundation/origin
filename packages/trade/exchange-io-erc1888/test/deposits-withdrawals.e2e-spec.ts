@@ -330,6 +330,16 @@ describe('Deposits using deployed registry', () => {
 
         const [claimDetails] = await certificate.getClaimedData();
         expect(claimDetails.claimData).to.deep.equal(claim.claimData);
+
+        const { body: transfers }: { body: Transfer[] } = await request(app.getHttpServer())
+            .get('/transfer/all/claimed')
+            .expect(HttpStatus.OK);
+
+        const [claimed] = transfers;
+        console.log(transfers);
+        expect(transfers.length).to.be.gte(1);
+        expect(claimed.userId).equals(user1Id);
+        expect(claimed.direction).equals(TransferDirection.Claim);
     });
 
     it('should batch claim from the exchange', async () => {
