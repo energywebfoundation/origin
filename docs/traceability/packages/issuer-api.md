@@ -81,7 +81,7 @@ export interface IBlockchainProperties {
 ```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/BlockchainProperties.ts)
 
-The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts) contains a wrap method that provides a new instance of the Registry and Issuer contracts with the current signer:  
+The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts) contains a wrap method that provides a new instance of the Registry and Issuer contracts with the current [Signer](https://docs.ethers.io/v5/api/signer/):  
 
 ```
     wrap(signerOrPrivateKey?: Signer | string): IBlockchainProperties {
