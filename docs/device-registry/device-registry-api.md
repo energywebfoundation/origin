@@ -19,16 +19,8 @@ The Device Registry API exports [one module](https://github.com/energywebfoundat
   + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
   + A [module](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.module.ts) class that is used by NestJS to structure the application  
 
-  The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture and [TypeORM](https://typeorm.io/#/) integration that may help to understand the elements of this application:
-- [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
-- [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
-- [CQRS module](https://docs.nestjs.com/recipes/cqrs)
-- [Modules](https://docs.nestjs.com/modules)
-- [NestJS TypeORM Integration](https://docs.nestjs.com/techniques/database)
-- [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)  
-
 ### Service Endpoints
-The [services file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.service.ts ) provides public methods to fetch and create new devices. 
+The [services file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.service.ts ) provides public methods to fetch and create new devices:
 
 ```
     public async find(options?: FindManyOptions<OriginDevice>): Promise<OriginDevice[]> {
