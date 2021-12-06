@@ -46,20 +46,15 @@ This SDK is built on the basis of the order book system, where sellers post [ask
 
 See documentation for the Trade SDK [here](./trade.md). 
 
-### UI Module
 
-The UI module is the user interface that connects all of the underlying SDKs listed above, and makes them accessible to the end-user as an online EAC marketplace.  
-
-It serves as a demonstration of how easy it is to build an open, transparent, and regulatory compliant market for EACs around the world.  
-
-See the source code for the for the UI module [here](https://github.com/energywebfoundation/origin/tree/master/packages/ui). 
 
 ## Implementing Origin SDKs
-The Origin SDKs are developed to be agnostic of registry and certificate standard implementation. Depending on implementation needs, users can implement one or all of the SDKs. The [Origin Backend package](#origin-backend) provides authorization and user/organization management, however users can integrate their implementation. 
+The Origin SDKs are developed to be agnostic of registry and certificate standard implementation. Depending on implementation needs, users can implement one or all of the SDKs. The [Origin Backend package](#origin-backend) provides authorization and user/organization management, however users can integrate their implementation. The User Interface module provides a front-end application infrastructure for the marketplace. 
 
 ## [Origin Backend](./backend.md)
 The Origin Backend is a NestJS application that provides services to manage authorization and user and organization management. The Origin Backend application can be used in conjunction with one, several or all of the [Origin SDKs](#origin-sdks) to provide integrated user management and authorization. 
 
 See documentation for the Origin Backend application [here](./backend.md). 
+
 
 
