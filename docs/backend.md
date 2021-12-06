@@ -12,7 +12,6 @@ The below gives an overview the of the package architecture, however the NestJS 
 - [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
 ## Origin Backend Architecture
-
 The Origin Backend package is broken down into seven NestJS modules or ['pods'](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods):  
 
 + [admin](#admin)

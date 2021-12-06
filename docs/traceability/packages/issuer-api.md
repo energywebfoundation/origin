@@ -12,7 +12,6 @@ The below gives an overview the of the package architecture, however the NestJS 
 - [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
 ## Issuer API Architecture
-
 The Issuer API package is broken down into three NestJS modules or ['pods'](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods):  
 
 + [blockchain])(#blockchain)

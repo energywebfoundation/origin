@@ -1,7 +1,6 @@
 # Glossary of Terms
 
 ## Ask
-
 With **asks**, sellers offer to sell a specific set of [Energy Attribute Certificates (EACs)](#energy-attribute-certificate) with a specific volume for a specific price. Users can define the volume and price when creating the ask. Asks are tied directly to the EACs that the seller owns and that are in the seller’s Exchange Inbox. Every EAC in the system is represented by the “asset” data structure that holds the EAC information, such as device ID and generation time. An ask is tied to one specific asset which means that it can only contain certificates from one device and a specific generation time frame. Users can only create asks for asset volumes that are currently in the active part of their Exchange Inbox. The one-to-one connection between ask and asset ensures that sellers can only offer EACs that they actually own and have locked on the Exchange.  
 
 By creating an ask, the specified EACs are offered for sale and the order becomes visible on the Exchange(./exchange-guides/view-market.md). The corresponding asset volumes are moved to the locked part of the Exchange Inbox. Locking the asset volume ensures that the EACs cannot be withdrawn from the exchange or offered for sale in a second ask. As a result, all buyers on the Exchange can be sure on a technical level that asks are backed by the correct amount of EACs. 
@@ -28,7 +27,6 @@ Assets represent [Energy Attribute Certificates](#energy-attribute-certificate) 
 Storing EAC token data this way allows efficient information handling and trading on the Exchange. 
 
 ## Bid  
-
 **Bids** are the buy offers that are posted by buyers to express their desire to buy [Energy Attribute Certificates (EACs)](#energy-attribute-certificate) on the Exchange. Unlike [asks](#ask), bids are not tied to specific EACs. Bids are entirely defined by the buyer’s needs, which vary in terms of their respective proof of impact needs. Bids include a maximum price, a volume, and a requirement specification that we call “product”. The maximum price is the highest price that a buyer is willing to pay per EAC. The volume defines the amount of EACs (i.e., the volume of MWh) that a buyer wants to buy.     
 
 The buyer can define the characteristics that the underlying EAC of an ask has to fulfill in order to be matched. In our reference implementation, the product allows the buyer to define the device type, such as solar or wind, device vintage (i.e., the installation date), the location or grid region, and the MWh generation time frame. But it would be possible to expand this to many other characteristics to meet buyers’ needs. **All of these product specifications are entirely optional**, and so the buyer can simply choose to specify “any” to express that a given characteristic is not important to increase the number of possible product matches.   
@@ -67,14 +65,14 @@ In the most extreme case, it is hoped to at least receive a very small price per
 
 Sellers can also use bundles for targeted marketing of their EACs. Bundles allow sellers to sell a story that can result in a price premium. They could, for example, bundle all EACs from one region and offer this to buyers from that region. Or they could bundle EACs from one technology but multiple generation devices, for example, multiple different solar farms and market this to buyers that are especially interested in this technology. The goal here is also to increase the price per certificate by making the packaged offering more attractive.  
 
-d## Direct Buy 
+## Direct Buy 
 Instead of creating a [bid](#bid), buyers can also browse the exchange and directly buy the [Energy Attribute Certificates](#energy-attribute-certificate) offered in an [ask](#ask). Users are expected to make use of this feature if they see an ask that exactly meets their requirements or after being notified about an ask by a configured notification.  
 
 Direct buying simplifies the process of buying an EAC in the case that there is already a fitting ask on the market. The buyer does not have to create a bid and ensure it is matched by configuring it in so that it exactly matches the ask. Direct buy allows users to purchase EACs from an existing ask in a simple one-click solution.
 
 Even though it represents a special case, the underlying logic of direct buys follows the bid model. A direct buy triggers the creation of a bid that exactly matches the specifications of the ask. Such a bid does not differ from regular bids in any way and is matched through the exact same matching system. Every bid that is created through a direct buy holds information about the direct buy request for clear traceability. 
-## Energy Attribute Certificate  
 
+## Energy Attribute Certificate  
 Energy Attribute Certificates (EACs) describe global instruments which certify that a specific unit (historically 1 MWh, but sometimes 1 KWh) of electricity was produced from a renewable source.  
 
 Globally there are various EAC systems to claim the use of renewable or low-carbon energy. Some well-known standards include Guarantees of Origin (EU), I-RECs (global), and RECs (US/Canada).  
@@ -85,12 +83,11 @@ Globally there are various EAC systems to claim the use of renewable or low-carb
 - Unbundled (products): contracts that sell only energy OR EACs, not both together  
 
 ## Exchange Deposit Account  
-
 [Energy Attribute Certificates (EACs)](#energy-attribute-certificate) are represented as blockchain tokens, so they must be transferred on to the blockchain in order to be deposited to the Exchange. The Origin Exchange creates a unique smart contract wallet for each organization that wants to trade on the exchange, which is the Exchange Deposit account. This wallet acts as a deposit account on the exchange. Every organization is tied to exactly one account to allow for easy accounting within the Origin Exchange. 
 
-As common practice for blockchain exchanges, this deposit account is tied to the organization but owned by the Exchange operator on-chain. **This account is auto-generated by the platform** (see [account deployer service](https://github.com/energywebfoundation/origin/blob/a1c3332ec263b26cbd1b89768c03328658c18226/packages/trade/exchange/src/pods/account-deployer/account-deployer.service.ts#L23))). By depositing EACs to the Exchange, users put them in the custody of this operator. It's important to note that certificates are not stored in the Exchange Deposit account. The Exchange Deposit account is a smart contract that forwards certificates to the Exchange's [hot wallet](#hot-wallet) address. This wallet account stores all EACs that are currently being active on the exchange. All operations that users can do with the on-chain EACs, such as transferring and claiming, are restricted this way. This ensures that all operations that are performed on the Origin Exchange are valid. 
+As common practice for blockchain exchanges, this deposit account is tied to the organization but owned by the Exchange operator on-chain. **This account is auto-generated by the platform** (see [account deployer service](https://github.com/energywebfoundation/origin/blob/a1c3332ec263b26cbd1b89768c03328658c18226/packages/trade/exchange/src/pods/account-deployer/account-deployer.service.ts#L23))). By depositing EACs to the Exchange, users put them in the custody of this operator. **It is important to note that certificates are not stored in the Exchange Deposit account.** The Exchange Deposit account is a smart contract that forwards certificates to the Exchange's [hot wallet](#hot-wallet) address. The hot wallet stores all EACs that are currently being active on the exchange. All operations that users can do with the on-chain EACs, such as transferring and claiming, are restricted this way. This ensures that all operations that are performed on the Origin Exchange are valid. 
 
-The Exchange [hot wallet](#hot-wallet) has a balance that stores the information on which and how many [Energy Attribute Certificate's](#energy-attribute-certificate) are currently being held by the organization in the account. The balance is divided into an 'active' and 'locked component', with assets that are currently being traded on the exchange being 'locked'. 
+The Exchange [hot wallet](#hot-wallet) has a balance that stores the information on which and how many [Energy Attribute Certificate's](#energy-attribute-certificate) are currently being held by the organization in the account. The balance is divided into an 'active' and 'locked component', with assets that are currently being traded (posted for sale) on the exchange being 'locked'. 
 
 Once they are on the Exchange, the EACs are tokenized [assets](#asset), and they can be:  
 
@@ -107,20 +104,18 @@ Users must define the duration of the demand, meaning how long a demand should b
 There is one thing that slightly complicates automatic bid creation and, that is the required generation time frame. It can be expected that the time of bid creation will influence the desired generation time frame. But if we would require users that care about generation time to manually select the generation time frame for every bid created in the future, it would eliminate much of the advantages of automatic bid creation. As a result, we offer to peg the required generation time to the chosen demand time frame. Part of the rationale for this is that it aligns with currently limited, but growing interest in 24/7 renewables procurement. For a monthly demand, this would mean that the product of the bid created includes the current month as the generation time frame in the product: A bid created in June would include June as the required generation time. 
 __Demands do not have to be canceled because they have a limited duration__. After the duration ends there are no further bids created. In order to signal that a demand is no longer active its status can be changed to archived. Demands can be paused in case a bid should not be created in some time frame. Users can also choose to resume paused demands if automatic demand creation should be continued after a pause.  
 
-## Hot Wallet
-The wallet address that stores all [Energy Attribute Certificates (EACs)](#energy-attribute-certificate) that are currently active on the Exchange.
-
 ### Requirements:  
 - Only registered users can create a demand
 - The system should automatically create a bid once every defined demand time frame with the right specifications
 - The system should periodically create bids from the start until the end of the demand duration
 
-## Order
+## Hot Wallet
+The wallet address that stores all [Energy Attribute Certificates (EACs)](#energy-attribute-certificate) that are currently on the Exchange.
 
+## Order
 An order can be either a sell offer or a buy offer. Orders are collected in a a digital [order book](#order-book). A buy order is called a ['bid'](#bid) and a sell order is called an ['ask'](#ask). 
 
 ## Order Book
-
 An exchange where the buy orders, called ['bids'](#bid), and sell orders, called ['asks'](#ask), are openly displayed with offered volumes and ordered by price.  
 
 The bid price is the highest price a buyer is willing to pay for a commodity, while the ask price is the lowest price that a seller is willing to accept. A trade occurs when the seller and buyer agree on a price. This means that either a buyer matches the lowest ask price available in the order book by posting a bid with the same price (or higher) or a seller matches the lowest available bid price by posting an ask of the same price (or lower).  
