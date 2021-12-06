@@ -1,11 +1,15 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-export const useMyDeviceCardHeaderEffects = (link: string) => {
+export const useMyDeviceCardHeaderEffects = (
+  viewDetailsLink: string,
+  editDeviceLink: string
+) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const clickHandler = () => {
-    navigate(link);
-  };
+  const viewDetailsClickHandler = () => navigate(viewDetailsLink);
+  const editDeviceClickHandler = () => navigate(editDeviceLink);
 
-  return clickHandler;
+  return { viewDetailsClickHandler, editDeviceClickHandler, t };
 };

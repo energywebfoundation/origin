@@ -1,4 +1,3 @@
-export * from './approveOrg';
 export * from './createBeneficiary';
 export * from './receivedInvitationsHandlers';
 export * from './inviteHandler';

@@ -21,7 +21,6 @@ export const useSentInvitationsTableLogic = (
     },
     loading,
     pageSize: 5,
-    totalPages: Math.ceil(invitations?.length / 5),
     tableTitle: t('organization.invitations.sentTableTitle'),
     data: invitations?.map((invite) => prepareSentInvitation(invite)) ?? [],
   };

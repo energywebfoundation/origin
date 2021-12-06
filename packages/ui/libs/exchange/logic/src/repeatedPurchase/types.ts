@@ -8,7 +8,7 @@ import { ButtonProps } from '@mui/material';
 import { Dayjs } from 'dayjs';
 import * as yup from 'yup';
 
-type DemandFormValues = {
+export type DemandFormValues = {
   period: TimeFrame;
   volume: number;
   startDate: Dayjs;

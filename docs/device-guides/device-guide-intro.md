@@ -1,5 +1,4 @@
 # Devices
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/all](https://origin-ui-canary.herokuapp.com/device/all)  
 
 **Source code on github:** [https://github.com/energywebfoundation/origin/tree/master/packages/devices](https://github.com/energywebfoundation/origin/tree/master/packages/devices)
 
@@ -20,10 +19,10 @@ Once you have an active account in the Origin platform and are part of an organi
 
 The Device interface has five views: 
 
-1. <b>[All Devices:](./all-devices.md)</b> Allows any user to see all registered devices within a marketplace. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
-2. <b>[Map View:](./map-view.md)</b> Allows any user to see registered devices within a marketplace as locations on a map. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface.
-3. <b>[My Devices:](./my-devices.md)</b> Allows any logged in user to see their organization’s registered devices.
-4. <b>[Register Device:](./register-device.md)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to register a device on behalf of that organization.
-5. <b>[Import Device:](./import-device.md)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to import their organization's devices that are currently registered with I-REC and not registered on the Origin platform.  
+1. <b>[All Devices:](./all-devices.md)</b> Allows any user to see all registered devices within a marketplace. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface
+2. <b>[Map View:](./map-view.md)</b> Allows any user to see registered devices within a marketplace as locations on a map. Selecting a single device allows you to see the detail view of each device. You do not need to be logged in to view this interface
+3. <b>[My Devices:](./my-devices.md)</b> Allows any logged in user to see their organization’s registered devices
+4. <b>[Register Device:](./register-device.md)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to register a device on behalf of that organization
+5. <b>[Import Device:](./import-device.md)</b> Allows any logged in user that is registered with an organization as a Device Manager or Admin to import their organization's devices that are currently registered with I-REC and not registered on the Origin platform  
 
 ![devices](../images/panels/devices.png)

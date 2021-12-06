@@ -50,9 +50,7 @@ export const ListActionsBlock: TListActionsBlock = ({
     setSelectedTab
   );
 
-  if (!actions[selected]) {
-    return null;
-  }
+  if (!actions[selected]) return null;
 
   const { content, component: Component } = actions[selected];
   return (

@@ -1,5 +1,4 @@
 # My Trades
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/my-trades]( https://origin-ui-canary.herokuapp.com/exchange/my-trades) 
 
 ![exchange-mytrades](../images/exchange/exchange-mytrades.png)
 

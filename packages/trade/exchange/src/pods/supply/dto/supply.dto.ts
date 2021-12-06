@@ -2,7 +2,11 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SupplyDto {
-    @ApiProperty({ type: String })
+    @ApiProperty({
+        type: String,
+        description: 'UUID string identifier',
+        example: '123e4567-e89b-12d3-a456-426614174000'
+    })
     @IsUUID()
     id: string;
 
@@ -11,7 +15,7 @@ export class SupplyDto {
     @IsString()
     ownerId: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: 'Dev1-A' })
     @IsNotEmpty()
     @IsString()
     deviceId: string;

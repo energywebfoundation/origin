@@ -26,7 +26,7 @@ Every organization has an admin user that must provide a set of mandatory inform
 If Origin is integrated into a certificate registry, such as I-REC, organizations that own generation devices have to be authenticated as active members of the certificate registry to interact with the system. This means that in order for users to be allowed to perform actions like device management or requesting certificates, their organization must have a confirmed active membership in the registry. Accordingly, if the membership is suspended or terminated, this will prevent all the users associated with this organization from interacting with the Origin marketplace. 
 
 #### Registering Organizations
-If you are not already a member of an organization on the platform, you can view the organization registration interface here: [https://origin-ui-canary.herokuapp.com/organization/register](https://origin-ui-canary.herokuapp.com/organization/register), or click on ‘Organization’ on the side panel and select 'Register’ (note that if you are already associated with an organization, this interface will not be accessible):  
+If you are not already a member of an organization on the platform, select ‘Organization’ on the side panel and select 'Register’ (note that if you are already associated with an organization, this interface will not be accessible):  
 
 ![registerOrgSidePanel](images/onboarding/onboarding-orgregistrationpanel.png) 
 
@@ -51,7 +51,7 @@ Users have one of three roles within an organization:
 3. Member
 
 ##### User Role Permissions
-Role Permissions for the [reference implementation](https://origin-ui-canary.herokuapp.com/) are as follows: 
+Role Permissions for the reference implementationare as follows: 
 
 | Roles          | Permissions                                                                                                                                                                                                                                                                                                                                                                     | Notes                                                                                                                                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -67,7 +67,7 @@ Each role has varying access to the interfaces on the platform:
 
 #### Registering Users
 
-To view the user registration interface, navigate to [https://origin-ui-canary.herokuapp.com/auth/register](https://origin-ui-canary.herokuapp.com/auth/register), or click on “Register” in the top right hand corner of the Origin interface:  
+To view the user registration interface, click 'Register' in the top right hand corner of the Origin interface:  
 
 ![register](images/onboarding/onboarding2-register.png)  
 
@@ -95,7 +95,7 @@ All necessary information and documents to register a device in Origin can be pr
 #### Registering Devices  
 In order to register a device, the user must be registered with an existing organization and must have a user role of Admin or Device Manager. Read more about user roles and permissions [here](#user-role-permissions).
 
-To view the device registration interface, navigate to [https://origin-ui-canary.herokuapp.com/device/register](https://origin-ui-canary.herokuapp.com/device/register), or click on Device on the side panel and select 'Register Device':  
+To view the device registration interface, navigate to click 'Device' on the side panel and select 'Register Device':  
 
 ![registerDeviceSidePanel](images/panels/panel-device-registerdevice.png)
 
@@ -104,8 +104,6 @@ You can view the suggested device registration fields in the reference implement
 ![registerNewDevice](images/onboarding/onboarding8-registernewdevice.png)
 
 ## Connecting to the Blockchain
-
-[https://origin-ui-canary.herokuapp.com/account/profile](https://origin-ui-canary.herokuapp.com/account/profile)
 
 Origin uses the Energy Web blockchain for traceability and verification of certificate ownership. Certificates are issued on the blockchain as tokens (you can read more about the certificate structure [here](https://energyweb.atlassian.net/wiki/spaces/OD/pages/883916918/Certificate+structure)).  
 

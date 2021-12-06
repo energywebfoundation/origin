@@ -41,8 +41,11 @@ nav:
           - Glossary: user-guide-glossary.md
     - Configuration:
           - UI: configuration-ui.md
-    - SDK:
-          - Traceability: traceability.md
+    - SDKs:
+          - Traceability:
+                - Traceability SDK Overview: traceability.md
+                - Issuer: traceability/packages/issuer.md
+                - Issuer API: traceability/packages/issuer-api.md
           - Trade: trade.md
           - Device Registry: device-registry.md
           - Organizations: organizations.md

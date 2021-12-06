@@ -2,7 +2,7 @@ import { TableCell, TableHead, TableRow } from '@mui/material';
 import React, { FC } from 'react';
 import { TableHeaderData } from '../../../containers';
 
-interface TableComponentHeaderProps {
+export interface TableComponentHeaderProps {
   headerData: TableHeaderData;
 }
 

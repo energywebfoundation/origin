@@ -2,7 +2,6 @@ import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ForbiddenException, Inject } from '@nestjs/common';
-
 import {
     BlockchainPropertiesService,
     CertificationRequest,
@@ -63,6 +62,7 @@ export class CreateIrecCertificationRequestHandler
         const tradeAccount =
             dto.irecTradeAccountCode ||
             (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
+
         const irecIssue = await this.irecService.createIssueRequest(platformAdmin.organization.id, {
             device: irecDevice.code,
             fuelType: irecDevice.fuelType,

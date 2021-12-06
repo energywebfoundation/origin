@@ -42,7 +42,6 @@
         "members": "Members",
         "invitations": "Invitations",
         "invite": "Invite",
-        "all": "All Organizations",
         "registerIRec": "Register I-REC",
         "createBeneficiary": "Create Beneficiary",
         "connectIRec": "Connect I-REC"
@@ -56,6 +55,7 @@
       "admin": {
         "sectionTitle": "Admin",
         "users": "Users",
+        "allOrganizations": "All Organizations",
         "claims": "Claims"
       },
       "layout": {
@@ -276,17 +276,17 @@
       },
       "modals": {
         "roleChanged": {
-          "title": "Successfully joined {organizationName}",
-          "text": "You have successfully joined {organizationName} organization.",
+          "title": "Successfully joined {{organizationName}}",
+          "text": "You have successfully joined {{organizationName}} organization.",
           "asMemberYouCan": "As an Organization Member you can:",
           "canPlaceOrder": "Place orders on the exchange",
-          "canBuyCertificates": "Directly buy {certificateType}",
-          "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
-          "canRedeemCertificates": "Redeem {certificateType}",
-          "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
+          "canBuyCertificates": "Directly buy {{certificateType}}",
+          "canCreateAndBuyCertificateBundles": "Create and buy {{certificateType}} bundles",
+          "canRedeemCertificates": "Redeem {{certificateType}}",
+          "canWithdrawCertificates": "Withdraw {{certificateType}} to organization’s own participant account",
           "asDeviceManagerYouCan": "As a Device Manager you have permission to:",
           "canRegisterDevices": "Register devices and device groups",
-          "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
+          "canRequestIssuenceOfCertificates": "Request the issuance of {{certificateType}}",
           "canConfigureAutomatedOrderCreation": "Configure automated order creation",
           "asOrgAdminYouCan": "As an Organization Admin you have permission to:",
           "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
@@ -340,14 +340,15 @@
         "otherGreenAttr": "Other green attributes",
         "publicSupport": "Public support",
         "vintageCOD": "Vintage / (Commercial Operation Date)",
-        "viewDetailsButton": "View Details"
+        "viewDetailsButton": "View Details",
+        "editButton": "Edit"
       },
       "detailView": {
         "photo": "Photo",
         "map": "Map",
         "smartMeter": {
-          "tableTime": "Time ({timezone})",
-          "tableMeterValue": "Meter value ({unit})",
+          "tableTime": "Time ({{timezone}})",
+          "tableMeterValue": "Meter value ({{unit}})",
           "day": "Day",
           "week": "Week",
           "month": "Month",
@@ -392,8 +393,8 @@
         "deviceType": "Device Type",
         "nameplateCapacity": "Nameplate capacity (MW)",
         "status": "Status",
-        "certifiedFor": "Certified for {yearToDisplay} (MWh)",
-        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "certifiedFor": "Certified for {{yearToDisplay}} (MWh)",
+        "toBeCertifiedFor": "To be certified for {{yearToDisplay}} (MWh)",
         "approve": "Approve",
         "reject": "Reject",
         "notifications": {
@@ -414,6 +415,7 @@
           "toTime": "To",
           "energy": "Amount of energy in MW"
         },
+        "deviceStatusTooltip": "Device status: {{status}}",
         "notifications": {
           "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates.",
           "certificateRequestSuccess": "Certificate has been successfully requested",
@@ -445,6 +447,27 @@
         "notifications": {
           "importSuccess": "Device has been successfully imported",
           "importError": "Error while importing device"
+        }
+      },
+      "edit": {
+        "formTitle": "Editing {{deviceName}}",
+        "name": "Device name",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "capacity": "Capacity",
+        "commissioningDate": "Vintage / Commercial Operation Date",
+        "registrationDate": "Registration Date",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Description",
+        "notifications": {
+          "editSuccess": "Request for editing device information successfully submitted to I-REC",
+          "editError": "Error while submitting edit device request"
+        }
+      },
+      "modals": {
+        "editConfirm": {
+          "title": "Plese confirm editing of the device information"
         }
       }
     },
@@ -544,12 +567,12 @@
           "claimedTitle": "Certificate claimed",
           "requestedTitle": "Requested certification",
           "certificationRequestApproved": "Local issuer approved the certification request",
-          "transferred": "Transferred {amount} from {oldOwner} to {newOwner}",
-          "claimedContent": "Claimed {amount} by {claimer}",
-          "requestedContent": "{requestor} requested certification of {amount}",
+          "transferred": "Transferred {{amount}} from {{oldOwner}} to {{newOwner}}",
+          "claimedContent": "Claimed {{amount}} by {{claimer}}",
+          "requestedContent": "{{requestor}} requested certification of {{amount}}",
           "requestedClaimTitle": "Requested claim",
-          "requestedClaimContent": "For {amount} by {claimer}",
-          "transferedToInitialOwner": "Transfered {amount} to the {address} of the initial owner"
+          "requestedClaimContent": "For {{amount}} by {{claimer}}",
+          "transferedToInitialOwner": "Transfered {{amount}} to the {{address}} of the initial owner"
         }
       },
       "requests": {
@@ -623,7 +646,7 @@
       "modals": {
         "confirmImport": {
           "title": "Confirm certificate import",
-          "text": "Please, confirm that you want to import certificate with {volume} MWh of {deviceName} for the period of {timeFrame}."
+          "text": "Please, confirm that you want to import certificate with {{volume}} MWh of {{deviceName}} for the period of {{timeFrame}}."
         }
       }
     },
@@ -768,7 +791,7 @@
           }
         },
         "notifications": {
-          "orderRemoveSuccess": "{orderSide} has been successfully removed",
+          "orderRemoveSuccess": "{{orderSide}} has been successfully removed",
           "orderRemoveError": "Error while removing order",
           "demandRemoveSuccess": "Demand has been successfully removed",
           "demandRemoveError": "Error while removing demand",
@@ -787,7 +810,7 @@
         "facilityName": "Facility Name",
         "price": "Price",
         "status": "Status",
-        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "toBeCertifiedFor": "To be certified for {{yearToDisplay}} (MWh)",
         "update": "Update",
         "remove": "Remove",
         "cancel": "Cancel",
@@ -836,6 +859,7 @@
         "email": "Email",
         "telephone": "Telephone",
         "password": "Password",
+        "passwordValidation": "Password length should be minimum 6 characters and consist of latin letters and at least one number",
         "notifications": {
           "registerSuccess": "User registered",
           "registerError": "Error while registering user"
@@ -851,6 +875,15 @@
         "notifications": {
           "loginError": "Could not log in with supplied credentials"
         }
+      },
+      "requestResetPassword": {
+        "formTitle": "Please, enter your email to receive a link for reseting password",
+        "email": "Email"
+      },
+      "resetPassword": {
+        "formTitle": "Please, create new password",
+        "newPassword": "New Password",
+        "passwordConfirm": "Confirm password"
       },
       "confirmEmail": {
         "alreadyConfirmed": "Email has been already confirmed",
@@ -928,7 +961,7 @@
         },
         "pendingInvitation": {
           "title": "Invitation to join the organization on marketplace",
-          "text": "{admin} has invited you to join the marketplace as a {role} for {orgName}. Click accept to join the organization",
+          "text": "{{admin}} has invited you to join the marketplace as a {{role}} for {{orgName}}. Click accept to join the organization",
           "acceptSuccess": "Invitation accepted",
           "acceptError": "Could not accept invitation",
           "declineSuccess": "Invitation rejected",
@@ -1018,6 +1051,9 @@
         "mrs": "Mrs",
         "ms": "Ms",
         "other": "Other"
+      },
+      "validations": {
+        "passwordMatch": "Passwords don't match"
       }
     },
     "error": {

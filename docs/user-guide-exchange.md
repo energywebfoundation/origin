@@ -1,5 +1,4 @@
 # Exchange
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/view-market  
 
 **Source code on github:** https://github.com/energywebfoundation/origin/tree/master/packages/trade 
 
@@ -18,7 +17,6 @@ The Exchange portal has seven views. The purpose and utility of each view is exp
 ![exchange](images/panels/panel-exchange.png)
 
 ## View Market
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/view-market 
 
 ### Market
 The Market form is where a buyer makes a purchase request ([bid](./user-guide-glossary.md#bid)) for certificates for a given volume, time period and other specifications. 
@@ -32,7 +30,6 @@ Once you click “Place Bid Order”, you will see this ask reflected in the “
 ![exchangeMarketBuyOffers](images/exchange/exchange-market-buyoffers.png)
 
 You can also see your Buy Offers in the ‘My Orders’ view in ‘Bids’. 
-[https://origin-ui-canary.herokuapp.com/exchange/my-orders](https://origin-ui-canary.herokuapp.com/exchange/my-orders)
 
 ![exchange-myorders-bids](images/exchange/exchange-myorders-bids.png)
 
@@ -46,7 +43,6 @@ Once you click “Place Demand Order”, you will see your asks reflected in the
 ![exchange-market-buyoffers-repeated...nodate](images/exchange/exchange-market-buyoffers-repeatedpurchase-nodate.png)
 
 You can also see your Buy Offers in the [‘My Orders’](#my-orders) view under [‘Demands’](#demands). 
-https://origin-ui-canary.herokuapp.com/exchange/my-orders
 
 ![exchange-myorders-demands](images/exchange/exchange-myorders-demands.png)
 
@@ -66,7 +62,6 @@ The “Sell Offers” tab lists all of the Mwh for your organization’s certifi
 ## My Bundles
 
 ## My Orders
-**Reference Implementation:** https://origin-ui-canary.herokuapp.com/exchange/my-orders 
 
 ### Demands
 

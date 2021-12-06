@@ -13,39 +13,47 @@ import {
 } from 'class-validator';
 
 export class CertificationRequestDTO {
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Certificate Id' })
     @IsInt()
     @Min(0)
     id: number;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: 'DeviceB-789' })
     @IsString()
     deviceId: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: '10000' })
     @Validate(PositiveBNStringValidator)
     @Validate(IntUnitsOfEnergy)
     energy: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({
+        type: String,
+        description: 'Public blockchain address',
+        example: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8'
+    })
     @IsString()
     owner: string;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154471 })
     @IsInt()
     @IsPositive()
     fromTime: number;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154481 })
     @IsInt()
     @IsPositive()
     toTime: number;
 
-    @ApiProperty({ type: [String] })
+    @ApiProperty({
+        type: [String],
+        description: 'Array of file names',
+        example: ['test.pdf', 'test2.pdf']
+    })
     @IsArray()
     files: string[];
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154481 })
     @IsInt()
     @IsPositive()
     created: number;
@@ -58,12 +66,12 @@ export class CertificationRequestDTO {
     @IsBoolean()
     revoked: boolean;
 
-    @ApiPropertyOptional({ type: Date })
+    @ApiPropertyOptional({ type: Date, example: 'Sat Nov 06 2021 12:18:12 GMT-0400' })
     @IsOptional()
     @IsDate()
     approvedDate?: Date;
 
-    @ApiPropertyOptional({ type: Date })
+    @ApiPropertyOptional({ type: Date, example: 'Sat Nov 06 2021 12:18:12 GMT-0400' })
     @IsOptional()
     @IsDate()
     revokedDate?: Date;

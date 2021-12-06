@@ -1,12 +1,12 @@
 lockfileVersion: 5.3
 
 specifiers:
-  prettier: 2.4.1
-  pretty-quick: 3.1.1
+  prettier: 2.5.1
+  pretty-quick: 3.1.2
 
 dependencies:
-  prettier: 2.4.1
-  pretty-quick: 3.1.1_prettier@2.4.1
+  prettier: 2.5.1
+  pretty-quick: 3.1.2_prettier@2.5.1
 
 packages:
 
@@ -226,14 +226,14 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /prettier/2.4.1:
-    resolution: {integrity: sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==}
+  /prettier/2.5.1:
+    resolution: {integrity: sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: false
 
-  /pretty-quick/3.1.1_prettier@2.4.1:
-    resolution: {integrity: sha512-ZYLGiMoV2jcaas3vTJrLvKAYsxDoXQBUn8OSTxkl67Fyov9lyXivJTl0+2WVh+y6EovGcw7Lm5ThYpH+Sh3XxQ==}
+  /pretty-quick/3.1.2_prettier@2.5.1:
+    resolution: {integrity: sha512-T+fpTJrDjTzewql4p3lKrRA7z3MrNyjBK1MKeaBm5PpKwATgVm885TpY7TgY8KFt5Q1Qn3QDseRQcyX9AKTKkA==}
     engines: {node: '>=10.13'}
     hasBin: true
     peerDependencies:
@@ -245,7 +245,7 @@ packages:
       ignore: 5.1.8
       mri: 1.1.6
       multimatch: 4.0.0
-      prettier: 2.4.1
+      prettier: 2.5.1
     dev: false
 
   /pump/3.0.0:

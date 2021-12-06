@@ -4,7 +4,6 @@ import { Routes, Route } from 'react-router-dom';
 import { OrganizationModalsCenter } from './containers';
 import { OrganizationModalsProvider } from './context';
 import {
-  AllOrganizationsPage,
   ConnectIRecPage,
   CreateBeneficiaryPage,
   InvitationsPage,
@@ -22,7 +21,6 @@ export interface OrganizationAppProps {
     showMembers: boolean;
     showInvitations: boolean;
     showInvite: boolean;
-    showAllOrgs: boolean;
     showRegisterIRec: boolean;
     showCreateBeneficiary: boolean;
     showConnectIRec: boolean;
@@ -36,7 +34,6 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
     showMembers,
     showInvitations,
     showInvite,
-    showAllOrgs,
     showRegisterIRec,
     showCreateBeneficiary,
     showConnectIRec,
@@ -51,7 +48,6 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
         )}
         {showInvite && <Route path="invite" element={<InvitePage />} />}
         {showMembers && <Route path="members" element={<MembersPage />} />}
-        {showAllOrgs && <Route path="all" element={<AllOrganizationsPage />} />}
         {showRegisterOrg && (
           <Route path="register" element={<RegisterPage />} />
         )}

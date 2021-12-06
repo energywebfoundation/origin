@@ -19,11 +19,4 @@ export const useStyles = makeStyles((theme) => ({
       padding: 30,
     },
   },
-  background: {
-    height: '100vh',
-    width: '100%',
-    position: 'absolute',
-    zIndex: 0,
-    padding: 0,
-  },
 }));

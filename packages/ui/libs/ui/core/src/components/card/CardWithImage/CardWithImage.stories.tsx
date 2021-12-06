@@ -139,7 +139,7 @@ WithIcon.args = {
     </Box>
   ),
   imageUrl: '',
-  fallbackIcon: AccountBalance,
+  fallbackIcon: AccountBalance as any,
   hoverText: 'See detailed',
   onActionClick: () => alert('clicked to see detailed info'),
 };

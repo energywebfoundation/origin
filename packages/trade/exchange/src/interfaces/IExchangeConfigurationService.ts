@@ -6,4 +6,5 @@ export interface IExchangeConfigurationService {
     getGridOperators(): Promise<string[]>;
     getRegistryAddress(): Promise<string>;
     getIssuerAddress(): Promise<string>;
+    getExchangeAccountAddress(ownerId: string): Promise<string>;
 }

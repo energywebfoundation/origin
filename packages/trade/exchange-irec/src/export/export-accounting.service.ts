@@ -1,15 +1,15 @@
+import { Repository } from 'typeorm';
 import { Map } from 'immutable';
 import BN from 'bn.js';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
     AccountAssetDTO,
     AccountBalanceAssetService,
     AccountBalanceService,
     AssetService
 } from '@energyweb/exchange';
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ExportedAsset } from './exported.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class ExportAccountingService extends AccountBalanceAssetService {
@@ -21,6 +21,10 @@ export class ExportAccountingService extends AccountBalanceAssetService {
     ) {
         super();
         accountBalanceService.registerAssetSource(this);
+    }
+
+    public async findByOwner(ownerId: string) {
+        return this.repository.find({ ownerId });
     }
 
     public async lockedAssets(ownerId: string): Promise<Map<string, AccountAssetDTO>> {
@@ -45,9 +49,9 @@ export class ExportAccountingService extends AccountBalanceAssetService {
     }
 
     private async getExportedAssets(ownerId: string) {
-        const exportedAssetIds = await this.repository.find({ ownerId });
+        const exportedAssets = await this.findByOwner(ownerId);
         return await Promise.all(
-            exportedAssetIds.map(async (exported) => ({
+            exportedAssets.map(async (exported) => ({
                 asset: await this.assetService.get(exported.assetId),
                 amount: exported.amount
             }))

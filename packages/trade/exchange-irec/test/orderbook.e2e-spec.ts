@@ -15,10 +15,14 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import moment from 'moment';
 import request from 'supertest';
-import { CreateBidDTO } from '../src/order';
-import { OrderBookOrderDTO, TradePriceInfoDTO } from '../src/order-book';
-import { ProductDTO, ProductFilterDTO } from '../src/product';
-import { authenticatedUser, bootstrapTestInstance } from './exchange';
+import {
+    CreateBidDTO,
+    OrderBookOrderDTO,
+    TradePriceInfoDTO,
+    ProductDTO,
+    ProductFilterDTO
+} from '../src';
+import { authenticatedUser, bootstrapTestInstance, TestUser } from './exchange';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -35,7 +39,7 @@ describe('orderbook tests', () => {
     let orderService: OrderService<ProductDTO>;
     let accountService: AccountService;
 
-    const user1Id = authenticatedUser.organization.id;
+    const user1Id = String(authenticatedUser.organization.id);
     const user2Id = '2';
 
     const solarAsset: CreateAssetDTO = {
@@ -296,6 +300,7 @@ describe('orderbook tests', () => {
         it(`should return 400 when filter is invalid: ${JSON.stringify(params)}`, async () => {
             await request(app.getHttpServer())
                 .post('/orderbook/search')
+                .set({ 'test-user': TestUser.OrganizationDeviceManager })
                 .send(params)
                 .expect('Content-Type', /application\/json/)
                 .expect(HttpStatus.BAD_REQUEST);
@@ -307,6 +312,7 @@ describe('orderbook tests', () => {
             body: { asks, bids }
         }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect('Content-Type', /application\/json/)
             .expect(HttpStatus.OK);
 
@@ -319,6 +325,7 @@ describe('orderbook tests', () => {
             body: { asks }
         }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect('Content-Type', /application\/json/)
             .expect(HttpStatus.OK);
 
@@ -330,6 +337,7 @@ describe('orderbook tests', () => {
             body: { asks, bids, lastTradedPrice }
         }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send(defaultAllFilter)
             .expect('Content-Type', /application\/json/)
             .expect(HttpStatus.OK);
@@ -345,6 +353,7 @@ describe('orderbook tests', () => {
             body: { asks, bids }
         }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 ...defaultAllFilter,
                 deviceTypeFilter: Filter.Specific,
@@ -362,6 +371,7 @@ describe('orderbook tests', () => {
             body: { asks, bids, lastTradedPrice }
         }: { body: OrderBook } = await request(app.getHttpServer())
             .post('/orderbook/search')
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send({
                 ...defaultAllFilter,
                 deviceTypeFilter: Filter.Specific,
@@ -387,6 +397,7 @@ describe('orderbook tests', () => {
                 generationFrom: moment().startOf('month').toISOString(),
                 generationTo: moment().startOf('month').add(1, 'month').toISOString()
             })
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect('Content-Type', /application\/json/)
             .expect(HttpStatus.OK);
 
@@ -407,6 +418,7 @@ describe('orderbook tests', () => {
                 generationFrom: new Date('2020-01-02').toISOString(),
                 generationTo: new Date('2020-01-05').toISOString()
             })
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect('Content-Type', /application\/json/)
             .expect(HttpStatus.OK);
 
@@ -424,6 +436,7 @@ describe('orderbook tests', () => {
                 generationFrom: new Date('2019-01-01').toISOString(),
                 generationTo: new Date('2021-01-31').toISOString()
             })
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect('Content-Type', /application\/json/)
             .expect(HttpStatus.OK);
 
@@ -445,6 +458,7 @@ describe('orderbook tests', () => {
                     .add(2, 'hours')
                     .toISOString()
             })
+            .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .expect('Content-Type', /application\/json/)
             .expect(HttpStatus.OK);
 

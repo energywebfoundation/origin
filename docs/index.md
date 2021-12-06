@@ -1,17 +1,49 @@
-# Energy Web Origin
+<p align="center">
+  <a href="https://www.energyweb.org" target="blank"><img src="./images/ew_origin.png" width="120" alt="Energy Web Foundation Logo" /></a>
+</p>
 
-Energy Web (EW) Origin is a set of software development kits (SDKs) that together provide a system for the issuance and management of Energy Attribute Certificates (EACs).
+Energy Web (EW) Origin is a set of software development kits (SDKs) that together provide a system for the issuance, management and trading of [Energy Attribute Certificates (EACs)](./user-guide-glossary.md#energy-attribute-certificate). 
 
-EAC is an official document which guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles.
 
-The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs are mostly used to address sustainability reports regarding Scope 2 emissions.
+This site provides technical documentation for each SDK, as well as [user guides](./user-guides.md) on how to navigate the platform's user interface.   
 
-EW Origin SDK is comprised of multiple modules that can be used individually or in unison. Key modules are registry, issuer, exchange, and UI. Interested companies and regulators around the world can use parts of or all modules to build a platform for tracking and trading EACs.
+We provide documentation on how to install, build and run the Origin platform [here](getting-started.md). 
 
-The registry module has a goal of storing user and device information. The registry enables both on- and off-chain storage capabilities. The off-chain part ensures that private information are safely and securely kept away from the public domain. On the other hand, the registry leverages on-chain proofs to ensure that off-chain data is verifiable and tamper-proof.
+## Energy Attribute Certificates
 
-The issuer module is used to enable issuers to mint EAC's upon request based on provided generation evidence. Besides just minting new EAC’s, the issuer module also ensures that the certificate lifecycle and owners is always in compliance with the regulation. In EW Origin SDK each standard has its implementation of the issuer module. And to ensure compliance with widely adopted standards EW Origin team is working directly with regulators and standardization bodies.
+An Energy Attribute Certificate (EAC) is an official document that guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles.
 
-The exchange module is used to facilitate trading between buyers and sellers of EACs. The exchange module is built on the bases of the order book system where sellers post asks and buyers post bids. Once there’s a match based on EAC criteria and price the trade is executed.
+The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs can be traded and purchased on a marketplace so they can be used to address sustainability reports regarding [Scope 2 emissions](https://ghgprotocol.org/scope_2_guidance).
 
-The UI module is the glue that connects all underlying modules and makes them accessible to the end-user. It’s also a demonstration of how easy it is to build an open, transparent, and regulatory compliant market for EACs around the world.
+
+We provide more information on EACs in the glossary [here](./user-guide-glossary.md#energy-attribute-certificate). 
+
+## Origin SDKs
+
+The Origin SDK is comprised of [multiple SDKs](./packages.md) that can be used individually or in unison.  
+
+The key SDKs are Registry, [Traceability](./traceability.md), [Trade](./trade.md), and the user interface (UI). Below we provide a brief description of each SDK's core functionality. Interested companies and regulators around the world can use parts of or all SDKs to build a platform for tracking and trading EACs.
+
+### Registry
+
+The Registry SDK stores user and device information.  
+
+The registry enables both on- and off-chain storage capabilities. The off-chain component ensures that private information are safely and securely kept away from the public domain. The on-chain component leverages on-chain proofs to ensure that off-chain data is verifiable and tamper-proof.
+
+### [Traceability](./traceability.md)
+
+The Traceability SDK is used to enable certificate issuers (i.e. I-REC) to mint EAC's upon request based on provided generation evidence.  
+
+In addition to minting new EAC’s, the Traceability SDK also ensures that the certificate lifecycle and its owners are in compliance with  regulation at all times. Each issuing standard (e.g. I-REC) has its own implementation of the traceability SDK to meet its regulatory needs. To ensure compliance with widely adopted standards EW Origin team is working directly with regulators and standardization bodies.
+
+### [Trade](./trade.md)
+
+The Trade SDK is used to facilitate trading between buyers and sellers of EACs.   
+
+This SDK is built on the basis of the order book system, where sellers post [asks](./user-guide-glossary.md#ask) and buyers post [bids](./user-guide-glossary.md#bid). When there is a match based on EAC criteria and price, the trade is executed.
+
+### UI Module
+
+The UI module is the user interface that connects all of the underlying SDKs listed above, and makes them accessible to the end-user as an online EAC marketplace.  
+
+It serves as a demonstration of how easy it is to build an open, transparent, and regulatory compliant market for EACs around the world.

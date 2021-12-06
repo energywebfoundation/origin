@@ -1,5 +1,4 @@
 # My Orders
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/my-orders]( https://origin-ui-canary.herokuapp.com/exchange/my-orders) 
 
 The ‘My Orders’ interface allows a user to see all of the [bids](../user-guide-glossary.md#bid), [asks](../user-guide-glossary.md#ask) and [demands](../user-guide-glossary.md#demand) that users from their organization have created using the [Market interface](./view-market.md#market). 
 

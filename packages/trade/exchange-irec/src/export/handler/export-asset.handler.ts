@@ -44,7 +44,8 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
         user,
         assetId,
         recipientTradeAccount,
-        amount
+        amount,
+        fromTradeAccount
     }: ExportAssetCommand): Promise<void> {
         this.logger.debug(`Checking certificate ownership user=${user.id} assetId=${assetId}`);
         const { available } = await this.accountBalanceService.getAccountBalance(user.ownerId);
@@ -67,7 +68,10 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
             );
         }
 
-        const irecCertificates = await this.irecService.getCertificates(platformOrganization.id);
+        const irecCertificates = await this.irecService.getCertificates(
+            platformOrganization.id,
+            fromTradeAccount
+        );
         const irecCertificate = irecCertificates.find(
             // Uncomment the end of the line for testing with I-REC mock service
             (c) => c.asset === certificationRequest.irecAssetId // || c.asset === 'test-asset-id'
@@ -80,7 +84,8 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
         const result = await this.irecService.transferCertificate(
             platformOrganization.id,
             recipientTradeAccount,
-            irecCertificate.asset
+            irecCertificate.asset,
+            fromTradeAccount
         );
 
         if (!result) {
@@ -93,7 +98,8 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
         await this.repository.save({
             assetId: asset.asset.id,
             ownerId: user.ownerId,
-            amount
+            amount,
+            irecAssetId: result.code
         });
     }
 }

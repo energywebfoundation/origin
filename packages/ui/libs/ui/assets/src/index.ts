@@ -8,6 +8,15 @@ import { ReactComponent as MarineRegular } from './images/device-type-regular/ic
 import { ReactComponent as SolidRegular } from './images/device-type-regular/icon-solid-regular.svg';
 import { ReactComponent as ThermalRegular } from './images/device-type-regular/icon-thermal-regular.svg';
 
+export const WindSelected = withPrimaryColor(WindRegular);
+export const SolarSelected = withPrimaryColor(SolarRegular);
+export const GaseousSelected = withPrimaryColor(GaseousRegular);
+export const HydroSelected = withPrimaryColor(HydroRegular);
+export const LiquidSelected = withPrimaryColor(LiquidRegular);
+export const MarineSelected = withPrimaryColor(MarineRegular);
+export const SolidSelected = withPrimaryColor(SolidRegular);
+export const ThermalSelected = withPrimaryColor(ThermalRegular);
+
 export { ReactComponent as EnergyWebLogo } from './images/EW-Origin-WhiteText.svg';
 export { ReactComponent as OrganizationAdded } from './images/icon-org-added.svg';
 export { ReactComponent as CoordinatesLogo } from './images/coordinates-logo.svg';
@@ -23,14 +32,5 @@ export { ReactComponent as LiquidRegular } from './images/device-type-regular/ic
 export { ReactComponent as MarineRegular } from './images/device-type-regular/icon-marine-regular.svg';
 export { ReactComponent as SolidRegular } from './images/device-type-regular/icon-solid-regular.svg';
 export { ReactComponent as ThermalRegular } from './images/device-type-regular/icon-thermal-regular.svg';
-
-export const WindSelected = withPrimaryColor(WindRegular);
-export const SolarSelected = withPrimaryColor(SolarRegular);
-export const GaseousSelected = withPrimaryColor(GaseousRegular);
-export const HydroSelected = withPrimaryColor(HydroRegular);
-export const LiquidSelected = withPrimaryColor(LiquidRegular);
-export const MarineSelected = withPrimaryColor(MarineRegular);
-export const SolidSelected = withPrimaryColor(SolidRegular);
-export const ThermalSelected = withPrimaryColor(ThermalRegular);
 
 export { ReactComponent as ThailandFlag } from './images/flags/thailand_flag.svg';

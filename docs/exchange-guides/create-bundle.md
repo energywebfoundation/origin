@@ -1,5 +1,4 @@
 # Create Bundle
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/create-bundle]( https://origin-ui-canary.herokuapp.com/exchange/create-bundle) 
 
 The ‘Create Bundle’ interface allows users to group certificates that are active on the exchange together and sell their Mwh as a bundle. 
 

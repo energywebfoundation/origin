@@ -10,16 +10,24 @@ export class BatchCertificateTransferDTO
     extends PickType(CertificateDTO, ['id'] as const)
     implements Omit<CertificateBatchOperations.BatchCertificateTransfer, 'amount'>
 {
-    @ApiProperty({ type: String })
+    @ApiProperty({
+        type: String,
+        description: 'Public blockchain address',
+        example: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8'
+    })
     @IsEthereumAddress()
     to: string;
 
-    @ApiPropertyOptional({ type: String })
+    @ApiPropertyOptional({
+        type: String,
+        description: 'Public blockchain address',
+        example: '0xd46aC0Bc23dB5e8AfDAAB9Ad35E9A3bA05E092E8'
+    })
     @IsOptional()
     @IsEthereumAddress()
     from?: string;
 
-    @ApiPropertyOptional({ type: String })
+    @ApiPropertyOptional({ type: String, example: '1000' })
     @IsOptional()
     @Validate(IntUnitsOfEnergy)
     amount?: string;

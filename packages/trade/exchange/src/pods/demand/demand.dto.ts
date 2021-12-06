@@ -6,7 +6,11 @@ import { IDemand } from './demand.entity';
 import { Order } from '../order/order.entity';
 
 export class DemandDTO<TProduct> implements IDemand {
-    @ApiProperty({ type: String })
+    @ApiProperty({
+        type: String,
+        description: 'UUID string identifier',
+        example: '123e4567-e89b-12d3-a456-426614174000'
+    })
     @IsUUID()
     id: string;
 
@@ -20,17 +24,17 @@ export class DemandDTO<TProduct> implements IDemand {
     @IsNumber()
     price: number;
 
-    @ApiProperty({ type: Date })
+    @ApiProperty({ type: Date, example: 'Tue Nov 16 2021 16:09:43 GMT-0500' })
     @IsNotEmpty()
     @IsDate()
     start: Date;
 
-    @ApiProperty({ type: Date })
+    @ApiProperty({ type: Date, example: 'Tue Nov 16 2021 16:09:43 GMT-0500' })
     @IsNotEmpty()
     @IsDate()
     end: Date;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: '1000' })
     @IsNotEmpty()
     volumePerPeriod: BN;
 

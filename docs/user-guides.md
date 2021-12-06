@@ -1,6 +1,6 @@
 # Getting Started
 
-The User Guides review the functionality of the Origin platform reference implementation site [https://origin-ui-canary.herokuapp.com/](https://origin-ui-canary.herokuapp.com/).  
+The User Guides review the functionality of the Origin platform.  
 
 You can view the source code for the reference implementation's UI on github [here](https://github.com/energywebfoundation/origin/tree/master/packages/ui). 
 

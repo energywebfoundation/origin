@@ -1,5 +1,4 @@
 # View Market  
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/exchange/view-market ](https://origin-ui-canary.herokuapp.com/exchange/view-market )
 
 ## Market
 The Market form is where a buyer makes a purchase request ([bid](../user-guide-glossary.md#bid)) for certificates for a given volume, time period and other specifications. 
@@ -13,7 +12,6 @@ Once you click 'Place Bid Order', you will see this ask reflected in the 'Buy Of
 ![exchangeMarketBuyOffers](../images/exchange/exchange-market-buyoffers.png)
 
 You can also see your Buy Offers in the ‘My Orders’ view in ‘Bids’. 
-[https://origin-ui-canary.herokuapp.com/exchange/my-orders](https://origin-ui-canary.herokuapp.com/exchange/my-orders)
 
 ![exchange-myorders-bids](../images/exchange/exchange-myorders-bids.png)
 

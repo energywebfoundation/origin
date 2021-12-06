@@ -1,5 +1,4 @@
 # Members
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/organization/members](https://origin-ui-canary.herokuapp.com/organization/members )
 
 ![members](../images/organization/organization-members.png)
 

@@ -65,36 +65,31 @@ export const App: FC<AppProps> = memo(
     const allowedChainIds = (window as any).config.SUPPORTED_NETWORK_IDS.split(
       ';'
     ).map((id: string) => Number(id));
-
-    // No routes matched locatation "**/*"
-    // Ignore for now until warning is resolved:
-    // https://github.com/remix-run/react-router/issues/8095
-
     return (
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <MainLayout
-              themeSwitcher
-              themeMode={themeMode}
-              changeThemeMode={changeThemeMode}
-              isAuthenticated={isAuthenticated}
-              topbarButtons={topbarButtons}
-              menuSections={menuSections}
-              userData={userData}
-              orgData={orgData}
-              navBarPaperProps={
-                isLightTheme ? { className: classes.navPaper } : undefined
+      <>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <MainLayout
+                  themeSwitcher
+                  themeMode={themeMode}
+                  changeThemeMode={changeThemeMode}
+                  isAuthenticated={isAuthenticated}
+                  topbarButtons={topbarButtons}
+                  menuSections={menuSections}
+                  userData={userData}
+                  orgData={orgData}
+                  navBarPaperProps={
+                    isLightTheme ? { className: classes.navPaper } : undefined
+                  }
+                  topBarClassName={isLightTheme ? classes.topBar : undefined}
+                />
               }
-              topBarClassName={isLightTheme ? classes.topBar : undefined}
-            />
-          }
-        >
-          {loading ? (
-            <CircularProgress />
-          ) : (
-            <>
+            >
               <Route
                 path="device/*"
                 element={
@@ -176,27 +171,27 @@ export const App: FC<AppProps> = memo(
               />
 
               <Route path="/" element={<Navigate to="device/all" />} />
-            </>
-          )}
-        </Route>
-        <Route
-          path="/login"
-          element={
-            <Suspense fallback={<CircularProgress />}>
-              <LoginApp />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/confirm-email"
-          element={
-            <Suspense fallback={<CircularProgress />}>
-              <ConfirmEmailApp />
-            </Suspense>
-          }
-        />
-        {!loading && <Route path="*" element={<PageNotFound />} />}
-      </Routes>
+              <Route path="*" element={<PageNotFound />} />
+            </Route>
+            <Route
+              path="/login/*"
+              element={
+                <Suspense fallback={<CircularProgress />}>
+                  <LoginApp />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/confirm-email"
+              element={
+                <Suspense fallback={<CircularProgress />}>
+                  <ConfirmEmailApp />
+                </Suspense>
+              }
+            />
+          </Routes>
+        )}
+      </>
     );
   }
 );

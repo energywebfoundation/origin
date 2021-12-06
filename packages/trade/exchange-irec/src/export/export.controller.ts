@@ -39,10 +39,10 @@ export class ExportController {
     })
     public async exportCertificate(
         @UserDecorator() user: ILoggedInUser,
-        @Body() { assetId, recipientTradeAccount, amount }: ExportAssetDTO
+        @Body() { assetId, recipientTradeAccount, amount, fromTradeAccount }: ExportAssetDTO
     ): Promise<ISuccessResponse> {
         await this.commandBus.execute(
-            new ExportAssetCommand(user, assetId, recipientTradeAccount, amount)
+            new ExportAssetCommand(user, assetId, recipientTradeAccount, amount, fromTradeAccount)
         );
         return ResponseSuccess('IREC certificate exported');
     }

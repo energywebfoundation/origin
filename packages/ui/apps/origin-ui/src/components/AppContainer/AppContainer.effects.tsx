@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
 
@@ -23,7 +24,7 @@ import {
   getAdminMenu,
   TGetAccountMenuArgs,
   TGetAdminMenuArgs,
-  useTopbarButtonList,
+  getTopbarButtonList,
 } from '@energyweb/origin-ui-user-logic';
 import {
   useInvitationControllerGetInvitations,
@@ -34,6 +35,7 @@ import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { useUser } from '@energyweb/origin-ui-user-data';
 import { useActiveMenuTab, useAxiosDefaults } from '../../hooks';
 import { useStyles } from './AppContainer.styles';
+import { useNavigate } from 'react-router';
 
 export type RoutesConfig = {
   orgRoutes: Omit<TGetOrganizationMenuArgs, 't' | 'isOpen' | 'showSection'>;
@@ -54,9 +56,13 @@ export const useAppContainerEffects = () => {
   const isLightTheme = theme.palette.mode === 'light';
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { isAuthenticated, user, logout, userLoading } = useUser();
+  const topbarButtons = useMemo(
+    () => getTopbarButtonList(isAuthenticated, logout, t, navigate),
+    [isAuthenticated, logout, t, navigate]
+  );
 
-  const topbarButtons = useTopbarButtonList(isAuthenticated, logout);
   const {
     isOrganizationTabActive,
     isDeviceTabActive,
@@ -108,144 +114,255 @@ export const useAppContainerEffects = () => {
     user?.organization?.blockchainAccountAddress
   );
 
-  const orgRoutesConfig: RoutesConfig['orgRoutes'] = {
-    showRegisterOrg: !userHasOrg,
-    showMyOrg: userHasOrg,
-    showMembers: userHasOrg && userIsOrgAdmin,
-    showInvitations:
-      userHasOrg && userIsOrgAdmin
-        ? true
-        : !!userInvitations && userInvitations.length > 0,
-    showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
-    showAllOrgs: isAuthenticated && userIsActive && userIsAdminOrSupport,
-    showRegisterIRec: userHasOrg && userIsOrgAdmin && !Boolean(iRecOrg),
-    showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
-    showConnectIRec:
-      (userHasOrg && userIsOrgAdmin && Boolean(iRecOrg)) ||
+  const orgRoutesConfig: RoutesConfig['orgRoutes'] = useMemo(
+    () => ({
+      showRegisterOrg: !userHasOrg,
+      showMyOrg: userHasOrg,
+      showMembers: userHasOrg && userIsOrgAdmin,
+      showInvitations:
+        userHasOrg && userIsOrgAdmin
+          ? true
+          : !!userInvitations && userInvitations.length > 0,
+      showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
+      showRegisterIRec: userHasOrg && userIsOrgAdmin && !Boolean(iRecOrg),
+      showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
+      showConnectIRec:
+        userHasOrg &&
+        userIsOrgAdmin &&
+        Boolean(iRecOrg) &&
+        !userIsAdminOrSupport,
+    }),
+    [
+      userHasOrg,
+      userIsOrgAdmin,
+      userInvitations,
+      userIsActive,
+      iRecOrg,
       userIsAdminOrSupport,
-  };
-  const orgMenu = getOrganizationMenu({
-    t,
-    isOpen: isOrganizationTabActive,
-    showSection: userIsOrgAdminOrAdminOrSupport,
-    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
-    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
-    ...orgRoutesConfig,
-  });
+    ]
+  );
+  const orgMenu = useMemo(
+    () =>
+      getOrganizationMenu({
+        t,
+        isOpen: isOrganizationTabActive,
+        showSection: userIsOrgAdminOrAdminOrSupport,
+        menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+        selectedMenuItemClass: isLightTheme
+          ? classes.selectedMenuItem
+          : undefined,
+        ...orgRoutesConfig,
+      }),
+    [
+      t,
+      isOrganizationTabActive,
+      userIsOrgAdminOrAdminOrSupport,
+      isLightTheme,
+      orgRoutesConfig,
+    ]
+  );
 
-  const deviceRoutesConfig: RoutesConfig['deviceRoutes'] = {
-    showAllDevices: true,
-    showMapView: true,
-    showMyDevices: userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
-    showPendingDevices: userIsIssuer,
-    showRegisterDevice:
-      userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
-    showDeviceImport:
-      userIsActive &&
-      userHasOrg &&
-      userIsDeviceManagerOrAdmin &&
-      iRecConnectionActive &&
-      // @should be fixed on backend to actually return a string
-      ((iRecOrg?.accountType as unknown as IRECAccountType) ===
-        IRECAccountType.Registrant ||
+  const deviceRoutesConfig: RoutesConfig['deviceRoutes'] = useMemo(
+    () => ({
+      showAllDevices: true,
+      showMapView: true,
+      showMyDevices: userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
+      showPendingDevices: userIsIssuer,
+      showRegisterDevice:
+        userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
+      showDeviceImport:
+        userIsActive &&
+        userHasOrg &&
+        userIsDeviceManagerOrAdmin &&
+        iRecConnectionActive &&
+        // @should be fixed on backend to actually return a string
+        ((iRecOrg?.accountType as unknown as IRECAccountType) ===
+          IRECAccountType.Registrant ||
+          (iRecOrg?.accountType as unknown as IRECAccountType) ===
+            IRECAccountType.Both),
+    }),
+    [
+      userIsActive,
+      userHasOrg,
+      userIsDeviceManagerOrAdmin,
+      userIsIssuer,
+      iRecConnectionActive,
+      iRecOrg,
+    ]
+  );
+  const deviceMenu = useMemo(
+    () =>
+      getDeviceMenu({
+        t,
+        isOpen: isDeviceTabActive,
+        showSection: true,
+        menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+        selectedMenuItemClass: isLightTheme
+          ? classes.selectedMenuItem
+          : undefined,
+        ...deviceRoutesConfig,
+      }),
+    [t, isDeviceTabActive, isLightTheme, deviceRoutesConfig]
+  );
+
+  const certificateRoutesConfig: RoutesConfig['certificateRoutes'] = useMemo(
+    () => ({
+      showExchangeInbox: userIsActive && userHasOrg && !userIsIssuer,
+      showBlockchainInbox:
+        userIsActive &&
+        userHasOrg &&
+        userOrgHasBlockchainAccountAttached &&
+        !userIsIssuer,
+      showClaimsReport: userIsActive && userHasOrg && !userIsIssuer,
+      showRequests: userIsActive && userHasOrg && !userIsIssuer,
+      showPending: userIsIssuer,
+      showApproved: userIsIssuer,
+      showImport:
         (iRecOrg?.accountType as unknown as IRECAccountType) ===
-          IRECAccountType.Both),
-  };
-  const deviceMenu = getDeviceMenu({
-    t,
-    isOpen: isDeviceTabActive,
-    showSection: true,
-    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
-    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
-    ...deviceRoutesConfig,
-  });
+          IRECAccountType.Participant ||
+        (iRecOrg?.accountType as unknown as IRECAccountType) ===
+          IRECAccountType.Both,
+    }),
+    [
+      userIsActive,
+      userHasOrg,
+      userIsIssuer,
+      userOrgHasBlockchainAccountAttached,
+      iRecOrg,
+    ]
+  );
+  const certificateMenu = useMemo(
+    () =>
+      getCertificateMenu({
+        t,
+        isOpen: isCertificateTabActive,
+        showSection:
+          (userIsActive && userHasOrg && !userIsAdminOrSupport) || userIsIssuer,
+        menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+        selectedMenuItemClass: isLightTheme
+          ? classes.selectedMenuItem
+          : undefined,
+        ...certificateRoutesConfig,
+      }),
+    [
+      t,
+      isCertificateTabActive,
+      userIsActive,
+      userHasOrg,
+      userIsAdminOrSupport,
+      userIsIssuer,
+      isLightTheme,
+      certificateRoutesConfig,
+    ]
+  );
 
-  const certificateRoutesConfig: RoutesConfig['certificateRoutes'] = {
-    showExchangeInbox: userIsActive && userHasOrg && !userIsIssuer,
-    showBlockchainInbox:
-      userIsActive &&
-      userHasOrg &&
-      userOrgHasBlockchainAccountAttached &&
-      !userIsIssuer,
-    showClaimsReport: userIsActive && userHasOrg && !userIsIssuer,
-    showRequests: userIsActive && userHasOrg && !userIsIssuer,
-    showPending: userIsIssuer,
-    showApproved: userIsIssuer,
-    showImport:
-      (iRecOrg?.accountType as unknown as IRECAccountType) ===
-        IRECAccountType.Participant ||
-      (iRecOrg?.accountType as unknown as IRECAccountType) ===
-        IRECAccountType.Both,
-  };
-  const certificateMenu = getCertificateMenu({
-    t,
-    isOpen: isCertificateTabActive,
-    showSection: (userIsActive && userHasOrg) || userIsIssuer,
-    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
-    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
-    ...certificateRoutesConfig,
-  });
+  const exchangeRoutesConfig: RoutesConfig['exchangeRoutes'] = useMemo(
+    () => ({
+      showViewMarket: true,
+      showAllBundles: true,
+      showCreateBundle: userIsActive && userHasOrg,
+      showMyBundles: userIsActive && userHasOrg,
+      showMyTrades: userIsActive && userHasOrg,
+      showMyOrders: userIsActive && userHasOrg,
+      showSupply: userIsActive && userHasOrg,
+    }),
+    [userIsActive, userHasOrg]
+  );
+  const exchangeMenu = useMemo(
+    () =>
+      getExchangeMenu({
+        t,
+        isOpen: isExchangeTabActive,
+        showSection: !userIsAdminOrSupport,
+        menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+        selectedMenuItemClass: isLightTheme
+          ? classes.selectedMenuItem
+          : undefined,
+        ...exchangeRoutesConfig,
+      }),
+    [
+      t,
+      isExchangeTabActive,
+      userIsAdminOrSupport,
+      isLightTheme,
+      exchangeRoutesConfig,
+    ]
+  );
 
-  const exchangeRoutesConfig: RoutesConfig['exchangeRoutes'] = {
-    showViewMarket: true,
-    showAllBundles: true,
-    showCreateBundle: userIsActive && userHasOrg,
-    showMyBundles: userIsActive && userHasOrg,
-    showMyTrades: userIsActive && userHasOrg,
-    showMyOrders: userIsActive && userHasOrg,
-    showSupply: userIsActive && userHasOrg,
-  };
-  const exchangeMenu = getExchangeMenu({
-    t,
-    isOpen: isExchangeTabActive,
-    showSection: true,
-    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
-    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
-    ...exchangeRoutesConfig,
-  });
+  const accountRoutesConfig: RoutesConfig['accountRoutes'] = useMemo(
+    () => ({
+      showSettings: true,
+      showUserProfile: isAuthenticated,
+    }),
+    [isAuthenticated]
+  );
+  const accountMenu = useMemo(
+    () =>
+      getAccountMenu({
+        t,
+        isOpen: isAccountTabActive,
+        showSection: true,
+        menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+        selectedMenuItemClass: isLightTheme
+          ? classes.selectedMenuItem
+          : undefined,
+        ...accountRoutesConfig,
+      }),
+    [t, isAccountTabActive, isLightTheme, accountRoutesConfig]
+  );
+  const adminRoutesConfig: RoutesConfig['adminRoutes'] = useMemo(
+    () => ({
+      showClaims: userIsAdminOrSupport,
+      showAllOrgs: userIsAdminOrSupport,
+      showUsers: userIsAdminOrSupport,
+    }),
+    [userIsAdminOrSupport]
+  );
+  const adminMenu = useMemo(
+    () =>
+      getAdminMenu({
+        t,
+        isOpen: isAdminTabAcive,
+        showSection: userIsAdminOrSupport,
+        menuButtonClass: isLightTheme ? classes.menuButton : undefined,
+        selectedMenuItemClass: isLightTheme
+          ? classes.selectedMenuItem
+          : undefined,
+        ...adminRoutesConfig,
+      }),
+    [t, isAdminTabAcive, userIsAdminOrSupport, isLightTheme, adminRoutesConfig]
+  );
 
-  const accountRoutesConfig: RoutesConfig['accountRoutes'] = {
-    showSettings: true,
-    showUserProfile: isAuthenticated,
-  };
-  const accountMenu = getAccountMenu({
-    t,
-    isOpen: isAccountTabActive,
-    showSection: true,
-    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
-    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
-    ...accountRoutesConfig,
-  });
-  const adminRoutesConfig: RoutesConfig['adminRoutes'] = {
-    showClaims: userIsAdminOrSupport,
-    showUsers: userIsAdminOrSupport,
-  };
-  const adminMenu = getAdminMenu({
-    t,
-    isOpen: isAdminTabAcive,
-    showSection: userIsAdminOrSupport,
-    menuButtonClass: isLightTheme ? classes.menuButton : undefined,
-    selectedMenuItemClass: isLightTheme ? classes.selectedMenuItem : undefined,
-    ...adminRoutesConfig,
-  });
+  const menuSections = useMemo(
+    () => [
+      deviceMenu,
+      certificateMenu,
+      exchangeMenu,
+      orgMenu,
+      accountMenu,
+      adminMenu,
+    ],
+    [deviceMenu, certificateMenu, exchangeMenu, orgMenu, accountMenu, adminMenu]
+  );
 
-  const menuSections = [
-    deviceMenu,
-    certificateMenu,
-    exchangeMenu,
-    orgMenu,
-    accountMenu,
-    adminMenu,
-  ];
-
-  const routesConfig: RoutesConfig = {
-    orgRoutes: orgRoutesConfig,
-    deviceRoutes: deviceRoutesConfig,
-    certificateRoutes: certificateRoutesConfig,
-    exchangeRoutes: exchangeRoutesConfig,
-    accountRoutes: accountRoutesConfig,
-    adminRoutes: adminRoutesConfig,
-  };
+  const routesConfig: RoutesConfig = useMemo(
+    () => ({
+      orgRoutes: orgRoutesConfig,
+      deviceRoutes: deviceRoutesConfig,
+      certificateRoutes: certificateRoutesConfig,
+      exchangeRoutes: exchangeRoutesConfig,
+      accountRoutes: accountRoutesConfig,
+      adminRoutes: adminRoutesConfig,
+    }),
+    [
+      orgRoutesConfig,
+      deviceRoutesConfig,
+      certificateRoutesConfig,
+      exchangeRoutesConfig,
+      accountRoutesConfig,
+      adminRoutesConfig,
+    ]
+  );
 
   const isLoading =
     userLoading ||

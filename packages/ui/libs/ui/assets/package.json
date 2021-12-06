@@ -23,8 +23,8 @@
     "dist"
   ],
   "dependencies": {
-    "@mui/material": "5.0.6",
-    "@mui/styles": "5.0.2",
+    "@mui/material": "5.2.2",
+    "@mui/styles": "5.2.2",
     "clsx": "1.1.1"
   },
   "peerDependencies": {

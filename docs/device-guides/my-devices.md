@@ -1,5 +1,4 @@
 # My Devices
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/device/my](https://origin-ui-canary.herokuapp.com/device/my)
 
 Use this interface to view all of your organization's registered devices.   
 ![My Devices](../images/deviceMgmtImages/MyDevices.png)

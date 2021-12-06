@@ -1,5 +1,4 @@
 ## Create Beneficiary
-**Reference Implementation:** [https://origin-ui-canary.herokuapp.com/organization/create-beneficiary](https://origin-ui-canary.herokuapp.com/organization/create-beneficiary)
 
 ![org-createbeneficiary](../images/organization/org-createbeneficiary.png)
 

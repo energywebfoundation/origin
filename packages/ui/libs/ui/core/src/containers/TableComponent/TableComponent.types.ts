@@ -29,15 +29,14 @@ export type TableFilter = {
 };
 
 export interface TableComponentProps<Id> {
-  loading: boolean;
-  data: TableRowData<Id>[];
   header: TableHeaderData;
+  data: TableRowData<Id>[];
+  loading?: boolean;
   tableFilters?: TableFilter[];
-  totalPages?: number;
   tableTitle?: string;
   tableTitleProps?: TypographyProps;
   pageSize?: number;
-  onRowClick?: (id: Id) => void;
+  onRowClick?: (id: Id) => void | Promise<void>;
   getCustomRowClassName?: (id: Id) => string;
 }
 
