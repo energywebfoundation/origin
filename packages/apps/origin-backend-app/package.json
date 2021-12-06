@@ -31,7 +31,7 @@
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "dependencies": {
         "@energyweb/exchange": "1.10.0",
         "@energyweb/exchange-io-erc1888": "1.2.0",

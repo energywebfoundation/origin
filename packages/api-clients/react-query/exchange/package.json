@@ -4,7 +4,7 @@
     "description": "React Query Client library for interacting with the Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/exchange#readme",
     "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "main": "dist/js/index.js",
     "repository": {
         "type": "git",

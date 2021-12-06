@@ -4,7 +4,7 @@
     "description": "An API for local version of I-REC compatible registry",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-irec-local-api#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "main": "dist/js/src/index.js",
     "repository": {
         "type": "git",

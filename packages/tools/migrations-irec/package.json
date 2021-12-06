@@ -1,7 +1,7 @@
 {
     "name": "@energyweb/migrations-irec",
     "description": "Migrations for deploying the Origin SDK smart contracts for I-REC API integration",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "author": "",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/migrations-irec#readme",
     "repository": {
