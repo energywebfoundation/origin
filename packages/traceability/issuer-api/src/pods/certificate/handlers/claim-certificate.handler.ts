@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Certificate as CertificateFacade } from '@energyweb/issuer';
 import { BigNumber, ContractTransaction, Event as BlockchainEvent, utils } from 'ethers';
-import { PreciseProofs } from 'precise-proofs-js';
+import { PreciseProofs } from 'ew-precise-proofs-js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 import { ClaimCertificateCommand } from '../commands/claim-certificate.command';

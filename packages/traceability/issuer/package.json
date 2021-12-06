@@ -57,7 +57,7 @@
         "ethers": "5.3.1",
         "ganache-cli": "6.12.2",
         "moment": "2.29.1",
-        "precise-proofs-js": "1.2.0",
+        "ew-precise-proofs-js": "1.1.0",
         "winston": "3.3.3"
     },
     "devDependencies": {
