@@ -336,7 +336,6 @@ describe('Deposits using deployed registry', () => {
             .expect(HttpStatus.OK);
 
         const [claimed] = transfers;
-        console.log(transfers);
         expect(transfers.length).to.be.gte(1);
         expect(claimed.userId).equals(user1Id);
         expect(claimed.direction).equals(TransferDirection.Claim);
