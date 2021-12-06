@@ -991,7 +991,7 @@
             "entryFile": "libs/ui/web3/src/index.ts",
             "external": ["react/jsx-runtime", "@emotion/styled/base"],
             "rollupConfig": "rollup.config.js",
-            "assets": ["libs/ui/web3/LICENSE.md", "libs/ui/web3/README.md"]
+            "assets": ["libs/ui/web3/LICENSE", "libs/ui/web3/README.md"]
           }
         },
         "lint": {

@@ -4,7 +4,7 @@
     "description": "Client library interacting with the Origin Energy API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "main": "dist/js/index.js",
     "repository": {
         "type": "git",

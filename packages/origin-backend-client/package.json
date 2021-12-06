@@ -22,7 +22,7 @@
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "dependencies": {
         "axios": "0.24.0"
     },

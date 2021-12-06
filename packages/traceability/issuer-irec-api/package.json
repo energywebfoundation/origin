@@ -4,7 +4,7 @@
     "description": "NestJS module for interacting with renewable energy certificates with IREC connectivity",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-irec-api#readme",
     "author": "EnergyWeb DevHub GmbH; Aleksandr Marenin, aleksandr.marenin@energyweb.org",
-    "license": "GPL-3.0-or-later",
+    "license": "MIT",
     "main": "dist/js/src/index.js",
     "repository": {
         "type": "git",
@@ -66,7 +66,7 @@
         "moment": "2.29.1",
         "moment-range": "4.0.2",
         "pg": "8.7.1",
-        "precise-proofs-js": "1.2.0",
+        "ew-precise-proofs-js": "1.1.0",
         "rxjs": "7.4.0",
         "swagger-ui-express": "4.2.0",
         "typeorm": "0.2.41"

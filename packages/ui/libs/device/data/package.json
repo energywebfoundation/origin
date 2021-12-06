@@ -11,7 +11,7 @@
   "author": "EnergyWeb DevHub GmbH; Alexander Popadyuk, alexander.popadyuk@energyweb.org",
   "description": "Data layer implementation for the Device part of Origin marketplace user interface",
   "homepage": "https://github.com/energywebfoundation/origin/blob/master/packages/ui/libs/device/data/README.md",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"

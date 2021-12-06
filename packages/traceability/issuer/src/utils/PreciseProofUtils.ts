@@ -1,4 +1,4 @@
-import { PreciseProofs } from 'precise-proofs-js';
+import { PreciseProofs } from 'ew-precise-proofs-js';
 
 export class PreciseProofUtils {
     static generateProofs(
