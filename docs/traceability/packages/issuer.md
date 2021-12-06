@@ -61,7 +61,7 @@ When new Certificates are issued, they are stored in [Registry’s certificate s
 The Blockchain facade exposes methods that call the [Issuer module's smart contract](#smart-contracts) public methods. The facade methods use the [ethers.js](https://docs.ethers.io/v5/) API to interact with the smart contracts. If you’re unfamiliar with how API client libraries connect to and interact with the blockchain, you can read more in our documentation [here](https://energy-web-foundation.gitbook.io/energy-web/how-tos-and-tutorials/interacting-with-a-smart-contract). 
 
 ### Implementing Facades in the Issuer API
-Facades are imported and instantiated in the [Issuer API](./issuer-api.md), where methods are called to interact with smart contracts on the blockchain. See the below implementation in the Issue Certificate Handler (source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/issue-certificate.handler.ts).
+Facades are imported and instantiated in the [Issuer API](./issuer-api.md), where the facade's methods are called to interact with smart contracts on the blockchain. See the below implementation in the Issue Certificate Handler (source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/issue-certificate.handler.ts)).
 
 ```
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';

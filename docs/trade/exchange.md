@@ -64,7 +64,7 @@ export class AccountService {
 You can read more about dependency injection in NestJS [here](https://docs.nestjs.com/providers#dependency-injection). You can read more about using the repository design pattern with TypeORM in NestJS applications [here](https://docs.nestjs.com/recipes/sql-typeorm). 
 
 ## Exchange Architecture
-This NestJS applicaton is broken down into NestJS modules or 'pods' that manage different features/functionalities of the Exchange: 
+This NestJS applicaton is broken down into NestJS modules or 'pods' that manage the Exchange functionalities: 
 - [Account](#account)
 - [Asset](#asset)
 - [Bundle](#bundle)

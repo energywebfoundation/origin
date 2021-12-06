@@ -19,7 +19,7 @@ const address = await this.accountDeployerService.deployAccount();
 
 await this.repository.save({ userId, address });
 ```
-[soucre](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange/src/pods/account/account.service.ts#L54)
+[source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange/src/pods/account/account.service.ts#L54)
 
 ## Receving and Forwarding Tokens to the Exchange 'Hot Wallet'
 The wallet address that is used to deploy the ExchangeTokenAccount contract (see above) is the address of the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet). 

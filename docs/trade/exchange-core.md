@@ -105,7 +105,7 @@ The exchange collects and queues all actions that are submitted in one tick into
 ```
 private pendingActions = List<OrderBookAction<TProduct, TProductFilter>>();
 ```
-[source]
+[source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/trade/exchange-core/src/MatchingEngine.ts#L52)
 
  The action is of type [OrderBookAction](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange-core/src/MatchingEngine.ts#L32), and it consists of the Action Type (in the below code snippet, "ActionKind") and the Order itself. The Action Type can be 'add order', 'add direct buy', or 'cancel order', each of which are handled differently by the Matching Engine. With every tick, all queued actions are executed one after the other:
 
