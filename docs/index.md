@@ -22,7 +22,14 @@ We provide more information on EACs in the glossary [here](./user-guide-glossary
 
 The Origin SDK is comprised of [multiple SDKs](./packages.md) that can be used individually or in unison.  
 
-The core SDKs are [Device Registry](./device-registry.md), [Traceability](./traceability.md), [Trade](./trade.md), and the user interface (UI). Below we provide a brief description of each SDK's core functionality. Any company or regulator can use parts of or all SDKs to build a platform for tracking and trading EACs.
+The core SDKs are: 
++ [Device Registry](./device-registry.md)
++ [Traceability](./traceability.md) 
++ [Trade](./trade.md)  
+
+The [Origin Backend](#origin-backend) provides authorization, organization and user management functionality. 
+
+Below we provide a brief description of each SDK's core functionality and a link to its documentation. Any company or regulator can use one or several SDKs to build a platform for tracking and trading EACs.
 
 ### [Device Registry](./device-registry.md)
 
@@ -45,8 +52,6 @@ The Trade SDK is used to facilitate trading between buyers and sellers of EACs.
 This SDK is built on the basis of the order book system, where sellers post [asks](./user-guide-glossary.md#ask) and buyers post [bids](./user-guide-glossary.md#bid). When there is a match based on EAC criteria and price, the trade is executed. 
 
 See documentation for the Trade SDK [here](./trade.md). 
-
-
 
 ## Implementing Origin SDKs
 The Origin SDKs are developed to be agnostic of registry and certificate standard implementation. Depending on implementation needs, users can implement one or all of the SDKs. The [Origin Backend package](#origin-backend) provides authorization and user/organization management, however users can integrate their implementation. The User Interface module provides a front-end application infrastructure for the marketplace. 
