@@ -56,12 +56,27 @@ The [services file](https://github.com/energywebfoundation/origin/blob/master/pa
 ### Persistence
 Device information is persisted in the Origin Device Repository. The [Origin Device entity file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/origin-device.entity.ts) maps the Device data to a strongly typed entity in the repository. 
 
-Note that these fields are dependent on implementation needs and the registry that the application will integrate with. If, for example, the registry will integrate with I-REC, different or additional fields will be required to conform to I-REC's device registration standards. 
- if this device also exists in different registry other than ours (e.g. I-REC registry), this points to its ID in the other registry
+Repositories are [injected](https://docs.nestjs.com/providers#dependency-injection) into services or command handlers so they are available to use in methods:
 
-The External Registry Id is the Id of this device in another external (e.g. I-REC) registry. 
+```
+@Injectable()
+export class DeviceRegistryService {
+    constructor(
+        @InjectRepository(OriginDevice) private readonly repository: Repository<OriginDevice>,
+        private readonly queryBus: QueryBus
+    ) {}
 
-**Note** that the Smart Meter Id and External Registry Id can only be tied to one device. 
+    public async find(options?: FindManyOptions<OriginDevice>): Promise<OriginDevice[]> {
+        return this.repository.find(options);
+    }
+...
+}
+```
+[source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/devices/origin-device-registry-api/src/device-registry/device-registry.service.ts#L15)
+
+Note that the device entity fields are dependent on implementation needs and the registry that the application will integrate with. If, for example, the registry will integrate with I-REC, different or additional fields will be required to conform to I-REC's device registration standards. 
+
+The External Registry Id is the Id of this device in another external (e.g. I-REC) registry. **Note** that the Smart Meter Id and External Registry Id can only be tied to one device. 
 
 ### Reference Implentation
 - [Devices User Guide](../device-guides/device-guide-intro.md)

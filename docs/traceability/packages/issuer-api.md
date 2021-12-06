@@ -60,6 +60,9 @@ export class ApproveCertificationRequestHandler
     constructor(
         @InjectRepository(CertificationRequest)
         private readonly repository: Repository<CertificationRequest>,
+    )
+...
+}
 ```
 [source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/traceability/issuer-api/src/pods/certification-request/handlers/approve-certification-request.handler.ts#L15)
 
