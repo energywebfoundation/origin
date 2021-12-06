@@ -55,7 +55,7 @@ export class TransferController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: [Transfer],
-        description: 'Get claimed my transfers'
+        description: 'Get my claimed transfers'
     })
     public async getMyClaimTransfers(
         @UserDecorator() { ownerId }: ILoggedInUser
