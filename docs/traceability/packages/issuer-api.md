@@ -115,7 +115,7 @@ The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/
 ```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts#L34)
 
-The blockchain facadades use this method on the blockchain properties to create new instances of contracts:
+The blockchain facades use the wrap method to create new instances of smart contracts:
 
 ```
         if (!isPrivate) {
@@ -133,7 +133,7 @@ The blockchain facadades use this method on the blockchain properties to create 
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/traceability/issuer-api/src/pods/certificate/handlers/issue-certificate.handler.ts#L30)
 
 
-The blockchain properties [controller](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.controller.ts) manages requests and responses to the client. The [service](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.service.ts) provides methods to fetch and save the blockchain property data to the repository. Blockchain properties are needed to establish the RPC connection and interact with the Certificate smart contracts on the blockchain.  
+The blockchain properties [controller](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.controller.ts) manages requests and responses to the client. The [service](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.service.ts) provides methods to fetch and persist the blockchain property data to the repository. 
 
 The [Data Transfer Object (DTO)](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.dto.ts) file provides a representation of the data that is exposed to the endpoint consumer of the controller methods.  
 
