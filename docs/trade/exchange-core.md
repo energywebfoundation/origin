@@ -45,7 +45,7 @@ export class AskPriceStrategy implements IPriceStrategy {
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/strategy/AskPriceStrategy.ts)
 
 #### Order Creation TimePick Strategy
-If the [bid](../user-guide-glossary.md#ask) price was created first, use the bid price. Otherwise, use the ask price: 
+If the [bid](../user-guide-glossary.md#bid) price was created first, use the bid price. Otherwise, use the ask price: 
 ```
 export class OrderCreationTimePickStrategy implements IPriceStrategy {
     pickPrice(ask: IOrder, bid: IOrder): number {

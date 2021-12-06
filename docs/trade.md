@@ -1,5 +1,5 @@
 # Trade SDK
-[**Source code on GitHub** ](https://github.com/energywebfoundation/origin/tree/master/packages/trade)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade)
 
 ## Overview
 The Trade SDK is responsible for enabling an order book style exchange for [Energy Attribute Certificates](./user-guide-glossary.md#energy-attribute-certificates). It is designed to support different types and standards of EACs, and matching scenarios and criteria. This SDK integrates with the [Traceability SDK](./traceability.md) to allow for trading of Energy Attribute Certificates on the blockchain.  

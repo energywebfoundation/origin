@@ -17,7 +17,7 @@ This functionality includes:
 + Persisting concerns for the above functionalities 
 
 ## Persistence  
-The Trade SDK uses a relational database for Persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the entity.ts files in each pod, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)).
+The Trade SDK uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the entity.ts files in each pod, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)).
 
 ```
 @Entity({ name: `${DB_TABLE_PREFIX}_account` })
@@ -37,17 +37,9 @@ export class Account extends ExtendedBaseEntity {
    address: string;
 }
 ```
-The following Exchange components are mapped to entities and are persisted in tables (repositories) in the “exchange” database. 
-+ Asset
-+ Bundle
-+ Bundle Trade
-+ Demand
-+ Order
-+ Trade Entity
-+ Transfer
-+ Supply  
+[source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/account/account.entity.ts) 
 
-Repositories are [injected](https://docs.nestjs.com/providers#dependency-injection) into services so they are available to use in API endpoints. 
+Repositories are [injected](https://docs.nestjs.com/providers#dependency-injection) into services or command handlers so they are available to use in methods: 
 
 ```
 import { Account } from './account.entity';
@@ -66,6 +58,9 @@ export class AccountService {
        this.requestQueue.pipe(concatMap((id) => this.process(id))).subscribe();
    }
 ``` 
+[source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/trade/exchange/src/pods/account/account.service.ts#L19)  
+
+ 
 You can read more about dependency injection in NestJS [here](https://docs.nestjs.com/providers#dependency-injection). You can read more about using the repository design pattern with TypeORM in NestJS applications [here](https://docs.nestjs.com/recipes/sql-typeorm). 
 
 ## Exchange Architecture
@@ -83,9 +78,9 @@ This NestJS applicaton is broken down into NestJS modules or 'pods' that manage 
 - [Transfer](#transfer)
 
 In general, each 'pod' or NestJS module has:  
-  + A controller that manages requests and responses to the client
-  + An entity file that maps an entity to a database repository
-  + A service file that provides methods to fetch and transform data
+  + A [controller](https://docs.nestjs.com/controllers) that manages requests and responses to the client
+  + A .entity file that maps an entity to a database repository
+  + A .service file that provides methods to fetch and transform data
   + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
   + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application
 
@@ -122,7 +117,7 @@ User Guides on Exchange Deposit Account:
 [Assets](../user-guide-glossary.md#asset) represent [Energy Attribute Certificates](../user-guide-glossary.md#energy-attribute-certificate) that are active (tradeable) on the exchange. Every asset is tied to one specific device and a specific generation time frame. The Asset pod provides services to fetch and create assets.
 
 #### Persistence
-Assets are persisted in the Asset repository.  Because each assest represents an on-chain EAC, the asset has a blockchain address where it is deployed on the chain. It also has a tokenId that from the certificate that was granted by the issuing body. You can view the Asset entity [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/asset/asset.entity.ts). 
+Assets are persisted in the Asset repository.  Because each assest represents an on-chain EAC, each asset has a blockchain address. It also has a tokenId that from the certificate that was granted by the issuing body. You can view the Asset entity [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/asset/asset.entity.ts). 
 
 ```
    private async create(asset: CreateAssetDTO, transaction: EntityManager) {
@@ -147,7 +142,7 @@ Assets are persisted in the Asset repository.  Because each assest represents an
 ### Bundle 
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/bundle)
 
-Bundles are products that are compiled from a number of different EACs that are offered to buyers as one entity. You can read more about bundles in the glossary [here](../user-guide-glossary.md#bundle). The Bundle pod provides services for:  
+Bundles are products that are compiled from a number of different EACs that are offered to buyers as one entity. You can read more about bundles in the glossary [here](../user-guide-glossary.md#bundle).  The Bundle pod provides services for:  
 
 + CRUD operations for a user’s bundles (creating, retrieving, updating, cancelling)  
 + Trading (buying/trading) bundles on the exchange  
@@ -166,7 +161,7 @@ User Guides on bundles:
 ### Demand
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/demand)
 
-Demands are automatically recurring bids. By creating a demand, buyers tell the system to automatically create a [bid]((../user-guide-glossary.md#bid)) with the same criteria once every defined time period. You can read more about demands in the glossary [here](../user-guide-glossary.md#demand). 
+Demands are automatically recurring bids. By creating a demand, buyers tell the system to automatically create a [bid](../user-guide-glossary.md#bid) with the same criteria once every defined time period. You can read more about demands in the glossary [here](../user-guide-glossary.md#demand). 
 
 The Demand pod provides services for managing (fetching, creating, updating, pausing, resuming, cancelling) demands. 
 
@@ -184,7 +179,7 @@ User Guides on demands:
 The matching engine service initializes the [Matching Engine](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts) from the @energyweb/exchange-core module and sends order submissions, queries and cancellations to the Matching Engine. The Matching Engine is initialized with the price strategy, which is set in the configuration file. There are two price strategies:  
 
   1. Ask Price Strategy (default): Orders are bought at the defined Ask price
-  2. Order Creation Time Pick Strategy: FILL IN
+  2. Order Creation Time Pick Strategy: If the bid price was created first, use the bid price. Otherwise, use the ask price: 
 
 #### Reference Implentation
 User Guides on order matching:
@@ -251,7 +246,7 @@ The Transfer pod handles:
 + Depositing certificates onto the Exchange. Once deposited onto the exchange, a certificate becomes an [Asset](../user-guide-glossary.md#asset).  
 + Withdrawing certificates from the Exchange (into the user's Blockchain Inbox)
 + Claiming (retiring) certificate(s)
-+ Transfering certificates to another address  
++ Transfering certificate(s) to another address  
 
 #### Persistence 
 Transfers are persisted in the Transfer repository. Each entity stores the blockchain address of the certificate, and the [Transfer Direction](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer-direction.ts), which denotes whether the transfer is a deposit, withdrawal, claim, or is being sent to another blockchain address. You can view the Transfer entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer.entity.ts).

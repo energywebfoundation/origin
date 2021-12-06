@@ -1,5 +1,5 @@
 # Issuer  
-**Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer) 
+[**Source code on GitHub**:](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer) 
 
 ## Overview of Components
 The Issuer package has four components:      

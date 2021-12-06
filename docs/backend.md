@@ -28,7 +28,49 @@ In general, each 'pod' or NestJS module has:
   + A .entity file that maps an entity to the database repository
   + A .service file that provides methods to fetch and transform data
   + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
-  + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application
+  + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application 
+
+## Persistence
+The Origin Backend uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each pod, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
+
+```
+@Entity('email_confirmation')
+export class EmailConfirmation extends ExtendedBaseEntity implements IEmailConfirmation {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @OneToOne(() => User)
+    @JoinColumn()
+    user: User;
+
+    @Column()
+    @IsBoolean()
+    confirmed: boolean;
+
+    @Column()
+    @IsString()
+    token: string;
+
+    @Column()
+    @IsInt()
+    @Min(0)
+    expiryTimestamp: number;
+}
+```
+[source](https://github.com/energywebfoundation/origin/blob/master/packages/origin-backend/src/pods/email-confirmation/email-confirmation.entity.ts)
+
+Repositories are [injected](https://docs.nestjs.com/providers#dependency-injection) into services or command handlers so they are available to use in methods:
+
+```
+@Injectable()
+export class EmailConfirmationService {
+    constructor(
+        @InjectRepository(EmailConfirmation)
+        private readonly repository: Repository<EmailConfirmation>,
+        private readonly eventBus: EventBus
+    ) {}
+```
+[source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/origin-backend/src/pods/email-confirmation/email-confirmation.service.ts#L18)
 
 
 ### admin
