@@ -250,31 +250,3 @@ The Transfer pod handles:
 
 #### Persistence 
 Transfers are persisted in the Transfer repository. Each entity stores the blockchain address of the certificate, and the [Transfer Direction](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer-direction.ts), which denotes whether the transfer is a deposit, withdrawal, claim, or is being sent to another blockchain address. You can view the Transfer entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer.entity.ts).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
