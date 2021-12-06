@@ -52,8 +52,10 @@ nav:
                 - Exchange-Core Package: trade/exchange-core.md
                 - Exchange Token Account Package: trade/exchange-token-account.md
                 - Exchange IO ERC-1888 Package: trade/exchange-io-erc1888.md
-          - Device Registry: device-registry.md
-          - Organizations: organizations.md
+          - Device Registry: 
+                - Device Registry SDK Overview: device-registry.md
+                - Device Registry API Package: device-registry/device-registry-api.md
+    - Origin Backend: backend.md
     - SDK Reference:
           - '@energyweb/issuer-irec-api-wrapper': sdk-reference/issuer-irec-api-wrapper/modules.md
     - Cookbook:
