@@ -296,7 +296,15 @@ describe('Deposits using deployed registry', () => {
 
         const claim: RequestClaimDTO = {
             assetId,
-            amount: tokenAmount
+            amount: tokenAmount,
+            claimData: {
+                beneficiary: 'EnergyWeb',
+                location: '133 N. St, Orange County, CA 19444',
+                countryCode: 'GB',
+                periodStartDate: '2021-11-08T17:11:11.883Z',
+                periodEndDate: '2021-11-08T17:11:11.883Z',
+                purpose: 'No idea'
+            }
         };
 
         const balance = await getBalance(exchangeAddress, tokenId);
@@ -321,7 +329,16 @@ describe('Deposits using deployed registry', () => {
         }).sync();
 
         const [claimDetails] = await certificate.getClaimedData();
-        expect(claimDetails.claimData.beneficiary).to.equal(depositAddress);
+        expect(claimDetails.claimData).to.deep.equal(claim.claimData);
+
+        const { body: transfers }: { body: Transfer[] } = await request(app.getHttpServer())
+            .get('/transfer/all/claimed')
+            .expect(HttpStatus.OK);
+
+        const [claimed] = transfers;
+        expect(transfers.length).to.be.gte(1);
+        expect(claimed.userId).equals(user1Id);
+        expect(claimed.direction).equals(TransferDirection.Claim);
     });
 
     it('should batch claim from the exchange', async () => {
@@ -333,7 +350,15 @@ describe('Deposits using deployed registry', () => {
         const asset2Id = await depositToExchangeAddress(token2Amount, token2Id);
 
         const batchClaim: RequestBatchClaimDTO = {
-            assetIds: [assetId, asset2Id]
+            assetIds: [assetId, asset2Id],
+            claimData: {
+                beneficiary: 'EnergyWeb',
+                location: '133 N. St, Orange County, CA 19444',
+                countryCode: 'GB',
+                periodStartDate: '2021-11-08T17:11:11.883Z',
+                periodEndDate: '2021-11-08T17:11:11.883Z',
+                purpose: 'No idea'
+            }
         };
 
         const balance = await getBalance(exchangeAddress, tokenId);
