@@ -6,7 +6,11 @@ The Exchange Token Account module contains the [TokenAccount.sol smart contract]
 When EACs are issued by the Issuing body, they are automatically deposited onto the Exchange. Users can [withdraw certificates off of the exchange](./exchange-io-erc1888.md#withdrawal-processor) at any time. This means that the asset is moved from the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet) to the users Blockchain account. Inversely, users can at any time transfer certificates that are in their Blockchain account into their Exchange Deposit account, which forwards them to the Exchange hot wallet where they are active on the exchange. 
 
 ## Exchange Deposit Account Deployment
-The Exchange Token Account module [exports a Token Account factory](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/src/index.ts) that can be used to deploy new instances of the Token Account. The factory method is used in the Exchange module's Account Deployer Service to deploy new accounts. The TokenAccountFactory is initialized with the wallet 
+The Exchange Token Account module [exports a Token Account factory](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/src/index.ts) that can be used to deploy new instances of the Token Account. The factory method is used in the Exchange module's Account Deployer Service to deploy new accounts.  
+
+The 'wallet' used to initialize the TokenAccountFactory is the private key used for exchange accounts deployment. This should be set in the .env file.  
+
+The 'walletAddress' used as a parameter in the 'deploy' method is the public key of the Exchange's hot wallet. This should be set in the .env file. 
 ```
 const account = await new factory.TokenAccountFactory(wallet).deploy(walletAddress);
 
