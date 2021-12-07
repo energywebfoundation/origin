@@ -88,6 +88,31 @@ Organizations can define any blockchain address to release the tokens to their w
 
 In the application, withdrawals are initiated from the [WithdrawalRequestedEventHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/withdrawal-processor/withdrawal-requested-event.handler.ts) and [ClaimRequestedEventHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/withdrawal-processor/claim-requested-event.handler.ts). Both of these even handlers are triggered from events in the [Exchange module's transfer service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer.service.ts) (WithdrawalRequestedEvent and ClaimRequestedEvent).
 
+The Withdrawal Processor Service sets the wallet using the Exchange Wallet private key. **This is the private key for the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet)**. The wallet is set as the active user in the Blockchain Properties object:
+
+```
+const walletPrivateKey = this.configService.get<string>('EXCHANGE_WALLET_PRIV');
+...
+ this.wallet = new Wallet(walletPrivateKey, provider);
+
+this.blockchainProperties = {
+    web3: provider,
+    registry: Contracts.factories.RegistryExtendedFactory.connect(
+    registryAddress,
+                this.wallet
+    ),
+    issuer: Contracts.factories.IssuerFactory.connect(issuerAddress, this.wallet),
+    activeUser: this.wallet
+};
+
+    this.logger.log(
+        `Initializing transfer processor for ${this.blockchainProperties.registry.address} using ${this.wallet.address}`
+    );
+}
+```
+[souce](https://github.com/energywebfoundation/origin/blob/a9b0da027c75b76cb434652374cfbdd9211f9e0e/packages/trade/exchange-io-erc1888/src/withdrawal-processor/withdrawal-processor.service.ts#L36)
+
+
 The withdrawal processor uses the [Certificate facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/Certificate.ts) to access and interact with the certificate on the blockchain: 
 ```
   const certificate = await new Certificate(
