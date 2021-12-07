@@ -33,14 +33,14 @@ The Device Registry SDK is used to register, manage and fetch devices. ‘Device
 See documentation for the Device Registry SDK [here](./device-registry.md). 
 
 ### [**Traceability SDK**](./traceability.md)
-The Traceability SDK is used to enable certificate issuers (i.e. I-REC) to mint EAC's upon request based on provided generation evidence.  
+The Traceability SDK is used to enable certificate issuers (i.e. I-REC) to mint on-chain EAC's upon request based on provided generation evidence, and to manage the on-chain lifecycle (transferring, claiming) of certificates. This SDK contains the smart contracts for certificate issuance, as well as methods to interact with smart contracts on the blockchain.  
 
-In addition to minting new EAC’s, the Traceability SDK also ensures that the certificate lifecycle and its owners are in compliance with  regulation at all times. Each issuing standard (e.g. I-REC) has its own implementation of the traceability SDK to meet its regulatory needs. To ensure compliance with widely adopted standards EW Origin team is working directly with regulators and standardization bodies.  
+The Traceability SDK ensures that the certificate lifecycle and its owners are in compliance with regulation at all times. Each issuing standard (e.g. I-REC) has its own implementation of the traceability SDK to meet its regulatory needs. To ensure compliance with widely adopted standards EW Origin team is working directly with regulators and standardization bodies.  
 
 See documentation for the Traceability SDK [here](./traceability.md). 
 
 ### [**Trade SDK**](./trade.md)
-The Trade SDK is used to facilitate trading between buyers and sellers of EACs.   
+The Trade SDK is used to facilitate trading of EACs between buyers and sellers, and to manage EACs that are active on the Exchange.    
 
 This SDK is built on the basis of the [order book](./user-guide-glossary.md#order-book) system, where sellers post [asks](./user-guide-glossary.md#ask) and buyers post [bids](./user-guide-glossary.md#bid). When there is a match based on [EAC criteria](./trade/matching-criteria.md) and price, a trade is executed. 
 
