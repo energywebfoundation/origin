@@ -100,7 +100,7 @@ All possible events that happen on the Exchange can be categorized into **trade 
 
 Events are triggered by actions. [Adding orders](#adding-orders) and [adding direct buys](#adding-direct-buys) are actions that result in trading events while [canceling an order](#cancelling-orders) results in a status change. 
 
-The exchange collects and queues all actions that are submitted in one tick into a pending action List.  One tick is the defined execution time frame of the exchange, and it’s set to 1 second by default.
+The exchange collects and queues all actions that are submitted in one tick into a pending action List.  One tick is the defined execution time frame of the exchange, and it’s [set to a 1 second interval by default in the Matching Engine Service using the config's EXCHANGE_MATCHING_INTERVAL setting](https://github.com/energywebfoundation/origin/blob/a9b0da027c75b76cb434652374cfbdd9211f9e0e/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L100).
 
 ```
 private pendingActions = List<OrderBookAction<TProduct, TProductFilter>>();
@@ -112,7 +112,7 @@ private pendingActions = List<OrderBookAction<TProduct, TProductFilter>>();
 ```
 public tick(): void {
         this.triggers.next(null);
-    }
+}
 
 private trigger() {
         const actions = this.pendingActions;
