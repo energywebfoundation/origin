@@ -26,7 +26,7 @@ await this.repository.save({ userId, address });
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange/src/pods/account/account.service.ts#L54)
 
 ## Receving and Forwarding Tokens to the Exchange 'Hot Wallet'
-The wallet address that is used to deploy the ExchangeTokenAccount contract (see above) is the address of the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet). 
+The wallet address that is used to deploy the ExchangeTokenAccount contract (see above) is the address (public key) of the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet). 
 
 When ERC-1155 tokens are deposited to the Exchange Deposit account, the Token Account smart contract forwards them to the Exchange's hot wallet using the safeTransferFrom method: 
 ```
@@ -44,6 +44,7 @@ When ERC-1155 tokens are deposited to the Exchange Deposit account, the Token Ac
 ```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-token-account/contracts/TokenAccount.sol#L17)
 
+The hot wallet holds all ERCs that are active on the Exchange. 
 
 
 

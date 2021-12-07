@@ -1,6 +1,6 @@
 # Exchange Inbox 
 
-The Exchange Inbox allows admin users to sell, withdraw, transfer and export certificates that are currently in the organization’s Exchange Deposit Address.  Certificates in this inbox are in the custody of the platform operator and are active on the exchange. This inbox is associated with your Organization's [Exchange Deposit Address](../user-guide-reg-onboarding.md#exchange-deposit-address).   
+The Exchange Inbox allows admin users to sell, withdraw, transfer and export certificates that are currently on the Exchange. Certificates in this inbox are held in the exchange's [hot wallet](../user-guide-glossary.md#hotwallet).  
 
 **When the issuing body approves a certificate request, the certificate is first deposited into the Exchange Inbox.** Certificates must be in the Exchange Inbox in order to be:  
 
@@ -31,7 +31,9 @@ Note that by default, all of the Mwh that the certificate represents will be for
 
 When you are satisfied with the price and number of Mwh to sell, click ‘Sell Certificate’. This will create an [ask](../user-guide-glossary.md#ask) on the exchange:
 
-![exchange-ask](../images/exchange/exchange-ask.png)
+![exchange-ask](../images/exchange/exchange-ask.png)  
+
+Once a Certificate is posted for sale, it is "locked" and cannot be withdrawn or transferred. In order to unlock the Certificate, you must first cancel the ask. 
 
 ## Withdraw
 

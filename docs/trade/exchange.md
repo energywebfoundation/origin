@@ -4,7 +4,7 @@
 The Exchange package is a [NestJS](https://docs.nestjs.com/) application that provides backend services to manage the Exchange's functionality (account management and buying, selling and transferring [Energy Attribute Certificates](../user-guide-glossary.md#energy-attribute-certificate) and [bundles](../user-guide-glossary.md#bundle)). 
 
 This functionality includes:  
-+ Providing API endpoints to interact with Trade features. Trade features are described in more detail [below](#exchange-entities). 
++ Providing API endpoints to perform Trade module functionalities. These are described in more detail [below](#exchange-entities). 
 + Creating (deploying) new [Exchange Deposit Addresses](../user-guide-glossary.md#exchange-deposit-account) on the Energy Web Chain
 + Depositing, withdrawing, transferring and retiring (claiming) certificates
 + Creating, managing and selling [Bundles](../user-guide-glossary.md#bundle)
@@ -66,6 +66,7 @@ You can read more about dependency injection in NestJS [here](https://docs.nestj
 ## Exchange Architecture
 This NestJS applicaton is broken down into NestJS modules or 'pods' that manage the Exchange functionalities: 
 - [Account](#account)
+- [Account Balance](#account-balance)
 - [Asset](#asset)
 - [Bundle](#bundle)
 - [Demand](#demand)
@@ -92,6 +93,12 @@ The below gives an overview the of the package architecture, however the NestJS 
 - [NestJS TypeORM Integration](https://docs.nestjs.com/techniques/database)
 - [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
+### Accounting Services
+
+
+
+
+
 ### Account  
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/account)
 
@@ -108,8 +115,37 @@ The user id and their associated blockchain address are persisted in the Account
 ```
 #### Reference Implentation
 User Guides on Exchange Deposit Account:
-- [Accounts and User Management: Connecting to the Blockchain](../user-guide-reg-onboarding.md#exchange-deposit-address)
+- [Accounts and User Management: Connecting to the Blockchain](../user-guide-reg-onboarding.md#exchange-deposit-address) 
 
+### Account Balance
+The Account Balance module has two services:
+
+1. Account Balance Service
+This service provides a method to register [assets](../user-guide-glossary.md#asset) to a user:
+```
+    private assetSources = Array<IAccountableAsset>();
+
+    public registerAssetSource(source: IAccountableAsset): void {
+        const { name } = source.constructor;
+
+        this.logger.debug(`Registering asset source: ${name}`);
+
+        if (this.assetSources.find((i) => i.constructor.name === name)) {
+            this.logger.debug('Asset source already registered');
+            return;
+        }
+
+        this.assetSources.push(source);
+    }
+```
+[source](https://github.com/energywebfoundation/origin/blob/fe7af8709103f37240253dd0b517f97099447831/packages/trade/exchange/src/pods/account-balance/account-balance.service.ts#L15)
+
+The remaining methods in the class use the assetSources Array to calculate a user's available and locked assets, and to return their current asset amounts. 
+
+2. Account Balance Asset Service
+This service returns a users locked and available assets. 
+
+**This class is the base for all of the Accounting Services in the Exchange's modules.** 
 
 ### Asset
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/asset)
@@ -151,6 +187,9 @@ Bundles are products that are compiled from a number of different EACs that are 
 There are two repositories pertaining to bundles:  
 1. **Bundle Repository:** Persists information related to a bundle (creating, cancelling, updating status of bundles). S
 2. **Bundle Trade Repository:** Persists information related to bundle trade (buying and selling). Remember that bundles are not sold via the order book on the exchange; they must be purchased directly. 
+
+#### Bundle Accounting Service
+The [Bundle Accounting Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/bundle/bundle-accounting.service.ts) extends the [Account Balance Asset Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/account-balance/account-balance-asset.service.ts). The public methods return the locked and available bundle assets for an owner. 
 
 #### Reference Implentation
 User Guides on bundles:    
@@ -198,6 +237,9 @@ User Guides on order matching:
 #### Persistence 
 Orders are persisted in the Order repository. You can view the Order entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/order/order.entity.ts).  
 
+### Order Accounting Service 
+The [Order Accounting Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/order/order-accounting.service.ts) extends the [Account Balance Asset Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/account-balance/account-balance-asset.service.ts). The public methods retrieve active bids and asks for an owner, and then calculates the current locked and available assets for that owner. 
+
 ### Post for Sale
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/post-for-sale)  
 
@@ -236,7 +278,10 @@ The Trade pod manages the fetching and persisting of trades, and updating the co
 The trade service uses the NestJS EventBus class to publish events related to emit trade events. 
 
 #### Persistence 
-Trades are persisted in the Trade repository. You can view the Trade entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/trade/trade.entity.ts.
+Trades are persisted in the Trade repository. You can view the Trade entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/trade/trade.entity.ts.  
+
+#### Trade Accounting Service 
+The [Trade Accounting Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/trade/trade-accounting.service.ts) extends the [Account Balance Asset Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/account-balance/account-balance-asset.service.ts). The public method retrieves all trades for an owner, and then calculates the current available assets for that owner. 
 
 ### Transfer 
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/transfer) 
@@ -249,4 +294,7 @@ The Transfer pod handles:
 + Transfering certificate(s) to another address  
 
 #### Persistence 
-Transfers are persisted in the Transfer repository. Each entity stores the blockchain address of the certificate, and the [Transfer Direction](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer-direction.ts), which denotes whether the transfer is a deposit, withdrawal, claim, or is being sent to another blockchain address. You can view the Transfer entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer.entity.ts).
+Transfers are persisted in the Transfer repository. Each entity stores the blockchain address of the certificate, and the [Transfer Direction](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer-direction.ts), which denotes whether the transfer is a deposit, withdrawal, claim, or is being sent to another blockchain address. You can view the Transfer entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer.entity.ts).  
+
+#### Transfer Accounting Service 
+The [Transfer Accounting Service](link) extends the [Account Balance Asset Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/account-balance/account-balance-asset.service.ts). The public method retrieves all transfers for an owner, and then calculates the current available assets for that owner based on the transfer directions (withdrawal, claim, send, deposit). 
