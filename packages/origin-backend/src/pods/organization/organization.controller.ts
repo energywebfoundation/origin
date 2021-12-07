@@ -49,6 +49,7 @@ import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
 import { OrganizationDocumentOwnershipMismatchError } from './errors/organization-document-ownership-mismatch.error';
 import { OrganizationNameAlreadyTakenError } from './errors/organization-name-taken.error';
 import { OrganizationService } from './organization.service';
+import { SetOwnershipDTO } from './dto';
 
 @ApiTags('organization')
 @ApiBearerAuth('access-token')
@@ -307,6 +308,26 @@ export class OrganizationController {
         }
 
         return this.organizationService.setBlockchainAddress(organizationId, signedMessage);
+    }
+
+    @Put('/self-ownership')
+    @UseGuards(AuthGuard(), RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiBody({ type: SetOwnershipDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: "Set organization's self ownership flag"
+    })
+    public async setSelfOwnershipFlag(
+        @UserDecorator() { organizationId }: ILoggedInUser,
+        @Body() { selfOwnership }: SetOwnershipDTO
+    ): Promise<SuccessResponseDTO> {
+        if (!organizationId) {
+            throw new NotFoundException('User is not a part of an organization.');
+        }
+
+        return this.organizationService.setSelfOwnershipFlag(organizationId, selfOwnership);
     }
 
     private ensureOrganizationMemberOrAdmin(user: ILoggedInUser, organizationId: number) {

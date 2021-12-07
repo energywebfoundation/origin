@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, plainToClass } from 'class-transformer';
-import { IsArray, IsISO31661Alpha2, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsISO31661Alpha2, IsOptional, IsString } from 'class-validator';
 import { Organization } from '../organization.entity';
 import { PublicOrganizationInfoDTO } from './public-organization-info.dto';
 
@@ -59,6 +59,11 @@ export class FullOrganizationInfoDTO extends PublicOrganizationInfoDTO {
     @IsString()
     @IsOptional()
     blockchainAccountSignedMessage?: string;
+
+    @ApiPropertyOptional({ type: Boolean })
+    @IsBoolean()
+    @IsOptional()
+    selfOwnership?: boolean;
 
     public static fromPlatformOrganization(
         platformOrganization: Organization
