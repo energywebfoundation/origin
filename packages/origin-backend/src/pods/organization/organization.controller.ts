@@ -243,7 +243,7 @@ export class OrganizationController {
         return ResponseSuccess();
     }
 
-    @Put(':id/remove-member/:memberId')
+    @Put('/:id/remove-member/:memberId')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiResponse({
@@ -263,7 +263,7 @@ export class OrganizationController {
         return ResponseSuccess();
     }
 
-    @Put(':id/change-role/:userId')
+    @Put('/:id/change-role/:userId')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiBody({ type: UpdateMemberDTO })
@@ -291,6 +291,27 @@ export class OrganizationController {
         return ResponseSuccess();
     }
 
+    @Put('/:id/self-ownership')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiBody({ type: SetOwnershipDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: "Set organization's self ownership flag"
+    })
+    public async setSelfOwnershipFlag(
+        @UserDecorator() { organizationId, hasRole }: ILoggedInUser,
+        @Param('id', new ParseIntPipe()) id: number,
+        @Body() { selfOwnership }: SetOwnershipDTO
+    ): Promise<SuccessResponseDTO> {
+        if (!hasRole(Role.Admin) && organizationId !== id) {
+            throw new ForbiddenException("You cannot change organization's self ownership flag");
+        }
+
+        return this.organizationService.setSelfOwnershipFlag(id, selfOwnership);
+    }
+
     @Post('chain-address')
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
     @ApiBody({ type: BindBlockchainAccountDTO })
@@ -308,26 +329,6 @@ export class OrganizationController {
         }
 
         return this.organizationService.setBlockchainAddress(organizationId, signedMessage);
-    }
-
-    @Put('/self-ownership')
-    @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.Admin)
-    @ApiBody({ type: SetOwnershipDTO })
-    @ApiResponse({
-        status: HttpStatus.OK,
-        type: SuccessResponseDTO,
-        description: "Set organization's self ownership flag"
-    })
-    public async setSelfOwnershipFlag(
-        @UserDecorator() { organizationId }: ILoggedInUser,
-        @Body() { selfOwnership }: SetOwnershipDTO
-    ): Promise<SuccessResponseDTO> {
-        if (!organizationId) {
-            throw new NotFoundException('User is not a part of an organization.');
-        }
-
-        return this.organizationService.setSelfOwnershipFlag(organizationId, selfOwnership);
     }
 
     private ensureOrganizationMemberOrAdmin(user: ILoggedInUser, organizationId: number) {
