@@ -5,6 +5,7 @@ import { IClaimData } from '@energyweb/issuer';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 
 import { Asset } from '../asset';
+import { ClaimDataDTO } from './dto';
 import { DB_TABLE_PREFIX } from '../../utils';
 import { TransferDirection } from './transfer-direction';
 import { TransferStatus } from './transfer-status';
@@ -56,6 +57,7 @@ export class Transfer extends ExtendedBaseEntity {
     @Column()
     direction: TransferDirection;
 
+    @ApiProperty({ type: ClaimDataDTO, nullable: true, required: false })
     @Column('simple-json', { nullable: true })
     @IsOptional()
     claimData?: IClaimData;
