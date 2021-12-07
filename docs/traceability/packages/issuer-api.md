@@ -1,5 +1,5 @@
 # Issuer API
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api)
 
 The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling all Certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about the certificate lifecycle [here](../../traceability.md). 
 

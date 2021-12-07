@@ -1,5 +1,5 @@
 # Origin Backend
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend)
 
 The Origin Backend is a [NestJS](https://nestjs.com/) application that provides services for user and organization authorization and management. The Backend application can be used in conjunction with one, several or all of the [Origin SDKs](./index#origin-sdks) to provide integrated user management and authorization. 
 
@@ -74,42 +74,43 @@ export class EmailConfirmationService {
 ## Pods 
 
 ### admin
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/admin) 
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/admin) 
 
 The admin module's controller uses the [user service](#user) to fetch and update user information. 
 
 ### configuration
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/configuration)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/configuration)
 
 The configuration module fetches and updates the platform's configuration values. These values are used to populate the platform's market options. 
 
 ### email-confirmation
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/email-confirmation)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/email-confirmation)
 
 The email-confirmation module provides methods to manage the email confirmation process. When users register to join the platform, they must confirm their email. Confirmations are persisted in the Email Confirmation repository. 
 
 ### file
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/file)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/file)
 
 The email-confirmation module provides methods to fetch, update and store files. Files are uploaded to the system when registering an organization, a device or requesting certification. Files are persisted in the File repository. 
 
 ### invitation
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/invitation)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/invitation)
 
 The invitation module provides methods to manage invitations for users to join organizations. Invitations are persisted in the Invitation repository. 
 
 ### organization
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/organization)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/organization)
 
 The invitation module provides methods to manage fetch, create and update Organizations and their Blockchain Account Addresses. Organizations are persisted in the Organization Repository. 
 
 ### user 
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/user)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/user)
 
 The user module provides methods to manage fetch, create and update users. Users are persisted in the User Repository. 
 
 ## Origin Backend-Core Package
-[**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-core)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-core)
+
 The Origin Backend Core package provides the interfaces, types and enums for Origin Backend.
 
 
