@@ -1,6 +1,6 @@
 # Exchange Inbox 
 
-The Exchange Inbox allows admin users to sell, withdraw, transfer and export certificates that are currently on the Exchange. Certificates in this inbox are held in the exchange's [hot wallet](../user-guide-glossary.md#hotwallet).  
+The Exchange Inbox allows admin users to sell, withdraw, transfer and export certificates that are currently on the Exchange. Certificates in this inbox are held in the [Exchange wallet](../user-guide-glossary.md#exchange-wallet).  
 
 **When the issuing body approves a certificate request, the certificate is first deposited into the Exchange Inbox.** Certificates must be in the Exchange Inbox in order to be:  
 

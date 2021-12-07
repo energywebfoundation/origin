@@ -1,7 +1,7 @@
 # @energyweb/exchange-io-erc1888
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888) 
 
-@energyweb/exchange-io-erc1888 monitors for deposits of [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) volumes onto the Exchange (into the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet)), and executes withdrawals and transfers. You can read more about the ERC-1888 in the context of Origin [here](../traceability.md#energy-attribute-certificates-on-the-blockchain).
+@energyweb/exchange-io-erc1888 monitors for deposits of [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) volumes onto the Exchange (into the Exchange [Exchange wallet](../user-guide-glossary.md#exchange-wallet)), and executes withdrawals and transfers. You can read more about the ERC-1888 in the context of Origin [here](../traceability.md#energy-attribute-certificates-on-the-blockchain).
 
 This package is a NestJS application that uses [ethers.js](https://docs.ethers.io/v5/) to interact with the smart contracts on blockchain. It is tightly coupled with the [Exchange module](./exchange.md). 
 
@@ -12,7 +12,7 @@ The package has two core NestJS modules:
 ## deposit-watcher
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/deposit-watcher)
 
-The [deposit-watcher service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts) sets up a listener for transfers (deposits) of [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) from the Registry to the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet), and emits events to the DepositDiscoveredEventHandler when they occur. 
+The [deposit-watcher service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts) sets up a listener for transfers (deposits) of [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) from the Registry to the [Exchange wallet](../user-guide-glossary.md#exchange-wallet), and emits events to the DepositDiscoveredEventHandler when they occur. 
 
 When the deposit-watcher module initializes, The service does the following: 
 
@@ -84,11 +84,11 @@ As long as EACs are not currently in an active ask (i.e. posted for sale) on the
 
 Any EAC volumes that are in an active ask (posted for sale) are locked so that they can be sent to a buyer once a match is made. A user can cancel an ask, and *then* withdraw those volumes from the exchange, but the ask must be cancelled first. 
 
-Organizations can define any blockchain address to release the tokens to their withdrawal requests. In the user interface, this is known as the [Blockchain Account Address](../user-guide-reg-onboarding.md#organization-blockchain-account-address). If successful, the EAC tokens are transferred from the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet) to this blockchain address. The EAC is now no longer in the custody of the Exchange operator but is owned by the user on-chain. The same EACs now would have to be re-deposited to be traded on the Exchange again.
+Organizations can define any blockchain address to release the tokens to their withdrawal requests. In the user interface, this is known as the [Blockchain Account Address](../user-guide-reg-onboarding.md#organization-blockchain-account-address). If successful, the EAC tokens are transferred from the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) to this blockchain address. The EAC is now no longer in the custody of the Exchange operator but is owned by the user on-chain. The same EACs now would have to be re-deposited to be traded on the Exchange again.
 
 In the application, withdrawals are initiated from the [WithdrawalRequestedEventHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/withdrawal-processor/withdrawal-requested-event.handler.ts) and [ClaimRequestedEventHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/withdrawal-processor/claim-requested-event.handler.ts). Both of these even handlers are triggered from events in the [Exchange module's transfer service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/transfer/transfer.service.ts) (WithdrawalRequestedEvent and ClaimRequestedEvent).
 
-The Withdrawal Processor Service sets the wallet using the Exchange Wallet private key. **This is the private key for the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet)**. The wallet is set as the active user in the Blockchain Properties object:
+The Withdrawal Processor Service sets the wallet using the Exchange Wallet private key. **This is the private key for the [Exchange wallet](../user-guide-glossary.md#exchange-wallet)**. The wallet is set as the active user in the Blockchain Properties object:
 
 ```
 const walletPrivateKey = this.configService.get<string>('EXCHANGE_WALLET_PRIV');
@@ -126,7 +126,7 @@ The transfer request is piped through the transfer queue, which is facilitated b
 
 
 Depending on the transfer's direction, the service uses the methods from the [Certificate facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/Certificate.ts) to:
-- Withdrawal a certificate from the exchange (i.e. from the exchange's [hot wallet]((../user-guide-glossary.md#hot-wallet)) address) to the organization's Blockchain Acount Address
+- Withdrawal a certificate from the exchange (i.e. from the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) address) to the organization's Blockchain Acount Address
 - Transfer a certificate to another blockchain address
 - Claim (retire) a certificate
 ```

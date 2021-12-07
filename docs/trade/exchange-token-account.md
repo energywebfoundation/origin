@@ -1,16 +1,23 @@
 # Exchange Token Account - @energyweb/exchange-token-account
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-token-account)
 
-The Exchange Token Account module contains the [TokenAccount.sol smart contract](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/contracts/TokenAccount.sol#L17). This smart contract is used to create (deploy) an organization's [Exchange Deposit account](../user-guide-glossary.md#exchange-deposit-account) on the blockchain. **This account forwards all of an organization's [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) to the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet), which stores all EACs currently active on the Exchange.**  
+The Exchange Token Account module contains the [TokenAccount.sol smart contract](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/contracts/TokenAccount.sol#L17). This smart contract is used to create (deploy) an organization's [Exchange Deposit account](../user-guide-glossary.md#exchange-deposit-account) on the blockchain. **This account forwards all of an organization's [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) to the [Exchange wallet](../user-guide-glossary.md#exchange-wallet), which stores all EACs currently active on the Exchange.**  
 
-When EACs are issued by the Issuing body, they are automatically deposited onto the Exchange. Users can [withdraw certificates off of the exchange](./exchange-io-erc1888.md#withdrawal-processor) at any time. This means that the asset is moved from the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet) to the users Blockchain account. Inversely, users can at any time transfer certificates that are in their Blockchain account into their Exchange Deposit account, which forwards them to the Exchange hot wallet where they are active on the exchange. 
+See the image below of a certificate's blockchain transactions: 
+1. First, the local issuer approves the certificate request
+2. The certificate is transferred to the Exchange Deposit address (Exchange Deposit account)
+3. The certificate is transferred from the Exchange Deposit address to the Exchange Wallet
+
+![exchangeForwarding](../images/exchangeForwarding.png)
+
+When EACs are issued by the Issuing body, they are automatically deposited onto the Exchange. Users can [withdraw certificates off of the exchange](./exchange-io-erc1888.md#withdrawal-processor) at any time. In doing so, the asset is moved from the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) to the user's Blockchain account. Inversely, users can at any time transfer certificates that are in their Blockchain account to their Exchange Deposit account, which forwards them to the Exchange wallet where they are active on the exchange. 
 
 ## Exchange Deposit Account Deployment
 The Exchange Token Account module [exports a Token Account factory](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/src/index.ts) that can be used to deploy new instances of the Token Account. The factory method is used in the Exchange module's Account Deployer Service to deploy new accounts.  
 
 The 'wallet' used to initialize the TokenAccountFactory is the private key used for exchange accounts deployment. This should be set in the .env file.  
 
-The 'walletAddress' used as a parameter in the 'deploy' method is the public key of the Exchange's hot wallet. This should be set in the .env file. 
+The 'walletAddress' used as a parameter in the 'deploy' method is the public key of the Exchange wallet. This should be set in the .env file. 
 ```
 const account = await new factory.TokenAccountFactory(wallet).deploy(walletAddress);
 
@@ -25,10 +32,10 @@ await this.repository.save({ userId, address });
 ```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange/src/pods/account/account.service.ts#L54)
 
-## Receving and Forwarding Tokens to the Exchange 'Hot Wallet'
-The wallet address that is used to deploy the ExchangeTokenAccount contract (see above) is the address (public key) of the Exchange's [hot wallet](../user-guide-glossary.md#hot-wallet). 
+## Receving and Forwarding Tokens to the Exchange Wallet
+The wallet address that is used to deploy the ExchangeTokenAccount contract (see above) is the address (public key) of the [Exchange wallet](../user-guide-glossary.md#exchange-wallet). 
 
-When ERC-1155 tokens are deposited to the Exchange Deposit account, the Token Account smart contract forwards them to the Exchange's hot wallet using the safeTransferFrom method: 
+When ERC-1155 tokens are deposited to the Exchange Deposit account, the Token Account smart contract forwards them to the Exchange wallet using the safeTransferFrom method: 
 ```
     function onERC1155Received(
         address operator, // Needed for the interface, but unused because it's irrelevant for our use case
@@ -44,7 +51,7 @@ When ERC-1155 tokens are deposited to the Exchange Deposit account, the Token Ac
 ```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-token-account/contracts/TokenAccount.sol#L17)
 
-The hot wallet holds all ERCs that are active on the Exchange. 
+The Exchange wallet holds all ERCs that are active on the Exchange. 
 
 
 
