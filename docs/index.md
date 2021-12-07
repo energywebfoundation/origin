@@ -16,7 +16,7 @@ The main purpose of EACs is to act as an accounting vehicle to prove that consum
 We provide more information on EACs in the glossary [here](./user-guide-glossary.md#energy-attribute-certificate). 
 
 ## Origin SDKs
-Origin is comprised of [multiple SDKs](./packages.md) that can be used individually or in unison.  
+Origin is comprised of [multiple SDKs](./packages.md) that can be used individually or in unison.
 
 The core SDKs are: 
 + [Device Registry](./device-registry.md)
@@ -47,7 +47,13 @@ This SDK is built on the basis of the [order book](./user-guide-glossary.md#orde
 See documentation for the Trade SDK [here](./trade.md). 
 
 ## Implementing Origin SDKs
-The Origin SDKs are developed to be agnostic of registry and certificate standard implementation. Depending on implementation needs, users can implement one or all of the SDKs. The [Origin Backend package](#origin-backend) provides authorization and user/organization management, however users can integrate their backend implementation. 
+The Origin SDKs are developed to be agnostic of registry and certificate standard implementation. Depending on implementation needs, users can implement one or all of the SDKs. By design, the SDK packages are loosely coupled, which enables the possibility to implement solutions that consist of only part of the Origin features, such as:
+
+-   Issuance only
+-   Device registry only
+-   Trading only  
+
+ The [Origin Backend package](#origin-backend) provides authorization and user/organization management, however users can integrate their backend implementation. 
 
 ## [**Origin Backend**](./backend.md)
 The Origin Backend is a NestJS application that provides services to manage authorization and user and organization management. The Origin Backend application can be used in conjunction with one, several or all of the [Origin SDKs](#origin-sdks) to provide integrated user management and authorization. 
