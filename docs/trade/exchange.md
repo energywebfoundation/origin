@@ -237,7 +237,7 @@ User Guides on order matching:
 #### Persistence 
 Orders are persisted in the Order repository. You can view the Order entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/order/order.entity.ts).  
 
-### Order Accounting Service 
+#### Order Accounting Service 
 The [Order Accounting Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/order/order-accounting.service.ts) extends the [Account Balance Asset Service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/account-balance/account-balance-asset.service.ts). The public methods retrieve active bids and asks for an owner, and then calculates the current locked and available assets for that owner. 
 
 ### Post for Sale
