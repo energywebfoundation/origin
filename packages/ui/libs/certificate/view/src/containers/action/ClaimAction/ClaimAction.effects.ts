@@ -1,29 +1,49 @@
-import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import {
   useCachedExchangeCertificates,
   useCachedAllFuelTypes,
   useCachedAllDevices,
-  useCachedUser,
   useClaimCertificateHandler,
+  useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
-import { useClaimActionLogic } from '@energyweb/origin-ui-certificate-logic';
+import {
+  useClaimBeneficiaryFormLogic,
+  useClaimActionLogic,
+} from '@energyweb/origin-ui-certificate-logic';
+import { Dayjs } from 'dayjs';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { useTransactionPendingDispatch } from '../../../context';
 
 export const useClaimActionEffects = (
   selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
-  const setTxPending = useTransactionPendingDispatch();
   const exchangeCertificates = useCachedExchangeCertificates();
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
-  const user = useCachedUser();
+  const setTxPending = useTransactionPendingDispatch();
 
-  const withdrawalAddress = user?.organization?.blockchainAccountAddress;
+  const { user, isLoading } = useApiUserAndAccount();
+  const organization = user?.organization;
 
-  const withdrawHandler = useClaimCertificateHandler(
-    withdrawalAddress,
+  const { initialValues, fields, validationSchema } =
+    useClaimBeneficiaryFormLogic();
+
+  const { register, control, watch, formState } = useForm({
+    defaultValues: initialValues,
+    mode: 'onChange',
+    resolver: yupResolver(validationSchema),
+  });
+  const { isValid, isDirty, errors } = formState;
+  const { startDate, endDate, purpose } = watch();
+
+  const { claimHandler } = useClaimCertificateHandler(
     exchangeCertificates,
+    organization,
+    startDate as Dayjs,
+    endDate as Dayjs,
+    purpose,
     resetIds,
     setTxPending
   );
@@ -35,5 +55,16 @@ export const useClaimActionEffects = (
     allFuelTypes,
   });
 
-  return { ...actionLogic, withdrawHandler };
+  const buttonDisabled = !isDirty || !isValid;
+
+  return {
+    ...actionLogic,
+    claimHandler,
+    isLoading,
+    buttonDisabled,
+    fields,
+    register,
+    control,
+    errors,
+  };
 };
