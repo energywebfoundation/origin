@@ -45,9 +45,10 @@ export const ListActionsBlock: TListActionsBlock = ({
   selectedTab,
   setSelectedTab,
 }) => {
-  const { selected, setSelected } = useListActionsBlockEffects(
+  const { selected, setSelected, resetList } = useListActionsBlockEffects(
     selectedTab,
-    setSelectedTab
+    setSelectedTab,
+    resetSelected
   );
 
   if (!actions[selected]) return null;
@@ -75,7 +76,7 @@ export const ListActionsBlock: TListActionsBlock = ({
       {content ? (
         content
       ) : (
-        <Component selectedIds={selectedIds} resetIds={resetSelected} />
+        <Component selectedIds={selectedIds} resetIds={resetList} />
       )}
     </div>
   );
