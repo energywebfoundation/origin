@@ -93,11 +93,8 @@ The below gives an overview the of the package architecture, however the NestJS 
 - [NestJS TypeORM Integration](https://docs.nestjs.com/techniques/database)
 - [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
-### Accounting Services
 
-
-
-
+## Pods 
 
 ### Account  
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/account)

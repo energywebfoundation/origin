@@ -71,16 +71,17 @@ export class EmailConfirmationService {
 ```
 [source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/origin-backend/src/pods/email-confirmation/email-confirmation.service.ts#L18)
 
+## Pods 
 
 ### admin
 [**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/admin) 
 
-The admin module's controller uses the user service(link) to fetch and update user information. 
+The admin module's controller uses the [user service](#user) to fetch and update user information. 
 
 ### configuration
 [**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/configuration)
 
-The configuration module fetches and updates the platform's configuration settings. 
+The configuration module fetches and updates the platform's configuration values. These values are used to populate the platform's market options. 
 
 ### email-confirmation
 [**Source code on GitHub:**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/email-confirmation)
