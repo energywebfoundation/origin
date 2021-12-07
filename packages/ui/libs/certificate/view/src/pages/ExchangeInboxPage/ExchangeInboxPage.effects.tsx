@@ -17,6 +17,7 @@ import {
   WithdrawAction,
   ExchangeTransferAction,
   ExchangeExportAction,
+  ClaimAction,
 } from '../../containers';
 import { useTransactionPendingStore } from '../../context';
 
@@ -62,6 +63,10 @@ export const useExchangeInboxPageEffects = () => {
     {
       name: t('certificate.exchangeInbox.exportActionTitle'),
       component: ExchangeExportAction,
+    },
+    {
+      name: t('certificate.exchangeInbox.claimActionTitle'),
+      component: ClaimAction,
     },
   ];
 

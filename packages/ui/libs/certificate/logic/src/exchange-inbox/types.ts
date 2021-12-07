@@ -2,10 +2,12 @@ import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import {
+  GenericFormProps,
   ItemsListWithActionsProps,
   ListAction,
   TItemsListWithActionsContainers,
 } from '@energyweb/origin-ui-core';
+import { Dayjs } from 'dayjs';
 import React, { FC } from 'react';
 
 export interface ListItemContentProps<Id> {
@@ -124,3 +126,27 @@ export type TUseExchangeExportActionLogic<Id> = (
   selectedItems: SelectedItem<Id>[];
   inputHeader: string;
 };
+
+type TUseClaimActionLogicArgs<Id> = {
+  selectedIds: Id[];
+  exchangeCertificates: AccountAssetDTO[];
+  allDevices: ComposedPublicDevice[];
+  allFuelTypes: CodeNameDTO[];
+};
+
+export type TUseClaimActionLogic<Id> = (args: TUseClaimActionLogicArgs<Id>) => {
+  title: string;
+  buttonText: string;
+  selectedItems: SelectedItem<Id>[];
+};
+
+export type ClaimBeneficiaryFormValues = {
+  startDate: Dayjs;
+  endDate: Dayjs;
+  purpose: string;
+};
+
+export type TUseClaimBeneficiariesFormLogic = () => Pick<
+  GenericFormProps<ClaimBeneficiaryFormValues>,
+  'initialValues' | 'validationSchema' | 'fields'
+>;

@@ -16,7 +16,7 @@ const formatClaimsReportData: TFormatClaimsReportData = ({
   return claimedCertificates?.length > 0 && devices.length > 0
     ? claimedCertificates?.map((certificate) => {
         const compliance = 'I-REC';
-        const fullCertificateData = blockchainCertificates.find(
+        const fullCertificateData = blockchainCertificates?.find(
           (bc) => bc.id === certificate.id
         );
 
@@ -38,6 +38,7 @@ const formatClaimsReportData: TFormatClaimsReportData = ({
           certifiedEnergy: EnergyFormatter.getValueInDisplayUnit(
             certificate.value
           ).toString(),
+          creationTime: fullCertificateData?.creationTime ?? 0,
         };
       })
     : ([] as TFormatClaimsReportReturnData);

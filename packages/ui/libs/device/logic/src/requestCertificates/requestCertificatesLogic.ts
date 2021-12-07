@@ -12,6 +12,7 @@ export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = () => {
       fromTime: dayjs().toISOString(),
       toTime: dayjs().toISOString(),
     },
+    validationMode: 'onSubmit',
     validationSchema: yup.object({
       fromTime: yup
         .string()
