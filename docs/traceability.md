@@ -1,5 +1,5 @@
 # Traceability SDK
-**Source code on GitHub**: [https://github.com/energywebfoundation/origin/tree/master/packages/traceability](https://github.com/energywebfoundation/origin/tree/master/packages/traceability)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability)
 
 The Traceability SDK is responsible for the **request**, **issuance** and **exchange** of [Energy Attribute Certificates](./user-guide-glossary.md#energy-attribute-certificate) on the Origin platform. Certificates are requested by device owners, and approved by issuers. The issuer is the entity that is responsible for reviewing the energy generation evidence and issuing the certificate in a way that conforms with legislative and industry standards.  
 
@@ -8,9 +8,8 @@ The Traceability SDK has two core packages:
 ### 1. **[Issuer](./traceability/packages/issuer.md)**  
 The issuer package handles the management of certificates on the blockchain. It has two primary components:   
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. Smart contracts that execute the on-chain lifecycle of certificates      
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. Facades for interacting with smart contract methods. The Issuer API uses these facades rather than interacting with the blockchain directly. 
++ Smart contracts that execute the on-chain lifecycle of certificates      
++ Facades for interacting with smart contract methods. The Issuer API uses these facades rather than interacting with the blockchain directly. 
 
 ### 2. **[Issuer API](./traceability/packages/issuer-api.md)** 
 Restful endpoints for managing Certificate operations. Implements [Issuer blockchain facade](./traceability/contracts/Issuer.md#blockchain-facade) for managing certificate lifecycle. 

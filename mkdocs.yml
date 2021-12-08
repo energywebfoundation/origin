@@ -2,6 +2,7 @@ site_name: EW-Origin
 
 nav:
     - Introduction: index.md
+    - Glossary: user-guide-glossary.md
     - Getting started: getting-started.md
     - Architecture: architecture.md
     - Packages: packages.md
@@ -38,17 +39,23 @@ nav:
                 - Invite: organization-guides/invite.md
                 - Create Beneficiary: organization-guides/create-beneficiary.md
                 - Connect I-REC: organization-guides/connect-irec.md
-          - Glossary: user-guide-glossary.md
     - Configuration:
           - UI: configuration-ui.md
     - SDKs:
           - Traceability:
                 - Traceability SDK Overview: traceability.md
-                - Issuer: traceability/packages/issuer.md
-                - Issuer API: traceability/packages/issuer-api.md
-          - Trade: trade.md
-          - Device Registry: device-registry.md
-          - Organizations: organizations.md
+                - Issuer Package: traceability/packages/issuer.md
+                - Issuer API Package: traceability/packages/issuer-api.md
+          - Trade:
+                - Trade SDK Overview: trade.md
+                - Exchange Package: trade/exchange.md
+                - Exchange-Core Package: trade/exchange-core.md
+                - Exchange Token Account Package: trade/exchange-token-account.md
+                - Exchange IO ERC-1888 Package: trade/exchange-io-erc1888.md
+          - Device Registry: 
+                - Device Registry SDK Overview: device-registry.md
+                - Device Registry API Package: device-registry/device-registry-api.md
+    - Origin Backend: backend.md
     - SDK Reference:
           - '@energyweb/issuer-irec-api-wrapper': sdk-reference/issuer-irec-api-wrapper/modules.md
     - Cookbook:

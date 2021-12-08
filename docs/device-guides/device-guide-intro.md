@@ -1,6 +1,5 @@
 # Devices
-
-**Source code on github:** [https://github.com/energywebfoundation/origin/tree/master/packages/devices](https://github.com/energywebfoundation/origin/tree/master/packages/devices)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/devices)
 
 
 ‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine.) They must be registered in the system to provide their capacity, location and generation data. This data is used to provide trust in the validity of the certificates that are issued for their generation.  
@@ -8,7 +7,6 @@
 A user that is associated with a registered [organization](../user-guide-reg-onboarding.md#organizations) can [register a device](../user-guide-reg-onboarding.md#registering-devices) within the system if they have the necessary role permissions. In the Origin reference implementation, only the Admin and Device Manager roles can register devices. Read more about role permissioning [here](../user-guide-reg-onboarding.md#user-roles-and-hierarchy). 
 
 ## Accessing Device Generation Data
-
 Origin offers the possibility to connect an external metering system. In order for this to work, a custom integration to the specific metering system is required. Devices must be approved by the issuer in order to be used on the platform.
 
 The local issuer receives the device registration through Origin's [Register Device](./register-device.md) interface, and can verify the data and approve the device. Everything that involves additional processes of the registry, (e.g. if there is a need for an on-site visit or additional documents), is handled directly between the user and the registry.
