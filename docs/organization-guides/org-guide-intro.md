@@ -1,6 +1,6 @@
 # Organizations  
 
-**Source code on github:** [https://github.com/energywebfoundation/origin/tree/master/packages/organizations](https://github.com/energywebfoundation/origin/tree/master/packages/organizations)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/organizations)
 
 The Organization interface allows admin users to manage and invite members to your organization, and to request I-REC API access for your organization. **In the reference implementation, this interface is only visible to users with Admin privileges**. 
 

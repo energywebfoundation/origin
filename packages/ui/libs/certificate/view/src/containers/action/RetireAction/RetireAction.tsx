@@ -12,7 +12,6 @@ import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { ConnectMetamaskBlockchainInbox } from '../../metamask';
 import { useRetireActionEffects } from './RetireAction.effects';
-import { useStyles } from './RetireAction.styles';
 
 type RetireActionProps = ListActionComponentProps<CertificateDTO['id']>;
 
@@ -21,7 +20,6 @@ export type TRetireAction = (
 ) => ReactElement;
 
 const Component: TRetireAction = ({ selectedIds, resetIds }) => {
-  const classes = useStyles();
   const {
     title,
     buttonText,
@@ -52,7 +50,7 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
         errorExists={!isEmpty(errors[fields[0].name])}
         errorText={(errors[fields[0].name] as any)?.message ?? ''}
       />
-      <Grid container spacing={1} className={classes.mb}>
+      <Grid container spacing={1} sx={{ marginBottom: '10px' }}>
         <Grid item xs={6}>
           <FormDatePicker
             control={control}

@@ -122,4 +122,9 @@ export class Organization extends ExtendedBaseEntity implements IFullOrganizatio
     @Optional()
     @IsArray()
     documentIds: string[];
+
+    @ApiProperty({ type: Boolean })
+    @Optional()
+    @Column({ nullable: false, default: false })
+    selfOwnership: boolean;
 }

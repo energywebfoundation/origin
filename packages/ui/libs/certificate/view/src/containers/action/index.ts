@@ -5,3 +5,4 @@ export * from './RetireAction';
 export * from './BlockchainTransferAction';
 export * from './ExchangeTransferAction';
 export * from './ExchangeExportAction';
+export * from './ClaimAction';

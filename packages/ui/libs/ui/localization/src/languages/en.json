@@ -492,6 +492,9 @@
         "exportTo": "Export to",
         "exportButton": "Export",
         "iRecAccountId": "I-REC Account ID",
+        "claimActionTitle": "Claim",
+        "selectedForClaim": "Selected for Claim",
+        "claimButton": "Claim",
         "notifications": {
           "sellSuccess": "Certificate has been successfully posted to exchange",
           "sellError": "Error while posting certificate for sale",
@@ -500,7 +503,9 @@
           "transferSuccess": "Certificate has been successfully transfered",
           "transferError": "Error while transfering certificate",
           "exportSuccess": "Certificate has been successfully exported",
-          "exportError": "Error while exporting certificate"
+          "exportError": "Error while exporting certificate",
+          "claimSuccess": "Certificate has been successfully claimed",
+          "claimError": "Error while claiming certificate"
         }
       },
       "blockchainInbox": {

@@ -265,6 +265,17 @@ export class OrganizationService {
         return this.updateBlockchainAddress(id, utils.getAddress(address), signedMessage);
     }
 
+    async setSelfOwnershipFlag(organizationId: number, selfOwnership: boolean) {
+        const organization = await this.findOne(organizationId);
+        if (!organization.blockchainAccountAddress) {
+            throw new BadRequestException('Organization does not have a blockchain address');
+        }
+
+        await this.repository.update(organizationId, { selfOwnership });
+
+        return ResponseSuccess();
+    }
+
     async updateBlockchainAddress(
         orgId: number,
         address: string,

@@ -22,9 +22,11 @@ export const useCertificateDataLogic = (certificate: DetailedCertificate) => {
     },
     claimed: {
       title: t('certificate.detailView.claimed'),
-      text: certificate.blockchainPart?.isClaimed
-        ? t('certificate.detailView.yes')
-        : t('certificate.detailView.no'),
+      text:
+        certificate.blockchainPart?.isClaimed ||
+        certificate.blockchainPart?.claims?.length > 0
+          ? t('certificate.detailView.yes')
+          : t('certificate.detailView.no'),
     },
     creationDate: {
       title: t('certificate.detailView.creationDate'),

@@ -27,10 +27,15 @@ export const useCertificateDetailsEffects = (
     'certificate.detailView.blockchainTransactions'
   );
 
+  const showClaimInfo =
+    certificate.blockchainPart.isClaimed ||
+    certificate.blockchainPart.claims?.length > 0;
+
   return {
     ...certificateData,
     isLoading,
     eventsData,
     blockhainTransactionsTitle,
+    showClaimInfo,
   };
 };
