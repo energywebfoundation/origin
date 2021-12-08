@@ -141,6 +141,9 @@ export class UserService {
     }
 
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
+        if (typeof conditions.email === 'string') {
+            conditions.email = conditions.email.toLowerCase().trim();
+        }
         const user = await (this.repository.findOne(conditions, {
             relations: ['organization']
         }) as Promise<IUser> as Promise<TUserBaseEntity>);

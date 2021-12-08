@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 
-import { UserModule } from '../pods/user';
+import { UserModule } from '../pods/user/user.module';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
