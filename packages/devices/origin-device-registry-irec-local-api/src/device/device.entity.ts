@@ -1,7 +1,7 @@
 import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { DeviceDTO } from './dto';
@@ -108,4 +108,10 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
     @Column({ default: true })
     @IsBoolean()
     active: boolean;
+
+    @Column({ default: '', nullable: true })
+    @ApiProperty({ type: String, nullable: true })
+    @IsString()
+    @IsOptional()
+    irecTradeAccountCode: string;
 }
