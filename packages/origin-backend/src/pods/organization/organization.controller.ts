@@ -49,6 +49,7 @@ import { PublicOrganizationInfoDTO } from './dto/public-organization-info.dto';
 import { OrganizationDocumentOwnershipMismatchError } from './errors/organization-document-ownership-mismatch.error';
 import { OrganizationNameAlreadyTakenError } from './errors/organization-name-taken.error';
 import { OrganizationService } from './organization.service';
+import { SetOwnershipDTO } from './dto';
 
 @ApiTags('organization')
 @ApiBearerAuth('access-token')
@@ -242,7 +243,7 @@ export class OrganizationController {
         return ResponseSuccess();
     }
 
-    @Put(':id/remove-member/:memberId')
+    @Put('/:id/remove-member/:memberId')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiResponse({
@@ -262,7 +263,7 @@ export class OrganizationController {
         return ResponseSuccess();
     }
 
-    @Put(':id/change-role/:userId')
+    @Put('/:id/change-role/:userId')
     @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
     @Roles(Role.OrganizationAdmin, Role.Admin)
     @ApiBody({ type: UpdateMemberDTO })
@@ -288,6 +289,27 @@ export class OrganizationController {
         await this.organizationService.changeMemberRole(loggedUser.organizationId, memberId, role);
 
         return ResponseSuccess();
+    }
+
+    @Put('/:id/self-ownership')
+    @UseGuards(AuthGuard(), ActiveUserGuard, RolesGuard)
+    @Roles(Role.OrganizationAdmin, Role.Admin)
+    @ApiBody({ type: SetOwnershipDTO })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        type: SuccessResponseDTO,
+        description: "Set organization's self ownership flag"
+    })
+    public async setSelfOwnershipFlag(
+        @UserDecorator() { organizationId, hasRole }: ILoggedInUser,
+        @Param('id', new ParseIntPipe()) id: number,
+        @Body() { selfOwnership }: SetOwnershipDTO
+    ): Promise<SuccessResponseDTO> {
+        if (!hasRole(Role.Admin) && organizationId !== id) {
+            throw new ForbiddenException("You cannot change organization's self ownership flag");
+        }
+
+        return this.organizationService.setSelfOwnershipFlag(id, selfOwnership);
     }
 
     @Post('chain-address')

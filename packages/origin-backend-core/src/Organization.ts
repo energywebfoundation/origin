@@ -32,6 +32,7 @@ export interface IFullOrganization extends IPublicOrganization {
     signatoryPhoneNumber: string;
     signatoryDocumentIds?: string[];
     documentIds?: string[];
+    selfOwnership?: boolean;
 }
 
 export type OrganizationPostData = {
