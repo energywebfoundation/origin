@@ -3,18 +3,18 @@ import {
   useCachedAllFuelTypes,
   useCachedAllDevices,
   useRetireCertificateHandler,
-  usePlatformBeneficiaries,
+  useCompanyBeneficiaries,
 } from '@energyweb/origin-ui-certificate-data';
 import {
   useBeneficiaryFormLogic,
   useRetireActionLogic,
 } from '@energyweb/origin-ui-certificate-logic';
+import { Dayjs } from 'dayjs';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { useTransactionPendingDispatch } from '../../../context';
-import { Dayjs } from 'dayjs';
 
 export const useRetireActionEffects = (
   selectedIds: CertificateDTO['id'][],
@@ -25,11 +25,11 @@ export const useRetireActionEffects = (
   const allFuelTypes = useCachedAllFuelTypes();
   const setTxPending = useTransactionPendingDispatch();
 
-  const { platformBeneficiaries, isLoading: areBeneficiariesLoading } =
-    usePlatformBeneficiaries();
+  const { companyBeneficiaries, areCompanyBeneficiariesLoading } =
+    useCompanyBeneficiaries();
 
   const { initialValues, fields, validationSchema } = useBeneficiaryFormLogic({
-    allBeneficiaries: platformBeneficiaries,
+    allBeneficiaries: companyBeneficiaries,
   });
 
   const { register, control, watch, formState } = useForm({
@@ -42,9 +42,8 @@ export const useRetireActionEffects = (
   const { beneficiary, startDate, endDate, purpose } = watch();
 
   const selectedBeneficiary = useMemo(
-    () =>
-      platformBeneficiaries?.find((b) => b.irecBeneficiaryId === beneficiary),
-    [platformBeneficiaries, beneficiary]
+    () => companyBeneficiaries?.find((b) => b.id === beneficiary),
+    [companyBeneficiaries, beneficiary]
   );
 
   const { retireHandler, isLoading: isHandlerLoading } =
@@ -64,7 +63,7 @@ export const useRetireActionEffects = (
     allFuelTypes,
   });
 
-  const isLoading = areBeneficiariesLoading || isHandlerLoading;
+  const isLoading = areCompanyBeneficiariesLoading || isHandlerLoading;
   const buttonDisabled = !isDirty || !isValid;
 
   return {

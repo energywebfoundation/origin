@@ -41,9 +41,9 @@ export const useRetireCertificateHandler = (
         PowerFormatter.getBaseValueFromValueInDisplayUnit(Number(amount))
       );
       const claimData: IClaimData = {
-        beneficiary: selectedBeneficiary.organization.name,
-        location: selectedBeneficiary.organization.address,
-        countryCode: selectedBeneficiary.organization.country,
+        beneficiary: selectedBeneficiary.name,
+        location: selectedBeneficiary.location,
+        countryCode: selectedBeneficiary.countryCode,
         periodStartDate: startDate.toISOString(),
         periodEndDate: endDate.toISOString(),
         purpose,
