@@ -1,5 +1,5 @@
 import { Expose, plainToClass } from 'class-transformer';
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString, IsUUID } from 'class-validator';
 import { Trim } from 'class-sanitizer';
 import { ApiProperty } from '@nestjs/swagger';
 import { ExternalDeviceIdDTO } from './external-device-id.dto';
@@ -37,6 +37,7 @@ export class NewDeviceDTO {
     @IsOptional()
     @IsArray()
     @Expose()
+    @IsUUID('all', { each: true })
     imageIds?: string[];
 
     public static sanitize(device: NewDeviceDTO): NewDeviceDTO {

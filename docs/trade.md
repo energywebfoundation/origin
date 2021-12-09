@@ -1,6 +1,8 @@
 # Trade SDK
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade)
 
-Trade SDK is responsible for enabling an order book style exchange for RECs. It was designed to support different types of RECs and matching scenarios.
+## Overview
+The Trade SDK is responsible for enabling an order book style exchange for [Energy Attribute Certificates](./user-guide-glossary.md#energy-attribute-certificates). It is designed to support different types and standards of EACs, and matching scenarios and criteria. This SDK integrates with the [Traceability SDK](./traceability.md) to allow for trading of Energy Attribute Certificates on the blockchain.  
 
 <div class="admonition note">
   <p class="first admonition-title">Note</p>
@@ -9,178 +11,38 @@ Trade SDK is responsible for enabling an order book style exchange for RECs. It 
   </p>
 </div>
 
-## Components overview
+## Trade SDK Packages  
+The Trade SDK has four core packages:
 
-![Components overview](images/exchange-packages-overview.png)
-### @energyweb/exchange-core
+### 1. [Exchange Core - @energyweb/exchange-core](./trade/exchange-core.md)
+[Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-core) 
 
-Package contains the implementation of order book based matching engine with robust test engine that allows developers to instantiate their own version based on the supplied types for **TProduct** and **TProductFilter**.
+**The Exchange Core package contains the implementation of the Exchange's [order book](./user-guide-glossary.md#order-book)-based matching engine.** The Exchange package submits bids and asks to the Matching Engine, which checks for matches against existing orders in the order book, and executes trades. It also handles [direct buys](./user-guide-glossary.md#direct-buy).  
 
-```typescript
-export class MatchingEngine<TProduct, TProductFilter> {
-  ...
-}
-```
+See the full documentation for this package [here](./trade/exchange-core.md). 
 
-[Source](https://github.com/energywebfoundation/origin/blob/63fae4a9035e3b5dc864b20a7671efae0d941d00/packages/trade/exchange-core/src/MatchingEngine.ts#L39)
+### [2. Exchange - @energyweb/exchange](./trade/exchange.md)  
+[Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange) 
 
-Origin matching engine uses a custom algorithm for matching bids and asks, the matchable properties are:
+The Exchange package is a [NestJS](https://docs.nestjs.com/) application that **provides backend services to manage the Exchange's functionality (account management and buying, selling and transferring [Energy Attribute Certificates](../user-guide-glossary.md#energy-attribute-certificate) and [bundles](../user-guide-glossary.md#bundle))**.  
 
-- price
-- product
+See the full documentation for this package [here](./trade/exchange.md).
 
-while ordering is based on order arrival time.
+### 3. [Exchange Token Account - @energyweb/exchange-token-account](./trade/exchange-token-account.md)
+[Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-token-account)  
 
-Both `price` and `product` matching can be customized to meet the needs of the implementers.
+This package **provides the smart contract for Exchange Deposit accounts using [the ERC-1888 Certificate standard](https://github.com/ethereum/EIPs/issues/1888)**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain))
 
-Concrete use-case implementations are available in a separate packages
+See the full documentation for this package [here](./trade/exchange-token-account.md). 
 
-- I-REC Product Matching rules - `@energyweb/exchange-core-irec` 
+### 4. [Exchange IO ERC1888 - @energyweb/exchange-io-erc1888](./trade/exchange-io-erc1888.md)  
+[Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888)  
 
-#### Price strategies
+By design, The Trade SDK allows different type of assets to be used for trading. The @energyweb/exchange-io-erc1888 package **monitors specifically for deposits of [ERC-1888 Certificates](https://github.com/ethereum/EIPs/issues/1888) onto the Exchange, and executes withdrawals and transfers**. (You can read more about ERC-1888 Certificate standard in the context of Origin [here](./traceability.md#energy-attribute-certificates-on-the-blockchain)).  
 
-Price strategies allows developers to provide custom price matching rules. Strategies are required to conform to:
+See the full documentation for this package [here](./trade/exchange-io-erc1888.md).
 
-```TypesScript
-export interface IPriceStrategy {
-    pickPrice(ask: IOrder, bid: IOrder): number;
-}
-```
+### Additional Reading
+For more context and detail on the Trade SDK:  
 
-[Source](https://github.com/energywebfoundation/origin/blob/121fafd84515d482b42b477fe9f8c617481d22b2/packages/trade/exchange-core/src/strategy/IPriceStrategy.ts)
-
-`@energyweb/exchange-core` by default ships with two different strategies:
-
-1. AskPriceStrategy
-
-```typescript
-import { IOrder } from '../IOrder';
-import { IPriceStrategy } from './IPriceStrategy';
-
-export class AskPriceStrategy implements IPriceStrategy {
-    pickPrice(ask: IOrder, bid: IOrder): number {
-        return ask.price;
-    }
-}
-```
-[Source](https://github.com/energywebfoundation/origin/blob/121fafd84515d482b42b477fe9f8c617481d22b2/packages/trade/exchange-core/src/strategy/AskPriceStrategy.ts)
-
-<div class="admonition attention">
-  <p class="first admonition-title">Attention</p>
-  <p class="last">
-    Price picking strategy is always executed after successful matching for price, time and product
-  </p>
-</div>
-****
-
-Example above implements the strategy such as after successful matching the price that is going to be used to close the trade would be always `ask` price.
-
-#### Custom product matching
-
-The `MatchingEngine` is designed in such way that it delegates the product matching to `Order` object that has to conform `IMatchableOrder<TProduct, TProductFilter>` interface. By enabling that the `MatchingEngine` can operate on the orders which contains **any** product.
-
-<div class="admonition note">
-  <p class="first admonition-title">Note</p>
-  <p class="last">
-    By <b>product</b> we mean a set of attributes assigned to a RECs like for e.g fuel type, location, grid operator etc
-  </p>
-</div>
-
-The example of *product* that is being used for I-REC based RECs is
-
-```typescript
-export class IRECProduct {
-    public deviceType?: string[];
-    public location?: string[];
-    public deviceVintage?: DeviceVintage;
-    public generationTime?: TimeRange;
-    public gridOperator?: string[];
-}
-```
-[Source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core-irec/src/IRECProduct.ts)
-
-Now, in order to provide the MatchingEngine a compatible type for `Orders` one need to provide object that follows an `IMatchable<IRECProduct, IRECProductFilter>` specification
-
-```typescript
-export interface IMatchableOrder<TProduct, TProductFilter> extends IOrder {
-    filterBy(productFilter: TProductFilter): boolean;
-    matches(order: IMatchableOrder<TProduct, TProductFilter>): boolean;
-    clone(): IMatchableOrder<TProduct, TProductFilter>;
-    updateWithTradedVolume(tradedVolume: BN): IMatchableOrder<TProduct, TProductFilter>;
-    product: TProduct;
-}
-```
-[Source](https://github.com/energywebfoundation/origin/blob/121fafd84515d482b42b477fe9f8c617481d22b2/packages/trade/exchange-core/src/IMatchableOrder.ts)
-
-
-```typescript
-export class AskProduct implements IMatchableProduct<IRECProduct, IRECProductFilter> {
-    public filter(productFilter: IRECProductFilter): boolean {
-        const hasMatchingDeviceType = this.filterByDeviceType(productFilter);
-        const hasMatchingVintage = this.filterByDeviceVintage(productFilter);
-        const hasMatchingLocation = this.filterByLocation(productFilter);
-        const hasMatchingGenerationTime = this.filterByGenerationTime(productFilter);
-        const hasMatchingGridOperator = this.filterByGridOperator(productFilter);
-
-        return (
-            hasMatchingDeviceType &&
-            hasMatchingVintage &&
-            hasMatchingLocation &&
-            hasMatchingGenerationTime &&
-            hasMatchingGridOperator
-        );
-    }
-
-    public matches(product: IRECProduct): boolean {
-        const hasMatchingDeviceType = this.hasMatchingDeviceType(product);
-        const hasMatchingVintage = this.hasMatchingVintage(product);
-        const hasMatchingLocation = this.hasMatchingLocation(product);
-        const hasMatchingGenerationTime = this.hasMatchingGenerationTime(product);
-        const hasMatchingGridOperator = this.hasMatchingGridOperator(product);
-
-        return (
-            hasMatchingDeviceType &&
-            hasMatchingVintage &&
-            hasMatchingLocation &&
-            hasMatchingGenerationTime &&
-            hasMatchingGridOperator
-        );
-    }
-
-    ...
-}
-```
-[Source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core-irec/src/AskProduct.ts)
-
-For some use-case it might be necessary to provide a separate object for Asks and Bids.
-
-
-### @energyweb/exchange
-
-The main responsibilities for `@energyweb/exchange` project is to:
-
-- provide an API endpoints to interact with Trading features
-- host matching engine
-- persistency concerns for Orders, Trades
-- accounting and reports
-- deposits and withdrawals
-- higher level features like Demand, Supply
-
-<div class="admonition note">
-  <p class="first admonition-title">Note</p>
-  <p class="last">
-    Since matching engine is an <i>generic</i> class, it requires certain parts of <b>@energyweb/exchange</b> to be implemented for concrete <b>TProduct</b> and <b>TProductFilter</b>
-  </p>
-</div>
-
-#### @energyweb/exchange-irec
-
-This package contains the implementation for all endpoints to conform with **TProduct** and **TProductFilter** implemented in `@energyweb/exchange-core-irec`
-
-### @energyweb/exchange-io-erc1888
-
-Exchange project by design allows different type of assets to be used for trading, `@energyweb/exchange-io-erc1888` provides the implementation for ERC1888 certificates deposits and withdrawals.
-
-### @energyweb/exchange-token-account
-
-Smart contract wallet for deposits with ERC1888 tokens support.
+- ["Inside a digitalized EAC exchange for renewable energy markets" on Medium](https://medium.com/energy-web-insights/inside-a-digitalized-eac-exchange-for-renewable-energy-markets-e04f561266c3)
