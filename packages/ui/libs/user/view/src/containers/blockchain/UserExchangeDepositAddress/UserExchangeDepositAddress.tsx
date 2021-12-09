@@ -1,64 +1,48 @@
 import React, { FC } from 'react';
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import { Info } from '@mui/icons-material';
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
 import { useStyles } from './UserExchangeDepositAddress.styles';
 import { useUserExchangeDepositAddressEffects } from './UserExchangeDepositAddress.effects';
-import { Info } from '@mui/icons-material';
 
 export const UserExchangeDepositAddress: FC = () => {
-  const classes = useStyles();
-  const {
-    isCreating,
-    submitHandler,
-    exchangeAddress,
-    isLoading,
-    title,
-    buttonText,
-    popoverText,
-  } = useUserExchangeDepositAddressEffects();
+  const { exchangeAddress, isLoading, title, popoverText } =
+    useUserExchangeDepositAddressEffects();
+  const classes = useStyles({
+    exchangeAddressExists: Boolean(exchangeAddress),
+  });
 
-  if (isLoading) {
-    return <CircularProgress />;
-  }
+  if (isLoading) return <CircularProgress />;
 
   return (
     <Grid item md={8} xs={12} className={classes.gridContainer}>
-      <Typography variant="h6">{title}</Typography>
-      <div className={classes.fieldWrapper}>
-        {exchangeAddress ? (
-          <TextField
-            value={exchangeAddress}
-            disabled={true}
-            variant="filled"
-            className={classes.field}
-          />
-        ) : (
-          <>
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              disabled={isCreating}
-              onClick={submitHandler}
-            >
-              {buttonText}
-            </Button>
-            {isCreating && <CircularProgress className={classes.loader} />}
-          </>
-        )}
+      <Typography variant="h6" component="span">
+        {title}
+      </Typography>
+      {!exchangeAddress ? (
         <IconPopover
           icon={Info}
           iconSize={IconSize.Large}
           popoverText={popoverText}
           className={classes.iconPopover}
         />
-      </div>
+      ) : null}
+      {exchangeAddress ? (
+        <div className={classes.fieldWrapper}>
+          <TextField
+            value={exchangeAddress}
+            disabled={true}
+            variant="filled"
+            className={classes.field}
+          />
+          <IconPopover
+            icon={Info}
+            iconSize={IconSize.Large}
+            popoverText={popoverText}
+            className={classes.iconPopover}
+          />
+        </div>
+      ) : null}
     </Grid>
   );
 };
