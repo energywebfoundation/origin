@@ -97,7 +97,7 @@ export class TransferService {
 
     public async requestClaim(
         userId: string,
-        { amount, assetId, claimData }: RequestClaimDTO,
+        { amount, assetId, claimData, claimAddress }: RequestClaimDTO,
         transaction?: EntityManager
     ): Promise<Transfer['id']> {
         await this.validateEnoughFunds(userId, assetId, amount);
@@ -112,7 +112,8 @@ export class TransferService {
                 asset: { id: assetId } as Asset,
                 status: TransferStatus.Accepted,
                 direction: TransferDirection.Claim,
-                claimData
+                claimData,
+                claimAddress
             },
             transaction
         );

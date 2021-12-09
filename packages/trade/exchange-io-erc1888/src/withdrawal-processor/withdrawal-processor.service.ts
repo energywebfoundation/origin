@@ -151,7 +151,8 @@ export class WithdrawalProcessorService implements OnModuleInit {
             } else if (transfer.direction === TransferDirection.Claim) {
                 result = await certificate.claim(
                     transfer.claimData,
-                    BigNumber.from(transfer.amount)
+                    BigNumber.from(transfer.amount),
+                    transfer.claimAddress ?? undefined
                 );
             } else {
                 throw Error(`Unable to process transfer with direction ${transfer.direction}.`);
