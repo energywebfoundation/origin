@@ -883,12 +883,20 @@
       },
       "requestResetPassword": {
         "formTitle": "Please, enter your email to receive a link for reseting password",
-        "email": "Email"
+        "email": "Email",
+        "notifications": {
+          "success": "You have successfully requested password reset. You will receive an email with a link to change your password",
+          "error": "Error while requesting password reset. Please, try again"
+        }
       },
       "resetPassword": {
         "formTitle": "Please, create new password",
         "newPassword": "New Password",
-        "passwordConfirm": "Confirm password"
+        "passwordConfirm": "Confirm password",
+        "notifications": {
+          "success": "Your password has been successfully changed. Please, log in using the new password",
+          "error": "Error while setting new password. Please, try again"
+        }
       },
       "confirmEmail": {
         "alreadyConfirmed": "Email has been already confirmed",
