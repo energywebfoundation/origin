@@ -1,5 +1,11 @@
 import { Expose } from 'class-transformer';
 
+export enum OrganisationRole {
+    Registrant = 'registrant',
+    Issuer = 'issuer',
+    Participant = 'participant'
+}
+
 export class Organisation {
     code: string;
 
@@ -25,5 +31,5 @@ export class Organisation {
 
     country: string;
 
-    roles: string[];
+    roles: OrganisationRole[];
 }

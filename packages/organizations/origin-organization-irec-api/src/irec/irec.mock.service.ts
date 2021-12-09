@@ -17,6 +17,7 @@ import {
     Issue,
     IssueWithStatus,
     Organisation,
+    OrganisationRole,
     RedeemTransactionResult,
     TransactionResult,
     TransactionType
@@ -92,6 +93,20 @@ export class IrecMockService implements IIrecService {
             status: IssuanceStatus.Approved
         }
     ];
+
+    private userOrganization: Organisation = {
+        code: 'REGORG001',
+        name: 'Registrant Organisation 1',
+        address: '10 Dorchester Road',
+        primaryContact: 'John Doe',
+        telephone: '0114 2002002',
+        email: 'example@test.com',
+        regNum: '123 456 789',
+        vatNum: '987 654 321',
+        regAddress: '10 Dorchester Road',
+        country: 'GB',
+        roles: [OrganisationRole.Registrant]
+    };
 
     public async getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO> {
         return {
@@ -189,6 +204,14 @@ export class IrecMockService implements IIrecService {
         return this.accountInfo;
     }
 
+    async getAccountInfoByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Account[]> {
+        return this.accountInfo;
+    }
+
     async getTradeAccountCode(user: UserIdentifier): Promise<string> {
         const accounts = await this.getAccountInfo(user);
         return accounts.find((account: Account) => account.type === AccountType.Trade)?.code || '';
@@ -233,6 +256,13 @@ export class IrecMockService implements IIrecService {
     }
 
     async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {}
+
+    async createAccountByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens,
+        params: CreateAccountParams
+    ): Promise<void> {}
 
     async uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]) {
         return files.map(() => randomString());
@@ -353,19 +383,15 @@ export class IrecMockService implements IIrecService {
     }
 
     async getUserOrganization(user: UserIdentifier): Promise<Organisation> {
-        return {
-            code: 'REGORG001',
-            name: 'Registrant Organisation 1',
-            address: '10 Dorchester Road',
-            primaryContact: 'John Doe',
-            telephone: '0114 2002002',
-            email: 'example@test.com',
-            regNum: '123 456 789',
-            vatNum: '987 654 321',
-            regAddress: '10 Dorchester Road',
-            country: 'GB',
-            roles: ['registrant']
-        };
+        return this.userOrganization;
+    }
+
+    async getUserOrganizationByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Organisation> {
+        return this.userOrganization;
     }
 }
 

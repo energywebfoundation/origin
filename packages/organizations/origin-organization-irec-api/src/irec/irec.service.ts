@@ -87,6 +87,12 @@ export interface IIrecService {
 
     getAccountInfo(user: UserIdentifier): Promise<Account[]>;
 
+    getAccountInfoByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Account[]>;
+
     getTradeAccountCode(user: UserIdentifier): Promise<string>;
 
     getIssueAccountCode(user: UserIdentifier): Promise<string>;
@@ -94,6 +100,13 @@ export interface IIrecService {
     getRedemptionAccountCode(user: UserIdentifier): Promise<string>;
 
     createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void>;
+
+    createAccountByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens,
+        params: CreateAccountParams
+    ): Promise<void>;
 
     createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus>;
 
@@ -133,6 +146,12 @@ export interface IIrecService {
     rejectDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 
     getUserOrganization(user: UserIdentifier): Promise<Organisation>;
+
+    getUserOrganizationByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Organisation>;
 }
 
 @Injectable()
@@ -189,6 +208,20 @@ export class IrecService implements IIrecService {
                 await this.commandBus.execute(new RefreshTokensCommand(user, newTokens));
             },
             accessTokens
+        );
+    }
+
+    private async getIrecClientByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ) {
+        return new IRECAPIClient(
+            this.configService.get<string>('IREC_API_URL'),
+            clientId,
+            clientSecret,
+            undefined,
+            tokens
         );
     }
 
@@ -286,6 +319,16 @@ export class IrecService implements IIrecService {
 
     async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {
         const irecClient = await this.getIrecClient(user);
+        await irecClient.account.create(params);
+    }
+
+    async createAccountByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens,
+        params: CreateAccountParams
+    ): Promise<void> {
+        const irecClient = await this.getIrecClientByTokens(clientId, clientSecret, tokens);
         await irecClient.account.create(params);
     }
 
@@ -453,5 +496,23 @@ export class IrecService implements IIrecService {
     async getUserOrganization(user: UserIdentifier): Promise<Organisation> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.organisation.get();
+    }
+
+    async getUserOrganizationByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Organisation> {
+        const irecClient = await this.getIrecClientByTokens(clientId, clientSecret, tokens);
+        return irecClient.organisation.get();
+    }
+
+    async getAccountInfoByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Account[]> {
+        const irecClient = await this.getIrecClientByTokens(clientId, clientSecret, tokens);
+        return irecClient.account.getAll();
     }
 }

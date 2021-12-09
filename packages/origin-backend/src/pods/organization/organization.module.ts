@@ -8,13 +8,15 @@ import { UserModule } from '../user';
 import { OrganizationController } from './organization.controller';
 import { Organization } from './organization.entity';
 import { OrganizationService } from './organization.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Organization]),
         forwardRef(() => UserModule),
         FileModule,
-        CqrsModule
+        CqrsModule,
+        ConfigModule
     ],
     exports: [...Handlers, OrganizationService],
     providers: [...Handlers, OrganizationService],
