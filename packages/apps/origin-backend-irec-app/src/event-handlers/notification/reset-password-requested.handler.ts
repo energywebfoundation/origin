@@ -18,7 +18,7 @@ export class ResetPasswordRequestedHandler implements IEventHandler<ResetPasswor
         const { email, token } = event;
 
         const host = this.configService.get<string>('UI_BASE_URL');
-        const url = `${host}/reset-password?token=${token}`;
+        const url = `${host}/login/reset-password?token=${token}`;
 
         const result = await this.mailService.send({
             to: email,
