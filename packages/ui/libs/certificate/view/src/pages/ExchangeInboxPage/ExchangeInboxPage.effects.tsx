@@ -47,15 +47,23 @@ export const useExchangeInboxPageEffects = () => {
     areFuelTypesLoading ||
     userAndAccountLoading;
 
+  const userHasBlockchainAddress = Boolean(
+    user?.organization?.blockchainAccountAddress
+  );
+
   const actions: ListAction[] = [
     {
       name: t('certificate.exchangeInbox.sellActionTitle'),
       component: SellAction,
     },
-    {
-      name: t('certificate.exchangeInbox.withdrawActionTitle'),
-      component: WithdrawAction,
-    },
+    ...(userHasBlockchainAddress
+      ? [
+          {
+            name: t('certificate.exchangeInbox.withdrawActionTitle'),
+            component: WithdrawAction,
+          },
+        ]
+      : []),
     {
       name: t('certificate.exchangeInbox.transferActionTitle'),
       component: ExchangeTransferAction,

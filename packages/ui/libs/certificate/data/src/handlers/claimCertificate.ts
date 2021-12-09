@@ -15,6 +15,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { useCachedUser } from '../cached';
 
 export const useClaimCertificateHandler = (
   exchangeCertificates: AccountAssetDTO[],
@@ -29,6 +30,8 @@ export const useClaimCertificateHandler = (
   const { mutate, isLoading } = useTransferControllerRequestClaim();
   const queryClient = useQueryClient();
   const exchangeCertificatesQueryKey = getAccountBalanceControllerGetQueryKey();
+
+  const user = useCachedUser();
 
   const claimHandler = <Id>(id: Id, amount: string) => {
     setTxPending(true);
@@ -52,6 +55,7 @@ export const useClaimCertificateHandler = (
         Number(amount)
       ).toString(),
       claimData,
+      claimAddress: user?.organization?.blockchainAccountAddress ?? undefined,
     };
 
     mutate(

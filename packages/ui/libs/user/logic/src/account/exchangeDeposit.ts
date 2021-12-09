@@ -8,6 +8,5 @@ export const useExchangeDepositAddressLogic = () => {
       t('user.profile.popover.exchangeAddressWhatFor'),
       t('user.profile.popover.exchangeAddressHowTo'),
     ],
-    buttonText: t('user.profile.createExchangeAddressButton'),
   };
 };
