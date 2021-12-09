@@ -209,6 +209,7 @@ dependencies:
   polly-js: 1.8.2
   prettier: 2.5.1
   qs: 6.10.1
+  query-string: 7.0.1
   react: 17.0.2
   react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
   react-chartjs-2: 4.0.0_chart.js@3.6.2+react@17.0.2
@@ -18356,6 +18357,12 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==
+  /filter-obj/1.1.0:
+    dev: false
+    engines:
+      node: '>=0.10.0'
+    resolution:
+      integrity: sha1-mzERErxsYSehbgFsbF1/GeCAXFs=
   /finalhandler/1.1.2:
     dependencies:
       debug: 2.6.9
@@ -29030,6 +29037,17 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-gjWOsm2SoGlgLEdAGt7a6slVOk9mGiXmPFMqrEhLQ68rhQuBnpfs3+EmlvqKyxnCo9/PPlF+9MtY02S1aFg+Jw==
+  /query-string/7.0.1:
+    dependencies:
+      decode-uri-component: 0.2.0
+      filter-obj: 1.1.0
+      split-on-first: 1.1.0
+      strict-uri-encode: 2.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-uIw3iRvHnk9to1blJCG3BTc+Ro56CBowJXKmNNAm3RulvPBzWLRqKSiiDk+IplJhsydwtuNMHi8UGQFcCLVfkA==
   /querystring-es3/0.2.1:
     dev: false
     engines:
@@ -31684,6 +31702,12 @@ packages:
     optional: true
     resolution:
       integrity: sha512-WpjSXv9NQz0nU3yCT9TFEOfpFrXADY9C5fG6eAJqixLhvTX1jP3w92Y8IE5oafIe42nlF9otjhllnXN/QCaB3A==
+  /split-on-first/1.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==
   /split-string/3.1.0:
     dependencies:
       extend-shallow: 3.0.2
@@ -31890,6 +31914,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
+  /strict-uri-encode/2.0.0:
+    dev: false
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha1-ucczDHBChi9rFC3CdLvMWGbONUY=
   /string-hash/1.1.3:
     dev: false
     resolution:
@@ -38890,6 +38920,7 @@ packages:
       lodash: 4.17.21
       os-browserify: 0.3.0
       prettier: 2.5.1
+      query-string: 7.0.1
       react: 17.0.2
       react-beautiful-dnd: 13.1.0_react-dom@17.0.2+react@17.0.2
       react-chartjs-2: 4.0.0_chart.js@3.6.2+react@17.0.2
@@ -38924,7 +38955,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-80yqXfRXeqxewlXJl7/yiFlct89lcUrKvqScgnHDyVyLo+W2218Oao2WwRSqa/gS/fBeut2QA13xkFO7G+TZ8g==
+      integrity: sha512-nTK+aVVVawdBAZ924j0NK7E47fTMOzqc4tgbGk2ZsG06LnGuZ2/YiOwv8HNKalWO0HROi+B4Jx+vuE2E5DenrA==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -39212,6 +39243,7 @@ specifiers:
   polly-js: 1.8.2
   prettier: 2.5.1
   qs: 6.10.1
+  query-string: 7.0.1
   react: 17.0.2
   react-beautiful-dnd: 13.1.0
   react-chartjs-2: 4.0.0

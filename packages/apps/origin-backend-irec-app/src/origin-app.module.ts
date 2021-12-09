@@ -52,7 +52,8 @@ import {
     OrganizationNameAlreadyTakenHandler,
     OrganizationRegisteredHandler,
     OrganizationStatusChangedHandler,
-    RegistrationCreatedHandler
+    RegistrationCreatedHandler,
+    ResetPasswordRequestedHandler
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
@@ -107,6 +108,7 @@ const OriginAppTypeOrmModule = () => {
         OrganizationMemberRoleChangedHandler,
         OrganizationStatusChangedHandler,
         RegistrationCreatedHandler,
+        ResetPasswordRequestedHandler,
         OrganizationRegisteredHandler,
         ConnectionCreatedHandler,
         IrecCertificateImportFailedHandler,
