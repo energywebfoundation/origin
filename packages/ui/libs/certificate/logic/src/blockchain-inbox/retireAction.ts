@@ -27,6 +27,9 @@ export const useRetireActionLogic: TUseRetireActionLogic<
     title: t('certificate.blockchainInbox.selectedForRetirement'),
     buttonText: t('certificate.blockchainInbox.retireButton'),
     selectedItems,
+    selectDisabledTooltip: t(
+      'certificate.blockchainInbox.addBeneficiariesTooltip'
+    ),
   };
 };
 

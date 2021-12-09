@@ -66,6 +66,8 @@ export const useRetireActionEffects = (
   const isLoading = areCompanyBeneficiariesLoading || isHandlerLoading;
   const buttonDisabled = !isDirty || !isValid;
 
+  const selectDisabled = fields[0].options?.length === 0;
+
   return {
     ...actionLogic,
     retireHandler,
@@ -75,5 +77,6 @@ export const useRetireActionEffects = (
     register,
     control,
     errors,
+    selectDisabled,
   };
 };
