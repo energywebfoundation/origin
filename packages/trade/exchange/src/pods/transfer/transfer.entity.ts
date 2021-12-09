@@ -61,4 +61,9 @@ export class Transfer extends ExtendedBaseEntity {
     @Column('simple-json', { nullable: true })
     @IsOptional()
     claimData?: IClaimData;
+
+    @ApiProperty({ type: String, nullable: true, required: false })
+    @Column({ nullable: true })
+    @IsOptional()
+    claimAddress?: string;
 }
