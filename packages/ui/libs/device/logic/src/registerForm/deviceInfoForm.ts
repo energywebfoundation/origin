@@ -13,7 +13,8 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
   allFuelTypes,
   allDeviceTypes,
   myAccounts,
-  externalDeviceId
+  externalDeviceId,
+  singleAccountMode
 ) => ({
   formTitle: t('device.register.deviceInfoFormTitle'),
   inputsVariant: 'filled',
@@ -90,7 +91,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       options: gridOperatorOptions,
       required: true,
     },
-    ...(/true/i.test(process.env.NX_SINGLE_ACCOUNT_MODE)
+    ...(singleAccountMode
       ? ([
           {
             name: 'irecTradeAccountCode',

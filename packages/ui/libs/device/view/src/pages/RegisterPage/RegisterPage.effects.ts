@@ -13,7 +13,7 @@ import { DeviceImagesUpload } from '../../containers';
 import { useDeviceAppEnv } from '../../context';
 
 export const useRegisterPageEffects = () => {
-  const { smartMeterId } = useDeviceAppEnv();
+  const { smartMeterId, singleAccountMode } = useDeviceAppEnv();
   const {
     user,
     exchangeDepositAddress,
@@ -28,7 +28,9 @@ export const useRegisterPageEffects = () => {
     useAllDeviceFuelTypes();
   const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
     useAllDeviceTypes();
-  const { myAccounts, isLoading: areMyAccountsLoading } = useApiMyAccounts();
+  const { myAccounts, isLoading: areMyAccountsLoading } = useApiMyAccounts({
+    enabled: singleAccountMode,
+  });
   const {
     allRegions,
     country,
@@ -45,6 +47,7 @@ export const useRegisterPageEffects = () => {
     myAccounts,
     externalDeviceId: smartMeterId,
     platformCountryCode,
+    singleAccountMode,
   });
 
   const { submitHandler, isMutating } =

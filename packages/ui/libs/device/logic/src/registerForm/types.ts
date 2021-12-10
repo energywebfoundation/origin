@@ -25,7 +25,8 @@ export type TCreateDeviceInfoForm = (
   allFuelTypes: CodeNameDTO[],
   allDeviceTypes: CodeNameDTO[],
   myAccounts: AccountDTO[],
-  externalDeviceId: string
+  externalDeviceId: string,
+  singleAccountMode: boolean
 ) => MultiStepFormItem<DeviceInfoFormValues>;
 
 export type DeviceLocationFormValues = {
@@ -65,6 +66,7 @@ export type TUseRegisterDeviceFormArgs = {
   myAccounts: AccountDTO[];
   externalDeviceId: string;
   platformCountryCode: string;
+  singleAccountMode: boolean;
 };
 export type TUseRegisterDeviceFormLogic = (
   args: TUseRegisterDeviceFormArgs

@@ -11,6 +11,7 @@ export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = ({
   myAccounts,
   externalDeviceId,
   platformCountryCode,
+  singleAccountMode,
 }) => {
   const { t } = useTranslation();
   return {
@@ -21,7 +22,8 @@ export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = ({
         allFuelTypes,
         allDeviceTypes,
         myAccounts,
-        externalDeviceId
+        externalDeviceId,
+        singleAccountMode
       ),
       createDeviceLocationForm(t, allRegions, platformCountryCode),
       createDeviceImagesForm(t),
