@@ -414,6 +414,7 @@
           "formTitle": "Request Certificates for",
           "fromTime": "From",
           "toTime": "To",
+          "irecTradeAccountCode": "Account Code",
           "energy": "Amount of energy in MW"
         },
         "deviceStatusTooltip": "Device status: {{status}}",
