@@ -101,6 +101,12 @@ export class CreateDeviceDTO {
     @Expose()
     subregion: string;
 
+    @ApiProperty({ type: String, required: false })
+    @IsString()
+    @IsOptional()
+    @Expose()
+    irecTradeAccountCode?: string;
+
     public static sanitize(device: CreateDeviceDTO): CreateDeviceDTO {
         return plainToClass(CreateDeviceDTO, device, { excludeExtraneousValues: true });
     }

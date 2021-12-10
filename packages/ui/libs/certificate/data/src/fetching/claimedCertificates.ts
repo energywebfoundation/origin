@@ -1,14 +1,24 @@
 import { useTransferControllerGetMyClaimTransfers } from '@energyweb/exchange-react-query-client';
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
+import { useCachedUser } from '../cached';
 import { useAllBlockchainCertificates } from './blockchainCertificates';
 
 export const useApiClaimedCertificates = () => {
+  const user = useCachedUser();
+  const userHasBlockchainAccountAttached = Boolean(
+    user?.organization?.blockchainAccountAddress
+  );
+
   const {
     blockchainCertificates,
     isLoading: areAllBlockchainCertificatesLoading,
   } = useAllBlockchainCertificates();
   const { data: claimedFromExchange, isLoading: areExchangeClaimedLoading } =
-    useTransferControllerGetMyClaimTransfers();
+    useTransferControllerGetMyClaimTransfers({
+      query: {
+        enabled: !userHasBlockchainAccountAttached,
+      },
+    });
 
   const claimedCertificates: CertificateDTO['myClaims'] =
     claimedFromExchange?.map((cert) => ({

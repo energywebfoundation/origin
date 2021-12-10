@@ -11,3 +11,5 @@ export * from './updateUserPassword';
 export * from './userLogin';
 export * from './confirmEmail';
 export * from './approveOrg';
+export * from './resetPassword';
+export * from './changeSelfOwnership';

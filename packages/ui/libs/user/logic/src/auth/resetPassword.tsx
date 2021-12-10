@@ -1,18 +1,15 @@
 import { GenericFormProps, VisibilityButton } from '@energyweb/origin-ui-core';
+import { ResetPasswordFormValues } from '@energyweb/origin-ui-user-data';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-
-export interface ResetPasswordFormValues {
-  password: string;
-  passwordConfirm: string;
-}
 
 export type TUserResetPasswordFormLogicArgs = {
   passwordVisible: boolean;
   setPasswordVisible: (value: boolean) => void;
   passwordConfirmVisible: boolean;
   setPasswordConfirmVisible: (value: boolean) => void;
+  isMutating: boolean;
 };
 
 export const useResetPasswordFormLogic = ({
@@ -20,6 +17,7 @@ export const useResetPasswordFormLogic = ({
   setPasswordVisible,
   passwordConfirmVisible,
   setPasswordConfirmVisible,
+  isMutating,
 }: TUserResetPasswordFormLogicArgs): Omit<
   GenericFormProps<ResetPasswordFormValues>,
   'submitHandler'
@@ -29,6 +27,7 @@ export const useResetPasswordFormLogic = ({
     formTitle: t('user.resetPassword.formTitle'),
     formTitleVariant: 'h6',
     initialValues: { password: '', passwordConfirm: '' },
+    loading: isMutating,
     validationMode: 'onBlur',
     validationSchema: yup.object().shape({
       password: yup

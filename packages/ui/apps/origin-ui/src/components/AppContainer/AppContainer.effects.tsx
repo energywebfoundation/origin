@@ -72,28 +72,6 @@ export const useAppContainerEffects = () => {
     isCertificateTabActive,
   } = useActiveMenuTab();
 
-  const { data: userInvitations, isLoading: areInvitationsLoading } =
-    useInvitationControllerGetInvitations({
-      query: { enabled: isAuthenticated },
-    });
-  const { data: iRecRegistrations, isLoading: isIRecRegistrationsLoading } =
-    useRegistrationControllerGetRegistrations({
-      query: {
-        enabled: isAuthenticated && Boolean(user?.organization?.id),
-      },
-    });
-  const { data: iRecConnection, isLoading: isIRecOrgLoading } =
-    useConnectionControllerGetMyConnection({
-      query: {
-        enabled:
-          isAuthenticated &&
-          Boolean(user?.organization?.id) &&
-          iRecRegistrations?.length > 0,
-      },
-    });
-
-  const iRecOrg = iRecRegistrations?.length > 0 && iRecRegistrations[0];
-  const iRecConnectionActive = iRecConnection?.active;
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
   const userIsDeviceManagerOrAdmin = isRole(
@@ -113,6 +91,30 @@ export const useAppContainerEffects = () => {
   const userOrgHasBlockchainAccountAttached = Boolean(
     user?.organization?.blockchainAccountAddress
   );
+
+  const { data: userInvitations, isLoading: areInvitationsLoading } =
+    useInvitationControllerGetInvitations({
+      query: { enabled: isAuthenticated },
+    });
+  const { data: iRecRegistrations, isLoading: isIRecRegistrationsLoading } =
+    useRegistrationControllerGetRegistrations({
+      query: {
+        enabled: isAuthenticated && userHasOrg,
+      },
+    });
+  const { data: iRecConnection, isLoading: isIRecOrgLoading } =
+    useConnectionControllerGetMyConnection({
+      query: {
+        enabled:
+          isAuthenticated &&
+          userHasOrg &&
+          iRecRegistrations?.length > 0 &&
+          !userIsAdminOrSupport,
+      },
+    });
+
+  const iRecOrg = iRecRegistrations?.length > 0 && iRecRegistrations[0];
+  const iRecConnectionActive = iRecConnection?.active;
 
   const orgRoutesConfig: RoutesConfig['orgRoutes'] = useMemo(
     () => ({
