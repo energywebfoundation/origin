@@ -13,9 +13,9 @@ export const prepareAccountCodeOptions = (
 
   const options: FormSelectOption[] = myAccounts
     .filter((account) => account.type === AccountDTOType.Trade)
-    .map((type) => ({
-      value: type.code,
-      label: type.details.name,
+    .map((account) => ({
+      value: account.code,
+      label: account.code,
     }));
   return options;
 };
