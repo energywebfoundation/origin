@@ -365,6 +365,7 @@
         "registrationDate": "Registration Date",
         "capacity": "Capacity (MW)",
         "gridOperator": "Grid Operator",
+        "irecTradeAccountCode": "Account Code",
         "description": "Description",
 
         "deviceLocationFormTitle": "Device Location",
