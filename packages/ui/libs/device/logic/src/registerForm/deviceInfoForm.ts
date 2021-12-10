@@ -1,15 +1,18 @@
 import * as yup from 'yup';
+import { GenericFormField } from '@energyweb/origin-ui-core';
 import {
   prepareDeviceTypesOptions,
   prepareFuelTypesOptions,
+  prepareAccountCodeOptions,
   gridOperatorOptions,
 } from '../utils';
-import { TCreateDeviceInfoForm } from './types';
+import { TCreateDeviceInfoForm, DeviceInfoFormValues } from './types';
 
 export const createDeviceInfoForm: TCreateDeviceInfoForm = (
   t,
   allFuelTypes,
   allDeviceTypes,
+  myAccounts,
   externalDeviceId
 ) => ({
   formTitle: t('device.register.deviceInfoFormTitle'),
@@ -24,6 +27,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
     smartMeterId: '',
     capacity: '',
     gridOperator: '',
+    irecTradeAccountCode: '',
   },
   validationSchema: yup.object().shape({
     facilityName: yup
@@ -86,6 +90,16 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       options: gridOperatorOptions,
       required: true,
     },
+    ...(/true/i.test(process.env.NX_SINGLE_ACCOUNT_MODE)
+      ? ([
+          {
+            name: 'irecTradeAccountCode',
+            label: t('device.register.irecTradeAccountCode'),
+            select: true,
+            options: prepareAccountCodeOptions(myAccounts),
+          },
+        ] as GenericFormField<DeviceInfoFormValues>[])
+      : []),
     {
       name: 'capacity',
       label: t('device.register.capacity'),

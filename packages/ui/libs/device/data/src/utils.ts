@@ -89,6 +89,7 @@ export function decomposeForIRec({
       ? newDevice.timeZone[0].value.toString()
       : timeZones[0].timeZone,
     gridOperator: newDevice.gridOperator,
+    irecTradeAccountCode: newDevice?.irecTradeAccountCode,
     postalCode: organization.zipCode,
     region: newDevice.region[0].value.toString(),
     subregion: newDevice.subregion[0].value.toString(),

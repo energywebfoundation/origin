@@ -8,6 +8,7 @@ export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = ({
   allFuelTypes,
   allDeviceTypes,
   allRegions,
+  myAccounts,
   externalDeviceId,
   platformCountryCode,
 }) => {
@@ -15,7 +16,13 @@ export const useRegisterDeviceFormLogic: TUseRegisterDeviceFormLogic = ({
   return {
     heading: t('device.register.formTitle'),
     forms: [
-      createDeviceInfoForm(t, allFuelTypes, allDeviceTypes, externalDeviceId),
+      createDeviceInfoForm(
+        t,
+        allFuelTypes,
+        allDeviceTypes,
+        myAccounts,
+        externalDeviceId
+      ),
       createDeviceLocationForm(t, allRegions, platformCountryCode),
       createDeviceImagesForm(t),
     ],

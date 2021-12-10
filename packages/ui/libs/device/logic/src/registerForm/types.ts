@@ -1,5 +1,6 @@
 import { ConfigurationDTORegions } from '@energyweb/origin-backend-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { AccountDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
   FormSelectOption,
   MultiStepFormItem,
@@ -17,11 +18,13 @@ export type DeviceInfoFormValues = {
   smartMeterId: string;
   capacity: string;
   gridOperator: string;
+  irecTradeAccountCode?: string;
 };
 export type TCreateDeviceInfoForm = (
   t: TFunction,
   allFuelTypes: CodeNameDTO[],
   allDeviceTypes: CodeNameDTO[],
+  myAccounts: AccountDTO[],
   externalDeviceId: string
 ) => MultiStepFormItem<DeviceInfoFormValues>;
 
@@ -59,6 +62,7 @@ export type TUseRegisterDeviceFormArgs = {
   allFuelTypes: CodeNameDTO[];
   allDeviceTypes: CodeNameDTO[];
   allRegions: ConfigurationDTORegions;
+  myAccounts: AccountDTO[];
   externalDeviceId: string;
   platformCountryCode: string;
 };
