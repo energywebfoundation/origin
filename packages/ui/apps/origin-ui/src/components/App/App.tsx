@@ -107,6 +107,9 @@ export const App: FC<AppProps> = memo(
                     <DeviceApp
                       routesConfig={deviceRoutes}
                       envVariables={{
+                        singleAccountMode: /true/i.test(
+                          process.env.NX_SINGLE_ACCOUNT_MODE
+                        ),
                         googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
                         smartMeterId: process.env.NX_SMART_METER_ID,
                       }}

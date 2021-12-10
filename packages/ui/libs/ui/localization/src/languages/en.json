@@ -365,6 +365,7 @@
         "registrationDate": "Registration Date",
         "capacity": "Capacity (MW)",
         "gridOperator": "Grid Operator",
+        "irecTradeAccountCode": "Account Code",
         "description": "Description",
 
         "deviceLocationFormTitle": "Device Location",
@@ -413,6 +414,7 @@
           "formTitle": "Request Certificates for",
           "fromTime": "From",
           "toTime": "To",
+          "irecTradeAccountCode": "Account Code",
           "energy": "Amount of energy in MW"
         },
         "deviceStatusTooltip": "Device status: {{status}}",

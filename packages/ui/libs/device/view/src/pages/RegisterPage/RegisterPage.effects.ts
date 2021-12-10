@@ -6,13 +6,14 @@ import {
   useApiRegisterDevice,
   useApiRegionsConfiguration,
   useApiUserAndAccount,
+  useApiMyAccounts,
 } from '@energyweb/origin-ui-device-data';
 import { usePermissionsLogic } from '@energyweb/origin-ui-device-logic';
 import { DeviceImagesUpload } from '../../containers';
 import { useDeviceAppEnv } from '../../context';
 
 export const useRegisterPageEffects = () => {
-  const { smartMeterId } = useDeviceAppEnv();
+  const { smartMeterId, singleAccountMode } = useDeviceAppEnv();
   const {
     user,
     exchangeDepositAddress,
@@ -27,6 +28,9 @@ export const useRegisterPageEffects = () => {
     useAllDeviceFuelTypes();
   const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
     useAllDeviceTypes();
+  const { myAccounts, isLoading: areMyAccountsLoading } = useApiMyAccounts({
+    enabled: singleAccountMode,
+  });
   const {
     allRegions,
     country,
@@ -40,8 +44,10 @@ export const useRegisterPageEffects = () => {
     allFuelTypes,
     allDeviceTypes,
     allRegions,
+    myAccounts,
     externalDeviceId: smartMeterId,
     platformCountryCode,
+    singleAccountMode,
   });
 
   const { submitHandler, isMutating } =
@@ -65,7 +71,8 @@ export const useRegisterPageEffects = () => {
     areFuelTypesLoading ||
     areDeviceTypesLoading ||
     areRegionsLoading ||
-    userAndAccountLoading;
+    userAndAccountLoading ||
+    areMyAccountsLoading;
 
   return { isLoading, isMutating, formProps, canAccessPage, requirementsProps };
 };
