@@ -53,6 +53,7 @@ export const useBlockchainTransferCertificateHandler = (
         resetList();
       }
     } catch (error) {
+      console.error(error);
       showNotification(
         t('certificate.blockchainInbox.notifications.transferError'),
         NotificationTypeEnum.Error

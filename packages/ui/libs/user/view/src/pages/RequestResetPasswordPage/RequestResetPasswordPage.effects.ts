@@ -1,15 +1,15 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useRequestResetPasswordFormLogic } from '@energyweb/origin-ui-user-logic';
+import { GenericFormProps } from '@energyweb/origin-ui-core';
 import {
   RequestResetPasswordFormValues,
-  useRequestResetPasswordFormLogic,
-} from '@energyweb/origin-ui-user-logic';
-import { GenericFormProps } from '@energyweb/origin-ui-core';
+  useRequestPasswordResetHandler,
+} from '@energyweb/origin-ui-user-data';
 
 export const useRequestResetPasswordPageEffects = () => {
-  const formLogic = useRequestResetPasswordFormLogic();
-
-  // add proper when api is ready
-  const submitHandler = useCallback(() => {}, []);
+  const { requestHandler: submitHandler, isMutating } =
+    useRequestPasswordResetHandler();
+  const formLogic = useRequestResetPasswordFormLogic(isMutating);
 
   const formProps: GenericFormProps<RequestResetPasswordFormValues> = useMemo(
     () => ({ ...formLogic, submitHandler }),

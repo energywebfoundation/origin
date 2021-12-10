@@ -70,6 +70,7 @@ export const useDepositCertificateHandler = (
         resetList();
       }
     } catch (error) {
+      console.error(error);
       showNotification(
         t('certificate.blockchainInbox.notifications.depositError'),
         NotificationTypeEnum.Error

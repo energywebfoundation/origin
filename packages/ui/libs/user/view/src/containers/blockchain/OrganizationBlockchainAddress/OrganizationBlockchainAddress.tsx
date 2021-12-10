@@ -29,7 +29,9 @@ const Component: FC = () => {
 
   return (
     <Grid item md={8} xs={12}>
-      <Typography variant="h6">{title}</Typography>
+      <Typography variant="h6" component="span">
+        {title}
+      </Typography>
       <div className={classes.fieldWrapper}>
         {blockchainAddress ? (
           <TextField
@@ -67,3 +69,12 @@ export const OrganizationBlockchainAddress = withMetamask(
   Component,
   ConnectMetamaskPlaceholder
 );
+
+export const getOrganizationBlockchainAddressComponent = (
+  isAddressAttached: boolean
+) => {
+  const component = isAddressAttached
+    ? Component
+    : OrganizationBlockchainAddress;
+  return component;
+};

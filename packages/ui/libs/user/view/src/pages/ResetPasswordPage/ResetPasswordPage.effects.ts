@@ -1,24 +1,29 @@
 import { GenericFormProps } from '@energyweb/origin-ui-core';
 import {
   ResetPasswordFormValues,
-  useResetPasswordFormLogic,
-} from '@energyweb/origin-ui-user-logic';
-import { useCallback, useMemo, useState } from 'react';
+  useResetPasswordHandler,
+} from '@energyweb/origin-ui-user-data';
+import { useResetPasswordFormLogic } from '@energyweb/origin-ui-user-logic';
+import { useQueryString } from '@energyweb/origin-ui-utils';
+import { useMemo, useState } from 'react';
 
 export const useResetPasswordPageEffects = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
+
+  const parsedQuery = useQueryString();
+  const token = parsedQuery.token as string;
+
+  const { resetHandler: submitHandler, isMutating } =
+    useResetPasswordHandler(token);
 
   const formLogic = useResetPasswordFormLogic({
     passwordVisible,
     setPasswordVisible,
     passwordConfirmVisible,
     setPasswordConfirmVisible,
+    isMutating,
   });
-
-  // add proper when api is ready
-  // add token read from query string as well
-  const submitHandler = useCallback(() => {}, []);
 
   const formProps: GenericFormProps<ResetPasswordFormValues> = useMemo(
     () => ({ ...formLogic, submitHandler }),
