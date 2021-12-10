@@ -63,7 +63,6 @@ export default {
       control: false,
     },
     errorExists: {
-      type: { required: false },
       description:
         'Prop which could be received by checking form context for errors existing in this particular field. Specifiying it as `true` marks input as errored',
       defaultValue: false,
@@ -73,7 +72,6 @@ export default {
       },
     },
     errorText: {
-      type: { required: false },
       description:
         'Prop which could be received by checking form context for error message in this particular field. This property is used as `helperText` below the Input.',
       defaultValue: '',
@@ -83,7 +81,6 @@ export default {
       },
     },
     variant: {
-      type: { required: false },
       defaultValue: 'standard',
       table: {
         defaultValue: { summary: 'standard' },
