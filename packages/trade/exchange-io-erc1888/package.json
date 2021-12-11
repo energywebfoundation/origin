@@ -53,7 +53,7 @@
         "@ethersproject/contracts": "5.3.0",
         "@ethersproject/providers": "5.3.1",
         "@nestjs/cli": "8.1.4",
-        "@types/chai": "4.2.22",
+        "@types/chai": "4.3.0",
         "@types/mocha": "9.0.0",
         "@types/node": "14.18.0",
         "@types/superagent": "4.1.13",
