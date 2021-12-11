@@ -1,6 +1,6 @@
 # Exchange Inbox 
 
-The Exchange Inbox allows admin users to sell, withdraw, transfer and export certificates that are currently on the Exchange. Certificates in this inbox are held in the [Exchange wallet](../user-guide-glossary.md#exchange-wallet).  
+The Exchange Inbox shows all of your organization's certificates that are currently on the Exchange. The Exchange Inbox allows admin users to [sell](#sell), [withdraw](#withdraw), [transfer](#transfer) and [export](#export) certificates that are currently on the Exchange. Certificates in this inbox are held in the [Exchange wallet](../user-guide-glossary.md#exchange-wallet).  
 
 **When the issuing body approves a certificate request, the certificate is first deposited into the Exchange Inbox.** Certificates must be in the Exchange Inbox in order to be:  
 
@@ -13,7 +13,7 @@ If you want to move certificate hours from this inbox into your organization’s
 
 ![Certificates-exchangeinbox](../images/certificates/certificates-exchangeinbox.png)  
 
-The Exchange Inbox shows all certificates that are currently active on the Exchange that are associated with your organization’s [Exchange Deposit Address](../user-guide-reg-onboarding.md#exchange-deposit-address). Certificate hours in your Exchange Deposit address are active and can be sold on the Exchange using the [Sell tab](#sell).
+Certificate hours in your Exchange Deposit address are active and can be sold on the Exchange using the [Sell tab](#sell).
 
 ## View Certificate Details
 
@@ -47,7 +47,7 @@ Once you withdraw the Mwh, they  will be transferred to your [Blockchain Inbox](
 
 ## Transfer
 
-Mwh from certificates can be transferred to another Exchange Deposit address if you would like to perform a transfer or a sale off of the exchange interface. To transfer Mwh from a certificate to another Exchange inbox account, select the certificate that you would like to transfer and navigate to the Transfer tab. 
+Mwh from certificates can be transferred to another Exchange Deposit address (The public address associated with another Exchange Deposit account) if you would like to perform a transfer or a sale outside of the Exchange interface. To transfer Mwh from a certificate to another Exchange inbox account, select the certificate that you would like to transfer and navigate to the Transfer tab. 
 
 ![certificate-exchangeinbox-transfer](../images/certificates/certificate-exchangeinbox-transfer.png)
 

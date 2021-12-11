@@ -6,7 +6,7 @@ The Blockchain Inbox interface shows all certificates for your organization’s 
 
  Certificates in this inbox are not active on the exchange. Certificates must be in the Blockchain Inbox in order to be:  
 
-1. Deposited onto the exchange (at which point they are in [Exchange Inbox](./exchange-inbox.md),in the custody of the platform administrator and can be posted for sale)
+1. Deposited onto the exchange (at which point they are in [Exchange Inbox](./exchange-inbox.md), in the custody of the platform administrator and can be posted for sale)
 2. Retired for sustainability reporting
 3. Transferred to another blockchain account address 
 
@@ -14,7 +14,7 @@ The Blockchain Inbox interface shows all certificates for your organization’s 
 
 ![Certificate-blockchaininbox-deposit](../images/certificates/certificate-blockchaininbox-deposit.png)
 
-To deposit Mwh into your organization’s Account Exchange Address, select the device and navigate to the Deposit tab. Once deposited, these Mwh can be active on the exchange and will be visible in your [Exchange Inbox](./exchange-inbox.md). 
+To deposit Certificate Mwh onto the Exchange, select the device and navigate to the Deposit tab. Once deposited, these Mwh can be active on the exchange and will be visible in your [Exchange Inbox](./exchange-inbox.md). 
 
 Note that you can edit the number of Mwh you would like to deposit by clicking the pencil icon next to the Mwh. By default, the number of Mwh to deposit is the total number of Mwh available from the certificate.  
 

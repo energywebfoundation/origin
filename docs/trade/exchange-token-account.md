@@ -4,6 +4,7 @@
 The Exchange Token Account module contains the [TokenAccount.sol smart contract](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/contracts/TokenAccount.sol#L17). This smart contract is used to create (deploy) an organization's [Exchange Deposit account](../user-guide-glossary.md#exchange-deposit-account) on the blockchain. **This account forwards all of an organization's [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) to the [Exchange wallet](../user-guide-glossary.md#exchange-wallet), which stores all EACs currently active on the Exchange.**  
 
 See the image below of a certificate's blockchain transactions: 
+
 1. First, the local issuer approves the certificate request
 2. The certificate is transferred to the Exchange Deposit address (Exchange Deposit account)
 3. The certificate is transferred from the Exchange Deposit address to the Exchange Wallet
@@ -13,7 +14,7 @@ See the image below of a certificate's blockchain transactions:
 When EACs are issued by the Issuing body, they are automatically deposited onto the Exchange. Users can [withdraw certificates off of the exchange](./exchange-io-erc1888.md#withdrawal-processor) at any time. In doing so, the asset is moved from the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) to the user's Blockchain account. Inversely, users can at any time transfer certificates that are in their Blockchain account to their Exchange Deposit account, which forwards them to the Exchange wallet where they are active on the exchange. 
 
 ## Exchange Deposit Account Deployment
-The Exchange Token Account module [exports a Token Account factory](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/src/index.ts) that can be used to deploy new instances of the Token Account. The factory method is used in the Exchange module's Account Deployer Service to deploy new accounts.  
+The Exchange Token Account module [exports a Token Account factory](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/src/index.ts) that is used to deploy new instances of the Token Account. The factory method is used in the Exchange module's Account Deployer Service to deploy new accounts.  
 
 The 'wallet' used to initialize the TokenAccountFactory is the private key used for exchange accounts deployment. This should be set in the .env file.  
 

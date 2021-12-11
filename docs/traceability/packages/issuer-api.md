@@ -3,7 +3,8 @@
 
 The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling all Certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about the certificate lifecycle [here](../../traceability.md). 
 
-The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:
+The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
+
 - [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
 - [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
 - [CQRS (Command and Query Responsibility Segregation)](https://docs.nestjs.com/recipes/cqrs)
@@ -12,21 +13,22 @@ The below gives an overview the of the package architecture, however the NestJS 
 - [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
 ## Issuer API Architecture
-The Issuer API package is broken down into three NestJS modules or ['pods'](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods):  
+The Issuer API package is broken down into three NestJS [modules](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods):  
 
 + [blockchain](#blockchain)
 + [certificate](#certificate)
 + [certification-request](#certification-request)  
 
-In general, each 'pod' or NestJS module has:  
-  + A [controller](https://docs.nestjs.com/controllers) that manages requests and responses to the client
-  + An .entity file that maps an entity to a database repository
-  + A .service file that provides methods to fetch and transform data
-  + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
-  + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application
+Each module contains code relevant for a specific feature. In general, each NestJS module has: 
+
++ A [controller](https://docs.nestjs.com/controllers) that manages requests and responses to the client
++ An .entity file that maps an entity to a database repository
++ A .service file that provides methods to fetch and transform data
++ [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
++ A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application
 
 ## Persistence
-The Issuer API uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each pod, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
+The Issuer API uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
 
 ```
 @Entity({ name: CERTIFICATION_REQUESTS_TABLE_NAME })
@@ -65,12 +67,13 @@ export class ApproveCertificationRequestHandler
 ```
 [source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/traceability/issuer-api/src/pods/certification-request/handlers/approve-certification-request.handler.ts#L15)
 
-## Pods
+## Modules
 
 ### blockchain
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/blockchain)
 
-The blockchain pod provides services to fetch and create blockchain properties, which are needed to establish connection with the blockchain through a web3 provider, and interact with smart contracts on the blockchain. The registry, issuer and private issuer are public addresses. 
+The blockchain module provides services to fetch and create blockchain properties, which are needed to establish connection with the blockchain through a web3 provider, and interact with smart contracts on the blockchain. 
+
 ```
 export interface IBlockchainProperties {
     web3: providers.FallbackProvider | providers.JsonRpcProvider;
@@ -138,34 +141,24 @@ The blockchain properties [controller](https://github.com/energywebfoundation/or
 
 The [Data Transfer Object (DTO)](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.dto.ts) file provides a representation of the data that is exposed to the endpoint consumer of the controller methods.  
 
-The [module file](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.module.ts) is used by NestJS to structure the application. 
-
-
-#### Persistence
-Blockchain property data is persisted in the Blockchain Properties repository. The [entity file](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts) maps the blockchain property data to a strongly typed entity in the database repository. 
+The [module file](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.module.ts) is used by NestJS to structure the application.  
 
 ### certificate
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate)  
 
-The certificate pod provides services to manage the certificate lifecycle *after* issuance (fetch, claim, transfer, issue). This pod provides a seperate controller and commands/command handlers for batch operations (handling multiple certificates at once).
+The certificate module provides services to manage the certificate lifecycle *after* issuance (fetch, claim, transfer, issue). It has a seperate controller and commands/command handlers for batch operations (handling multiple certificates at once).
 
-The [certificate controller](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/certificate.controller.ts) manages requests and responses to the client. Unlike the [blockchain module](#blockchain), the controller methods do not call on a service provider. This module uses [commands](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate/commands) and [command handlers](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/claim-certificate.handler.ts) to perform business logic and persist data. To do this it uses the NestJS CQRS (Command and Query Responsibility Segregation) module. Commands are classes that take in defined parameters. Every command has a corresponding command handler that performs business logic and persistence much like a service, using the parameters from the command. You can read more about the NestJS CQRS module in their documentation [here](https://docs.nestjs.com/recipes/cqrs).  
+The [certificate controller](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/certificate.controller.ts) manages requests and responses to the client. This module uses [commands](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate/commands) and [command handlers](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/claim-certificate.handler.ts) to perform business logic and persist data, rather than a service provider. To do this the module uses the NestJS CQRS (Command and Query Responsibility Segregation) module. Commands are classes that take in defined parameters. Every command has a corresponding command handler that performs business logic and persistence much like a service, using the parameters from the command. You can read more about the NestJS CQRS module in their documentation [here](https://docs.nestjs.com/recipes/cqrs).  
 
-The certificate pod has commands and corresponding command handlers for each certificate (or batch certificate) operation (i.e. batch claim certificate, create certificate, get certificate, claim certificate, etc.)  
+The certificate module has commands and corresponding command handlers for each certificate (or batch certificate) operation (i.e. batch claim certificate, create certificate, get certificate, claim certificate, etc.)  
+  
 - [Commands](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate/commands)
 - [Command handlers](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate/handlers)
-
-#### Persistence
-See [below](#certificate-persistence) on certificate persistence. 
 
 ### certification-request 
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certification-request) 
 
-The certification-request pod manages fetching, creating and approving certificate requests. It uses the same command handler (CQRS) pattern as the [certificate pod](#certificate). 
-
-#### Persistence
-Certificate requests are persisted in the Certification Request repository. You can see the Certificate Request entity model [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/certification-request.entity.ts). The [command handlers](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certification-request/handlers) are responsible for fetching, persisting and updating data in the repository. 
-
+The certification-request module manages fetching, creating and approving certificate requests. It uses the same command handler (CQRS) pattern as the [certificate module](#certificate). 
 
 ## Certificate Persistence  
 Certificate data is persisted in two locations:  

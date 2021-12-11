@@ -6,17 +6,20 @@
 This package is a NestJS application that uses [ethers.js](https://docs.ethers.io/v5/) to interact with the smart contracts on blockchain. It is tightly coupled with the [Exchange module](./exchange.md). 
 
 The package has two core NestJS modules:  
+
 - [deposit-watcher](#deposit-watcher)
 - [withdrawal-processor](#withdrawal-processor)
 
 ## deposit-watcher
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/deposit-watcher)
 
-The [deposit-watcher service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts) sets up a listener for transfers (deposits) of [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) from the Registry to the [Exchange wallet](../user-guide-glossary.md#exchange-wallet), and emits events to the DepositDiscoveredEventHandler when they occur. 
+The deposit-watcher handles the transfer of assets to the Exchange wallet. Once an EAC is in the Exchange wallet, it is active on the Exchange, meaning it can be posted for sale, transferred to another Exchange Deposit address, or claimed. 
 
-When the deposit-watcher module initializes, The service does the following: 
+The [deposit-watcher service](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-io-erc1888/src/deposit-watcher/deposit-watcher.service.ts) sets up a listener for transfers (deposits) of [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) from the Registry to the [Exchange wallet](../user-guide-glossary.md#exchange-wallet), and emits events to the [Exchange module](./exchange.md) so that corresponding assets can be updated in their respective repositories. The deposited EAC is then posted for sale as an ask on the Exchange. 
 
-1. Creates an interface of the ERC-1888 token in order to interact with the contract: 
+When the deposit-watcher module initializes, The service does the following to set up the deposit listener: 
+
+1. Creates an interface of the ERC-1888 token (the token standard for EACs) in order to interact with the contract: 
 
 ```
 private tokenInterface = new ethers.utils.Interface(Contracts.RegistryExtendedJSON.abi);
