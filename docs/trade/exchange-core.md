@@ -17,7 +17,7 @@ export class MatchingEngine<TProduct, TProductFilter>
 TProduct represents the product being traded - in the case of the Origin reference implementation, an [Energy Attribute Certificate (EAC)](../user-guide-glossary.md#energy-attribute-certificate) - so the implemented product type contains EAC attributes such as device type, location, generation time, grid operator etc. The interface can change according to implementation requirements. 
 
 ### Product Filter
-TProductFilter represents the product filters in a bid or ask. Products can be filtered by, for example, a specific fuel type or a specific region where the energy represented by an EAC was produced. These filters can change according to implememntation requirements. 
+TProductFilter represents the product filters in a bid or ask. Products can be filtered by, for example, a specific fuel type or a specific region where the energy represented by an EAC was produced. These filters can change according to implemementation requirements. 
 
 ### Price Strategy
 The Matching Engine is instantiated with a price strategy:
@@ -56,7 +56,7 @@ export class OrderCreationTimePickStrategy implements IPriceStrategy {
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/strategy/OrderCreationTimePickStrategy.ts)
 
 ## Order Book
-The Matching Engine [creates the order book](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85), which contains all of the current bids and asks: 
+The Matching Engine [creates the order book](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85), which contains all of the Exchange's current bids and asks: 
 
 ```
 public orderBook(): OrderBook<TProduct, TProductFilter> {
@@ -75,10 +75,14 @@ public orderBook(): OrderBook<TProduct, TProductFilter> {
 ## Matching Flow 
 ** Note that the matching flow pertains to bids and asks. The logic for handling Direct Buys is [described seperatley below](#adding-direct-buys). 
 
-### 1. Submit Order
-The [Exchange module's matching engine service submits orders](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L71) to the Matching Egnine. Orders that are submitted to the Matching Engine order book must be of type [IMatchableOrder](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/IMatchableOrder.ts). The [OrderMapperService] in the Exchange package (https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/test/order/order-mapper.service.ts) maps orders to instances of the [Order class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/Order.ts), which implements the IMatchableOrder interface.  
+### 1. Submit Order to Matching Engine
+The [Exchange module's matching engine service submits orders](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L71) to the Matching Engine. Orders that are submitted to the Matching Engine order book must be of type [IMatchableOrder](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/IMatchableOrder.ts).  
 
-After mapping, the [SubmitOrderHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/matching-engine/handlers/submit-order.handler.ts) posts the Order to the Matching Engine. Once submitted to the Matching Engine, Orders are placed in the Pending Actions queue:
+The [OrderMapperService](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/test/order/order-mapper.service.ts) in the Exchange package maps orders to instances of the [Order class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/Order.ts), which implements the IMatchableOrder interface.  
+
+After mapping, the [SubmitOrderHandler](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange/src/pods/matching-engine/handlers/submit-order.handler.ts) posts the Order to the Matching Engine.  
+
+Once submitted to the Matching Engine, Orders are placed in the Pending Actions queue:
 
 ```
    public submitOrder(order: IMatchableOrder<TProduct, TProductFilter>): void {
@@ -92,7 +96,7 @@ After mapping, the [SubmitOrderHandler](https://github.com/energywebfoundation/o
 [source](https://github.com/energywebfoundation/origin/blob/231ce006d7fc49b8bda44636bb8f48708e93a0b9/packages/trade/exchange-core/src/MatchingEngine.ts#L61)
 
 
-### 2. Handle and Queue Events 
+### 2. Handle Queued Events 
 All possible events that happen on the Exchange can be categorized into **trade events** and **status changes**.   
 
 - Trade events are those that can result in the creation of a trade. 
@@ -100,14 +104,16 @@ All possible events that happen on the Exchange can be categorized into **trade 
 
 Events are triggered by actions. [Adding orders](#adding-orders) and [adding direct buys](#adding-direct-buys) are actions that result in trading events while [canceling an order](#cancelling-orders) results in a status change. 
 
-The exchange collects and queues all actions that are submitted in one tick into a pending action List.  One tick is the defined execution time frame of the exchange, and it’s [set to a 1 second interval by default in the Matching Engine Service using the config's EXCHANGE_MATCHING_INTERVAL setting](https://github.com/energywebfoundation/origin/blob/a9b0da027c75b76cb434652374cfbdd9211f9e0e/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L100).
+The exchange collects and queues all actions that are submitted in one tick into a pending action List.  One tick is the defined execution time frame of the exchange, and it’s [set to a one second interval by default in the Matching Engine Service using the config's EXCHANGE_MATCHING_INTERVAL setting](https://github.com/energywebfoundation/origin/blob/a9b0da027c75b76cb434652374cfbdd9211f9e0e/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L100).
 
 ```
 private pendingActions = List<OrderBookAction<TProduct, TProductFilter>>();
 ```
 [source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/trade/exchange-core/src/MatchingEngine.ts#L52)
 
- The action is of type [OrderBookAction](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange-core/src/MatchingEngine.ts#L32), and it consists of the Action Type (in the below code snippet, "ActionKind") and the Order itself. The Action Type can be 'add order', 'add direct buy', or 'cancel order', each of which are handled differently by the Matching Engine. With every tick, all queued actions are executed one after the other:
+ Order Book actions are of type [OrderBookAction](https://github.com/energywebfoundation/origin/blob/73d30845f6c57684bdbc1e95f6bb3b80b5ff2770/packages/trade/exchange-core/src/MatchingEngine.ts#L32). Order Book Actions consists of the Action Type (in the below code snippet, "ActionKind") and the Order itself. The Action Type can be 'add order', 'add direct buy', or 'cancel order', each of which are handled differently by the Matching Engine.  
+ 
+ With every tick, all queued actions are executed one after the other:
 
 ```
 public tick(): void {
@@ -168,7 +174,7 @@ private trigger() {
 ```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts)  
 
-### 2. Add/Insert Order
+### 3. Insert Bids and Asks to Order Book
 When a new order (not a direct buy) is added, it is inserted into the order book on either the ask or bid side: 
 
 ```
@@ -182,8 +188,10 @@ When a new order (not a direct buy) is added, it is inserted into the order book
 ```
 [source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange-core/src/MatchingEngine.ts#L116)
 
-### 3. Check for Match
-The Matching Engine checks if the new order matches with any existing orders in the order book. The matching works by comparing each existing ask and bid in the order book to see if they match based on the established matching criteria. You can read more detail about the matching criteria in the reference implementation [here](./matching-criteria). You can read more detail about Exchange scenarios and logic [here](https://energyweb.atlassian.net/wiki/spaces/OD/pages/1138360384/Exchange+scenarios).
+### 4. Check for Match
+The Matching Engine checks if the new order matches with any existing orders in the order book. The matching works by comparing each existing ask and bid in the order book to see if they match based on the established matching criteria.  
+
+You can read more detail about the matching criteria in the reference implementation [here](./matching-criteria). You can read more detail about Exchange scenarios and logic [here](https://energyweb.atlassian.net/wiki/spaces/OD/pages/1138360384/Exchange+scenarios).
 
 ```
 private matches(
@@ -208,7 +216,7 @@ private matches(
 ```
 [source](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange-core/src/MatchingEngine.ts#L319) 
 
-### 4. Handle Trade Scenario
+### 5. Handle Trade Scenario
 Adding orders can result in the creation of a trade if the order matches with another one on the exchange. The bid and the ask's volumes are updated accordng to what amount was filled by the trade.
 
 ```
@@ -249,7 +257,7 @@ Adding orders can result in the creation of a trade if the order matches with an
 ```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/trade/exchange-core/src/MatchingEngine.ts#L180)
 
- ### 5. Broadcast Events
+### 6. Broadcast Events
 The trade and status change events that have been collected in the matching engine trigger operations in other parts of the system using asynchronous events and event listeners. Events and event  are facilitated by the [NestJS CQRS module](https://docs.nestjs.com/recipes/cqrs). 
 
 The [Matching Engine Service](./exchange.md#matching-engine-service) in the Exchange package [subscribes to trade execution events](https://github.com/energywebfoundation/origin/blob/6e510dca5f934b6b17ea5a43304d444c3499b62f/packages/trade/exchange/src/pods/matching-engine/matching-engine.service.ts#L63). 

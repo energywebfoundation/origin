@@ -3,7 +3,8 @@
 
 The Origin Backend is a [NestJS](https://nestjs.com/) application that provides services for user and organization authorization and management. The Backend application can be used in conjunction with one, several or all of the [Origin SDKs](./index#origin-sdks) to provide integrated user management and authorization. 
 
-The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:
+The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
+
 - [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
 - [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
 - [CQRS (Command and Query Responsibility Segregation)](https://docs.nestjs.com/recipes/cqrs)
@@ -12,7 +13,7 @@ The below gives an overview the of the package architecture, however the NestJS 
 - [TypeORM repository design pattern](https://docs.nestjs.com/techniques/database#repository-pattern)
 
 ## Origin Backend Architecture
-The Origin Backend package is broken down into seven NestJS modules or ['pods'](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods):  
+The Origin Backend package is broken down into seven NestJS [modules](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods):  
 
 + [admin](#admin)
 + [configuration](#configuration)
@@ -22,15 +23,16 @@ The Origin Backend package is broken down into seven NestJS modules or ['pods'](
 + [organization](#organization)
 + [user](#user)  
 
-In general, each 'pod' or NestJS module has:  
-  + A [controller](https://docs.nestjs.com/controllers) that manages requests and responses to the client
-  + A .entity file that maps an entity to the database repository
-  + A .service file that provides methods to fetch and transform data
-  + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
-  + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application 
+Each module contains code relevant for a specific feature. In general, each NestJS module has:  
+
++ A [controller](https://docs.nestjs.com/controllers) that manages requests and responses to the client
++ A .entity file that maps an entity to the database repository
++ A .service file that provides methods to fetch and transform data
++ [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
++ A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application 
 
 ## Persistence
-The Origin Backend uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each pod, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
+The Origin Backend uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
 
 ```
 @Entity('email_confirmation')
@@ -71,7 +73,7 @@ export class EmailConfirmationService {
 ```
 [source](https://github.com/energywebfoundation/origin/blob/f8db6c42a425225a3b91e8e3b423a7224a842a0e/packages/origin-backend/src/pods/email-confirmation/email-confirmation.service.ts#L18)
 
-## Pods 
+## Modules 
 
 ### admin
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/admin) 
