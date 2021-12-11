@@ -1,4 +1,4 @@
-# Origin Backend
+# Origin Backend - @energyweb/origin-backend
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend)
 
 The Origin Backend is a [NestJS](https://nestjs.com/) application that provides services for user and organization authorization and management. The Backend application can be used in conjunction with one, several or all of the [Origin SDKs](./index#origin-sdks) to provide integrated user management and authorization. 
