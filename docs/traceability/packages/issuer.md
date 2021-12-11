@@ -1,4 +1,4 @@
-# Issuer  
+# Issuer - @energyweb/issuer 
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer) 
 
 ## Overview of Components
