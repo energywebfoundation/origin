@@ -105,7 +105,7 @@ export class IrecMockService implements IIrecService {
         vatNum: '987 654 321',
         regAddress: '10 Dorchester Road',
         country: 'GB',
-        roles: [OrganisationRole.Registrant]
+        roles: [OrganisationRole.Registrant, OrganisationRole.Participant]
     };
 
     public async getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO> {
