@@ -44,6 +44,7 @@ export type TRegisterDeviceFormValues = {
   registrationDate: string;
   capacity: string;
   gridOperator: string;
+  irecTradeAccountCode?: string;
   description: string;
   smartMeterId: string;
   timeZone?: FormSelectOption[];

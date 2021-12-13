@@ -3,8 +3,10 @@ import {
   ComposedDevice,
   fileUploadHandler,
   useRequestCertificatesHandler,
+  useApiMyAccounts,
 } from '@energyweb/origin-ui-device-data';
 import { useRequestCertificatesLogic } from '@energyweb/origin-ui-device-logic';
+import { useDeviceAppEnv } from '../../../context';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,13 +17,22 @@ export const useRequestCertificateFormEffects = (
   const { t } = useTranslation();
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
-  const formLogic = useRequestCertificatesLogic();
-  const { requestHandler, isLoading, isMutating } =
-    useRequestCertificatesHandler({
-      files,
-      deviceId: device.externalRegistryId,
-      closeForm,
-    });
+  const { singleAccountMode } = useDeviceAppEnv();
+
+  const { myAccounts, isLoading: areMyAccountsLoading } = useApiMyAccounts({
+    enabled: singleAccountMode,
+  });
+
+  const formLogic = useRequestCertificatesLogic(myAccounts, singleAccountMode);
+  const {
+    requestHandler,
+    isLoading: requestCertificatesLoading,
+    isMutating,
+  } = useRequestCertificatesHandler({
+    files,
+    deviceId: device.externalRegistryId,
+    closeForm,
+  });
   const formProps = {
     ...formLogic,
     submitHandler: requestHandler,
@@ -36,7 +47,15 @@ export const useRequestCertificateFormEffects = (
     onChange: onDeviceFilesChange,
   };
 
+  const isLoading = areMyAccountsLoading || requestCertificatesLoading;
+
   const formTitle = t('device.my.requestCertificates.formTitle');
 
-  return { formProps, fileUploadProps, isMutating, isLoading, formTitle };
+  return {
+    formProps,
+    fileUploadProps,
+    isMutating,
+    isLoading,
+    formTitle,
+  };
 };
