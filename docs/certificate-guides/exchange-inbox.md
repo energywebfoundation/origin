@@ -1,7 +1,7 @@
 # Exchange Inbox 
 [**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/certificate/view/src/pages/ExchangeInboxPage)
 
-The Exchange Inbox shows all of your organization's certificates that are currently on the Exchange. The Exchange Inbox allows admin users to [sell](#sell), [withdraw](#withdraw), [transfer](#transfer) and [export](#export) certificates that are currently on the Exchange. Certificates in this inbox are held in the [Exchange wallet](../user-guide-glossary.md#exchange-wallet).  
+The Exchange Inbox shows all of your organization's certificates that are currently on the Exchange. The Exchange Inbox allows admin users to [sell](#sell), [withdraw](#withdraw), [transfer](#transfer), [export](#export) and [claim ](#claim) certificates that are currently on the Exchange. Certificates in this inbox are held in the [Exchange wallet](../user-guide-glossary.md#exchange-wallet).  
 
 **When the issuing body approves a certificate request, the certificate is immediatley deposited into the Exchange Inbox (unless the user has selected the ["Full Self-Ownership" toggle](../user-guide-reg-onboarding.md#full-self-Ownership) in the User Profile settings).**  
 
@@ -61,9 +61,12 @@ Enter the exchange deposit address and click “Transfer Certificate”.
 
 ## Claim
 
-Mwh from certificates are claimed when you would like to use them for sustainability reporting, and keep them permanently in the Exchange wallet. Once hours are claimed, they will no longer be visible in your Exchange Inbox. They are permanently locked in place in the Exchange wallet and cannot be revoked by the issuer, transferred or withdrawn from the Exchange wallet. 
+Mwh from certificates are claimed when you would like to use them for sustainability reporting, and keep them permanently in the Exchange wallet. Once hours are claimed, they will no longer be visible in your Exchange Inbox. They are permanently locked in place in the Exchange wallet and cannot be revoked by the issuer, transferred or withdrawn from the Exchange wallet. Note that by using the Claim function, your Organization is automatically assigned as the beneficiary of the certificate in the Claim Data. 
 
-**If you would like to keep claimed certificates in your Organization's Blockchain account, you must first withdraw the certificate from the Exchange into your Blockchain inbox, and then [use the Blockchain Inbox's "Retire" function](./blockchain-inbox.md#retire)**. Note that by using the Claim fucntion, your Organization is automatically assigned as the beneficiary in the Claim Data. 
+If the user has not linked their blockchain account at the time they claim a certificate, certificates will be locked in the Exchange Inbox with the Organization assigned as the beneficiary of the certificate in the Claim Data. 
+
+**If you would like to keep claimed certificates in your Organization's Blockchain account, or designate a beneficiary other than your organization for the certificate, you must first withdraw the certificate from the Exchange into your Blockchain inbox, and then [use the Blockchain Inbox's "Retire" function](./blockchain-inbox.md#retire)**. 
+
 
 To claim certificates for reporting purposes, select the certificate you want to withdraw and navigate to the Claim tab. 
 

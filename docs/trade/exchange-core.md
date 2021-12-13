@@ -17,7 +17,7 @@ export class MatchingEngine<TProduct, TProductFilter>
 TProduct represents the product being traded - in the case of the Origin reference implementation, an [Energy Attribute Certificate (EAC)](../user-guide-glossary.md#energy-attribute-certificate) - so the implemented product type contains EAC attributes such as device type, location, generation time, grid operator etc. The interface can change according to implementation requirements. 
 
 ### Product Filter
-TProductFilter represents the product filters in a bid or ask. Products can be filtered by, for example, a specific fuel type or a specific region where the energy represented by an EAC was produced. These filters can change according to implemementation requirements. 
+TProductFilter represents the product filters in a bid or ask. Products can be filtered by, for example, a specific fuel type or a specific region where the energy represented by an EAC was produced. These filters can change according to implementation requirements. 
 
 ### Price Strategy
 The Matching Engine is instantiated with a price strategy:
