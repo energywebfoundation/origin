@@ -155,7 +155,9 @@ If you or your organization has not connected a blockchain address, select the a
 
 ![full-self-ownership](images/onboarding/onboarding-fullselfownership.png) 
 
-If the 'Full Self-Ownership' toggle is selected, all issued certificates will go directly to the Organization's Blockchain Account address, and will be immediatley visible in the [Blockchain Inbox interface](./certificate-guides/exchange-inbox.md). Users will then have to manually deposit them onto the Exchange using the ['Deposit' tab](./certificate-guides/blockchain-inbox.md#deposit).
+If the 'Full Self-Ownership' toggle is selected, all issued certificates will go directly to the Organization's Blockchain Account address, and will be immediatley visible in the [Blockchain Inbox interface](./certificate-guides/blockchain-inbox.md). Users will then have to manually deposit them onto the Exchange using the ['Deposit' tab](./certificate-guides/blockchain-inbox.md#deposit). 
+
+If the toggle is not selected, all issued certificates will go directly to the Organization's Account address, where they will be immediatley deposited onto the Exchange, and be visible in the [Exchange Inbox interface](./certificate-guides/exchange-inbox.md). This is the default behavior. 
 
 
 
