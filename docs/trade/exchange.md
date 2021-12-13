@@ -106,7 +106,7 @@ User Guides on Exchange Deposit Account:
 ### Account Balance
 The Account Balance module has two services:
 
-1. Account Balance Service
+#### 1. Account Balance Service
 This service provides a method to register [assets](../user-guide-glossary.md#asset) to a user:
 ```
     private assetSources = Array<IAccountableAsset>();
@@ -128,7 +128,7 @@ This service provides a method to register [assets](../user-guide-glossary.md#as
 
 The remaining methods in the class use the assetSources Array to calculate a user's available and locked assets, and to return their current asset amounts. 
 
-2. Account Balance Asset Service
+#### 2. Account Balance Asset Service
 This service returns a users locked and available assets. 
 
 **This class is the base for all of the Accounting Services in the Exchange's modules.** 
