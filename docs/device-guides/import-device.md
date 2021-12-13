@@ -1,4 +1,5 @@
 # Import Device
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/device/view/src/pages/DeviceImportPage)
 
 ![ImportDevices](../images/deviceMgmtImages/devices-devicestoimport.png)
 

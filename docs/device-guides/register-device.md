@@ -1,4 +1,5 @@
-# Register Device  
+# Register Device 
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/device/view/src/pages/RegisterPage)
 
 Use this interface to register a new device under your [organization](../user-guide-reg-onboarding.md#organizations). Note that registered device details are public once the device is approved by the Issuer.
 

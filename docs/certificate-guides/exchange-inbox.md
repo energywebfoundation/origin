@@ -1,8 +1,11 @@
 # Exchange Inbox 
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/certificate/view/src/pages/ExchangeInboxPage)
 
 The Exchange Inbox shows all of your organization's certificates that are currently on the Exchange. The Exchange Inbox allows admin users to [sell](#sell), [withdraw](#withdraw), [transfer](#transfer) and [export](#export) certificates that are currently on the Exchange. Certificates in this inbox are held in the [Exchange wallet](../user-guide-glossary.md#exchange-wallet).  
 
-**When the issuing body approves a certificate request, the certificate is first deposited into the Exchange Inbox.** Certificates must be in the Exchange Inbox in order to be:  
+**When the issuing body approves a certificate request, the certificate is immediatley deposited into the Exchange Inbox (unless the user has selected the ["Full Self-Ownership" toggle](../user-guide-reg-onboarding.md#full-self-Ownership) in the User Profile settings).**  
+
+Certificates must be in the Exchange Inbox in order to be:  
 
 1. Posted for sale
 2. Transferred to another exchange deposit address
@@ -13,9 +16,10 @@ If you want to move certificate hours from this inbox into your organization’s
 
 ![Certificates-exchangeinbox](../images/certificates/certificates-exchangeinbox.png)  
 
-Certificate hours in your Exchange Deposit address are active and can be sold on the Exchange using the [Sell tab](#sell).
+Certificate hours in your Exchange Deposit address are active on the Exchange and can be sold on the Exchange using the [Sell tab](#sell).
 
 ## View Certificate Details
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/certificate/view/src/pages/DetailViewPage)
 
 You can view a certificate’s details by clicking on ‘View’:
 
@@ -55,7 +59,29 @@ Note that you can edit the number of Mwh you would like to transfer by clicking 
 
 Enter the exchange deposit address and click “Transfer Certificate”. 
 
-## Export
+## Claim
+
+Mwh from certificates are claimed when you would like to use them for sustainability reporting, and keep them permanently in the Exchange wallet. Once hours are claimed, they will no longer be visible in your Exchange Inbox. They are permanently locked in place in the Exchange wallet and cannot be revoked by the issuer, transferred or withdrawn from the Exchange wallet. 
+
+**If you would like to keep claimed certificates in your Organization's Blockchain account, you must first withdraw the certificate from the Exchange into your Blockchain inbox, and then [use the Blockchain Inbox's "Retire" function](./blockchain-inbox.md#retire)**. Note that by using the Claim fucntion, your Organization is automatically assigned as the beneficiary in the Claim Data. 
+
+To claim certificates for reporting purposes, select the certificate you want to withdraw and navigate to the Claim tab. 
+
+![certificate-exchangeinbox-claim](../images/certificates/exchangeinbox-claimtab.png)  
+
+Note that you can edit the number of Mwh you would like to claim by clicking the pencil icon next to the Mwh. By default, the number of Mwh to claim is the total number of Mwh available from the certificate. 
+
+Once the claim is processed, You can view claimed certificate hours in the [Claims Report interface](./claims-report.md). 
+
+![claimed-cert](../images/certificates/claimsreport-claimfromcertinbox.png) 
+
+Click on the claim to see claim details. 
+
+![claimed-cert-exchange](../images/certificates/claims-exchangewalletclaim.png) 
+
+The address in the above "Certificate Claimed" claim detail is the address of the Exchange wallet. This indicates that the certificates has been retired from the Exchange inbox, and now resides permanantly in the Exchange wallet.  
+
+
 
 
 

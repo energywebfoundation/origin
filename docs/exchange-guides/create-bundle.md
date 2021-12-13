@@ -1,4 +1,5 @@
 # Create Bundle
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/exchange/view/src/pages/CreateBundlePage)
 
 The ‘Create Bundle’ interface allows users to group certificates that are active on the exchange together and sell their Mwh as a bundle. 
 
