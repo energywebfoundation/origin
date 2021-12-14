@@ -11,14 +11,9 @@ The main purpose of EACs is to act as an accounting vehicle to prove that consum
 
 We provide more information on EACs in the glossary [here](./user-guide-glossary.md#energy-attribute-certificate).  
 
-This site provides technical documentation for each SDK's generic implementations (i.e. not I-REC specific implementations), as well as [user guides](./user-guides.md) on how to navigate the reference implementation platform's user interface. Note that although this documentation only covers the packages built for generic (not IREC compliant) implementation, each SDK does contain I-REC specific packages that comply and integrate with the I-REC registry.
+**This site provides technical documentation for each SDK's generic implementations (i.e. not I-REC specific implementations), as well as [user guides](./user-guides.md) on how to navigate the [reference implementation platform's](#origin-platform-reference-implementation) user interface.**   
 
-# Origin Platform Reference Implementation
-The [Origin repository](https://github.com/energywebfoundation/origin) provides a full reference implementation for an end-to-end, I-REC-compliant platform for device and organization registry, user management and Certificate issuance and trading.  
-
-+ See documentation on how to install, build and run Origin's reference implementation platform locally [here](getting-started.md)
-+ See the user guides for the reference implementation platform [here](./user-guides.md) 
-
+*Note* that although this documentation only covers the packages built for generic (i.e. not IREC compliant) implementation, each SDK does contain I-REC specific packages that comply and integrate with the I-REC registry. You can find those packages in the SDK's GitHub repository. 
 
 # Origin SDKs
 Origin is comprised of [multiple SDKs](./packages.md) that can be used individually or in unison.
@@ -81,7 +76,13 @@ UI libraries provide that is modularized according to each reference implementat
 + [exchange](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/exchange)
 + [organization](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/organization)
 + [user](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/user)
-+ [main UI](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/ui)
++ [main UI](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/ui)  
+
+# Origin Platform Reference Implementation
+The [Origin repository](https://github.com/energywebfoundation/origin) provides a full reference implementation for an end-to-end, I-REC-compliant platform for device and organization registry, user management and Certificate issuance and trading.  
+
++ See documentation on how to install, build and run Origin's reference implementation platform locally [here](getting-started.md)
++ See the user guides for the reference implementation platform [here](./user-guides.md) 
 
 
 

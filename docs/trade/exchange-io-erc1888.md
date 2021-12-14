@@ -128,10 +128,12 @@ The withdrawal processor uses the [Certificate facade](https://github.com/energy
 The transfer request is piped through the transfer queue, which is facilitated by [RxJs Subject Observables](https://rxjs.dev/guide/subject)
 
 
-Depending on the transfer's direction, the service uses the methods from the [Certificate facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/Certificate.ts) to:
+Depending on the transfer's direction, the service uses the methods from the [Certificate facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/Certificate.ts) to:  
+
 - Withdrawal a certificate from the exchange (i.e. from the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) address) to the organization's Blockchain Acount Address
 - Transfer a certificate to another blockchain address
-- Claim (retire) a certificate
+- Claim (retire) a certificate  
+
 ```
         try {
             const certificate = await new Certificate(

@@ -3,7 +3,8 @@
 
 The Device Registry API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for fetching and creating/persisting Devices.  
 
-The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:
+The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
+
 - [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
 - [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
 - [CQRS (Command and Query Responsibility Segregation)](https://docs.nestjs.com/recipes/cqrs)
