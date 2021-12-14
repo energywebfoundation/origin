@@ -38,7 +38,7 @@ The Device Registry SDK is used to register, manage and fetch devices. ‘Device
 See documentation for the Device Registry SDK [here](./device-registry.md). 
 
 ### [**Traceability SDK**](./traceability.md)
-The Traceability SDK is used to enable certificate issuers (i.e. I-REC) to mint on-chain EAC's upon request based on provided generation evidence, and to manage the on-chain lifecycle (transferring, claiming) of certificates. This SDK contains the smart contracts for certificate issuance, as well as methods to interact with and manage certificates on the blockchain after issuance.  
+The Traceability SDK is used to enable certificate issuing bodies to mint on-chain EAC's upon request based on provided generation evidence, and to manage the on-chain lifecycle (transferring, claiming) of certificates. This SDK contains the smart contracts for certificate issuance, as well as methods to interact with and manage certificates on the blockchain after issuance.  
 
 The Traceability SDK ensures that the certificate lifecycle and its owners are in compliance with regulation at all times. Each issuing standard (e.g. I-REC) has its own implementation of the traceability SDK to meet its regulatory needs. To ensure compliance with widely adopted standards EW Origin team is working directly with regulators and standardization bodies.  
 

@@ -51,7 +51,7 @@ Once you withdraw the Mwh, they  will be transferred to your [Blockchain Inbox](
 
 ## Transfer
 
-Mwh from certificates can be transferred to another Exchange Deposit address (The public address associated with another Exchange Deposit account) if you would like to perform a transfer or a sale outside of the Exchange interface. To transfer Mwh from a certificate to another Exchange inbox account, select the certificate that you would like to transfer and navigate to the Transfer tab. 
+Mwh from certificates can be transferred to another Exchange Deposit address (the public address associated with another Exchange Deposit account) if you would like to perform a transfer or a sale outside of the Exchange interface. To transfer Mwh from a certificate to another Exchange inbox account, select the certificate that you would like to transfer and navigate to the Transfer tab. 
 
 ![certificate-exchangeinbox-transfer](../images/certificates/certificate-exchangeinbox-transfer.png)
 

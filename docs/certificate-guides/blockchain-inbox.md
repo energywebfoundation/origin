@@ -5,6 +5,8 @@
 
 The Blockchain Inbox interface shows all certificates for your organization’s devices that are currently in your Organization’s Blockchain Inbox. This inbox is associated with your [Organization's Blockchain Account Address](../user-guide-reg-onboarding.md#organization's-blockchain-account-address).  
 
+* Note that your Organization must have a registered Blockchain Address, and your MetaMask must be connected in order to view the Blockchain Inbox interface. You can see guidance on this [here](../user-guide-reg-onboarding.md#blockchain-addresses). 
+
  Certificates in this inbox are not active on the exchange. Certificates must be in the Blockchain Inbox in order to be:  
 
 1. Deposited onto the exchange (at which point they are in [Exchange Inbox](./exchange-inbox.md), in the custody of the platform administrator's [Exchange wallet](../user-guide-glossary.md#exchange-wallet) and can be posted for sale)

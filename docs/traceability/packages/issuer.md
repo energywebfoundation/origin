@@ -40,7 +40,7 @@ Claimed balances (the balance of units of energy claimed) are stored in the [cla
 #### Claiming Certificates
 To claim a certificate is to retire it, or remove it from circulation, for reporting purposes. This is the final stage in the certificate lifecyle.  
 
-When a certificate is claimed, the Certificate blockchain facade calls the safeTransferAndClaimFrom method on the [Registry contract](../contracts/Registry.md) with the certificate id, the volume to be claimed and the [claim data](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer/src/blockchain-facade/Certificate.ts#L23).  
+When a certificate is claimed, the [Certificate blockchain facade](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer/src/blockchain-facade/Certificate.ts) calls the safeTransferAndClaimFrom method on the [Registry contract](../contracts/Registry.md) with the certificate id, the volume to be claimed and the [claim data](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer/src/blockchain-facade/Certificate.ts#L23).  
 
 ```
         return registryWithSigner.safeTransferAndClaimFrom(
