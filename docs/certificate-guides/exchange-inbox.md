@@ -3,7 +3,7 @@
 
 The Exchange Inbox shows all of your organization's certificates that are currently on the Exchange. The Exchange Inbox allows admin users to [sell](#sell), [withdraw](#withdraw), [transfer](#transfer), [export](#export) and [claim ](#claim) certificates that are currently on the Exchange. Certificates in this inbox are held in the [Exchange wallet](../user-guide-glossary.md#exchange-wallet).  
 
-**When the issuing body approves a certificate request, the certificate is immediatley deposited into the Exchange Inbox (unless the user has selected the ["Full Self-Ownership" toggle](../user-guide-reg-onboarding.md#full-self-Ownership) in the User Profile settings).**  
+**When the issuing body approves a certificate request, the certificate is immediatley deposited into the Exchange Inbox (unless the user has selected the ["Full Self-Ownership" toggle](../user-guide-reg-onboarding.md#full-self-Ownership) in the User Profile settings, in which case the certificate is deposited into the [Blockchain Inbox](./blockchain-inbox.md)).**  
 
 Certificates must be in the Exchange Inbox in order to be:  
 
