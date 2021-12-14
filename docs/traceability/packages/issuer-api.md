@@ -155,6 +155,29 @@ The certificate module has commands and corresponding command handlers for each 
 - [Commands](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate/commands)
 - [Command handlers](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate/handlers)
 
+#### On-chain Certificate Listener
+[Source code on GitHub](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/listeners/on-chain-certificates.listener.ts#L66)
+
+The OnChainCertificateWatcher class listens for events in the Registry contract (i.e. certificate creation, certificate transfer, claiming of a certificate), and publishes corresponding events for the Issuer API's [command handlers]((https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certificate/handlers)) to react to. This ensures that all events that occur on-chain are reflected in the database repositories. 
+
+Listen for Certificate Issuance:
+```
+this.provider.on(
+    this.registry.filters.IssuanceSingle(null, null, null),
+    (event: providers.Log) => this.processEvent(BlockchainEventType.IssuanceSingle, event)
+    );
+```
+[source](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer-api/src/pods/certificate/listeners/on-chain-certificates.listener.ts#L40)
+
+Process the event and trigger the [CertificatesCreated event handler](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/handlers/certificates-created.handler.ts):
+```
+    case BlockchainEventType.IssuanceSingle:
+        logEvent(BlockchainEventType.IssuanceSingle, [event._id.toNumber()]);
+        this.eventBus.publish(new CertificatesCreatedEvent([event._id.toNumber()]));
+        break;
+```
+[source](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer-api/src/pods/certificate/listeners/on-chain-certificates.listener.ts#L96)
+
 ### certification-request 
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api/src/pods/certification-request) 
 
