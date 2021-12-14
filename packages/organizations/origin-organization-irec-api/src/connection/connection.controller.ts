@@ -64,7 +64,7 @@ export class ConnectionController {
         type: [AccountDTO],
         description: 'Get a IREC user accounts'
     })
-    public async getMyAccounts(@UserDecorator() user: ILoggedInUser): Promise<[AccountDTO]> {
+    public async getMyAccounts(@UserDecorator() user: ILoggedInUser): Promise<AccountDTO[]> {
         return this.commandBus.execute(new GetAccountsCommand(user));
     }
 }
