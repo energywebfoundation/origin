@@ -67,7 +67,7 @@ The Origin Backend is a [NestJS](https://docs.nestjs.com/) application that prov
 See documentation for the Origin Backend application [here](./backend.md). 
 
 # **Origin UI**
-[Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/ui)
+[Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/ui/apps/origin-ui)
 
 The Origin UI package provides the code for the full, end-to-end I-REC-compliant reference implementation (see the source code [here](https://github.com/energywebfoundation/origin/tree/master/packages/ui/apps/origin-ui)), as well as modularized libraries for each interface component. **Note that the UI components use the I-REC implementation of the SDKs,** so these serve more as a reference guide for generic implementations rather than for direct use. See an overview of the reference implementation [here](./user-guides.md)in the User Guides section. 
 
