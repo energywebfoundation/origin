@@ -1,4 +1,4 @@
-# Issuer  
+# Issuer - @energyweb/issuer 
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer) 
 
 ## Overview of Components
@@ -35,12 +35,61 @@ As its name suggests, the Registry contract stores and manages certificates. It 
 
 Certificates are stored in the [certificateStorage map](https://github.com/energywebfoundation/origin/blob/2881ba2e04739c99eb8d6f48a53d15afe4844c3e/packages/traceability/issuer/contracts/Registry.sol#L13) in this contract, and are accessed by their Certificate Id.  
 
+Claimed balances (the balance of units of energy claimed) are stored in the [claimedBalances map](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer/contracts/Registry.sol#L16) in this contract, and are accessed by tokenId and owner address. 
+
+#### Claiming Certificates
+To claim a certificate is to retire it, or remove it from circulation, for reporting purposes. This is the final stage in the certificate lifecyle.  
+
+When a certificate is claimed, the [Certificate blockchain facade](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer/src/blockchain-facade/Certificate.ts) calls the safeTransferAndClaimFrom method on the [Registry contract](../contracts/Registry.md) with the certificate id, the volume to be claimed and the [claim data](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer/src/blockchain-facade/Certificate.ts#L23).  
+
+```
+        return registryWithSigner.safeTransferAndClaimFrom(
+            fromAddress,
+            claimAddress,
+            this.id,
+            amount ?? ownedVolume,
+            encodedClaimData
+        );
+```
+[source](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer/src/blockchain-facade/Certificate.ts#L287)
+
+The user's claim balance is updated in the Registry contract, and the certificate is burned using the [ERC1155 burn method](https://docs.openzeppelin.com/contracts/3.x/api/token/erc1155#ERC1155-_burn-address-uint256-uint256-): 
+```
+	/// @notice Burn certificates after they've been claimed, and increase the claimed balance.
+	function _burn(address _from, uint256 _id, uint256 _value) internal override {
+		ERC1155._burn(_from, _id, _value);
+
+		claimedBalances[_id][_from] = claimedBalances[_id][_from] + _value;
+	}
+```
+[source](https://github.com/energywebfoundation/origin/blob/6c90c45a0615b18fc9b344dfae544f67c3d4cd92/packages/traceability/issuer/contracts/Registry.sol#L188)
+
+**Once a certificate is burned, you can no longer perform operations on it** (transfer, withdraw, deposit onto exchange, etc.)
+
+When the burn occurs, a ClaimSingle (or ClaimBatch) event is emitted. The [Issuer API's on-chain Certificate listener](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer-api/src/pods/certificate/listeners/on-chain-certificates.listener.ts#L66) processes this event by updating the certificate repository with the new claim event. This creates parity between the on-chain certificate and the representation of the certificate in the database. This data is used for claims reporting. 
+```
+const onChainCert = await new OnChainCertificate(
+    certificate.id,
+    certificate.blockchain.wrap()
+    ).sync();
+
+try {
+    const updateResult = await this.repository.update(certificate.id, {
+        owners: onChainCert.owners,
+        claimers: onChainCert.claimers,
+        claims: await onChainCert.getClaimedData()
+    });
+```
+[source](https://github.com/energywebfoundation/origin/blob/aabfee59df866348fd64c798cc2c40c241ba53d6/packages/traceability/issuer-api/src/pods/certificate/handlers/sync-certificate.handler.ts#L37) 
+
+
 ### RegistryExtended  
 - [**Source code on GitHub** ](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol)  
 
 The methods in this contract handle batch issuance, batch transfer and batch transfer and claim for multiple _to and _from addresses. (Batch methods in the [Registry.sol](#registry) contract only support issuing and transferring certificates for one address.) 
 
 ### Issuer
+
 - [**Source code on GitHub**](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol) 
 - [Full API documentation](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/contracts/Issuer/)  
 

@@ -1,4 +1,5 @@
 # View Market  
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/exchange/view/src/pages/ViewMarketPage)
 
 ## Market
 The Market form is where a buyer makes a purchase request ([bid](../user-guide-glossary.md#bid)) for certificates for a given volume, time period and other specifications. 

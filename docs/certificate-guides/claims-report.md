@@ -1,4 +1,5 @@
 # Claims Report
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/certificate/view/src/pages/ClaimsReportPage)
 
 The Claims Report interface allows admin users to see all certificate hours from the organization’s generating devices that have been retired from the exchange and claimed for sustainability reporting. 
 

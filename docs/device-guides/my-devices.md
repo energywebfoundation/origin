@@ -1,4 +1,5 @@
 # My Devices
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/device/view/src/pages/MyDevicesPage)
 
 Use this interface to view all of your organization's registered devices.   
 ![My Devices](../images/deviceMgmtImages/MyDevices.png)

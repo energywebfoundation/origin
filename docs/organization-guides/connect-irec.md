@@ -1,4 +1,5 @@
 # Connect I-REC
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/organization/view/src/pages/ConnectIRecPage)
 
 This view allows admins to enter their I-REC credentials to create an API connection with I-REC. The IREC API credentials come directly from I-REC. **Note that this interface is only visible if you have registered with I-REC through the Origin platform.**   
 

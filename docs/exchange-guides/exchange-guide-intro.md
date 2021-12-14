@@ -1,6 +1,6 @@
 # Exchange
-
-[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade) 
+- [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade) 
+- [**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/exchange) 
 
 The Exchange interface handles the platform’s market activity ([bids](../user-guide-glossary.md#bid), [asks](../user-guide-glossary.mda#ask), trades and sales) for buyers and sellers. It integrates with certificate issuance to allow for trading of [Energy Attribute Certificates (EACs)](../user-guide-glossary.md#energy-attribute-certificate) on the blockchain. 
 
