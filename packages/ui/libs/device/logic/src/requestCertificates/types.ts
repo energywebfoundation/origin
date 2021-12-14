@@ -1,5 +1,5 @@
 import { GenericFormProps } from '@energyweb/origin-ui-core';
-import { AccountDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
+import { IrecAccountDto } from '@energyweb/origin-organization-irec-api-react-query-client';
 
 export type RequestCertificateFormValues = {
   energy: string;
@@ -9,6 +9,6 @@ export type RequestCertificateFormValues = {
 };
 
 export type TUseRequestCertificatesLogic = (
-  myAccounts: AccountDTO[],
+  myAccounts: IrecAccountDto[],
   singleAccountMode: boolean
 ) => Omit<GenericFormProps<RequestCertificateFormValues>, 'submitHandler'>;

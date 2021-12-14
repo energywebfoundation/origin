@@ -1,5 +1,5 @@
 import {
-  AccountDTO,
+  IrecAccountDto,
   getConnectionControllerGetMyAccountsQueryKey,
   useConnectionControllerGetMyAccounts,
 } from '@energyweb/origin-organization-irec-api-react-query-client';
@@ -13,7 +13,8 @@ export const useApiMyAccounts = ({ enabled }: TUseApiMyAccounts) => {
   const queryClient = useQueryClient();
   const key = getConnectionControllerGetMyAccountsQueryKey();
 
-  const cachedData: AccountDTO[] | undefined = queryClient.getQueryData(key);
+  const cachedData: IrecAccountDto[] | undefined =
+    queryClient.getQueryData(key);
 
   const { data, isLoading } = useConnectionControllerGetMyAccounts({
     query: {
