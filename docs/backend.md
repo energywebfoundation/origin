@@ -103,7 +103,7 @@ The invitation module provides methods to manage invitations for users to join o
 ### organization
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/organization)
 
-The invitation module provides methods to manage fetch, create and update Organizations and their Blockchain Account Addresses. Organizations are persisted in the Organization Repository. 
+The invitation module provides methods to manage fetch, create and update Organization data, including Organization Blockchain Account Addresses. Organizations are persisted in the Organization Repository. 
 
 ### user 
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend/src/pods/user)

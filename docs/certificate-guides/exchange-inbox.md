@@ -63,7 +63,7 @@ Enter the exchange deposit address and click “Transfer Certificate”.
 
 Mwh from certificates are claimed when you would like to use them for sustainability reporting, and keep them permanently in the Exchange wallet. Once hours are claimed, they will no longer be visible in your Exchange Inbox. They are permanently locked in place in the Exchange wallet and cannot be revoked by the issuer, transferred or withdrawn from the Exchange wallet. Note that by using the Claim function, your Organization is automatically assigned as the beneficiary of the certificate in the Claim Data. 
 
-If the user has not linked their blockchain account at the time they claim a certificate, certificates will be locked in the Exchange Inbox with the Organization assigned as the beneficiary of the certificate in the Claim Data. 
+If the user has not linked their blockchain account at the time they claim a certificate, claimed certificates will still be locked in the Exchange Inbox with the Organization assigned as the beneficiary of the certificate in the Claim Data. 
 
 **If you would like to keep claimed certificates in your Organization's Blockchain account, or designate a beneficiary other than your organization for the certificate, you must first withdraw the certificate from the Exchange into your Blockchain inbox, and then [use the Blockchain Inbox's "Retire" function](./blockchain-inbox.md#retire)**. 
 
