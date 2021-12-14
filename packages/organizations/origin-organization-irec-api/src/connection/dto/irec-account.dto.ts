@@ -22,7 +22,7 @@ export class AccountDetailsDTO {
     countryCode?: string;
 }
 
-export class AccountDTO {
+export class IrecAccountDto {
     @ApiProperty({ type: String })
     code: string;
 
