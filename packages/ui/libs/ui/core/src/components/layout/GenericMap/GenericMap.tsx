@@ -21,8 +21,8 @@ export type MapItem = {
 
 export interface GenericMapProps {
   apiKey: string;
-  allItems: MapItem[];
-  infoWindowContent?: FC<any>;
+  mapItems: MapItem[];
+  infoWindowContent?: FC<MapItem>;
   containerClassName?: string;
   mapProps?: GoogleMapProps;
   markerProps?: Omit<MarkerProps, 'position' | 'onClick' | 'label'>;
@@ -30,7 +30,7 @@ export interface GenericMapProps {
 
 export const GenericMap: FC<GenericMapProps> = ({
   apiKey,
-  allItems,
+  mapItems,
   infoWindowContent: InfoWindowContent,
   containerClassName,
   mapProps,
@@ -42,7 +42,7 @@ export const GenericMap: FC<GenericMapProps> = ({
     showWindowForItem,
     itemHighlighted,
     setItemHighllighted,
-  } = useGenericMapEffects(allItems);
+  } = useGenericMapEffects(mapItems);
   const classes = useStyles();
 
   return (
@@ -58,7 +58,7 @@ export const GenericMap: FC<GenericMapProps> = ({
         mapContainerClassName={containerClassName ?? classes.map}
         {...mapProps}
       >
-        {allItems.map((item) => (
+        {mapItems.map((item) => (
           <React.Fragment key={item.id}>
             <Marker
               position={{
