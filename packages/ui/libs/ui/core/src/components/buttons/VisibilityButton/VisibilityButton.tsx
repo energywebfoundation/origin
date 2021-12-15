@@ -4,7 +4,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export interface VisibilityButtonProps {
   visible: boolean;
-  setVisible: (newStatus: boolean) => void;
+  setVisible: (value: boolean) => void;
 }
 
 export const VisibilityButton: FC<VisibilityButtonProps> = ({

@@ -11,3 +11,4 @@ export * from './PageNotFound';
 export * from './Requirements';
 export * from './TimeframeSelect';
 export * from './ThemeSwitcher';
+export * from './MainLayout';

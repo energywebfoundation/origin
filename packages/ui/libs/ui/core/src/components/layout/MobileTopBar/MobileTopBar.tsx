@@ -8,8 +8,8 @@ import { useStyles } from './MobileTopBar.styles';
 import { TopBarButtonData } from '../TopBar';
 
 export interface MobileTopBarProps {
-  onMobileNavOpen: () => void;
   buttons: TopBarButtonData[];
+  onMobileNavOpen: () => void;
   toolbarClassName?: string;
   themeSwitcher?: boolean;
   themeMode?: ThemeModeEnum;
@@ -19,12 +19,12 @@ export interface MobileTopBarProps {
 
 export const MobileTopBar: FC<MobileTopBarProps> = memo(
   ({
-    onMobileNavOpen,
     buttons,
+    onMobileNavOpen,
     toolbarClassName,
-    themeSwitcher,
-    themeMode,
-    changeThemeMode,
+    themeSwitcher = false,
+    themeMode = ThemeModeEnum.Light,
+    changeThemeMode = () => {},
     themeSwitchProps,
   }) => {
     const classes = useStyles();

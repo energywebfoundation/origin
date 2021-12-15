@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 
 const REFRESH_INTERVAL_MS = 5000;
 
-export const useImagesCarouselEffects = (imagesLength: number) => {
+export const useImagesCarouselEffects = (
+  imagesLength: number,
+  refreshInterval?: number
+) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const updateIndex = () => {
@@ -14,7 +17,10 @@ export const useImagesCarouselEffects = (imagesLength: number) => {
   };
 
   useEffect(() => {
-    const intervalRef = setInterval(updateIndex, REFRESH_INTERVAL_MS);
+    const intervalRef = setInterval(
+      updateIndex,
+      refreshInterval ?? REFRESH_INTERVAL_MS
+    );
     return () => {
       clearInterval(intervalRef);
     };

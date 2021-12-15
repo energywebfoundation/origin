@@ -14,7 +14,14 @@ export interface MenuItemProps {
 }
 
 export const MenuItem: FC<MenuItemProps> = memo(
-  ({ label, url, selected, closeMobileNav, selectedClass, buttonClass }) => {
+  ({
+    label,
+    url,
+    selected = false,
+    closeMobileNav,
+    selectedClass,
+    buttonClass,
+  }) => {
     const classes = useStyles();
     return (
       <ListItem
