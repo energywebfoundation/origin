@@ -14,7 +14,7 @@ export const MapViewPage: FC = () => {
   return (
     <GenericMap
       apiKey={googleMapsApiKey}
-      allItems={allDevices}
+      mapItems={allDevices}
       infoWindowContent={ItemHighlightedContent}
     />
   );

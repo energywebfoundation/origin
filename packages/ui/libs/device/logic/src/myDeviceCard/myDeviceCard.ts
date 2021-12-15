@@ -4,7 +4,7 @@ import {
 } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { ThailandFlag } from '@energyweb/origin-ui-assets';
 import {
-  FallbackIconProps,
+  IconHoverTextProps,
   IconTextProps,
   SpecFieldProps,
 } from '@energyweb/origin-ui-core';
@@ -21,7 +21,7 @@ type TUseSpecsForMyDeviceCardArgs = {
 
 export type TUseSpecsForMyDeviceCardReturnType = {
   imageUrl: string;
-  fallbackIcon: FallbackIconProps['icon'];
+  fallbackIcon: IconHoverTextProps['icon'];
   cardHeaderProps: {
     deviceName: string;
     deviceState: DeviceState;
