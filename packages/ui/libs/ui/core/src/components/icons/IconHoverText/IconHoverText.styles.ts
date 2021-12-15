@@ -16,14 +16,12 @@ export const useStyles = makeStyles((theme) => ({
     left: 0,
     right: 0,
     width: '100%',
+    height: '100%',
     transition: '.5s ease',
     backgroundColor: theme.palette.background.paper,
     opacity: 0,
     '&:hover': {
       opacity: 0.8,
     },
-  },
-  text: {
-    color: theme.palette.text.primary,
   },
 }));

@@ -1,28 +1,26 @@
+import { Typography, TypographyProps } from '@mui/material';
 import React, { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
-import { useStyles } from './FallbackIcon.styles';
+import { useStyles } from './IconHoverText.styles';
 
-export interface FallbackIconProps {
+export interface IconHoverTextProps {
   icon: FC<React.SVGProps<SVGSVGElement>>;
+  hoverText?: string;
   wrapperProps?: DetailedHTMLProps<
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
-  hoverText?: string;
   iconProps?: React.SVGProps<SVGSVGElement>;
   overlayProps?: DetailedHTMLProps<
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
-  overlayTextProps?: DetailedHTMLProps<
-    HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  >;
+  overlayTextProps?: TypographyProps;
 }
 
-export const FallbackIcon: FC<FallbackIconProps> = ({
+export const IconHoverText: FC<IconHoverTextProps> = ({
   icon: Icon,
+  hoverText = '',
   wrapperProps,
-  hoverText,
   iconProps,
   overlayProps,
   overlayTextProps,
@@ -31,13 +29,11 @@ export const FallbackIcon: FC<FallbackIconProps> = ({
   return (
     <div className={classes.wrapper} {...wrapperProps}>
       <Icon {...iconProps} />
-      {!!hoverText && (
+      {hoverText ? (
         <div className={classes.overlay} {...overlayProps}>
-          <div className={classes.text} {...overlayTextProps}>
-            {hoverText}
-          </div>
+          <Typography {...overlayTextProps}>{hoverText}</Typography>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
