@@ -28,7 +28,7 @@ export const DeviceMapCarousel: FC<DeviceMapCarouselProps> = ({
       <div {...itemProps}>
         <GenericMap
           apiKey={googleMapsApiKey}
-          allItems={[device]}
+          mapItems={[device]}
           containerClassName={classes.mapContainer}
           mapProps={{
             options: {
