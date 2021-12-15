@@ -9,14 +9,13 @@ import {
   PRIMARY_STORY,
   Stories,
 } from '@storybook/addon-docs';
-import { NavSectionTitle, NavSectionTitleProps } from './NavSectionTitle';
+import { BlockTintedBottom, BlockTintedBottomProps } from './BlockTintedBottom';
 
-const description =
-  'Navigation button used as Section Title in `NavBarSection`';
+const description = `Wrapper providing the tinted bottom to the wrapped component`;
 
 export default {
-  title: 'Navigation / NavSectionTitle',
-  component: NavSectionTitle,
+  title: 'Layout / BlockTintedBottom',
+  component: BlockTintedBottom,
   parameters: {
     docs: {
       page: () => (
@@ -31,19 +30,18 @@ export default {
     },
   },
   argTypes: {
-    buttonClass: {
-      description: 'Class supplied to `Button` component',
-      control: false,
+    children: {
+      type: { name: 'other', value: 'ReactNode', required: true },
+      control: null,
     },
   },
 } as Meta;
 
-const Template: Story<NavSectionTitleProps> = (args) => (
-  <NavSectionTitle {...args} />
+const Template: Story<BlockTintedBottomProps> = (args) => (
+  <BlockTintedBottom {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'Section Title',
-  url: '/section-title',
+  children: <div style={{ height: '250px', backgroundColor: '#72d668' }}></div>,
 };

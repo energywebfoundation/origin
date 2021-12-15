@@ -9,14 +9,14 @@ import {
   PRIMARY_STORY,
   Stories,
 } from '@storybook/addon-docs';
-import { NavSectionTitle, NavSectionTitleProps } from './NavSectionTitle';
+import { PageNotFound } from './PageNotFound';
 
 const description =
-  'Navigation button used as Section Title in `NavBarSection`';
+  'Simple placeholder for 404 Not Found page. Built with `Paper`, `Typography` and `Button`. Button click will lead to previous page';
 
 export default {
-  title: 'Navigation / NavSectionTitle',
-  component: NavSectionTitle,
+  title: 'Layout / PageNotFound',
+  component: PageNotFound,
   parameters: {
     docs: {
       page: () => (
@@ -30,20 +30,8 @@ export default {
       ),
     },
   },
-  argTypes: {
-    buttonClass: {
-      description: 'Class supplied to `Button` component',
-      control: false,
-    },
-  },
 } as Meta;
 
-const Template: Story<NavSectionTitleProps> = (args) => (
-  <NavSectionTitle {...args} />
-);
+const Template: Story = () => <PageNotFound />;
 
 export const Default = Template.bind({});
-Default.args = {
-  title: 'Section Title',
-  url: '/section-title',
-};

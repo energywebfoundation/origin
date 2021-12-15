@@ -7,16 +7,17 @@ import {
   Primary,
   ArgsTable,
   PRIMARY_STORY,
-  Stories,
 } from '@storybook/addon-docs';
-import { NavSectionTitle, NavSectionTitleProps } from './NavSectionTitle';
+import { VisibilityButton, VisibilityButtonProps } from './VisibilityButton';
 
-const description =
-  'Navigation button used as Section Title in `NavBarSection`';
+const description = `
+  Button with Visibility icon used for password inputs to switch between field display type.
+  Normally, state supplied here will be used to change the type of the password input.
+`;
 
 export default {
-  title: 'Navigation / NavSectionTitle',
-  component: NavSectionTitle,
+  title: 'Buttons / VisibilityButton',
+  component: VisibilityButton,
   parameters: {
     docs: {
       page: () => (
@@ -25,25 +26,18 @@ export default {
           <Description>{description}</Description>
           <Primary />
           <ArgsTable story={PRIMARY_STORY} />
-          <Stories />
         </>
       ),
     },
   },
-  argTypes: {
-    buttonClass: {
-      description: 'Class supplied to `Button` component',
-      control: false,
-    },
-  },
 } as Meta;
 
-const Template: Story<NavSectionTitleProps> = (args) => (
-  <NavSectionTitle {...args} />
+const Template: Story<VisibilityButtonProps> = (args) => (
+  <VisibilityButton {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'Section Title',
-  url: '/section-title',
+  visible: false,
+  setVisible: () => {},
 };
