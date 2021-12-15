@@ -20,7 +20,7 @@ export class BatchTransferCertificatesHandler
     ) {}
 
     async execute({ transfers }: BatchTransferCertificatesCommand): Promise<ContractTransaction> {
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         for (const { id, amount, from } of transfers) {
             if (!amount) {
@@ -51,7 +51,7 @@ export class BatchTransferCertificatesHandler
         try {
             return await CertificateBatchOperations.transferCertificates(
                 transfers,
-                blockchainProperties.wrap()
+                blockchainProperties
             );
         } catch (error) {
             throw new HttpException(JSON.stringify(error), HttpStatus.FAILED_DEPENDENCY);

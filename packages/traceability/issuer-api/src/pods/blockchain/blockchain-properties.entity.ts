@@ -22,32 +22,23 @@ export class BlockchainProperties extends ExtendedBaseEntity {
     @Column()
     rpcNode: string;
 
-    @Column()
-    platformOperatorPrivateKey: string;
-
     @Column({ nullable: true })
     rpcNodeFallback?: string;
 
     @Column({ nullable: true })
     privateIssuer?: string;
 
-    wrap(signerOrPrivateKey?: Signer | string): IBlockchainProperties {
+    wrap(signerOrPrivateKey: Signer | string): IBlockchainProperties {
         const web3 = getProviderWithFallback(
-            ...[this.rpcNode, this.rpcNodeFallback].filter((url) => !!url)
+            ...[this.rpcNode, this.rpcNodeFallback].filter((url) => Boolean(url))
         );
         const assure0x = (privateKey: string) =>
             privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
 
-        let signer: Signer;
-
-        if (signerOrPrivateKey) {
-            signer =
-                typeof signerOrPrivateKey === 'string'
-                    ? new Wallet(assure0x(signerOrPrivateKey), web3)
-                    : signerOrPrivateKey;
-        } else {
-            signer = new Wallet(assure0x(this.platformOperatorPrivateKey), web3);
-        }
+        let signer: Signer =
+            typeof signerOrPrivateKey === 'string'
+                ? new Wallet(assure0x(signerOrPrivateKey), web3)
+                : signerOrPrivateKey;
 
         return {
             web3,

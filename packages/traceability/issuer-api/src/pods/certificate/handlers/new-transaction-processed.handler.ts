@@ -1,23 +1,19 @@
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
-import { ModuleRef } from '@nestjs/core';
+import { Inject } from '@nestjs/common';
 import { NewTransactionProcessedEvent } from '../events/new-transaction-processed.event';
 import { TransactionLogService } from '../transaction-log.service';
-import { IssuerModuleOptions } from '../../../types';
-import { ISSUER_MODULE_OPTIONS_TOKEN } from '../../../const';
+import { IssuerModuleOptions, ISSUER_MODULE_OPTIONS_TOKEN } from '../../options';
 
 @EventsHandler(NewTransactionProcessedEvent)
 export class NewTransactionProcessedHandler implements IEventHandler<NewTransactionProcessedEvent> {
     constructor(
         private transactionLogService: TransactionLogService,
-        private moduleRef: ModuleRef
+        @Inject(ISSUER_MODULE_OPTIONS_TOKEN)
+        private issuerOptions: IssuerModuleOptions
     ) {}
 
     async handle({ data }: NewTransactionProcessedEvent): Promise<void> {
-        const issuerOptions: IssuerModuleOptions = this.moduleRef.get(ISSUER_MODULE_OPTIONS_TOKEN, {
-            strict: false
-        });
-
-        if (issuerOptions.enableTransactionLogging) {
+        if (this.issuerOptions.enableTransactionLogging) {
             await this.transactionLogService.logEvent(data);
         }
     }

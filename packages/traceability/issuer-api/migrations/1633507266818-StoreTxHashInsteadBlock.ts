@@ -15,7 +15,7 @@ export class StoreTxHashInsteadBlock1633507266818 implements MigrationInterface 
         const existingCertificates = await queryRunner.query(`SELECT id FROM "issuer_certificate"`);
 
         if (existingCertificates.length > 0) {
-            const blockchainProperties: BlockchainProperties = await queryRunner.query(
+            const blockchainProperties = await queryRunner.query(
                 `SELECT * FROM "issuer_blockchain_properties"`
             );
             const wrapped: IBlockchainProperties =
@@ -71,7 +71,9 @@ export class StoreTxHashInsteadBlock1633507266818 implements MigrationInterface 
     }
 
     private getBlockchainProperties(
-        blockchainProperties: BlockchainProperties
+        // At this point of migration platformOperatorPrivateKey is existing in database
+        // It is removed in later migration
+        blockchainProperties: BlockchainProperties & { platformOperatorPrivateKey: string }
     ): IBlockchainProperties {
         const web3 = getProviderWithFallback(
             ...[blockchainProperties.rpcNode, blockchainProperties.rpcNodeFallback].filter(
