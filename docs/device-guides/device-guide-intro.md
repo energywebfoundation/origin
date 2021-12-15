@@ -1,5 +1,7 @@
 # Devices
-[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/devices)
+- [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/devices)
+- [**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/device)
+
 
 
 ‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine.) They must be registered in the system to provide their capacity, location and generation data. This data is used to provide trust in the validity of the certificates that are issued for their generation.  

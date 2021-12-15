@@ -3,7 +3,8 @@
 
 The Device Registry API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for fetching and creating/persisting Devices.  
 
-The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:
+The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
+
 - [Custom Providers as Services](https://docs.nestjs.com/fundamentals/custom-providers#custom-providers)
 - [Dependency Injection](https://docs.nestjs.com/providers#dependency-injection)
 - [CQRS (Command and Query Responsibility Segregation)](https://docs.nestjs.com/recipes/cqrs)
@@ -13,11 +14,12 @@ The below gives an overview the of the package architecture, however the NestJS 
 
 ## Device Registry API Architecture  
 The Device Registry API exports [one module](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/app.module.ts), which is the Device Registry Module. The module contains:  
-  + A [controller](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.controller.ts) that manages requests and responses to the client
-  + An [entity file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/origin-device.entity.ts) that maps an entity to a database repository
-  + A [service file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.service.ts) that provides methods to fetch and transform data
-  + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
-  + A [module](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.module.ts) class that is used by NestJS to structure the application  
+
++ A [controller](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.controller.ts) that manages requests and responses to the client
++ An [entity file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/origin-device.entity.ts) that maps an entity to a database repository
++ A [service file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.service.ts) that provides methods to fetch and transform data
++ [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
++ A [module](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.module.ts) class that is used by NestJS to structure the application  
 
 ### Service Endpoints
 The [services file](https://github.com/energywebfoundation/origin/blob/master/packages/devices/origin-device-registry-api/src/device-registry/device-registry.service.ts ) provides public methods to fetch and create new devices:

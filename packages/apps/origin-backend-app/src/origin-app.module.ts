@@ -40,7 +40,8 @@ import {
     OrganizationMemberRoleChangedHandler,
     OrganizationRegisteredHandler,
     OrganizationStatusChangedHandler,
-    RegistrationCreatedHandler
+    RegistrationCreatedHandler,
+    ResetPasswordRequestedHandler
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
@@ -95,7 +96,8 @@ export class OriginAppModule {
                 OrganizationMemberRoleChangedHandler,
                 OrganizationStatusChangedHandler,
                 RegistrationCreatedHandler,
-                OrganizationRegisteredHandler
+                OrganizationRegisteredHandler,
+                ResetPasswordRequestedHandler
             ]
         };
     }

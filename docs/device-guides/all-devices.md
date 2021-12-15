@@ -1,4 +1,5 @@
 # All Devices
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/device/view/src/pages/AllDevicesPage)
 
 This view provides a tile view of all devices registered within a marketplace:
 

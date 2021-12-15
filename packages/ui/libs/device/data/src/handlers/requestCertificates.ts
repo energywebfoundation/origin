@@ -18,6 +18,7 @@ type FormValuesTypes = {
   fromTime: string;
   toTime: string;
   energy: string;
+  irecTradeAccountCode?: string;
 };
 
 type TUseRequestCertificatesHandlerArgs = {
@@ -70,7 +71,7 @@ export const useRequestCertificatesHandler = ({
       toTime: dayjs(values.toTime).endOf('day').unix(),
       files: files.map((f) => f.uploadedName),
       isPrivate: false,
-      irecTradeAccountCode: undefined,
+      irecTradeAccountCode: values.irecTradeAccountCode || undefined,
     };
 
     mutate(

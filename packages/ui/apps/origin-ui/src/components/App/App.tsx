@@ -1,5 +1,5 @@
 import React, { FC, memo, Suspense, lazy } from 'react';
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
 import {
@@ -68,7 +68,17 @@ export const App: FC<AppProps> = memo(
     return (
       <>
         {loading ? (
-          <CircularProgress />
+          <Box
+            sx={{
+              width: '100%',
+              height: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <CircularProgress />
+          </Box>
         ) : (
           <Routes>
             <Route
@@ -97,6 +107,9 @@ export const App: FC<AppProps> = memo(
                     <DeviceApp
                       routesConfig={deviceRoutes}
                       envVariables={{
+                        singleAccountMode: /true/i.test(
+                          process.env.NX_SINGLE_ACCOUNT_MODE
+                        ),
                         googleMapsApiKey: process.env.NX_GOOGLE_MAPS_API_KEY,
                         smartMeterId: process.env.NX_SMART_METER_ID,
                       }}

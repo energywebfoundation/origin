@@ -1,4 +1,5 @@
 # My Orders
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/exchange/view/src/pages/MyOrdersPage)
 
 The ‘My Orders’ interface allows a user to see all of the [bids](../user-guide-glossary.md#bid), [asks](../user-guide-glossary.md#ask) and [demands](../user-guide-glossary.md#demand) that users from their organization have created using the [Market interface](./view-market.md#market). 
 
