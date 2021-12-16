@@ -57,6 +57,15 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
+            "name": "test:ui:e2e",
+            "commandKind": "global",
+            "summary": "Run all ui test:e2e in packages",
+            "safeForSimultaneousRushProcesses": false,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "concurrently --restart-tries 3 --restart-after 1500 -n ganache,backend,ui \"yarn run:ganache\" \"wait-on tcp:8545 && yarn migrate:demo && yarn run:backend\" \"wait-on tcp:3030 && yarn run test:ui:e2e\"",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "commandKind": "bulk",
             "name": "build:container:canary",
             "summary": "Deploys the canary containers",

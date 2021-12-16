@@ -28,7 +28,8 @@
         "build:containers:release": "lerna run build:container:latest --stream",
         "publish:preview": "lerna publish --yes --skip-git --exact --cd-version=prerelease --pre-dist-tag preview --preid=$BUILD_ID",
         "deploy:heroku:canary": "lerna run deploy:container:heroku:canary --stream",
-        "deploy:heroku:stable": "lerna run deploy:container:heroku:stable --stream"
+        "deploy:heroku:stable": "lerna run deploy:container:heroku:stable --stream",
+        "test:ui:e2e": "lerna run e2e --scope ui-packages --stream"
     },
     "workspaces": [
         "packages/*",
