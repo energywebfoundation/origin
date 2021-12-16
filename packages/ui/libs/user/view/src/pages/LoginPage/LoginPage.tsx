@@ -32,7 +32,7 @@ export const LoginPage: FC<LoginPageProps> = ({ bgImage, formIcon }) => {
         </GenericForm>
         <Box>
           <Typography>{t('user.login.dontHaveAcc')}</Typography>
-          <Button onClick={navigateToRegister}>
+          <Button data-cy="register-now-button" onClick={navigateToRegister}>
             {t('user.login.registerNow')}
           </Button>
         </Box>

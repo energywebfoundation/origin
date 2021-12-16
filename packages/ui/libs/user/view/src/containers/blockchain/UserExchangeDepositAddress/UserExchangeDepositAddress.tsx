@@ -1,5 +1,11 @@
 import React, { FC } from 'react';
-import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import {
+  CircularProgress,
+  Grid,
+  TextField,
+  Typography,
+  SvgIconProps,
+} from '@mui/material';
 import { Info } from '@mui/icons-material';
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
 import { useStyles } from './UserExchangeDepositAddress.styles';
@@ -25,6 +31,7 @@ export const UserExchangeDepositAddress: FC = () => {
           iconSize={IconSize.Large}
           popoverText={popoverText}
           className={classes.iconPopover}
+          iconProps={{ ['data-cy']: 'exchange-address-info-icon' }}
         />
       ) : null}
       {exchangeAddress ? (
@@ -40,6 +47,7 @@ export const UserExchangeDepositAddress: FC = () => {
             iconSize={IconSize.Large}
             popoverText={popoverText}
             className={classes.iconPopover}
+            iconProps={{ ['data-cy']: 'exchange-address-info-icon' }}
           />
         </div>
       ) : null}
