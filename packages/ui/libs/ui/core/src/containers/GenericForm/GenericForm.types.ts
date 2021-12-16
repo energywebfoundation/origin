@@ -30,6 +30,7 @@ export type GenericFormField<FormValuesType> = {
     name: string;
     label: string;
     required: boolean;
+    inputProps?: InputBaseProps['inputProps'];
   };
   options?: FormSelectOption[];
   autocomplete?: boolean;
