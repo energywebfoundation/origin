@@ -96,8 +96,9 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
         // check the IREC account against the platform organization's IREC account requirements
         if (organizationId === platformAdmin.organization.id) {
             if (
-                !irecOrganization.roles.includes(OrganisationRole.Issuer) ||
-                !irecOrganization.roles.includes(OrganisationRole.Participant)
+                !irecOrganization.roles.includes(OrganisationRole.Issuer)
+                // TODO: request IREC to provide accounts with both issuer and participant roles
+                // || !irecOrganization.roles.includes(OrganisationRole.Participant)
             ) {
                 throw new BadRequestException(
                     'IREC account organization has to have issuer and participant roles'
@@ -114,17 +115,18 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
 
         // check irec account to be used as any other organization
         if (
-            !irecOrganization.roles.includes(OrganisationRole.Registrant) ||
-            !irecOrganization.roles.includes(OrganisationRole.Participant)
+            !irecOrganization.roles.includes(OrganisationRole.Registrant)
+            // TODO: request IREC to provide accounts with both registrant and participant roles
+            // || !irecOrganization.roles.includes(OrganisationRole.Participant)
         ) {
             throw new BadRequestException(
                 'IREC account organization has to have registrant and participant roles'
             );
         }
-
-        await this.createAccounts(clientId, clientSecret, tokens, organization, [
-            AccountType.Trade
-        ]);
+        if (irecOrganization.roles.includes(OrganisationRole.Participant))
+            await this.createAccounts(clientId, clientSecret, tokens, organization, [
+                AccountType.Trade
+            ]);
     }
 
     async createAccounts(
