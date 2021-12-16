@@ -22,6 +22,7 @@ export const getAccountMenu: TGetAccountMenuFn = ({
   menuButtonClass,
 }) => ({
   isOpen,
+  dataCy: 'settingsMenu',
   sectionTitle: showUserProfile
     ? t('navigation.account.sectionTitle')
     : t('navigation.account.sectionTitleForUnlogged'),
@@ -32,11 +33,13 @@ export const getAccountMenu: TGetAccountMenuFn = ({
       url: 'settings',
       label: t('navigation.account.settings'),
       show: showSettings,
+      dataCy: 'accountSettings',
     },
     {
       url: 'profile',
       label: t('navigation.account.userProfile'),
       show: showUserProfile,
+      dataCy: 'accountUserProfile',
     },
   ],
   menuButtonClass,

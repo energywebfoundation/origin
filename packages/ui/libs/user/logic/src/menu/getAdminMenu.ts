@@ -26,6 +26,7 @@ export const getAdminMenu: TUseAdminMenuFn = ({
 }) => {
   return {
     isOpen,
+    dataCy: 'adminMenu',
     sectionTitle: t('navigation.admin.sectionTitle'),
     rootUrl: '/admin',
     show: showSection,
@@ -34,16 +35,19 @@ export const getAdminMenu: TUseAdminMenuFn = ({
         url: 'users',
         label: t('navigation.admin.users'),
         show: showUsers,
+        dataCy: 'adminUsers',
       },
       {
         url: 'all-organizations',
         label: t('navigation.admin.allOrganizations'),
         show: showAllOrgs,
+        dataCy: 'adminOrganizations',
       },
       {
         url: 'claims',
         label: t('navigation.admin.claims'),
         show: showClaims,
+        dataCy: 'adminClaims',
       },
     ],
     menuButtonClass,
