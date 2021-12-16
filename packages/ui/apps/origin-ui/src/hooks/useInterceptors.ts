@@ -3,6 +3,7 @@ import {
   removeAuthenticationToken,
 } from '@energyweb/origin-ui-shared-state';
 import axios, { AxiosResponse } from 'axios';
+import { useEffect } from 'react';
 
 declare global {
   interface Window {
@@ -17,15 +18,17 @@ declare global {
 const isUnauthorized = (response: AxiosResponse) => response?.status === 401;
 
 export const useAxiosDefaults = () => {
-  const token = getAuthenticationToken();
-
-  axios.defaults.baseURL = window.config.BACKEND_URL;
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  useEffect(() => {
+    const token = getAuthenticationToken();
+    axios.defaults.baseURL = window.config.BACKEND_URL;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }, []);
 
   axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-      if (isUnauthorized(error?.response) && token) {
+      const authToken = getAuthenticationToken();
+      if (isUnauthorized(error?.response) && authToken) {
         removeAuthenticationToken();
         axios.defaults.headers.common['Authorization'] = undefined;
         window.location.reload();

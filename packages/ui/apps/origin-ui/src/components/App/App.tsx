@@ -58,6 +58,7 @@ export const App: FC<AppProps> = memo(
       certificateRoutes,
       deviceRoutes,
       exchangeRoutes,
+      loginRoutes,
     } = routesConfig;
     const themeMode = useThemeModeStore();
     const isLightTheme = themeMode === ThemeModeEnum.Light;
@@ -190,7 +191,7 @@ export const App: FC<AppProps> = memo(
               path="/login/*"
               element={
                 <Suspense fallback={<CircularProgress />}>
-                  <LoginApp />
+                  <LoginApp routesConfig={loginRoutes} />
                 </Suspense>
               }
             />
