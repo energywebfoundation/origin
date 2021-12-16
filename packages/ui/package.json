@@ -30,7 +30,7 @@
     "storybook": "nx run ui-core:storybook --port=6006",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
-    "e2e": "nx e2e",
+    "e2e": "nx e2e origin-ui-e2e --watch",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",
@@ -102,7 +102,8 @@
     "os-browserify": "0.3.0",
     "crypto-browserify": "3.12.0",
     "buffer": "6.0.3",
-    "query-string": "7.0.1"
+    "query-string": "7.0.1",
+    "cypress-file-upload": "~5.0.8"
   },
   "devDependencies": {
     "@babel/core": "7.16.0",
