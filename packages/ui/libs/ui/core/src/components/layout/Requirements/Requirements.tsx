@@ -27,10 +27,8 @@ export const Requirements: FC<RequirementsProps> = ({
   const classes = useStyles();
 
   return (
-    <Paper className={classes?.container}>
-      <Typography variant="body1" className="mt-3" gutterBottom>
-        {title}
-      </Typography>
+    <Paper className={classes.container}>
+      <Typography variant="body1">{title}</Typography>
       <List>
         {rules?.map((rule) => (
           <ListItem key={rule.label} role={undefined} dense>
