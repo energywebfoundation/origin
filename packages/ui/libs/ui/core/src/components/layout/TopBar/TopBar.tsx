@@ -9,6 +9,7 @@ export type TopBarButtonData = {
   Icon: FC<any>;
   onClick: () => void;
   show: boolean;
+  dataCy?: string;
 };
 
 export interface TopBarProps {

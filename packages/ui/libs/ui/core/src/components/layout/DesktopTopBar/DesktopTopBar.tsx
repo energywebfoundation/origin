@@ -37,8 +37,13 @@ export const DesktopTopBar: FC<DesktopTopBarProps> = memo(
         )}
         {buttons
           ?.filter((v) => v.show !== false)
-          .map(({ label, onClick }) => (
-            <Button className={classes.button} key={label} onClick={onClick}>
+          .map(({ label, onClick, dataCy }) => (
+            <Button
+              className={classes.button}
+              key={label}
+              onClick={onClick}
+              data-cy={dataCy}
+            >
               {label}
             </Button>
           ))}

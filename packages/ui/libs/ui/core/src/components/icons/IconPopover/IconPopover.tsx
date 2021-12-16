@@ -1,5 +1,5 @@
 import React, { ElementType } from 'react';
-import { Popover, Typography, Button } from '@mui/material';
+import { Popover, Typography, Button, SvgIconProps } from '@mui/material';
 import { useStyles } from './IconPopover.styles';
 import { useIconPopoverEffects } from './IconPopover.effects';
 
@@ -12,6 +12,9 @@ export enum IconSize {
 export interface IconPopoverProps {
   icon: ElementType;
   iconSize: IconSize;
+  iconProps?: SvgIconProps & {
+    ['data-cy']: string;
+  };
   popoverText: string[];
   className?: string;
   clickable?: boolean;
@@ -21,6 +24,7 @@ export const IconPopover = (props: IconPopoverProps) => {
   const {
     icon: Icon,
     iconSize,
+    iconProps,
     popoverText,
     className,
     clickable = false,
@@ -46,7 +50,7 @@ export const IconPopover = (props: IconPopoverProps) => {
       {clickable ? (
         <>
           <Button aria-describedby={getClickableId(open)} onClick={handleClick}>
-            <Icon fontSize={iconSize} />
+            <Icon fontSize={iconSize} {...iconProps} />
           </Button>
           <Popover
             id={getClickableId(open)}
@@ -82,6 +86,7 @@ export const IconPopover = (props: IconPopoverProps) => {
             onMouseEnter={handlePopoverOpen}
             onMouseLeave={handlePopoverClose}
             fontSize={iconSize}
+            {...iconProps}
           />
           <Popover
             id="mouse-over-popover"

@@ -32,6 +32,7 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
             pending={userPending}
             tooltipText={userTooltip}
             typographyProps={{ variant: 'h6', component: 'span' }}
+            dotWrapperProps={{ ['data-cy']: 'user-pending-badge' }}
           />
           <TextWithPendingDot
             textContent={orgName}

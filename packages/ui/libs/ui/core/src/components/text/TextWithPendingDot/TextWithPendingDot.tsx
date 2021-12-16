@@ -1,5 +1,11 @@
 import React, { FC } from 'react';
-import { Tooltip, Typography, TypographyProps } from '@mui/material';
+import {
+  Box,
+  Tooltip,
+  Typography,
+  TypographyProps,
+  BoxProps,
+} from '@mui/material';
 import { Dot } from '../../icons';
 import { useStyles } from './TextWithPendingDot.styles';
 import { useTheme } from '@mui/styles';
@@ -10,6 +16,7 @@ export interface TextWithPendingDotProps {
   tooltipText?: string;
   typographyProps?: TypographyProps & { component?: 'span' | 'p' };
   showSuccessDot?: boolean;
+  dotWrapperProps?: BoxProps & { ['data-cy']: string };
 }
 
 export const TextWithPendingDot: FC<TextWithPendingDotProps> = ({
@@ -18,6 +25,7 @@ export const TextWithPendingDot: FC<TextWithPendingDotProps> = ({
   tooltipText,
   typographyProps,
   showSuccessDot = false,
+  dotWrapperProps,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -28,13 +36,13 @@ export const TextWithPendingDot: FC<TextWithPendingDotProps> = ({
       </div>
       {(pending || showSuccessDot) && (
         <Tooltip title={tooltipText}>
-          <div className={classes.dotWrapper}>
+          <Box className={classes.dotWrapper} {...dotWrapperProps}>
             <Dot
               backgroundColor={
                 showSuccessDot ? theme.palette.primary.main : undefined
               }
             />
-          </div>
+          </Box>
         </Tooltip>
       )}
     </div>

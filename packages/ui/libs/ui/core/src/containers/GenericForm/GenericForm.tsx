@@ -15,6 +15,7 @@ export const GenericForm: TGenericForm = memo(
     formTitle,
     formTitleVariant,
     buttonFullWidth = false,
+    buttonProps,
     buttonWrapperProps,
     secondaryButtons,
     formClass,
@@ -107,6 +108,7 @@ export const GenericForm: TGenericForm = memo(
             variant="contained"
             disabled={submitButtonDisabled || loading}
             type="submit"
+            {...buttonProps}
           >
             {buttonText}
             {loading && (

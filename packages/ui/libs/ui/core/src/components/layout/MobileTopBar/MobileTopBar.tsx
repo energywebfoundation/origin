@@ -44,9 +44,10 @@ export const MobileTopBar: FC<MobileTopBarProps> = memo(
               />
             )}
             {allowedButtons?.map((button) => {
-              const { Icon, onClick, label } = button;
+              const { Icon, onClick, label, dataCy } = button;
               return (
                 <IconButton
+                  data-cy={dataCy}
                   key={`mobile-topbar-button-${label}`}
                   onClick={onClick}
                 >
