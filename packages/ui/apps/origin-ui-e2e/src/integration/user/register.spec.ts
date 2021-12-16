@@ -6,25 +6,25 @@ describe('User registration', () => {
   const testUser = generateNewUser();
 
   before(() => {
-    cy.visit('account/user-register');
+    cy.visit('auth/register');
   });
 
   it('should allow to enter custom title', () => {
-    cy.dataCy('title-select').click();
+    cy.dataCy('register-title-select').parent().click();
     cy.contains('Other').click();
-    cy.dataCy('other-title-input').type('PhD');
+    cy.dataCy('register-other-title-input').type('PhD');
   });
 
   it('should require first name', () => {
-    cy.inputRequired('first-name', 'last-name');
+    cy.inputRequired('firstName', 'lastName');
   });
 
   it('should require last name', () => {
-    cy.inputRequired('last-name', 'first-name');
+    cy.inputRequired('lastName', 'firstName');
   });
 
   it('should require email', () => {
-    cy.inputRequired('email', 'last-name');
+    cy.inputRequired('email', 'lastName');
   });
 
   it('should require telephone', () => {
@@ -44,19 +44,17 @@ describe('User registration', () => {
 
     cy.dataCy('register-button').should('not.be.disabled').click();
 
-    cy.notification('User registered.');
+    cy.notification('User registered');
     cy.contains('Thanks for registering as a user on the marketplace');
     cy.dataCy('user-registered-modal-ok').click();
-    cy.url().should('include', '/user-login');
+    cy.url().should('include', '/login');
   });
 
   it('should not be able to create user with same email', () => {
-    cy.visit('account/user-register');
+    cy.visit('auth/register');
 
     cy.fillUserRegister(testUser);
     cy.dataCy('register-button').should('not.be.disabled').click();
-    cy.notification(
-      `The user with email ${testUser.email} has already been registered. Please log in using the original account.`
-    );
+    cy.notification(`Error while registering user`);
   });
 });

@@ -18,11 +18,17 @@ Cypress.Commands.add('dataCy', (value: string) => {
 });
 
 Cypress.Commands.add('inputRequired', (target: string, neighbor: string) => {
-  cy.clearInput(target);
-  cy.dataCy(neighbor).click();
-  cy.dataCy(`${target}-label`).then((elem) => {
-    // @ts-ignore
-    const fieldName = elem.text().replace(/\s[*]/, '');
+  cy.dataCy(target).then((elem) => {
+    cy.clearInput(target);
+    cy.dataCy(neighbor).click();
+
+    const fieldName = elem
+      // @ts-ignore
+      .parent()
+      .parent()
+      .find('label')
+      .text()
+      .replace(/\s[*]/, '');
     cy.contains(`${fieldName} is a required field`);
   });
 });
