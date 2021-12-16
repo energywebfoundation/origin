@@ -1,4 +1,8 @@
 import { UserDTO } from '@energyweb/origin-backend-react-query-client';
+import {
+  RegistrationDTO,
+  ShortConnectionDTO,
+} from '@energyweb/origin-organization-irec-api-react-query-client';
 
 export interface IPermissionRule {
   label: string;
@@ -19,6 +23,8 @@ export enum Requirement {
   IsPartOfApprovedOrg,
   HasExchangeDepositAddress,
   HasOrganizationBlockchainAddress,
+  HasIRecOrg,
+  HasIRecApiConnection,
 }
 
 export type RequirementList = Requirement[];
@@ -26,5 +32,7 @@ export type RequirementList = Requirement[];
 export interface TUsePermissions {
   user: UserDTO;
   exchangeDepositAddress: string;
+  iRecOrg?: RegistrationDTO;
+  iRecConnection?: ShortConnectionDTO;
   config?: RequirementList;
 }

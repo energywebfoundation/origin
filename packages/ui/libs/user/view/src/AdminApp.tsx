@@ -6,6 +6,7 @@ import {
   AdminClaimsPage,
   AdminUpdateUserPage,
   AdminUsersPage,
+  AdminOrganizationViewPage,
 } from './pages';
 
 export interface AdminAppProps {
@@ -25,12 +26,15 @@ export const AdminApp: FC<AdminAppProps> = ({ routesConfig }) => {
         <Route path="update-user/:id" element={<AdminUpdateUserPage />} />
       )}
       {showAllOrgs && (
-        <Route
-          path="all-organizations"
-          element={<AdminAllOrganizationsPage />}
-        />
+        <Route path="organizations" element={<AdminAllOrganizationsPage />} />
       )}
       {showClaims && <Route path="claims" element={<AdminClaimsPage />} />}
+      {showAllOrgs && (
+        <Route
+          path="organization/:id"
+          element={<AdminOrganizationViewPage />}
+        />
+      )}
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

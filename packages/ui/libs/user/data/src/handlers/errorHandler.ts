@@ -5,7 +5,7 @@ import {
 import { TFunction } from 'i18next';
 
 export const userApiErrorHandler = (error: any, t: TFunction) => {
-  console.log(error);
+  console.error(error);
   if (error?.data?.message) {
     showNotification(error.data.message, NotificationTypeEnum.Error);
   } else if (error?.response) {

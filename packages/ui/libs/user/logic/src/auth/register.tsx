@@ -32,6 +32,7 @@ export const useUserSignInFormConfig = (
   }));
   return {
     buttonText: t('general.buttons.register'),
+    validationMode: 'onSubmit',
     fields: [
       {
         label: t('user.register.title'),

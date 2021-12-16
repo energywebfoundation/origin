@@ -9,6 +9,7 @@ export const useCreateBeneficiaryFormLogic: TUseCreateBeneficiaryFormLogic =
     return {
       formTitleVariant: 'h5',
       inputsVariant: 'filled',
+      validationMode: 'onSubmit',
       initialValues: {
         name: '',
         countryCode: [],

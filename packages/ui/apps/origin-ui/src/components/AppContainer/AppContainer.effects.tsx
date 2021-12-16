@@ -26,6 +26,7 @@ import {
   TGetAdminMenuArgs,
   getTopbarButtonList,
 } from '@energyweb/origin-ui-user-logic';
+import { LoginRoutesConfig } from '@energyweb/origin-ui-user-view';
 import {
   useInvitationControllerGetInvitations,
   useConnectionControllerGetMyConnection,
@@ -47,6 +48,7 @@ export type RoutesConfig = {
   exchangeRoutes: Omit<TGetExchangeMenuArgs, 't' | 'isOpen' | 'showSection'>;
   accountRoutes: Omit<TGetAccountMenuArgs, 't' | 'isOpen' | 'showSection'>;
   adminRoutes: Omit<TGetAdminMenuArgs, 't' | 'isOpen' | 'showSection'>;
+  loginRoutes: LoginRoutesConfig;
 };
 
 export const useAppContainerEffects = () => {
@@ -221,9 +223,7 @@ export const useAppContainerEffects = () => {
       showApproved: userIsIssuer,
       showImport:
         (iRecOrg?.accountType as unknown as IRECAccountType) ===
-          IRECAccountType.Participant ||
-        (iRecOrg?.accountType as unknown as IRECAccountType) ===
-          IRECAccountType.Both,
+          IRECAccountType.Participant && iRecConnectionActive,
     }),
     [
       userIsActive,
@@ -335,6 +335,15 @@ export const useAppContainerEffects = () => {
     [t, isAdminTabAcive, userIsAdminOrSupport, isLightTheme, adminRoutesConfig]
   );
 
+  const loginRoutesConfig: RoutesConfig['loginRoutes'] = useMemo(
+    () => ({
+      showLoginPage: !isAuthenticated,
+      showRequestResetPasswordPage: !isAuthenticated,
+      showResetPasswordPage: !isAuthenticated,
+    }),
+    [isAuthenticated]
+  );
+
   const menuSections = useMemo(
     () => [
       deviceMenu,
@@ -355,6 +364,7 @@ export const useAppContainerEffects = () => {
       exchangeRoutes: exchangeRoutesConfig,
       accountRoutes: accountRoutesConfig,
       adminRoutes: adminRoutesConfig,
+      loginRoutes: loginRoutesConfig,
     }),
     [
       orgRoutesConfig,
@@ -363,6 +373,7 @@ export const useAppContainerEffects = () => {
       exchangeRoutesConfig,
       accountRoutesConfig,
       adminRoutesConfig,
+      loginRoutesConfig,
     ]
   );
 
