@@ -1,4 +1,7 @@
-import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
+import {
+  InvitationDTO,
+  UserDTO,
+} from '@energyweb/origin-backend-react-query-client';
 import { UserModalsActionsEnum } from './reducer';
 
 export interface IUserModalsStore {
@@ -7,9 +10,13 @@ export interface IUserModalsStore {
   pendingInvitation: {
     open: boolean;
     invitation: InvitationDTO;
+    user: UserDTO;
   };
   createExchangeAddress: boolean;
-  roleChanged: boolean;
+  roleChanged: {
+    open: boolean;
+    user: UserDTO;
+  };
 }
 
 interface IShowUserRegisteredAction {
@@ -27,6 +34,7 @@ interface IShowPendingInvitationActions {
   payload: {
     open: boolean;
     invitation: InvitationDTO;
+    user: UserDTO;
   };
 }
 
@@ -37,7 +45,10 @@ interface IShowCreateExchangeAddressAction {
 
 interface IShowRoleChangeAction {
   type: UserModalsActionsEnum.SHOW_ROLE_CHANGED;
-  payload: boolean;
+  payload: {
+    open: boolean;
+    user: UserDTO;
+  };
 }
 
 export type TUserModalsAction =

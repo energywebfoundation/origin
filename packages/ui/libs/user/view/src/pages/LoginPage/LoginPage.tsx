@@ -4,9 +4,9 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
+import { LoginPageLayout } from '../../containers';
 import { useStyles } from './LoginPage.styles';
 import { useLogInPageEffects } from './LoginPage.effects';
-import { LoginPageLayout } from '../../containers';
 
 export interface LoginPageProps {
   bgImage?: string;

@@ -18,6 +18,8 @@ export const defaultRequirementList: RequirementList = [
 export const usePermissionsLogic = ({
   user,
   exchangeDepositAddress,
+  iRecOrg,
+  iRecConnection,
   config = defaultRequirementList,
 }: TUsePermissions): IPermissionReturnType => {
   const { t } = useTranslation();
@@ -44,6 +46,14 @@ export const usePermissionsLogic = ({
     [Requirement.HasOrganizationBlockchainAddress]: {
       label: t('general.requirements.organizationHasToHaveBlockchainAccount'),
       passing: Boolean(user?.organization?.blockchainAccountAddress),
+    },
+    [Requirement.HasIRecOrg]: {
+      label: t('general.requirements.hasToHaveIRecOrg'),
+      passing: Boolean(iRecOrg),
+    },
+    [Requirement.HasIRecApiConnection]: {
+      label: t('general.requirements.hasToHaveActiveIRecConnection'),
+      passing: iRecConnection?.active,
     },
   };
 

@@ -60,7 +60,7 @@ export const useUpdateUserAccountPasswordFormConfig: TUseUpdateUserAccountPasswo
             [Yup.ref('newPassword'), null],
             t('user.profile.confirmDoesntMatch')
           )
-          .label(t('user.profile.confirmPassword'))
+          .label(t('user.profile.newPasswordConfirm'))
           .required(),
       }),
     };
