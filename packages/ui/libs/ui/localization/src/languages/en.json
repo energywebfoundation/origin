@@ -55,7 +55,7 @@
       "admin": {
         "sectionTitle": "Admin",
         "users": "Users",
-        "allOrganizations": "All Organizations",
+        "organizations": "Organizations",
         "claims": "Claims"
       },
       "layout": {
@@ -1057,7 +1057,9 @@
         "hasToBeActiveUser": "User has to be approved by the platform admin.",
         "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
         "organizationHasToHaveExchangeDeposit": "The organization has to have a blockchain exchange deposit address attached to the account.",
-        "organizationHasToHaveBlockchainAccount": "Your organization has to have a blockchain account attached."
+        "organizationHasToHaveBlockchainAccount": "Your organization has to have a blockchain account attached.",
+        "hasToHaveIRecOrg": "Your organization has to have an I-REC registration",
+        "hasToHaveActiveIRecConnection": "You should have an active I-REC API connection"
       },
       "input": {
         "editAmount": "Edit amount"
