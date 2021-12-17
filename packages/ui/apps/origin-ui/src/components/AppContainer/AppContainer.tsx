@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { App } from '../App';
 import { OriginGlobalStyles } from '../OriginGlobalStyles';
 import { NotificationsCenter } from '../NotificationsCenter';

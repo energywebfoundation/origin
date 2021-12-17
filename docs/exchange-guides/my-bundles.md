@@ -1,4 +1,5 @@
 # My Bundles
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/exchange/view/src/pages/MyBundlesPage)
 
 Use this interface to view your organization’s bundles that were created using the [Create Bundle](./create-bundle.md) interface. 
 

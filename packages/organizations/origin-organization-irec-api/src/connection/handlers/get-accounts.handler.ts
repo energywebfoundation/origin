@@ -7,7 +7,7 @@ import { Connection } from '../connection.entity';
 import { RegistrationService } from '../../registration';
 import { GetAccountsCommand } from '../commands';
 import { IREC_SERVICE, IrecService } from '../../irec';
-import { AccountDTO } from '../dto';
+import { IrecAccountDto } from '../dto';
 import { HttpException } from '@nestjs/common';
 
 @CommandHandler(GetAccountsCommand)
@@ -21,7 +21,7 @@ export class GetAccountsHandler implements ICommandHandler<GetAccountsCommand> {
         private readonly irecService: IrecService
     ) {}
 
-    async execute({ owner }: GetAccountsCommand): Promise<AccountDTO[]> {
+    async execute({ owner }: GetAccountsCommand): Promise<IrecAccountDto[]> {
         try {
             return await this.irecService.getAccountInfo(owner);
         } catch (e) {

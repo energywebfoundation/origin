@@ -1,4 +1,5 @@
 ## Create Beneficiary
+[**UI Components**](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/organization/view/src/pages/CreateBeneficiaryPage)
 
 ![org-createbeneficiary](../images/organization/org-createbeneficiary.png)
 

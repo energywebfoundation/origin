@@ -12,6 +12,7 @@ import {
   LoginDataDTO,
   useAppControllerLogin,
   InvitationDTO,
+  UserDTO,
 } from '@energyweb/origin-backend-react-query-client';
 import {
   NotificationTypeEnum,
@@ -25,7 +26,7 @@ import { useNavigate } from 'react-router';
 
 export const useUserLogin = (
   openRegisterOrgModal: () => void,
-  openInvitationModal: (invitation: InvitationDTO) => void,
+  openInvitationModal: (invitation: InvitationDTO, user: UserDTO) => void,
   openExchangeAddressModal: () => void
 ) => {
   const navigate = useNavigate();
@@ -44,38 +45,42 @@ export const useUserLogin = (
             'Authorization'
           ] = `Bearer ${accessToken}`;
 
-          const user = await userControllerMe();
+          try {
+            const user = await userControllerMe();
 
-          const invitations = await invitationControllerGetInvitations();
-          const pendingInvitations = invitations?.filter(
-            (invitation) =>
-              invitation.status === OrganizationInvitationStatus.Pending
-          );
+            const invitations = await invitationControllerGetInvitations();
+            const pendingInvitations = invitations?.filter(
+              (invitation) =>
+                invitation.status === OrganizationInvitationStatus.Pending
+            );
 
-          const account = await accountControllerGetAccount();
-          const exchangeAddress = account?.address;
+            const account = await accountControllerGetAccount();
+            const exchangeAddress = account?.address;
 
-          if (
-            !user?.organization &&
-            (!pendingInvitations || pendingInvitations.length === 0)
-          ) {
-            openRegisterOrgModal();
-          } else if (!!pendingInvitations && pendingInvitations.length > 0) {
-            const lastInvitation =
-              pendingInvitations[pendingInvitations.length - 1];
-            openInvitationModal(lastInvitation);
-          } else if (
-            user?.organization.status === OrganizationStatus.Active &&
-            user.status === UserStatus.Active &&
-            !isRole(user, Role.Issuer) &&
-            !isRole(user, Role.Admin) &&
-            !isRole(user, Role.SupportAgent) &&
-            !exchangeAddress
-          ) {
-            openExchangeAddressModal();
-          } else {
-            navigate('/');
-            queryClient.resetQueries();
+            if (
+              !user?.organization &&
+              (!pendingInvitations || pendingInvitations.length === 0)
+            ) {
+              openRegisterOrgModal();
+            } else if (!!pendingInvitations && pendingInvitations.length > 0) {
+              const lastInvitation =
+                pendingInvitations[pendingInvitations.length - 1];
+              openInvitationModal(lastInvitation, user);
+            } else if (
+              user?.organization.status === OrganizationStatus.Active &&
+              user.status === UserStatus.Active &&
+              !isRole(user, Role.Issuer) &&
+              !isRole(user, Role.Admin) &&
+              !isRole(user, Role.SupportAgent) &&
+              !exchangeAddress
+            ) {
+              openExchangeAddressModal();
+            } else {
+              navigate('/');
+              queryClient.resetQueries();
+            }
+          } catch (error) {
+            console.error(error);
           }
         },
         onError: () => {

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import { GenericForm } from '@energyweb/origin-ui-core';
+import { GenericForm, Requirements } from '@energyweb/origin-ui-core';
 import { Paper } from '@mui/material';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +9,13 @@ import { useCreateBeneficiaryPageEffects } from './CreateBeneficiaryPage.effects
 
 export const CreateBeneficiaryPage: FC = () => {
   const { t } = useTranslation();
-  const { formProps } = useCreateBeneficiaryPageEffects();
+  const { formProps, canAccessPage, requirementsProps } =
+    useCreateBeneficiaryPageEffects();
   const classes = useStyles();
+
+  if (!canAccessPage) {
+    return <Requirements {...requirementsProps} />;
+  }
 
   return (
     <Paper classes={{ root: classes.paper }}>

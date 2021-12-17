@@ -1,5 +1,9 @@
 import { Countries } from '@energyweb/utils-general';
-import { useRegisterDeviceFormLogic } from '@energyweb/origin-ui-device-logic';
+import {
+  defaultRequirementList,
+  Requirement,
+  useRegisterDeviceFormLogic,
+} from '@energyweb/origin-ui-device-logic';
 import {
   useAllDeviceTypes,
   useAllDeviceFuelTypes,
@@ -7,13 +11,25 @@ import {
   useApiRegionsConfiguration,
   useApiUserAndAccount,
   useApiMyAccounts,
+  useCachedIRecOrg,
+  useCachedIRecConnection,
 } from '@energyweb/origin-ui-device-data';
 import { usePermissionsLogic } from '@energyweb/origin-ui-device-logic';
 import { DeviceImagesUpload } from '../../containers';
 import { useDeviceAppEnv } from '../../context';
 
+const permissionsConfig = [
+  ...defaultRequirementList,
+  ...(process.env.NODE_ENV === 'development'
+    ? []
+    : [Requirement.HasIRecOrg, Requirement.HasIRecApiConnection]),
+];
+
 export const useRegisterPageEffects = () => {
   const { smartMeterId, singleAccountMode } = useDeviceAppEnv();
+  const iRecOrg = useCachedIRecOrg();
+  const iRecConnection = useCachedIRecConnection();
+
   const {
     user,
     exchangeDepositAddress,
@@ -22,6 +38,9 @@ export const useRegisterPageEffects = () => {
   const { canAccessPage, requirementsProps } = usePermissionsLogic({
     user,
     exchangeDepositAddress,
+    iRecOrg,
+    iRecConnection,
+    config: permissionsConfig,
   });
 
   const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =

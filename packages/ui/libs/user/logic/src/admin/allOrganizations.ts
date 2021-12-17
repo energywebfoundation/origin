@@ -7,6 +7,7 @@ import {
   TableComponentProps,
   TableRowData,
 } from '@energyweb/origin-ui-core';
+import { useNavigate } from 'react-router';
 
 export type TUseAllOrganizationsTableArgs = {
   allOrganizations: FullOrganizationInfoDTO[];
@@ -39,6 +40,8 @@ export const useAllOrganizationsTableLogic: TUseAllOrganizationsTableLogic = ({
   isLoading,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   return {
     header: {
       name: t('organization.all.name'),
@@ -47,6 +50,7 @@ export const useAllOrganizationsTableLogic: TUseAllOrganizationsTableLogic = ({
       status: t('organization.all.status'),
       actions: '',
     },
+    onRowClick: (id) => navigate(`/admin/organization/${id}`),
     pageSize: 20,
     loading: isLoading,
     data: formatOrganizations({ allOrganizations, actions }) ?? [],
