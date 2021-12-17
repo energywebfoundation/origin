@@ -6,10 +6,11 @@ describe('Settings for unlogged user', () => {
   });
 
   it('should be able to change language', () => {
-    cy.dataCy('language-select').click();
-    cy.contains('pl').click();
-    cy.contains('Język');
-    cy.contains('Zarejestruj');
-    cy.contains('Rynek');
+    cy.dataCy('languageSelect').click();
+    cy.contains('Polish').click();
+    cy.dataCy('updateLanguage').click();
+
+    cy.contains('Zarejestrować');
+    cy.contains('Zaloguj sie');
   });
 });

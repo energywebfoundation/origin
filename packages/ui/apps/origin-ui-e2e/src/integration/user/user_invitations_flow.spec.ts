@@ -32,122 +32,110 @@ describe('User invitation flow', () => {
   });
 
   it('should show modal and allow to skip it', () => {
-    cy.visit('/user-login');
-    const { email, password } = memberAccept;
-    cy.fillUserLogin({ email, password });
-    cy.dataCy('login-button').click();
+    cy.login(memberAccept.email, memberAccept.password);
 
-    cy.contains('Invitation to join the marketplace');
+    cy.contains('Invitation to join the organization on marketplace');
     cy.contains(orgOwner.firstName);
     cy.contains(orgOwner.lastName);
     cy.contains(testOrg.name);
-    cy.dataCy('invitations-later-button').click();
+    cy.contains('Later').click();
     cy.notification('You can find this invitation on the Organizations tab');
-    cy.get('.toast').click();
 
-    cy.contains('Thank you for registering as a user on the marketplace');
-    cy.get('button').contains('Not now').click();
-    cy.url().should('include', '/devices/production');
+    cy.url().should('include', '/device/all');
     cy.contains(testOrg.name).should('not.exist');
   });
 
   it('should allow to accept invitation through invitations table', () => {
-    cy.dataCy('organizations-menu').click();
-    cy.url().should('include', 'organization-invitations');
+    cy.dataCy('organizationMenu').click();
+    cy.dataCy('organizationInvitations').last().click();
+    cy.url().should('include', 'organization/invitations');
 
     cy.contains('Received');
-    cy.contains('tr', memberAccept.email).contains('td', 'Pending');
-    cy.contains('tr', memberAccept.email).find('td').last().click();
-    cy.dataCy('accept-invitation-icon').filter(':visible').click();
+    cy.contains('tr', memberAccept.email);
+    cy.dataCy('moreIcon').trigger('mouseover');
+    cy.dataCy('checkIcon').click();
 
-    cy.contains(`Successfully joined ${testOrg.name}`);
-    cy.contains('As a member you can');
+    cy.notification('Invitation accepted');
+    cy.contains('Successfully joined');
+    cy.contains('As an Organization Admin you have permission to:');
     cy.contains('Place orders on the exchange');
     cy.contains('button', 'Ok').click();
-    cy.url().should('include', 'devices/production');
-    cy.notification('Invitation accepted');
-    cy.get('.toast').click();
-    cy.contains(testOrg.name);
-    cy.dataCy('organizations-menu').should('not.exist');
+    cy.contains('button', 'Not now').click();
+    cy.contains('Thank you for registering');
+    cy.contains('button', 'Ok').click();
+
+    cy.url().should('include', 'organization/my');
+
+    cy.contains('label', 'Organization Name')
+      .parent()
+      .find('input')
+      .should('have.value', testOrg.name);
+
+    cy.dataCy('organizationMenu').should('not.exist');
 
     cy.clearLocalStorage();
   });
 
   it('should allow to decline invitation through invitations table', () => {
-    cy.visit('/user-login');
-    const { email, password } = memberReject;
-    cy.fillUserLogin({ email, password });
-    cy.dataCy('login-button').click();
+    cy.login(memberReject.email, memberReject.password);
 
-    cy.contains('Invitation to join the marketplace');
+    cy.contains('Invitation to join the organization on marketplace');
     cy.contains(orgOwner.firstName);
     cy.contains(orgOwner.lastName);
     cy.contains(testOrg.name);
-    cy.dataCy('invitations-later-button').click();
+    cy.contains('Later').click();
     cy.notification('You can find this invitation on the Organizations tab');
-    cy.get('.toast').click();
 
-    cy.contains('Thank you for registering as a user on the marketplace');
-    cy.get('button').contains('Not now').click();
-    cy.dataCy('organizations-menu').click();
-    cy.url().should('include', 'organization-invitations');
+    cy.dataCy('organizationMenu').click();
+    cy.dataCy('organizationInvitations').last().click();
+    cy.url().should('include', 'organization/invitations');
 
-    cy.contains('tr', memberReject.email).find('td').last().click();
-    cy.dataCy('decline-invitation-icon').filter(':visible').click();
-    cy.wait(50);
+    cy.contains('tr', memberReject.email);
+    cy.dataCy('moreIcon').trigger('mouseover');
+    cy.dataCy('clearIcon').click();
     cy.notification('Invitation rejected');
     cy.contains('tr', memberReject.email).contains('td', 'Rejected');
-    cy.dataCy('organizations-menu');
+    cy.dataCy('organizationMenu');
 
     cy.clearLocalStorage();
   });
 
   it('should allow to accept invitation through modal window', () => {
-    cy.visit('/user-login');
-    const { email, password } = deviceManager;
-    cy.fillUserLogin({ email, password });
-    cy.dataCy('login-button').click();
+    cy.login(deviceManager.email, deviceManager.password);
 
-    cy.contains('Invitation to join the marketplace');
+    cy.contains('Invitation to join the organization on marketplace');
     cy.contains(orgOwner.firstName);
     cy.contains(orgOwner.lastName);
     cy.contains(testOrg.name);
-    cy.dataCy('invitations-accept-button').click();
+    cy.contains('Accept').click();
+    cy.notification('Invitation accepted');
 
-    cy.contains(`Successfully joined ${testOrg.name}`);
-    cy.contains('As a Device Manager you have permission to');
-    cy.contains('Register devices and device groups');
-    cy.contains('Place orders on the exchange');
-    cy.contains('button', 'Ok').click();
-
-    cy.contains('Connect Blockchain Address');
-    cy.contains('button', 'Maybe Later').click();
-
-    cy.url().should('include', 'devices/production');
+    cy.url().should('include', 'device/all');
     cy.contains(testOrg.name);
-    cy.dataCy('organizations-menu').should('not.exist');
+
+    cy.visit('/organization/my');
+    cy.url().should('include', 'organization/my');
+
+    cy.contains('label', 'Organization Name')
+      .parent()
+      .find('input')
+      .should('have.value', testOrg.name);
 
     cy.clearLocalStorage();
   });
 
   it('should allow to decline invitation through modal window', () => {
-    cy.visit('/user-login');
-    const { email, password } = admin;
-    cy.fillUserLogin({ email, password });
-    cy.dataCy('login-button').click();
+    cy.login(admin.email, admin.password);
 
-    cy.contains('Invitation to join the marketplace');
+    cy.contains('Invitation to join the organization on marketplace');
     cy.contains(orgOwner.firstName);
     cy.contains(orgOwner.lastName);
     cy.contains(testOrg.name);
-    cy.dataCy('invitations-decline-button').click();
-
-    cy.contains('Thank you for registering as a user on the marketplace');
-    cy.get('button').contains('Not now').click();
+    cy.contains('Decline').click();
     cy.notification('Invitation rejected');
 
-    cy.url().should('include', 'devices/production');
+    cy.url().should('include', 'device/all');
     cy.contains(testOrg.name).should('not.exist');
-    cy.dataCy('organizations-menu');
+    cy.dataCy('organizationMenu');
   });
 });

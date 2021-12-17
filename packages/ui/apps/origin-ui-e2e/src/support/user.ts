@@ -1,6 +1,12 @@
 /// <reference types="cypress" />
 import { KYCStatus, UserStatus } from '@energyweb/origin-backend-core';
 
+Cypress.Commands.add('login', (email, password) => {
+  cy.visit('/login');
+  cy.fillUserLogin({ email, password });
+  cy.dataCy('login-button').click();
+});
+
 Cypress.Commands.add('fillUserRegister', (user: UserRegisterData) => {
   cy.dataCy('register-title-select').parent().click();
   cy.contains('Mr').click();
@@ -8,7 +14,7 @@ Cypress.Commands.add('fillUserRegister', (user: UserRegisterData) => {
   cy.dataCy('lastName').type(user.lastName);
   cy.dataCy('email').type(user.email);
   cy.dataCy('telephone').type(user.telephone);
-  cy.dataCy('password').type(user.password).blur();
+  cy.dataCy('password').type(user.password);
 });
 
 Cypress.Commands.add('apiRegisterUser', (user: UserRegisterData) => {

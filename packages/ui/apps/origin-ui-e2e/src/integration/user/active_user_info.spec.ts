@@ -24,15 +24,12 @@ describe('Active user profile user info block interactions', () => {
   it('should show pop-up for blockchain addresse fields', () => {
     cy.dataCy('exchange-address-info-icon').trigger('mouseover');
     cy.contains('You need it to trade certificates on the exchange');
-
-    // cy.dataCy('blockchain-address-info-icon').trigger('mouseover');
-    // cy.contains('A connected user blockchain address is required to withdraw');
   });
 
   it('should validate user info fields as required', () => {
-    cy.filledInputRequired('firstName', 'lastName');
-    cy.filledInputRequired('lastName', 'telephone');
-    cy.filledInputRequired('telephone', 'firstName');
+    cy.inputRequired('firstName', 'lastName');
+    cy.inputRequired('lastName', 'telephone');
+    cy.inputRequired('telephone', 'firstName');
   });
 
   it('should allow to change user info', () => {

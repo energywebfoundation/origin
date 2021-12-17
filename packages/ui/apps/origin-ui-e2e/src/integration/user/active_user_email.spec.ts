@@ -15,7 +15,7 @@ describe('Active user profile email block interactions', () => {
     cy.apiLoginUser(testUser);
     cy.visit('/account/profile');
 
-    cy.filledInputRequired('email', 'firstName');
+    cy.inputRequired('email', 'firstName');
   });
 
   it('should keep save email button disabled if email did not changed after editing', () => {
@@ -42,13 +42,11 @@ describe('Active user profile email block interactions', () => {
   });
 
   it('should allow user to log in using new email', () => {
-    cy.visit('/login');
+    cy.login(newEmail, testUser.password);
 
-    cy.fillUserLogin({ email: newEmail, password: testUser.password });
-    cy.dataCy('login-button').click();
-    // cy.contains('Thank you for registering as a user on the marketplace');
-    // cy.get('button').contains('Not now').click();
-    // cy.url().should('include', '/devices/all');
-    // cy.contains(`${testUser.firstName} ${testUser.lastName}`);
+    cy.contains('Thank you for registering as a user on the marketplace');
+    cy.get('button').contains('Not now').click();
+    cy.url().should('include', '/device/all');
+    cy.contains(`${testUser.firstName} ${testUser.lastName}`);
   });
 });

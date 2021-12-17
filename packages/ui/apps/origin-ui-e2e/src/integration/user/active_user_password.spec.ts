@@ -36,14 +36,12 @@ describe('Active user profile password block interactions', () => {
   });
 
   it('should allow user to log in using new password', () => {
-    cy.visit('/login');
-    cy.fillUserLogin({ email, password: newPassword });
-    cy.dataCy('login-button').click();
+    cy.login(email, newPassword);
 
-    // cy.contains('Thank you for registering as a user on the marketplace');
-    // cy.get('button').contains('Not now').click();
+    cy.contains('Thank you for registering as a user on the marketplace');
+    cy.get('button').contains('Not now').click();
 
-    // cy.contains(`${testUser.firstName} ${testUser.lastName}`);
-    // cy.url().should('include', 'devices/all');
+    cy.contains(`${testUser.firstName} ${testUser.lastName}`);
+    cy.url().should('include', 'device/all');
   });
 });

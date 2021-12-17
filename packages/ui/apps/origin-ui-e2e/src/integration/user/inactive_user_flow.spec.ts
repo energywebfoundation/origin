@@ -43,8 +43,8 @@ describe('User with status Pending flow', () => {
   });
 
   it('should display exchange menu for inactive user', () => {
-    cy.visit('/exchange');
-    cy.url().should('include', '/view-market');
+    cy.visit('/exchange/view-market');
+    cy.url().should('include', '/exchange/view-market');
 
     cy.dataCy('exchangeMenu');
     cy.dataCy('exchangeViewMarket');
@@ -58,63 +58,56 @@ describe('User with status Pending flow', () => {
   });
 
   it('should display settings menu for inactive user', () => {
-    cy.visit('/account');
-    cy.url().should('include', '/settings');
+    cy.visit('/account/settings');
+    cy.url().should('include', '/account/settings');
 
-    cy.dataCy('settings-menu');
-    cy.dataCy('settings');
-    cy.dataCy('user-profile');
+    cy.dataCy('settingsMenu');
+    cy.dataCy('accountSettings');
+    cy.dataCy('accountUserProfile');
   });
 
-  // it('should not allow user to change information and email', () => {
-  //   cy.visit('/account/user-profile');
-  //   cy.dataCy('info-edit-button').click();
+  it('should not allow user to change information and email', () => {
+    cy.visit('/account/profile');
 
-  //   cy.dataCy('first-name').find('input').type('-edit').blur();
-  //   cy.dataCy('info-save-button').click();
-  //   cy.notification('Error to update User profile');
-  //   cy.get('.toast').click();
-  //   cy.wait(100);
+    cy.dataCy('firstName').type('-edit').blur();
+    cy.dataCy('user-data-change-button').click();
+    cy.notification(
+      'Only active users can perform this action. Your status is Pending'
+    );
 
-  //   cy.dataCy('last-name').find('input').type('-edit').blur();
-  //   cy.dataCy('info-save-button').click();
-  //   cy.notification('Error to update User profile');
-  //   cy.get('.toast').click();
-  //   cy.wait(200);
+    cy.dataCy('lastName').type('-edit').blur();
+    cy.dataCy('user-data-change-button').click();
+    cy.notification(
+      'Only active users can perform this action. Your status is Pending'
+    );
 
-  //   cy.dataCy('telephone').find('input').type('-edit').blur();
-  //   cy.dataCy('info-save-button').click();
-  //   cy.notification('Error to update User profile');
-  //   cy.get('.toast').click();
-  //   cy.wait(300);
+    cy.dataCy('telephone').type('-edit').blur();
+    cy.dataCy('user-data-change-button').click();
+    cy.notification(
+      'Only active users can perform this action. Your status is Pending'
+    );
 
-  //   cy.dataCy('email-edit-button').click();
-  //   cy.dataCy('email').find('input').type('-edit').blur();
-  //   cy.dataCy('email-save-button').click();
-  //   cy.notification('Error to update User profile');
-  // });
+    cy.dataCy('email').type('-edit').blur();
+    cy.dataCy('email-change-button').click();
+    cy.notification(
+      'Only active users can perform this action. Your status is Pending'
+    );
+  });
 
-  // it('should not allow to change password', () => {
-  //   cy.visit('/account/user-profile');
-  //   cy.dataCy('password-edit-button').click();
+  it('should not allow to change password', () => {
+    cy.visit('/account/profile');
 
-  //   cy.dataCy('current-password').type(testUser.password);
-  //   cy.dataCy('password-save-button').should('be.disabled');
+    cy.dataCy('oldPassword').type(testUser.password);
+    cy.dataCy('password-change-button').should('be.disabled');
 
-  //   const newPassword = testUser.password + '0qwe';
-  //   cy.dataCy('new-password').type(newPassword);
-  //   cy.dataCy('password-save-button').should('not.be.disabled');
+    const newPassword = testUser.password + '0qwe';
+    cy.dataCy('newPassword').type(newPassword);
+    cy.dataCy('newPasswordConfirm').type(newPassword).blur();
+    cy.dataCy('password-change-button').should('not.be.disabled');
 
-  //   cy.dataCy('confirm-password').type(newPassword);
-  //   cy.dataCy('password-save-button').should('not.be.disabled');
-  //   cy.dataCy('password-save-button').click();
-  //   cy.notification('Error to update User password');
-  // });
-
-  // it('should not allow to create exchange deposit address', () => {
-  //   cy.visit('/account/user-profile');
-
-  //   cy.dataCy('exchange-address-create-button').click();
-  //   cy.notification('Only active users can perform this action');
-  // });
+    cy.dataCy('password-change-button').click();
+    cy.notification(
+      'Only active users can perform this action. Your status is Pending'
+    );
+  });
 });

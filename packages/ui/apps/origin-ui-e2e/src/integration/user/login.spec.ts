@@ -4,7 +4,6 @@ import { generateNewUser } from '../../utils/generateMockData';
 
 describe('User login', () => {
   const testUser = generateNewUser();
-  console.log(testUser, 'testUser');
   const loginUrl = '/login';
 
   before(() => {
@@ -20,66 +19,40 @@ describe('User login', () => {
     cy.url().should('include', '/auth/register');
   });
 
-  // it('should require email and password', () => {
-  //   cy.inputRequired('email', 'password');
-  //   cy.inputRequired('password', 'email');
-  // });
+  it('should not allow login with wrong password', () => {
+    cy.login(testUser.email, testUser.password + '0');
 
-  // it('should validate email', () => {
-  //   cy.dataCy('email').type(testUser.firstName);
-  //   cy.dataCy('password').click();
-  //   cy.contains('must be a valid email');
-  // });
+    cy.url().should('include', loginUrl);
+    cy.notification('Could not log in with supplied credentials');
+  });
 
-  // it('should not allow login with wrong password', () => {
-  //   const { email, password } = testUser;
+  it('should not allow login with wrong email', () => {
+    cy.login('wrong' + testUser.email, testUser.password);
 
-  //   cy.fillUserLogin({ email, password: password + '0' });
-  //   cy.dataCy('login-button').click();
-
-  //   cy.url().should('include', loginUrl);
-  //   cy.notification('Could not log in with supplied credentials');
-  // });
-
-  // it('should not allow login with wrong email', () => {
-  //   const { email, password } = testUser;
-
-  //   cy.fillUserLogin({ password, email: 'wrong' + email });
-  //   cy.dataCy('login-button').click();
-
-  //   cy.url().should('include', loginUrl);
-  //   cy.notification('Could not log in with supplied credentials');
-  // });
+    cy.url().should('include', loginUrl);
+    cy.notification('Could not log in with supplied credentials');
+  });
 
   it('should login user', () => {
-    const { email, password } = testUser;
-
-    cy.fillUserLogin({ email, password });
-    cy.dataCy('login-button').click();
+    cy.login(testUser.email, testUser.password);
 
     cy.contains('Thank you for registering as a user on the marketplace');
   });
 
-  // it('should redirect to default page after modal action', () => {
-  //   const { email, password } = testUser;
+  it('should redirect to default page after modal action', () => {
+    cy.login(testUser.email, testUser.password);
 
-  //   cy.fillUserLogin({ email, password });
-  //   cy.dataCy('login-button').click();
+    cy.contains('Thank you for registering as a user on the marketplace');
+    cy.get('button').contains('Not now').click();
+    cy.url().should('include', '/device/all');
+    cy.contains(`${testUser.firstName} ${testUser.lastName}`);
+  });
 
-  //   cy.contains('Thank you for registering as a user on the marketplace');
-  //   cy.get('button').contains('Not now').click();
-  //   cy.url().should('include', '/devices/all');
-  //   cy.contains(`${testUser.firstName} ${testUser.lastName}`);
-  // });
+  it('should redirect to Register Org page after modal action', () => {
+    cy.login(testUser.email, testUser.password);
 
-  // it('should redirect to Register Org page after modal action', () => {
-  //   const { email, password } = testUser;
-
-  //   cy.fillUserLogin({ email, password });
-  //   cy.dataCy('login-button').click();
-
-  //   cy.contains('Thank you for registering as a user on the marketplace');
-  //   cy.get('button').contains('Register organization').click();
-  //   cy.url().should('include', '/organization/register');
-  // });
+    cy.contains('Thank you for registering as a user on the marketplace');
+    cy.get('button').contains('Register Organization').click();
+    cy.url().should('include', '/organization/register');
+  });
 });

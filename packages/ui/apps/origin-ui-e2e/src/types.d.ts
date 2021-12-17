@@ -92,7 +92,6 @@ declare namespace Cypress {
     apiRegisterAndApproveUser(user: UserRegisterData): Chainable<Element>;
     fillOrgRegisterForm(orgData: OrganizationPostData): Chainable<Element>;
     attachDocument(uploadDataCy: string): Chainable<Element>;
-    login(email: string, password: string): void;
     attachMultipleDocuments(
       uploadDataCy: string,
       count: number

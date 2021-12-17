@@ -15,30 +15,6 @@ describe('User registration', () => {
     cy.dataCy('register-other-title-input').type('PhD');
   });
 
-  it('should require first name', () => {
-    cy.inputRequired('firstName', 'lastName');
-  });
-
-  it('should require last name', () => {
-    cy.inputRequired('lastName', 'firstName');
-  });
-
-  it('should require email', () => {
-    cy.inputRequired('email', 'lastName');
-  });
-
-  it('should require telephone', () => {
-    cy.inputRequired('telephone', 'email');
-  });
-
-  it('should require password', () => {
-    cy.inputRequired('password', 'telephone');
-  });
-
-  it('register button should be disabled', () => {
-    cy.dataCy('register-button').should('be.disabled');
-  });
-
   it('should create new user', () => {
     cy.fillUserRegister(testUser);
 
