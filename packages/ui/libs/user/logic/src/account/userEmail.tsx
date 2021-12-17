@@ -18,9 +18,6 @@ export const useUpdateUserAccountEmailFormConfig = (
         label: t('user.profile.email'),
         name: 'email',
         required: true,
-        inputLabelProps: {
-          ['data-cy']: 'email-label',
-        },
         inputProps: {
           ['data-cy']: 'email',
         },

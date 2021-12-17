@@ -31,9 +31,6 @@ export const useUpdateUserAccountPasswordFormConfig: TUseUpdateUserAccountPasswo
           label: t('user.profile.currentPassword'),
           name: 'oldPassword',
           required: true,
-          inputLabelProps: {
-            ['data-cy']: 'oldPassword-label',
-          },
           inputProps: {
             ['data-cy']: 'oldPassword',
           },
@@ -43,9 +40,6 @@ export const useUpdateUserAccountPasswordFormConfig: TUseUpdateUserAccountPasswo
           label: t('user.profile.newPassword'),
           name: 'newPassword',
           required: true,
-          inputLabelProps: {
-            ['data-cy']: 'newPassword-label',
-          },
           inputProps: {
             ['data-cy']: 'newPassword',
           },
@@ -55,9 +49,6 @@ export const useUpdateUserAccountPasswordFormConfig: TUseUpdateUserAccountPasswo
           label: t('user.profile.newPasswordConfirm'),
           name: 'newPasswordConfirm',
           required: true,
-          inputLabelProps: {
-            ['data-cy']: 'newPasswordConfirm-label',
-          },
           inputProps: {
             ['data-cy']: 'newPasswordConfirm',
           },

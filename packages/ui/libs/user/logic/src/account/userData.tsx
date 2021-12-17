@@ -35,9 +35,6 @@ export const useUpdateUserAccountDataFormConfig = (
         label: t('user.profile.firstName'),
         name: 'firstName',
         required: true,
-        inputLabelProps: {
-          ['data-cy']: 'firstName-label',
-        },
         inputProps: {
           ['data-cy']: 'firstName',
         },
@@ -46,9 +43,6 @@ export const useUpdateUserAccountDataFormConfig = (
         label: t('user.profile.lastName'),
         name: 'lastName',
         required: true,
-        inputLabelProps: {
-          ['data-cy']: 'lastName-label',
-        },
         inputProps: {
           ['data-cy']: 'lastName',
         },
@@ -57,9 +51,6 @@ export const useUpdateUserAccountDataFormConfig = (
         label: t('user.profile.telephone'),
         name: 'telephone',
         required: true,
-        inputLabelProps: {
-          ['data-cy']: 'telephone-label',
-        },
         inputProps: {
           ['data-cy']: 'telephone',
         },
