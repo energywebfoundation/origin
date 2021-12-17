@@ -4,7 +4,6 @@ import * as yup from 'yup';
 import {
   TextFieldProps,
   InputBaseProps,
-  InputLabelProps,
   BoxProps,
   ButtonProps,
   TypographyVariant,
@@ -45,9 +44,6 @@ export type GenericFormField<FormValuesType> = {
   };
   textFieldProps?: TextFieldProps;
   inputProps?: InputBaseProps['inputProps'];
-  inputLabelProps?: InputLabelProps & {
-    ['data-cy']: string;
-  };
   dependentOn?: string;
   dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
 };

@@ -4,7 +4,6 @@ import {
   TextField,
   TextFieldProps,
   InputBaseProps,
-  InputLabelProps,
 } from '@mui/material';
 import { UseFormRegister } from 'react-hook-form';
 
@@ -21,7 +20,6 @@ export type FormInputField<FormValuesType> = {
   };
   textFieldProps?: TextFieldProps;
   inputProps?: InputBaseProps['inputProps'];
-  inputLabelProps?: InputLabelProps;
 };
 
 export interface FormInputProps<FormValues> {
@@ -68,9 +66,6 @@ export const FormInput: TFormInput = memo(
         variant={variant}
         inputProps={{
           ...field?.inputProps,
-        }}
-        InputLabelProps={{
-          ...field?.inputLabelProps,
         }}
         InputProps={{
           startAdornment: field.startAdornment && (
