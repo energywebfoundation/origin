@@ -105,10 +105,10 @@
     "query-string": "7.0.1"
   },
   "devDependencies": {
-    "@babel/core": "7.16.0",
-    "@babel/preset-env": "7.16.4",
+    "@babel/core": "7.16.5",
+    "@babel/preset-env": "7.16.5",
     "@babel/preset-react": "7.16.0",
-    "@babel/preset-typescript": "7.16.0",
+    "@babel/preset-typescript": "7.16.5",
     "@emotion/babel-plugin": "11.3.0",
     "@emotion/babel-preset-css-prop": "11.2.0",
     "@nrwl/cli": "13.2.3",
