@@ -86,3 +86,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('inputHasValue', (inputCy: string, value: string) => {
   cy.dataCy(inputCy).should('have.value', value);
 });
+
+Cypress.Commands.add('nextStep', () => {
+  cy.contains('Next Step').should('not.be.disabled').click();
+});
