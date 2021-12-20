@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.5](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api@1.0.4...@energyweb/origin-energy-api@1.0.5) (2021-12-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+
+
+
+
+
 ## [1.0.4](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api@1.0.3...@energyweb/origin-energy-api@1.0.4) (2021-09-17)
 
 **Note:** Version bump only for package @energyweb/origin-energy-api

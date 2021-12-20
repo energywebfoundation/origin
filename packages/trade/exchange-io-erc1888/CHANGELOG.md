@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-io-erc1888@1.2.1...@energyweb/exchange-io-erc1888@1.3.0) (2021-12-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+
+
+### Features
+
+* **exchange-io-erc1888:** claim to optional claimAddress if provided ([318e1c9](https://github.com/energywebfoundation/origin/commit/318e1c9181f71e9a5f0eba1a2e14a9c622078c6b))
+* **exchange:** added claim data to claim from exchange ([8938424](https://github.com/energywebfoundation/origin/commit/89384242ca291ce4c45c50ebb7b730c8deff10ca))
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-io-erc1888@1.2.0...@energyweb/exchange-io-erc1888@1.2.1) (2021-09-17)
 
 **Note:** Version bump only for package @energyweb/exchange-io-erc1888

@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "1.2.1",
+    "version": "1.3.0",
     "main": "dist/js/main.js",
     "bin": {
         "origin-migrations-irec": "./bin/migrations-irec"
@@ -32,21 +32,21 @@
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
-        "@energyweb/issuer": "4.1.0",
-        "@energyweb/origin-backend-core": "8.0.3",
-        "@energyweb/origin-backend-irec-app": "1.3.0",
-        "@energyweb/origin-backend-utils": "1.6.1",
-        "@energyweb/utils-general": "11.0.4",
-        "@energyweb/exchange": "1.11.0",
+        "@energyweb/exchange": "^1.12.0",
+        "@energyweb/issuer": "^5.0.0",
+        "@energyweb/origin-backend-core": "^8.1.0",
+        "@energyweb/origin-backend-irec-app": "^1.4.0",
+        "@energyweb/origin-backend-utils": "^1.7.0",
+        "@energyweb/utils-general": "^11.1.0",
         "@nestjs/core": "8.1.1",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",
         "@types/pg": "8.6.1",
-        "typeorm": "0.2.41",
         "commander": "6.2.1",
         "dotenv": "10.0.0",
         "ethers": "5.3.1",
         "pg": "8.7.1",
+        "typeorm": "0.2.41",
         "winston": "3.3.3",
         "winston-transport": "4.4.0",
         "write-json-file": "5.0.0",

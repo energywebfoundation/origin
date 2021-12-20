@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-organization-view@0.1.0...@energyweb/origin-ui-organization-view@0.2.0) (2021-12-20)
+
+
+### chore
+
+* update to latest versions of [@mui](https://github.com/mui) packages ([2f53854](https://github.com/energywebfoundation/origin/commit/2f53854070f20f9251992fdd3ac92812c5d83060))
+
+
+### Features
+
+* **origin-ui-organization:** add permissions block to create-beneficiaries page ([9d2a9a6](https://github.com/energywebfoundation/origin/commit/9d2a9a66b8ca7aa84e86904aa0ba6b3ecaba2769))
+* **origin-ui-organization:** remove All Organizations page from organization-ui ([0f8c4d3](https://github.com/energywebfoundation/origin/commit/0f8c4d3f9664a458428b468ea6fedf14f836aee8))
+
+
+### BREAKING CHANGES
+
+* package now uses @mui/* packages instead of @material-ui/* ones
+
+
+
+
+
 # 0.1.0 (2021-09-17)
 
 
