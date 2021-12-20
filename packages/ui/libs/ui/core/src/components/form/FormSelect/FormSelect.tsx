@@ -66,6 +66,7 @@ export const FormSelect: TFormSelect = ({
 
   return (
     <Controller
+      key={`${field.name}`}
       name={field.name as any}
       control={control}
       render={({ field: { value, onChange } }) => {

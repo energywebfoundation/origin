@@ -54,6 +54,7 @@ export const FormInput: TFormInput = memo(
     return (
       <TextField
         fullWidth
+        key={name}
         margin="normal"
         name={name ?? ''}
         disabled={disabled}
