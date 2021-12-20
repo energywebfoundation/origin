@@ -1,5 +1,11 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { TextField, Autocomplete, Chip, TextFieldProps } from '@mui/material';
+import {
+  TextField,
+  Autocomplete,
+  Chip,
+  TextFieldProps,
+  InputBaseProps,
+} from '@mui/material';
 import { useSelectAutocompleteEffects } from './SelectAutocomplete.effects';
 import { useStyles } from './SelectAutocomplete.styles';
 import { FormSelectOption } from '../FormSelect';
@@ -13,6 +19,7 @@ export type SelectAutocompleteField<FormValuesType> = {
   multiple?: boolean;
   maxValues?: number;
   textFieldProps?: TextFieldProps;
+  inputProps?: InputBaseProps['inputProps'];
   dependentOn?: string;
   dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
 };
@@ -72,7 +79,7 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
           placeholder={field.placeholder}
           onChange={(event: any) => setTextValue(event.target.value)}
           helperText={errorText}
-          inputProps={{ ...params.inputProps }}
+          inputProps={{ ...params.inputProps, ...field?.inputProps }}
           error={errorExists}
           variant={variant}
           fullWidth

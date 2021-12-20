@@ -3,21 +3,22 @@ import {
   Grid,
   Paper,
   TextField,
-  TextFieldProps,
   Typography,
   TypographyProps,
+  InputBaseProps,
 } from '@mui/material';
 import { useStyles } from './DisabledFormView.styles';
 
 export type DisabledFormData = {
   label: string;
   value: string | number;
+  dataCy?: string;
 };
 
 export interface DisabledFormViewProps {
   data: DisabledFormData[];
   heading?: string;
-  inputProps?: TextFieldProps;
+  inputProps?: InputBaseProps['inputProps'];
   headingProps?: TypographyProps;
   paperClass?: string;
 }
@@ -57,7 +58,10 @@ export const DisabledFormView: FC<DisabledFormViewProps> = ({
               disabled
               variant="standard"
               classes={{ root: classes.input }}
-              {...inputProps}
+              inputProps={{
+                ...inputProps,
+                ...(item?.dataCy && { ['data-cy']: item.dataCy }),
+              }}
             />
           ))}
         </Grid>
@@ -71,7 +75,10 @@ export const DisabledFormView: FC<DisabledFormViewProps> = ({
               fullWidth
               disabled
               classes={{ root: classes.input }}
-              {...inputProps}
+              inputProps={{
+                ...inputProps,
+                ...(item?.dataCy && { ['data-cy']: item.dataCy }),
+              }}
             />
           ))}
         </Grid>
