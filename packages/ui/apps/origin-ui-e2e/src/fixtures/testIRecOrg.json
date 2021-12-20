@@ -1,7 +1,7 @@
 {
-  "accountType": 2,
+  "accountType": "2",
   "headquarterCountry": "AT",
-  "registrationYear": 1980,
+  "registrationYear": "1980",
   "employeesNumber": "50-100",
   "shareholders": "John Doe, Jane Doe",
   "website": "https://bigcompany.website",

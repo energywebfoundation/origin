@@ -4,6 +4,23 @@ Cypress.Commands.add('dataCy', (value: string) => {
   cy.get(`[data-cy="${value}"]`);
 });
 
+Cypress.Commands.add('selectValue', (target: string, value: string) => {
+  cy.dataCy(target).parent().click();
+  cy.contains(value).click();
+});
+
+Cypress.Commands.add('selectValueByIndex', (target: string, index: string) => {
+  cy.dataCy(target).parent().click();
+  cy.get(`li[data-value=${index}]`).click();
+});
+
+Cypress.Commands.add('selectMultiple', (target: string, values: string[]) => {
+  values.forEach((value) => {
+    cy.dataCy(target).parent().click();
+    cy.contains(value).click();
+  });
+});
+
 Cypress.Commands.add('inputRequired', (target: string, neighbor: string) => {
   cy.dataCy(target).then((elem) => {
     cy.clearInput(target);
@@ -67,5 +84,5 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('inputHasValue', (inputCy: string, value: string) => {
-  cy.dataCy(inputCy).find('input').should('have.value', value);
+  cy.dataCy(inputCy).should('have.value', value);
 });

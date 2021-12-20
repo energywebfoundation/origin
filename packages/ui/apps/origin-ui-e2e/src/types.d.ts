@@ -53,6 +53,46 @@ type OrganizationPostData = {
   documentIds?: string[];
 };
 
+type IRecRegistrationInfoForm = {
+  accountType: string;
+  headquarterCountry: string[] | string;
+  registrationYear: string;
+  employeesNumber: string;
+  shareholders: string;
+  website: string;
+  activeCountries: string[];
+  mainBusiness: string;
+  ceoName: string;
+  ceoPassportNumber: string;
+  balanceSheetTotal: string;
+};
+
+type IrecPrimaryContactDetails = {
+  primaryContactOrganizationName: string;
+  primaryContactOrganizationAddress: string;
+  primaryContactOrganizationPostalCode: string;
+  primaryContactOrganizationCountry: string;
+  subsidiaries?: string;
+  primaryContactName: string;
+  primaryContactEmail: string;
+  primaryContactPhoneNumber: string;
+  primaryContactFax: string;
+};
+
+type IrecLeadUserDetails = {
+  leadUserTitle: string;
+  leadUserTitleInput?: string;
+  leadUserFirstName: string;
+  leadUserLastName: string;
+  leadUserEmail: string;
+  leadUserPhoneNumber: string;
+  leadUserFax: string;
+};
+
+type IRecOrganizationPostData = IRecRegistrationInfoForm &
+  IrecPrimaryContactDetails &
+  IrecLeadUserDetails;
+
 type DevicePostData = {
   address: string;
   capacityInW: number;
@@ -81,6 +121,9 @@ declare namespace Cypress {
     login(email: string, password: string): void;
     dataCy(value: string): Chainable<Element>;
     clearInput(target: string): Chainable<Element>;
+    selectValue(target: string, value: string): Chainable<Element>;
+    selectValueByIndex(target: string, index: string): Chainable<Element>;
+    selectMultiple(target: string, values: string[]): Chainable<Element>;
     inputRequired(target: string, neighbor: string): Chainable<Element>;
     filledInputRequired(target: string, neighbor: string): Chainable<Element>;
     fillUserRegister(user: UserRegisterData): Chainable<Element>;
@@ -91,6 +134,13 @@ declare namespace Cypress {
     apiLoginUser(loginData: UserLoginData): Chainable<Element>;
     apiRegisterAndApproveUser(user: UserRegisterData): Chainable<Element>;
     fillOrgRegisterForm(orgData: OrganizationPostData): Chainable<Element>;
+    fillIrecPrimaryContactDetails(
+      orgData: IrecPrimaryContactDetails
+    ): Chainable<Element>;
+    fillIrecLeadUserDetails(orgData: IrecLeadUserDetails): Chainable<Element>;
+    fillIRecRegistrationInfo(
+      iRecData: IRecRegistrationInfoForm
+    ): Chainable<Element>;
     attachDocument(uploadDataCy: string): Chainable<Element>;
     attachMultipleDocuments(
       uploadDataCy: string,
