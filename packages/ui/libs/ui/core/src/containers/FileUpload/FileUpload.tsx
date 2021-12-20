@@ -14,7 +14,7 @@ export interface FileUploadProps extends TUseFileUploadEffectsArgs {
   wrapperProps?: React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLElement>,
     HTMLElement
-  >;
+  > & { ['data-cy']: string };
   dropzoneClassName?: string;
 }
 
