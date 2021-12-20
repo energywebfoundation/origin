@@ -41,6 +41,7 @@ export const UserExchangeDepositAddress: FC = () => {
             disabled={true}
             variant="filled"
             className={classes.field}
+            inputProps={{ ['data-cy']: 'exchange-deposit-address' }}
           />
           <IconPopover
             icon={Info}
