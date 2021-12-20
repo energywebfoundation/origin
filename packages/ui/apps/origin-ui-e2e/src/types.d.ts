@@ -128,6 +128,7 @@ declare namespace Cypress {
     filledInputRequired(target: string, neighbor: string): Chainable<Element>;
     fillUserRegister(user: UserRegisterData): Chainable<Element>;
     notification(text: string): Chainable<Element>;
+    nextStep(): void;
     closeAllNotifications(): void;
     fillUserLogin(loginData: UserLoginData): Chainable<Element>;
     apiRegisterUser(user: UserRegisterData): Chainable<Element>;
