@@ -39,6 +39,7 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
             pending={orgPending}
             tooltipText={orgTooltip}
             typographyProps={{ color: 'textSecondary' }}
+            dotWrapperProps={{ ['data-cy']: 'organization-pending-badge' }}
           />
         </Box>
         <Box flexGrow={1} />
