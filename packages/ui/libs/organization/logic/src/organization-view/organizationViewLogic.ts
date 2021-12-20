@@ -6,6 +6,7 @@ import { formatOrganizationBusinessType } from '../utils';
 type TDocumentBlockData = {
   documents: string[];
   blockTitle: string;
+  dataCy?: string;
 };
 
 type TViewLogicReturnType = {
@@ -73,9 +74,11 @@ export const getOrganizationViewLogic: TOrganizationViewLogic = (
   companyProofData: {
     documents: organization.documentIds,
     blockTitle: t('organization.view.regular.companyProof'),
+    dataCy: 'downloadCompanyProof',
   },
   signatoryData: {
     documents: organization.signatoryDocumentIds,
     blockTitle: t('organization.view.regular.signatoryId'),
+    dataCy: 'downloadSignatoryId',
   },
 });

@@ -42,6 +42,7 @@ export const RegisterOrgDocs: FC<RegisterOrgDocsProps> = ({
         heading={companyProofHeading}
         apiUploadFunction={uploadFunction}
         onChange={onCompanyProofsChange}
+        wrapperProps={{ ['data-cy']: 'companyProof' }}
       />
       <Divider className={classes.divider} />
       <FileUpload
@@ -49,6 +50,7 @@ export const RegisterOrgDocs: FC<RegisterOrgDocsProps> = ({
         dropzoneText={uploadText}
         apiUploadFunction={uploadFunction}
         onChange={onSignatoryIdChange}
+        wrapperProps={{ ['data-cy']: 'signatoryId' }}
       />
       <Box mt={1} display="flex" justifyContent="flex-end">
         {secondaryButtons &&
