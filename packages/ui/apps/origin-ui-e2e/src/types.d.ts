@@ -53,6 +53,29 @@ type OrganizationPostData = {
   documentIds?: string[];
 };
 
+type OrganizationInfoPostData = {
+  name: string;
+  address: string;
+  zipCode: string;
+  city: string;
+  country: string;
+  businessType: string;
+  tradeRegistryCompanyNumber: string;
+  vatNumber: string;
+};
+
+type OrganizationAuthSignInfoPostData = {
+  signatoryFullName: string;
+  signatoryAddress: string;
+  signatoryZipCode: string;
+  signatoryCity: string;
+  signatoryCountry: string;
+  signatoryEmail: string;
+  signatoryPhoneNumber: string;
+  signatoryDocumentIds?: string[];
+  documentIds?: string[];
+};
+
 type IRecRegistrationInfoForm = {
   accountType: string;
   headquarterCountry: string[] | string;
@@ -121,6 +144,7 @@ declare namespace Cypress {
     login(email: string, password: string): void;
     dataCy(value: string): Chainable<Element>;
     clearInput(target: string): Chainable<Element>;
+    navigateMenu(target: string): Chainable<Element>;
     selectValue(target: string, value: string): Chainable<Element>;
     selectValueByIndex(target: string, index: string): Chainable<Element>;
     selectMultiple(target: string, values: string[]): Chainable<Element>;
@@ -135,6 +159,10 @@ declare namespace Cypress {
     apiLoginUser(loginData: UserLoginData): Chainable<Element>;
     apiRegisterAndApproveUser(user: UserRegisterData): Chainable<Element>;
     fillOrgRegisterForm(orgData: OrganizationPostData): Chainable<Element>;
+    fillOrgRegisterInfo(orgData: OrganizationInfoPostData): Chainable<Element>;
+    fillOrgRegisterAuthSignInfo(
+      orgData: OrganizationAuthSignInfoPostData
+    ): Chainable<Element>;
     fillIrecPrimaryContactDetails(
       orgData: IrecPrimaryContactDetails
     ): Chainable<Element>;

@@ -69,6 +69,42 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add(
+  'fillOrgRegisterInfo',
+  (orgData: OrganizationInfoPostData) => {
+    cy.dataCy('orgInfoName').type(orgData.name);
+    cy.dataCy('orgInfoAddress').type(orgData.address);
+    cy.dataCy('orgInfoZipCode').type(orgData.zipCode);
+    cy.dataCy('orgInfoCity').type(orgData.city);
+    cy.selectValue(
+      'orgInfoCountry',
+      Countries.find((country) => country.code === orgData.country).name
+    );
+    cy.selectValueByIndex('orgInfoBusinessType', orgData.businessType);
+    cy.dataCy('orgInfoTradeRegistryCompanyNumber').type(
+      orgData.tradeRegistryCompanyNumber
+    );
+    cy.dataCy('orgInfoVatNumber').type(orgData.vatNumber).blur();
+  }
+);
+
+Cypress.Commands.add(
+  'fillOrgRegisterAuthSignInfo',
+  (orgData: OrganizationAuthSignInfoPostData) => {
+    cy.dataCy('signatoryFullName').type(orgData.signatoryFullName);
+    cy.dataCy('signatoryAddress').type(orgData.signatoryAddress);
+    cy.dataCy('signatoryZipCode').type(orgData.signatoryZipCode);
+    cy.dataCy('signatoryCity').type(orgData.signatoryCity);
+    cy.selectValue(
+      'signatoryCountry',
+      Countries.find((country) => country.code === orgData.signatoryCountry)
+        .name
+    );
+    cy.dataCy('signatoryEmail').type(orgData.signatoryEmail);
+    cy.dataCy('signatoryPhoneNumber').type(orgData.signatoryPhoneNumber);
+  }
+);
+
 Cypress.Commands.add('fillOrgRegisterForm', (orgData: OrganizationPostData) => {
   cy.dataCy('orgInfoName').type(orgData.name);
   cy.dataCy('orgInfoAddress').type(orgData.address);

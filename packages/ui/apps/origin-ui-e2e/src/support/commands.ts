@@ -41,6 +41,10 @@ Cypress.Commands.add('clearInput', (target: string) => {
   cy.dataCy(target).clear();
 });
 
+Cypress.Commands.add('navigateMenu', (target: string) => {
+  cy.dataCy(target).filter(':visible').click();
+});
+
 Cypress.Commands.add(
   'filledInputRequired',
   (target: string, neighbor: string) => {
