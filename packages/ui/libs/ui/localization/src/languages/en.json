@@ -296,7 +296,7 @@
           "asAMemberYouCanAlso": "You can also perform all actions that a regular Organization Member can perform:"
         },
         "changeMemberRole": {
-          "title": "Change role for {username}"
+          "title": "Change role for {{username}}"
         },
         "iRecAccountRegistered": {
           "title": "Thank you for registering an I-REC account!",
