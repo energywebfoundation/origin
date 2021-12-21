@@ -108,7 +108,7 @@ describe('Certificate tests', () => {
         await app.close();
     });
 
-    it.only('should claim a certificate', async () => {
+    it('should claim a certificate', async () => {
         const { id: certificateId } = await createCertificate();
 
         await request(app.getHttpServer())
