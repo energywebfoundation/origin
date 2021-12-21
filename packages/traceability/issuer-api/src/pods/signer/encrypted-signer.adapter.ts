@@ -59,6 +59,9 @@ export class EncryptedSignerAdapter implements SignerAdapter {
             );
         }
 
+        const assure0x = (privateKey: string) =>
+            privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
+
         if (!signerEntity.isEncrypted) {
             await this.signerRepository.update(
                 { blockchainNetId },
@@ -70,10 +73,9 @@ export class EncryptedSignerAdapter implements SignerAdapter {
                     isEncrypted: true
                 }
             );
-        }
 
-        const assure0x = (privateKey: string) =>
-            privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
+            return assure0x(signerEntity.platformOperatorPrivateKey);
+        }
 
         return assure0x(this.decryptOperatorKey(signerEntity.platformOperatorPrivateKey));
     }
