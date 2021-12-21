@@ -33,12 +33,14 @@ export const useInviteFormLogic: TUseInviteFormLogic = () => {
       {
         name: 'email',
         label: t('organization.invite.email'),
+        inputProps: { ['data-cy']: 'inviteEmail' },
       },
       {
         name: 'role',
         label: t('organization.invite.role'),
         select: true,
         options: roleNamesInvitePage(t),
+        inputProps: { ['data-cy']: 'inviteRole' },
       },
     ],
     buttonText: t('organization.invite.inviteButton'),
