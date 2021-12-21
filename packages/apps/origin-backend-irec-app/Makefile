@@ -13,7 +13,7 @@ build-canary:
 	@mkdir ./deployment
 	@rush deploy -p @energyweb/origin-backend-irec-app -t ./deployment --overwrite
 	@docker rmi ${LATEST} -f
-	@docker build -t ${NAME}:${TAG_CANARY} --build-arg VERSION=${TAG_CANARY} -f Dockerfile ./deployment
+	@docker buildx build -t ${NAME}:${TAG_CANARY} --platform linux/amd64 --build-arg VERSION=${TAG_CANARY} -f Dockerfile ./deployment
 	@rm -rf ./deployment
 	@docker tag ${NAME}:${TAG_CANARY} ${CANARY}
 
@@ -22,6 +22,6 @@ build-latest:
 	@mkdir ./deployment
 	@rush deploy -p @energyweb/origin-backend-irec-app -t ./deployment --overwrite
 	@docker rmi ${LATEST} -f
-	@docker build -t ${NAME}:${TAG_LATEST} --build-arg VERSION=${TAG_LATEST} -f Dockerfile ./deployment
+	@docker buildx build -t ${NAME}:${TAG_LATEST} --platform linux/amd64 --build-arg VERSION=${TAG_LATEST} -f Dockerfile ./deployment
 	@rm -rf ./deployment
 	@docker tag ${NAME}:${TAG_LATEST} ${LATEST}

@@ -104,6 +104,10 @@ export class DeviceService {
             return null;
         }
 
+        if (device.status === DeviceState.Approved) {
+            throw new BadRequestException('Approved device is not allowed to edit');
+        }
+
         const updatedDevice = { ...device, ...deviceData };
         const irecDevice = await this.irecService.updateDevice(user, device.code, {
             ...deviceData,
