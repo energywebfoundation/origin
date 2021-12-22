@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { DateFormatEnum } from '@energyweb/origin-ui-utils';
-import { Box, TextField, TextFieldProps } from '@mui/material';
+import { Box, TextField, TextFieldProps, InputBaseProps } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDayJs from '@mui/lab/AdapterDayjs';
 import { Dayjs } from 'dayjs';
@@ -14,6 +14,7 @@ type DatePickerField<FormValuesType> = {
   placeholder?: string;
   required?: boolean;
   textFieldProps?: TextFieldProps;
+  inputProps?: InputBaseProps['inputProps'];
 };
 
 export interface MaterialDatepickerProps<FormValuesType = any> {
@@ -96,6 +97,7 @@ export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
             placeholder={field.placeholder || field.label}
             inputProps={{
               ...props.inputProps,
+              ...field?.inputProps,
               placeholder: field.placeholder || field.label,
             }}
             {...field.textFieldProps}
