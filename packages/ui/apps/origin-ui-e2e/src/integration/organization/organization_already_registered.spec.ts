@@ -21,7 +21,7 @@ describe('Register organization with taken name', () => {
 
     cy.fillOrgRegisterForm(orgWithDuplicateName);
 
-    cy.contains('Submit').should('not.be.disabled').click();
+    cy.submitForm();
 
     cy.notification(
       `Organization name "${orgWithDuplicateName.name}" is already taken`

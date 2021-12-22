@@ -15,7 +15,7 @@ describe('Register new organization', () => {
 
   it('should allow to create new organization using register form', () => {
     cy.fillOrgRegisterForm(testOrg);
-    cy.contains('Submit').should('not.be.disabled').click();
+    cy.submitForm();
 
     cy.notification('Organization registered');
   });

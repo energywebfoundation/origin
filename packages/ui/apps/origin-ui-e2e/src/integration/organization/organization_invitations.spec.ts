@@ -47,13 +47,6 @@ describe('Organization invite form and invitations table', () => {
     cy.notification('Invitation sent');
   });
 
-  // it('should not allow to send invitation to already invited user', () => {
-  //   cy.dataCy('inviteEmail').type(member.email).blur();
-  //   cy.contains('Member');
-  //   cy.contains('button', 'Invite').click();
-  //   //cy.notification('You have already sent an invitation for this user');
-  // });
-
   it('should not allow to send invitation to a user who is a part of another organization', () => {
     cy.clearLocalStorage();
 
@@ -73,7 +66,7 @@ describe('Organization invite form and invitations table', () => {
   });
 
   it('should show invitation with pending status', () => {
-    cy.dataCy('organizationInvitations').last().click();
+    cy.navigateMenu('organizationInvitations');
     cy.url().should('include', '/organization/invitations');
     cy.contains('tr', member.email).contains(
       'td',
@@ -98,7 +91,7 @@ describe('Organization invite form and invitations table', () => {
     cy.apiLoginUser(testUser);
     cy.visit('/');
     cy.dataCy('organizationMenu').click();
-    cy.dataCy('organizationInvitations').last().click();
+    cy.navigateMenu('organizationInvitations');
     cy.url().should('include', '/organization/invitations');
 
     cy.contains('tr', member.email).contains(
@@ -127,7 +120,7 @@ describe('Organization invite form and invitations table', () => {
     cy.apiLoginUser(testUser);
     cy.visit('/');
     cy.dataCy('organizationMenu').click();
-    cy.dataCy('organizationInvitations').last().click();
+    cy.navigateMenu('organizationInvitations');
     cy.url().should('include', '/organization/invitations');
 
     cy.contains('tr', member.email).contains(

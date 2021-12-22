@@ -18,18 +18,14 @@ describe('I-REC organization registration', () => {
 
   it('should fill all form inputs', () => {
     cy.fillIRecRegistrationInfo(testIrecOrg);
-
-    cy.contains('Next Step').should('not.be.disabled').click();
-
+    cy.nextStep();
     cy.fillIrecPrimaryContactDetails(testIrecOrg);
-
-    cy.contains('Next Step').should('not.be.disabled').click();
-
+    cy.nextStep();
     cy.fillIrecLeadUserDetails(testIrecOrg);
   });
 
   it('should register organization and show notification and modals', () => {
-    cy.contains('Submit').should('not.be.disabled').click();
+    cy.submitForm();
     cy.contains('Thank you for registering an I-REC account!');
     cy.get('button').contains('Ok').click();
 

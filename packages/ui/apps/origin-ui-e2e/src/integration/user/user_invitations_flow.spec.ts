@@ -47,7 +47,7 @@ describe('User invitation flow', () => {
 
   it('should allow to accept invitation through invitations table', () => {
     cy.dataCy('organizationMenu').click();
-    cy.dataCy('organizationInvitations').last().click();
+    cy.navigateMenu('organizationInvitations');
     cy.url().should('include', 'organization/invitations');
 
     cy.contains('Received');
@@ -87,7 +87,7 @@ describe('User invitation flow', () => {
     cy.notification('You can find this invitation on the Organizations tab');
 
     cy.dataCy('organizationMenu').click();
-    cy.dataCy('organizationInvitations').last().click();
+    cy.navigateMenu('organizationInvitations');
     cy.url().should('include', 'organization/invitations');
 
     cy.contains('tr', memberReject.email);

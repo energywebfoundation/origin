@@ -38,7 +38,7 @@ describe('Organization with status Active and User status active flow', () => {
 
     cy.contains("Currently you don't have any devices in Origin");
 
-    cy.dataCy('registerDevice').last().click();
+    cy.navigateMenu('registerDevice');
     cy.contains('Register New Device');
     cy.contains('Device Information');
   });
@@ -46,17 +46,17 @@ describe('Organization with status Active and User status active flow', () => {
   it('should not show requirements in certificates', () => {
     cy.dataCy('certificateMenu').click();
 
-    cy.dataCy('certificateExchangeInbox').last().click();
+    cy.navigateMenu('certificateExchangeInbox');
     cy.url().should('include', 'exchange-inbox');
     cy.contains('Exchange Inbox');
     cy.contains('Sell');
 
-    cy.dataCy('certificateClaimsReport').last().click();
+    cy.navigateMenu('certificateClaimsReport');
     cy.url().should('include', 'claims-report');
     cy.contains('Compliance');
     cy.contains('Certified Energy');
 
-    cy.dataCy('certificateRequests').last().click();
+    cy.navigateMenu('certificateRequests');
     cy.url().should('include', 'requests');
     cy.contains('Evidence files');
     cy.contains('Status');
@@ -70,33 +70,33 @@ describe('Organization with status Active and User status active flow', () => {
     cy.contains('Sell offers');
     cy.contains('Buy offers');
 
-    cy.dataCy('exchangeAllBundles').last().click();
+    cy.navigateMenu('exchangeAllBundles');
     cy.url().should('include', 'all-bundles');
     cy.contains('Total energy');
     cy.contains('Price per MWh');
 
-    cy.dataCy('exchangeCreateBundle').last().click();
+    cy.navigateMenu('exchangeCreateBundle');
     cy.url().should('include', 'create-bundle');
     cy.contains('Create Bundle');
     cy.contains('Selected For Sale');
 
-    cy.dataCy('exchangeMyTrades').last().click();
+    cy.navigateMenu('exchangeMyTrades');
     cy.url().should('include', 'my-trades');
     cy.contains('My Trades');
     cy.contains('Total');
 
-    cy.dataCy('exchangeMyBundles').last().click();
+    cy.navigateMenu('exchangeMyBundles');
     cy.url().should('include', 'my-bundles');
     cy.contains('My bundles');
     cy.contains('Total energy');
 
-    cy.dataCy('exchangeMyOrders').last().click();
+    cy.navigateMenu('exchangeMyOrders');
     cy.url().should('include', 'my-orders');
     cy.contains('Demands');
     cy.contains('Bids');
     cy.contains('Asks');
 
-    cy.dataCy('exchangeSupply').last().click();
+    cy.navigateMenu('exchangeSupply');
     cy.url().should('include', 'supply');
     cy.contains('Status');
     cy.contains('To be certified');

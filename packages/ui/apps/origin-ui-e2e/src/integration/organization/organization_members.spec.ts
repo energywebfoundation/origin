@@ -50,7 +50,7 @@ describe('Organization members page', () => {
     cy.apiLoginUser(testUser);
     cy.visit('/');
     cy.dataCy('organizationMenu').click();
-    cy.dataCy('organizationMembers').last().click();
+    cy.navigateMenu('organizationMembers');
     cy.url().should('include', 'members');
   });
 
