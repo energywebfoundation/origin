@@ -21,7 +21,7 @@ export const useAxiosDefaults = () => {
   useEffect(() => {
     const token = getAuthenticationToken();
     axios.defaults.baseURL = window.config.BACKEND_URL;
-    if (!!token) {
+    if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
   }, []);
