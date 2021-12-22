@@ -15,6 +15,26 @@ export enum TransactionType {
     Transfer = 'Transfer'
 }
 
+export class CreateAccountParams {
+    code: string;
+
+    @Expose({ name: 'account_type', toPlainOnly: true })
+    type: AccountType;
+
+    name: string;
+
+    private: boolean;
+
+    restricted: boolean;
+
+    active: boolean;
+
+    @Expose({ name: 'country_code', toPlainOnly: true })
+    countryCode: string;
+
+    notes: string;
+}
+
 export class AccountDetails {
     name: string;
 

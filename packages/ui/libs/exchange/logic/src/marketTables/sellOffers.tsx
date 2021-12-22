@@ -1,11 +1,16 @@
 import {
+  OrderBookOrderDTO,
+  assetControllerGet,
+} from '@energyweb/exchange-irec-react-query-client';
+import {
   EnergyTypeEnum,
   formatDate,
   PowerFormatter,
 } from '@energyweb/origin-ui-utils';
-import { Button, useTheme, Tooltip } from '@material-ui/core';
-import React from 'react';
+import { Button, useTheme, Tooltip } from '@mui/material';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import {
   getEnergyTypeImage,
   getMainFuelType,
@@ -58,9 +63,22 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
   onBuyClick,
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const theme = useTheme();
   const primaryColor = theme.palette.primary.main;
   const canBuyAnyAsk = asks.some((ask) => user?.id?.toString() !== ask.userId);
+
+  const handleNavigateToCertificateView = useCallback(
+    async (id: OrderBookOrderDTO['id']) => {
+      const askToWorkWith = asks?.find((ask) => ask.id === id);
+      const asset = await assetControllerGet(askToWorkWith?.assetId);
+      const certificateId = asset?.tokenId;
+
+      navigate(`/certificate/detail-view/${certificateId}`);
+    },
+    [navigate, asks]
+  );
+
   return {
     header: {
       fuelType: t('exchange.viewMarket.type'),
@@ -76,5 +94,6 @@ export const useSellOffersTableLogic: TUseSellOffersTableLogic = ({
     data:
       formatAsks({ t, asks, user, allFuelTypes, onBuyClick, primaryColor }) ??
       [],
+    onRowClick: !!user ? handleNavigateToCertificateView : undefined,
   };
 };

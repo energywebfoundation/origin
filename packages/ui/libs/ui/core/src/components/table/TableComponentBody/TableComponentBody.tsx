@@ -1,10 +1,10 @@
-import { Box, Skeleton, TableBody } from '@material-ui/core';
+import { Box, Skeleton, TableBody } from '@mui/material';
 import React, { FC, PropsWithChildren, ReactElement } from 'react';
 import { TableHeaderData, TableRowData } from '../../../containers';
 import { TableComponentRow } from '../TableComponentRow';
 import { range } from 'lodash';
 
-interface TableComponentBodyProps<Id> {
+export interface TableComponentBodyProps<Id> {
   rowData: TableRowData<Id>[];
   headerData: TableHeaderData;
   pageSize: number;

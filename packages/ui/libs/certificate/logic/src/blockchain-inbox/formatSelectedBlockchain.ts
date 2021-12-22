@@ -15,7 +15,7 @@ export const formatSelectedBlockchainItems: TFormatSelectedBlockchainItems = ({
 }) => {
   return selectedIds.map((selectedId) => {
     const certificate = blockchainCertificates.find(
-      (item) => item.id === ((selectedId as unknown) as CertificateDTO['id'])
+      (item) => item.id === (selectedId as unknown as CertificateDTO['id'])
     );
     const matchingDevice = allDevices.find(
       (device) => device.externalRegistryId === certificate.deviceId

@@ -2,7 +2,6 @@ import { Repository } from 'typeorm';
 import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ForbiddenException, Inject } from '@nestjs/common';
-
 import {
     BlockchainPropertiesService,
     CertificationRequest,
@@ -40,9 +39,9 @@ export class CreateIrecCertificationRequestHandler
     async execute(
         params: CreateIrecCertificationRequestCommand
     ): Promise<FullCertificationRequestDTO> {
-        const { user, files, deviceId } = params;
+        const { user, dto } = params;
 
-        const irecDevice = await this.deviceService.findOne(deviceId);
+        const irecDevice = await this.deviceService.findOne(dto.deviceId);
         if (!irecDevice || irecDevice.status !== DeviceState.Approved) {
             throw new ForbiddenException('IREC Device is not approved');
         }
@@ -50,9 +49,9 @@ export class CreateIrecCertificationRequestHandler
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         let fileIds: string[] = [];
-        if (files?.length) {
+        if (dto.files?.length) {
             const list = await Promise.all(
-                files.map((fileId) => this.fileService.get(fileId, user))
+                dto.files.map((fileId) => this.fileService.get(fileId, user))
             );
             fileIds = await this.irecService.uploadFiles(
                 user.organizationId,
@@ -60,38 +59,46 @@ export class CreateIrecCertificationRequestHandler
             );
         }
 
-        const platformTradeAccount = await this.irecService.getTradeAccountCode(
-            platformAdmin.organization.id
-        );
+        const tradeAccount =
+            dto.irecTradeAccountCode ||
+            (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
+
         const irecIssue = await this.irecService.createIssueRequest(platformAdmin.organization.id, {
             device: irecDevice.code,
             fuelType: irecDevice.fuelType,
-            recipient: platformTradeAccount,
-            start: new Date(params.fromTime * 1e3),
-            end: new Date(params.toTime * 1e3),
-            production: Number(params.energy) / 1e6,
+            recipient: tradeAccount,
+            start: new Date(dto.fromTime * 1e3),
+            end: new Date(dto.toTime * 1e3),
+            production: Number(dto.energy) / 1e6,
             files: fileIds
         });
 
         const certificationRequest: CertificationRequest = await this.commandBus.execute(
             new CreateCertificationRequestCommand(
-                params.to,
-                params.energy,
-                params.fromTime,
-                params.toTime,
-                params.deviceId,
-                params.files,
-                params.isPrivate
+                dto.to,
+                dto.energy,
+                dto.fromTime,
+                dto.toTime,
+                dto.deviceId,
+                dto.files,
+                dto.isPrivate
             )
         );
 
         const irecCertificationRequest = this.irecRepository.create({
             certificationRequestId: certificationRequest.id,
             organizationId: String(user.organizationId),
-            irecIssueRequestId: irecIssue.code
+            irecIssueRequestId: irecIssue.code,
+            irecTradeAccountCode: tradeAccount
         });
         await this.irecRepository.save(irecCertificationRequest);
 
-        return { ...certificationRequest, organizationId: irecCertificationRequest.organizationId };
+        return {
+            ...certificationRequest,
+            irecIssueRequestId: irecCertificationRequest.irecIssueRequestId,
+            organizationId: irecCertificationRequest.organizationId,
+            irecAssetId: irecCertificationRequest.irecAssetId,
+            irecTradeAccountCode: irecCertificationRequest.irecTradeAccountCode
+        };
     }
 }

@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@mui/styles';
 
 export const useStyles = makeStyles((theme) => ({
   paper: {
@@ -18,12 +18,5 @@ export const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       padding: 30,
     },
-  },
-  background: {
-    height: '100vh',
-    width: '100%',
-    position: 'absolute',
-    zIndex: 0,
-    padding: 0,
   },
 }));

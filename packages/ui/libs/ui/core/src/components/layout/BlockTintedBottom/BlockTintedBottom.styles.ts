@@ -1,5 +1,5 @@
 import { HexToRGBA } from '@energyweb/origin-ui-theme';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@mui/styles';
 
 export const useStyles = (height: number) => {
   return makeStyles((theme) => ({
@@ -7,7 +7,7 @@ export const useStyles = (height: number) => {
       position: 'relative',
     },
     tintedBottom: {
-      height: height || 150,
+      height: height,
       width: '100%',
       position: 'absolute',
       bottom: 0,

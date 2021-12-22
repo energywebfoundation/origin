@@ -6,9 +6,9 @@ import {
     ConflictException,
     Inject,
     Injectable,
+    InternalServerErrorException,
     NotFoundException
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { EventBus } from '@nestjs/cqrs';
 
 import {
@@ -31,7 +31,6 @@ export class DeviceService {
         @InjectRepository(Device)
         private readonly repository: Repository<Device>,
         private readonly eventBus: EventBus,
-        private readonly configService: ConfigService,
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly userService: UserService
@@ -51,15 +50,22 @@ export class DeviceService {
         }
 
         const platformAdmin = await this.userService.getPlatformAdmin();
-        const tradeAccount = await this.irecService.getTradeAccountCode(
-            platformAdmin.organization.id
-        );
+        const irecTradeAccountCode =
+            newDevice.irecTradeAccountCode ||
+            (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
+
+        if (!irecTradeAccountCode) {
+            throw new InternalServerErrorException(
+                'Platform admin IREC account does not have a trade account'
+            );
+        }
+
         const issuerOrg = await this.irecService.getUserOrganization(platformAdmin.organization.id);
         const registrantOrg = await this.irecService.getUserOrganization(user);
 
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
-            defaultAccount: tradeAccount,
+            defaultAccount: irecTradeAccountCode,
             registrantOrganization: registrantOrg.code,
             issuer: issuerOrg.code,
             active: true
@@ -74,6 +80,7 @@ export class DeviceService {
         const deviceToStore = new Device({
             ...deviceData,
             ...irecDevice,
+            irecTradeAccountCode,
             capacity: deviceData.capacity,
             status: DeviceState.InProgress,
             ownerId: user.ownerId
@@ -95,6 +102,10 @@ export class DeviceService {
 
         if (!device) {
             return null;
+        }
+
+        if (device.status === DeviceState.Approved) {
+            throw new BadRequestException('Approved device is not allowed to edit');
         }
 
         const updatedDevice = { ...device, ...deviceData };
@@ -175,13 +186,7 @@ export class DeviceService {
         return irecDevices
             .filter((d) => !deviceCodes.includes(d.code))
             .map((d) => {
-                return {
-                    ...d,
-                    // converting MWH to WH
-                    // numbers in JS are 64 bits floating point. And Number.MAX_SAFE_INTEGER
-                    // is 2^53, or about 9e20. So we safely can do such operations without BigInts
-                    capacity: Math.floor(Number(d.capacity) * 1e6).toString()
-                };
+                return { ...d, capacity: this.castCapacity(d.capacity) };
             });
     }
 
@@ -204,6 +209,7 @@ export class DeviceService {
         const deviceToStore = new Device({
             ...deviceToImport,
             ...irecDevice,
+            capacity: this.castCapacity(irecDevice.capacity),
             ownerId: user.ownerId
         });
 
@@ -216,5 +222,12 @@ export class DeviceService {
 
     getAddressLine(device: CreateDeviceDTO): string {
         return `${device.countryCode}, ${device.postalCode}, ${device.region}, ${device.subregion}`;
+    }
+
+    castCapacity(capacity: string) {
+        // converting MWH to WH
+        // numbers in JS are 64 bits floating point. And Number.MAX_SAFE_INTEGER
+        // is 2^53, or about 9e20. So we safely can do such operations without BigInts
+        return Math.floor(Number(capacity) * 1e6).toString();
     }
 }

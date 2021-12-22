@@ -1,5 +1,9 @@
-import { getAuthenticationToken } from '@energyweb/origin-ui-shared-state';
-import axios from 'axios';
+import {
+  getAuthenticationToken,
+  removeAuthenticationToken,
+} from '@energyweb/origin-ui-shared-state';
+import axios, { AxiosResponse } from 'axios';
+import { useEffect } from 'react';
 
 declare global {
   interface Window {
@@ -11,15 +15,26 @@ declare global {
   }
 }
 
-export const useAxiosDefaults = () => {
-  const token = getAuthenticationToken();
+const isUnauthorized = (response: AxiosResponse) => response?.status === 401;
 
-  axios.defaults.baseURL = window.config.BACKEND_URL;
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+export const useAxiosDefaults = () => {
+  useEffect(() => {
+    const token = getAuthenticationToken();
+    axios.defaults.baseURL = window.config.BACKEND_URL;
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  }, []);
 
   axios.interceptors.response.use(
     (response) => response,
-    async (error) => {
+    (error) => {
+      const authToken = getAuthenticationToken();
+      if (isUnauthorized(error?.response) && authToken) {
+        removeAuthenticationToken();
+        axios.defaults.headers.common['Authorization'] = undefined;
+        window.location.reload();
+      }
       return Promise.reject(error);
     }
   );

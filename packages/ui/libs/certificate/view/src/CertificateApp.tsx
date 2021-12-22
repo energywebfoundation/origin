@@ -9,14 +9,14 @@ import {
   TransactionPendingProvider,
 } from './context';
 import {
+  ApprovedPage,
   BlockchainInboxPage,
-  ExchangeInboxPage,
+  CertificatesImportPage,
   ClaimsReportPage,
+  DetailViewPage,
+  ExchangeInboxPage,
   PendingPage,
   RequestsPage,
-  DetailViewPage,
-  ApprovedPage,
-  CertificatesImportPage,
 } from './pages';
 
 export interface CertificateAppProps {

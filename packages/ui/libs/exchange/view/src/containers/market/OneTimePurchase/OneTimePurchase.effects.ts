@@ -1,3 +1,7 @@
+import { Dayjs } from 'dayjs';
+import { Dispatch } from 'react';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useOneTimePurchaseFormLogic } from '@energyweb/origin-ui-exchange-logic';
@@ -7,9 +11,6 @@ import {
   MarketFiltersActions,
   MarketFiltersState,
 } from '../../../reducer';
-import { Dayjs } from 'dayjs';
-import { Dispatch } from 'react';
-import { useMediaQuery, useTheme } from '@material-ui/core';
 import { MarketButton } from '../TotalAndButtons';
 
 type BidFormValues = {
@@ -23,12 +24,8 @@ export const useOneTimePurchaseEffects = (
 ) => {
   const theme = useTheme();
   const mobileView = useMediaQuery(theme.breakpoints.down('sm'));
-  const {
-    initialValues,
-    validationSchema,
-    fields,
-    buttons,
-  } = useOneTimePurchaseFormLogic(mobileView);
+  const { initialValues, validationSchema, fields, buttons } =
+    useOneTimePurchaseFormLogic(mobileView);
 
   const handleGenerationFromChange = (event: Dayjs) => {
     dispatch({
@@ -44,17 +41,12 @@ export const useOneTimePurchaseEffects = (
     });
   };
 
-  const {
-    register,
-    formState,
-    handleSubmit,
-    reset,
-    watch,
-  } = useForm<BidFormValues>({
-    mode: 'onChange',
-    resolver: yupResolver(validationSchema),
-    defaultValues: initialValues,
-  });
+  const { register, formState, handleSubmit, reset, watch } =
+    useForm<BidFormValues>({
+      mode: 'onChange',
+      resolver: yupResolver(validationSchema),
+      defaultValues: initialValues,
+    });
 
   const resetGenerationDates = () => {
     handleGenerationFromChange(null);
@@ -76,8 +68,10 @@ export const useOneTimePurchaseEffects = (
   const totalPrice = (price * energy).toFixed(2).toString();
 
   const { isValid, errors, isDirty, dirtyFields, isSubmitting } = formState;
-
-  const buttonDisabled = !isValid || !isDirty || isSubmitting;
+  const onlyFuelTypeSpecified =
+    filters.fuelType.length > 0 && filters.deviceType.length === 0;
+  const buttonDisabled =
+    !isValid || !isDirty || isSubmitting || onlyFuelTypeSpecified;
   const buttonWithState: MarketButton[] = buttons?.map((button) => ({
     ...button,
     onClick: onSubmit,

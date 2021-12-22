@@ -1,14 +1,10 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MapItem } from '@energyweb/origin-ui-core';
 import { useStyles } from './ItemHighlightedContent.styles';
-import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
 
-export const ItemHighlightedContent: FC<ComposedPublicDevice> = ({
-  name,
-  ownerId,
-  id,
-}) => {
+export const ItemHighlightedContent: FC<MapItem> = ({ name, ownerId, id }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   return (

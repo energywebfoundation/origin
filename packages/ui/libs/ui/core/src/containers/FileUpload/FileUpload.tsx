@@ -1,14 +1,17 @@
-import { Box, Typography, TypographyProps } from '@material-ui/core';
+import { Box, Typography, TypographyProps } from '@mui/material';
 import React, { FC } from 'react';
-import { UploadChip } from '../../components/file';
-import {
-  useFileUploadEffects,
-  TUseFileUploadEffectsArgs,
-} from './FileUpload.effects';
+import { UploadChip } from './UploadChip';
+import { useFileUploadEffects } from './FileUpload.effects';
 import { useStyles } from './FileUpload.styles';
+import {
+  ApiUploadFunction,
+  FileUploadOnChangeFunction,
+} from './FileUpload.types';
 
-export interface FileUploadProps extends TUseFileUploadEffectsArgs {
+export interface FileUploadProps {
   dropzoneText: string;
+  apiUploadFunction: ApiUploadFunction;
+  onChange: FileUploadOnChangeFunction;
   heading?: string;
   headingProps?: TypographyProps;
   wrapperProps?: React.DetailedHTMLProps<
@@ -27,13 +30,8 @@ export const FileUpload: FC<FileUploadProps> = ({
   wrapperProps,
   dropzoneClassName,
 }) => {
-  const {
-    getRootProps,
-    getInputProps,
-    files,
-    state,
-    dispatch,
-  } = useFileUploadEffects({ apiUploadFunction, onChange });
+  const { getRootProps, getInputProps, files, state, dispatch } =
+    useFileUploadEffects({ apiUploadFunction, onChange });
   const classes = useStyles();
   const dropzoneClasses = `${classes.dropzone} ${dropzoneClassName}`;
 

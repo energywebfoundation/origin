@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import { expect } from 'chai';
 
-import { DeviceType, FuelType, IRECAPIClient, ReservationItem } from '../src';
+import { AccountType, DeviceType, FuelType, IRECAPIClient, ReservationItem } from '../src';
 
 import { credentials, getClient, validateCodeName, validateOrganization } from './helpers';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
@@ -33,6 +33,24 @@ describe('IREC API', () => {
 
             expect(firstAccount.details).to.exist;
             expect(firstAccount.type).to.exist;
+        });
+
+        it(`should create an account`, async () => {
+            const code = `test${Date.now()}`.toUpperCase();
+            await participantClient.account.create({
+                code: `test${Date.now()}`,
+                type: AccountType.Trade,
+                name: 'test account',
+                private: false,
+                restricted: false,
+                active: true,
+                countryCode: 'GB',
+                notes: ''
+            });
+            const accounts = await participantClient.account.getAll();
+            const account = accounts.find((a) => a.code === code);
+
+            expect(account).to.exist;
         });
 
         it('should fetch account by code', async () => {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MapItem } from './GenericMap';
 
 type Bounds = {
   east: number;
@@ -7,9 +8,9 @@ type Bounds = {
   west: number;
 };
 
-export const useGenericMapEffects = (items: any[]) => {
+export const useGenericMapEffects = (items: MapItem[]) => {
   const [map, setMap] = useState(null);
-  const [itemHighlighted, setItemHighllighted] = useState(null);
+  const [itemHighlighted, setItemHighllighted] = useState<MapItem>(null);
 
   const updateBounds = (targetMap: any = map) => {
     if (targetMap && map !== targetMap) {
@@ -50,7 +51,9 @@ export const useGenericMapEffects = (items: any[]) => {
     targetMap.fitBounds(bounds, 80);
   };
 
-  const showWindowForItem = async (item: any) => setItemHighllighted(item);
+  const showWindowForItem = (item: any) => {
+    setItemHighllighted(item);
+  };
 
   const defaultCenter =
     items.length > 0

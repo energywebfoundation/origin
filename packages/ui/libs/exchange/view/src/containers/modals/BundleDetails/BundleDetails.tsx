@@ -4,14 +4,8 @@ import { BundleDetailsModalContent } from '../../bundle-details';
 import { useBundleDetailsEffects } from './BundleDetails.effect';
 
 export const BundleDetails: FC = () => {
-  const {
-    open,
-    bundle,
-    splits,
-    handleClose,
-    isLoading,
-    isOwner,
-  } = useBundleDetailsEffects();
+  const { open, bundle, splits, handleClose, isLoading, isOwner } =
+    useBundleDetailsEffects();
 
   return (
     <GenericModal

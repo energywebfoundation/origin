@@ -17,7 +17,11 @@ export class BundleTrade extends ExtendedBaseEntity {
         Object.assign(this, trade);
     }
 
-    @ApiProperty({ type: String })
+    @ApiProperty({
+        type: String,
+        description: 'UUID string identifier',
+        example: '123e4567-e89b-12d3-a456-426614174000'
+    })
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -25,7 +29,7 @@ export class BundleTrade extends ExtendedBaseEntity {
     @Column()
     buyerId: string;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: '500' })
     @Column('varchar', { transformer: BNTransformer })
     @Transform((v: BN) => v.toString(10), { toPlainOnly: true })
     volume: BN;

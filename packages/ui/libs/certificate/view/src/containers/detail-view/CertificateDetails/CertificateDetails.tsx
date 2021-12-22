@@ -1,7 +1,7 @@
 import { DetailedCertificate } from '@energyweb/origin-ui-certificate-data';
 import { SmallTitleWithText } from '@energyweb/origin-ui-core';
 import { formatDate } from '@energyweb/origin-ui-utils';
-import { CircularProgress, Grid, Paper, Typography } from '@material-ui/core';
+import { CircularProgress, Grid, Paper, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { StyledTitleAndText } from '../StyledTitleAndText';
 import { useCertificateDetailsEffects } from './CertificateDetails.effects';
@@ -28,6 +28,7 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
     claimedEnergy,
     remainingEnergy,
     claimBeneficiaries,
+    showClaimInfo,
   } = useCertificateDetailsEffects(certificate);
   const blockExplorerUrl = (window as any).config.BLOCKCHAIN_EXPLORER_URL;
 
@@ -40,21 +41,17 @@ export const CertificateDetails: FC<CertificateDetailsProps> = ({
           <Grid item md={4} xs={12}>
             <StyledTitleAndText {...certificateId} />
             <StyledTitleAndText {...certifiedEnergy} />
-            {certificate.blockchainPart.isClaimed && (
-              <StyledTitleAndText {...claimedEnergy} />
-            )}
+            {showClaimInfo && <StyledTitleAndText {...claimedEnergy} />}
           </Grid>
           <Grid item md={4} xs={12}>
             <StyledTitleAndText {...claimed} />
             <StyledTitleAndText {...creationDate} />
-            {certificate.blockchainPart.isClaimed && (
-              <StyledTitleAndText {...remainingEnergy} />
-            )}
+            {showClaimInfo && <StyledTitleAndText {...remainingEnergy} />}
           </Grid>
           <Grid item md={4} xs={12}>
             <StyledTitleAndText {...generationStartDate} />
             <StyledTitleAndText {...generationEndDate} />
-            {certificate.blockchainPart.isClaimed && (
+            {showClaimInfo && (
               <div className={classes.blockItem}>
                 <Typography color="textSecondary" margin="normal">
                   {claimBeneficiaries?.title}

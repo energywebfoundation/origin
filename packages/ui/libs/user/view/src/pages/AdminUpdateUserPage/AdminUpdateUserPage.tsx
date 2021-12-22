@@ -1,5 +1,5 @@
 import { GenericForm } from '@energyweb/origin-ui-core';
-import { CircularProgress, Paper } from '@material-ui/core';
+import { CircularProgress, Paper } from '@mui/material';
 import React from 'react';
 import { useStyles } from './AdminUpdateUserPage.styles';
 import { useAdminUpdateUserPageEffects } from './AdminUpdateUserPage.effects';
@@ -18,3 +18,5 @@ export const AdminUpdateUserPage = () => {
     </Paper>
   );
 };
+
+export default AdminUpdateUserPage;

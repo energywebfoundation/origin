@@ -3,9 +3,8 @@ import { userModalsInitialState, userModalsReducer } from './reducer';
 import { IUserModalsStore, TUserModalsAction } from './types';
 
 const UserModalsStore = createContext<IUserModalsStore>(null);
-const UserModalsDispatch = createContext<React.Dispatch<TUserModalsAction>>(
-  null
-);
+const UserModalsDispatch =
+  createContext<React.Dispatch<TUserModalsAction>>(null);
 
 export const UserModalsProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(

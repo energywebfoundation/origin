@@ -1,11 +1,13 @@
 /* eslint-disable no-unused-expressions */
-import { IClaimData } from '@energyweb/issuer';
-import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { expect } from 'chai';
 import { QueryBus } from '@nestjs/cqrs';
 import moment from 'moment';
 import request from 'supertest';
+import { ContractTransaction } from 'ethers';
+import { IClaimData } from '@energyweb/issuer';
+import { DatabaseService } from '@energyweb/origin-backend-utils';
+import polly from 'polly-js';
 
 import { CertificateDTO } from '../src/pods/certificate/dto/certificate.dto';
 import { CERTIFICATES_TABLE_NAME } from '../src/pods/certificate/certificate.entity';
@@ -28,7 +30,6 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const certificateTestData = {
     to: deviceManager.address,
-    deviceId: 'ABC-123',
     fromTime: moment().subtract(2, 'month').unix(),
     toTime: moment().subtract(1, 'month').unix(),
     energy: '1000000'
@@ -52,16 +53,51 @@ describe('Transaction logs tests', () => {
     let queryBus: QueryBus;
 
     const createCertificate = async (toUser?: TestUser): Promise<CertificateDTO> => {
-        const { body } = await request(app.getHttpServer())
+        const deviceId = `device-0x000-a`;
+
+        const {
+            body: { txHash }
+        } = await request(app.getHttpServer())
             .post('/certificate')
             .set({ 'test-user': TestUser.Issuer })
             .send({
                 ...certificateTestData,
+                deviceId,
                 to: toUser ? getUserBlockchainAddress(toUser) : certificateTestData.to
             })
-            .expect(HttpStatus.CREATED);
+            .expect(HttpStatus.OK);
 
-        return body;
+        await sleep(1000);
+
+        const { body } = await request(app.getHttpServer())
+            .get(`/certificate/by-transaction/${txHash}`)
+            .set({ 'test-user': TestUser.Issuer })
+            .expect(HttpStatus.OK);
+
+        return {
+            ...body.pop(),
+            deviceId
+        };
+    };
+
+    const getCertificatesByTxHash = async (
+        txHash: ContractTransaction['hash'],
+        user: TestUser
+    ): Promise<CertificateDTO[]> => {
+        const certificates = await polly()
+            .waitAndRetry(5)
+            .executeForPromise(async (): Promise<CertificateDTO[]> => {
+                const res = await request(app.getHttpServer())
+                    .get(`/certificate/by-transaction/${txHash}`)
+                    .set({ 'test-user': user });
+
+                if (res.status !== HttpStatus.OK) {
+                    throw new Error('Not mined yet');
+                }
+                return res.body;
+            });
+
+        return certificates;
     };
 
     const expectLogs = (certificate: CertificateWithLogs) => {
@@ -88,7 +124,7 @@ describe('Transaction logs tests', () => {
         await app.init();
     });
 
-    afterEach(async () => {
+    beforeEach(async () => {
         await databaseService.truncate(CERTIFICATES_TABLE_NAME);
         await databaseService.truncate(TRANSACTION_LOG_TABLE_NAME);
     });
@@ -99,7 +135,7 @@ describe('Transaction logs tests', () => {
     });
 
     it('should create single issue, transfer and claim logs', async () => {
-        const { id: certificateId } = await createCertificate();
+        const { id: certificateId, deviceId } = await createCertificate();
 
         await request(app.getHttpServer())
             .put(`/certificate/${certificateId}/transfer`)
@@ -122,7 +158,7 @@ describe('Transaction logs tests', () => {
 
         const certificatesWithLogs: GetCertificatesWithLogsResponse = await queryBus.execute(
             new GetCertificatesWithLogsQuery({
-                deviceIds: [certificateTestData.deviceId],
+                deviceIds: [deviceId],
                 from: new Date(0),
                 to: new Date()
             })
@@ -134,25 +170,34 @@ describe('Transaction logs tests', () => {
     });
 
     it('should create batch issue, batch transfer and batch claim logs', async () => {
-        const { body: ids } = await request(app.getHttpServer())
+        const deviceId = `device-0x000-b`;
+        const {
+            body: { txHash }
+        } = await request(app.getHttpServer())
             .post(`/certificate-batch/issue`)
             .set({ 'test-user': TestUser.Issuer })
-            .send([certificateTestData, certificateTestData])
-            .expect(HttpStatus.CREATED);
+            .send([
+                { ...certificateTestData, deviceId },
+                { ...certificateTestData, deviceId }
+            ])
+            .expect(HttpStatus.OK);
 
-        await sleep(10000);
+        const certificates = await getCertificatesByTxHash(
+            txHash,
+            TestUser.OrganizationDeviceManager
+        );
 
         await request(app.getHttpServer())
             .put(`/certificate-batch/transfer`)
             .set({ 'test-user': TestUser.OrganizationDeviceManager })
             .send([
                 {
-                    id: ids[0],
+                    id: certificates[0].id,
                     to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
                     amount: certificateTestData.energy
                 },
                 {
-                    id: ids[1],
+                    id: certificates[1].id,
                     to: getUserBlockchainAddress(TestUser.OtherOrganizationDeviceManager),
                     amount: certificateTestData.energy
                 }
@@ -165,8 +210,8 @@ describe('Transaction logs tests', () => {
             .put(`/certificate-batch/claim`)
             .set({ 'test-user': TestUser.OtherOrganizationDeviceManager })
             .send([
-                { id: ids[0], claimData, amount: certificateTestData.energy },
-                { id: ids[1], claimData, amount: certificateTestData.energy }
+                { id: certificates[0].id, claimData, amount: certificateTestData.energy },
+                { id: certificates[1].id, claimData, amount: certificateTestData.energy }
             ])
             .expect(HttpStatus.OK);
 
@@ -174,15 +219,13 @@ describe('Transaction logs tests', () => {
 
         const certificatesWithLogs: GetCertificatesWithLogsResponse = await queryBus.execute(
             new GetCertificatesWithLogsQuery({
-                deviceIds: [certificateTestData.deviceId],
+                deviceIds: [deviceId],
                 from: new Date(0),
                 to: new Date()
             })
         );
 
         expect(certificatesWithLogs).to.have.length(2);
-        expect(certificatesWithLogs[0].id).to.be.eq(ids[0]);
-        expect(certificatesWithLogs[1].id).to.be.eq(ids[1]);
 
         expectBatchLogs(certificatesWithLogs[0]);
         expectBatchLogs(certificatesWithLogs[1]);

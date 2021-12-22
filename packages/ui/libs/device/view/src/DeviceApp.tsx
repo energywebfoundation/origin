@@ -9,13 +9,14 @@ import {
 } from './context';
 import {
   AllDevicesPage,
+  DetailViewPage,
+  DeviceImportPage,
+  MapViewPage,
   MyDevicesPage,
   PendingPage,
   RegisterPage,
-  MapViewPage,
-  DetailViewPage,
-  DeviceImportPage,
 } from './pages';
+import { EditDevicePage } from './pages/EditDevicePage';
 
 export interface DeviceAppProps {
   routesConfig: {
@@ -54,11 +55,14 @@ export const DeviceApp: FC<DeviceAppProps> = ({
           {showRegisterDevice && (
             <Route path="register" element={<RegisterPage />} />
           )}
+          {showDeviceImport && (
+            <Route path="import" element={<DeviceImportPage />} />
+          )}
           {showAllDevices && (
             <Route path="detail-view/:id" element={<DetailViewPage />} />
           )}
-          {showDeviceImport && (
-            <Route path="import" element={<DeviceImportPage />} />
+          {showMyDevices && (
+            <Route path="edit/:id" element={<EditDevicePage />} />
           )}
           <Route path="*" element={<PageNotFound />} />
         </Routes>

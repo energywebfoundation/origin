@@ -1,6 +1,6 @@
 import {
   useAllFuelTypes,
-  useClaimedCertificates,
+  useApiClaimedCertificates,
   useApiUserAndAccount,
 } from '@energyweb/origin-ui-certificate-data';
 import { useApiAllDevices } from '@energyweb/origin-ui-certificate-data';
@@ -24,17 +24,13 @@ export const useClaimsReportPageEffects = () => {
     claimedCertificates,
     blockchainCertificates,
     isLoading: areClaimedLoading,
-  } = useClaimedCertificates();
+  } = useApiClaimedCertificates();
 
-  const {
-    allDevices: devices,
-    isLoading: areDevicesLoading,
-  } = useApiAllDevices();
+  const { allDevices: devices, isLoading: areDevicesLoading } =
+    useApiAllDevices();
 
-  const {
-    allTypes: allFuelTypes,
-    isLoading: isFuelTypesloading,
-  } = useAllFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: isFuelTypesloading } =
+    useAllFuelTypes();
 
   const loading =
     areClaimedLoading ||

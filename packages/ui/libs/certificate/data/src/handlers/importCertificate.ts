@@ -1,8 +1,8 @@
 import {
-  getIrecCertificateControllerGetIrecCertificateToImportQueryKey,
+  getImportControllerGetIrecCertificateToImportQueryKey,
   IrecAccountItemDto,
-  useIrecCertificateControllerImportIrecCertificate,
-} from '@energyweb/issuer-irec-api-react-query-client';
+  useImportControllerImportIrecCertificate,
+} from '@energyweb/exchange-irec-react-query-client';
 import {
   NotificationTypeEnum,
   showNotification,
@@ -14,9 +14,9 @@ export const useImportCertificateHandler = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const certificatesToImportQueryKey =
-    getIrecCertificateControllerGetIrecCertificateToImportQueryKey();
+    getImportControllerGetIrecCertificateToImportQueryKey();
 
-  const { mutate } = useIrecCertificateControllerImportIrecCertificate();
+  const { mutate } = useImportControllerImportIrecCertificate();
 
   const submitHandler = (assetId: IrecAccountItemDto['asset']) => {
     mutate(

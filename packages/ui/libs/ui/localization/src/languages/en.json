@@ -42,7 +42,6 @@
         "members": "Members",
         "invitations": "Invitations",
         "invite": "Invite",
-        "all": "All Organizations",
         "registerIRec": "Register I-REC",
         "createBeneficiary": "Create Beneficiary",
         "connectIRec": "Connect I-REC"
@@ -56,6 +55,7 @@
       "admin": {
         "sectionTitle": "Admin",
         "users": "Users",
+        "organizations": "Organizations",
         "claims": "Claims"
       },
       "layout": {
@@ -276,17 +276,17 @@
       },
       "modals": {
         "roleChanged": {
-          "title": "Successfully joined {organizationName}",
-          "text": "You have successfully joined {organizationName} organization.",
+          "title": "Successfully joined {{organizationName}}",
+          "text": "You have successfully joined {{organizationName}} organization.",
           "asMemberYouCan": "As an Organization Member you can:",
           "canPlaceOrder": "Place orders on the exchange",
-          "canBuyCertificates": "Directly buy {certificateType}",
-          "canCreateAndBuyCertificateBundles": "Create and buy {certificateType} bundles",
-          "canRedeemCertificates": "Redeem {certificateType}",
-          "canWithdrawCertificates": "Withdraw {certificateType} to organization’s own participant account",
+          "canBuyCertificates": "Directly buy {{certificateType}}",
+          "canCreateAndBuyCertificateBundles": "Create and buy {{certificateType}} bundles",
+          "canRedeemCertificates": "Redeem {{certificateType}}",
+          "canWithdrawCertificates": "Withdraw {{certificateType}} to organization’s own participant account",
           "asDeviceManagerYouCan": "As a Device Manager you have permission to:",
           "canRegisterDevices": "Register devices and device groups",
-          "canRequestIssuenceOfCertificates": "Request the issuance of {certificateType}",
+          "canRequestIssuenceOfCertificates": "Request the issuance of {{certificateType}}",
           "canConfigureAutomatedOrderCreation": "Configure automated order creation",
           "asOrgAdminYouCan": "As an Organization Admin you have permission to:",
           "canAddOrRemoveOrgMembers": "Add or remove members from the organization",
@@ -340,14 +340,15 @@
         "otherGreenAttr": "Other green attributes",
         "publicSupport": "Public support",
         "vintageCOD": "Vintage / (Commercial Operation Date)",
-        "viewDetailsButton": "View Details"
+        "viewDetailsButton": "View Details",
+        "editButton": "Edit"
       },
       "detailView": {
         "photo": "Photo",
         "map": "Map",
         "smartMeter": {
-          "tableTime": "Time ({timezone})",
-          "tableMeterValue": "Meter value ({unit})",
+          "tableTime": "Time ({{timezone}})",
+          "tableMeterValue": "Meter value ({{unit}})",
           "day": "Day",
           "week": "Week",
           "month": "Month",
@@ -364,9 +365,11 @@
         "registrationDate": "Registration Date",
         "capacity": "Capacity (MW)",
         "gridOperator": "Grid Operator",
+        "irecTradeAccountCode": "Account Code",
         "description": "Description",
 
         "deviceLocationFormTitle": "Device Location",
+        "timeZone": "Time zone",
         "country": "Country",
         "region": "Region",
         "subregion": "Subregion",
@@ -391,8 +394,8 @@
         "deviceType": "Device Type",
         "nameplateCapacity": "Nameplate capacity (MW)",
         "status": "Status",
-        "certifiedFor": "Certified for {yearToDisplay} (MWh)",
-        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "certifiedFor": "Certified for {{yearToDisplay}} (MWh)",
+        "toBeCertifiedFor": "To be certified for {{yearToDisplay}} (MWh)",
         "approve": "Approve",
         "reject": "Reject",
         "notifications": {
@@ -411,8 +414,10 @@
           "formTitle": "Request Certificates for",
           "fromTime": "From",
           "toTime": "To",
+          "irecTradeAccountCode": "Account Code",
           "energy": "Amount of energy in MW"
         },
+        "deviceStatusTooltip": "Device status: {{status}}",
         "notifications": {
           "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can request certificates.",
           "certificateRequestSuccess": "Certificate has been successfully requested",
@@ -445,6 +450,27 @@
           "importSuccess": "Device has been successfully imported",
           "importError": "Error while importing device"
         }
+      },
+      "edit": {
+        "formTitle": "Editing {{deviceName}}",
+        "name": "Device name",
+        "fuelType": "Fuel Type",
+        "deviceType": "Device Type",
+        "capacity": "Capacity",
+        "commissioningDate": "Vintage / Commercial Operation Date",
+        "registrationDate": "Registration Date",
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "notes": "Description",
+        "notifications": {
+          "editSuccess": "Request for editing device information successfully submitted to I-REC",
+          "editError": "Error while submitting edit device request"
+        }
+      },
+      "modals": {
+        "editConfirm": {
+          "title": "Plese confirm editing of the device information"
+        }
       }
     },
     "certificate": {
@@ -453,6 +479,7 @@
         "sellActionTitle": "Sell",
         "withdrawActionTitle": "Withdraw",
         "transferActionTitle": "Transfer",
+        "exportActionTitle": "Export",
         "generationTime": "Generation Time Frame",
         "selectedForSale": "Selected For Sale",
         "price": "Price per MWh",
@@ -463,13 +490,30 @@
         "selectedForTransfer": "Selected For Transfer",
         "exchangeAddress": "Exchange Deposit Address",
         "transferButton": "Transfer",
+        "selectedForExport": "Selected For Export",
+        "exportTo": "Export to",
+        "exportButton": "Export",
+        "iRecAccountId": "I-REC Account ID",
+        "claimActionTitle": "Claim",
+        "selectedForClaim": "Selected for Claim",
+        "claimButton": "Claim",
+        "selectBeneficiary": "Select beneficiary",
+        "beneficiary": "Beneficiary",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "purpose": "Purpose",
+        "addBeneficiariesTooltip": "Currently you don't have any beneficiaries. Please, go to Organization > Create Beneficiary to add one.",
         "notifications": {
           "sellSuccess": "Certificate has been successfully posted to exchange",
           "sellError": "Error while posting certificate for sale",
           "withdrawSuccess": "Certificate has been successfully withdrawn",
           "withdrawError": "Error while withdrawing certificate",
           "transferSuccess": "Certificate has been successfully transfered",
-          "transferError": "Error while transfering certificate"
+          "transferError": "Error while transfering certificate",
+          "exportSuccess": "Certificate has been successfully exported",
+          "exportError": "Error while exporting certificate",
+          "claimSuccess": "Certificate has been successfully claimed",
+          "claimError": "Error while claiming certificate"
         }
       },
       "blockchainInbox": {
@@ -483,8 +527,6 @@
         "generationTime": "Generation Time Frame",
         "selectBeneficiary": "Select beneficiary",
         "beneficiary": "Beneficiary",
-        "beneficiaryId": "ID:",
-        "beneficiaryName": "Name:",
         "transferActionTitle": "Transfer",
         "selectedForTransfer": "Selected For Transfer",
         "transferButton": "Transfer",
@@ -492,6 +534,7 @@
         "startDate": "Start date",
         "endDate": "End date",
         "purpose": "Purpose",
+        "addBeneficiariesTooltip": "Currently you don't have any beneficiaries. Please, go to Organization > Create Beneficiary to add one.",
         "notifications": {
           "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can deposit certificates",
           "depositSuccess": "Certificate has been successfully deposited",
@@ -510,6 +553,7 @@
         "noCertificates": "You don't have any certificates in the inbox",
         "bulkActionsRestrictionsText": "Bulk certificate actions are currently unavailable. Please, select single certificate to continue",
         "enterValidAddress": "Please, enter valid address",
+        "enterValidId": "Please, enter valid ID",
         "transactionInProgress": "Transaction in progress"
       },
       "detailView": {
@@ -535,12 +579,12 @@
           "claimedTitle": "Certificate claimed",
           "requestedTitle": "Requested certification",
           "certificationRequestApproved": "Local issuer approved the certification request",
-          "transferred": "Transferred {amount} from {oldOwner} to {newOwner}",
-          "claimedContent": "Claimed {amount} by {claimer}",
-          "requestedContent": "{requestor} requested certification of {amount}",
+          "transferred": "Transferred {{amount}} from {{oldOwner}} to {{newOwner}}",
+          "claimedContent": "Claimed {{amount}} by {{claimer}}",
+          "requestedContent": "{{requestor}} requested certification of {{amount}}",
           "requestedClaimTitle": "Requested claim",
-          "requestedClaimContent": "For {amount} by {claimer}",
-          "transferedToInitialOwner": "Transfered {amount} to the {address} of the initial owner"
+          "requestedClaimContent": "For {{amount}} by {{claimer}}",
+          "transferedToInitialOwner": "Transfered {{amount}} to the {{address}} of the initial owner"
         }
       },
       "requests": {
@@ -614,7 +658,7 @@
       "modals": {
         "confirmImport": {
           "title": "Confirm certificate import",
-          "text": "Please, confirm that you want to import certificate with {volume} MWh of {deviceName} for the period of {timeFrame}."
+          "text": "Please, confirm that you want to import certificate with {{volume}} MWh of {{deviceName}} for the period of {{timeFrame}}."
         }
       }
     },
@@ -650,6 +694,9 @@
         "matching": "Matching",
         "asks": "Asks",
         "bids": "Bids",
+        "facilityName": "Facility Name",
+        "constructed": "Constructed",
+        "fuelDeviceType": "Fuel type / Device type",
         "popover": {
           "asksDescription": "Below you see the sell offers that are matching the certificate criteria you defined in the market filter.",
           "asksFurtherInstructions": "To see all available asks, remove the set market filters. To see a list of your active asks go to \"My Orders\".",
@@ -756,7 +803,7 @@
           }
         },
         "notifications": {
-          "orderRemoveSuccess": "{orderSide} has been successfully removed",
+          "orderRemoveSuccess": "{{orderSide}} has been successfully removed",
           "orderRemoveError": "Error while removing order",
           "demandRemoveSuccess": "Demand has been successfully removed",
           "demandRemoveError": "Error while removing demand",
@@ -775,7 +822,7 @@
         "facilityName": "Facility Name",
         "price": "Price",
         "status": "Status",
-        "toBeCertifiedFor": "To be certified for {yearToDisplay} (MWh)",
+        "toBeCertifiedFor": "To be certified for {{yearToDisplay}} (MWh)",
         "update": "Update",
         "remove": "Remove",
         "cancel": "Cancel",
@@ -824,6 +871,7 @@
         "email": "Email",
         "telephone": "Telephone",
         "password": "Password",
+        "passwordValidation": "Password length should be minimum 6 characters and consist of latin letters and at least one number",
         "notifications": {
           "registerSuccess": "User registered",
           "registerError": "Error while registering user"
@@ -838,6 +886,23 @@
         "loginButton": "Login",
         "notifications": {
           "loginError": "Could not log in with supplied credentials"
+        }
+      },
+      "requestResetPassword": {
+        "formTitle": "Please, enter your email to receive a link for reseting password",
+        "email": "Email",
+        "notifications": {
+          "success": "You have successfully requested password reset. You will receive an email with a link to change your password",
+          "error": "Error while requesting password reset. Please, try again"
+        }
+      },
+      "resetPassword": {
+        "formTitle": "Please, create new password",
+        "newPassword": "New Password",
+        "passwordConfirm": "Confirm password",
+        "notifications": {
+          "success": "Your password has been successfully changed. Please, log in using the new password",
+          "error": "Error while setting new password. Please, try again"
         }
       },
       "confirmEmail": {
@@ -871,12 +936,14 @@
         "createExchangeAddressButton": "Create Exchange Deposit Address",
         "orgBlockchainAccountAddress": "Organization's Blockchain Account Address",
         "connectBlockchain": "Connect Blockchain Address",
+        "fullSelfOwnership": "Full Self-Ownership",
         "popover": {
           "exchangeAddressWhatFor": "This blockchain address identifies you on the certificate exchange. You need it to trade certificates on the exchange.",
-          "exchangeAddressHowTo": "The platform automatically generates the deposit address and takes custody of it. You do not have to manage your own blockchain wallet.",
+          "exchangeAddressHowTo": "The platform automatically generates the deposit address on organization creation and takes custody of it. You do not have to manage your own blockchain wallet.",
           "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
           "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
-          "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet."
+          "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet.",
+          "fullSelfOwnership": "By choosing full self-ownership, your certificates are issued to your user blockchain account and you have to manually deposit them to the exchange to trade."
         },
         "notifications": {
           "confirmationEmailResentSuccess": "Confirmation email re-sent",
@@ -887,13 +954,15 @@
           "userEmailUpdateError": "Error while updating user email",
           "userPasswordUpdateSuccess": "User password updated successfully. Please log in using new password",
           "userPasswordUpdateError": "Error while updating user password",
-          "onlyActiveUserCan": "Only active users can perform this action. Your status is {status}",
+          "onlyActiveUserCan": "Only active users can perform this action. Your status is {{status}}",
           "onlyMembersOfActiveOrgCan": "Only members of active organization can perform this action",
           "exchangeAddressSuccess": "Exchange Deposit Address created successfully",
           "exchangeAddressFailure": "Exchange Deposit Address could not be created",
           "noBlockchainConnection": "No blockchain connection detected, please visit metamask.io and follow the instructions. If you have MetaMask installed, be logged-in, have the page connected and try to refresh.",
           "thisAccountAlreadyConnected": "This blockchain address is already connected to your account",
-          "blockchainAccountLinked": "Blockchain address successfully linked to your organization account"
+          "blockchainAccountLinked": "Blockchain address successfully linked to your organization account",
+          "selfOwnershipChangeSuccess": "Full Self-Ownership status successfully changed",
+          "selfOwnershipChangeError": "Error while updating Full Self-Ownership status"
         }
       },
       "settings": {
@@ -916,7 +985,7 @@
         },
         "pendingInvitation": {
           "title": "Invitation to join the organization on marketplace",
-          "text": "{admin} has invited you to join the marketplace as a {role} for {orgName}. Click accept to join the organization",
+          "text": "{{admin}} has invited you to join the marketplace as a {{role}} for {{orgName}}. Click accept to join the organization",
           "acceptSuccess": "Invitation accepted",
           "acceptError": "Could not accept invitation",
           "declineSuccess": "Invitation rejected",
@@ -992,13 +1061,16 @@
         "hasToBeActiveUser": "User has to be approved by the platform admin.",
         "userHasToBePartOfApprovedOrganization": "The user should be a part of an approved organization.",
         "organizationHasToHaveExchangeDeposit": "The organization has to have a blockchain exchange deposit address attached to the account.",
-        "organizationHasToHaveBlockchainAccount": "Your organization has to have a blockchain account attached."
+        "organizationHasToHaveBlockchainAccount": "Your organization has to have a blockchain account attached.",
+        "hasToHaveIRecOrg": "Your organization has to have an I-REC registration",
+        "hasToHaveActiveIRecConnection": "You should have an active I-REC API connection"
       },
       "input": {
         "editAmount": "Edit amount"
       },
       "notifications": {
-        "unknownError": "Unknown error"
+        "unknownError": "Unknown error",
+        "pleaseLogInToView": "Please log in to view this page"
       },
       "titles": {
         "dr": "Dr",
@@ -1006,6 +1078,9 @@
         "mrs": "Mrs",
         "ms": "Ms",
         "other": "Other"
+      },
+      "validations": {
+        "passwordMatch": "Passwords don't match"
       }
     },
     "error": {
@@ -1024,6 +1099,15 @@
     "file": {
       "upload": {
         "dropOrClick": "Drop files here or click to select files"
+      }
+    },
+    "metamask": {
+      "installMetamask": "Install Metamask",
+      "connectMetamask": "Connect Metamask",
+      "blockRequireInstalledAndConnected": "This block requires Metamask to be installed and connected",
+      "notifications": {
+        "unsupportedNetwork": "You are connected to the unsupported network.",
+        "unknownError": "Unknown error while connecting wallet. Please reload the page"
       }
     }
   }

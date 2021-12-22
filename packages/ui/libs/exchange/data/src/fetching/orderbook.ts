@@ -57,7 +57,8 @@ const INITIAL_ORDERBOOK_STATE: TOrderBookData = {
 
 export const useApiOrderbookPoll = (
   marketFiltersState: MarketFiltersState,
-  user: UserDTO
+  user: UserDTO,
+  isBuyOfferTableActive: boolean
 ) => {
   const [orderBookData, setOrderBookData] = useState<TOrderBookData>(
     INITIAL_ORDERBOOK_STATE
@@ -78,7 +79,10 @@ export const useApiOrderbookPoll = (
       generationDateEnd: marketFiltersState.generationTo?.toISOString(),
     };
 
-    const productFilters = getProductFilterConfig(filters);
+    const productFilters = getProductFilterConfig(
+      filters,
+      isBuyOfferTableActive
+    );
     const userIsActive = user && user.status == UserStatus.Active;
     const orders = userIsActive
       ? await orderBookControllerGetByProduct(productFilters)
@@ -106,6 +110,7 @@ export const useApiOrderbookPoll = (
     marketFiltersState.subregions,
     marketFiltersState.generationFrom,
     marketFiltersState.generationTo,
+    isBuyOfferTableActive,
   ]);
 
   const isLoading =

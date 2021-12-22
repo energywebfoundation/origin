@@ -1,3 +1,4 @@
+import { Typography, TypographyProps } from '@mui/material';
 import React, {
   DetailedHTMLProps,
   FC,
@@ -19,10 +20,7 @@ export interface ImageWithHoverTextProps {
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
-  overlayTextProps?: DetailedHTMLProps<
-    HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  >;
+  overlayTextProps?: TypographyProps;
 }
 
 export const ImageWithHoverText: FC<ImageWithHoverTextProps> = ({
@@ -36,12 +34,10 @@ export const ImageWithHoverText: FC<ImageWithHoverTextProps> = ({
 }) => {
   const classes = useStyles();
   return (
-    <div {...imageWrapperProps}>
+    <div className={classes.wrapper} {...imageWrapperProps}>
       <img src={src} alt={alt} {...imageProps} />
       <div className={classes.overlay} {...overlayProps}>
-        <div className={classes.text} {...overlayTextProps}>
-          {text}
-        </div>
+        <Typography {...overlayTextProps}>{text}</Typography>
       </div>
     </div>
   );

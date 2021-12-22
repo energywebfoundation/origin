@@ -1,4 +1,4 @@
-import { PreciseProofs } from 'precise-proofs-js';
+import { PreciseProofs } from 'ew-precise-proofs-js';
 
 export class PreciseProofUtils {
     static generateProofs(
@@ -33,8 +33,4 @@ export interface IOwnershipCommitmentProof {
     rootHash: string;
     leafs: PreciseProofs.Leaf[];
     salts: string[];
-}
-
-export interface IOwnershipCommitmentProofWithTx extends IOwnershipCommitmentProof {
-    txHash: string;
 }

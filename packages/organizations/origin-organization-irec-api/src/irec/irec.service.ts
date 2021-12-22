@@ -17,6 +17,7 @@ import {
     ApproveTransaction,
     Beneficiary,
     BeneficiaryUpdateParams,
+    CreateAccountParams,
     Device,
     Device as IrecDevice,
     DeviceCreateParams,
@@ -86,9 +87,26 @@ export interface IIrecService {
 
     getAccountInfo(user: UserIdentifier): Promise<Account[]>;
 
+    getAccountInfoByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Account[]>;
+
     getTradeAccountCode(user: UserIdentifier): Promise<string>;
 
     getIssueAccountCode(user: UserIdentifier): Promise<string>;
+
+    getRedemptionAccountCode(user: UserIdentifier): Promise<string>;
+
+    createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void>;
+
+    createAccountByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens,
+        params: CreateAccountParams
+    ): Promise<void>;
 
     createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus>;
 
@@ -108,12 +126,13 @@ export interface IIrecService {
 
     rejectIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void>;
 
-    getCertificates(user: UserIdentifier): Promise<AccountItem[]>;
+    getCertificates(user: UserIdentifier, accountCode?: string): Promise<AccountItem[]>;
 
     transferCertificate(
         fromUser: UserIdentifier,
-        toUser: UserIdentifier,
-        assetId: string
+        toTradeAccount: string,
+        assetId: string,
+        fromTradeAccount?: string
     ): Promise<TransactionResult>;
 
     redeem(
@@ -127,6 +146,12 @@ export interface IIrecService {
     rejectDevice(user: UserIdentifier, deviceId: string): Promise<IrecDevice>;
 
     getUserOrganization(user: UserIdentifier): Promise<Organisation>;
+
+    getUserOrganizationByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Organisation>;
 }
 
 @Injectable()
@@ -169,7 +194,7 @@ export class IrecService implements IIrecService {
             );
         }
 
-        const accessToken: AccessTokens = {
+        const accessTokens: AccessTokens = {
             accessToken: irecConnection.accessToken,
             refreshToken: irecConnection.refreshToken,
             expiryDate: irecConnection.expiryDate
@@ -182,7 +207,21 @@ export class IrecService implements IIrecService {
             async (newTokens: AccessTokens) => {
                 await this.commandBus.execute(new RefreshTokensCommand(user, newTokens));
             },
-            accessToken
+            accessTokens
+        );
+    }
+
+    private async getIrecClientByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ) {
+        return new IRECAPIClient(
+            this.configService.get<string>('IREC_API_URL'),
+            clientId,
+            clientSecret,
+            undefined,
+            tokens
         );
     }
 
@@ -273,6 +312,26 @@ export class IrecService implements IIrecService {
         return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
     }
 
+    async getRedemptionAccountCode(user: UserIdentifier): Promise<string> {
+        const accounts = await this.getAccountInfo(user);
+        return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
+    }
+
+    async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {
+        const irecClient = await this.getIrecClient(user);
+        await irecClient.account.create(params);
+    }
+
+    async createAccountByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens,
+        params: CreateAccountParams
+    ): Promise<void> {
+        const irecClient = await this.getIrecClientByTokens(clientId, clientSecret, tokens);
+        await irecClient.account.create(params);
+    }
+
     async createIssueRequest(user: UserIdentifier, issue: Issue): Promise<IssueWithStatus> {
         const irecClient = await this.getIrecClient(user);
         const irecIssue: IssueWithStatus = await irecClient.issue.create(issue);
@@ -331,22 +390,20 @@ export class IrecService implements IIrecService {
         return irecClient.issue.reject(issueRequestCode);
     }
 
-    async getCertificates(user: UserIdentifier): Promise<AccountItem[]> {
+    async getCertificates(user: UserIdentifier, accountCode?: string): Promise<AccountItem[]> {
         const irecClient = await this.getIrecClient(user);
-        const tradeAccountCode = await this.getTradeAccountCode(user);
-        return irecClient.account.getItems(tradeAccountCode);
+        return irecClient.account.getItems(accountCode || (await this.getTradeAccountCode(user)));
     }
 
     async transferCertificate(
         fromUser: UserIdentifier,
-        toUser: UserIdentifier,
-        assetId: string
+        toTradeAccount: string,
+        assetId: string,
+        fromTradeAccount?: string
     ): Promise<TransactionResult> {
         const fromUserClient = await this.getIrecClient(fromUser);
         const fromUserConnectionInfo = await this.getConnectionInfo(fromUser);
-
-        const fromUserTradeAccount = await this.getTradeAccountCode(fromUser);
-        const toUserTradeAccount = await this.getTradeAccountCode(toUser);
+        const fromUserTradeAccount = fromTradeAccount || (await this.getTradeAccountCode(fromUser));
 
         const items = await fromUserClient.account.getItems(fromUserTradeAccount);
         const item = items.find((i) => i.asset === assetId);
@@ -361,23 +418,26 @@ export class IrecService implements IIrecService {
 
         return fromUserClient.transfer({
             sender: fromUserTradeAccount,
-            recipient: toUserTradeAccount,
+            recipient: toTradeAccount,
             approver: fromUserConnectionInfo.userName,
             volume: transferItem.amount,
             items: [transferItem],
-            notes: ''
+            notes: 'Transfer certificate from origin to third-party organization'
         });
     }
 
     async redeem(
         user: UserIdentifier,
         assetId: string,
-        claimData: IClaimData
+        claimData: IClaimData,
+        fromTradeAccount?: string,
+        toRedemptionAccount?: string
     ): Promise<RedeemTransactionResult> {
         const userClient = await this.getIrecClient(user);
         const userConnectionInfo = await this.getConnectionInfo(user);
 
-        const userTradeAccount = await this.getTradeAccountCode(user);
+        const userTradeAccount = fromTradeAccount || (await this.getTradeAccountCode(user));
+        const accountTo = toRedemptionAccount || (await this.getRedemptionAccountCode(user));
 
         const items = await userClient.account.getItems(userTradeAccount);
         const item = items.find((i) => i.asset === assetId);
@@ -392,7 +452,7 @@ export class IrecService implements IIrecService {
 
         return userClient.redeem({
             sender: userTradeAccount,
-            recipient: userTradeAccount,
+            recipient: accountTo,
             approver: userConnectionInfo.userName,
             volume: claimItem.amount,
             items: [claimItem],
@@ -436,5 +496,23 @@ export class IrecService implements IIrecService {
     async getUserOrganization(user: UserIdentifier): Promise<Organisation> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.organisation.get();
+    }
+
+    async getUserOrganizationByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Organisation> {
+        const irecClient = await this.getIrecClientByTokens(clientId, clientSecret, tokens);
+        return irecClient.organisation.get();
+    }
+
+    async getAccountInfoByTokens(
+        clientId: string,
+        clientSecret: string,
+        tokens: AccessTokens
+    ): Promise<Account[]> {
+        const irecClient = await this.getIrecClientByTokens(clientId, clientSecret, tokens);
+        return irecClient.account.getAll();
     }
 }

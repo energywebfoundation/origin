@@ -1,44 +1,47 @@
-import { Box, BoxProps } from '@material-ui/core';
+import { Box, BoxProps } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { TextWithPendingDot } from '../../text';
 import { useStyles } from './UsernameAndOrg.styles';
 
-export interface UsernameAndOrgProps extends BoxProps {
+export interface UsernameAndOrgProps {
   username: string;
   userPending?: boolean;
   userTooltip?: string;
-  orgName: string;
+  orgName?: string;
   orgPending?: boolean;
   orgTooltip?: string;
+  wrapperProps?: BoxProps;
 }
 
 export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
   ({
     username,
-    userPending,
-    userTooltip,
-    orgName,
-    orgPending,
-    orgTooltip,
-    ...props
+    userPending = false,
+    userTooltip = '',
+    orgName = '',
+    orgPending = false,
+    orgTooltip = '',
+    wrapperProps,
   }) => {
     const classes = useStyles();
     return (
-      <Box className={classes.wrapper} {...props}>
+      <Box className={classes.wrapper} {...wrapperProps}>
         <Box flexGrow={1} />
         <Box>
           <TextWithPendingDot
             textContent={username}
             pending={userPending}
             tooltipText={userTooltip}
-            variant="h6"
+            typographyProps={{ variant: 'h6', component: 'span' }}
           />
-          <TextWithPendingDot
-            textContent={orgName}
-            pending={orgPending}
-            tooltipText={orgTooltip}
-            typographyProps={{ color: 'textSecondary' }}
-          />
+          {orgName ? (
+            <TextWithPendingDot
+              textContent={orgName}
+              pending={orgPending}
+              tooltipText={orgTooltip}
+              typographyProps={{ color: 'textSecondary' }}
+            />
+          ) : null}
         </Box>
         <Box flexGrow={1} />
       </Box>

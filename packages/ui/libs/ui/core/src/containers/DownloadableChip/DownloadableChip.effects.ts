@@ -14,7 +14,7 @@ export const useDownloadableChipEffects = () => {
       if (response) {
         const imageType = response.headers['content-type'];
         const blob = new Blob(
-          [Buffer.from((response.data.data as unknown) as string)],
+          [Buffer.from(response.data.data as unknown as string)],
           {
             type: imageType,
           }

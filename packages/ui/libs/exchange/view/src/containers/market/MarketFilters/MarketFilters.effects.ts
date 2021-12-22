@@ -11,6 +11,7 @@ import {
   useRegionsFilterLogic,
   useSubRegionsFilterLogic,
 } from '@energyweb/origin-ui-exchange-logic';
+import { useEffect } from 'react';
 import { MarketFilterActionEnum } from '../../../reducer';
 import { MarketFiltersProps } from './MarketFilters';
 
@@ -18,14 +19,10 @@ export const useMarketFiltersEffects = ({
   state,
   dispatch,
 }: MarketFiltersProps) => {
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllDeviceFuelTypes();
-  const {
-    allTypes: allDeviceTypes,
-    isLoading: areDeviceTypesLoading,
-  } = useAllDeviceTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
+  const { allTypes: allDeviceTypes, isLoading: areDeviceTypesLoading } =
+    useAllDeviceTypes();
 
   const handleFuelTypeChange = (newValues: FormSelectOption[]) => {
     dispatch({
@@ -97,6 +94,17 @@ export const useMarketFiltersEffects = ({
 
   const isLoading =
     areFuelTypesLoading || areDeviceTypesLoading || areRegionsLoading;
+
+  const dependendentDeviceTypeCallback =
+    deviceTypeAutocompleteProps?.field?.dependentOptionsCallback;
+
+  useEffect(() => {
+    const allOptions = dependendentDeviceTypeCallback(state.fuelType);
+    dispatch({
+      type: MarketFilterActionEnum.SET_DEVICE_TYPE,
+      payload: allOptions,
+    });
+  }, [dependendentDeviceTypeCallback, state.fuelType]);
 
   return {
     fuelTypeAutocompleteProps,

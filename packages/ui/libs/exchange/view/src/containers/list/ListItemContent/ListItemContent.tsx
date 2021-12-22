@@ -1,4 +1,5 @@
-import { Typography, useMediaQuery, useTheme } from '@material-ui/core';
+import { Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import React, { FC } from 'react';
 import { useStyles } from './ListItemContent.styles';
 

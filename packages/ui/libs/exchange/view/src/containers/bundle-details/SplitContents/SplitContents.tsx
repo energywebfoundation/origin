@@ -8,8 +8,8 @@ import {
   getMainFuelType,
 } from '@energyweb/origin-ui-exchange-logic';
 import { EnergyTypeEnum, PowerFormatter } from '@energyweb/origin-ui-utils';
-import { Box, Button, IconButton, Typography } from '@material-ui/core';
-import { ArrowBackIos, ArrowForwardIos } from '@material-ui/icons';
+import { Box, Button, IconButton, Typography } from '@mui/material';
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { useStyles } from './SplitContent.styles';
 import { useSplitContentsEffects } from './SplitContents.effects';
@@ -36,6 +36,7 @@ export const SplitContents: FC<SplitContentsProps> = ({
     selectedVolume,
     handleSelect,
     buyHandler,
+    disableBuyButton,
   } = useSplitContentsEffects(splits);
   const classes = useStyles();
 
@@ -63,6 +64,9 @@ export const SplitContents: FC<SplitContentsProps> = ({
               parseInt(PowerFormatter.format(split.volume.toNumber())) *
               (Number(bundle.price) / 100)
             ).toFixed(2);
+          const buyClickHandler = disableBuyButton
+            ? undefined
+            : () => buyHandler(bundle.id);
 
           return (
             <Box
@@ -119,7 +123,8 @@ export const SplitContents: FC<SplitContentsProps> = ({
                 <Box textAlign="center">
                   <Button
                     variant="contained"
-                    onClick={() => buyHandler(bundle.id)}
+                    disabled={disableBuyButton}
+                    onClick={buyClickHandler}
                   >
                     Buy
                   </Button>

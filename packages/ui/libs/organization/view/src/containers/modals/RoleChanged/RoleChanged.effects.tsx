@@ -1,7 +1,5 @@
-import {
-  getUserControllerMeQueryKey,
-  useUserControllerMe,
-} from '@energyweb/origin-backend-react-query-client';
+import { getUserControllerMeQueryKey } from '@energyweb/origin-backend-react-query-client';
+import { useUser } from '@energyweb/origin-ui-organization-data';
 import { getRoleChangedLogic } from '@energyweb/origin-ui-organization-logic';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
@@ -23,7 +21,7 @@ export const useRoleChangedEffects = () => {
 
   const isIRecEnabled = true;
 
-  const { data: user } = useUserControllerMe();
+  const { user, userLoading } = useUser();
   const orgName = user?.organization?.name;
   const role = user?.rights;
 
@@ -57,5 +55,5 @@ export const useRoleChangedEffects = () => {
     isIRecEnabled,
   });
 
-  return { open, ...modalLogic };
+  return { open, ...modalLogic, userLoading };
 };

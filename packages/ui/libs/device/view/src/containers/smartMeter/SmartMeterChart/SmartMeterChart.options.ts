@@ -1,13 +1,9 @@
 export const smartMeterChartOptions = {
   maintainAspectRatio: false,
   scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-    ],
+    yAxes: {
+      beginAtZero: true,
+    },
   },
   tooltips: {
     callbacks: {

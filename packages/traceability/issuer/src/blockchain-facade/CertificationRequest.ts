@@ -46,7 +46,12 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
     public initialized = false;
 
     constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
-
+    /**
+     * 
+     *
+     * @description Uses Issuer contract to create Certificate request
+     *
+     */
     public static async create(
         generationStartTime: Timestamp,
         generationEndTime: Timestamp,
@@ -79,7 +84,12 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
         return newCertificationRequest.sync();
     }
-
+     /**
+     * 
+     *
+     * @description Returns all Certification Requests for an Issuer 
+     *
+     */
     public static async getAll(
         blockchainProperties: IBlockchainProperties
     ): Promise<CertificationRequest[]> {
@@ -95,6 +105,12 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         );
     }
 
+      /**
+     * 
+     *
+     * @description Retrieves Certificate data
+     *
+     */
     public async sync(): Promise<CertificationRequest> {
         if (this.id === null) {
             return this;
@@ -136,6 +152,12 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         return this;
     }
 
+      /**
+     * 
+     *
+     * @description Uses Issuer contract to approve a Certificate request
+     *
+     */
     async approve(energy: BigNumber): Promise<CertificationRequest['issuedCertificateTokenId']> {
         const { issuer, activeUser } = this.blockchainProperties;
 
@@ -155,6 +177,12 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         return certificateId;
     }
 
+      /**
+     * 
+     *
+     * @description Uses Issuer contract to revoke a Certificate request
+     *
+     */
     async revoke(): Promise<ethers.ContractTransaction> {
         const { issuer, activeUser } = this.blockchainProperties;
         const issuerWithSigner = issuer.connect(activeUser);

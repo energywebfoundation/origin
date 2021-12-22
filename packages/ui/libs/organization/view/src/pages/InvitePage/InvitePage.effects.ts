@@ -4,15 +4,12 @@ import {
   useInviteFormLogic,
   InviteFormValues,
 } from '@energyweb/origin-ui-organization-logic';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 
 export const useInvitePageEffects = () => {
-  const {
-    fields,
-    initialValues,
-    validationSchema,
-    buttonText,
-  } = useInviteFormLogic();
+  const { fields, initialValues, validationSchema, buttonText } =
+    useInviteFormLogic();
 
   const { submitHandler, apiLoading } = useOrganizationInviteHandler();
 

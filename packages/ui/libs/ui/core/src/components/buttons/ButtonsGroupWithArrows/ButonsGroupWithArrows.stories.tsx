@@ -1,7 +1,7 @@
 /* deepscan-disable */
 import React, { useState } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import {
   ButtonsGroupWithArrows,
   ButtonsGroupWithArrowsProps,
@@ -12,32 +12,32 @@ export default {
   component: ButtonsGroupWithArrows,
   argTypes: {
     buttons: {
-      type: { required: true },
+      type: { name: 'other', value: 'ButtonGroupItem<T>[]', required: true },
       description: `Buttons Array of type ButtonGroupItem`,
       table: {
         type: {
-          summary: 'ButtonGroupItem',
+          summary: 'ButtonGroupItem<T>[]',
           detail: '{ label: string, value: T }',
         },
       },
     },
     selected: {
-      type: { name: 'any', required: true },
+      type: { name: 'other', value: 'T', required: true },
       description: `State variable of button.value type`,
       control: { type: 'text' },
     },
     setSelected: {
-      type: { required: true },
+      type: { name: 'function', required: true },
       description: `SetState function for changing selected state`,
     },
     onLeftArrowClick: {
-      type: { required: true },
+      type: { name: 'function', required: true },
       description: `Function for handling Left Arrow click.
       Normally should not be responsible for managing selected state,
       but rather to adjust the data for selected object.`,
     },
     onRightArrowClick: {
-      type: { required: true },
+      type: { name: 'function', required: true },
       description: `Function for handling Right Arrow click.
       Normally should not be responsible for managing selected state,
       but rather to adjust the data for selected object.`,

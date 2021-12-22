@@ -10,7 +10,7 @@ import {
   NotificationTypeEnum,
   showNotification,
 } from '@energyweb/origin-ui-core';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 
@@ -25,9 +25,8 @@ export const useBuyBundleHandler = (
   const allBundlesQueryKey = getBundleControllerGetAvailableBundlesQueryKey();
 
   return (bundleId: BundlePublicDTO['id']) => {
-    const bundleSplitsQueryKey = getBundleControllerAvailableBundleSplitsQueryKey(
-      bundleId
-    );
+    const bundleSplitsQueryKey =
+      getBundleControllerAvailableBundleSplitsQueryKey(bundleId);
 
     const data: BuyBundleDTO = {
       bundleId,

@@ -8,7 +8,7 @@ import {
   ArgsTable,
   PRIMARY_STORY,
 } from '@storybook/addon-docs';
-import { IconButtonProps } from '@material-ui/core';
+import { IconButtonProps } from '@mui/material';
 import { ClearButton } from './ClearButton';
 
 const description = `

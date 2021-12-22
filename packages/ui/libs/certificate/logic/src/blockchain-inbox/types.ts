@@ -82,6 +82,7 @@ export type TUseRetireActionLogic<Id> = (
   title: string;
   buttonText: string;
   selectedItems: SelectedItem<Id>[];
+  selectDisabledTooltip: string;
 };
 
 type TUseBeneficiaryFormLogicArgs = {

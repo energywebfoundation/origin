@@ -5,6 +5,7 @@ import {
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { prepareDeviceTypesOptions } from '../utils';
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 
 type TUseDeviceTypeFilterLogic = (
   allFuelTypes: CodeNameDTO[],
@@ -22,6 +23,10 @@ export const useDeviceTypeFilterLogic: TUseDeviceTypeFilterLogic = (
   fuelTypeValue
 ) => {
   const { t } = useTranslation();
+  const dependentDeviceTypeCallback = useMemo(
+    () => prepareDeviceTypesOptions(allFuelTypes, allDeviceTypes),
+    [allFuelTypes, allDeviceTypes]
+  );
   return {
     value,
     onChange,
@@ -30,10 +35,7 @@ export const useDeviceTypeFilterLogic: TUseDeviceTypeFilterLogic = (
       label: t('exchange.viewMarket.deviceType'),
       multiple: true,
       dependentOn: 'fuelType',
-      dependentOptionsCallback: prepareDeviceTypesOptions(
-        allFuelTypes,
-        allDeviceTypes
-      ),
+      dependentOptionsCallback: dependentDeviceTypeCallback,
     },
     errorExists: null,
     errorText: '',

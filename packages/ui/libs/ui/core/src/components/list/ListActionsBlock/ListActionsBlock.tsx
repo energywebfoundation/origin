@@ -1,4 +1,4 @@
-import { Tabs, Tab, TabsProps } from '@material-ui/core';
+import { Tabs, Tab, TabsProps } from '@mui/material';
 import React, {
   DetailedHTMLProps,
   HTMLAttributes,
@@ -28,6 +28,8 @@ export type ListActionsBlockProps<ItemId = any> = {
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
+  selectedTab?: number;
+  setSelectedTab?: (value: number) => void;
 };
 
 export type TListActionsBlock = <ItemId>(
@@ -40,21 +42,25 @@ export const ListActionsBlock: TListActionsBlock = ({
   resetSelected,
   tabsProps,
   wrapperProps,
+  selectedTab,
+  setSelectedTab,
 }) => {
-  const { tabIndex, setTabIndex } = useListActionsBlockEffects();
+  const { selected, setSelected, resetList } = useListActionsBlockEffects(
+    selectedTab,
+    setSelectedTab,
+    resetSelected
+  );
 
-  if (!actions[tabIndex]) {
-    return null;
-  }
+  if (!actions[selected]) return null;
 
-  const { content, component: Component } = actions[tabIndex];
+  const { content, component: Component } = actions[selected];
   return (
     <div {...wrapperProps}>
       {actions.length >= 2 && (
         <Tabs
-          value={tabIndex}
+          value={selected}
           onChange={(event: any, index: number) => {
-            setTabIndex(index);
+            setSelected(index);
           }}
           indicatorColor="primary"
           textColor="primary"
@@ -70,7 +76,7 @@ export const ListActionsBlock: TListActionsBlock = ({
       {content ? (
         content
       ) : (
-        <Component selectedIds={selectedIds} resetIds={resetSelected} />
+        <Component selectedIds={selectedIds} resetIds={resetList} />
       )}
     </div>
   );

@@ -5,7 +5,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { CertificateUtils, Contracts } from '@energyweb/issuer';
 import {
     IUser,
@@ -17,7 +16,6 @@ import {
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
 import { FileService, UserService } from '@energyweb/origin-backend';
-import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 
 import { AppModule, BlockchainPropertiesService, entities } from '../src';
@@ -65,7 +63,7 @@ export const testUsers = new Map([
     [
         TestUser.OrganizationDeviceManager,
         {
-            id: 1,
+            id: Number(TestUser.OrganizationDeviceManager),
             organization: {
                 id: 1000,
                 status: OrganizationStatus.Active,
@@ -78,7 +76,7 @@ export const testUsers = new Map([
     [
         TestUser.UserWithoutBlockchainAccount,
         {
-            id: 2,
+            id: Number(TestUser.UserWithoutBlockchainAccount),
             organization: { id: 1001, status: OrganizationStatus.Active },
             status: UserStatus.Active,
             rights: Role.OrganizationAdmin
@@ -87,7 +85,7 @@ export const testUsers = new Map([
     [
         TestUser.Issuer,
         {
-            id: 3,
+            id: Number(TestUser.Issuer),
             organization: {
                 id: 1003,
                 status: OrganizationStatus.Active,
@@ -100,7 +98,7 @@ export const testUsers = new Map([
     [
         TestUser.OtherOrganizationDeviceManager,
         {
-            id: 1,
+            id: Number(TestUser.OtherOrganizationDeviceManager),
             organization: {
                 id: 1000,
                 status: OrganizationStatus.Active,
@@ -170,6 +168,9 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
         .useValue({
             getPlatformAdmin() {
                 return testUsers.get(TestUser.PlatformAdmin);
+            },
+            findOne(userId: TestUser) {
+                return testUsers.get(userId);
             }
         })
         .overrideProvider(FileService)
@@ -202,10 +203,6 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
                     active: true
                 }
             ]
-        })
-        .overrideProvider(DeviceRegistryService)
-        .useValue({
-            find: () => [{ id: 1, externalRegistryId: 1 }]
         })
         .compile();
 

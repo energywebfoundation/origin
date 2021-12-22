@@ -9,8 +9,8 @@ import {
   PRIMARY_STORY,
   Stories,
 } from '@storybook/addon-docs';
-import { Box, Typography } from '@material-ui/core';
-import { AccountBalance } from '@material-ui/icons';
+import { Box, Typography } from '@mui/material';
+import { AccountBalance } from '@mui/icons-material';
 import { CardWithImage, CardWithImageProps } from './CardWithImage';
 
 const description = `
@@ -139,7 +139,7 @@ WithIcon.args = {
     </Box>
   ),
   imageUrl: '',
-  fallbackIcon: AccountBalance,
+  fallbackIcon: AccountBalance as any,
   hoverText: 'See detailed',
   onActionClick: () => alert('clicked to see detailed info'),
 };

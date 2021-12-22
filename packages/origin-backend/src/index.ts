@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth';
 import { AdminModule } from './pods/admin';
 import { Configuration, ConfigurationModule } from './pods/configuration';
 import { EmailConfirmation, EmailConfirmationModule } from './pods/email-confirmation';
@@ -12,6 +12,7 @@ import { User, UserModule } from './pods/user';
 
 export { AppModule } from './app.module';
 
+export * from './auth';
 export * from './pods/configuration';
 export * from './pods/email-confirmation/events';
 export * from './pods/invitation/events';

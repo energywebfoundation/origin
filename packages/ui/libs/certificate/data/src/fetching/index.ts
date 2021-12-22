@@ -16,3 +16,4 @@ export * from './userAndAccount';
 export * from './approvedCertificates';
 export * from './certificateToImport';
 export * from './deviceImages';
+export * from './companyBeneficiaries';

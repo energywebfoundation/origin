@@ -3,6 +3,7 @@ import { FC } from 'react';
 
 export type UserEnvVariables = {
   registrationMessage: string;
+  allowedChainIds: number[];
 };
 
 const UserAppEnv = createContext<UserEnvVariables>(null);

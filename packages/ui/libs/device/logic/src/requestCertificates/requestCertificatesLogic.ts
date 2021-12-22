@@ -1,17 +1,27 @@
 import dayjs from 'dayjs';
+import { GenericFormField } from '@energyweb/origin-ui-core';
+import { prepareAccountCodeOptions } from '../utils';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { TUseRequestCertificatesLogic } from './types';
+import {
+  TUseRequestCertificatesLogic,
+  RequestCertificateFormValues,
+} from './types';
 
-export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = () => {
+export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = (
+  myAccounts,
+  singleAccountMode
+) => {
   const { t } = useTranslation();
 
   return {
     initialValues: {
       energy: '',
+      irecTradeAccountCode: '',
       fromTime: dayjs().toISOString(),
       toTime: dayjs().toISOString(),
     },
+    validationMode: 'onSubmit',
     validationSchema: yup.object({
       fromTime: yup
         .string()
@@ -42,6 +52,16 @@ export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = () => {
         name: 'energy',
         label: t('device.my.requestCertificates.energy'),
       },
+      ...(singleAccountMode
+        ? ([
+            {
+              name: 'irecTradeAccountCode',
+              label: t('device.my.requestCertificates.irecTradeAccountCode'),
+              select: true,
+              options: prepareAccountCodeOptions(myAccounts),
+            },
+          ] as GenericFormField<RequestCertificateFormValues>[])
+        : []),
     ],
     buttonFullWidth: true,
     buttonText: t('general.buttons.confirm'),

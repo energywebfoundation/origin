@@ -27,6 +27,9 @@ export const useRetireActionLogic: TUseRetireActionLogic<
     title: t('certificate.blockchainInbox.selectedForRetirement'),
     buttonText: t('certificate.blockchainInbox.retireButton'),
     selectedItems,
+    selectDisabledTooltip: t(
+      'certificate.blockchainInbox.addBeneficiariesTooltip'
+    ),
   };
 };
 
@@ -64,7 +67,7 @@ export const useBeneficiaryFormLogic: TUseBeneficiaryFormLogic = ({
         name: 'beneficiary',
         label: t('certificate.blockchainInbox.selectBeneficiary'),
         select: true,
-        options: prepareBeneficiariesOptions(allBeneficiaries, t),
+        options: prepareBeneficiariesOptions(allBeneficiaries),
         textFieldProps: {
           variant: 'filled' as any,
         },

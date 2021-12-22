@@ -8,7 +8,7 @@ import {
   showNotification,
 } from '@energyweb/origin-ui-core';
 import { PowerFormatter } from '@energyweb/origin-ui-utils';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
@@ -23,22 +23,17 @@ export const useDepositCertificateHandler = (
 ) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const blockchainCertificatesQueryKey = getIrecCertificateControllerGetAllQueryKey();
+  const blockchainCertificatesQueryKey =
+    getIrecCertificateControllerGetAllQueryKey();
 
-  const {
-    exchangeAddress,
-    isLoading: isExchangeAddressLoading,
-  } = useExchangeAddress();
+  const { exchangeAddress, isLoading: isExchangeAddressLoading } =
+    useExchangeAddress();
 
-  const {
-    data: account,
-    isLoading: isAccountLoading,
-  } = useAccountControllerGetAccount();
+  const { data: account, isLoading: isAccountLoading } =
+    useAccountControllerGetAccount();
 
-  const {
-    getBlockchainCertificate,
-    isLoading: isGetBlockchainLoading,
-  } = useGetBlockchainCertificateHandler();
+  const { getBlockchainCertificate, isLoading: isGetBlockchainLoading } =
+    useGetBlockchainCertificateHandler();
 
   const depositHandler = async <Id>(id: Id, amount: string) => {
     if (!exchangeAddress) {
@@ -52,7 +47,7 @@ export const useDepositCertificateHandler = (
 
     try {
       const onChainCertificate = await getBlockchainCertificate(
-        (id as unknown) as CertificateDTO['id']
+        id as unknown as CertificateDTO['id']
       );
       const formattedAmount = BigNumber.from(
         PowerFormatter.getBaseValueFromValueInDisplayUnit(Number(amount))
@@ -75,6 +70,7 @@ export const useDepositCertificateHandler = (
         resetList();
       }
     } catch (error) {
+      console.error(error);
       showNotification(
         t('certificate.blockchainInbox.notifications.depositError'),
         NotificationTypeEnum.Error

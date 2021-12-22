@@ -1,11 +1,16 @@
+import {
+  OrganizationStatus,
+  UserStatus,
+} from '@energyweb/origin-backend-react-query-client';
 import { usePaginateData } from '@energyweb/origin-ui-core';
 import {
   BundleSplit,
   useBuyBundleHandler,
   useCachedAllDevices,
   useCachedAllFuelTypes,
+  useCachedUser,
 } from '@energyweb/origin-ui-exchange-data';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { useState } from 'react';
 import {
   ExchangeModalsActionsEnum,
@@ -64,6 +69,11 @@ export const useSplitContentsEffects = (splits: BundleSplit[]) => {
 
   const allDevices = useCachedAllDevices();
   const allFuelTypes = useCachedAllFuelTypes();
+  const user = useCachedUser();
+
+  const disableBuyButton =
+    user?.status !== UserStatus.Active ||
+    user?.organization?.status !== OrganizationStatus.Active;
 
   return {
     paginatedData,
@@ -76,5 +86,6 @@ export const useSplitContentsEffects = (splits: BundleSplit[]) => {
     handlePreviousPage,
     handleSelect,
     buyHandler,
+    disableBuyButton,
   };
 };

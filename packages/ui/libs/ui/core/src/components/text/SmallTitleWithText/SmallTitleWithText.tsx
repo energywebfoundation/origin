@@ -1,4 +1,4 @@
-import { Typography, TypographyProps } from '@material-ui/core';
+import { Typography, TypographyProps } from '@mui/material';
 import React, { ReactNode } from 'react';
 import { useStyles } from './SmallTitleWithText.styles';
 
@@ -15,8 +15,8 @@ export interface SmallTitleWithTextProps {
 }
 
 export const SmallTitleWithText: React.FC<SmallTitleWithTextProps> = ({
-  title,
-  titleElement,
+  title = '',
+  titleElement = null,
   titleProps,
   text,
   textProps,
@@ -25,13 +25,12 @@ export const SmallTitleWithText: React.FC<SmallTitleWithTextProps> = ({
   const classes = useStyles();
   return (
     <div {...wrapperProps}>
-      {!titleElement ? (
-        <Typography color="textSecondary" margin="normal" {...titleProps}>
-          {title || ''}
-        </Typography>
-      ) : (
-        titleElement
-      )}
+      {titleElement ??
+        (title && (
+          <Typography color="textSecondary" margin="normal" {...titleProps}>
+            {title}
+          </Typography>
+        ))}
       <Typography margin="dense" className={classes.text} {...textProps}>
         {text}
       </Typography>

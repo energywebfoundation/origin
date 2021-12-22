@@ -18,4 +18,5 @@
 | SMART_METER_ID               | Smart Meter Readings API ID          | Identifier for smart meter connected to device                                                             |
 | MARKET_UTC_OFFSET            | 420                                  | UTC offset for keeping precise time of trade in market timezone                                            |
 | DEFAULT_ENERGY_IN_BASE_UNIT  | 1                                    | Default amount of energy in platform's energy unit                                                         |
-| GOOGLE_MAPS_API_KEY          | API_KEY                              | Used for displaying device location on map                                                                 |
+| GOOGLE_MAPS_API_KEY          | API_KEY                              | Used for displaying device location on map                                                                  |
+| SINGLE_ACCOUNT_MODE          | false                                | Specifies the allowance for users to select between Trade Accounts on device creation and certificate request  

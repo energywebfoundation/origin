@@ -5,6 +5,8 @@ import {
   useForm,
   UseFormRegister,
   Control,
+  DeepPartial,
+  UnionLike,
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { GenericFormProps } from './GenericForm.types';
@@ -25,9 +27,9 @@ type GenericFormEffectsProps<FormValuesType> = Pick<
 type GenericFormEffectsReturnType<FormValuesType> = {
   register: UseFormRegister<FormValuesType>;
   onSubmit: FormEventHandler<HTMLFormElement>;
-  errors: DeepMap<FormValuesType, FieldError>;
+  errors: DeepMap<DeepPartial<UnionLike<FormValuesType>>, FieldError>;
   submitButtonDisabled: boolean;
-  dirtyFields: DeepMap<FormValuesType, true>;
+  dirtyFields: DeepMap<DeepPartial<UnionLike<FormValuesType>>, true>;
   control: Control<FormValuesType>;
 };
 
@@ -67,20 +69,20 @@ export const useGenericFormEffects: TGenericFormEffects = ({
     await submitHandler(values, reset);
   });
 
-  const nextForm =
-    initialValues && Object.keys(initialValues)[0] in dirtyFields;
   const submitButtonDisabled =
     buttonDisabled || partOfMultiForm
-      ? !(nextForm && isValid)
+      ? !isValid
       : acceptInitialValues
       ? false
-      : !isDirty;
+      : validationMode === 'onSubmit'
+      ? false
+      : !isDirty || !isValid;
 
   return {
     control,
     register,
     onSubmit,
-    errors,
+    errors: !isValid ? errors : ({} as any),
     submitButtonDisabled,
     dirtyFields,
   };

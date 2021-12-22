@@ -5,7 +5,7 @@ import {
   CardProps,
   Checkbox,
   CheckboxProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { useStyles } from './ListCard.styles';
 
@@ -19,7 +19,7 @@ export interface CardsListItem<Id> {
   contentWrapperProps?: BoxProps;
 }
 
-interface ListCardProps<Id> {
+export interface ListCardProps<Id> {
   item: CardsListItem<Id>;
   selected: boolean;
   handleSelect: (id: Id) => void;
@@ -34,7 +34,7 @@ export const ListCard: TListCard = ({
   item,
   selected,
   handleSelect,
-  selectOnCardClick,
+  selectOnCardClick = true,
 }) => {
   const handleCardSelect = () => handleSelect(item.id);
   const { content: ItemContent } = item;

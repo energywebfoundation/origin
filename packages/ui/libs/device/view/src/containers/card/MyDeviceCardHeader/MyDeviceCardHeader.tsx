@@ -1,38 +1,76 @@
-import { SpecField, SpecFieldProps } from '@energyweb/origin-ui-core';
-import { Button, Typography } from '@material-ui/core';
-import { ChevronRight } from '@material-ui/icons';
 import React from 'react';
+import { DeviceState } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import {
+  SpecField,
+  SpecFieldProps,
+  TextWithPendingDot,
+} from '@energyweb/origin-ui-core';
+import { Button } from '@mui/material';
+import { ChevronRight, Edit } from '@mui/icons-material';
 import { useMyDeviceCardHeaderEffects } from './MyDeviceCardHeader.effects';
 import { useStyles } from './MyDeviceCardHeader.styles';
-interface MyDeviceCardHeaderProps {
+
+export interface MyDeviceCardHeaderProps {
   deviceName: string;
-  buttonText: string;
-  buttonLink: string;
+  deviceState: DeviceState;
+  viewButtonText: string;
+  viewButtonLink: string;
+  editButtonText: string;
+  editButtonLink: string;
   specFieldProps: SpecFieldProps;
 }
 
 export const MyDeviceCardHeader: React.FC<MyDeviceCardHeaderProps> = ({
   deviceName,
-  buttonText,
-  buttonLink,
+  deviceState,
+  viewButtonText,
+  viewButtonLink,
+  editButtonText,
+  editButtonLink,
   specFieldProps,
 }) => {
-  const clickHandler = useMyDeviceCardHeaderEffects(buttonLink);
+  const { viewDetailsClickHandler, editDeviceClickHandler, t } =
+    useMyDeviceCardHeaderEffects(viewButtonLink, editButtonLink);
+  const showEditButton = deviceState !== DeviceState.Approved;
   const classes = useStyles();
 
   return (
     <div className={classes.headerWrapper}>
       <div className={classes.nameBlockWrapper}>
-        <Typography variant="h5">{deviceName}</Typography>
+        <TextWithPendingDot
+          textContent={deviceName}
+          typographyProps={{
+            variant: 'h5',
+            component: 'span',
+            marginRight: '5px',
+          }}
+          pending={deviceState !== DeviceState.Approved}
+          showSuccessDot={deviceState === DeviceState.Approved}
+          tooltipText={t('device.my.deviceStatusTooltip', {
+            status: deviceState,
+          })}
+        />
         <Button
           color="inherit"
-          onClick={clickHandler}
+          onClick={viewDetailsClickHandler}
           className={classes.button}
           classes={{ endIcon: classes.buttonEndIcon }}
-          endIcon={<ChevronRight fontSize="small" />}
+          endIcon={<ChevronRight />}
         >
-          {buttonText}
+          {viewButtonText}
         </Button>
+        {showEditButton && (
+          <Button
+            color="inherit"
+            onClick={editDeviceClickHandler}
+            className={classes.button}
+            classes={{ iconSizeMedium: classes.smallEndIcon }}
+            endIcon={<Edit />}
+            sx={{ marginLeft: '10px' }}
+          >
+            {editButtonText}
+          </Button>
+        )}
       </div>
       <div className={classes.specBlockWrapper}>
         <SpecField

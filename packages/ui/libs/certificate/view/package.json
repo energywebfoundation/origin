@@ -11,11 +11,14 @@
   "author": "EnergyWeb DevHub GmbH; Alexander Popadyuk, alexander.popadyuk@energyweb.org",
   "description": "View layer implementation for the Certificate part of Origin marketplace user interface",
   "homepage": "https://github.com/energywebfoundation/origin/blob/master/packages/ui/libs/certificate/view/README.md",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/certificate-view.umd.js",
   "module": "dist/certificate-view.esm.js",
   "typings": "dist/index.d.ts"

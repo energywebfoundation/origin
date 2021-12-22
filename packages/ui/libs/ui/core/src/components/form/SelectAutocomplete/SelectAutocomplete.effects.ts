@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { GenericFormField } from '../../../containers';
 import { FormSelectOption } from '../FormSelect';
 
@@ -7,6 +7,7 @@ export const useSelectAutocompleteEffects = <FormValuesType>(
   dependentValue: FormSelectOption[],
   field: GenericFormField<FormValuesType>
 ) => {
+  const isMountedRef = useRef(false);
   const [textValue, setTextValue] = useState<string>('');
 
   const changeHandler = (
@@ -24,12 +25,19 @@ export const useSelectAutocompleteEffects = <FormValuesType>(
   };
 
   useEffect(() => {
-    if (dependentValue?.length === 0) {
+    if (dependentValue?.length === 0 && isMountedRef.current === true) {
       setTextValue('');
       onChange([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dependentValue]);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const options =
     !!field.dependentOn && field.dependentOptionsCallback

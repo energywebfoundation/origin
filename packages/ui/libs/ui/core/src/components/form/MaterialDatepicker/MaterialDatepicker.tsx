@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { DateFormatEnum } from '@energyweb/origin-ui-utils';
-import { Box, TextField, TextFieldProps } from '@material-ui/core';
-import { DatePicker, LocalizationProvider } from '@material-ui/lab';
-import AdapterDayJs from '@material-ui/lab/AdapterDayjs';
+import { Box, TextField, TextFieldProps } from '@mui/material';
+import { DatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDayJs from '@mui/lab/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 import { ClearButton } from '../../buttons';
 import { useStyles } from './MaterialDatepicker.styles';

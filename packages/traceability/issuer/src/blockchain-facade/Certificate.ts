@@ -1,11 +1,4 @@
-import {
-    Event as BlockchainEvent,
-    ContractTransaction,
-    ethers,
-    BigNumber,
-    utils,
-    providers
-} from 'ethers';
+import { ContractTransaction, ethers, BigNumber, utils, providers } from 'ethers';
 
 import { Timestamp } from '@energyweb/utils-general';
 
@@ -23,7 +16,7 @@ import { IBlockchainProperties } from './BlockchainProperties';
 import { MAX_ENERGY_PER_CERTIFICATE } from './CertificationRequest';
 import {
     IOwnershipCommitment,
-    IOwnershipCommitmentProofWithTx,
+    IOwnershipCommitmentProof,
     PreciseProofUtils
 } from '../utils/PreciseProofUtils';
 
@@ -56,7 +49,7 @@ export interface ICertificate extends IData {
     id: number;
     issuer: string;
     creationTime: Timestamp;
-    creationBlockHash: string;
+    creationTransactionHash: string;
     owners: IShareInCertificate;
     claimers: IShareInCertificate;
 }
@@ -72,7 +65,7 @@ export class Certificate implements ICertificate {
 
     public creationTime: Timestamp;
 
-    public creationBlockHash: string;
+    public creationTransactionHash: string;
 
     public initialized = false;
 
@@ -83,7 +76,13 @@ export class Certificate implements ICertificate {
     public claimers: IShareInCertificate;
 
     constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
-
+    
+     /**
+     * 
+     *
+     * @description Uses the Issuer contract to allow direct issuance of a certificate
+     *
+     */
     public static async create(
         to: string,
         value: BigNumber,
@@ -92,15 +91,12 @@ export class Certificate implements ICertificate {
         deviceId: string,
         blockchainProperties: IBlockchainProperties,
         metadata?: string
-    ): Promise<Certificate> {
+    ): Promise<ContractTransaction> {
         if (value.gt(MAX_ENERGY_PER_CERTIFICATE)) {
             throw new Error(
                 `Too much energy requested. Requested: ${value}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
             );
         }
-
-        const getIdFromEvents = (logs: BlockchainEvent[]): number =>
-            Number(logs.find((log) => log.event === 'CertificationRequestApproved').topics[2]);
 
         const { issuer } = blockchainProperties;
         const issuerWithSigner = issuer.connect(blockchainProperties.activeUser);
@@ -114,15 +110,61 @@ export class Certificate implements ICertificate {
 
         const properChecksumToAddress = ethers.utils.getAddress(to);
 
-        const tx = await issuerWithSigner.issue(properChecksumToAddress, value, data);
-        const { events, blockHash } = await tx.wait();
+        return await issuerWithSigner.issue(properChecksumToAddress, value, data);
+    }
 
-        const newCertificate = new Certificate(getIdFromEvents(events), blockchainProperties);
-        newCertificate.creationBlockHash = blockHash;
+      /**
+     * 
+     *
+     * @description Returns the Certificate that was created in a given transaction
+     *
+     */
+    public static async fromTxHash(
+        txHash: string,
+        blockchainProperties: IBlockchainProperties
+    ): Promise<Certificate> {
+        const tx = await blockchainProperties.web3.getTransactionReceipt(txHash);
+
+        if (!tx || !tx.blockNumber) {
+            throw new Error(`No certificate was issued in transaction ${txHash}`);
+        }
+
+        let result: ethers.utils.Result;
+
+        for (const log of tx.logs) {
+            try {
+                result = blockchainProperties.issuer.interface.decodeEventLog(
+                    'CertificationRequestApproved',
+                    log.data,
+                    log.topics
+                );
+            } catch (e) {
+                continue;
+            }
+
+            try {
+                result = blockchainProperties.issuer.interface.decodeEventLog(
+                    'PrivateCertificationRequestApproved',
+                    log.data,
+                    log.topics
+                );
+            } catch (e) {
+                continue;
+            }
+        }
+
+        const newCertificate = new Certificate(result._id.toNumber(), blockchainProperties);
+        newCertificate.creationTransactionHash = txHash;
 
         return newCertificate.sync();
     }
 
+       /**
+     * 
+     *
+     * @description Uses Private Issuer contract to allow issuance of a private Certificate
+     *
+     */
     public static async createPrivate(
         to: string,
         value: BigNumber,
@@ -131,17 +173,12 @@ export class Certificate implements ICertificate {
         deviceId: string,
         blockchainProperties: IBlockchainProperties,
         metadata?: string
-    ): Promise<{ certificate: Certificate; proof: IOwnershipCommitmentProofWithTx }> {
+    ): Promise<{ proof: IOwnershipCommitmentProof; tx: ContractTransaction }> {
         if (value.gt(MAX_ENERGY_PER_CERTIFICATE)) {
             throw new Error(
                 `Too much energy requested. Requested: ${value}, Max: ${MAX_ENERGY_PER_CERTIFICATE}`
             );
         }
-
-        const getIdFromEvents = (logs: BlockchainEvent[]): number =>
-            Number(
-                logs.find((log) => log.event === 'PrivateCertificationRequestApproved').topics[2]
-            );
 
         const { privateIssuer } = blockchainProperties;
         const privateIssuerWithSigner = privateIssuer.connect(blockchainProperties.activeUser);
@@ -166,20 +203,19 @@ export class Certificate implements ICertificate {
             commitmentProof.rootHash,
             data
         );
-        const { events, blockHash } = await tx.wait();
-
-        const newCertificate = new Certificate(getIdFromEvents(events), blockchainProperties);
-        newCertificate.creationBlockHash = blockHash;
 
         return {
-            certificate: await newCertificate.sync(),
-            proof: {
-                ...commitmentProof,
-                txHash: tx.hash
-            }
+            proof: commitmentProof,
+            tx
         };
     }
 
+     /**
+     * 
+     *
+     * @description Retrieves current data for a Certificate 
+     *
+     */
     async sync(): Promise<Certificate> {
         if (this.id === null) {
             return this;
@@ -187,9 +223,7 @@ export class Certificate implements ICertificate {
 
         const { registry } = this.blockchainProperties;
 
-        const issuanceBlock = this.creationBlockHash
-            ? await registry.provider.getBlock(this.creationBlockHash)
-            : await this.getIssuanceBlock();
+        const issuanceTransaction = await this.getIssuanceTransaction();
 
         const certOnChain = await registry.getCertificate(this.id);
 
@@ -201,17 +235,33 @@ export class Certificate implements ICertificate {
         this.metadata = decodedData.metadata;
 
         this.issuer = certOnChain.issuer;
-        this.creationTime = Number(issuanceBlock.timestamp);
-        this.creationBlockHash = issuanceBlock.hash;
 
-        this.owners = await calculateOwnership(this.id, this.blockchainProperties);
-        this.claimers = await calculateClaims(this.id, this.blockchainProperties);
+        const creationBlock = await registry.provider.getBlock(issuanceTransaction.blockNumber);
+        this.creationTime = Number(creationBlock.timestamp);
+        this.creationTransactionHash = issuanceTransaction.transactionHash;
+
+        this.owners = await calculateOwnership(
+            this.id,
+            this.blockchainProperties,
+            issuanceTransaction.blockNumber
+        );
+        this.claimers = await calculateClaims(
+            this.id,
+            this.blockchainProperties,
+            issuanceTransaction.blockNumber
+        );
 
         this.initialized = true;
 
         return this;
     }
 
+    /**
+     * 
+     *
+     * @description Uses Registry contract to allow user to claim all or part of a Certificate's volume units
+     *
+     */
     async claim(
         claimData: IClaimData,
         amount?: BigNumber,
@@ -244,6 +294,12 @@ export class Certificate implements ICertificate {
         );
     }
 
+     /**
+     * 
+     *
+     * @description Uses Registry contract to allow user to transfer part or all of a Certificate's volume units to another address 
+     *
+     */
     async transfer(to: string, amount?: BigNumber, from?: string): Promise<ContractTransaction> {
         if (await this.isRevoked()) {
             throw new Error(`Unable to transfer Certificate #${this.id}. It has been revoked.`);
@@ -265,7 +321,12 @@ export class Certificate implements ICertificate {
             utils.defaultAbiCoder.encode([], []) // TO-DO: Store more meaningful transfer data?
         );
     }
-
+     /**
+     * 
+     *
+     * @description Uses Issuer contract to allow issuer to mint more volumes of energy units for an existing Certificate 
+     *
+     */
     async mint(to: string, volume: BigNumber): Promise<ContractTransaction> {
         const toAddress = ethers.utils.getAddress(to);
 
@@ -275,6 +336,12 @@ export class Certificate implements ICertificate {
         return issuerWithSigner.mint(toAddress, this.id, volume);
     }
 
+      /**
+     * 
+     *
+     * @description Uses Issuer contract to allow issuer to revoke a Certificate 
+     *
+     */
     async revoke(): Promise<ContractTransaction> {
         const { issuer } = this.blockchainProperties;
         const issuerWithSigner = issuer.connect(this.blockchainProperties.activeUser);
@@ -282,25 +349,43 @@ export class Certificate implements ICertificate {
         return issuerWithSigner.revokeCertificate(this.id);
     }
 
+    /**
+     * 
+     *
+     * @description Allows issuer to see if Certificate has been revoked
+     * @returns boolean
+     */
     async isRevoked(): Promise<boolean> {
         const { issuer } = this.blockchainProperties;
 
+        const issuanceTransaction = await this.getIssuanceTransaction();
+
         const revokedEvents = await getEventsFromContract(
             issuer,
-            issuer.filters.CertificateRevoked(this.id)
+            issuer.filters.CertificateRevoked(this.id),
+            issuanceTransaction.blockNumber
         );
 
         return revokedEvents.length > 0;
     }
 
+     /**
+     * 
+     *
+     * @description Returns all claim data for a Certificate
+     *
+     */
     async getClaimedData(): Promise<IClaim[]> {
         const { registry } = this.blockchainProperties;
+
+        const issuanceTransaction = await this.getIssuanceTransaction();
 
         const claims: IClaim[] = [];
 
         const claimSingleEvents = await getEventsFromContract(
             registry,
-            registry.filters.ClaimSingle(null, null, null, null, null, null)
+            registry.filters.ClaimSingle(null, null, null, null, null, null),
+            issuanceTransaction.blockNumber
         );
 
         for (const claimEvent of claimSingleEvents) {
@@ -321,7 +406,8 @@ export class Certificate implements ICertificate {
 
         const claimBatchEvents = await getEventsFromContract(
             registry,
-            registry.filters.ClaimBatch(null, null, null, null, null, null)
+            registry.filters.ClaimBatch(null, null, null, null, null, null),
+            issuanceTransaction.blockNumber
         );
 
         for (const claimBatchEvent of claimBatchEvents) {
@@ -348,7 +434,8 @@ export class Certificate implements ICertificate {
 
         const claimBatchMultipleEvents = await getEventsFromContract(
             registry,
-            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null)
+            registry.filters.ClaimBatchMultiple(null, null, null, null, null, null),
+            issuanceTransaction.blockNumber
         );
 
         for (const claimBatchMultipleEvent of claimBatchMultipleEvents) {
@@ -377,8 +464,18 @@ export class Certificate implements ICertificate {
         return claims;
     }
 
-    private async getIssuanceBlock(): Promise<providers.Block> {
+     /**
+     * 
+     *
+     * @description Returns the Issuance transaction for a Certificate
+     *
+     */
+    private async getIssuanceTransaction(): Promise<providers.TransactionReceipt> {
         const { registry } = this.blockchainProperties;
+
+        if (this.creationTransactionHash) {
+            return await registry.provider.getTransactionReceipt(this.creationTransactionHash);
+        }
 
         const allIssuanceLogs = await getEventsFromContract(
             registry,
@@ -404,6 +501,6 @@ export class Certificate implements ICertificate {
             }
         }
 
-        return registry.provider.getBlock(issuanceLog.blockHash);
+        return registry.provider.getTransactionReceipt(issuanceLog.transactionHash);
     }
 }

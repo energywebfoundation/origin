@@ -28,15 +28,11 @@ export const useCreateBundlePageEffects = () => {
     user,
     exchangeDepositAddress,
   });
-  const {
-    exchangeCertificates,
-    isLoading: areCertificatesLoading,
-  } = useApiAllExchangeCertificates();
+  const { exchangeCertificates, isLoading: areCertificatesLoading } =
+    useApiAllExchangeCertificates();
   const { allDevices, isLoading: areDevicesLoading } = useApiAllDevices();
-  const {
-    allTypes: allFuelTypes,
-    isLoading: areFuelTypesLoading,
-  } = useAllDeviceFuelTypes();
+  const { allTypes: allFuelTypes, isLoading: areFuelTypesLoading } =
+    useAllDeviceFuelTypes();
 
   const isLoading =
     areCertificatesLoading ||

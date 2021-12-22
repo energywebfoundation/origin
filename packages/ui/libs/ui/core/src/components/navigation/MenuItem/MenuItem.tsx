@@ -1,4 +1,4 @@
-import { Button, ListItem } from '@material-ui/core';
+import { Button, ListItem } from '@mui/material';
 import clsx from 'clsx';
 import React, { FC, memo } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -14,7 +14,14 @@ export interface MenuItemProps {
 }
 
 export const MenuItem: FC<MenuItemProps> = memo(
-  ({ label, url, selected, closeMobileNav, selectedClass, buttonClass }) => {
+  ({
+    label,
+    url,
+    selected = false,
+    closeMobileNav,
+    selectedClass,
+    buttonClass,
+  }) => {
     const classes = useStyles();
     return (
       <ListItem

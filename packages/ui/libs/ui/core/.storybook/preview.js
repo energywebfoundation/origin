@@ -1,37 +1,32 @@
 import React from 'react';
+import { addDecorator } from '@storybook/react';
 import { MemoryRouter } from 'react-router';
-import { makeOriginUiConfig } from '@energyweb/origin-ui-theme';
-import { ThemeProvider } from '@material-ui/core/styles';
-import StyledEngineProvider from '@material-ui/core/StyledEngineProvider';
+import { makeOriginUiConfig, ThemeModeEnum } from '@energyweb/origin-ui-theme';
+import { ThemeProvider } from '@mui/material/styles';
+import StyledEngineProvider from '@mui/material/StyledEngineProvider';
 import { ThemeProvider as EmotionThemeProvider } from 'emotion-theming';
 
-const uiConfiguration = makeOriginUiConfig();
+const uiConfiguration = makeOriginUiConfig(ThemeModeEnum.Dark);
+
 export const OriginThemeProvider = ({ children }) => {
-  const configuration = makeOriginUiConfig();
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={configuration.materialTheme}>
+      <ThemeProvider theme={uiConfiguration.materialTheme}>
         {children}
       </ThemeProvider>
     </StyledEngineProvider>
   );
 };
 
-const themeDecorator = (Story, context) => (
+addDecorator((story) => (
   <EmotionThemeProvider theme={uiConfiguration.materialTheme}>
-    <OriginThemeProvider>
-      <Story {...context} />
-    </OriginThemeProvider>
+    <OriginThemeProvider>{story()}</OriginThemeProvider>
   </EmotionThemeProvider>
-);
+));
 
-const routerDecorator = (Story) => (
-  <MemoryRouter initialEntries={['/']}>
-    <Story />
-  </MemoryRouter>
-);
-
-export const decorators = [themeDecorator, routerDecorator];
+addDecorator((story) => (
+  <MemoryRouter initialEntries={['/']}>{story()}</MemoryRouter>
+));
 
 export const parameters = {
   backgrounds: {

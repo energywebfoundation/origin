@@ -26,15 +26,21 @@ const useCertifiedAmountForDevice = (
 };
 
 export const useDeviceDetailData = (id: OriginDeviceDTO['id']) => {
-  const { data: originDevice, isLoading: isOriginDeviceLoading } =
-    useDeviceRegistryControllerGet(id);
+  const {
+    data: originDevice,
+    isLoading: isOriginDeviceLoading,
+    isRefetching: isOriginDeviceRefetching,
+  } = useDeviceRegistryControllerGet(id);
 
-  const { data: iRecDevice, isLoading: isIRecDeviceLoading } =
-    useDeviceControllerGet(originDevice?.externalRegistryId, {
-      query: {
-        enabled: !!originDevice?.externalRegistryId,
-      },
-    });
+  const {
+    data: iRecDevice,
+    isLoading: isIRecDeviceLoading,
+    isRefetching: isIRecDeviceRefetching,
+  } = useDeviceControllerGet(originDevice?.externalRegistryId, {
+    query: {
+      enabled: !!originDevice?.externalRegistryId,
+    },
+  });
 
   const { certifiedAmount, isCertifiedLoading } = useCertifiedAmountForDevice(
     originDevice?.externalRegistryId
@@ -42,8 +48,9 @@ export const useDeviceDetailData = (id: OriginDeviceDTO['id']) => {
 
   const isLoading =
     isOriginDeviceLoading || isIRecDeviceLoading || isCertifiedLoading;
+  const isRefetching = isOriginDeviceRefetching || isIRecDeviceRefetching;
   const device =
     !isLoading && composePublicDevices([originDevice], [iRecDevice])[0];
 
-  return { device, certifiedAmount, isLoading };
+  return { device, certifiedAmount, isLoading, isRefetching };
 };

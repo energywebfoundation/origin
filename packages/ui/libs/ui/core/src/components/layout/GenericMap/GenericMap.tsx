@@ -5,25 +5,36 @@ import {
   GoogleMapProps,
   Marker,
   InfoWindow,
+  MarkerProps,
 } from '@react-google-maps/api';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { useGenericMapEffects } from './GenericMap.effects';
 import { useStyles } from './GenericMap.styles';
 
+export type MapItem = {
+  id: string;
+  latitude: string;
+  longitude: string;
+  label?: string;
+  [key: string]: any;
+};
+
 export interface GenericMapProps {
   apiKey: string;
-  allItems: any[];
-  infoWindowContent?: FC<any>;
+  mapItems: MapItem[];
+  infoWindowContent?: FC<MapItem>;
   containerClassName?: string;
   mapProps?: GoogleMapProps;
+  markerProps?: Omit<MarkerProps, 'position' | 'onClick' | 'label'>;
 }
 
 export const GenericMap: FC<GenericMapProps> = ({
   apiKey,
-  allItems,
+  mapItems,
   infoWindowContent: InfoWindowContent,
   containerClassName,
   mapProps,
+  markerProps,
 }) => {
   const {
     defaultCenter,
@@ -31,7 +42,7 @@ export const GenericMap: FC<GenericMapProps> = ({
     showWindowForItem,
     itemHighlighted,
     setItemHighllighted,
-  } = useGenericMapEffects(allItems);
+  } = useGenericMapEffects(mapItems);
   const classes = useStyles();
 
   return (
@@ -47,7 +58,7 @@ export const GenericMap: FC<GenericMapProps> = ({
         mapContainerClassName={containerClassName ?? classes.map}
         {...mapProps}
       >
-        {allItems.map((item) => (
+        {mapItems.map((item) => (
           <React.Fragment key={item.id}>
             <Marker
               position={{
@@ -55,6 +66,8 @@ export const GenericMap: FC<GenericMapProps> = ({
                 lng: parseFloat(item.longitude),
               }}
               onClick={() => showWindowForItem(item)}
+              label={item.label}
+              {...markerProps}
             />
           </React.Fragment>
         ))}

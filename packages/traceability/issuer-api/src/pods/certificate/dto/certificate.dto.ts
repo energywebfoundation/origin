@@ -1,43 +1,43 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
     IsArray,
     IsBoolean,
     IsInt,
+    IsOptional,
     IsPositive,
     IsString,
     Min,
-    ValidateIf,
     ValidateNested
 } from 'class-validator';
 import { ClaimDTO } from './claim.dto';
 import { EnergyDTO } from './energy.dto';
 
 export class CertificateDTO {
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Certificate Id' })
     @IsInt()
     @Min(1)
     id: number;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: 'DeviceB-789' })
     @IsString()
     deviceId: string;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154471 })
     @IsInt()
     @IsPositive()
     generationStartTime: number;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154471 })
     @IsInt()
     @IsPositive()
     generationEndTime: number;
 
-    @ApiProperty({ type: Number })
+    @ApiProperty({ type: Number, description: 'Unix timestamp', example: 1636154471 })
     @IsInt()
     @IsPositive()
     creationTime: number;
 
-    @ApiProperty({ type: String })
+    @ApiProperty({ type: String, example: 'Additional Details' })
     @IsString()
     metadata: string;
 
@@ -53,27 +53,29 @@ export class CertificateDTO {
     @IsBoolean()
     isClaimed: boolean;
 
-    @ApiProperty({ required: false, type: [ClaimDTO] })
-    @ValidateIf((dto: CertificateDTO) => !!dto.myClaims)
+    @ApiPropertyOptional({ type: [ClaimDTO] })
+    @IsOptional()
     @IsArray()
     myClaims?: ClaimDTO[];
 
-    @ApiProperty({ required: false, type: [ClaimDTO] })
-    @ValidateIf((dto: CertificateDTO) => !!dto.claims)
+    @ApiPropertyOptional({ type: [ClaimDTO] })
+    @IsOptional()
     @IsArray()
     claims?: ClaimDTO[];
 
-    @ApiProperty({ required: false })
-    @ValidateIf((dto: CertificateDTO) => !!dto.blockchain)
+    @ApiPropertyOptional()
+    @IsOptional()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blockchain?: any;
 
-    @ApiProperty({ type: String, required: false })
-    @ValidateIf((dto: CertificateDTO) => !!dto.creationBlockHash)
-    creationBlockHash?: string;
+    @ApiProperty({
+        type: String,
+        example: '0x2b8da531e46cff1e217abc113495befac9384339feb10816b0f7f2ffa02fadd4'
+    })
+    creationTransactionHash?: string;
 
-    @ApiProperty({ type: Boolean, required: false })
-    @ValidateIf((dto: CertificateDTO) => !!dto.issuedPrivately)
+    @ApiPropertyOptional({ type: Boolean })
+    @IsOptional()
     @IsBoolean()
     issuedPrivately?: boolean;
 }

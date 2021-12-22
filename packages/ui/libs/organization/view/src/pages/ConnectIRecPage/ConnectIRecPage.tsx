@@ -8,7 +8,7 @@ import {
   Paper,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import React, { FC } from 'react';
 import { useConnectIRecPageEffects } from './ConnectIRecPage.effects';
 import { useStyles } from './ConnectIRecPage.styles';
@@ -67,3 +67,5 @@ export const ConnectIRecPage: FC = () => {
     </Paper>
   );
 };
+
+export default ConnectIRecPage;

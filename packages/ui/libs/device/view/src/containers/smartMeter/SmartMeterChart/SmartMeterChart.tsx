@@ -1,10 +1,18 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { ButtonsGroupWithArrows } from '@energyweb/origin-ui-core';
 import React, { FC } from 'react';
 import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+} from 'chart.js';
 import { useSmartMeterChartsEffects } from './SmartMeterChart.effects';
 import { smartMeterChartOptions } from './SmartMeterChart.options';
 import { useStyles } from './SmartMeterChart.styles';
+
+ChartJS.register(LinearScale, CategoryScale, BarElement);
 
 interface SmartMeterChartProps {
   meterId: string;
@@ -39,7 +47,7 @@ export const SmartMeterChart: FC<SmartMeterChartProps> = ({ meterId }) => {
         </div>
       )}
       <div className={classes.chartWrapper}>
-        <Bar type="bar" data={chartData} options={smartMeterChartOptions} />
+        <Bar data={chartData} options={smartMeterChartOptions} />
       </div>
     </>
   );

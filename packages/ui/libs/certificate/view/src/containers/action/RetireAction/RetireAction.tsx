@@ -1,17 +1,17 @@
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
-import { withMetamask } from '@energyweb/origin-ui-blockchain';
 import {
   ListActionComponentProps,
   FormSelect,
   FormDatePicker,
   FormInput,
 } from '@energyweb/origin-ui-core';
-import { CircularProgress, Grid, Box } from '@material-ui/core';
+import { withMetamask } from '@energyweb/origin-ui-web3';
+import { CircularProgress, Grid, Box, Tooltip } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
+import { ConnectMetamaskBlockchainInbox } from '../../metamask';
 import { useRetireActionEffects } from './RetireAction.effects';
-import { useStyles } from './RetireAction.styles';
 
 type RetireActionProps = ListActionComponentProps<CertificateDTO['id']>;
 
@@ -20,7 +20,6 @@ export type TRetireAction = (
 ) => ReactElement;
 
 const Component: TRetireAction = ({ selectedIds, resetIds }) => {
-  const classes = useStyles();
   const {
     title,
     buttonText,
@@ -32,6 +31,8 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
     register,
     control,
     errors,
+    selectDisabled,
+    selectDisabledTooltip,
   } = useRetireActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
@@ -45,13 +46,21 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
       submitHandler={retireHandler}
       buttonDisabled={buttonDisabled}
     >
-      <FormSelect
-        control={control}
-        field={fields[0]}
-        errorExists={!isEmpty(errors[fields[0].name])}
-        errorText={(errors[fields[0].name] as any)?.message ?? ''}
-      />
-      <Grid container spacing={1} className={classes.mb}>
+      <Tooltip
+        placement="top"
+        title={selectDisabled ? selectDisabledTooltip : ''}
+      >
+        <div>
+          <FormSelect
+            disabled={selectDisabled}
+            control={control}
+            field={fields[0]}
+            errorExists={!isEmpty(errors[fields[0].name])}
+            errorText={(errors[fields[0].name] as any)?.message ?? ''}
+          />
+        </div>
+      </Tooltip>
+      <Grid container spacing={1} sx={{ marginBottom: '10px' }}>
         <Grid item xs={6}>
           <FormDatePicker
             control={control}
@@ -81,4 +90,7 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
   );
 };
 
-export const RetireAction = withMetamask(Component);
+export const RetireAction = withMetamask(
+  Component,
+  ConnectMetamaskBlockchainInbox
+);

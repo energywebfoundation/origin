@@ -4,25 +4,23 @@ import { Routes, Route } from 'react-router-dom';
 import { OrganizationModalsCenter } from './containers';
 import { OrganizationModalsProvider } from './context';
 import {
-  RegisterPage,
-  RegisterIRecPage,
-  OrganizationViewPage,
-  InvitationsPage,
-  MembersPage,
-  InvitePage,
-  AllOrganizationsPage,
-  CreateBeneficiaryPage,
   ConnectIRecPage,
+  CreateBeneficiaryPage,
+  InvitationsPage,
+  InvitePage,
+  MembersPage,
+  OrganizationViewPage,
+  RegisterIRecPage,
+  RegisterPage,
 } from './pages';
 
-interface OrganizationAppProps {
+export interface OrganizationAppProps {
   routesConfig: {
     showRegisterOrg: boolean;
     showMyOrg: boolean;
     showMembers: boolean;
     showInvitations: boolean;
     showInvite: boolean;
-    showAllOrgs: boolean;
     showRegisterIRec: boolean;
     showCreateBeneficiary: boolean;
     showConnectIRec: boolean;
@@ -36,7 +34,6 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
     showMembers,
     showInvitations,
     showInvite,
-    showAllOrgs,
     showRegisterIRec,
     showCreateBeneficiary,
     showConnectIRec,
@@ -46,12 +43,12 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
     <OrganizationModalsProvider>
       <Routes>
         {showMyOrg && <Route path="my" element={<OrganizationViewPage />} />}
-        {showInvitations && (
-          <Route path="invitations" element={<InvitationsPage />} />
-        )}
+        <Route
+          path="invitations"
+          element={<InvitationsPage redirectToIndex={!showInvitations} />}
+        />
         {showInvite && <Route path="invite" element={<InvitePage />} />}
         {showMembers && <Route path="members" element={<MembersPage />} />}
-        {showAllOrgs && <Route path="all" element={<AllOrganizationsPage />} />}
         {showRegisterOrg && (
           <Route path="register" element={<RegisterPage />} />
         )}
@@ -67,10 +64,8 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
         {showConnectIRec && (
           <Route path="connect-irec" element={<ConnectIRecPage />} />
         )}
-
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-
       <OrganizationModalsCenter />
     </OrganizationModalsProvider>
   );

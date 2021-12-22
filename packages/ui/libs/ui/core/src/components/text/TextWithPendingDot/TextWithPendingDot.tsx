@@ -1,40 +1,37 @@
 import React, { FC } from 'react';
-import {
-  Tooltip,
-  Typography,
-  TypographyVariant,
-  TypographyProps,
-} from '@material-ui/core';
-import { Dot } from '../../icons';
+import { Tooltip, Typography, TypographyProps } from '@mui/material';
+import { Dot } from './Dot';
 import { useStyles } from './TextWithPendingDot.styles';
+import { useTheme } from '@mui/styles';
 
 export interface TextWithPendingDotProps {
   textContent: string;
-  pending: boolean;
+  pending?: boolean;
   tooltipText?: string;
-  variant?: TypographyVariant;
-  typographyProps?: TypographyProps;
+  typographyProps?: TypographyProps & { component?: 'span' | 'p' };
+  showSuccessDot?: boolean;
 }
 
 export const TextWithPendingDot: FC<TextWithPendingDotProps> = ({
   textContent,
   pending = false,
-  tooltipText,
-  variant,
+  tooltipText = '',
   typographyProps,
+  showSuccessDot = false,
 }) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const dotBgColor = showSuccessDot ? theme.palette.primary.main : undefined;
+
   return (
     <div className={classes.blockWrapper}>
       <div>
-        <Typography variant={variant} {...typographyProps}>
-          {textContent}
-        </Typography>
+        <Typography {...typographyProps}>{textContent}</Typography>
       </div>
-      {pending && (
+      {(pending || showSuccessDot) && (
         <Tooltip title={tooltipText}>
           <div className={classes.dotWrapper}>
-            <Dot />
+            <Dot backgroundColor={dotBgColor} />
           </div>
         </Tooltip>
       )}

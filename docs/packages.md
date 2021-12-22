@@ -1,8 +1,10 @@
 # Packages
 
-Origin consist of many publicly available NPM packages that allows developers to build their own RECs traceability and trading solutions. The goal is to allow implementers to pick and chose from the suite of available SDK components as well as allow them to create custom implementations for e.g for other issuers like I-REC.
+Origin consist of publicly available NPM packages that allow developers to build their own [Energy Attribute Certificate (EAC)](./user-guide-glossary.md#energy-attribute-certificate) traceability and trading solutions.  
 
-By design SDK packages are loosely coupled which enables the possibility to implement solutions that consist of only part of the Origin features like:
+The SDKs are structured  so that implementers to pick and chose from the suite of available SDK components, as well as allow them to create custom implementations for for other issuers, such as I-REC.
+
+By design, the SDK packages are loosely coupled, which enables the possibility to implement solutions that consist of only part of the Origin features, such as:
 
 -   issuance only
 -   device registry only
@@ -29,7 +31,7 @@ Naming scheme:
 -   **client** suffix - packages that contains auto-generated Typescript client libraries for **api** projects _for e.g @energyweb/origin-device-registry-api-client_
 -   **wrapper** suffix - packages that contains wrapper libraries for external APIs _for e.g @energyweb/issuer-irec-api-wrapper_
 
-### Devices
+### [Devices](./device-registry.md)
 
 Device registration related packages.
 
@@ -67,7 +69,7 @@ Organization registration and management related packages.
 | @energyweb/origin-organization-irec-api | I-REC organizations API            |
 | @energyweb/origin-ui-irec-core          | Core component for Origin based UI |
 
-### Traceability
+### [Traceability](./traceability.md)
 
 Issuance and transparency related packages.
 
@@ -87,7 +89,7 @@ Issuance and transparency related packages.
 | @energyweb/issuer-irec-api-wrapper | I-REC API client package           |
 | @energyweb/origin-ui-irec-core     | Core component for Origin based UI |
 
-### Trade
+### [Trade](./trade.md)
 
 RECs trading related packages.
 

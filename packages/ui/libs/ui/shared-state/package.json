@@ -11,18 +11,20 @@
   "author": "EnergyWeb DevHub GmbH; Alexander Popadyuk, alexander.popadyuk@energyweb.org",
   "description": "Library for managing shared state elements used for building Origin marketplace user interface",
   "homepage": "https://github.com/energywebfoundation/origin/blob/master/packages/ui/libs/ui/shared-state/README.md",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/ui-shared-state.umd.js",
   "module": "dist/ui-shared-state.esm.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@energyweb/origin-ui-localization": "0.1.0",
-    "i18next": "20.6.1",
-    "i18next-icu": "1.4.2",
-    "react-i18next": "11.12.0"
+    "i18next": "21.5.4",
+    "react-i18next": "11.14.3"
   }
 }

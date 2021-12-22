@@ -6,7 +6,7 @@ import {
   GridProps,
   Typography,
   TypographyProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { MaterialDatepicker, MaterialDatepickerProps } from '../../form';
 import { useStyles } from './TimeframeSelect.styles';
 
@@ -15,7 +15,7 @@ export interface TimeframeSelectProps {
   toPickerProps: MaterialDatepickerProps;
   title?: string;
   titleProps?: TypographyProps;
-  titleWrapperProps?: BoxProps;
+  titleWrapperProps?: GridProps;
   wrapperProps?: BoxProps;
   containerProps?: GridProps;
   pickersContainerProps?: GridProps;
@@ -24,9 +24,9 @@ export interface TimeframeSelectProps {
 }
 
 export const TimeframeSelect: FC<TimeframeSelectProps> = ({
-  title,
   fromPickerProps,
   toPickerProps,
+  title = '',
   titleProps,
   titleWrapperProps,
   wrapperProps,
@@ -46,21 +46,23 @@ export const TimeframeSelect: FC<TimeframeSelectProps> = ({
         {...containerProps}
       >
         {title && (
-          <Box
+          <Grid
             className={classes.titleWrapper}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
+            item
+            xs={12}
+            md={6}
             {...titleWrapperProps}
           >
             <Typography className={classes.title} {...titleProps}>
               {title}
             </Typography>
-          </Box>
+          </Grid>
         )}
         <Grid
           className={classes.dates}
-          container
+          item
+          xs={12}
+          md={6}
           alignItems="center"
           {...pickersContainerProps}
         >

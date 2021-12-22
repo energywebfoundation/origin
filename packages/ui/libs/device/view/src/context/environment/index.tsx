@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { FC } from 'react';
 
 export type DeviceEnvVariables = {
+  singleAccountMode: boolean;
   googleMapsApiKey: string;
   smartMeterId: string;
 };

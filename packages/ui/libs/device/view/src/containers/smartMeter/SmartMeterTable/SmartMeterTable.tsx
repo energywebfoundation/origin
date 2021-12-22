@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { TableComponent } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
 import { useSmartMeterTableEffects } from './SmartMeterTable.effects';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { useStyles } from './SmartMeterTable.styles';
 
 interface SmartMeterTableProps {

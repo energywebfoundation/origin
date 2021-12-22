@@ -5,7 +5,7 @@ import {
 import { BundleSplit } from '@energyweb/origin-ui-exchange-data';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
 import { Unit } from '@energyweb/utils-general';
-import { BigNumber } from 'ethers';
+import { BigNumber } from '@ethersproject/bignumber';
 import { useState } from 'react';
 
 export const bundlePrice = ({

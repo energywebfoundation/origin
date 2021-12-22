@@ -1,12 +1,6 @@
 import React, { FC, memo } from 'react';
-import {
-  AppBar,
-  IconButton,
-  Toolbar,
-  Box,
-  SwitchProps,
-} from '@material-ui/core';
-import { Menu } from '@material-ui/icons';
+import { AppBar, IconButton, Toolbar, Box, SwitchProps } from '@mui/material';
+import { Menu } from '@mui/icons-material';
 import clsx from 'clsx';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { ThemeSwitcher } from '../ThemeSwitcher';
@@ -14,8 +8,8 @@ import { useStyles } from './MobileTopBar.styles';
 import { TopBarButtonData } from '../TopBar';
 
 export interface MobileTopBarProps {
-  onMobileNavOpen: () => void;
   buttons: TopBarButtonData[];
+  onMobileNavOpen: () => void;
   toolbarClassName?: string;
   themeSwitcher?: boolean;
   themeMode?: ThemeModeEnum;
@@ -25,12 +19,12 @@ export interface MobileTopBarProps {
 
 export const MobileTopBar: FC<MobileTopBarProps> = memo(
   ({
-    onMobileNavOpen,
     buttons,
+    onMobileNavOpen,
     toolbarClassName,
-    themeSwitcher,
-    themeMode,
-    changeThemeMode,
+    themeSwitcher = false,
+    themeMode = ThemeModeEnum.Light,
+    changeThemeMode = () => {},
     themeSwitchProps,
   }) => {
     const classes = useStyles();

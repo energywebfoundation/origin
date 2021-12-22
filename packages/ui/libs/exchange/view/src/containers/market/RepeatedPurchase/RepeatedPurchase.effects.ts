@@ -1,22 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRepeatedPurchaseFormLogic } from '@energyweb/origin-ui-exchange-logic';
-import { TimeFrame } from '@energyweb/exchange-irec-react-query-client';
+import {
+  DemandFormValues,
+  useRepeatedPurchaseFormLogic,
+} from '@energyweb/origin-ui-exchange-logic';
 import { useApiCreateDemandHandler } from '@energyweb/origin-ui-exchange-data';
 import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { calculateDemandTotalVolume } from '@energyweb/origin-ui-exchange-data';
-import { useMediaQuery, useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/styles';
+import { useMediaQuery } from '@mui/material';
 import { MarketFiltersState } from '../../../reducer';
 import { MarketButton } from '../TotalAndButtons';
-
-type DemandFormValues = {
-  period: TimeFrame;
-  volume: number;
-  startDate: Dayjs;
-  endDate: Dayjs;
-  price: number;
-};
 
 export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
   const theme = useTheme();
@@ -24,12 +19,11 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
   const { initialValues, validationSchema, fields, buttons } =
     useRepeatedPurchaseFormLogic(mobileView);
 
-  const { register, control, formState, handleSubmit, watch, reset } =
-    useForm<DemandFormValues>({
-      mode: 'onChange',
-      resolver: yupResolver(validationSchema),
-      defaultValues: initialValues,
-    });
+  const { register, control, formState, handleSubmit, watch, reset } = useForm({
+    mode: 'onChange',
+    resolver: yupResolver(validationSchema) as any,
+    defaultValues: initialValues,
+  });
   const createDemandHandler = useApiCreateDemandHandler(filters, reset);
 
   const values = watch();
@@ -41,8 +35,8 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
       const newTotal = await calculateDemandTotalVolume({
         period,
         volume,
-        startDate,
-        endDate,
+        startDate: startDate as Dayjs,
+        endDate: endDate as Dayjs,
       });
       setTotalVolume(newTotal);
     };
@@ -51,15 +45,23 @@ export const useRepeatedPurchaseEffects = (filters: MarketFiltersState) => {
   }, [values.period, values.volume, values.startDate, values.endDate]);
 
   const onSubmit = handleSubmit(async (values) => {
-    await createDemandHandler(values);
+    await createDemandHandler(values as DemandFormValues);
   });
 
   const { isValid, errors, isDirty, dirtyFields, isSubmitting } = formState;
 
   const isValidDates =
-    dayjs(values.startDate).isValid() && dayjs(values.endDate).isValid();
+    dayjs(values.startDate as Dayjs).isValid() &&
+    dayjs(values.endDate as Dayjs).isValid();
 
-  const buttonDisabled = !isValid || !isDirty || !isValidDates || isSubmitting;
+  const onlyFuelTypeSpecified =
+    filters.fuelType.length > 0 && filters.deviceType.length === 0;
+  const buttonDisabled =
+    !isValid ||
+    !isDirty ||
+    !isValidDates ||
+    isSubmitting ||
+    onlyFuelTypeSpecified;
 
   const buttonWithState: MarketButton[] = buttons?.map((button) => ({
     ...button,

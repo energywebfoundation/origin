@@ -9,4 +9,3 @@ export * from './notification';
 export * from './list';
 export * from './card';
 export * from './buttons';
-export * from './cardTable';

@@ -1,12 +1,12 @@
-import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
+import { IEventHandler, EventsHandler, EventBus } from '@nestjs/cqrs';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { Certificate as OnChainCertificate } from '@energyweb/issuer';
 
-import { SyncCertificateEvent } from '../events/sync-certificate-event';
 import { Certificate } from '../certificate.entity';
+import { SyncCertificateEvent, CertificateUpdatedEvent } from '../events';
 
 @EventsHandler(SyncCertificateEvent)
 export class SyncCertificateHandler implements IEventHandler<SyncCertificateEvent> {
@@ -14,10 +14,11 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
 
     constructor(
         @InjectRepository(Certificate)
-        private readonly repository: Repository<Certificate>
+        private readonly repository: Repository<Certificate>,
+        private readonly eventBus: EventBus
     ) {}
 
-    async handle({ id }: SyncCertificateEvent): Promise<ISuccessResponse> {
+    async handle({ id, byTxHash }: SyncCertificateEvent): Promise<ISuccessResponse> {
         this.logger.log(`Detected a new event for certificate with id ${id}. Re-syncing...`);
 
         const certificate = await this.repository.findOne({ id }, { relations: ['blockchain'] });
@@ -56,6 +57,8 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
             this.logger.error(JSON.stringify(e));
             return ResponseFailure(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        this.eventBus.publish(new CertificateUpdatedEvent(id, byTxHash));
 
         this.logger.log(`Successfully re-synced certificate with id ${id}.`);
         return ResponseSuccess();

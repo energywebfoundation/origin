@@ -1,6 +1,18 @@
-import { AppModule as ExchangeModule, entities as ExchangeEntities } from '@energyweb/exchange';
+import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import {
+    AccountModule,
+    AppModule as ExchangeModule,
+    entities as ExchangeEntities
+} from '@energyweb/exchange';
 import { ExchangeErc1888Module } from '@energyweb/exchange-io-erc1888';
-import { AppModule as ExchangeIRECModule } from '@energyweb/exchange-irec';
+import {
+    AppModule as ExchangeIRECModule,
+    entities as ExchangeIRECEntities
+} from '@energyweb/exchange-irec';
 import { AppModule as IssuerModule, entities as IssuerEntities } from '@energyweb/issuer-irec-api';
 import {
     AppModule as OriginBackendModule,
@@ -8,14 +20,14 @@ import {
     OrganizationModule,
     UserModule
 } from '@energyweb/origin-backend';
-import { HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
+import { getDBConnectionOptions, HTTPLoggingInterceptor } from '@energyweb/origin-backend-utils';
 import {
     AppModule as OriginDeviceRegistry,
     entities as OriginDeviceEntities
 } from '@energyweb/origin-device-registry-api';
 import {
-    DeviceModule as IrecDeviceModule,
     AppModule as IRECDeviceRegistry,
+    DeviceModule as IrecDeviceModule,
     entities as IRECDeviceEntities
 } from '@energyweb/origin-device-registry-irec-local-api';
 import {
@@ -24,28 +36,27 @@ import {
     RegistrationModule
 } from '@energyweb/origin-organization-irec-api';
 import { ReadsModule } from '@energyweb/origin-energy-api';
-import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { CqrsModule } from '@nestjs/cqrs';
-import { ScheduleModule } from '@nestjs/schedule';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
     CertificateRequestApprovedHandler,
+    ConnectionCreatedHandler,
+    CreateExchangeDepositAddressHandler,
+    CreateIrecBeneficiaryHandler,
     DeviceCreatedHandler,
     DeviceStatusChangedHandler,
     EmailConfirmationRequestedHandler,
     InvitationCreatedHandler,
-    IrecModule,
+    IrecCertificateImportFailedHandler,
     OrganizationMemberRemovedHandler,
     OrganizationMemberRoleChangedHandler,
+    OrganizationNameAlreadyTakenHandler,
     OrganizationRegisteredHandler,
     OrganizationStatusChangedHandler,
-    RegistrationCreatedHandler
+    RegistrationCreatedHandler,
+    ResetPasswordRequestedHandler
 } from '.';
 import { IntegrationModule } from './integration';
 import { MailModule } from './mail';
-import { RefreshAllTokensTask } from './cron';
 
 const OriginAppTypeOrmModule = () => {
     const entities = [
@@ -54,34 +65,19 @@ const OriginAppTypeOrmModule = () => {
         ...IRECOrganizationEntities,
         ...IssuerEntities,
         ...OriginDeviceEntities,
-        ...IRECDeviceEntities
+        ...IRECDeviceEntities,
+        ...ExchangeIRECEntities
     ];
 
-    return process.env.DATABASE_URL
-        ? TypeOrmModule.forRoot({
-              type: 'postgres',
-              url: process.env.DATABASE_URL,
-              ssl: {
-                  rejectUnauthorized: false
-              },
-              entities,
-              logging: ['info']
-          })
-        : TypeOrmModule.forRoot({
-              type: 'postgres',
-              host: process.env.DB_HOST ?? 'localhost',
-              port: Number(process.env.DB_PORT) ?? 5432,
-              username: process.env.DB_USERNAME ?? 'postgres',
-              password: process.env.DB_PASSWORD ?? 'postgres',
-              database: process.env.DB_DATABASE ?? 'origin',
-              entities,
-              logging: ['info']
-          });
+    return TypeOrmModule.forRoot({
+        ...getDBConnectionOptions(),
+        entities,
+        logging: ['info']
+    });
 };
 
 @Module({
     imports: [
-        ScheduleModule.forRoot(),
         OriginAppTypeOrmModule(),
         OriginBackendModule,
         IRECDeviceRegistry,
@@ -98,8 +94,8 @@ const OriginAppTypeOrmModule = () => {
         CqrsModule,
         RegistrationModule,
         IrecDeviceModule,
-        IrecModule,
-        ReadsModule
+        ReadsModule,
+        AccountModule
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: HTTPLoggingInterceptor },
@@ -112,8 +108,13 @@ const OriginAppTypeOrmModule = () => {
         OrganizationMemberRoleChangedHandler,
         OrganizationStatusChangedHandler,
         RegistrationCreatedHandler,
+        ResetPasswordRequestedHandler,
         OrganizationRegisteredHandler,
-        RefreshAllTokensTask
+        ConnectionCreatedHandler,
+        IrecCertificateImportFailedHandler,
+        OrganizationNameAlreadyTakenHandler,
+        CreateExchangeDepositAddressHandler,
+        CreateIrecBeneficiaryHandler
     ]
 })
 export class OriginAppModule {}

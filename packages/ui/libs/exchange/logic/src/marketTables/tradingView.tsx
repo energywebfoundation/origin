@@ -17,6 +17,7 @@ import {
 export const formatAsksForTradingView: TFormatAsksForTradingView = ({
   asks,
   allFuelTypes,
+  expandedRowComponent,
 }) => {
   return asks?.map((ask) => {
     const fuelCode = ask.product.deviceType[0].split(';')[0];
@@ -28,6 +29,7 @@ export const formatAsksForTradingView: TFormatAsksForTradingView = ({
       fuelType: <Icon style={{ width: 20 }} />,
       volume: PowerFormatter.format(parseInt(ask.volume)),
       price: ask.price / 100,
+      expandedRowComponent,
     };
   });
 };
@@ -38,6 +40,7 @@ export const useAsksTableLogic: TUseAsksTableLogic = ({
   isLoading,
   user,
   className,
+  expandedRowComponent,
 }) => {
   const { t } = useTranslation();
   return {
@@ -48,7 +51,9 @@ export const useAsksTableLogic: TUseAsksTableLogic = ({
     },
     loading: isLoading,
     getCustomRowClassName: getOwnedOrderStyles(asks, user?.id, className),
-    data: formatAsksForTradingView({ asks, allFuelTypes }) ?? [],
+    data:
+      formatAsksForTradingView({ asks, allFuelTypes, expandedRowComponent }) ??
+      [],
   };
 };
 

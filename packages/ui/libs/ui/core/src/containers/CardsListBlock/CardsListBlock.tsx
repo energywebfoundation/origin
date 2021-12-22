@@ -1,21 +1,21 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
-import { Grid } from '@material-ui/core';
-import { GenericCardsListProps, GenericCardsList } from '../../components';
+import { BoxProps, CheckboxProps, Grid, TypographyProps } from '@mui/material';
+import { GenericCardsList, CardsListItem } from '../../components';
 import { useCardsListBlockEffects } from './CardsListBlock.effects';
 
 export interface CardsListBlockProps<Id> {
-  allItems: GenericCardsListProps<Id>['allItems'];
-  loading: GenericCardsListProps<Id>['loading'];
+  allItems: CardsListItem<Id>[];
   Content: React.FC<{ selectedIds: Id[] }>;
-  listTitle?: GenericCardsListProps<Id>['listTitle'];
-  listTitleProps?: GenericCardsListProps<Id>['listTitleProps'];
-  handleDrag?: GenericCardsListProps<Id>['handleDrag'];
-  checkAllText?: GenericCardsListProps<Id>['checkAllText'];
-  selectOnCardClick?: GenericCardsListProps<Id>['selectOnCardClick'];
-  dragNdrop?: GenericCardsListProps<Id>['dragNdrop'];
-  listWrapperProps?: GenericCardsListProps<Id>['listWrapperProps'];
-  headerWrapperProps?: GenericCardsListProps<Id>['headerWrapperProps'];
-  selectAllCheckboxProps?: GenericCardsListProps<Id>['selectAllCheckboxProps'];
+  loading?: boolean;
+  listTitle?: string;
+  listTitleProps?: TypographyProps;
+  handleDrag?: (newOrder: CardsListItem<Id>[]) => void | Promise<void>;
+  checkAllText?: string;
+  selectOnCardClick?: boolean;
+  dragNdrop?: boolean;
+  listWrapperProps?: BoxProps;
+  headerWrapperProps?: BoxProps;
+  selectAllCheckboxProps?: CheckboxProps;
 }
 
 export type TCardsListBlock = <Id>(
@@ -24,24 +24,20 @@ export type TCardsListBlock = <Id>(
 
 export const CardsListBlock: TCardsListBlock = ({
   allItems,
-  loading,
   Content,
-  listTitle,
+  loading = false,
+  listTitle = '',
   listTitleProps,
   handleDrag,
   checkAllText,
-  selectOnCardClick,
+  selectOnCardClick = true,
   listWrapperProps,
   headerWrapperProps,
   selectAllCheckboxProps,
-  dragNdrop,
+  dragNdrop = false,
 }) => {
-  const {
-    checkedIds,
-    handleCheck,
-    allChecked,
-    handleAllCheck,
-  } = useCardsListBlockEffects(allItems);
+  const { checkedIds, handleCheck, allChecked, handleAllCheck } =
+    useCardsListBlockEffects(allItems);
   return (
     <Grid container>
       <Grid item>

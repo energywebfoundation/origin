@@ -22,7 +22,6 @@ export default {
   component: DisabledFormView,
   argTypes: {
     data: {
-      type: { required: true },
       description: 'Required prop for building component content',
       table: {
         type: {
@@ -78,6 +77,7 @@ Default.args = {
     { label: 'Address', value: "Doe's street 1" },
     { label: 'Phone', value: '+10987654321' },
   ],
+  inputProps: { margin: 'normal' },
 };
 
 export const WithHeading = Template.bind({});
@@ -91,6 +91,7 @@ WithHeading.args = {
     { label: 'Phone', value: '+10987654321' },
   ],
   heading: 'User Profile data',
+  inputProps: { margin: 'normal' },
 };
 
 export const WithInputProps = Template.bind({});

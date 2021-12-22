@@ -7,7 +7,7 @@ import {
   TypographyProps,
   Pagination,
   PaginationProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ListItemsContainer,
   ListItemsContainerProps,
@@ -15,10 +15,7 @@ import {
 import { useStyles } from './GenericItemsList.styles';
 
 export interface GenericItemsListProps<ContainerId, ItemId> {
-  listContainers:
-    | ListItemsContainerProps<ContainerId, ItemId>[]
-    | null
-    | undefined;
+  listContainers: ListItemsContainerProps<ContainerId, ItemId>[];
   listTitle?: string;
   titleProps?: TypographyProps;
   checkboxes?: boolean;

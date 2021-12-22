@@ -10,6 +10,9 @@ export class CertificationRequestFieldsIrec {
 
     @ApiProperty({ type: String, required: false })
     irecAssetId?: string;
+
+    @ApiProperty({ type: String, required: false })
+    irecTradeAccountCode?: string;
 }
 
 export class IrecCertificationRequestDTO extends CertificationRequestFieldsIrec {

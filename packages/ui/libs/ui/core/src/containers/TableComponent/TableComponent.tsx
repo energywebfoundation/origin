@@ -1,6 +1,5 @@
-import { Table, Typography } from '@material-ui/core';
+import { Table, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
-import { TTableComponent } from './TableComponent.types';
 import {
   TableComponentHeader,
   TableComponentBody,
@@ -8,20 +7,20 @@ import {
   TableComponentFilters,
 } from '../../components/table';
 import { usePaginateData } from './usePaginateData';
-import { useStyles } from './TableComponent.styles';
 import { useFilterTableData } from './useFilterTableData';
+import { useStyles } from './TableComponent.styles';
+import { TTableComponent } from './TableComponent.types';
 
 export const TABLE_COMPONENT__DEFAULT_PAGE_SIZE = 5;
 
 export const TableComponent: TTableComponent = ({
-  data = [],
   header,
+  data,
   tableTitle,
   tableTitleProps,
   pageSize = TABLE_COMPONENT__DEFAULT_PAGE_SIZE,
-  totalPages,
   tableFilters,
-  loading,
+  loading = false,
   onRowClick,
   getCustomRowClassName,
 }) => {
@@ -44,7 +43,7 @@ export const TableComponent: TTableComponent = ({
       {tableFilters && tableFilters.length > 0 && (
         <TableComponentFilters filters={filters} setFilters={setFilters} />
       )}
-      <Table aria-label="generic_table">
+      <Table>
         <TableComponentHeader headerData={header} />
         <TableComponentBody
           rowData={paginatedData}
@@ -64,7 +63,7 @@ export const TableComponent: TTableComponent = ({
             [setActivePage]
           )}
           pageSize={pageSize}
-          totalPages={totalPages || Math.ceil(filteredData.length / pageSize)}
+          totalPages={Math.ceil(filteredData.length / pageSize)}
         />
       </Table>
     </div>

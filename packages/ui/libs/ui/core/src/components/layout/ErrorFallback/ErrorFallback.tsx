@@ -1,16 +1,12 @@
-import {
-  Paper,
-  PaperProps,
-  Typography,
-  TypographyProps,
-} from '@material-ui/core';
+import { Paper, PaperProps, Typography, TypographyProps } from '@mui/material';
 import { Global, css } from '@emotion/react';
-import React, { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
+import React, { DetailedHTMLProps, HTMLAttributes, ReactNode } from 'react';
 import { useStyles } from './ErrorFallback.styles';
 
-interface ErrorFallbackProps {
+export interface ErrorFallbackProps {
   error: Error;
   title?: string;
+  children?: ReactNode;
   wrapperProps?: DetailedHTMLProps<
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
@@ -20,15 +16,15 @@ interface ErrorFallbackProps {
   messageProps?: TypographyProps;
 }
 
-export const ErrorFallback: FC<ErrorFallbackProps> = ({
-  title,
+export const ErrorFallback = ({
   error,
+  title = '',
   wrapperProps,
   paperProps,
   titleProps,
   messageProps,
   children,
-}) => {
+}: ErrorFallbackProps) => {
   const classes = useStyles();
   return (
     <div className={classes.wrapper} {...wrapperProps}>

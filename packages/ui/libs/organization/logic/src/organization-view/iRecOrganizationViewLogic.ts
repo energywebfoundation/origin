@@ -20,7 +20,7 @@ export const getIRecOrganizationViewLogic: TOrganizationViewLogic = (
         label: t('organization.view.iRec.accountTypeLabel'),
         value: iRecAccountTypeFormat(
           t,
-          (iRecOrganization.accountType as unknown) as IRECAccountType
+          iRecOrganization.accountType as unknown as IRECAccountType
         ),
       },
       {

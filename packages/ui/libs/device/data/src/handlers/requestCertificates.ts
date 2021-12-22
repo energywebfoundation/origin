@@ -1,5 +1,5 @@
 import {
-  CreateCertificationRequestDTO,
+  CreateIrecCertificationRequestDTO,
   useCertificationRequestControllerCreate,
 } from '@energyweb/issuer-irec-api-react-query-client';
 import { useAccountControllerGetAccount } from '@energyweb/exchange-react-query-client';
@@ -12,11 +12,13 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
 import { UnpackNestedValue } from 'react-hook-form';
+import { useCachedUser } from '../cached';
 
 type FormValuesTypes = {
   fromTime: string;
   toTime: string;
   energy: string;
+  irecTradeAccountCode?: string;
 };
 
 type TUseRequestCertificatesHandlerArgs = {
@@ -31,6 +33,7 @@ export const useRequestCertificatesHandler = ({
   closeForm,
 }: TUseRequestCertificatesHandlerArgs) => {
   const { t } = useTranslation();
+  const user = useCachedUser();
   const { data, isLoading } = useAccountControllerGetAccount({
     query: {
       staleTime: 1000000,
@@ -56,15 +59,21 @@ export const useRequestCertificatesHandler = ({
       throw Error(t('device.my.notifications.onlyUsersWithExchangeAddress'));
     }
 
-    const formattedValues: CreateCertificationRequestDTO = {
+    const formattedValues: CreateIrecCertificationRequestDTO = {
       energy: energyInBaseUnit.toString(),
-      to: !isLoading && address,
+      to:
+        user?.organization?.selfOwnership &&
+        Boolean(user?.organization?.blockchainAccountAddress)
+          ? user?.organization?.blockchainAccountAddress
+          : address,
       deviceId: deviceId,
       fromTime: dayjs(values.fromTime).startOf('day').unix(),
       toTime: dayjs(values.toTime).endOf('day').unix(),
       files: files.map((f) => f.uploadedName),
       isPrivate: false,
+      irecTradeAccountCode: values.irecTradeAccountCode || undefined,
     };
+
     mutate(
       { data: formattedValues },
       {

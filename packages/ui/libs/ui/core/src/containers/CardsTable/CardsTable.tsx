@@ -1,10 +1,10 @@
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import React from 'react';
 import {
   CardTableContent,
   CardTableTotalColumn,
   CardTableVerticalHeaders,
-} from '../../components';
+} from '../../components/cardTable';
 import { useCardsTableEffects } from './CardsTable.effects';
 import { TCardsTable } from './CardsTable.types';
 

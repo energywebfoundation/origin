@@ -32,6 +32,7 @@ export const useUserSignInFormConfig = (
   }));
   return {
     buttonText: t('general.buttons.register'),
+    validationMode: 'onSubmit',
     fields: [
       {
         label: t('user.register.title'),
@@ -88,7 +89,10 @@ export const useUserSignInFormConfig = (
         .label(t('user.register.telephone'))
         .required(),
       password: Yup.string()
-        .min(6)
+        .matches(
+          /((?=.*[0-9])(?=.*[a-z]).{6,})/,
+          t('user.register.passwordValidation')
+        )
         .label(t('user.register.password'))
         .required(),
     }),

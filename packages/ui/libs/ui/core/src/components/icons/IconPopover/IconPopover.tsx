@@ -1,18 +1,19 @@
 import React, { ElementType } from 'react';
-import { Popover, Typography, Button } from '@material-ui/core';
+import { Popover, Typography, Button } from '@mui/material';
 import { useStyles } from './IconPopover.styles';
 import { useIconPopoverEffects } from './IconPopover.effects';
 
 export enum IconSize {
   Small = 'small',
-  Medium = 'default',
+  Medium = 'medium',
   Large = 'large',
 }
 
 export interface IconPopoverProps {
   icon: ElementType;
-  iconSize: IconSize;
   popoverText: string[];
+  iconSize?: IconSize;
+  iconProps?: Record<string, any>;
   className?: string;
   clickable?: boolean;
 }
@@ -20,11 +21,11 @@ export interface IconPopoverProps {
 export const IconPopover = (props: IconPopoverProps) => {
   const {
     icon: Icon,
-    iconSize,
+    iconSize = IconSize.Medium,
+    iconProps,
     popoverText,
     className,
     clickable = false,
-    ...otherProps
   } = props;
   const classes = useStyles();
 
@@ -42,11 +43,11 @@ export const IconPopover = (props: IconPopoverProps) => {
   const textContent = mapTextWithLineBreaks(popoverText);
 
   return (
-    <div className={className} {...otherProps}>
+    <div className={className}>
       {clickable ? (
         <>
           <Button aria-describedby={getClickableId(open)} onClick={handleClick}>
-            <Icon fontSize={iconSize} />
+            <Icon fontSize={iconSize} {...iconProps} />
           </Button>
           <Popover
             id={getClickableId(open)}

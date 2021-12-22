@@ -1,5 +1,5 @@
-import { createTheme, Theme, ThemeOptions } from '@material-ui/core/styles';
-import { enUS, plPL } from '@material-ui/core/locale';
+import { createTheme, Theme, ThemeOptions } from '@mui/material/styles';
+import { enUS, plPL } from '@mui/material/locale';
 import { LightenColor } from '../utils/colors';
 import {
   createStyleConfig,

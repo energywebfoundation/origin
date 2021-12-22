@@ -10,3 +10,4 @@ export * from './userAndAccount';
 export * from './file';
 export * from './deviceFirstImage';
 export * from './deviceImages';
+export * from './myAccounts';

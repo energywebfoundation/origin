@@ -1,5 +1,6 @@
-import { Switch, SwitchProps } from '@material-ui/core';
+import { Switch, SwitchProps } from '@mui/material';
 import React from 'react';
+import clsx from 'clsx';
 import { useStyles } from './ThemeSwitcher.styles';
 
 export interface ThemeSwitcherProps {
@@ -18,8 +19,8 @@ export const ThemeSwitcher: React.FC<ThemeSwitcherProps> = ({
     <Switch
       checked={selected}
       onChange={handleThemeChange}
-      className={classes.switch}
       {...switchProps}
+      className={clsx(classes.switch, switchProps?.className)}
     />
   );
 };

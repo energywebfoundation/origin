@@ -1,6 +1,6 @@
 import React from 'react';
 import { GenericForm, GenericModal } from '@energyweb/origin-ui-core';
-import { Box, Switch, Typography } from '@material-ui/core';
+import { Box, Switch, Typography } from '@mui/material';
 import { useUpdateDemandEffects } from './UpdateDemand.effects';
 import { useStyles } from './UpdateDemand.styles';
 
@@ -46,6 +46,7 @@ export const UpdateDemand = () => {
             />
           </Box>
           <Box width="95%" mx={'auto'}>
+            {/* @ts-ignore */}
             <GenericForm {...formProps} />
           </Box>
         </Box>

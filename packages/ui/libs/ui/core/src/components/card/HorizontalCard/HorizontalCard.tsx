@@ -5,8 +5,8 @@ import {
   CardMedia,
   CardContent,
   CardContentProps,
-} from '@material-ui/core';
-import { FallbackIcon } from '../../icons';
+} from '@mui/material';
+import { IconHoverText } from '../../icons';
 import { useStyles } from './HorizontalCard.styles';
 
 export interface HorizontalCardProps {
@@ -46,7 +46,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
         <CardMedia image={imageUrl} className={classes.image} />
       ) : fallbackIcon ? (
         <CardMedia className={classes.image}>
-          <FallbackIcon
+          <IconHoverText
             icon={fallbackIcon}
             iconProps={fallbackIconProps}
             wrapperProps={fallbackIconWrapperProps}

@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 
-import { UserModule } from '@energyweb/origin-backend';
+import { OrganizationModule, UserModule } from '@energyweb/origin-backend';
 
 import { RegistrationModule } from '../registration';
 import { IrecModule, IrecService } from '../irec';
@@ -19,6 +19,7 @@ import { RefreshAllTokensTask } from './cron';
         ConfigModule,
         CqrsModule,
         PassportModule.register({ defaultStrategy: 'jwt' }),
+        OrganizationModule,
         RegistrationModule,
         UserModule,
         IrecModule

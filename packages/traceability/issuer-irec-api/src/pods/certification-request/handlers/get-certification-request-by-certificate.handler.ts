@@ -2,7 +2,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
-    Certificate,
     CertificationRequest,
     GetCertificationRequestByCertificateQuery,
     GetCertificationRequestByCertificateHandler as OriginalHandler
@@ -18,12 +17,10 @@ export class GetCertificationRequestByCertificateHandler
     constructor(
         @InjectRepository(CertificationRequest)
         readonly repository: Repository<CertificationRequest>,
-        @InjectRepository(Certificate)
-        readonly certificateRepository: Repository<Certificate>,
         @InjectRepository(IrecCertificationRequest)
         readonly irecRepository: Repository<IrecCertificationRequest>
     ) {
-        super(repository, certificateRepository);
+        super(repository);
     }
 
     async execute({
@@ -39,7 +36,9 @@ export class GetCertificationRequestByCertificateHandler
         return {
             ...certificationRequest,
             irecIssueRequestId: irecCertificationRequest.irecIssueRequestId,
-            organizationId: irecCertificationRequest.organizationId
+            organizationId: irecCertificationRequest.organizationId,
+            irecAssetId: irecCertificationRequest.irecAssetId,
+            irecTradeAccountCode: irecCertificationRequest.irecTradeAccountCode
         };
     }
 }

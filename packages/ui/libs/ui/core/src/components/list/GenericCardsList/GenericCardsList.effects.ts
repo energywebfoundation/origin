@@ -8,7 +8,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 
 export const useGenericCardsListEffects = <ItemType>(
   list?: ItemType[],
-  handleDrag?: (newList: ItemType[]) => Promise<void>
+  handleDrag?: (newList: ItemType[]) => void | Promise<void>
 ) => {
   const onCardDragEnd = async (result: DropResult) => {
     if (!result.destination || !list || !handleDrag) return;

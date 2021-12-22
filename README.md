@@ -32,9 +32,6 @@
 -   [Run demo](#run-demo)
     -   [Heroku environment provisioning](#heroku-environment-provisioning)
 -   [Energy Attribute Certificates](#energy-attribute-certificates)
--   [Key modules and components](#key-modules-and-components)
-    -   [Key repositories](#key-repositories)
-    -   [Other components](#other-components)
 -   [Deployment](#deployment)
 -   [Contribution guidelines](#contribution-guidelines)
 
@@ -42,22 +39,34 @@
 
 ### SDK Releases
 
-| Package                                                               | Stable                                                                                                                                      | Canary                                                                                                                                         | Description                                                             |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [`@energyweb/device-registry`](/packages/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry.svg)](https://www.npmjs.com/package/@energyweb/device-registry)             | [![npm](https://img.shields.io/npm/v/@energyweb/device-registry/canary)](https://www.npmjs.com/package/@energyweb/device-registry)             | Library that contains information on renewable energy producing devices |
-| [`@energyweb/issuer`](/packages/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer.svg)](https://www.npmjs.com/package/@energyweb/issuer)                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer/canary)](https://www.npmjs.com/package/@energyweb/issuer)                               | Energy Attribute Certificates Issuer Module                             |
-| [`@energyweb/origin-backend-client`](/packages/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client.svg)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend-client/canary)](https://www.npmjs.com/package/@energyweb/origin-backend-client) | Client library for interacting with the backend                         |
-| [`@energyweb/origin-backend`](/packages/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)               | Example backend necessary for running Origin                            |
-| [`@energyweb/exchange`](/packages/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange.svg)](https://www.npmjs.com/package/@energyweb/exchange)                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange/canary)](https://www.npmjs.com/package/@energyweb/exchange)                           | A service project hosting order book based exchange                     |
-| [`@energyweb/utils-general`](/packages/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                 | Utilities                                                               |
+| Package                                                                                                       | Stable                                                                                                                                                                      | Canary                                                                                                                                                                         | Description                                                                             |
+| ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| [`@energyweb/origin-device-registry-api`](/packages/devices/origin-device-registry-api)                       | [![npm](https://img.shields.io/npm/v/@energyweb/origin-device-registry-api.svg)](https://www.npmjs.com/package/@energyweb/origin-device-registry-api)                       | [![npm](https://img.shields.io/npm/v/@energyweb/origin-device-registry-api/canary)](https://www.npmjs.com/package/@energyweb/origin-device-registry-api)                       | Generic implementation of API working with Origin device registry                       |
+| [`@energyweb/origin-device-registry-irec-local-api`](/packages/devices/origin-device-registry-irec-local-api) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-device-registry-irec-local-api.svg)](https://www.npmjs.com/package/@energyweb/origin-device-registry-irec-local-api) | [![npm](https://img.shields.io/npm/v/@energyweb/origin-device-registry-irec-local-api/canary)](https://www.npmjs.com/package/@energyweb/origin-device-registry-irec-local-api) | API for local version of I-REC compatible registry                                      |
+| [`@energyweb/origin-energy-api`](/packages/devices/origin-energy-api)                                         | [![npm](https://img.shields.io/npm/v/@energyweb/origin-energy-api.svg)](https://www.npmjs.com/package/@energyweb/origin-energy-api)                                         | [![npm](https://img.shields.io/npm/v/@energyweb/origin-energy-api/canary)](https://www.npmjs.com/package/@energyweb/origin-energy-api)                                         | API for Smart meter reads                                                               |
+| [`@energyweb/origin-organization-irec-api`](/packages/devices/origin-organization-irec-api)                   | [![npm](https://img.shields.io/npm/v/@energyweb/origin-organization-irec-api.svg)](https://www.npmjs.com/package/@energyweb/origin-organization-irec-api)                   | [![npm](https://img.shields.io/npm/v/@energyweb/origin-organization-irec-api/canary)](https://www.npmjs.com/package/@energyweb/origin-organization-irec-api)                   | API for I-REC based organizations                                                       |
+| [`@energyweb/origin-backend`](/packages/origin-backend)                                                       | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend.svg)](https://www.npmjs.com/package/@energyweb/origin-backend)                                               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-backend/canary)](https://www.npmjs.com/package/@energyweb/origin-backend)                                               | Example backend necessary for running Origin                                            |
+| [`@energyweb/issuer`](/packages/traceability/issuer)                                                          | [![npm](https://img.shields.io/npm/v/@energyweb/issuer.svg)](https://www.npmjs.com/package/@energyweb/issuer)                                                               | [![npm](https://img.shields.io/npm/v/@energyweb/issuer/canary)](https://www.npmjs.com/package/@energyweb/issuer)                                                               | Energy Attribute Certificates Issuer Module                                             |
+| [`@energyweb/issuer-api`](/packages/traceability/issuer-api)                                                  | [![npm](https://img.shields.io/npm/v/@energyweb/issuer-api.svg)](https://www.npmjs.com/package/@energyweb/issuer-api)                                                       | [![npm](https://img.shields.io/npm/v/@energyweb/issuer-api/canary)](https://www.npmjs.com/package/@energyweb/issuer-api)                                                       | NestJS module for interacting with renewable energy certificates                        |
+| [`@energyweb/issuer-irec-api`](/packages/traceability/issuer-irec-api)                                        | [![npm](https://img.shields.io/npm/v/@energyweb/issuer-irec-api.svg)](https://www.npmjs.com/package/@energyweb/issuer-irec-api)                                             | [![npm](https://img.shields.io/npm/v/@energyweb/issuer-irec-api/canary)](https://www.npmjs.com/package/@energyweb/issuer-irec-api)                                             | NestJS module for interacting with renewable energy certificates with IREC connectivity |
+| [`@energyweb/exchange`](/packages/trade/exchange)                                                             | [![npm](https://img.shields.io/npm/v/@energyweb/exchange.svg)](https://www.npmjs.com/package/@energyweb/exchange)                                                           | [![npm](https://img.shields.io/npm/v/@energyweb/exchange/canary)](https://www.npmjs.com/package/@energyweb/exchange)                                                           | A service project hosting order book based exchange                                     |
+| [`@energyweb/exchange-irec`](/packages/trade/exchange-irec)                                                   | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-irec.svg)](https://www.npmjs.com/package/@energyweb/exchange-irec)                                                 | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-irec/canary)](https://www.npmjs.com/package/@energyweb/exchange-irec)                                                 | A service project hosting order book based I-REC specific exchange                      |
+| [`@energyweb/exchange-core`](/packages/trade/exchange-core)                                                   | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-core.svg)](https://www.npmjs.com/package/@energyweb/exchange-core)                                                 | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-core/canary)](https://www.npmjs.com/package/@energyweb/exchange-core)                                                 | Generic EACs order book product and matching                                            |
+| [`@energyweb/exchange-core-irec`](/packages/trade/exchange-core-irec)                                         | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-core-irec.svg)](https://www.npmjs.com/package/@energyweb/exchange-core-irec)                                       | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-core-irec/canary)](https://www.npmjs.com/package/@energyweb/exchange-core-irec)                                       | An IREC based EACs product and matching                                                 |
+| [`@energyweb/exchange-io-erc1888`](/packages/trade/exchange-io-erc1888)                                       | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-io-erc1888.svg)](https://www.npmjs.com/package/@energyweb/exchange-io-erc1888)                                     | [![npm](https://img.shields.io/npm/v/@energyweb/exchange-io-erc1888/canary)](https://www.npmjs.com/package/@energyweb/exchange-core-irec)                                      | ERC1888 withdwaral/deposit processing for exchange                                      |
+| [`@energyweb/utils-general`](/packages/utils-general)                                                         | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general.svg)](https://www.npmjs.com/package/@energyweb/utils-general)                                                 | [![npm](https://img.shields.io/npm/v/@energyweb/utils-general/canary)](https://www.npmjs.com/package/@energyweb/utils-general)                                                 | General Utilities                                                                       |
+| [`@energyweb/origin-ui-core`](/packages/ui/libs/ui/core)                                                      | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-core.svg)](https://www.npmjs.com/package/@energyweb/origin-ui-core)                                               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-core/canary)](https://www.npmjs.com/package/@energyweb/origin-ui-core)                                               | React components library for building Origin marketplace user interface                 |
+| [`@energyweb/origin-ui-localization`](/packages/ui/libs/ui/localization)                                      | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-localization.svg)](https://www.npmjs.com/package/@energyweb/origin-ui-localization)                               | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-localization/canary)](https://www.npmjs.com/package/@energyweb/origin-ui-localization)                               | Localization library for building Origin marketplace user interface                     |
+| [`@energyweb/origin-ui-theme`](/packages/ui/libs/ui/theme)                                                    | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-theme.svg)](https://www.npmjs.com/package/@energyweb/origin-ui-theme)                                             | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-theme/canary)](https://www.npmjs.com/package/@energyweb/origin-ui-theme)                                             | Material-UI theme configuration and styling utilities                                   |
+| [`@energyweb/origin-ui-utils`](/packages/ui/libs/ui/utils)                                                    | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-utils.svg)](https://www.npmjs.com/package/@energyweb/origin-ui-utils)                                             | [![npm](https://img.shields.io/npm/v/@energyweb/origin-ui-utils/canary)](https://www.npmjs.com/package/@energyweb/origin-ui-utils)                                             | UI general utilities                                                                    |
 
 ### Applications, Infrastructure and Demo
 
-| Package                                                   | Description                                |
-| --------------------------------------------------------- | ------------------------------------------ |
-| [`@energyweb/origin-ui`](/packages/origin-ui)             | UI for Origin                              |
-| [`@energyweb/solar-simulator`](/packages/solar-simulator) | Solar production and consumption simulator |
-| [`@energyweb/migrations`](/packages/migrations)           | Deployment and configuration utilities     |
+| Package                                                                        | Description                                                     |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| [`@energyweb/origin-backend-irec-app`](/packages/apps/origin-backend-irec-app) | Bootstrap project for Origin API that uses I-REC API connection |
+| [`@energyweb/origin-ui`](/packages/ui/apps/origin-ui)                          | Root of UI for Origin                                           |
+| [`@energyweb/migrations-irec`](/packages/tools/migrations-irec)                | Deployment and configuration utilities                          |
 
 ### Packages types
 
@@ -115,7 +124,7 @@ Run the InfluxDB instance
 docker run --name energy-influxdb --env-file ./.env -d -p 8086:8086 -v $PWD/influxdb-local:/var/lib/influxdb -v $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro influxdb:1.8
 ```
 
-1. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-app#development
+1. For custom DB credentials, ports, db name etc refer to https://github.com/energywebfoundation/origin/tree/master/packages/apps/origin-backend-irec-app#development
 
 ## Installation
 
@@ -156,7 +165,6 @@ PREFIX=<name> STAGE=<stage> TEAM=<team> ./provision-heroku-origin.sh
 Naming convention is for apps:
 
 ```
-${PREFIX}-origin-sim-${STAGE}
 ${PREFIX}-origin-ui-${STAGE}
 ${PREFIX}-origin-api-${STAGE}
 ```
@@ -174,26 +182,6 @@ Note: This script assumes that Heroku CLI tool is installed and your are logged 
 Energy Attribute Certificates, or EACs, is an official document which guarantees that produced energy comes from a renewable source. There are different standards that regulate how data is stored and validated. In Europe, this document is called Guarantee of Origin (GO), in North America, it's called Renewable Energy Certificate (REC), and in parts of Asia, Africa, the Middle East, and Latin America governing standard is International REC (I-REC). Standards do vary, but they all share the same core principles.
 
 The main purpose of EACs is to act as an accounting vehicle to prove that consumed energy came from a renewable source. EACs are mostly used to address sustainability reports regarding [Scope 2 emissions](https://en.wikipedia.org/wiki/Carbon_emissions_reporting#Scope_2:_Electricity_indirect_GHG_emissions).
-
-## Key modules and components
-
-Overview of architecture
-
-### Key repositories
-
-This section lists key entry points to start your journey with Origin.
-
-1. [migrations](https://github.com/energywebfoundation/origin/tree/master/packages/migrations) - repository with build scripts that enable easy deployment of smart contracts to EWC, Volta or a local blockchain. Often used to demo and get to know features and capabilities of Origin.
-2. [origin-backend](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend) - This repository is used to act as a backend service for off-chain data storage.
-3. [origin-ui](https://github.com/energywebfoundation/origin/tree/master/packages/origin-ui) - frontend of the system needed to view data stored in smart contracts (on-chain) and in the backend (off-chain). To interact with the Origin frontend you'll need [MetaMask](https://metamask.io).
-
-### Other components
-
-1. [device-registry](https://github.com/energywebfoundation/origin/tree/master/packages/device-registry) - high-level library for creating and managing electricity producing and consuming devices.
-2. [issuer](https://github.com/energywebfoundation/origin/tree/master/packages/issuer) - high-level library for issuing and transferring Energy Attribute Certificates.
-3. [exchange](https://github.com/energywebfoundation/origin/tree/master/packages/exchange) - An orderbook-based exchange for trading Energy Attribute Certificates.
-4. [utils-general](https://github.com/energywebfoundation/origin/tree/master/packages/utils-general) - Contains logic for more straightforward interaction with contracts, such as watching events. It is also a base layer for other libraries to build upon. It provides a foundation for things like off-chain data storage that is universal for all entities.
-5. [solar-simulator](https://github.com/energywebfoundation/origin/tree/master/packages/solar-simulator) - This service simulates smart-meter readings based on example solar data from whole year in 15-mins intervals. Also allows you to generate the config based on data from public I-REC registry.
 
 ## Deployment
 

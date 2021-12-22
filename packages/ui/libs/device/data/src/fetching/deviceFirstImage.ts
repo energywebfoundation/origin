@@ -9,27 +9,38 @@ export const useDeviceFirstImageUrl = (
   const [imageUrl, setImageUrl] = useState('');
 
   const getAndSetImage = async (id: string) => {
-    const response = await publicFileDownloadHandler(id);
-    const imageType = (response as any).headers['content-type'];
-    const blob = new Blob(
-      [Buffer.from((response.data as any).data as unknown as string)],
-      {
-        type: imageType,
+    if (!id) return;
+    try {
+      const response = await publicFileDownloadHandler(id);
+      const imageType = (response as any).headers['content-type'];
+      const blob = new Blob(
+        [Buffer.from((response.data as any).data as unknown as string)],
+        {
+          type: imageType,
+        }
+      );
+      const urlCreator = window.URL || window.webkitURL;
+      const imageUrl = urlCreator.createObjectURL(blob);
+
+      if (isMountedRef.current === true) {
+        setImageUrl(imageUrl);
       }
-    );
-    const urlCreator = window.URL || window.webkitURL;
-    const imageUrl = urlCreator.createObjectURL(blob);
-    setImageUrl(imageUrl);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     isMountedRef.current = true;
-    if (imageIds?.length > 0) {
-      getAndSetImage(imageIds[0]);
-    }
     return () => {
       isMountedRef.current = false;
     };
+  }, []);
+
+  useEffect(() => {
+    if (imageIds?.length > 0) {
+      getAndSetImage(imageIds[0]);
+    }
   }, [imageIds]);
 
   return imageUrl;

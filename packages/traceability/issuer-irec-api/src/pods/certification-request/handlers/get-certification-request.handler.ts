@@ -33,7 +33,9 @@ export class GetCertificationRequestHandler
         return {
             ...certificationRequest,
             irecIssueRequestId: irecCertificationRequest?.irecIssueRequestId,
-            organizationId: irecCertificationRequest?.organizationId
+            organizationId: irecCertificationRequest?.organizationId,
+            irecAssetId: irecCertificationRequest?.irecAssetId,
+            irecTradeAccountCode: irecCertificationRequest?.irecTradeAccountCode
         };
     }
 }

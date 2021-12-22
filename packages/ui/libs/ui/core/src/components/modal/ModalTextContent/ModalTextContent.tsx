@@ -1,5 +1,5 @@
-import { Typography } from '@material-ui/core';
-import { TypographyProps } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import { TypographyProps } from '@mui/material';
 import React, { FC } from 'react';
 import { GenericModalProps } from '../GenericModal';
 
@@ -16,13 +16,17 @@ export const ModalTextContent: FC<ModalTextContentProps> = ({
     <div>
       {typeof text === 'string' ? (
         <Typography {...textProps}>{text}</Typography>
-      ) : (
-        text.map((paragraph, idx) => (
-          <Typography key={'dialogText' + idx} gutterBottom {...textProps}>
+      ) : text ? (
+        text.map((paragraph) => (
+          <Typography
+            key={'dialogText-' + paragraph}
+            gutterBottom
+            {...textProps}
+          >
             {paragraph}
           </Typography>
         ))
-      )}
+      ) : null}
     </div>
   );
 };

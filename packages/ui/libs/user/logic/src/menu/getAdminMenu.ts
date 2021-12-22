@@ -7,6 +7,7 @@ export type TGetAdminMenuArgs = {
   showSection: boolean;
   showUsers: boolean;
   showClaims: boolean;
+  showAllOrgs: boolean;
   menuButtonClass?: string;
   selectedMenuItemClass?: string;
 };
@@ -18,6 +19,7 @@ export const getAdminMenu: TUseAdminMenuFn = ({
   isOpen,
   showSection,
   showUsers,
+  showAllOrgs,
   showClaims,
   menuButtonClass,
   selectedMenuItemClass,
@@ -32,6 +34,11 @@ export const getAdminMenu: TUseAdminMenuFn = ({
         url: 'users',
         label: t('navigation.admin.users'),
         show: showUsers,
+      },
+      {
+        url: 'organizations',
+        label: t('navigation.admin.organizations'),
+        show: showAllOrgs,
       },
       {
         url: 'claims',

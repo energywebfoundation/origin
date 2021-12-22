@@ -11,19 +11,24 @@
   "author": "EnergyWeb DevHub GmbH; Alexander Popadyuk, alexander.popadyuk@energyweb.org",
   "description": "UI general utils library for building Origin marketplace user interface",
   "homepage": "https://github.com/energywebfoundation/origin/blob/master/packages/ui/libs/ui/utils/README.md",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "files": [
+    "dist"
+  ],
   "main": "dist/ui-utils.umd.js",
   "module": "dist/ui-utils.esm.js",
   "typings": "dist/index.d.ts",
   "dependencies": {
     "@energyweb/utils-general": "11.0.4",
     "dayjs": "1.10.7",
-    "ethers": "5.3.1",
+    "@ethersproject/bignumber": "5.3.0",
+    "@ethersproject/units": "5.3.0",
     "lodash": "4.17.21",
-    "react-router": "6.0.0-beta.4"
+    "react-router": "6.0.2",
+    "query-string": "7.0.1"
   }
 }

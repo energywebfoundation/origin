@@ -1,10 +1,5 @@
-import {
-  Step,
-  StepLabel,
-  Stepper,
-  Theme,
-  useMediaQuery,
-} from '@material-ui/core';
+import { Step, StepLabel, Stepper, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/styles';
 import React, { FC } from 'react';
 import { useStyles } from './StepReport.styles';
 
@@ -15,9 +10,8 @@ export interface StepReportProps {
 
 export const StepReport: FC<StepReportProps> = ({ labels, activeStep }) => {
   const classes = useStyles();
-  const smallScreen = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.down('sm')
-  );
+  const theme = useTheme();
+  const smallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Stepper
       alternativeLabel={smallScreen}

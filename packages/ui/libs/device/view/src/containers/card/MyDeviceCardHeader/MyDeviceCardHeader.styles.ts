@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@mui/styles';
 
 export const useStyles = makeStyles((theme) => ({
   headerWrapper: {
@@ -38,6 +38,11 @@ export const useStyles = makeStyles((theme) => ({
   },
   buttonEndIcon: {
     marginLeft: 0,
+  },
+  smallEndIcon: {
+    '& > *:first-child': {
+      fontSize: 14,
+    },
   },
   specFieldGrid: {
     alignItems: 'center',

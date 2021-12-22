@@ -43,7 +43,7 @@ export class MatchingEngine<TProduct, TProductFilter> {
     private asks: List<IMatchableOrder<TProduct, TProductFilter>> =
         List<IMatchableOrder<TProduct, TProductFilter>>();
 
-    private readonly triggers = new Subject();
+    private readonly triggers = new Subject<any>();
 
     public trades = new Subject<List<TradeExecutedEvent>>();
 
@@ -103,7 +103,8 @@ export class MatchingEngine<TProduct, TProductFilter> {
     }
 
     public tick(): void {
-        this.triggers.next();
+        // Not sure what to put here?
+        this.triggers.next(null);
     }
 
     public clear(): void {

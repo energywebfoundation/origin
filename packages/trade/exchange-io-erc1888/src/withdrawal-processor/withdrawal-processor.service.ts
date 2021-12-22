@@ -150,15 +150,9 @@ export class WithdrawalProcessorService implements OnModuleInit {
                 );
             } else if (transfer.direction === TransferDirection.Claim) {
                 result = await certificate.claim(
-                    {
-                        beneficiary: transfer.address,
-                        location: '',
-                        countryCode: '',
-                        periodStartDate: '',
-                        periodEndDate: '',
-                        purpose: 'GHG Accounting'
-                    },
-                    BigNumber.from(transfer.amount)
+                    transfer.claimData,
+                    BigNumber.from(transfer.amount),
+                    transfer.claimAddress ?? undefined
                 );
             } else {
                 throw Error(`Unable to process transfer with direction ${transfer.direction}.`);

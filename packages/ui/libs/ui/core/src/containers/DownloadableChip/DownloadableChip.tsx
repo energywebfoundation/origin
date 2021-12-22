@@ -1,23 +1,23 @@
 import React, { FC } from 'react';
-import { Chip } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
+import { Chip } from '@mui/material';
+import { GetApp } from '@mui/icons-material';
 import {
   ApiDownloadFunction,
   useDownloadableChipEffects,
 } from './DownloadableChip.effects';
 import { useStyles } from './DownloadableChip.styles';
 
-interface DownloadableChipProps {
+export interface DownloadableChipProps {
   label: string;
   downloadFunc: ApiDownloadFunction;
   documentId: string;
-  name: string;
+  fileName: string;
 }
 
 export const DownloadableChip: FC<DownloadableChipProps> = ({
   downloadFunc,
   documentId,
-  name,
+  fileName,
   label,
 }) => {
   const { downloadFileHandler } = useDownloadableChipEffects();
@@ -27,7 +27,7 @@ export const DownloadableChip: FC<DownloadableChipProps> = ({
       label={label ?? 'Download file'}
       variant="outlined"
       color="primary"
-      onClick={() => downloadFileHandler(downloadFunc, documentId, name)}
+      onClick={() => downloadFileHandler(downloadFunc, documentId, fileName)}
       icon={<GetApp color="primary" />}
       className={classes.chip}
     />

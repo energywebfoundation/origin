@@ -1,6 +1,6 @@
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
-import { BoxProps, Drawer, List, PaperProps } from '@material-ui/core';
-import React, { FC, ReactNode } from 'react';
+import { BoxProps, Drawer, List, PaperProps } from '@mui/material';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { CloseButton } from '../../buttons';
 import { IconLink } from '../../icons';
 import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';
@@ -29,6 +29,7 @@ export const MobileNav: FC<MobileNavProps> = ({
   paperProps,
 }) => {
   const classes = useStyles();
+  const wrapperProps = useMemo(() => ({ className: classes.userAndOrg }), []);
   return (
     <Drawer
       anchor="left"
@@ -42,7 +43,7 @@ export const MobileNav: FC<MobileNavProps> = ({
         {icon ? icon : <EnergyWebLogo className={classes.logo} />}
       </IconLink>
       {isAuthenticated && (
-        <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />
+        <UsernameAndOrg wrapperProps={wrapperProps} {...userAndOrgData} />
       )}
       <List className={classes.list}>
         {menuSections?.map(({ sectionTitle, rootUrl, show, menuList }) => (
