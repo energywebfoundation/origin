@@ -270,7 +270,7 @@ export class OrganizationController {
     @ApiResponse({
         status: HttpStatus.OK,
         type: SuccessResponseDTO,
-        description: 'Removes a member from an organization'
+        description: 'Changes a member role in an organization'
     })
     async changeMemberRole(
         @Param('id', new ParseIntPipe()) organizationId: number,
@@ -312,7 +312,7 @@ export class OrganizationController {
         return this.organizationService.setSelfOwnershipFlag(id, selfOwnership);
     }
 
-    @Post('chain-address')
+    @Post('/chain-address')
     @UseGuards(AuthGuard('jwt'), NotDeletedUserGuard)
     @ApiBody({ type: BindBlockchainAccountDTO })
     @ApiResponse({
