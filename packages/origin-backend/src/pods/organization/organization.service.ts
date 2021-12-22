@@ -244,14 +244,14 @@ export class OrganizationService {
     }
 
     async setBlockchainAddress(
-        id: number,
+        organizationId: number,
         signedMessage: BindBlockchainAccountDTO['signedMessage']
     ): Promise<ISuccessResponse> {
         if (!signedMessage) {
             throw new BadRequestException('Signed message is empty.');
         }
 
-        const organization = await this.findOne(id);
+        const organization = await this.findOne(organizationId);
 
         if (organization.blockchainAccountAddress) {
             throw new ConflictException('Organization already has a blockchain address');
@@ -262,7 +262,11 @@ export class OrganizationService {
             signedMessage
         );
 
-        return this.updateBlockchainAddress(id, utils.getAddress(address), signedMessage);
+        return this.updateBlockchainAddress(
+            organizationId,
+            utils.getAddress(address),
+            signedMessage
+        );
     }
 
     async setSelfOwnershipFlag(organizationId: number, selfOwnership: boolean) {
