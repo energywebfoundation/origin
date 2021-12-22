@@ -21,6 +21,13 @@ Cypress.Commands.add('selectMultiple', (target: string, values: string[]) => {
   });
 });
 
+Cypress.Commands.add('selectDate', (target: string, day: string) => {
+  cy.dataCy(target).filter(':visible').click();
+  cy.get('.MuiCalendarPicker-root').within(() => {
+    cy.contains('button', day).filter(':visible').click();
+  });
+});
+
 Cypress.Commands.add('inputRequired', (target: string, neighbor: string) => {
   cy.dataCy(target).then((elem) => {
     cy.clearInput(target);
@@ -93,4 +100,8 @@ Cypress.Commands.add('inputHasValue', (inputCy: string, value: string) => {
 
 Cypress.Commands.add('nextStep', () => {
   cy.contains('Next Step').should('not.be.disabled').click();
+});
+
+Cypress.Commands.add('submitForm', () => {
+  cy.contains('Submit').should('not.be.disabled').click();
 });

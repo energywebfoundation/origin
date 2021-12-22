@@ -25,9 +25,13 @@ export const generateNewOrg = (
   };
 };
 
-export const generateNewDevice = (user: UserRegisterData): DevicePostData => {
+export const generateNewDevice = (
+  user: UserRegisterData
+): DeviceFormPostData => {
+  const randomNumber = Math.round(Math.random() * 100000);
   return {
     ...testDevice,
     facilityName: `${user.firstName}-facility`,
+    smartMeterId: `${randomNumber}-${testDevice.smartMeterId}`,
   };
 };

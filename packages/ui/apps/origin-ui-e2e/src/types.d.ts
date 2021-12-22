@@ -139,6 +139,40 @@ type DevicePostData = {
   typeOfPublicSupport: string;
 };
 
+type DeviceInfoFormValues = {
+  facilityName: string;
+  fuelType: string;
+  deviceType: string;
+  commissioningDate: string;
+  registrationDate: string;
+  description: string;
+  smartMeterId: string;
+  capacity: string;
+  gridOperator: string;
+  irecTradeAccountCode?: string;
+};
+
+type DeviceLocationFormValues = {
+  timeZone?: string;
+  region: string;
+  subregion: string;
+  postalCode: string;
+  address: string;
+  latitude: string;
+  longitude: string;
+};
+
+type DeviceImagesFormValues = {
+  imageIds: string[];
+};
+
+type DeviceFormPostData = DeviceInfoFormValues &
+  DeviceLocationFormValues &
+  DeviceImagesFormValues;
+
+type FuelType = { code: string; name: string };
+type DeviceType = { code: string; name: string };
+
 declare namespace Cypress {
   interface Chainable {
     login(email: string, password: string): void;
@@ -148,11 +182,13 @@ declare namespace Cypress {
     selectValue(target: string, value: string): Chainable<Element>;
     selectValueByIndex(target: string, index: string): Chainable<Element>;
     selectMultiple(target: string, values: string[]): Chainable<Element>;
+    selectDate(target: string, day: string): Chainable<Element>;
     inputRequired(target: string, neighbor: string): Chainable<Element>;
     filledInputRequired(target: string, neighbor: string): Chainable<Element>;
     fillUserRegister(user: UserRegisterData): Chainable<Element>;
     notification(text: string): Chainable<Element>;
     nextStep(): void;
+    submitForm(): void;
     closeAllNotifications(): void;
     fillUserLogin(loginData: UserLoginData): Chainable<Element>;
     apiRegisterUser(user: UserRegisterData): Chainable<Element>;
@@ -170,11 +206,22 @@ declare namespace Cypress {
     fillIRecRegistrationInfo(
       iRecData: IRecRegistrationInfoForm
     ): Chainable<Element>;
+    fillDeviceInfoForm(deviceData: DeviceInfoFormValues): Chainable<Element>;
+    fillDeviceLocationForm(
+      deviceData: DeviceLocationFormValues
+    ): Chainable<Element>;
+    fillDeviceImagesForm(): Chainable<Element>;
+    fillDeviceForm(
+      userData: UserRegisterData,
+      orgData: DeviceFormPostData
+    ): Chainable<Element>;
     attachDocument(uploadDataCy: string): Chainable<Element>;
     attachMultipleDocuments(
       uploadDataCy: string,
       count: number
     ): Chainable<Element>;
+    apiGetFuelType(userData: UserRegisterData): Chainable<Element>;
+    apiGetDeviceType(userData: UserRegisterData): Chainable<Element>;
     apiRegisterOrg(
       userData: UserRegisterData,
       orgData: OrganizationPostData
@@ -195,11 +242,11 @@ declare namespace Cypress {
     ): Chainable<Element>;
     apiRegisterDevice(
       userData: UserRegisterData,
-      testDevice: DevicePostData
+      testDevice: DeviceFormPostData
     ): Chainable<Element>;
     apiRegisterAndApproveDevice(
       userData: UserRegisterData,
-      testDevice: DevicePostData
+      testDevice: DeviceFormPostData
     ): Chainable<Element>;
   }
 }
