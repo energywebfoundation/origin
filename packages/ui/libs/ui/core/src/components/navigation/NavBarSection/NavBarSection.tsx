@@ -41,7 +41,7 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
 
   return (
     <div>
-      {show && (
+      {show ? (
         <div className={classes.wrapper}>
           <NavSectionTitle
             url={sectionTitleUrl}
@@ -58,7 +58,7 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
             menuButtonClass={menuButtonClass}
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

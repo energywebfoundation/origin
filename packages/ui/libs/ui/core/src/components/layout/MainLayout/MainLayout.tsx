@@ -1,20 +1,18 @@
 import { BoxProps, PaperProps, SwitchProps } from '@mui/material';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { FC } from 'react';
 import { Outlet } from 'react-router-dom';
 import {
   NavBar,
   OrgNavData,
-  PageWrapper,
   TMenuSection,
-  TopBar,
-  TopBarButtonData,
   UserNavData,
-} from '../../components';
-import { useMainLayoutEffects } from './MainLayout.effects';
+} from '../../navigation';
+import { TopBar, TopBarButtonData } from '../TopBar';
+import { PageWrapper } from '../PageWrapper';
 
-interface MainLayoutProps {
+export interface MainLayoutProps {
   topbarButtons: TopBarButtonData[];
   menuSections: TMenuSection[];
   userData: UserNavData;
@@ -36,25 +34,34 @@ export const MainLayout: FC<MainLayoutProps> = ({
   userData,
   orgData,
   isAuthenticated,
-  icon,
+  icon = null,
   iconWrapperProps,
-  topBarClassName,
+  topBarClassName = '',
   navBarPaperProps,
-  ...themeSwitcherProps
+  themeSwitcher = false,
+  themeMode = ThemeModeEnum.Dark,
+  changeThemeMode,
+  themeSwitchProps,
 }) => {
-  const { mobileNavOpen, setMobileNavOpen } = useMainLayoutEffects();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const handleMobileNavOpen = () => setMobileNavOpen(true);
+  const handleMobileNavClose = () => setMobileNavOpen(false);
+
   return (
     <>
       <TopBar
         buttons={topbarButtons}
-        onMobileNavOpen={() => setMobileNavOpen(true)}
+        onMobileNavOpen={handleMobileNavOpen}
         toolbarClassName={topBarClassName}
-        {...themeSwitcherProps}
+        themeSwitcher={themeSwitcher}
+        themeMode={themeMode}
+        changeThemeMode={changeThemeMode}
+        themeSwitchProps={themeSwitchProps}
       />
       <NavBar
         isAuthenticated={isAuthenticated}
         openMobile={mobileNavOpen}
-        onMobileClose={() => setMobileNavOpen(false)}
+        onMobileClose={handleMobileNavClose}
         menuSections={menuSections}
         userData={userData}
         orgData={orgData}

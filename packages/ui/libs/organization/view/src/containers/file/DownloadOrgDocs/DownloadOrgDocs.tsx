@@ -22,7 +22,7 @@ export const DownloadOrgDocs: FC<DownloadOrgDocsProps> = ({
           key={documentId}
           downloadFunc={fileDownloadHandler}
           documentId={documentId}
-          name={blockTitle}
+          fileName={blockTitle}
           dataCy={dataCy}
           label={`${
             documents.length > 1

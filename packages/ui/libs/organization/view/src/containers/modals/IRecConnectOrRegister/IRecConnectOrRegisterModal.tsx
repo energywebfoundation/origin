@@ -4,7 +4,11 @@ import { OrganizationAdded } from '@energyweb/origin-ui-assets';
 import { useIRecConnectOrRegisterEffects } from './IRecConnectOrRegister.effects';
 
 export const IRecConnectOrRegisterModal: FC = () => {
-  const { open, title, text, buttons } = useIRecConnectOrRegisterEffects();
+  const { open, title, text, buttons, userLoading } =
+    useIRecConnectOrRegisterEffects();
+
+  if (userLoading) return null;
+
   return (
     <GenericModal
       icon={<OrganizationAdded />}

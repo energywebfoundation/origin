@@ -1,13 +1,15 @@
 import React, { FC, memo } from 'react';
 import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { Box, Button, SwitchProps, Toolbar } from '@mui/material';
-import { useStyles } from './DesktopTopBar.styles';
-import { TopBarButtonData } from '../TopBar';
-import { ThemeSwitcher } from '../ThemeSwitcher/ThemeSwitcher';
 import clsx from 'clsx';
+import { TopBarButtonData } from '../TopBar';
+import { ThemeSwitcher } from '../ThemeSwitcher';
+import { useStyles } from './DesktopTopBar.styles';
+
+type DesktopTopbarButton = Omit<TopBarButtonData, 'Icon'>;
 
 export interface DesktopTopBarProps {
-  buttons: TopBarButtonData[];
+  buttons: DesktopTopbarButton[];
   toolbarClassName?: string;
   themeSwitcher?: boolean;
   themeMode?: ThemeModeEnum;
@@ -20,7 +22,7 @@ export const DesktopTopBar: FC<DesktopTopBarProps> = memo(
     buttons,
     toolbarClassName,
     themeSwitcher = false,
-    themeMode,
+    themeMode = ThemeModeEnum.Light,
     changeThemeMode,
     themeSwitchProps,
   }) => {
@@ -51,3 +53,5 @@ export const DesktopTopBar: FC<DesktopTopBarProps> = memo(
     );
   }
 );
+
+DesktopTopBar.displayName = 'DesktopTopBar';

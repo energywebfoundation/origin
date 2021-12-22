@@ -5,7 +5,7 @@ import {
   RequestClaimDTO,
   useTransferControllerRequestClaim,
 } from '@energyweb/exchange-react-query-client';
-import { FullOrganizationInfoDTO } from '@energyweb/origin-backend-react-query-client';
+import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
   showNotification,
   NotificationTypeEnum,
@@ -19,7 +19,7 @@ import { useCachedUser } from '../cached';
 
 export const useClaimCertificateHandler = (
   exchangeCertificates: AccountAssetDTO[],
-  organization: FullOrganizationInfoDTO,
+  beneficiary: BeneficiaryDTO,
   startDate: Dayjs,
   endDate: Dayjs,
   purpose: string,
@@ -41,9 +41,9 @@ export const useClaimCertificateHandler = (
     )?.asset.id;
 
     const claimData: ClaimDataDTO = {
-      beneficiary: organization?.name ?? '',
-      location: organization?.address ?? '',
-      countryCode: organization?.country ?? '',
+      beneficiary: beneficiary?.name ?? '',
+      location: beneficiary?.location ?? '',
+      countryCode: beneficiary?.countryCode ?? '',
       periodStartDate: dayjs(startDate).toISOString(),
       periodEndDate: dayjs(endDate).toISOString(),
       purpose,

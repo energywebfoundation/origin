@@ -18,11 +18,11 @@ export const MenuItem: FC<MenuItemProps> = memo(
   ({
     label,
     url,
-    selected,
+    dataCy,
+    selected = false,
     closeMobileNav,
     selectedClass,
     buttonClass,
-    dataCy,
   }) => {
     const classes = useStyles();
     return (

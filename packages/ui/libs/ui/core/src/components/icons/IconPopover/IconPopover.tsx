@@ -1,21 +1,19 @@
 import React, { ElementType } from 'react';
-import { Popover, Typography, Button, SvgIconProps } from '@mui/material';
+import { Popover, Typography, Button } from '@mui/material';
 import { useStyles } from './IconPopover.styles';
 import { useIconPopoverEffects } from './IconPopover.effects';
 
 export enum IconSize {
   Small = 'small',
-  Medium = 'default',
+  Medium = 'medium',
   Large = 'large',
 }
 
 export interface IconPopoverProps {
   icon: ElementType;
-  iconSize: IconSize;
-  iconProps?: SvgIconProps & {
-    ['data-cy']: string;
-  };
   popoverText: string[];
+  iconSize?: IconSize;
+  iconProps?: Record<string, any>;
   className?: string;
   clickable?: boolean;
 }
@@ -23,12 +21,11 @@ export interface IconPopoverProps {
 export const IconPopover = (props: IconPopoverProps) => {
   const {
     icon: Icon,
-    iconSize,
+    iconSize = IconSize.Medium,
     iconProps,
     popoverText,
     className,
     clickable = false,
-    ...otherProps
   } = props;
   const classes = useStyles();
 
@@ -46,7 +43,7 @@ export const IconPopover = (props: IconPopoverProps) => {
   const textContent = mapTextWithLineBreaks(popoverText);
 
   return (
-    <div className={className} {...otherProps}>
+    <div className={className}>
       {clickable ? (
         <>
           <Button aria-describedby={getClickableId(open)} onClick={handleClick}>

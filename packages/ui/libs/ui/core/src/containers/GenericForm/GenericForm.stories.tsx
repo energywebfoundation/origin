@@ -95,6 +95,11 @@ export default {
     },
     initialValues: {
       description: 'Inital form values',
+      table: {
+        type: {
+          summary: 'FormValues',
+        },
+      },
     },
     buttonText: {
       description: 'Text inside submit button',

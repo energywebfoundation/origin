@@ -47,7 +47,6 @@ export default {
   },
   argTypes: {
     field: {
-      type: { required: true },
       description:
         'Object containing all the field data used for `react-hook-form` setup and `TextField` visual setup',
       table: {
@@ -58,13 +57,11 @@ export default {
       },
     },
     register: {
-      type: { required: true },
       description:
         'Register function returned from `useForm` hook of `react-hook-form`',
       control: false,
     },
     errorExists: {
-      type: { required: false },
       description:
         'Prop which could be received by checking form context for errors existing in this particular field. Specifiying it as `true` marks input as errored',
       defaultValue: false,
@@ -74,7 +71,6 @@ export default {
       },
     },
     errorText: {
-      type: { required: false },
       description:
         'Prop which could be received by checking form context for error message in this particular field. This property is used as `helperText` below the Input.',
       defaultValue: '',
@@ -84,7 +80,6 @@ export default {
       },
     },
     isDirty: {
-      type: { required: false },
       description:
         'Prop used for validating particular field in case `endAdornment.isValidCheck` is set to `true` inside `field` object. This property could be received from `formState` of `useForm` hook',
       defaultValue: false,
@@ -94,7 +89,6 @@ export default {
       },
     },
     disabled: {
-      type: { required: false },
       defaultValue: false,
       table: {
         type: { summary: 'boolean' },
@@ -102,7 +96,6 @@ export default {
       },
     },
     variant: {
-      type: { required: false },
       defaultValue: 'standard',
       table: {
         defaultValue: { summary: 'standard' },

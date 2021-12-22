@@ -53,7 +53,6 @@ export default {
   },
   argTypes: {
     value: {
-      type: { required: true },
       description: 'Selected value(s)',
       table: {
         type: {
@@ -64,7 +63,6 @@ export default {
       control: false,
     },
     onChange: {
-      type: { required: true },
       description: 'Change handler',
       table: {
         type: {
@@ -73,7 +71,6 @@ export default {
       },
     },
     field: {
-      type: { required: true },
       description:
         'Object containing all the field data used for `TextField` setup',
       table: {
@@ -84,7 +81,6 @@ export default {
       },
     },
     errorExists: {
-      type: { required: false },
       description:
         'If using as a part of `react-hook-form` this prop could be received by checking form context for errors existing in this particular field. Specifiying it as `true` marks input as errored. If using outside `react-hook-form` could be provided some custom logic.',
       defaultValue: false,
@@ -94,7 +90,6 @@ export default {
       },
     },
     errorText: {
-      type: { required: false },
       description:
         'If using as a part of `react-hook-form` prop which could be received by checking form context for error message in this particular field. This property is used as `helperText` below the Input. If using outside `react-hook-form` could be provided some custom logic.',
       defaultValue: '',
@@ -104,19 +99,16 @@ export default {
       },
     },
     variant: {
-      type: { required: false },
       defaultValue: 'filled',
       table: {
         defaultValue: { summary: 'filled' },
       },
     },
     className: {
-      type: { required: false },
       description: 'Class name supplied to `Autocomplete` component',
       control: false,
     },
     dependentValue: {
-      type: { required: false },
       description: 'Value of the field this autocomplete is dependent on',
       control: false,
     },

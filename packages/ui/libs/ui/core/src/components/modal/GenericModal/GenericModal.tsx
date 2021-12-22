@@ -40,11 +40,11 @@ export interface GenericModalProps {
 
 export const GenericModal: FC<GenericModalProps> = ({
   open,
-  title,
-  text,
+  title = '',
+  text = '',
   buttons,
-  customContent,
-  icon,
+  customContent = null,
+  icon = null,
   dialogProps,
   titleProps,
   textProps,

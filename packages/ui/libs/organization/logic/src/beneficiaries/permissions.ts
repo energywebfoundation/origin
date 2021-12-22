@@ -25,8 +25,9 @@ export const useCreateBeneficiariesPermissionsLogic = ({
 }: CreateBeneficiariesPermissionsArgs): IPermissionReturnType => {
   const requirementList: Requirement[] = [
     Requirement.HasActiveOrganization,
-    Requirement.HasIRecApiConnection,
-    Requirement.HasIRecOrg,
+    ...(process.env.NODE_ENV !== 'development'
+      ? [Requirement.HasIRecApiConnection, Requirement.HasIRecOrg]
+      : []),
   ];
 
   const permissions = usePermissionsLogic({

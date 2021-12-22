@@ -31,6 +31,7 @@ export const MyDeviceCardHeader: React.FC<MyDeviceCardHeaderProps> = ({
 }) => {
   const { viewDetailsClickHandler, editDeviceClickHandler, t } =
     useMyDeviceCardHeaderEffects(viewButtonLink, editButtonLink);
+  const showEditButton = deviceState !== DeviceState.Approved;
   const classes = useStyles();
 
   return (
@@ -58,16 +59,18 @@ export const MyDeviceCardHeader: React.FC<MyDeviceCardHeaderProps> = ({
         >
           {viewButtonText}
         </Button>
-        <Button
-          color="inherit"
-          onClick={editDeviceClickHandler}
-          className={classes.button}
-          classes={{ iconSizeMedium: classes.smallEndIcon }}
-          endIcon={<Edit />}
-          sx={{ marginLeft: '10px' }}
-        >
-          {editButtonText}
-        </Button>
+        {showEditButton && (
+          <Button
+            color="inherit"
+            onClick={editDeviceClickHandler}
+            className={classes.button}
+            classes={{ iconSizeMedium: classes.smallEndIcon }}
+            endIcon={<Edit />}
+            sx={{ marginLeft: '10px' }}
+          >
+            {editButtonText}
+          </Button>
+        )}
       </div>
       <div className={classes.specBlockWrapper}>
         <SpecField

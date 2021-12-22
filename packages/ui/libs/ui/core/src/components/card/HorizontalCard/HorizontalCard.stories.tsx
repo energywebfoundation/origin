@@ -39,7 +39,7 @@ export default {
     header: {
       description:
         'React node with custom content located as a top part of card',
-      type: { required: true },
+      type: { name: 'other', value: 'ReactNode', required: true },
       table: {
         type: { summary: 'ReactNode' },
       },
@@ -48,7 +48,7 @@ export default {
     content: {
       description:
         'React node with custom content located as a bottom part of the card',
-      type: { required: true },
+      type: { name: 'other', value: 'ReactNode', required: true },
       table: {
         type: { summary: 'ReactNode' },
       },

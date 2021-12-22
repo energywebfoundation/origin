@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-interface ConditionalWrapperProps {
+export interface ConditionalWrapperProps {
   condition: boolean;
-  wrapper: React.FC;
+  wrapper: React.FC<{ children: ReactNode }>;
+  children: ReactNode;
 }
 
-export const ConditionalWrapper: React.FC<ConditionalWrapperProps> = ({
+export const ConditionalWrapper = ({
   condition,
   wrapper: Wrapper,
   children,
-}) => {
+}: ConditionalWrapperProps) => {
   if (condition) return <Wrapper>{children}</Wrapper>;
   return <div>{children}</div>;
 };

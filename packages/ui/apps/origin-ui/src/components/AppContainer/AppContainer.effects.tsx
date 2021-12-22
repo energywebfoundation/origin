@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
-
 import {
   getOrganizationMenu,
   IRECAccountType,
@@ -33,10 +33,10 @@ import {
   useRegistrationControllerGetRegistrations,
 } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { useUser } from '@energyweb/origin-ui-user-data';
 import { useActiveMenuTab, useAxiosDefaults } from '../../hooks';
 import { useStyles } from './AppContainer.styles';
-import { useNavigate } from 'react-router';
 
 export type RoutesConfig = {
   orgRoutes: Omit<TGetOrganizationMenuArgs, 't' | 'isOpen' | 'showSection'>;
@@ -55,7 +55,7 @@ export const useAppContainerEffects = () => {
   useAxiosDefaults();
   const classes = useStyles();
   const theme = useTheme();
-  const isLightTheme = theme.palette.mode === 'light';
+  const isLightTheme = theme.palette.mode === ThemeModeEnum.Light;
 
   const { t } = useTranslation();
   const navigate = useNavigate();

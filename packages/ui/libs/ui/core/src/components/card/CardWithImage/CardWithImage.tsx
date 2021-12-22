@@ -6,6 +6,7 @@ import {
   CardContent,
   CardProps,
   Typography,
+  TypographyProps,
 } from '@mui/material';
 import React, {
   DetailedHTMLProps,
@@ -15,7 +16,7 @@ import React, {
   ReactNode,
 } from 'react';
 import { ImageWithHoverText } from '../../images';
-import { FallbackIcon } from '../../icons';
+import { IconHoverText } from '../../icons';
 import { useStyles } from './CardWithImage.styles';
 
 export interface CardWithImageProps {
@@ -41,10 +42,7 @@ export interface CardWithImageProps {
     HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   >;
-  overlayTextProps?: DetailedHTMLProps<
-    HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  >;
+  overlayTextProps?: TypographyProps;
 }
 
 export const CardWithImage: FC<CardWithImageProps> = ({
@@ -79,7 +77,7 @@ export const CardWithImage: FC<CardWithImageProps> = ({
             overlayTextProps={overlayTextProps}
           />
         ) : (
-          <FallbackIcon
+          <IconHoverText
             icon={fallbackIcon}
             hoverText={hoverText}
             iconProps={fallbackIconProps || { className: classes.image }}
