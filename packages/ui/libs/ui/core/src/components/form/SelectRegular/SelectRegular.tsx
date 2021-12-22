@@ -73,7 +73,7 @@ export const SelectRegular: TSelectRegular = ({
         disabled={disabled}
         required={field.required}
         inputProps={{
-          ...field?.inputProps,
+          ...field.inputProps,
         }}
         {...field.textFieldProps}
       >

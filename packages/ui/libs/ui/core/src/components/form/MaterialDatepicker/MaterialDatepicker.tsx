@@ -97,7 +97,7 @@ export const MaterialDatepicker: FC<MaterialDatepickerProps> = ({
             placeholder={field.placeholder || field.label}
             inputProps={{
               ...props.inputProps,
-              ...field?.inputProps,
+              ...field.inputProps,
               placeholder: field.placeholder || field.label,
             }}
             {...field.textFieldProps}

@@ -60,7 +60,7 @@ export const DisabledFormView: FC<DisabledFormViewProps> = ({
               classes={{ root: classes.input }}
               inputProps={{
                 ...inputProps,
-                ...(item?.dataCy && { ['data-cy']: item.dataCy }),
+                ...(item.dataCy && { ['data-cy']: item.dataCy }),
               }}
             />
           ))}
@@ -77,7 +77,7 @@ export const DisabledFormView: FC<DisabledFormViewProps> = ({
               classes={{ root: classes.input }}
               inputProps={{
                 ...inputProps,
-                ...(item?.dataCy && { ['data-cy']: item.dataCy }),
+                ...(item.dataCy && { ['data-cy']: item.dataCy }),
               }}
             />
           ))}

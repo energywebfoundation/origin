@@ -79,7 +79,7 @@ export const SelectAutocomplete: TSelectAutocomplete = ({
           placeholder={field.placeholder}
           onChange={(event: any) => setTextValue(event.target.value)}
           helperText={errorText}
-          inputProps={{ ...params.inputProps, ...field?.inputProps }}
+          inputProps={{ ...params.inputProps, ...field.inputProps }}
           error={errorExists}
           variant={variant}
           fullWidth

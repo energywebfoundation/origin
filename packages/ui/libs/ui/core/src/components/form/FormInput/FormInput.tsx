@@ -66,7 +66,7 @@ export const FormInput: TFormInput = memo(
         required={field.required}
         variant={variant}
         inputProps={{
-          ...field?.inputProps,
+          ...field.inputProps,
         }}
         InputProps={{
           startAdornment: field.startAdornment && (
