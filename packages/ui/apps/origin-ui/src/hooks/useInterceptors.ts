@@ -21,12 +21,14 @@ export const useAxiosDefaults = () => {
   useEffect(() => {
     const token = getAuthenticationToken();
     axios.defaults.baseURL = window.config.BACKEND_URL;
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    if (!!token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
   }, []);
 
   axios.interceptors.response.use(
     (response) => response,
-    async (error) => {
+    (error) => {
       const authToken = getAuthenticationToken();
       if (isUnauthorized(error?.response) && authToken) {
         removeAuthenticationToken();
