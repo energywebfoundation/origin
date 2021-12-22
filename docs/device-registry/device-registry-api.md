@@ -1,6 +1,7 @@
 # Device Registry API - @energyweb/origin-device-registry-api
 [**Source code on GitHub**:](https://github.com/energywebfoundation/origin/tree/master/packages/devices/origin-device-registry-api)
 
+## Overview
 The Device Registry API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for fetching and creating/persisting Devices.  
 
 The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  

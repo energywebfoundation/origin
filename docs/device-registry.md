@@ -1,4 +1,6 @@
 # Device Registry SDK
+
+## Overview
 The Device Registry SDK is used to register and fetch devices and meter data.  
 
 ‘Devices’ are electricity generating assets (e.g solar pv, hydroelectric dam, steam turbine). Because [Energy Attribute Certificates](././user-guide-glossary.md.md#energy-attribute-certificate) are always tied to the device for which generation evidence was submitted, generation devices must be registered with Origin. Read more about the role of devices on the platform [here](./user-guide-reg-onboarding.md#devices). 

@@ -11,9 +11,15 @@ The main purpose of EACs is to act as an accounting vehicle to prove that consum
 
 We provide more information on EACs in the glossary [here](./user-guide-glossary.md#energy-attribute-certificate).  
 
-**This site provides technical documentation for each SDK's generic implementations (i.e. not I-REC specific implementations), as well as [user guides](./user-guides.md) on how to navigate the [reference implementation platform's](#origin-platform-reference-implementation) user interface.**   
+## Documentation Overview
+This site provides technical documentation for each SDK's generic implementations (i.e. not I-REC specific implementations), as well as [user guides](./user-guides.md) on how to navigate the [reference implementation platform's](#origin-platform-reference-implementation) user interface.  
 
-*Note* that although this documentation only covers the packages built for generic (i.e. not IREC compliant) implementation, each SDK does contain I-REC specific packages that comply and integrate with the I-REC registry. You can find those packages in the SDK's GitHub repository. 
+<div class="admonition note">
+  <p class="first admonition-title">Note</p>
+  <p class="last">
+   Although this documentation only covers the packages built for generic (i.e. not IREC compliant) implementation, each SDK does contain I-REC specific packages that comply and integrate with the I-REC registry. You can find those packages in the SDK's GitHub repository. 
+  </p>
+</div>
 
 # Origin SDKs
 Origin is comprised of [multiple SDKs](./packages.md) that can be used individually or in unison.

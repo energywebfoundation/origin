@@ -1,14 +1,10 @@
-<h1 align="center">
-  <br>
-  <a href="https://www.energyweb.org/"><img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150"></a>
-  <br>
-  EnergyWeb Origin
-  <br>
-  <h2 align="center">Origin-Backend</h2>
-  <br>
-</h1>
+<p align="center">
+  <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+</p>
 
-**Origin-Backend** package provides the API for managing users, certificate, requests and devices in the Origin project.
+# Origin Backend
+
+The Origin Backend is a [NestJS](https://nestjs.com/) application that provides services for user and organization authorization and management. The Backend application can be used in conjunction with one, several or all of the [Origin SDKs](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) to provide integrated user management and authorization. 
 
 ## Development
 

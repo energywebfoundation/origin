@@ -2,16 +2,16 @@
   <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
-# Device Registry API
+# Exchange Token Account
 
 ## Description
-The Device Registry API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for fetching and creating/persisting Devices. 
+The Exchange Core package provides the Matching Engine class, which contains the Exchange's order book functionality.
 
-It is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Device Registry SDK. 
+It is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Trade SDK. 
 
 ## Documentation
-- [Device Registry API](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/device-registry/device-registry-api/)
-- [Device Registry SDK](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/device-registry/)
+- [Exchange Core](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/trade/exchange-core/)
+- [Trade SDK](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/trade/)
 
 ## Contributing Guidelines 
 See [contributing.md](../../../contributing.md)

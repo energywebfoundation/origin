@@ -1,7 +1,8 @@
 # Issuer API - @energyweb/issuer-api
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api)
 
-The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling all Certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about the certificate lifecycle [here](../../traceability.md). 
+## Overview
+The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about the certificate lifecycle [here](../../traceability.md). 
 
 The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
 
@@ -193,7 +194,7 @@ The Issuer API uses a database for certificate data because it is more performan
 
 When a certificate is requested, issued, or updated (i.e. if it has been transferred, claimed or revoked), this is reflected in the certificate’s record in the database as well as on the blockchain. The Issuer API makes updates to the Certificates on the blockchain using the [Blockchain facade](../contracts/Issuer.md#blockchain-facade) methods, and queries the database repository using a connection through [TypeORM](https://typeorm.io/#/). 
 
-See the code snippet below from the CreateCertificateRequestHandler class. The certificate is first created on the blockchain using the [CertificationRequest facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/CertificationRequest.ts), and then created in the database using the repository service. You can see the source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/handlers/create-certification-request.handler.ts). 
+See the code snippet below from the CreateCertificateRequestHandler class. The certificate is first created on the blockchain using the [CertificationRequest facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/CertificationRequest.ts), and then created in the database using the repository service. 
 
 ```
 async execute({
@@ -248,7 +249,7 @@ async execute({
                `Certification request creation has failed with the error: ${e.message}`
            );
 ```
-
+[source](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/handlers/create-certification-request.handler.ts)
 
 
 
