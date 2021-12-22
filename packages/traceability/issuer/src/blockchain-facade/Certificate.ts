@@ -283,7 +283,6 @@ export class Certificate implements ICertificate {
         const fromAddress = from ?? activeUserAddress;
 
         const encodedClaimData = encodeClaimData(claimData);
-        //HEre is example
         return registryWithSigner.safeTransferAndClaimFrom(
             fromAddress,
             claimAddress,
