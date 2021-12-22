@@ -29,7 +29,11 @@ export const RequestCertificateForm: FC<RequestCertificateFormProps> = ({
       <Typography variant="h5">{formTitle}</Typography>
       <Typography color="textSecondary">{device.name}</Typography>
       <GenericForm loading={isMutating} {...formProps}>
-        <FileUpload dropzoneClassName={classes.dropzone} {...fileUploadProps} />
+        <FileUpload
+          dropzoneClassName={classes.dropzone}
+          {...fileUploadProps}
+          wrapperProps={{ ['data-cy']: 'requestCertificateUpload' }}
+        />
       </GenericForm>
     </div>
   );
