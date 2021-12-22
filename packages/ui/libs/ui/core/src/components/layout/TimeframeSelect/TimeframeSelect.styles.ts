@@ -26,6 +26,7 @@ export const useStyles = makeStyles((theme) => ({
   dates: {
     margin: '0 0 0 19px',
     width: 'auto',
+    display: 'flex',
     flexWrap: 'nowrap',
     [theme.breakpoints.down('lg')]: {
       width: '100%',

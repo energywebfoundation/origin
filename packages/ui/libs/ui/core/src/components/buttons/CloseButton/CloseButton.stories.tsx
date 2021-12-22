@@ -19,7 +19,7 @@ export default {
   component: CloseButton,
   argTypes: {
     onClose: {
-      type: { required: true },
+      type: { name: 'function', required: true },
       description: `Close handler function of type: () => void`,
     },
   },

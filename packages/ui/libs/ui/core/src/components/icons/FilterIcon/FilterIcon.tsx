@@ -1,10 +1,7 @@
 import React from 'react';
 import { useStyles } from './FilterIcon.styles';
 
-/* eslint-disable-next-line */
-export interface FilterIconProps {}
-
-export function FilterIcon() {
+export const FilterIcon = () => {
   const classes = useStyles();
   return (
     <svg
@@ -35,6 +32,6 @@ export function FilterIcon() {
       </g>
     </svg>
   );
-}
+};
 
 export default FilterIcon;

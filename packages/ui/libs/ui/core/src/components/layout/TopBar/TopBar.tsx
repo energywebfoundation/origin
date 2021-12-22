@@ -6,7 +6,7 @@ import { MobileTopBar } from '../MobileTopBar';
 
 export type TopBarButtonData = {
   label: string;
-  Icon: FC<any>;
+  Icon: FC;
   onClick: () => void;
   show: boolean;
 };
@@ -24,18 +24,33 @@ export interface TopBarProps {
 export const TopBar: FC<TopBarProps> = ({
   buttons,
   onMobileNavOpen,
-  ...themeSwitchProps
+  toolbarClassName = '',
+  themeSwitcher = false,
+  themeMode = ThemeModeEnum.Light,
+  changeThemeMode,
+  themeSwitchProps,
 }) => {
   return (
     <>
       <Box sx={{ display: { lg: 'block', xs: 'none' } }}>
-        <DesktopTopBar buttons={buttons} {...themeSwitchProps} />
+        <DesktopTopBar
+          buttons={buttons}
+          toolbarClassName={toolbarClassName}
+          themeSwitcher={themeSwitcher}
+          themeMode={themeMode}
+          changeThemeMode={changeThemeMode}
+          themeSwitchProps={themeSwitchProps}
+        />
       </Box>
       <Box sx={{ display: { lg: 'none', xs: 'block' } }}>
         <MobileTopBar
           buttons={buttons}
           onMobileNavOpen={onMobileNavOpen}
-          {...themeSwitchProps}
+          toolbarClassName={toolbarClassName}
+          themeSwitcher={themeSwitcher}
+          themeMode={themeMode}
+          changeThemeMode={changeThemeMode}
+          themeSwitchProps={themeSwitchProps}
         />
       </Box>
     </>
