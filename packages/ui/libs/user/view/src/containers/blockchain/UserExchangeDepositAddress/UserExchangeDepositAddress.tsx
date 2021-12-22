@@ -1,11 +1,5 @@
 import React, { FC } from 'react';
-import {
-  CircularProgress,
-  Grid,
-  TextField,
-  Typography,
-  SvgIconProps,
-} from '@mui/material';
+import { CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { Info } from '@mui/icons-material';
 import { IconPopover, IconSize } from '@energyweb/origin-ui-core';
 import { useStyles } from './UserExchangeDepositAddress.styles';
