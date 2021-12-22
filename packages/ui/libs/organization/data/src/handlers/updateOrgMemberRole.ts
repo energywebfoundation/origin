@@ -3,7 +3,6 @@ import {
   getOrganizationControllerGetUsersQueryKey,
   useOrganizationControllerChangeMemberRole,
   UserDTO,
-  useUserControllerMe,
 } from '@energyweb/origin-backend-react-query-client';
 import {
   NotificationTypeEnum,
@@ -11,12 +10,13 @@ import {
 } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
+import { useUser } from '../fetching';
 
 export const useOrganizationMemberRoleUpdate = () => {
   const { t } = useTranslation();
   const { mutate, isLoading: isMutating } =
     useOrganizationControllerChangeMemberRole();
-  const { data: userUpdating } = useUserControllerMe();
+  const { user: userUpdating } = useUser();
 
   const queryClient = useQueryClient();
   const membersKey = getOrganizationControllerGetUsersQueryKey(
@@ -26,7 +26,7 @@ export const useOrganizationMemberRoleUpdate = () => {
   const updateRoleHandler = (userToUpdateId: UserDTO['id'], newRole: Role) => {
     mutate(
       {
-        id: userUpdating.organization.id,
+        id: userUpdating?.organization?.id,
         userId: userToUpdateId,
         data: {
           role: newRole,
