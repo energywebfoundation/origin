@@ -3,12 +3,13 @@ import {
   useCachedAllFuelTypes,
   useCachedAllDevices,
   useClaimCertificateHandler,
-  useApiUserAndAccount,
+  useCompanyBeneficiaries,
 } from '@energyweb/origin-ui-certificate-data';
 import {
   useClaimBeneficiaryFormLogic,
   useClaimActionLogic,
 } from '@energyweb/origin-ui-certificate-logic';
+import { useMemo } from 'react';
 import { Dayjs } from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -24,11 +25,11 @@ export const useClaimActionEffects = (
   const allFuelTypes = useCachedAllFuelTypes();
   const setTxPending = useTransactionPendingDispatch();
 
-  const { user, isLoading } = useApiUserAndAccount();
-  const organization = user?.organization;
+  const { companyBeneficiaries, areCompanyBeneficiariesLoading } =
+    useCompanyBeneficiaries();
 
   const { initialValues, fields, validationSchema } =
-    useClaimBeneficiaryFormLogic();
+    useClaimBeneficiaryFormLogic(companyBeneficiaries);
 
   const { register, control, watch, formState } = useForm({
     defaultValues: initialValues,
@@ -36,11 +37,16 @@ export const useClaimActionEffects = (
     resolver: yupResolver(validationSchema),
   });
   const { isValid, isDirty, errors } = formState;
-  const { startDate, endDate, purpose } = watch();
+  const { beneficiary, startDate, endDate, purpose } = watch();
+
+  const selectedBeneficiary = useMemo(
+    () => companyBeneficiaries?.find((b) => b.id === beneficiary),
+    [beneficiary, companyBeneficiaries]
+  );
 
   const { claimHandler } = useClaimCertificateHandler(
     exchangeCertificates,
-    organization,
+    selectedBeneficiary,
     startDate as Dayjs,
     endDate as Dayjs,
     purpose,
@@ -56,15 +62,17 @@ export const useClaimActionEffects = (
   });
 
   const buttonDisabled = !isDirty || !isValid;
+  const selectDisabled = fields[0].options?.length === 0;
 
   return {
     ...actionLogic,
     claimHandler,
-    isLoading,
+    isLoading: areCompanyBeneficiariesLoading,
     buttonDisabled,
     fields,
     register,
     control,
     errors,
+    selectDisabled,
   };
 };
