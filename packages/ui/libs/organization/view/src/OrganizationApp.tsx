@@ -43,9 +43,10 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
     <OrganizationModalsProvider>
       <Routes>
         {showMyOrg && <Route path="my" element={<OrganizationViewPage />} />}
-        {showInvitations && (
-          <Route path="invitations" element={<InvitationsPage />} />
-        )}
+        <Route
+          path="invitations"
+          element={<InvitationsPage redirectToIndex={!showInvitations} />}
+        />
         {showInvite && <Route path="invite" element={<InvitePage />} />}
         {showMembers && <Route path="members" element={<MembersPage />} />}
         {showRegisterOrg && (
@@ -63,10 +64,8 @@ export const OrganizationApp: FC<OrganizationAppProps> = ({ routesConfig }) => {
         {showConnectIRec && (
           <Route path="connect-irec" element={<ConnectIRecPage />} />
         )}
-
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-
       <OrganizationModalsCenter />
     </OrganizationModalsProvider>
   );

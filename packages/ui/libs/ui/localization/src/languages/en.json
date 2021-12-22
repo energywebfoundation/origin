@@ -1069,7 +1069,8 @@
         "editAmount": "Edit amount"
       },
       "notifications": {
-        "unknownError": "Unknown error"
+        "unknownError": "Unknown error",
+        "pleaseLogInToView": "Please log in to view this page"
       },
       "titles": {
         "dr": "Dr",

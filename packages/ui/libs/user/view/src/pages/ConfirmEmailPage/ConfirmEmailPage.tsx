@@ -12,7 +12,7 @@ export const ConfirmEmailPage = () => {
   const confirmHandler = useConfirmEmailHandler(user);
 
   useEffect(() => {
-    if (!!token && !userLoading) {
+    if (token && !userLoading) {
       confirmHandler(token);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
