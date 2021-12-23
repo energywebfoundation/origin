@@ -12,7 +12,7 @@ The main purpose of EACs is to act as an accounting vehicle to prove that consum
 We provide more information on EACs in the glossary [here](./user-guide-glossary.md#energy-attribute-certificate).  
 
 ## Documentation Overview
-This site provides technical documentation for each SDK's generic implementations (i.e. not I-REC specific implementations), as well as [user guides](./user-guides.md) on how to navigate the [reference implementation platform's](#origin-platform-reference-implementation) user interface.  
+This site provides technical documentation for each SDK's generic implementations (i.e. not I-REC specific implementations), as well as [user guides](./user-guides.md) on how to navigate the reference implementation platform's user interface (read more about the reference implementation [below](#origin-platform-reference-implementation)).  
 
 <div class="admonition note">
   <p class="first admonition-title">Note</p>
