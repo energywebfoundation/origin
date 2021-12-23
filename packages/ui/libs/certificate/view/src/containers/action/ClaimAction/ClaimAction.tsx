@@ -36,6 +36,7 @@ export const ClaimAction: TClaimAction = ({ selectedIds, resetIds }) => {
 
   return (
     <CertificateActionContent
+      disableBulkActions
       title={title}
       buttonText={buttonText}
       selectedIds={selectedIds}

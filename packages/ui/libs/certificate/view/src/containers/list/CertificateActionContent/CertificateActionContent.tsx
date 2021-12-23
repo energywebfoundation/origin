@@ -21,6 +21,7 @@ export interface CertificateActionContentProps<Id> {
   >[];
   buttonDisabled?: boolean;
   setTotalAmount?: (newValue: number) => void;
+  disableBulkActions?: boolean;
 }
 
 export type TCertificateActionContent = <Id>(
@@ -36,6 +37,7 @@ export const CertificateActionContent: TCertificateActionContent = ({
   buttonDisabled,
   setTotalAmount,
   children,
+  disableBulkActions = false,
 }) => {
   const classes = useStyles();
   const {
@@ -87,7 +89,7 @@ export const CertificateActionContent: TCertificateActionContent = ({
         fullWidth
         disabled={
           selectedIds.length === 0 ||
-          selectedIds.length > 1 ||
+          (disableBulkActions && selectedIds.length > 1) ||
           buttonDisabled ||
           editMode ||
           loading
@@ -107,7 +109,7 @@ export const CertificateActionContent: TCertificateActionContent = ({
           </>
         )}
       </Button>
-      {selectedIds.length > 1 && (
+      {disableBulkActions && selectedIds.length > 1 && (
         <Box mt={2}>
           <Typography align="center" color="textSecondary">
             {bulkActionsRestrictionsText}

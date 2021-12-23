@@ -18,6 +18,7 @@ export const WithdrawAction: TWithdrawAction = ({ selectedIds, resetIds }) => {
 
   return (
     <CertificateActionContent
+      disableBulkActions
       title={title}
       buttonText={buttonText}
       selectedIds={selectedIds}
