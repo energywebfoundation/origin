@@ -70,12 +70,12 @@ See documentation for the Origin Backend application [here](./backend.md).
 # **Origin UI**
 [Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/ui/apps/origin-ui)
 
-The Origin UI package provides the code for the full, end-to-end I-REC-compliant reference implementation (see the source code [here](https://github.com/energywebfoundation/origin/tree/master/packages/ui/apps/origin-ui)), as well as modularized libraries for each interface component. **Note that the UI components use the I-REC implementation of the SDKs,** so these serve more as a reference guide for generic implementations rather than for direct use. See an overview of the reference implementation [here](./user-guides.md)in the User Guides section. 
+The Origin UI package provides the code for the full, end-to-end I-REC-compliant reference implementation (see the source code [here](https://github.com/energywebfoundation/origin/tree/master/packages/ui/apps/origin-ui)), as well as modularized libraries for each interface component. **Note that the UI components use the I-REC implementation of the SDKs,** so these serve more as a reference guide for generic implementations rather than for direct use. See an overview of the reference implementation [here](./user-guides.md) in the User Guides section. 
 
 All UI components are built with [React](https://reactjs.org/). For data fetching, UI components use [React Query](https://react-query.tanstack.com/overview) to access each SDK's controller methods. 
 
 ## UI Libraries
-UI libraries provide that is modularized according to each reference implementation view:  
+UI libraries provide packages that are modularized according to each reference implementation view:  
 
 + [certificate](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/certificate)
 + [device](https://github.com/energywebfoundation/origin/tree/master/packages/ui/libs/device)
