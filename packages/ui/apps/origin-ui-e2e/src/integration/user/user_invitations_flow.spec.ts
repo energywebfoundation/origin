@@ -29,6 +29,7 @@ describe('User invitation flow', () => {
       Role.OrganizationDeviceManager
     );
     cy.apiSendInvitation(orgOwner, admin.email, Role.OrganizationAdmin);
+    cy.visit('/');
   });
 
   it('should show modal and allow to skip it', () => {

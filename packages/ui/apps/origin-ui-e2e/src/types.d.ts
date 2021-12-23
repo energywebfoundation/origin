@@ -184,7 +184,6 @@ declare namespace Cypress {
     selectMultiple(target: string, values: string[]): Chainable<Element>;
     selectDate(target: string, day: string): Chainable<Element>;
     inputRequired(target: string, neighbor: string): Chainable<Element>;
-    filledInputRequired(target: string, neighbor: string): Chainable<Element>;
     fillUserRegister(user: UserRegisterData): Chainable<Element>;
     notification(text: string): Chainable<Element>;
     nextStep(): void;

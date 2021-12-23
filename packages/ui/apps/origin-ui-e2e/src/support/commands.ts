@@ -52,19 +52,6 @@ Cypress.Commands.add('navigateMenu', (target: string) => {
   cy.dataCy(target).filter(':visible').click();
 });
 
-Cypress.Commands.add(
-  'filledInputRequired',
-  (target: string, neighbor: string) => {
-    cy.clearInput(target);
-    cy.dataCy(neighbor).click();
-    cy.dataCy(`${target}-label`).then((elem) => {
-      // @ts-ignore
-      const fieldName = elem.text().replace(/\s[*]/, '');
-      cy.contains(`${fieldName} is a required field`);
-    });
-  }
-);
-
 Cypress.Commands.add('closeAllNotifications', () => {
   cy.get('.Toastify__toast').click({ multiple: true, force: true });
 });
