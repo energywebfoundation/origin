@@ -10,6 +10,5 @@
   "screenshotsFolder": "../../dist/cypress/apps/origin-ui-e2e/screenshots",
   "chromeWebSecurity": false,
   "viewportHeight": 720,
-  "viewportWidth": 1280,
-  "baseUrl": "http://localhost"
+  "viewportWidth": 1280
 }

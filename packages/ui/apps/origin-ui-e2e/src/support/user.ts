@@ -19,7 +19,6 @@ Cypress.Commands.add('fillUserRegister', (user: UserRegisterData) => {
 
 Cypress.Commands.add('apiRegisterUser', (user: UserRegisterData) => {
   const registerUrl = `${Cypress.env('apiUrl')}/user/register`;
-  console.log(user, 'body user');
   cy.request({
     url: registerUrl,
     method: 'POST',

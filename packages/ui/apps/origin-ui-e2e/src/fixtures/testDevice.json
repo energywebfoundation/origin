@@ -16,5 +16,6 @@
   "address": "Test address",
   "countryCode": "TH",
   "latitude": "45.555",
-  "longitude": "45.555"
+  "longitude": "45.555",
+  "imageIds": []
 }
