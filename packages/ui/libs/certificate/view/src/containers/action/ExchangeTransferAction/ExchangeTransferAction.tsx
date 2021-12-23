@@ -34,6 +34,7 @@ export const ExchangeTransferAction: TExchangeTransferAction = ({
 
   return (
     <CertificateActionContent
+      disableBulkActions
       title={title}
       buttonText={buttonText}
       selectedIds={selectedIds}

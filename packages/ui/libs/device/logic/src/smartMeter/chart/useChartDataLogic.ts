@@ -9,9 +9,17 @@ export const useChartDataLogic = ({
   endDate,
   window,
 }: TUseChartDataLogicArgs) => {
-  const datasets = useGenerateChartDataset(reads);
-
   const { multiplier, format } = intervalData[window];
+
+  const dateFormat = 'YYYY-MM-DDTHH:mm';
+  const datasets = useGenerateChartDataset(
+    reads,
+    startDate,
+    endDate,
+    multiplier,
+    dateFormat
+  );
+
   const labels = useGenerateChartLabels({
     start: startDate,
     end: endDate,

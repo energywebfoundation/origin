@@ -33,6 +33,7 @@ export const ExchangeExportAction: TExchangeExportAction = ({
 
   return (
     <CertificateActionContent
+      disableBulkActions
       title={title}
       buttonText={buttonText}
       selectedIds={selectedIds}

@@ -12,3 +12,4 @@ export * from './prepareDeviceTypeOptions';
 export * from './getTimeZonesOptions';
 export * from './getCountriesTimeZones';
 export * from './prepareAccountCodeOptions';
+export * from './DayJsTimeMultiplier';

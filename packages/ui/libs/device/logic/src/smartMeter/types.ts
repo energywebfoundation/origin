@@ -7,6 +7,7 @@ import {
   ComposedPublicDevice,
   ReadingsWindowEnum,
 } from '@energyweb/origin-ui-device-data';
+import { DayJsTimeMultiplier } from '../utils';
 
 export type TUseSmartMeterTableArgs = {
   device: ComposedPublicDevice;
@@ -32,7 +33,7 @@ export type TSetDateBasedOnWindowArgs = {
 
 export type TInterval = {
   label: string;
-  multiplier: number;
+  multiplier: DayJsTimeMultiplier;
   format: string;
 };
 
@@ -50,6 +51,6 @@ export type TUseChartDataLogicArgs = {
 export type TUseGenerateChartLabelsArgs = {
   start: Date;
   end: Date;
-  multiplier: number;
+  multiplier: DayJsTimeMultiplier;
   format: string;
 };
