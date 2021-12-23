@@ -103,14 +103,18 @@ describe('Organization members page', () => {
       .find('td')
       .last()
       .trigger('mouseover');
-    cy.dataCy('removeMember').filter(':visible').click();
+    cy.dataCy('removeMember')
+      .filter(':visible')
+      .click({ waitForAnimations: true });
     cy.notification('User removed');
     cy.wait(1000);
 
     cy.contains('tr', member.email).find('td').last().trigger('mouseover');
-    cy.dataCy('removeMember').filter(':visible').click();
+    cy.dataCy('removeMember')
+      .filter(':visible')
+      .click({ waitForAnimations: true });
     cy.notification('User removed');
-    cy.wait(100);
+    cy.wait(1000);
 
     cy.contains('tr', testUser.email).find('td').last().trigger('mouseover');
     cy.dataCy('removeMember')
