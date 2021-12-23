@@ -2,16 +2,16 @@
   <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
-# Issuer API
+# Exchange Token Account
 
 ## Description
-The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling Certificate operations (certificate request, issuance, transfer, claiming, revoking).
+The Exchange Core package provides the Matching Engine class, which contains the Exchange's order book functionality.
 
-It is is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Traceability SDK. 
+It is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Trade SDK. 
 
 ## Documentation
-- [Issuer API](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/packages/issuer-api/)
-- [Traceability SDK](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/)
+- [Exchange Core](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/trade/exchange-core/)
+- [Trade SDK](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/trade/)
 
 ## Contributing Guidelines 
 See [contributing.md](../../../contributing.md)
@@ -39,8 +39,3 @@ For a deep-dive into the motivation and methodology behind our technical solutio
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-
-## Notes
-
-If you decide to use CertificationRequest, then you should also include `ScheduleModule.forRoot()` in your application, to run synchronization task.

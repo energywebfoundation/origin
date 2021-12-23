@@ -1,6 +1,7 @@
 # Traceability SDK
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability)
 
+## Overview
 The Traceability SDK is responsible for the **request**, **issuance** and **exchange** of [Energy Attribute Certificates](./user-guide-glossary.md#energy-attribute-certificate) on the Origin platform. Certificates are requested by device owners, and approved by issuers. The issuer is the entity that is responsible for reviewing the energy generation evidence and issuing the certificate in a way that conforms with legislative and industry standards.  
 
 ## Traceability SDK Packages  

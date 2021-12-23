@@ -7,7 +7,6 @@ import { Certificate as OnChainCertificate } from '@energyweb/issuer';
 
 import { Certificate } from '../certificate.entity';
 import { SyncCertificateEvent, CertificateUpdatedEvent } from '../events';
-
 @EventsHandler(SyncCertificateEvent)
 export class SyncCertificateHandler implements IEventHandler<SyncCertificateEvent> {
     private readonly logger = new Logger(SyncCertificateHandler.name);

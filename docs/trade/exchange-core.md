@@ -1,7 +1,8 @@
 # Exchange Core - @energyweb/exchange-core
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-core) 
 
-The Exchange Core package provides the [Matching Engine class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts), which contains the Exchange's matching engine functionality. It processes [orders](../user-guide-glossary.md#order) (which can be [bids](../user-guide-glossary.md#bid), [asks](../user-guide-glossary.md#ask), or [direct buys](../user-guide-glossary.md#direct-buy) from the exchange.  
+## Overview
+The Exchange Core package provides the [Matching Engine class](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts), which provides the Exchange's order book functionality. It processes [orders](../user-guide-glossary.md#order) (which can be [bids](../user-guide-glossary.md#bid), [asks](../user-guide-glossary.md#ask), or [direct buys](../user-guide-glossary.md#direct-buy) that are submitted by users from the exchange.  
 
 When a new bid or ask is submitted, the Matching Engine will compare it to all active orders in the [order book](../user-guide-glossary.md#order-book) to see if there is a match, and if so, will execute a trade. In order to create a trade, an ask and bid have to be matched. An ask can only be matched with a bid if all the matching criteria explained above are met. See the source code for the Matching Engine class [here](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-core/src/MatchingEngine.ts#L85).  
 

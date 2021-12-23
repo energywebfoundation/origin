@@ -1,7 +1,14 @@
 # @energyweb/exchange-io-erc1888
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888) 
 
-@energyweb/exchange-io-erc1888 monitors for deposits of [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) volumes onto the Exchange (into the Exchange [Exchange wallet](../user-guide-glossary.md#exchange-wallet)), and executes withdrawals and transfers. You can read more about the ERC-1888 in the context of Origin [here](../traceability.md#energy-attribute-certificates-on-the-blockchain).
+## Overview
+@energyweb/exchange-io-erc1888 performs three main functions: 
+
++ Monitors for deposits of [ERC-1888 Certificate](https://github.com/ethereum/EIPs/issues/1888) volumes into the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) where they are then active on the Exchange
++ Executes withdrawals from the Exchange to a user's Blockchain account
++ Executes transfers to a user's Exchange Deposit account.  
+
+You can read more about the ERC-1888 in the context of Origin [here](../traceability.md#energy-attribute-certificates-on-the-blockchain).
 
 This package is a NestJS application that uses [ethers.js](https://docs.ethers.io/v5/) to interact with the smart contracts on blockchain. It is tightly coupled with the [Exchange module](./exchange.md). 
 
@@ -11,7 +18,7 @@ The package has two core NestJS modules:
 - [withdrawal-processor](#withdrawal-processor)
 
 ## deposit-watcher
-[Source code on GitHub](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/deposit-watcher)
+[**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange-io-erc1888/src/deposit-watcher)
 
 The deposit-watcher handles the transfer of assets to the Exchange wallet. Once an EAC is in the Exchange wallet, it is active on the Exchange, meaning it can be posted for sale, transferred to another Exchange Deposit address, or claimed. 
 
