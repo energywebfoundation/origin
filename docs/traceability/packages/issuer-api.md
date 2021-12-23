@@ -86,7 +86,7 @@ export interface IBlockchainProperties {
 ```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/BlockchainProperties.ts)
 
-The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts) contains a wrap method that provides a new instance of the Registry and Issuer contracts with the current [Signer](https://docs.ethers.io/v5/api/signer/):  
+The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts) contains a wrap method that provides new instances of the [Registry](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Registry.sol) and [Issuer](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol) contracts with the current [Signer](https://docs.ethers.io/v5/api/signer/):  
 
 ```
     wrap(signerOrPrivateKey?: Signer | string): IBlockchainProperties {
@@ -120,7 +120,7 @@ The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/
 ```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts#L34)
 
-The blockchain facades use the wrap method to create new instances of smart contracts:
+The blockchain facades use the wrap method to create new instances of smart contracts when the certificate is created:
 
 ```
         if (!isPrivate) {
