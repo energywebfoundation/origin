@@ -47,6 +47,8 @@ describe('User invitation flow', () => {
   });
 
   it('should allow to accept invitation through invitations table', () => {
+    cy.apiLoginUser(memberAccept);
+
     cy.dataCy('organizationMenu').click();
     cy.navigateMenu('organizationInvitations');
     cy.url().should('include', 'organization/invitations');
