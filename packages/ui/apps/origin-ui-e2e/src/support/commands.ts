@@ -53,7 +53,10 @@ Cypress.Commands.add('navigateMenu', (target: string) => {
 });
 
 Cypress.Commands.add('closeAllNotifications', () => {
-  cy.get('.Toastify__toast').click({ multiple: true, force: true });
+  cy.get('.Toastify__toast').click({
+    multiple: true,
+    force: true,
+  });
 });
 
 Cypress.Commands.add('notification', (text: string) => {

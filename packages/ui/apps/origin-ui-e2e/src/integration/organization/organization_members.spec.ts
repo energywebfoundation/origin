@@ -93,25 +93,29 @@ describe('Organization members page', () => {
     cy.contains('tr', member.email).contains('td', 'Member');
     cy.contains('tr', deviceManager.email).contains('td', 'Admin');
     cy.contains('1–3 of 3');
-    cy.wait(500);
   });
 
   it('should not allow remove last person in organization', () => {
+    cy.apiLoginUser(testUser);
+    cy.visit('/organization/members');
+
     cy.contains('tr', deviceManager.email)
       .find('td')
       .last()
       .trigger('mouseover');
     cy.dataCy('removeMember').filter(':visible').click();
     cy.notification('User removed');
-    cy.wait(750);
+    cy.wait(1000);
 
     cy.contains('tr', member.email).find('td').last().trigger('mouseover');
     cy.dataCy('removeMember').filter(':visible').click();
     cy.notification('User removed');
-    cy.wait(750);
+    cy.wait(100);
 
     cy.contains('tr', testUser.email).find('td').last().trigger('mouseover');
-    cy.dataCy('removeMember').filter(':visible').click();
+    cy.dataCy('removeMember')
+      .filter(':visible')
+      .click({ waitForAnimations: true });
     cy.notification("You can't remove yourself from organization");
     cy.contains('tr', testUser.email).contains('td', 'Admin');
     cy.contains('1–1 of 1');
