@@ -2,7 +2,7 @@
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api)
 
 ## Overview
-The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about the certificate lifecycle [here](../../traceability.md). 
+The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling certificate operations (certificate request, issuance, transfer, claiming, revoking), and persisting certificate data. You can read more about the certificate lifecycle [here](../../traceability.md). 
 
 The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
 
@@ -188,9 +188,9 @@ The certification-request module manages fetching, creating and approving certif
 Certificate data is persisted in two locations:  
 
 1. On the blockchain in the form of an [ERC-1888 Transferable Certificate](https://github.com/ethereum/EIPs/issues/1888). Read more about this in the Issuer documentation [here](../../traceability.md#energy-attribute-certificates-on-the-blockchain).  
-2. In a relational database. Origin’s reference implementation uses [PostgreSQL](https://www.postgresql.org/), however other registries can be used according to implementation needs. 
+2. In a relational database as a [Certificate entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/certificate.entity.ts). Origin’s reference implementation uses [PostgreSQL](https://www.postgresql.org/), however other registries can be used according to implementation needs. 
 
-The Issuer API uses a database for certificate data because it is more performant than querying the blockchain each time data is needed.  
+The Issuer API uses a database to persist certificate data because it is more performant than the blockchain for data storage and data fetching. 
 
 When a certificate is requested, issued, or updated (i.e. if it has been transferred, claimed or revoked), this is reflected in the certificate’s record in the database as well as on the blockchain. The Issuer API makes updates to the Certificates on the blockchain using the [Blockchain facade](../contracts/Issuer.md#blockchain-facade) methods, and queries the database repository using a connection through [TypeORM](https://typeorm.io/#/). 
 
