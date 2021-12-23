@@ -64,7 +64,12 @@ describe('Organization members page', () => {
   });
 
   it('should remove invited admin', () => {
-    cy.contains('tr', admin.email).find('td').last().trigger('mouseover');
+    cy.contains('tr', admin.email)
+      .find('td')
+      .last()
+      .within(() => {
+        cy.dataCy('moreIcon').trigger('mouseover');
+      });
     cy.dataCy('removeMember').filter(':visible').click();
     cy.notification('User removed');
     cy.contains('tr', admin.email).should('not.exist');
@@ -75,7 +80,9 @@ describe('Organization members page', () => {
     cy.contains('tr', deviceManager.email)
       .find('td')
       .last()
-      .trigger('mouseover');
+      .within(() => {
+        cy.dataCy('moreIcon').trigger('mouseover');
+      });
     cy.dataCy('editRole').filter(':visible').click();
     cy.contains(
       `Change role for ${deviceManager.firstName} ${deviceManager.lastName}`
@@ -102,19 +109,32 @@ describe('Organization members page', () => {
     cy.contains('tr', deviceManager.email)
       .find('td')
       .last()
-      .trigger('mouseover');
+      .within(() => {
+        cy.dataCy('moreIcon').trigger('mouseover');
+      });
+
     cy.dataCy('removeMember')
       .filter(':visible')
       .click({ waitForAnimations: true });
     cy.notification('User removed');
 
-    cy.contains('tr', member.email).find('td').last().trigger('mouseover');
+    cy.contains('tr', member.email)
+      .find('td')
+      .last()
+      .within(() => {
+        cy.dataCy('moreIcon').trigger('mouseover');
+      });
     cy.dataCy('removeMember')
       .filter(':visible')
       .click({ waitForAnimations: true });
     cy.notification('User removed');
 
-    cy.contains('tr', testUser.email).find('td').last().trigger('mouseover');
+    cy.contains('tr', testUser.email)
+      .find('td')
+      .last()
+      .within(() => {
+        cy.dataCy('moreIcon').trigger('mouseover');
+      });
     cy.dataCy('removeMember')
       .filter(':visible')
       .click({ waitForAnimations: true });
