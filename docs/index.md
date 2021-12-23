@@ -17,7 +17,7 @@ This site provides technical documentation for each SDK's generic implementation
 <div class="admonition note">
   <p class="first admonition-title">Note</p>
   <p class="last">
-   Although this documentation only covers the packages built for generic (i.e. not IREC compliant) implementation, each SDK does contain I-REC specific packages that comply and integrate with the I-REC registry. You can find those packages in the SDK's GitHub repository. 
+   Although this documentation only covers the packages built for generic (i.e. not I-REC compliant) implementation, each SDK does contain I-REC specific packages that comply and integrate with the I-REC registry. You can find those packages in the SDK's GitHub repository. 
   </p>
 </div>
 
