@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="https://www.energyweb.org" target="blank"><img src="./images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
 # Device Registry API
 
 ## Description
-The Device Registry API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for fetching and creating/persisting Devices. 
+The Device Registry API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for fetching and persisting Device data. 
 
 It is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Device Registry SDK. 
 
