@@ -7,3 +7,4 @@ export * from './pollExchangeAddress';
 export * from './user';
 export * from './allOrganizations';
 export * from './adminOrganizationById';
+export * from './fileDownload';
