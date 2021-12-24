@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-irec-local-api-client",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "Client library interacting with the Origin I-REC Device Registry ",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-irec-local-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -26,8 +26,8 @@
         "axios": "0.24.0"
     },
     "devDependencies": {
-        "@energyweb/origin-device-registry-irec-local-api": "0.4.0",
-        "@energyweb/origin-organization-irec-api": "1.6.0",
+        "@energyweb/origin-device-registry-irec-local-api": "0.5.0",
+        "@energyweb/origin-organization-irec-api": "1.7.0",
         "@nestjs/passport": "8.0.1",
         "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.1",

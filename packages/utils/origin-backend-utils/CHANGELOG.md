@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.6.1...@energyweb/origin-backend-utils@1.7.0) (2021-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+* **utils-general:** Return user property alongside username ([e842885](https://github.com/energywebfoundation/origin/commit/e84288526fe2920cf2edbd049ff22e10489e0f5c))
+
+
+### Features
+
+* **origin-backend:** added email notifications ([c1b5528](https://github.com/energywebfoundation/origin/commit/c1b5528e011e05a2020320fc89d8bcc14f4d8d58))
+
+
+
+
+
 ## [1.6.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-utils@1.6.0...@energyweb/origin-backend-utils@1.6.1) (2021-09-17)
 
 **Note:** Version bump only for package @energyweb/origin-backend-utils
