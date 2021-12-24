@@ -75,6 +75,10 @@ jobs:
     - name: Build UI packages
       run: |
         node common/scripts/install-run-rush.js build:ui-packages
+    
+    - name: Build Storybook
+      run: |
+        node common/scripts/install-run-rush.js build:storybook
 
     - name: Set creds to npm 
       run: |
@@ -99,3 +103,4 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_STABLE_APP_API: ${{ secrets.HEROKU_STABLE_APP_API }}
           HEROKU_STABLE_APP_UI: ${{ secrets.HEROKU_STABLE_APP_UI }}
+          HEROKU_STORYBOOK_APP: ${{ secrets.HEROKU_STORYBOOK_APP }}
