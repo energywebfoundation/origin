@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-irec@1.0.4...@energyweb/exchange-irec@1.1.0) (2021-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency immutable to v4.0.0 ([479ae47](https://github.com/energywebfoundation/origin/commit/479ae47676deaefb2e8d9121f0a592a3d8066f59))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **exchange-irec:** fix exchange device type filtering ([4217dc1](https://github.com/energywebfoundation/origin/commit/4217dc1a229b86f213d308757f22bf3fd9f6e6e0))
+* **exchange-irec:** fix exchange device type filtering ([eca42f5](https://github.com/energywebfoundation/origin/commit/eca42f56aeeab4dac35d2e910cff48abc0dcb6b0))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+
+
+### Features
+
+* **exchange-irec:** added transfer certificate to irec ([eeb73cc](https://github.com/energywebfoundation/origin/commit/eeb73cc0dcf4570814580840e8d5d08ab0b68395))
+* **exchange-irec:** Export functionality ([3fa4318](https://github.com/energywebfoundation/origin/commit/3fa4318a0d3f1ec01796274de5cc1e9b20b4fad1))
+* **exchange-irec:** import module refactoring ([f9709f4](https://github.com/energywebfoundation/origin/commit/f9709f4b6306ea5d04e33dc8deee634e41296a4c))
+* **origin-organization-irec-api:** added optional trade/redemption account parameters for clam and transfer ([787c43b](https://github.com/energywebfoundation/origin/commit/787c43beda56b543f14ab6e9a9dcdb1ce79b8875))
+* **ui-packages:** update ui to use new module ([4f130a9](https://github.com/energywebfoundation/origin/commit/4f130a919a09d483aca4a28e98d5b4b9d5c2b123))
+
+
+
+
+
 ## [1.0.4](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-irec@1.0.3...@energyweb/exchange-irec@1.0.4) (2021-09-17)
 
 **Note:** Version bump only for package @energyweb/exchange-irec

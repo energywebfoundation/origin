@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-exchange-data@0.1.0...@energyweb/origin-ui-exchange-data@0.2.0) (2021-12-24)
+
+
+### Features
+
+* **origin-ui-exchange:** add expanding asks rows in trading view with device data ([3822bf3](https://github.com/energywebfoundation/origin/commit/3822bf3f4ff54ad511b57ecb92a68422d828a1bc))
+* **origin-ui-exchange:** show all bids in BuyOffers table when filters not specified ([1b0684e](https://github.com/energywebfoundation/origin/commit/1b0684e1489753b40585bad989822c1e0dc3aae1))
+
+
+
+
+
 # 0.1.0 (2021-09-17)
 
 

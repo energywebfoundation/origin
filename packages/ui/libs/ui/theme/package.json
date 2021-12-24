@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-ui-theme",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/origin.git"
@@ -17,8 +17,8 @@
     "registry": "https://registry.npmjs.org"
   },
   "dependencies": {
-    "@energyweb/origin-ui-localization": "0.1.0",
-    "@energyweb/origin-ui-shared-state": "0.1.0",
+    "@energyweb/origin-ui-localization": "0.2.0",
+    "@energyweb/origin-ui-shared-state": "0.2.0",
     "@mui/material": "5.2.3",
     "i18next": "21.5.4",
     "react-i18next": "11.14.3"

@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-react-query-client",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "React Query Client library for interacting with the Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/exchange#readme",
     "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",
@@ -27,7 +27,7 @@
         "react-query": "3.34.0"
     },
     "devDependencies": {
-        "@energyweb/exchange": "1.11.0",
+        "@energyweb/exchange": "1.12.0",
         "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",

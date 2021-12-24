@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api-client@1.1.2...@energyweb/origin-energy-api-client@1.2.0) (2021-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency axios to v0.24.0 ([1ff92e7](https://github.com/energywebfoundation/origin/commit/1ff92e7297ff0bcdb54704b327f1e3d719e9e029))
+
+
+
+
+
 ## [1.1.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-energy-api-client@1.1.1...@energyweb/origin-energy-api-client@1.1.2) (2021-09-17)
 
 
