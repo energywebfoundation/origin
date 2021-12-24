@@ -1,5 +1,5 @@
 import { DownloadableChip } from '@energyweb/origin-ui-core';
-import { fileDownloadHandler } from '@energyweb/origin-ui-organization-data';
+import { fileDownloadHandler } from '@energyweb/origin-ui-user-data';
 import React, { FC } from 'react';
 import { useStyles } from './DownloadOrgDocs.styles';
 

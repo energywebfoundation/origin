@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.6](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-api-client@0.0.5...@energyweb/origin-device-registry-api-client@0.0.6) (2021-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency axios to v0.24.0 ([1ff92e7](https://github.com/energywebfoundation/origin/commit/1ff92e7297ff0bcdb54704b327f1e3d719e9e029))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+
+
+
+
+
 ## [0.0.5](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-api-client@0.0.4...@energyweb/origin-device-registry-api-client@0.0.5) (2021-09-17)
 
 

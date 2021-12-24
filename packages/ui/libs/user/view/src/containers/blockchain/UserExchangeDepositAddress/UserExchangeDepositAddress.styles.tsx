@@ -1,13 +1,17 @@
-import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-export const useStyles = makeStyles<Theme, { exchangeAddressExists: boolean }>(
+// to skip ts-errors while doing roll-up build of package
+export const useStyles = makeStyles<any, { exchangeAddressExists: boolean }>(
   (theme) => ({
     gridContainer: {
       paddingTop: 20,
       paddingBottom: 20,
-      display: ({ exchangeAddressExists }) =>
-        exchangeAddressExists ? 'block' : 'flex',
+      // to skip ts-errors while doing roll-up build of package
+      display: ({
+        exchangeAddressExists,
+      }: {
+        exchangeAddressExists: boolean;
+      }) => (exchangeAddressExists ? 'block' : 'flex'),
       alignItems: 'center',
     },
     fieldWrapper: {

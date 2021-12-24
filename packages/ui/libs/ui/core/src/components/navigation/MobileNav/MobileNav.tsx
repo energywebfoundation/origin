@@ -3,7 +3,10 @@ import { BoxProps, Drawer, List, PaperProps } from '@mui/material';
 import React, { FC, ReactNode, useMemo } from 'react';
 import { CloseButton } from '../../buttons';
 import { IconLink } from '../../icons';
-import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';
+import {
+  UsernameAndOrg,
+  UsernameAndOrgProps,
+} from '../../layout/UsernameAndOrg';
 import { TMenuSection, NavBarSection } from '../NavBarSection';
 import { useStyles } from './MobileNav.styles';
 

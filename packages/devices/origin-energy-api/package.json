@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-energy-api",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "An API for Smart meter reads",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@energyweb/energy-api-influxdb": "0.8.1",
-        "@energyweb/origin-backend-core": "8.0.3",
+        "@energyweb/origin-backend-core": "8.1.0",
         "@nestjs/config": "1.0.2",
         "@nestjs/passport": "8.0.1",
         "@nestjs/swagger": "5.1.4"

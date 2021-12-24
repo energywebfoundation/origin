@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [11.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@11.0.1...@energyweb/origin-backend@11.1.0) (2021-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency body-parser to v1.19.1 ([94a6e27](https://github.com/energywebfoundation/origin/commit/94a6e274a3f34c2777b683873d930ecc98e12df5))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency multer to v1.4.4 ([029bafc](https://github.com/energywebfoundation/origin/commit/029bafc3687507a3e5b912f9a07988bd8d214299))
+* **deps:** update dependency passport to v0.5.0 ([6c23dde](https://github.com/energywebfoundation/origin/commit/6c23dde94a2bfc2eba5a2821c824f952ef6ffa4c))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **origin-backend:** adjust reset-password dto to match register user password validation ([3740cdd](https://github.com/energywebfoundation/origin/commit/3740cdd62168ceb6b118960fbe2be8a8dbfab2c5))
+* **origin-backend:** change find user conditions ([b4883fd](https://github.com/energywebfoundation/origin/commit/b4883fd0043edcbb6afc1ffc773c8858b69d2903))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+* **origin-device-registry-irec-local-api:** do not allow editing approved device ([c319eb7](https://github.com/energywebfoundation/origin/commit/c319eb714fb00134e0109ded39c432852cd44f1f))
+
+
+### Features
+
+* **origin-backend:** add password reset endpoints ([d029f3a](https://github.com/energywebfoundation/origin/commit/d029f3a87a8ddbdae73f7d9291d6c56a6455932d))
+* **origin-backend:** added email notifications ([c1b5528](https://github.com/energywebfoundation/origin/commit/c1b5528e011e05a2020320fc89d8bcc14f4d8d58))
+* **origin-backend:** added self ownership flag ([d37f9d8](https://github.com/energywebfoundation/origin/commit/d37f9d86d123567ee04af4f0c51e2f3ed8131b1b))
+* **origin-backend:** changed set ownership method signature ([d30682f](https://github.com/energywebfoundation/origin/commit/d30682f2bd1ef423692418512b08a83669544f0c))
+* **origin-backend:** fix dependency injection ([7891946](https://github.com/energywebfoundation/origin/commit/7891946ed816848dd8c770bf1acf7612c89e188e))
+* **origin-organization-irec-api:** validate irec account roles and create missing irec org accounts ([d0709d3](https://github.com/energywebfoundation/origin/commit/d0709d3a436f5c6cb54b2dc38544d9f51793de32))
+
+
+
+
+
 ## [11.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@11.0.0...@energyweb/origin-backend@11.0.1) (2021-09-17)
 
 

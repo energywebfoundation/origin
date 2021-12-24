@@ -3,6 +3,60 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@2.0.0...@energyweb/origin-ui-core@3.0.0) (2021-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @emotion/react to v11.6.0 ([24045e4](https://github.com/energywebfoundation/origin/commit/24045e41dea4557aacad3759b90b9b35bdb43794))
+* **deps:** update dependency @emotion/styled to v11.6.0 ([2405f01](https://github.com/energywebfoundation/origin/commit/2405f01ee7928f3d4d3a62da50cbb6afa990d94c))
+* **deps:** update dependency @hookform/resolvers to v2.8.1 ([fa18c82](https://github.com/energywebfoundation/origin/commit/fa18c828c7180125137592dd56fc6a8f30742433))
+* **deps:** update dependency @hookform/resolvers to v2.8.2 ([cc7e86e](https://github.com/energywebfoundation/origin/commit/cc7e86ec15102852ef4cf5c5cc1b04e438077164))
+* **deps:** update dependency @hookform/resolvers to v2.8.3 ([a1ace66](https://github.com/energywebfoundation/origin/commit/a1ace66ff59c1e3358012159cc65cf4512ff6fc1))
+* **deps:** update dependency @hookform/resolvers to v2.8.4 ([e6ebfe5](https://github.com/energywebfoundation/origin/commit/e6ebfe506f159c2c773472cdd548c8b26f5979ea))
+* **deps:** update dependency axios to v0.24.0 ([1ff92e7](https://github.com/energywebfoundation/origin/commit/1ff92e7297ff0bcdb54704b327f1e3d719e9e029))
+* **deps:** update dependency yup to v0.32.11 ([533ee68](https://github.com/energywebfoundation/origin/commit/533ee683f7b38a06b3df4c6690209c95fb0e9d2c))
+* **deps:** update material-ui monorepo ([c9a70c3](https://github.com/energywebfoundation/origin/commit/c9a70c3ea34f4a2e817f8ce70741863ccdaeeee0))
+* **deps:** update material-ui monorepo ([3fc9562](https://github.com/energywebfoundation/origin/commit/3fc9562ec5f188feac626e6a3c8ea988479c5da2))
+* **deps:** update material-ui monorepo ([4b2ac2f](https://github.com/energywebfoundation/origin/commit/4b2ac2f725cc9d2ded70d6b1bec090cadedaecf4))
+* **deps:** update material-ui monorepo ([d5e495e](https://github.com/energywebfoundation/origin/commit/d5e495ebe9c758b766ff0e0c4f45da80ca203017))
+* **deps:** update material-ui monorepo ([ee2215e](https://github.com/energywebfoundation/origin/commit/ee2215ea5ab50d291650e57597942761110f820a))
+* **deps:** update react ([a094ad0](https://github.com/energywebfoundation/origin/commit/a094ad0b0e6b36a609efd098f05b82994fcd4084))
+* **deps:** update react ([5f8f953](https://github.com/energywebfoundation/origin/commit/5f8f953a4390838c684c390ee3977288defba341))
+* **origin-ui-core:** adjust GenericForm validation influence on button disabling ([2463eb6](https://github.com/energywebfoundation/origin/commit/2463eb676aa3d63c325386b4745f56f73790b436))
+* **origin-ui-core:** improve ItemsListWithActions state management, remove unnecessary actions, reduce re-renders, fix selection bugs ([c37edf9](https://github.com/energywebfoundation/origin/commit/c37edf9e603f5063b29de62cf2e97bda000ae25c))
+* **origin-ui-core:** remove memory leak on SelectAutocomplete ([25c977d](https://github.com/energywebfoundation/origin/commit/25c977dbbdf9f1cc412c066d7c5a3f5766538995))
+
+
+### chore
+
+* **origin-ui-core:** remove exports of dependent components and move the into the folders of its parent ([7f2a68b](https://github.com/energywebfoundation/origin/commit/7f2a68b5aa8f77f081a89de05dd7b113b68222fb))
+* **origin-ui-core:** rename FallbackIcon to IconHoverText ([a7fc0a3](https://github.com/energywebfoundation/origin/commit/a7fc0a33babf2a2ff7fd3ff688e806e72b333be7))
+* **origin-ui-core:** rename props to better display the purpose ([a4777a6](https://github.com/energywebfoundation/origin/commit/a4777a601863b428537b8c5c5b298f7ff3731610))
+* update to latest versions of [@mui](https://github.com/mui) packages ([2f53854](https://github.com/energywebfoundation/origin/commit/2f53854070f20f9251992fdd3ac92812c5d83060))
+
+
+### Features
+
+* **origin-ui-core:** add expanding functionality for TableComponentRow ([d98e2b8](https://github.com/energywebfoundation/origin/commit/d98e2b8ec1a087b6055fbcb84f9f274afa99af6c))
+* **origin-ui-core:** add new component - VisibilityButton ([d23fc77](https://github.com/energywebfoundation/origin/commit/d23fc77979a22c1bd6e37f6016b95333a72a00a5))
+* **origin-ui-core:** allow ListActionsBlock to be managed by outside state ([21efb74](https://github.com/energywebfoundation/origin/commit/21efb749e1f0022cb87d04f8b41bae6386580cb1))
+* **origin-ui-core:** extend GenericMap props to allow customization of Marker ([392b4fd](https://github.com/energywebfoundation/origin/commit/392b4fd162fe182881580e3d9007eb7bec9b7019))
+* **origin-ui-core:** improve marker items types, add label ([b223407](https://github.com/energywebfoundation/origin/commit/b2234078925ca4d66167726b3d44eebea8608bd2))
+* **origin-ui-core:** on list reset return to the first action in ListActionsBlock ([2ea057a](https://github.com/energywebfoundation/origin/commit/2ea057a3971c0e8ca03ff32e88dede695ba840a7))
+
+
+### BREAKING CHANGES
+
+* **origin-ui-core:** GenericMap now accepts mapItems prop instead of allItems, DownloadableChip now accepts fileName instead of name
+* **origin-ui-core:** UploadChip and Dot components are no longer exported from origin-ui-core
+* **origin-ui-core:** FallbackIcon is no longer exported from origin-ui-core, now exports IconHoverText
+* package now uses @mui/* packages instead of @material-ui/* ones
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@1.14.3...@energyweb/origin-ui-core@2.0.0) (2021-09-17)
 
 
