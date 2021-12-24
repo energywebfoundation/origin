@@ -26,6 +26,7 @@ export const NoDevicesOwnedCard = () => {
           className={classes.button}
           component={NavLink}
           to={'/device/register'}
+          data-cy="myRegisterDevice"
         >
           {registerButtonText}
         </Button>
@@ -35,6 +36,7 @@ export const NoDevicesOwnedCard = () => {
           className={classes.button}
           component={NavLink}
           to={'/device/import'}
+          data-cy="myImportDevice"
         >
           {importButtonText}
         </Button>

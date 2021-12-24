@@ -1,5 +1,10 @@
 import React, { memo, PropsWithChildren, ReactElement, ReactNode } from 'react';
-import { InputAdornment, TextField, TextFieldProps } from '@mui/material';
+import {
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+  InputBaseProps,
+} from '@mui/material';
 import { UseFormRegister } from 'react-hook-form';
 
 export type FormInputField<FormValuesType> = {
@@ -14,6 +19,7 @@ export type FormInputField<FormValuesType> = {
     isValidCheck?: boolean;
   };
   textFieldProps?: TextFieldProps;
+  inputProps?: InputBaseProps['inputProps'];
 };
 
 export interface FormInputProps<FormValues> {
@@ -48,6 +54,7 @@ export const FormInput: TFormInput = memo(
     return (
       <TextField
         fullWidth
+        key={name}
         margin="normal"
         name={name ?? ''}
         disabled={disabled}
@@ -58,6 +65,9 @@ export const FormInput: TFormInput = memo(
         helperText={errorText}
         required={field.required}
         variant={variant}
+        inputProps={{
+          ...field.inputProps,
+        }}
         InputProps={{
           startAdornment: field.startAdornment && (
             <InputAdornment position="start">

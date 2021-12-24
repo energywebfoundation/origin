@@ -33,6 +33,7 @@ export const NavSubMenu: FC<NavSubMenuProps> = memo(
               const link = `${rootUrl}/${item.url}`;
               return (
                 <MenuItem
+                  dataCy={item.dataCy}
                   closeMobileNav={closeMobileNav}
                   key={link}
                   url={link}

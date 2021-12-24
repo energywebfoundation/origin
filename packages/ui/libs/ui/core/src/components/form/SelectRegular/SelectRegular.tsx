@@ -1,4 +1,9 @@
-import { MenuItem, TextField, TextFieldProps } from '@mui/material';
+import {
+  MenuItem,
+  TextField,
+  TextFieldProps,
+  InputBaseProps,
+} from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { isEmpty } from 'lodash';
@@ -15,8 +20,10 @@ export type SelectRegularField<FormValuesType> = {
     name: string;
     label: string;
     required?: boolean;
+    inputProps?: InputBaseProps['inputProps'];
   };
   textFieldProps?: TextFieldProps;
+  inputProps?: InputBaseProps['inputProps'];
 };
 
 export interface SelectRegularProps<FormValuesType = any> {
@@ -65,6 +72,9 @@ export const SelectRegular: TSelectRegular = ({
         onChange={onChange}
         disabled={disabled}
         required={field.required}
+        inputProps={{
+          ...field.inputProps,
+        }}
         {...field.textFieldProps}
       >
         {options.map((option) => (
@@ -84,6 +94,7 @@ export const SelectRegular: TSelectRegular = ({
             inputRef={additionalInputRegistration?.ref}
             onChange={additionalInputRegistration?.onChange}
             onBlur={additionalInputRegistration?.onBlur}
+            inputProps={field.additionalInputProps?.inputProps}
             {...field.textFieldProps}
           />
         )}

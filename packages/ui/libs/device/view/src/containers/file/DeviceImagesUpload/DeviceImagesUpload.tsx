@@ -37,6 +37,7 @@ export const DeviceImagesUpload: FC<DeviceImagesUploadProps> = ({
         heading={deviceImagesHeading}
         apiUploadFunction={uploadFunction}
         onChange={onDeviceImageChange}
+        wrapperProps={{ ['data-cy']: 'deviceImages' }}
       />
       <Box mt={1} display="flex" justifyContent="flex-end">
         {secondaryButtons &&

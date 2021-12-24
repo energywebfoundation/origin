@@ -17,6 +17,7 @@ export const getTopbarButtonList = (
         navigate('/auth/register');
       },
       Icon: HowToReg,
+      dataCy: 'navigation-register-button',
     },
     {
       label: t('navigation.topbar.login'),
@@ -25,12 +26,14 @@ export const getTopbarButtonList = (
         navigate('/login');
       },
       Icon: AccountCircle,
+      dataCy: 'navigation-login-button',
     },
     {
       label: t('navigation.topbar.logout'),
       show: isAuthenticated,
       onClick: onLogout,
       Icon: ExitToApp,
+      dataCy: 'navigation-logout-button',
     },
   ];
 };

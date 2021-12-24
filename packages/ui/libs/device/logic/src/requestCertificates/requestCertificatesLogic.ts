@@ -42,15 +42,18 @@ export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = (
         name: 'fromTime',
         label: t('device.my.requestCertificates.fromTime'),
         datePicker: true,
+        inputProps: { ['data-cy']: 'fromTime' },
       },
       {
         name: 'toTime',
         label: t('device.my.requestCertificates.toTime'),
         datePicker: true,
+        inputProps: { ['data-cy']: 'toTime' },
       },
       {
         name: 'energy',
         label: t('device.my.requestCertificates.energy'),
+        inputProps: { ['data-cy']: 'certificatesEnergy' },
       },
       ...(singleAccountMode
         ? ([
@@ -65,5 +68,6 @@ export const useRequestCertificatesLogic: TUseRequestCertificatesLogic = (
     ],
     buttonFullWidth: true,
     buttonText: t('general.buttons.confirm'),
+    buttonProps: { ['data-cy']: 'requestCertificatesButton' },
   };
 };

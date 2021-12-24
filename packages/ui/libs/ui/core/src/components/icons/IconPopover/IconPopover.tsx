@@ -83,6 +83,7 @@ export const IconPopover = (props: IconPopoverProps) => {
             onMouseEnter={handlePopoverOpen}
             onMouseLeave={handlePopoverClose}
             fontSize={iconSize}
+            {...iconProps}
           />
           <Popover
             id="mouse-over-popover"

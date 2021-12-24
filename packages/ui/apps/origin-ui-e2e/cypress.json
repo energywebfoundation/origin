@@ -3,10 +3,12 @@
   "fixturesFolder": "./src/fixtures",
   "integrationFolder": "./src/integration",
   "modifyObstructiveCode": false,
-  "pluginsFile": "./src/plugins/index",
+  "pluginsFile": false,
   "supportFile": "./src/support/index.ts",
   "video": true,
   "videosFolder": "../../dist/cypress/apps/origin-ui-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/origin-ui-e2e/screenshots",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "viewportHeight": 720,
+  "viewportWidth": 1280
 }

@@ -36,7 +36,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       .label(t('organization.registerIRec.orgHeadquartersCountry')),
     registrationYear: yup
       .number()
-      .transform((value) => (isNaN(value) ? 0 : value))
+      .transform((value) => (isNaN(value) ? undefined : value))
       .min(1900)
       .required()
       .label(t('organization.registerIRec.yearOfregisterIRec')),
@@ -72,7 +72,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
     balanceSheetTotal: yup
       .string()
       .required()
-      .label(t('organization.registerIRec.lastBalance')),
+      .label(t('organization.registerIRec.balanceSheetTotal')),
   }),
   fields: [
     {
@@ -81,6 +81,7 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       select: true,
       options: createIRecAccountTypeOptions(t),
       required: true,
+      inputProps: { ['data-cy']: 'IRECAccountType' },
     },
     {
       name: 'headquarterCountry',
@@ -89,11 +90,13 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
       required: true,
+      inputProps: { ['data-cy']: 'orgHeadquartersCountry' },
     },
     {
       name: 'registrationYear',
       label: t('organization.registerIRec.yearOfregisterIRec'),
       required: true,
+      inputProps: { ['data-cy']: 'yearOfregisterIRec' },
     },
     {
       name: 'employeesNumber',
@@ -101,16 +104,19 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       select: true,
       options: NUMBER_OF_EMPLOYEES_OPTIONS,
       required: true,
+      inputProps: { ['data-cy']: 'numberOfEmployees' },
     },
     {
       name: 'shareholders',
       label: t('organization.registerIRec.shareholderNames'),
       required: true,
+      inputProps: { ['data-cy']: 'shareholderNames' },
     },
     {
       name: 'website',
       label: t('organization.registerIRec.orgWebsite'),
       required: true,
+      inputProps: { ['data-cy']: 'orgWebsite' },
     },
     {
       name: 'activeCountries',
@@ -121,26 +127,31 @@ export const createIRecRegistrationInfoForm: TCreateIRecRegistrationInfoForm = (
       multiple: true,
       required: true,
       maxValues: 3,
+      inputProps: { ['data-cy']: 'activeCountries' },
     },
     {
       name: 'mainBusiness',
       label: t('organization.registerIRec.mainBusiness'),
       required: true,
+      inputProps: { ['data-cy']: 'mainBusiness' },
     },
     {
       name: 'ceoName',
       label: t('organization.registerIRec.ceoName'),
       required: true,
+      inputProps: { ['data-cy']: 'ceoName' },
     },
     {
       name: 'ceoPassportNumber',
       label: t('organization.registerIRec.ceoPassport'),
       required: true,
+      inputProps: { ['data-cy']: 'ceoPassport' },
     },
     {
       name: 'balanceSheetTotal',
       label: t('organization.registerIRec.balanceSheetTotal'),
       required: true,
+      inputProps: { ['data-cy']: 'balanceSheetTotal' },
     },
   ],
   buttonText: t('general.buttons.nextStep'),

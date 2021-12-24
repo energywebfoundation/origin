@@ -35,21 +35,33 @@ export const useUpdateUserAccountDataFormConfig = (
         label: t('user.profile.firstName'),
         name: 'firstName',
         required: true,
+        inputProps: {
+          ['data-cy']: 'firstName',
+        },
       },
       {
         label: t('user.profile.lastName'),
         name: 'lastName',
         required: true,
+        inputProps: {
+          ['data-cy']: 'lastName',
+        },
       },
       {
         label: t('user.profile.telephone'),
         name: 'telephone',
         required: true,
+        inputProps: {
+          ['data-cy']: 'telephone',
+        },
       },
       {
         label: t('user.profile.status'),
         name: 'status',
         textFieldProps: { disabled: true },
+        inputProps: {
+          ['data-cy']: 'status',
+        },
       },
       {
         label: t('user.profile.kycStatus'),
@@ -63,6 +75,9 @@ export const useUpdateUserAccountDataFormConfig = (
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
+    buttonProps: {
+      ['data-cy']: 'user-data-change-button',
+    },
     initialValues: initialFormData,
     twoColumns: true,
     inputsVariant: 'filled' as any,
@@ -70,9 +85,9 @@ export const useUpdateUserAccountDataFormConfig = (
       firstName: Yup.string().label(t('user.profile.firstName')).required(),
       lastName: Yup.string().label(t('user.profile.lastName')).required(),
       telephone: Yup.string()
+        .required()
         .min(10)
-        .label(t('user.profile.telephone'))
-        .required(),
+        .label(t('user.profile.telephone')),
     }),
   };
 };

@@ -48,13 +48,13 @@ export const useMembersPageEffects = () => {
 
   const actions: TableActionData<User['id']>[] = [
     {
-      icon: <PermIdentityOutlined />,
+      icon: <PermIdentityOutlined data-cy="editRole" />,
       name: t('organization.members.editRole'),
       onClick: openChangeRoleModal,
       loading: isUpdateMemberMutating,
     },
     {
-      icon: <DeleteOutline />,
+      icon: <DeleteOutline data-cy="removeMember" />,
       name: t('organization.members.remove'),
       onClick: removeHandler,
       loading: isRemoveMutating,
