@@ -41,7 +41,7 @@
         "@nestjs/core": "8.1.1",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",
-        "@types/pg": "8.6.1",
+        "@types/pg": "8.6.3",
         "commander": "6.2.1",
         "dotenv": "10.0.0",
         "ethers": "5.3.1",
