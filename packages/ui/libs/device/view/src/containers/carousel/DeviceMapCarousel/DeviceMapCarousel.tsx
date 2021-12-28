@@ -25,7 +25,7 @@ export const DeviceMapCarousel: FC<DeviceMapCarouselProps> = ({
   const { googleMapsApiKey } = useDeviceAppEnv();
   return (
     <BlockTintedBottom height={70}>
-      <div {...itemProps}>
+      <div {...itemProps} data-cy="map">
         <GenericMap
           apiKey={googleMapsApiKey}
           mapItems={[device]}
