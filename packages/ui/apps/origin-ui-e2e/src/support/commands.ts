@@ -53,7 +53,7 @@ Cypress.Commands.add('navigateMenu', (target: string) => {
 });
 
 Cypress.Commands.add('closeAllNotifications', () => {
-  cy.get('.Toastify__toast', { timeout: 7000 })
+  cy.get('.Toastify__toast')
     .click({
       multiple: true,
       force: true,
