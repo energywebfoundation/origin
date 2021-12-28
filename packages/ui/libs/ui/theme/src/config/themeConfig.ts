@@ -4,10 +4,13 @@ import { LightenColor } from '../utils/colors';
 import {
   createStyleConfig,
   IOriginStyleConfig,
-  IOriginThemeConfiguration,
 } from '../utils/createStyleConfig';
 import { ThemeModeEnum } from '../utils';
-import { variables_darkTheme, variables_lightTheme } from './variables';
+import {
+  OriginUiThemeVariables,
+  variables_darkTheme,
+  variables_lightTheme,
+} from './variables';
 
 const getThemeConfig = (
   styleConfig: IOriginStyleConfig,
@@ -205,26 +208,33 @@ const getThemeConfig = (
   };
 };
 
-export const makeOriginUiConfig = (themeMode?: ThemeModeEnum) => {
+type MakeOriginUIThemeArgs = {
+  themeMode?: ThemeModeEnum;
+  colorsConfig?: OriginUiThemeVariables;
+};
+
+type MakeOriginUITheme = (args: MakeOriginUIThemeArgs) => Theme;
+
+export const makeOriginUiTheme: MakeOriginUITheme = ({
+  themeMode,
+  colorsConfig,
+}) => {
   const colors =
     themeMode === ThemeModeEnum.Dark
       ? variables_darkTheme
       : variables_lightTheme;
-  const DEFAULT_STYLE_CONFIG = createStyleConfig(colors);
 
-  const DEFAULT_ORIGIN_CONFIGURATION: IOriginThemeConfiguration = {
-    materialTheme: createMaterialThemeForOrigin(
-      DEFAULT_STYLE_CONFIG,
-      'en',
-      themeMode
-    ),
-  };
+  const styleConfig = colorsConfig
+    ? createStyleConfig(colorsConfig)
+    : createStyleConfig(colors);
 
-  const newConfiguration: IOriginThemeConfiguration = {
-    ...DEFAULT_ORIGIN_CONFIGURATION,
-  };
+  const materialTheme = createMaterialThemeForOrigin(
+    styleConfig,
+    'en',
+    themeMode
+  );
 
-  return newConfiguration;
+  return materialTheme;
 };
 
 export const createMaterialThemeForOrigin = (
