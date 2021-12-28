@@ -1,11 +1,11 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
+import { EmailConfirmationModule } from '../email-confirmation';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { User } from './user.entity';
-import { EmailConfirmationModule } from '../email-confirmation/email-confirmation.module';
 
 @Module({
     imports: [
