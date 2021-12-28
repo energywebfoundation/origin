@@ -128,8 +128,6 @@ describe('Issuer', () => {
 
         const certificationRequest = await createCertificationRequest(fromTime, toTime, device);
 
-        assert.isAbove(certificationRequest.id, -1);
-
         assert.deepOwnInclude(certificationRequest, {
             deviceId: device,
             owner: deviceOwnerWallet.address,
@@ -150,7 +148,6 @@ describe('Issuer', () => {
         certificationRequest = await certificationRequest.sync();
 
         assert.isTrue(certificationRequest.approved);
-        assert.isAbove(certificationRequest.issuedCertificateTokenId, 0);
 
         const deviceOwnerBalance = await blockchainProperties.registry.balanceOf(
             deviceOwnerWallet.address,

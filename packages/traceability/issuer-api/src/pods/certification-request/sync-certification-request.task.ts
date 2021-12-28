@@ -36,7 +36,7 @@ export class SyncCertificationRequestsTask {
                 where: { id: certReq.issuedCertificateId }
             });
 
-            if (!certificate?.id && certificate?.id !== 0) {
+            if (!certificate?.id && certificate?.id !== '0') {
                 this.logger.debug(
                     `Certification request #${certReq.id} has a certificate ${certReq.issuedCertificateId} assigned but this certificate doesn't exist in the database.`
                 );

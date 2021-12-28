@@ -84,7 +84,7 @@ export class CertificationRequestController {
         description: 'Returns a Certification Request by a certificate ID'
     })
     public async getByCertificate(
-        @Param('certificateId', new ParseIntPipe()) certificateId: number
+        @Param('certificateId', new ParseIntPipe()) certificateId: string
     ): Promise<FullCertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.queryBus.execute<
             CertificateBoundToCertificationRequestCommand,
@@ -138,7 +138,7 @@ export class CertificationRequestController {
         type: SuccessResponseDTO,
         description: 'Approves a Certification Request'
     })
-    public async approve(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
+    public async approve(@Param('id', new ParseIntPipe()) id: string): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(new ApproveIrecCertificationRequestCommand(id));
     }
 
@@ -150,7 +150,7 @@ export class CertificationRequestController {
         type: SuccessResponseDTO,
         description: 'Revokes a Certification Request'
     })
-    public async revoke(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
+    public async revoke(@Param('id', new ParseIntPipe()) id: string): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(new RevokeIrecCertificationRequestCommand(id));
     }
 }

@@ -147,7 +147,7 @@ export class CertificationRequestController {
         type: SuccessResponseDTO,
         description: 'Approves a Certification Request'
     })
-    public async approve(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
+    public async approve(@Param('id', new ParseIntPipe()) id: string): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(new ApproveCertificationRequestCommand(id));
     }
 
@@ -159,7 +159,7 @@ export class CertificationRequestController {
         type: SuccessResponseDTO,
         description: 'Revokes a Certification Request'
     })
-    public async revoke(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
+    public async revoke(@Param('id', new ParseIntPipe()) id: string): Promise<SuccessResponseDTO> {
         return this.commandBus.execute(new RevokeCertificationRequestCommand(id));
     }
 }

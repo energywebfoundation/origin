@@ -44,7 +44,7 @@ export class TransactionLogService {
         await Promise.all(savePromises);
     }
 
-    public async findByCertificateIds(certificateIds: number[]): Promise<TransactionLog[]> {
+    public async findByCertificateIds(certificateIds: string[]): Promise<TransactionLog[]> {
         const logs = await this.repository.find({
             where: {
                 certificateId: In(certificateIds.map((id) => String(id)))

@@ -3,6 +3,7 @@ import {
     IsArray,
     IsBoolean,
     IsInt,
+    IsNumberString,
     IsOptional,
     IsPositive,
     IsString,
@@ -13,10 +14,10 @@ import { ClaimDTO } from './claim.dto';
 import { EnergyDTO } from './energy.dto';
 
 export class CertificateDTO {
-    @ApiProperty({ type: Number, description: 'Certificate Id' })
-    @IsInt()
+    @ApiProperty({ type: String, description: 'Certificate Id' })
+    @IsNumberString()
     @Min(1)
-    id: number;
+    id: string;
 
     @ApiProperty({ type: String, example: 'DeviceB-789' })
     @IsString()

@@ -61,7 +61,7 @@ export class ApproveCertificationRequestHandler
         await this.repository.update(id, {
             approved: true,
             approvedDate: certReq.approvedDate ?? new Date(),
-            issuedCertificateId: newCertificateId
+            issuedCertificateId: newCertificateId as string
         });
 
         this.eventBus.publish(

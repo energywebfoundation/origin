@@ -1,3 +1,3 @@
 export class ApproveCertificationRequestCommand {
-    constructor(public readonly id: number) {}
+    constructor(public readonly id: string) {}
 }

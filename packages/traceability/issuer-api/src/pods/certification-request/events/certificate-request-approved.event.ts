@@ -1,3 +1,3 @@
 export class CertificateRequestApprovedEvent {
-    constructor(public readonly certificateRequestId: number) {}
+    constructor(public readonly certificateRequestId: string) {}
 }

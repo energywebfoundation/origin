@@ -233,7 +233,7 @@ export class CertificateController {
     })
     public async transfer(
         @BlockchainAccountDecorator() blockchainAddress: string,
-        @Param('id', new ParseIntPipe()) certificateId: number,
+        @Param('id', new ParseIntPipe()) certificateId: string,
         @Body() dto: TransferCertificateDTO
     ): Promise<TxHashDTO> {
         const tx = await this.commandBus.execute(
@@ -258,7 +258,7 @@ export class CertificateController {
     })
     public async claim(
         @BlockchainAccountDecorator() blockchainAddress: string,
-        @Param('id', new ParseIntPipe()) certificateId: number,
+        @Param('id') certificateId: string,
         @Body() dto: ClaimCertificateDTO
     ): Promise<TxHashDTO> {
         const tx = await this.commandBus.execute(

@@ -9,7 +9,7 @@ import { decodeData, encodeData } from './CertificateUtils';
 export const MAX_ENERGY_PER_CERTIFICATE = BigNumber.from(2).pow(256).sub(1);
 
 export interface ICertificationRequestBlockchain {
-    id: number;
+    id: string;
     deviceId: string;
     owner: string;
     fromTime: number;
@@ -19,7 +19,7 @@ export interface ICertificationRequestBlockchain {
     revoked: boolean;
     approvedDate?: Date;
     revokedDate?: Date;
-    issuedCertificateTokenId?: number;
+    issuedCertificateTokenId?: string;
 }
 
 export class CertificationRequest implements ICertificationRequestBlockchain {
@@ -41,13 +41,13 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
     public created: Timestamp;
 
-    public issuedCertificateTokenId: number;
+    public issuedCertificateTokenId: string;
 
     public initialized = false;
 
-    constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
+    constructor(public id: string, public blockchainProperties: IBlockchainProperties) {}
     /**
-     * 
+     *
      *
      * @description Uses Issuer contract to create Certificate request
      *
@@ -84,10 +84,10 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
         return newCertificationRequest.sync();
     }
-     /**
-     * 
+    /**
      *
-     * @description Returns all Certification Requests for an Issuer 
+     *
+     * @description Returns all Certification Requests for an Issuer
      *
      */
     public static async getAll(
@@ -105,8 +105,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         );
     }
 
-      /**
-     * 
+    /**
+     *
      *
      * @description Retrieves Certificate data
      *
@@ -152,8 +152,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         return this;
     }
 
-      /**
-     * 
+    /**
+     *
      *
      * @description Uses Issuer contract to approve a Certificate request
      *
@@ -167,7 +167,7 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
         const { events } = await approveTx.wait();
 
-        const certificateId = Number(
+        const certificateId = String(
             events.find((log: BlockchainEvent) => log.event === 'CertificationRequestApproved')
                 .topics[3]
         );
@@ -177,8 +177,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         return certificateId;
     }
 
-      /**
-     * 
+    /**
+     *
      *
      * @description Uses Issuer contract to revoke a Certificate request
      *

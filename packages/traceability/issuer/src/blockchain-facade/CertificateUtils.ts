@@ -92,7 +92,7 @@ export async function getAllOwnedCertificates(
         registry.filters.TransferSingle(null, null, owner, null, null)
     );
     const certificateIds = [
-        ...new Set<number>(transfers.map((transfer) => transfer.id.toNumber()))
+        ...new Set<string>(transfers.map((transfer) => transfer.id.toString()))
     ];
     const balances = await registry.balanceOfBatch(
         Array(certificateIds.length).fill(owner),
@@ -124,7 +124,7 @@ export async function decodeEvent(
 }
 
 export const getAllCertificateEvents = async (
-    certId: number,
+    certId: string,
     blockchainProperties: IBlockchainProperties
 ): Promise<IBlockchainEvent[]> => {
     const { registry } = blockchainProperties;

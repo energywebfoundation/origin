@@ -10,7 +10,7 @@ export interface CertificateInfoInBatch extends IData {
 }
 
 export type BatchCertificateTransfer = {
-    id: number;
+    id: string;
     to: string;
     from?: string;
     amount?: BigNumber;
@@ -21,12 +21,12 @@ export type BatchCertificateClaim = Omit<BatchCertificateTransfer, 'to'> & {
     to?: string;
 };
 
-    /**
-     * 
-     *
-     * @description Uses Issuer contract to allow issuer to batch issue Certificates
-     *
-     */
+/**
+ *
+ *
+ * @description Uses Issuer contract to allow issuer to batch issue Certificates
+ *
+ */
 export async function issueCertificates(
     certificateInfo: CertificateInfoInBatch[],
     blockchainProperties: IBlockchainProperties
@@ -50,12 +50,12 @@ export async function issueCertificates(
     );
 }
 
- /**
-     * 
-     *
-     * @description Returns array Certificate Ids created in a given transaction hash
-     *
-     */
+/**
+ *
+ *
+ * @description Returns array Certificate Ids created in a given transaction hash
+ *
+ */
 export async function getIdsFromBatchIssuanceTx(
     txHash: string,
     { web3, issuer, registry }: IBlockchainProperties
@@ -85,12 +85,12 @@ export async function getIdsFromBatchIssuanceTx(
     return issuanceEvent.args[2].map((id: BigNumber) => id.toNumber());
 }
 
- /**
-     * 
-     *
-     * @description Uses Registry Extended contract to allow  transfer of multiple certififactes 
-     *
-     */
+/**
+ *
+ *
+ * @description Uses Registry Extended contract to allow  transfer of multiple certififactes
+ *
+ */
 export async function transferCertificates(
     certificateBatch: BatchCertificateTransfer[],
     blockchainProperties: IBlockchainProperties
@@ -123,12 +123,12 @@ export async function transferCertificates(
     );
 }
 
- /**
-     * 
-     *
-     * @description Uses Registry Extended contract to allow claiming of multiple certififactes 
-     *
-     */
+/**
+ *
+ *
+ * @description Uses Registry Extended contract to allow claiming of multiple certififactes
+ *
+ */
 export async function claimCertificates(
     certificateBatch: BatchCertificateClaim[],
     blockchainProperties: IBlockchainProperties

@@ -5,6 +5,7 @@ import {
     IsBoolean,
     IsDate,
     IsInt,
+    IsNumberString,
     IsOptional,
     IsPositive,
     IsString,
@@ -13,10 +14,9 @@ import {
 } from 'class-validator';
 
 export class CertificationRequestDTO {
-    @ApiProperty({ type: Number, description: 'Certificate Id' })
-    @IsInt()
-    @Min(0)
-    id: number;
+    @ApiProperty({ type: String, description: 'Certificate Id' })
+    @IsNumberString()
+    id: string;
 
     @ApiProperty({ type: String, example: 'DeviceB-789' })
     @IsString()
@@ -78,9 +78,8 @@ export class CertificationRequestDTO {
 
     @ApiPropertyOptional({ type: Number })
     @IsOptional()
-    @IsInt()
-    @Min(0)
-    issuedCertificateId?: number;
+    @IsNumberString()
+    issuedCertificateId?: string;
 
     @ApiPropertyOptional({ type: Boolean })
     isPrivate?: boolean;

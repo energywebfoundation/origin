@@ -1,3 +1,3 @@
 export class SyncCertificateEvent {
-    constructor(public readonly id: number, public readonly byTxHash?: string) {}
+    constructor(public readonly id: string, public readonly byTxHash?: string) {}
 }

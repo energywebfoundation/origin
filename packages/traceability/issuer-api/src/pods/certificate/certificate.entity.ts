@@ -6,7 +6,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { IsBoolean, IsInt, IsPositive, IsString, Min } from 'class-validator';
+import { IsBoolean, IsInt, IsNumberString, IsPositive, IsString, Min } from 'class-validator';
 import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
 
@@ -14,10 +14,9 @@ export const CERTIFICATES_TABLE_NAME = 'issuer_certificate';
 
 @Entity({ name: CERTIFICATES_TABLE_NAME })
 export class Certificate {
-    @PrimaryColumn()
-    @IsInt()
-    @Min(1)
-    id: number;
+    @PrimaryColumn('bigint')
+    @IsNumberString()
+    id: string;
 
     @Column()
     @IsString()

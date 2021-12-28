@@ -16,8 +16,8 @@ export class CertificationRequestFieldsIrec {
 }
 
 export class IrecCertificationRequestDTO extends CertificationRequestFieldsIrec {
-    @ApiProperty({ type: Number })
-    certificationRequestId: number;
+    @ApiProperty({ type: String })
+    certificationRequestId: string;
 }
 
 export class FullCertificationRequestDTO extends IntersectionType(

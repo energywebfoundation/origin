@@ -10,8 +10,8 @@ export class IrecCertificationRequest
     extends ExtendedBaseEntity
     implements IrecCertificationRequestDTO
 {
-    @PrimaryColumn()
-    certificationRequestId: number;
+    @PrimaryColumn('bigint')
+    certificationRequestId: string;
 
     @Column()
     organizationId: string;
