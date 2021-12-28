@@ -47,6 +47,17 @@ describe('Organization invite form and invitations table', () => {
     cy.notification('Invitation sent');
   });
 
+  it('should not allow to send invitation to already invited user', () => {
+    cy.apiLoginUser(testUser);
+    cy.visit('/organization/invite');
+    cy.clearLocalStorage();
+
+    cy.dataCy('inviteEmail').type(member.email).blur();
+    cy.contains('Member');
+    cy.contains('button', 'Invite').click();
+    cy.notification('You have already sent an invitation for this user');
+  });
+
   it('should not allow to send invitation to a user who is a part of another organization', () => {
     cy.clearLocalStorage();
 
