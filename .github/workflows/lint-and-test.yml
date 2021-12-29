@@ -4,7 +4,9 @@ on:
   pull_request:
     branches:
       - '*'
-
+env:
+  WEB3: ${{ secrets.WEB3 }}
+  
 jobs:
   cancel-previous:
     name: 'Cancel Previous Runs'
@@ -56,6 +58,3 @@ jobs:
 
     - name: Run all test:ui:e2e
       run: node common/scripts/install-run-rush.js test:ui:e2e
-
-      env:
-          WEB3: ${{ secrets.WEB3 }}
