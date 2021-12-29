@@ -6,7 +6,7 @@ on:
       - '*'
 env:
   WEB3: ${{ secrets.WEB3 }}
-  
+
 jobs:
   cancel-previous:
     name: 'Cancel Previous Runs'
@@ -55,6 +55,9 @@ jobs:
 
     - name: Build application
       run: node common/scripts/install-run-rush.js rebuild --verbose
+
+    - name: Copy env
+      run: cp .env.example .env
 
     - name: Run all test:ui:e2e
       run: node common/scripts/install-run-rush.js test:ui:e2e
