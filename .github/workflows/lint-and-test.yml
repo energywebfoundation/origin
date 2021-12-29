@@ -57,6 +57,7 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
+        install: false
         spec: packages/ui/apps/origin-ui-e2e/src/integration/user/*
       env:
           GITHUB_TOKEN: ${{ github.token }}
