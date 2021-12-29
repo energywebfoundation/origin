@@ -16,7 +16,7 @@ export interface TextWithPendingDotProps {
   tooltipText?: string;
   typographyProps?: TypographyProps & { component?: 'span' | 'p' };
   showSuccessDot?: boolean;
-  dotWrapperProps?: BoxProps & { ['data-cy']: string };
+  dotWrapperProps?: BoxProps & { ['data-cy']?: string };
 }
 
 export const TextWithPendingDot: FC<TextWithPendingDotProps> = ({

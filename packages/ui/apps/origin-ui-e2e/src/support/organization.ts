@@ -139,6 +139,69 @@ Cypress.Commands.add('fillOrgRegisterForm', (orgData: OrganizationPostData) => {
   cy.attachDocument('signatoryId');
 });
 
+Cypress.Commands.add('fillConnectIrecForm', () => {
+  cy.dataCy('connectIRecUserName').type('userName');
+  cy.dataCy('connectIRecApiKey').type('apiKey');
+  cy.dataCy('connectIRecClientId').type('clientId');
+  cy.dataCy('connectIRecClientSecret').type('clientSecret');
+});
+
+Cypress.Commands.add('apiConnectIrec', (userData: UserRegisterData) => {
+  const irecConnectionUrl = `${Cypress.env('apiUrl')}/irec/connection`;
+  const loginData: UserLoginData = {
+    email: userData.email,
+    password: userData.password,
+  };
+
+  const body = {
+    clientId: 'clientId',
+    clientSecret: 'clientSecret',
+    password: 'apiKey',
+    userName: 'userName',
+  };
+
+  cy.apiLoginUser(loginData).then((token) => {
+    cy.request({
+      url: irecConnectionUrl,
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+    });
+  });
+});
+
+Cypress.Commands.add(
+  'apiRegisterIrecOrg',
+  (userData: UserRegisterData, irecData: IRecOrganizationPostData) => {
+    const organizationUrl = `${Cypress.env('apiUrl')}/irec/registration`;
+    const loginData: UserLoginData = {
+      email: userData.email,
+      password: userData.password,
+    };
+
+    const irecBody = {
+      ...irecData,
+      accountType: parseInt(irecData.accountType),
+      registrationYear: parseInt(irecData.registrationYear),
+    };
+
+    cy.apiLoginUser(loginData).then((token) => {
+      cy.request({
+        url: organizationUrl,
+        method: 'POST',
+        body: JSON.stringify(irecBody),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+      });
+    });
+  }
+);
+
 Cypress.Commands.add(
   'apiRegisterOrg',
   (userData: UserRegisterData, orgData: OrganizationPostData) => {

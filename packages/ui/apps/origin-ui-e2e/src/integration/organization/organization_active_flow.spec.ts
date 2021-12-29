@@ -101,4 +101,17 @@ describe('Organization with status Active and User status active flow', () => {
     cy.contains('Status');
     cy.contains('To be certified');
   });
+
+  it('should create beneficiary', () => {
+    cy.dataCy('organizationMenu').click();
+    cy.navigateMenu('organizationCreateBeneficiary');
+
+    cy.url().should('include', 'organization/create-beneficiary');
+    cy.dataCy('beneficiaryName').type('Beneficiary');
+    cy.selectValue('beneficiaryCountry', 'Austria');
+    cy.dataCy('beneficiaryLocation').type('Wien');
+
+    cy.contains('button', 'Create').click();
+    cy.notification('Beneficiary created successfully');
+  });
 });

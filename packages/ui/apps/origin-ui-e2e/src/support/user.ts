@@ -37,7 +37,7 @@ Cypress.Commands.add('fillUserLogin', (loginData: UserLoginData) => {
   cy.dataCy('password').type(loginData.password);
 });
 
-Cypress.Commands.add('apiLoginUser', (loginData: UserRegisterData) => {
+Cypress.Commands.add('apiLoginUser', (loginData: UserLoginData) => {
   const { email, password } = loginData;
   const loginUrl = `${Cypress.env('apiUrl')}/auth/login`;
   const reqBody = { username: email, password };

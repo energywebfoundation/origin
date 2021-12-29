@@ -10,5 +10,6 @@
   "screenshotsFolder": "../../dist/cypress/apps/origin-ui-e2e/screenshots",
   "chromeWebSecurity": false,
   "viewportHeight": 720,
-  "viewportWidth": 1280
+  "viewportWidth": 1280,
+  "defaultCommandTimeout": 10000
 }

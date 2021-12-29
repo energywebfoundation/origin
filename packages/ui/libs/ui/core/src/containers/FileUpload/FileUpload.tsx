@@ -17,7 +17,7 @@ export interface FileUploadProps {
   wrapperProps?: React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLElement>,
     HTMLElement
-  > & { ['data-cy']: string };
+  > & { ['data-cy']?: string };
   dropzoneClassName?: string;
 }
 
