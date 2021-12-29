@@ -56,8 +56,7 @@ jobs:
     - name: Build application
       run: node common/scripts/install-run-rush.js rebuild --verbose
 
-    - name: Copy env
-      run: cp .env.example .env
-
     - name: Run all test:ui:e2e
-      run: node common/scripts/install-run-rush.js test:ui:e2e
+      run: |
+      cp .env.example .env
+      node common/scripts/install-run-rush.js test:ui:e2e
