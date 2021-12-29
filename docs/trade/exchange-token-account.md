@@ -6,13 +6,13 @@ The Exchange Token Account module contains the [TokenAccount.sol smart contract]
 
 See the image below of a certificate's blockchain transactions: 
 
-1. First, the local issuer approves the certificate request
-2. The certificate is transferred to the Exchange Deposit address (Exchange Deposit account)
+1. The local issuer approves the certificate request
+2. The certificate is sent to the Exchange Deposit address (Exchange Deposit account)
 3. The certificate is transferred from the Exchange Deposit address to the Exchange Wallet
 
 ![exchangeForwarding](../images/exchangeForwarding.png)
 
-When EACs are issued by the Issuing body, they are automatically deposited onto the Exchange. Users can [withdraw certificates off of the exchange](./exchange-io-erc1888.md#withdrawal-processor) at any time. In doing so, the asset is moved from the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) to the user's Blockchain account. Inversely, users can at any time transfer certificates that are in their Blockchain account to their Exchange Deposit account, which forwards them to the Exchange wallet where they are active on the exchange. 
+When EACs are issued by the Issuing body, they are automatically deposited onto the Exchange, unless ['Full Self-Ownership'](../user-guide-reg-onboarding.md#full-self-Ownership) is set to true, in which case they are initially deposited into an organization's Blockchain account. Users can [withdraw certificates off of the exchange](./exchange-io-erc1888.md#withdrawal-processor) at any time. In doing so, the asset is moved from the [Exchange wallet](../user-guide-glossary.md#exchange-wallet) to the organization's Blockchain account. Inversely, users can at any time transfer certificates that are in their Blockchain account to their Exchange Deposit account, which forwards them to the Exchange wallet where they are active on the exchange. 
 
 ## Exchange Deposit Account Deployment and Persistence
 The Exchange Token Account module [exports a Token Account factory](https://github.com/energywebfoundation/origin/blob/master/packages/trade/exchange-token-account/src/index.ts) that is used to deploy new instances of the Token Account. An Exchange Deposit Account is deployed by the application once for each Organization. The factory method is used in the Exchange module's Account Deployer Service to deploy new accounts.  

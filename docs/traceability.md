@@ -81,7 +81,7 @@ Certificate owners can claim their certificates for reporting purposes. The 'cla
 
 Claimed certificates are locked and cannot be moved on to the Exchange, withdrawn to another wallet address, or transferred to another user. Claiming prevents any other entity from performing any action with the certificate. The issuer cannot suspend or revoke a claimed certificate. Certificates that have been kept private by the owner, concealing volume information, are made public before they are claimed as only public certificates can be claimed to ensure transparency and prevent double counting. 
 
-See documentation on the claim process [here](./traceability/contracts/Issuer.md#claiming-certificates).
+See documentation on the claim process [here](./traceability/packages/issuer.md#claiming-certificates).
 
 
 ### Additional Reading
