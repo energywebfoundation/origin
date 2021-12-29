@@ -59,7 +59,7 @@ export class CertificationRequestController {
         description: 'Returns a Certification Request'
     })
     public async get(
-        @Param('id', new ParseIntPipe()) id: number
+        @Param('id', new ParseIntPipe()) id: string
     ): Promise<CertificationRequestDTO> {
         return this.queryBus.execute(new GetCertificationRequestQuery(id));
     }
@@ -83,7 +83,7 @@ export class CertificationRequestController {
         description: 'Returns a Certification Request by a certificate ID'
     })
     public async getByCertificate(
-        @Param('certificateId', new ParseIntPipe()) certificateId: number
+        @Param('certificateId') certificateId: string
     ): Promise<CertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.queryBus.execute<
             CertificateBoundToCertificationRequestCommand,

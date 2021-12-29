@@ -1,6 +1,6 @@
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { IsInt, Min, IsBoolean, IsDate, IsPositive, IsNumberString } from 'class-validator';
+import { IsBoolean, IsDate, IsInt, IsNumberString, IsPositive } from 'class-validator';
 import { CertificationRequestDTO } from './certification-request.dto';
 
 export const CERTIFICATION_REQUESTS_TABLE_NAME = 'issuer_certification_request';

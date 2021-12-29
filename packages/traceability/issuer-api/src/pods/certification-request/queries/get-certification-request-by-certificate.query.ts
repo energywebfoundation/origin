@@ -1,3 +1,3 @@
 export class GetCertificationRequestByCertificateQuery {
-    constructor(public readonly certificateId: number) {}
+    constructor(public readonly certificateId: string) {}
 }

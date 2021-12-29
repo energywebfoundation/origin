@@ -5,7 +5,6 @@ import {
     Controller,
     HttpStatus,
     Param,
-    ParseIntPipe,
     Put,
     UseGuards,
     UseInterceptors,
@@ -39,7 +38,7 @@ export class IrecCertificateController extends CertificateController {
     })
     public async claimIREC(
         @UserDecorator() user: ILoggedInUser,
-        @Param('id', new ParseIntPipe()) certificateId: number,
+        @Param('id') certificateId: string,
         @Body() dto: ClaimCertificateDTO
     ): Promise<TxHashDTO> {
         const tx = await this.commandBus.execute(

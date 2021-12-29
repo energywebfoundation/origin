@@ -59,9 +59,7 @@ export class CertificationRequestController {
         type: FullCertificationRequestDTO,
         description: 'Returns a Certification Request'
     })
-    public async get(
-        @Param('id', new ParseIntPipe()) id: number
-    ): Promise<FullCertificationRequestDTO> {
+    public async get(@Param('id') id: string): Promise<FullCertificationRequestDTO> {
         return this.queryBus.execute(new GetCertificationRequestQuery(id));
     }
 
@@ -84,7 +82,7 @@ export class CertificationRequestController {
         description: 'Returns a Certification Request by a certificate ID'
     })
     public async getByCertificate(
-        @Param('certificateId', new ParseIntPipe()) certificateId: string
+        @Param('certificateId') certificateId: string
     ): Promise<FullCertificationRequestDTO | SuccessResponseDTO> {
         const validationCheck = await this.queryBus.execute<
             CertificateBoundToCertificationRequestCommand,

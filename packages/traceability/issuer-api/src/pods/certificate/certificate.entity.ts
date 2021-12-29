@@ -1,12 +1,12 @@
 import {
     Column,
+    CreateDateColumn,
     Entity,
     ManyToOne,
     PrimaryColumn,
-    CreateDateColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { IsBoolean, IsInt, IsNumberString, IsPositive, IsString, Min } from 'class-validator';
+import { IsBoolean, IsInt, IsNumberString, IsPositive, IsString } from 'class-validator';
 import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
 

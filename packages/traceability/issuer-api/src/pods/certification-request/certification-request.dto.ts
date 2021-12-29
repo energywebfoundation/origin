@@ -9,7 +9,6 @@ import {
     IsOptional,
     IsPositive,
     IsString,
-    Min,
     Validate
 } from 'class-validator';
 
