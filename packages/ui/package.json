@@ -30,7 +30,7 @@
     "storybook": "nx run ui-core:storybook --port=6006",
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
-    "e2e": "./dev-env.sh && nx e2e origin-ui-e2e --watch",
+    "e2e": "./dev-env.sh && nx e2e origin-ui-e2e",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",

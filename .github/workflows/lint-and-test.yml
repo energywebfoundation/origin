@@ -54,10 +54,5 @@ jobs:
     - name: Build application
       run: node common/scripts/install-run-rush.js rebuild --verbose
 
-    - name: Cypress run
-      uses: cypress-io/github-action@v2
-      with:
-        install: false
-        spec: packages/ui/apps/origin-ui-e2e/src/integration/user/*
-      env:
-          GITHUB_TOKEN: ${{ github.token }}
+    - name: Run all test:ui:e2e
+      run: node common/scripts/install-run-rush.js test:ui:e2e
