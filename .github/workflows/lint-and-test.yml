@@ -58,5 +58,5 @@ jobs:
 
     - name: Run all test:ui:e2e
       run: |
-      cp .env.example .env
-      node common/scripts/install-run-rush.js test:ui:e2e
+        cp .env.example .env
+        node common/scripts/install-run-rush.js test:ui:e2e
