@@ -18,15 +18,17 @@ The API package has one or several NestJS modules in the /pods directory. Each m
 + [Data Transfer Object (DTO) file(s)](https://docs.nestjs.com/controllers#request-payloads) that provide Data Transfer Objects, which are representations of the data that are exposed to the endpoint consumer  
 + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application 
 
+The [Origin-backend](./backend.md) package is also a NestJS application.
+
 ### Data Persistence
-API services fetch, update and persist data. Data is persisted using [PostgreSQL](https://www.postgresql.org/), and [TypeORM](https://typeorm.io/#/) is used to integrate the database into the NestJS application. You can view the SDK's database connection configuration in each SDK's typmeorm.ts file. 
+API services fetch, update and persist data. Data is persisted using [PostgreSQL](https://www.postgresql.org/), and [TypeORM](https://typeorm.io/#/) is used to integrate the database into the NestJS application. You can view the package's database connection configuration in the **ormconfig.ts file**. 
 
 ### Events and Commands
 In addition to services, the NestJS modules use [Commands](https://docs.nestjs.com/recipes/cqrs#commands) and [Events](https://docs.nestjs.com/recipes/cqrs#events) to encapsulate logic and, in the case of an event, respond asynchronously to something that has occured in the application. Events and commands are emitted and responded to within and between an SDK's packages using the [NestJS CQRS module](https://docs.nestjs.com/recipes/cqrs). 
 
 
 ## Smart Contracts
-The Issuer (@energyweb/issuer) and Exchange Token Account (@energyweb/exchange-token-account) packages contain their respective SKD's smart contracts. 
+The Issuer (@energyweb/issuer) and Exchange Token Account (@energyweb/exchange-token-account) packages contain their respective SDK's smart contracts. 
 
 - See documentation for Issuer smart contracts [here](./traceability/contracts/Issuer.md#smart-contracts)
 - See documentation for the Exchange Token Account smart contract [here](./trade/exchange-token-account.md)

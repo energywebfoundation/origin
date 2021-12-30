@@ -2,7 +2,7 @@
 
 Below are directions on how to get started building the Origin platform (including UI, backend, SDKs). 
 
-Before you can start Origin development you need to go through basic installation and building process.
+Before you can start Origin development, you need to go through basic installation and building process.
 
 1. Make sure you are using [Node 14.x.x](https://nodejs.org/en/download/)
 2. Make sure you have Java runtime installed in your system

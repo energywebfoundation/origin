@@ -3,7 +3,7 @@ site_name: EW-Origin
 nav:
     - Introduction: index.md
     - Glossary: user-guide-glossary.md
-    - Getting started: getting-started.md
+    - Install and Build: getting-started.md
     - Architecture: architecture.md
     - Packages: packages.md
     - Platform User Guides:
