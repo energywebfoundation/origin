@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-client",
-    "version": "0.1.6",
+    "version": "1.0.0",
     "description": "Client library interacting with the Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",

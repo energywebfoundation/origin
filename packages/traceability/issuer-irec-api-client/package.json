@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-irec-api-client",
-    "version": "0.2.2",
+    "version": "1.0.0",
     "description": "Client library interacting with the Issuer IREC API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-irec-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",

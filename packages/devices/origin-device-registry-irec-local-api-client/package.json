@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-irec-local-api-client",
-    "version": "0.2.2",
+    "version": "1.0.0",
     "description": "Client library interacting with the Origin I-REC Device Registry ",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-irec-local-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",

@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-irec-local-api",
-    "version": "0.5.0",
+    "version": "1.0.0",
     "description": "An API for local version of I-REC compatible registry",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-irec-local-api#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
