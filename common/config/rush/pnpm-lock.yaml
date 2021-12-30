@@ -163,6 +163,7 @@ dependencies:
   crypto-browserify: 3.12.0
   cypress: 9.2.0
   cypress-file-upload: 5.0.8_cypress@9.2.0
+  cypress-wait-until: 1.7.2
   dayjs: 1.10.7
   dotenv: 10.0.0
   emotion-theming: 11.0.0
@@ -16523,6 +16524,10 @@ packages:
       cypress: '>3.0.0'
     resolution:
       integrity: sha512-+8VzNabRk3zG6x8f8BWArF/xA/W0VK4IZNx3MV0jFWrJS/qKn8eHfa5nU73P9fOQAgwHFJx7zjg4lwOnljMO8g==
+  /cypress-wait-until/1.7.2:
+    dev: false
+    resolution:
+      integrity: sha512-uZ+M8/MqRcpf+FII/UZrU7g1qYZ4aVlHcgyVopnladyoBrpoaMJ4PKZDrdOJ05H5RHbr7s9Tid635X3E+ZLU/Q==
   /cypress/9.2.0:
     dependencies:
       '@cypress/request': 2.88.10
@@ -40392,6 +40397,7 @@ packages:
       crypto-browserify: 3.12.0
       cypress: 9.2.0
       cypress-file-upload: 5.0.8_cypress@9.2.0
+      cypress-wait-until: 1.7.2
       dayjs: 1.10.7
       emotion-theming: 11.0.0
       eslint: 8.5.0
@@ -40446,7 +40452,7 @@ packages:
       moment: '*'
       rxjs: '*'
     resolution:
-      integrity: sha512-LhOQ83KwrFKIEab40XbtwaegAfOBcLOGsr5hfz8JGH9uXcRFyFy9VsGje4L6t2OgYmS4WC2ZKanKA3gmWhAP9Q==
+      integrity: sha512-++KdHILG3uwpbTTznCRhEvIBbA0dt8VyTWCf4Zizlw/0S+9uX4cLGoRInt/wEz29oMG43EGab0QxHRm1ZZvdyw==
       tarball: file:projects/ui-packages.tgz
     version: 0.0.0
   file:projects/utils-general.tgz:
@@ -40688,6 +40694,7 @@ specifiers:
   crypto-browserify: 3.12.0
   cypress: 9.2.0
   cypress-file-upload: 5.0.8
+  cypress-wait-until: 1.7.2
   dayjs: 1.10.7
   dotenv: 10.0.0
   emotion-theming: 11.0.0
