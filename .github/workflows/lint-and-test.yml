@@ -69,5 +69,4 @@ jobs:
         start: yarn run:ganache
         wait-on: 'http://localhost:8545'
         command: yarn migrate:demo, yarn run:backend
-        wait-on: 'http://localhost:3030'
         config-file: packages/ui/apps/origin-ui-e2e/cypress.json
