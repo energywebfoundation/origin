@@ -5,7 +5,7 @@
   "modifyObstructiveCode": false,
   "pluginsFile": false,
   "supportFile": "./src/support/index.ts",
-  "video": true,
+  "video": false,
   "videosFolder": "../../dist/cypress/apps/origin-ui-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/origin-ui-e2e/screenshots",
   "chromeWebSecurity": false,
