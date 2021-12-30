@@ -8,7 +8,7 @@ The Device Registry SDK is used to register and fetch devices and meter data.
 ## Device Registry SDK Packages  
 The Device Registry SDK has two core packages:  
 
-### 1. [Device Registry API - @energyweb/origin-device-registry-api](./registry/device-registry-api.md)
+### 1. [Device Registry API - @energyweb/origin-device-registry-api](./device-registry/device-registry-api.md)
 A [NestJS](https://nestjs.com/) application to fetch and persist devices.
 
 See the documentation for this package [here](./device-registry/device-registry-api.md). 
