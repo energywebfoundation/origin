@@ -2,6 +2,7 @@
 Energy Web Origin is comprised of a user interface, a backend, and multiple SDKs that can be used individually, or in conjunction with each other. Each SDK is composed of one or several NPM packages. 
 
 ![origin-architecture](./images/panels/origin-architecture.png)
+Figure 1: Core SDK components and architecture 
 
 ## SDK API Packages
 Each SDK has an API package:  
