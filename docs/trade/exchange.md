@@ -5,7 +5,7 @@
 The Exchange package is a [NestJS](https://docs.nestjs.com/) application that provides backend services to manage the Exchange's functionality (account management and buying, selling and transferring [Energy Attribute Certificates](../user-guide-glossary.md#energy-attribute-certificate) and [bundles](../user-guide-glossary.md#bundle) through an order book system). 
 
 ## Persistence  
-The Trade SDK uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the entity.ts files in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)).
+The Trade SDK uses [PostgreSQL](https://www.postgresql.org/) for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the entity.ts files in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)).
 
 ```
 @Entity({ name: `${DB_TABLE_PREFIX}_account` })
