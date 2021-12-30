@@ -30,7 +30,7 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/issuer-irec-api-wrapper": "0.7.0",
+        "@energyweb/issuer-irec-api-wrapper": "1.0.0",
         "@energyweb/origin-backend": "11.1.0",
         "@energyweb/origin-backend-core": "8.1.0",
         "@energyweb/origin-backend-utils": "1.7.0",

@@ -41,7 +41,7 @@
         "@energyweb/origin-backend": "11.0.0",
         "@energyweb/origin-backend-core": "8.0.2",
         "@energyweb/origin-backend-utils": "1.6.1",
-        "@energyweb/origin-device-registry-api": "0.2.0",
+        "@energyweb/origin-device-registry-api": "1.0.0",
         "@energyweb/origin-device-registry-irec-form-api": "2.0.1",
         "@energyweb/origin-organization-irec-api": "1.5.0",
         "@energyweb/utils-general": "11.0.3",
