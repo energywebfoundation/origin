@@ -64,7 +64,7 @@ Cypress.Commands.add('closeAllNotifications', () => {
         cy
           .get('.Toastify__toast')
           .should('not.exist')
-          .then(() => true),
+          .then((elem) => elem === null),
       { timeout: 30000 }
     );
 });
