@@ -637,8 +637,7 @@
           "options": {
             "cypressConfig": "apps/origin-ui-e2e/cypress.json",
             "tsConfig": "apps/origin-ui-e2e/tsconfig.e2e.json",
-            "devServerTarget": "origin-ui:serve",
-            "headed": true
+            "devServerTarget": "origin-ui:serve"
           },
           "configurations": {
             "production": {
