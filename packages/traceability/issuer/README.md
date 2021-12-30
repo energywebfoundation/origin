@@ -1,55 +1,46 @@
-# EnergyWeb Issuer
+<p align="center">
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+</p>
 
-## Registry
+# Issuer 
 
-`Registry.sol` is ERC 1888 compatible registry for certificates issued by various issuers over various topics.
+## Description
+The Issuer package contains smart contracts and interfaces that handle the management of Energy Attribute Certificates on the blockchain.
 
-## Issuer
+It is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Traceability SDK. 
 
-`Issuer.sol` is an implementation of an I-REC compliant issuer which has the option to hide the volume for newly created certificates.
+## Documentation
+- [Issuer](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/packages/issuer/)
+- [Traceability SDK](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/)
 
-### Recipes
+## Contributing Guidelines 
+See [contributing.md](../../../contributing.md)
 
-1) Private issuance and private trading
-  - issue using `requestIssuance()` with the `isPrivate` flag set to `true`
-  - transfer using `approvePrivateTransfer()`
+# Energy Web Decentralized Operating System 
+EW-Origin is a component of the Energy Web Decentralized Operating System (EW-DOS).
 
-2) Private issuance and public trading
-  - issue using `requestIssuance()` with the `isPrivate` flag set to `true`
-  - migrate to public using `migrateToPublic()`
-  - transfer / trade public volumes
+The purpose of EW-DOS is to develop and deploy an open and decentralized digital operating system for the energy sector in support of a low-carbon, customer-centric energy future. 
 
-### Technical documentation
+We develop blockchain technology, full-stack applications and middleware packages that facilitate participation of Distributed Energy Resources on the grid and create open market places for transparent and efficient renewable energy trading.
 
-1) Private requesting and issuance
+- To learn about more about the EW-DOS tech stack, see our [documentation](https://app.gitbook.com/@energy-web-foundation/s/energy-web/)
 
-![Private issuance request](docs/1_request_private_issuance.png)
-![Private issuance sequence](docs/2_private_issuance_sequence.png)
+For a deep-dive into the motivation and methodology behind our technical solutions, read our White Papers:
 
----
-2) Migrating certificate to public certificate
+- [Energy Web White Paper on Vision and Purpose](https://www.energyweb.org/reports/EWDOS-Vision-Purpose/)
+- [Energy Web  White Paper on Technology Detail](https://www.energyweb.org/wp-content/uploads/2020/06/EnergyWeb-EWDOS-PART2-TechnologyDetail-202006-vFinal.pdf)
 
-![Migrations Private->Public certificate](docs/3_migration_privpub.png)
-![Migrations Private->Public certificate sequence](docs/4_sequence_migration_privpub.png)
 
----
-3) Claiming
+## Connect with Energy Web
+- [Twitter](https://twitter.com/energywebx)
+- [Discord](https://discord.com/channels/706103009205288990/843970822254362664)
+- [Telegram](https://t.me/energyweb)
 
-Claiming is supported only by public issued certificates. Private certificates have to be migrated to public before being claimed.
+## License
 
-![Claiming](docs/5_claiming.png)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
----
-4) Private transfers
-
-This is a case where volume can be transferred privately inside the private registry. 
-
-As an example, this can be used to transfer given volume to exchange or other account.
-
-![Private Transfer](docs/6_private_transfer.png)
-![Private Transfer sequence](docs/7_private_transfer_sequence.png)
-
-Notes:
+## Notes:
 `prevCommitment` is required to prevent state corruption, transition to new commitment based on other state that's currently on-chain will result in error.
 
 Implementation:

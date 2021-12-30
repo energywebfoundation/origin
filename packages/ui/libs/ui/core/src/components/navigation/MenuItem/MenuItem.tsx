@@ -11,12 +11,14 @@ export interface MenuItemProps {
   closeMobileNav?: () => void;
   selectedClass?: string;
   buttonClass?: string;
+  dataCy?: string;
 }
 
 export const MenuItem: FC<MenuItemProps> = memo(
   ({
     label,
     url,
+    dataCy,
     selected = false,
     closeMobileNav,
     selectedClass,
@@ -30,6 +32,7 @@ export const MenuItem: FC<MenuItemProps> = memo(
         }`}
       >
         <Button
+          data-cy={dataCy}
           onClick={closeMobileNav}
           className={clsx(classes.button, buttonClass)}
           component={NavLink}

@@ -41,7 +41,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   const cardClass = `${classes.card} ${selected && classes.selectedCard}`;
 
   return (
-    <Card className={cardClass} onClick={onClick}>
+    <Card className={cardClass} onClick={onClick} data-cy="myDeviceCard">
       {imageUrl ? (
         <CardMedia image={imageUrl} className={classes.image} />
       ) : fallbackIcon ? (

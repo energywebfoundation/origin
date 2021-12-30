@@ -33,6 +33,7 @@ export const useCreateBeneficiaryFormLogic: TUseCreateBeneficiaryFormLogic =
         {
           name: 'name',
           label: t('organization.createBeneficiary.name'),
+          inputProps: { ['data-cy']: 'beneficiaryName' },
         },
         {
           name: 'countryCode',
@@ -40,10 +41,12 @@ export const useCreateBeneficiaryFormLogic: TUseCreateBeneficiaryFormLogic =
           select: true,
           autocomplete: true,
           options: COUNTRY_OPTIONS_ISO,
+          inputProps: { ['data-cy']: 'beneficiaryCountry' },
         },
         {
           name: 'location',
           label: t('organization.createBeneficiary.location'),
+          inputProps: { ['data-cy']: 'beneficiaryLocation' },
         },
       ],
       buttonText: t('organization.createBeneficiary.create'),

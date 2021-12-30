@@ -9,6 +9,7 @@ export const useUserRegisteredModalLogic = (closeModal: () => void) => {
       {
         label: t('general.buttons.ok'),
         onClick: closeModal,
+        ['data-cy']: 'user-registered-modal-ok',
       },
     ],
   };

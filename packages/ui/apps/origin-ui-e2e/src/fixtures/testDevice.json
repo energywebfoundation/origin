@@ -1,0 +1,21 @@
+{
+  "facilityName": "Test facility",
+  "fuelType": "ES200",
+  "deviceType": "TC210",
+  "commissioningDate": "2021-12-01T14:48:26.000Z",
+  "registrationDate": "2021-12-01T14:48:28.000Z",
+  "description": "Description",
+  "smartMeterId": "smartMeter",
+  "capacity": "450000000",
+  "gridOperator": "TH-MEA",
+  "irecTradeAccountCode": "",
+  "timezone": "Asia/Bangkok",
+  "region": "Northeast",
+  "subregion": "Amnat Charoen",
+  "postalCode": "Zip code",
+  "address": "Test address",
+  "countryCode": "TH",
+  "latitude": "45.555",
+  "longitude": "45.555",
+  "imageIds": []
+}

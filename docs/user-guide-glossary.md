@@ -91,7 +91,7 @@ As common practice for blockchain exchanges, this deposit account is tied to the
 
 See the image below of a certificate's blockchain transactions:  
 
-1. First, the local issuer approves the certificate request
+1. The local issuer approves the certificate request
 2. The certificate is transferred to the Exchange Deposit address (the public address of the Exchange Deposit account)
 3. The certificate is transferred from the Exchange Deposit address to the Exchange Wallet
 

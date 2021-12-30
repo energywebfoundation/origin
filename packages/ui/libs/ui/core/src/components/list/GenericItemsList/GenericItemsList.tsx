@@ -24,7 +24,7 @@ export interface GenericItemsListProps<ContainerId, ItemId> {
   selectAllText?: string;
   pagination?: boolean;
   pageSize?: number;
-  paginationProps?: PaginationProps;
+  paginationProps?: PaginationProps & { ['data-cy']?: string };
   emptyListComponent?: ReactNode | null;
   disabled?: boolean;
 }

@@ -49,13 +49,13 @@ export const useInvitationsPageEffects = (redirectToIndex: boolean) => {
     useReceivedInvitationsActions(openRoleChangedModal);
   const receivedInvitationsActions: TableActionData<InvitationDTO['id']>[] = [
     {
-      icon: <Check />,
+      icon: <Check data-cy="checkIcon" />,
       name: t('organization.invitations.accept'),
       onClick: acceptInvite,
       loading: isMutating,
     },
     {
-      icon: <Clear />,
+      icon: <Clear data-cy="clearIcon" />,
       name: t('organization.invitations.decline'),
       onClick: rejectInvite,
       loading: isMutating,

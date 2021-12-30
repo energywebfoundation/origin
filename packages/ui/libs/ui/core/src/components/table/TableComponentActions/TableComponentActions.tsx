@@ -36,7 +36,7 @@ export const TableComponentActions: TTableComponentActions = ({
         <SpeedDial
           FabProps={{ className: classes.speedDialButton }}
           ariaLabel={`speed-dial-${id}`}
-          icon={<SpeedDialIcon icon={<MoreHoriz />} />}
+          icon={<SpeedDialIcon icon={<MoreHoriz data-cy="moreIcon" />} />}
           onClose={() => setOpen(false)}
           onMouseOver={() => setOpen(true)}
           onClick={(event: React.SyntheticEvent<Element, Event>) =>

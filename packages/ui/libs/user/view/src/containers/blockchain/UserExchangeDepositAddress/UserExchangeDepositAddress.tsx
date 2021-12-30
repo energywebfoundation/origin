@@ -25,6 +25,7 @@ export const UserExchangeDepositAddress: FC = () => {
           iconSize={IconSize.Large}
           popoverText={popoverText}
           className={classes.iconPopover}
+          iconProps={{ ['data-cy']: 'exchange-address-info-icon' }}
         />
       ) : null}
       {exchangeAddress ? (
@@ -34,12 +35,14 @@ export const UserExchangeDepositAddress: FC = () => {
             disabled={true}
             variant="filled"
             className={classes.field}
+            inputProps={{ ['data-cy']: 'exchange-deposit-address' }}
           />
           <IconPopover
             icon={Info}
             iconSize={IconSize.Large}
             popoverText={popoverText}
             className={classes.iconPopover}
+            iconProps={{ ['data-cy']: 'exchange-address-info-icon' }}
           />
         </div>
       ) : null}

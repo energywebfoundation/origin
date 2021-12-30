@@ -1,7 +1,8 @@
 # Issuer API - @energyweb/issuer-api
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api)
 
-The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling all Certificate operations (certificate request, issuance, transfer, claiming, revoking). You can read more about the certificate lifecycle [here](../../traceability.md). 
+## Overview
+The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling certificate operations (certificate request, issuance, transfer, claiming, revoking), and persisting certificate data. You can read more about the certificate lifecycle [here](../../traceability.md). 
 
 The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
 
@@ -85,7 +86,7 @@ export interface IBlockchainProperties {
 ```
 [source](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/BlockchainProperties.ts)
 
-The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts) contains a wrap method that provides a new instance of the Registry and Issuer contracts with the current [Signer](https://docs.ethers.io/v5/api/signer/):  
+The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts) contains a wrap method that provides new instances of the [Registry](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Registry.sol) and [Issuer](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/contracts/Issuer.sol) contracts with the current [Signer](https://docs.ethers.io/v5/api/signer/):  
 
 ```
     wrap(signerOrPrivateKey?: Signer | string): IBlockchainProperties {
@@ -119,7 +120,7 @@ The [BlockchainProperties entity](https://github.com/energywebfoundation/origin/
 ```
 [source](https://github.com/energywebfoundation/origin/blob/db84284d244bdef13496ea2c647a30816a0bf0a9/packages/traceability/issuer-api/src/pods/blockchain/blockchain-properties.entity.ts#L34)
 
-The blockchain facades use the wrap method to create new instances of smart contracts:
+The blockchain facades use the wrap method to create new instances of smart contracts when the certificate is created:
 
 ```
         if (!isPrivate) {
@@ -187,13 +188,13 @@ The certification-request module manages fetching, creating and approving certif
 Certificate data is persisted in two locations:  
 
 1. On the blockchain in the form of an [ERC-1888 Transferable Certificate](https://github.com/ethereum/EIPs/issues/1888). Read more about this in the Issuer documentation [here](../../traceability.md#energy-attribute-certificates-on-the-blockchain).  
-2. In a relational database. Origin’s reference implementation uses [PostgreSQL](https://www.postgresql.org/), however other registries can be used according to implementation needs. 
+2. In a relational database as a [Certificate entity](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certificate/certificate.entity.ts). Origin’s reference implementation uses [PostgreSQL](https://www.postgresql.org/), however other registries can be used according to implementation needs. 
 
-The Issuer API uses a database for certificate data because it is more performant than querying the blockchain each time data is needed.  
+The Issuer API uses a database to persist certificate data because it is more performant than the blockchain for data storage and data fetching. 
 
 When a certificate is requested, issued, or updated (i.e. if it has been transferred, claimed or revoked), this is reflected in the certificate’s record in the database as well as on the blockchain. The Issuer API makes updates to the Certificates on the blockchain using the [Blockchain facade](../contracts/Issuer.md#blockchain-facade) methods, and queries the database repository using a connection through [TypeORM](https://typeorm.io/#/). 
 
-See the code snippet below from the CreateCertificateRequestHandler class. The certificate is first created on the blockchain using the [CertificationRequest facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/CertificationRequest.ts), and then created in the database using the repository service. You can see the source code [here](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/handlers/create-certification-request.handler.ts). 
+See the code snippet below from the CreateCertificateRequestHandler class. The certificate is first created on the blockchain using the [CertificationRequest facade](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer/src/blockchain-facade/CertificationRequest.ts), and then created in the database using the repository service. 
 
 ```
 async execute({
@@ -248,7 +249,7 @@ async execute({
                `Certification request creation has failed with the error: ${e.message}`
            );
 ```
-
+[source](https://github.com/energywebfoundation/origin/blob/master/packages/traceability/issuer-api/src/pods/certification-request/handlers/create-certification-request.handler.ts)
 
 
 

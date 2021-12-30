@@ -18,9 +18,15 @@ export const useUpdateUserAccountEmailFormConfig = (
         label: t('user.profile.email'),
         name: 'email',
         required: true,
+        inputProps: {
+          ['data-cy']: 'email',
+        },
       },
     ],
     buttonWrapperProps: { justifyContent: 'flex-start' },
+    buttonProps: {
+      ['data-cy']: 'email-change-button',
+    },
     initialValues: { email: initialValues?.email },
     inputsVariant: 'filled',
     validationSchema: Yup.object().shape({

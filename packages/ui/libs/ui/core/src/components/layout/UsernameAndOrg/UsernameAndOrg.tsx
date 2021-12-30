@@ -33,6 +33,7 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
             pending={userPending}
             tooltipText={userTooltip}
             typographyProps={{ variant: 'h6', component: 'span' }}
+            dotWrapperProps={{ ['data-cy']: 'user-pending-badge' }}
           />
           {orgName ? (
             <TextWithPendingDot
@@ -40,6 +41,7 @@ export const UsernameAndOrg: FC<UsernameAndOrgProps> = memo(
               pending={orgPending}
               tooltipText={orgTooltip}
               typographyProps={{ color: 'textSecondary' }}
+              dotWrapperProps={{ ['data-cy']: 'organization-pending-badge' }}
             />
           ) : null}
         </Box>

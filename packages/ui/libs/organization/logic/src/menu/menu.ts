@@ -39,46 +39,55 @@ export const getOrganizationMenu: TGetOrganizationMenu = ({
       url: 'register',
       label: t('navigation.organization.register'),
       show: showRegisterOrg,
+      dataCy: 'organizationRegister',
     },
     {
       url: 'my',
       label: t('navigation.organization.my'),
       show: showMyOrg,
+      dataCy: 'myOrganization',
     },
     {
       url: 'members',
       label: t('navigation.organization.members'),
       show: showMembers,
+      dataCy: 'organizationMembers',
     },
     {
       url: 'invitations',
       label: t('navigation.organization.invitations'),
       show: showInvitations,
+      dataCy: 'organizationInvitations',
     },
     {
       url: 'invite',
       label: t('navigation.organization.invite'),
       show: showInvite,
+      dataCy: 'organizationInvite',
     },
     {
       url: 'register-irec',
       label: t('navigation.organization.registerIRec'),
       show: showRegisterIRec,
+      dataCy: 'organizationRegisterIRec',
     },
     {
       url: 'create-beneficiary',
       label: t('navigation.organization.createBeneficiary'),
       show: showCreateBeneficiary,
+      dataCy: 'organizationCreateBeneficiary',
     },
     {
       url: 'connect-irec',
       label: t('navigation.organization.connectIRec'),
       show: showConnectIRec,
+      dataCy: 'organizationConnectIRec',
     },
   ];
 
   return {
     isOpen,
+    dataCy: 'organizationMenu',
     sectionTitle: t('navigation.organization.sectionTitle'),
     show: showSection,
     rootUrl: '/organization',
