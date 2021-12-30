@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations-irec@1.2.1...@energyweb/migrations-irec@1.4.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **migrations-irec:** added missing exchange-irec ([31f7ac7](https://github.com/energywebfoundation/origin/commit/31f7ac7b79fed4a95d4127f106daf9e9b2c08f80))
+* **migrations-irec:** fix deployment scripts ([3f7231f](https://github.com/energywebfoundation/origin/commit/3f7231fab9729018b22c0a84700d8c5db5c597ed))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+* **origin-device-registry-irec-local-api:** do not allow editing approved device ([c319eb7](https://github.com/energywebfoundation/origin/commit/c319eb714fb00134e0109ded39c432852cd44f1f))
+* **origin-irec-backend-app:** fixed event handlers ([de56a87](https://github.com/energywebfoundation/origin/commit/de56a872e98cff6d535806e80b2d91bc8799ef4b))
+
+
+### Features
+
+* **migrations-irec:** fix deploy script ([420fff5](https://github.com/energywebfoundation/origin/commit/420fff57d8c2e341e5fd3595fe155d0bdc8568f5))
+* **origin-backend-irec-app:** create exchange deposit address on org registration and in migration's seed ([1f8884d](https://github.com/energywebfoundation/origin/commit/1f8884d16cdebaf3cdab80b66e27b4c93ea418a9))
+
+
+
+
+
 # [1.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations-irec@1.2.1...@energyweb/migrations-irec@1.3.0) (2021-12-24)
 
 

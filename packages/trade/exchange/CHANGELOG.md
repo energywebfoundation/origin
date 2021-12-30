@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.11.0...@energyweb/exchange@1.13.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency immutable to v4.0.0 ([479ae47](https://github.com/energywebfoundation/origin/commit/479ae47676deaefb2e8d9121f0a592a3d8066f59))
+* **deps:** update dependency immutable to v4.0.0-rc.15 ([edb971d](https://github.com/energywebfoundation/origin/commit/edb971d95c8fbe3dd5f719879f49021bcdb4362b))
+* **deps:** update dependency polly-js to v1.8.3 ([454be1d](https://github.com/energywebfoundation/origin/commit/454be1db7e1c1e62103855dbe1918ebacf981e4b))
+* **deps:** update dependency swagger-ui-express to v4.2.0 ([aaf518c](https://github.com/energywebfoundation/origin/commit/aaf518c1093330af1c671022b2c0c01b0e809cc6))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **exchange:** add apiproperty decorator for claimData prop to expose it to auto-generated content ([12c90ff](https://github.com/energywebfoundation/origin/commit/12c90ff2541bedd838efaee40bce00c4ea899523))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+* **origin-irec-backend-app:** fixed event handlers ([de56a87](https://github.com/energywebfoundation/origin/commit/de56a872e98cff6d535806e80b2d91bc8799ef4b))
+
+
+### Features
+
+* **exchange-irec:** added transfer certificate to irec ([eeb73cc](https://github.com/energywebfoundation/origin/commit/eeb73cc0dcf4570814580840e8d5d08ab0b68395))
+* **exchange:** added claim data to claim from exchange ([8938424](https://github.com/energywebfoundation/origin/commit/89384242ca291ce4c45c50ebb7b730c8deff10ca))
+* **exchange:** added endpoint to return claimed certificates ([a2cb1e7](https://github.com/energywebfoundation/origin/commit/a2cb1e73cb0e465abeff4ea2239fdc7d717e968e))
+* **exchange:** extend claim from the exchange to allow optional claimAddress ([cf8e2eb](https://github.com/energywebfoundation/origin/commit/cf8e2ebbc94343d4864904131c9bbf7c4d952b4a))
+* **issuer-irec-api:** mint certificate to exchange address if exists ([91f096e](https://github.com/energywebfoundation/origin/commit/91f096eee2f6b1efc6155ec27336f4745857161a))
+
+
+
+
+
 # [1.12.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.11.0...@energyweb/exchange@1.12.0) (2021-12-24)
 
 

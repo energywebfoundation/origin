@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api@0.4.0...@energyweb/issuer-api@0.6.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency polly-js to v1.8.3 ([454be1d](https://github.com/energywebfoundation/origin/commit/454be1db7e1c1e62103855dbe1918ebacf981e4b))
+* **deps:** update dependency swagger-ui-express to v4.2.0 ([aaf518c](https://github.com/energywebfoundation/origin/commit/aaf518c1093330af1c671022b2c0c01b0e809cc6))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **issuer-api:** fix certificate created transaction ([1e483b5](https://github.com/energywebfoundation/origin/commit/1e483b5bcc28bb4713f1a2d5db8d2926d0cdaac5))
+* **issuer-api:** fix get all certs query ([b0fd179](https://github.com/energywebfoundation/origin/commit/b0fd1797e4248ea90ac6f173d4362e168ee3f613))
+* **issuer-api:** handle multiple certificates created at once ([4995022](https://github.com/energywebfoundation/origin/commit/499502247a36227f4fff26a52af5437213835baa))
+* **issuer-api:** Only emit CertificateUpdated and Persisted events after changes are commited to db ([3a4aa0c](https://github.com/energywebfoundation/origin/commit/3a4aa0c3902c4f71cba3ced1d6f56a44d2236551))
+* **issuer-api:** properly run all the tests ([3465373](https://github.com/energywebfoundation/origin/commit/3465373278570088942aaf3958d9ee5d137d930d))
+* **issuer-api:** properly save metadata field ([5fa05df](https://github.com/energywebfoundation/origin/commit/5fa05df84a4130da2c200d993b943afecc98db0b))
+* **issuer-api:** stabilize transaction-logs tests ([51c2be7](https://github.com/energywebfoundation/origin/commit/51c2be7703342a449969ee045c478813bb5aabd6))
+* **issuer-api:** throw appropriate error for transactions on non-existing certificate ([41226da](https://github.com/energywebfoundation/origin/commit/41226da7d719a908e7a14403e740a063d74477d8))
+* **issuer-api:** throw if tried to claim empty batch ([7ef12c2](https://github.com/energywebfoundation/origin/commit/7ef12c23b4a890851965b7975eb1083e7b04980b))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+
+
+### Features
+
+* **exchange-irec:** Export from Exchange to I-REC ([09c0a7f](https://github.com/energywebfoundation/origin/commit/09c0a7f591d6ba47a7703b0cb4856f761ccd1269))
+* **issuer-api:** allow to query certificates by more fields ([8d3a60b](https://github.com/energywebfoundation/origin/commit/8d3a60b22f2a968f5944797a845a9cdf4a645e66))
+* **issuer-api:** allow to query certs by generationEnd frame ([2c22793](https://github.com/energywebfoundation/origin/commit/2c22793f366c68f47ef74efba1a095527c1edc72))
+* **issuer-api:** Return transaction hashes for each blockchain interaction ([2bb6aa3](https://github.com/energywebfoundation/origin/commit/2bb6aa37bac23d30a4af496afc4309e9e25e03bf))
+
+
+### BREAKING CHANGES
+
+* **issuer-api:** The Issuer API no longer waits for the blockchain transactions to be mined, but returns a transaction hash to the user and delegates checking if the transaction has been mined to the API user
+
+
+
+
+
 # [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api@0.4.0...@energyweb/issuer-api@0.5.0) (2021-12-24)
 
 

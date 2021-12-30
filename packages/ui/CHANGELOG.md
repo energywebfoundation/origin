@@ -3,6 +3,158 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/ui-packages@0.1.0...ui-packages@0.3.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @emotion/react to v11.6.0 ([24045e4](https://github.com/energywebfoundation/origin/commit/24045e41dea4557aacad3759b90b9b35bdb43794))
+* **deps:** update dependency @emotion/styled to v11.6.0 ([2405f01](https://github.com/energywebfoundation/origin/commit/2405f01ee7928f3d4d3a62da50cbb6afa990d94c))
+* **deps:** update dependency @hookform/resolvers to v2.8.1 ([fa18c82](https://github.com/energywebfoundation/origin/commit/fa18c828c7180125137592dd56fc6a8f30742433))
+* **deps:** update dependency @hookform/resolvers to v2.8.2 ([cc7e86e](https://github.com/energywebfoundation/origin/commit/cc7e86ec15102852ef4cf5c5cc1b04e438077164))
+* **deps:** update dependency @hookform/resolvers to v2.8.3 ([a1ace66](https://github.com/energywebfoundation/origin/commit/a1ace66ff59c1e3358012159cc65cf4512ff6fc1))
+* **deps:** update dependency @hookform/resolvers to v2.8.4 ([e6ebfe5](https://github.com/energywebfoundation/origin/commit/e6ebfe506f159c2c773472cdd548c8b26f5979ea))
+* **deps:** update dependency @hookform/resolvers to v2.8.5 ([522a833](https://github.com/energywebfoundation/origin/commit/522a8330beaeba35c2fc86697d39635c01d40841))
+* **deps:** update dependency axios to v0.24.0 ([1ff92e7](https://github.com/energywebfoundation/origin/commit/1ff92e7297ff0bcdb54704b327f1e3d719e9e029))
+* **deps:** update dependency chart.js to v3.6.0 ([ea4b58c](https://github.com/energywebfoundation/origin/commit/ea4b58c53b97e6ef28176139bd6a29be1250ad37))
+* **deps:** update dependency chart.js to v3.6.1 ([28c317a](https://github.com/energywebfoundation/origin/commit/28c317a539e867d58937eeb5388b7084da831919))
+* **deps:** update dependency chart.js to v3.6.2 ([c3008ee](https://github.com/energywebfoundation/origin/commit/c3008ee1c6e54e70ae3743b13682fcf041f317cc))
+* **deps:** update dependency chart.js to v3.7.0 ([1d8256d](https://github.com/energywebfoundation/origin/commit/1d8256d91595e626ba8b6ef25e381a67ab068da7))
+* **deps:** update dependency core-js to v3.18.0 ([7d6547f](https://github.com/energywebfoundation/origin/commit/7d6547f3e0d06356d0b1d2ed08f4a9d270ea7715))
+* **deps:** update dependency core-js to v3.18.1 ([e8e51c1](https://github.com/energywebfoundation/origin/commit/e8e51c18449e1e223f38d6de46c7ecb07e2b2523))
+* **deps:** update dependency core-js to v3.18.2 ([0c028fd](https://github.com/energywebfoundation/origin/commit/0c028fd046e2167140721d7f0c5a1d39ff20cb59))
+* **deps:** update dependency core-js to v3.18.3 ([b316452](https://github.com/energywebfoundation/origin/commit/b3164528cbc50b4a392d74f3dcfa6210c7d38ee8))
+* **deps:** update dependency core-js to v3.19.0 ([732020b](https://github.com/energywebfoundation/origin/commit/732020b7860406e92614d2886af9a917e53e4783))
+* **deps:** update dependency core-js to v3.19.1 ([dd774a6](https://github.com/energywebfoundation/origin/commit/dd774a6de02f090c8d43f8d24ce4e20d3b6e8732))
+* **deps:** update dependency core-js to v3.19.2 ([fc955b0](https://github.com/energywebfoundation/origin/commit/fc955b02f9aee1e6d39ea06d12b82b86381f42b5))
+* **deps:** update dependency core-js to v3.19.3 ([e6df79f](https://github.com/energywebfoundation/origin/commit/e6df79f4d1f1e944e150f3a2b0ba7d5874e75f28))
+* **deps:** update dependency core-js to v3.20.1 ([e739d28](https://github.com/energywebfoundation/origin/commit/e739d283957264d0c0cb460f23481c66437b1251))
+* **deps:** update dependency history to v5.1.0 ([8b006a9](https://github.com/energywebfoundation/origin/commit/8b006a9016a421e02edc5fa104a865313cf500e6))
+* **deps:** update dependency i18next to v21 ([9391aec](https://github.com/energywebfoundation/origin/commit/9391aec5ce375c5b7c012cb9377aa79b0bf44382))
+* **deps:** update dependency i18next to v21.2.3 ([6f6ec5f](https://github.com/energywebfoundation/origin/commit/6f6ec5f8d403de3034b9d04eb3823b086293e6c2))
+* **deps:** update dependency i18next to v21.2.4 ([44c23cd](https://github.com/energywebfoundation/origin/commit/44c23cd53258a78c7c429661e3e685e64c31a6f8))
+* **deps:** update dependency i18next to v21.2.6 ([4e3c420](https://github.com/energywebfoundation/origin/commit/4e3c420e69e2549c7b4ef903c5b3507dcdf60a2a))
+* **deps:** update dependency i18next to v21.3.2 ([4b46702](https://github.com/energywebfoundation/origin/commit/4b467027b7859e07af4e6f0332f60bffab919e8a))
+* **deps:** update dependency i18next to v21.3.3 ([5876169](https://github.com/energywebfoundation/origin/commit/58761697ee62f0711a00855c87c902db37e177af))
+* **deps:** update dependency i18next to v21.4.0 ([d8d21c4](https://github.com/energywebfoundation/origin/commit/d8d21c4b6cf9557c38df343e5a7fb28c530e8574))
+* **deps:** update dependency i18next to v21.4.2 ([a636c22](https://github.com/energywebfoundation/origin/commit/a636c22cbb153a6116dada15834431e1adbcc109))
+* **deps:** update dependency i18next to v21.5.2 ([b763319](https://github.com/energywebfoundation/origin/commit/b76331985a517cc4a8594c75db82ad5df4d9f1d3))
+* **deps:** update dependency i18next to v21.5.3 ([faf7a03](https://github.com/energywebfoundation/origin/commit/faf7a03a955c7e41418752d278d2377d8e5025ac))
+* **deps:** update dependency i18next to v21.5.4 ([3e27e0c](https://github.com/energywebfoundation/origin/commit/3e27e0caf2a30182a0e1b92e94e769518ca32cec))
+* **deps:** update dependency i18next-icu to v2 ([1cf321c](https://github.com/energywebfoundation/origin/commit/1cf321caf8ccb5bf7e01563c1d0ed1680c627a40))
+* **deps:** update dependency react-chartjs-2 to v4 ([7ba3971](https://github.com/energywebfoundation/origin/commit/7ba397164ef61896abe9ee7bb9bbcd5eb49ecec6))
+* **deps:** update dependency yup to v0.32.11 ([533ee68](https://github.com/energywebfoundation/origin/commit/533ee683f7b38a06b3df4c6690209c95fb0e9d2c))
+* **deps:** update material-ui monorepo ([a932bec](https://github.com/energywebfoundation/origin/commit/a932becba9c11cd9a8ea54fab64b96870f1edb7a))
+* **deps:** update material-ui monorepo ([c9a70c3](https://github.com/energywebfoundation/origin/commit/c9a70c3ea34f4a2e817f8ce70741863ccdaeeee0))
+* **deps:** update material-ui monorepo ([3fc9562](https://github.com/energywebfoundation/origin/commit/3fc9562ec5f188feac626e6a3c8ea988479c5da2))
+* **deps:** update material-ui monorepo ([4b2ac2f](https://github.com/energywebfoundation/origin/commit/4b2ac2f725cc9d2ded70d6b1bec090cadedaecf4))
+* **deps:** update material-ui monorepo ([d5e495e](https://github.com/energywebfoundation/origin/commit/d5e495ebe9c758b766ff0e0c4f45da80ca203017))
+* **deps:** update material-ui monorepo ([ee2215e](https://github.com/energywebfoundation/origin/commit/ee2215ea5ab50d291650e57597942761110f820a))
+* **deps:** update react ([a094ad0](https://github.com/energywebfoundation/origin/commit/a094ad0b0e6b36a609efd098f05b82994fcd4084))
+* **deps:** update react ([5f8f953](https://github.com/energywebfoundation/origin/commit/5f8f953a4390838c684c390ee3977288defba341))
+* **origin-organization-irec-api:** fix conflict in swagger for irec accounts endpoint ([a71935c](https://github.com/energywebfoundation/origin/commit/a71935cea02d78d427fed3e4b93a0ab75e460553))
+* **origin-ui-certificate:** add select for beneficiaries when claiming from exchange ([8fc1c91](https://github.com/energywebfoundation/origin/commit/8fc1c91d0fcb2636ffcee18a873ef7b19e76a892))
+* **origin-ui-certificate:** use companyBeneficiaries endpoint to get beneficiaries for retire-action ([9b040dd](https://github.com/energywebfoundation/origin/commit/9b040dd03d034b4bf8e37d261d5c5d980f8c7137))
+* **origin-ui-core:** adjust GenericForm validation influence on button disabling ([2463eb6](https://github.com/energywebfoundation/origin/commit/2463eb676aa3d63c325386b4745f56f73790b436))
+* **origin-ui-core:** improve ItemsListWithActions state management, remove unnecessary actions, reduce re-renders, fix selection bugs ([c37edf9](https://github.com/energywebfoundation/origin/commit/c37edf9e603f5063b29de62cf2e97bda000ae25c))
+* **origin-ui-core:** remove memory leak on SelectAutocomplete ([25c977d](https://github.com/energywebfoundation/origin/commit/25c977dbbdf9f1cc412c066d7c5a3f5766538995))
+* **origin-ui-device-data:** fix memory leak on PublicDeviceCard when fetching device image on unmount ([497845f](https://github.com/energywebfoundation/origin/commit/497845f4e0a613a0005877f8110abaca0d76a61e))
+* **origin-ui-device-data:** ignore fetching devices images for id === null ([2f35b21](https://github.com/energywebfoundation/origin/commit/2f35b21ec26271dc2b4fd891ac572b6f6b7fa6e6))
+* **origin-ui-device-logic:** smart meter chart intervals bug ([c2d4b80](https://github.com/energywebfoundation/origin/commit/c2d4b8083f891993d41090ed1bc0c1784c99ba40))
+* **origin-ui-exchange-logic:** using country code instead of country name for tables filtering ([58df055](https://github.com/energywebfoundation/origin/commit/58df05560b11afb893767097e9d5662eb0954c5e))
+* **origin-ui-exchange-view:** block buying bundle for users unable to proceed it ([c2f5240](https://github.com/energywebfoundation/origin/commit/c2f5240eb72ab8ec3ae4f70a6b3db0791eb17124))
+* **origin-ui-localization:** fix variables consumption in localization ([8092e1e](https://github.com/energywebfoundation/origin/commit/8092e1e40c8c6ce52b8dba11b7129d2dcef8fc29))
+* **origin-ui-localization:** localization variables ([f752d9d](https://github.com/energywebfoundation/origin/commit/f752d9dcd27c8f89a468033f8a4dbec4c1317764))
+* **origin-ui-organization:** remove fetching any data when user is not logged in, fix infinite fetch/re-render of organization ui app for unlogged users, add redirect for invitations page ([629dc58](https://github.com/energywebfoundation/origin/commit/629dc5874dfc34d6719ca02d990b2e66677926c6))
+* **origin-ui-shared-state:** remove unnecessary window reload ([88c2240](https://github.com/energywebfoundation/origin/commit/88c22409a54e8fa387f221a1c923e98cd0650cde))
+* **origin-ui-user:** add admin org-view, fix login re-render bug, adjust routes names & labels, correctly log errors ([b1ad9ad](https://github.com/energywebfoundation/origin/commit/b1ad9ad8258a32cb8a1eda3dc18549641ac4c2af))
+* **origin-ui-user:** fix newPasswordConfirm field error label ([e83e0e7](https://github.com/energywebfoundation/origin/commit/e83e0e799901437af0e2b112b893a7bc108079ca))
+* **origin-ui-user:** remove organization-data dependency ([a9e5309](https://github.com/energywebfoundation/origin/commit/a9e530943c38163998aa13f6361bd756b284ccdb))
+* **origin-ui:** dont fetch connections for admin user ([2f8208d](https://github.com/energywebfoundation/origin/commit/2f8208d9be1473f63371a5249be89cce3da23220))
+* **origin-ui:** fix light-theme navigation styles ([0732ffb](https://github.com/energywebfoundation/origin/commit/0732ffbe224b8c4653af9cbe269cbc36d6d164ce))
+* **origin-ui:** fix login bug, add login-app routes config ([8343ae2](https://github.com/energywebfoundation/origin/commit/8343ae2c1c3404b02d7ae99b71806edf33646c4b))
+* **origin-ui:** remove expired tokens ([0ce3fc2](https://github.com/energywebfoundation/origin/commit/0ce3fc2a92ba87436acec699dc9277171e0b41ea))
+
+
+### chore
+
+* **origin-ui-core:** remove exports of dependent components and move the into the folders of its parent ([7f2a68b](https://github.com/energywebfoundation/origin/commit/7f2a68b5aa8f77f081a89de05dd7b113b68222fb))
+* **origin-ui-core:** rename FallbackIcon to IconHoverText ([a7fc0a3](https://github.com/energywebfoundation/origin/commit/a7fc0a33babf2a2ff7fd3ff688e806e72b333be7))
+* **origin-ui-core:** rename props to better display the purpose ([a4777a6](https://github.com/energywebfoundation/origin/commit/a4777a601863b428537b8c5c5b298f7ff3731610))
+* update to latest versions of [@mui](https://github.com/mui) packages ([2f53854](https://github.com/energywebfoundation/origin/commit/2f53854070f20f9251992fdd3ac92812c5d83060))
+
+
+### Features
+
+* **origin-ui-certificate-view:** allow bulk actions only for blockchain inbox ([d4e7dac](https://github.com/energywebfoundation/origin/commit/d4e7dacb4f4284c09161c66b3f5d1d2ef3096201))
+* **origin-ui-certificate:** add claim action to exchange inbox ([978f5eb](https://github.com/energywebfoundation/origin/commit/978f5eb1b0a4a8650c41f8d5dae7d687d4bf7e48))
+* **origin-ui-certificate:** add export action to exchange inbox ([01e565f](https://github.com/energywebfoundation/origin/commit/01e565f51c4deb0366d1e63fc3ca655157950088))
+* **origin-ui-certificate:** add tooltip and disable select if there are no beneficiaries created by user ([abf759a](https://github.com/energywebfoundation/origin/commit/abf759a456743e80933706edacdca272ecca23cb))
+* **origin-ui-certificate:** adjust certificate pages to match blockchain account options ([ab9cff8](https://github.com/energywebfoundation/origin/commit/ab9cff81c78e21e0973e9457b48dcdb241d64806))
+* **origin-ui-certificate:** make claim-action form, adjust displaying of claimed certificates in claims-report and certificate-detail-view ([0bf011d](https://github.com/energywebfoundation/origin/commit/0bf011d5f189f6b45db1d2237f232a446e100328))
+* **origin-ui-certificate:** move from external web3 package to native web3 package usage ([697831a](https://github.com/energywebfoundation/origin/commit/697831a44b21ba906b809eeb0b8e0a8d9e3db13b))
+* **origin-ui-core:** add expanding functionality for TableComponentRow ([d98e2b8](https://github.com/energywebfoundation/origin/commit/d98e2b8ec1a087b6055fbcb84f9f274afa99af6c))
+* **origin-ui-core:** add new component - VisibilityButton ([d23fc77](https://github.com/energywebfoundation/origin/commit/d23fc77979a22c1bd6e37f6016b95333a72a00a5))
+* **origin-ui-core:** allow ListActionsBlock to be managed by outside state ([21efb74](https://github.com/energywebfoundation/origin/commit/21efb749e1f0022cb87d04f8b41bae6386580cb1))
+* **origin-ui-core:** extend GenericMap props to allow customization of Marker ([392b4fd](https://github.com/energywebfoundation/origin/commit/392b4fd162fe182881580e3d9007eb7bec9b7019))
+* **origin-ui-core:** improve marker items types, add label ([b223407](https://github.com/energywebfoundation/origin/commit/b2234078925ca4d66167726b3d44eebea8608bd2))
+* **origin-ui-core:** on list reset return to the first action in ListActionsBlock ([2ea057a](https://github.com/energywebfoundation/origin/commit/2ea057a3971c0e8ca03ff32e88dede695ba840a7))
+* **origin-ui-device-data:** request certificates based on users self-ownership ([a96a156](https://github.com/energywebfoundation/origin/commit/a96a15661c15e0f6138d0be29cac8689a02e9112))
+* **origin-ui-device-logic:** change requestCertificates form validationMode ([614f6ae](https://github.com/energywebfoundation/origin/commit/614f6ae268532812fe7d4278acca69dc2ba47d42))
+* **origin-ui-device-view:** show edit button only for non-approved devices ([450593b](https://github.com/energywebfoundation/origin/commit/450593b151dc8a9705ab6b12864e434cc941fd04))
+* **origin-ui-device:** add edit device page, confirm modal, status dot to device name in my-devices ([d68938c](https://github.com/energywebfoundation/origin/commit/d68938ce07948f509245533aade29f05d47cb093))
+* **origin-ui-device:** add irecTradeAccountCode field to request certificates, pass singleAccountMode variable ([8f8cbac](https://github.com/energywebfoundation/origin/commit/8f8cbac92a7dee6c2e70d5e57080fbb7cc613e2a))
+* **origin-ui-device:** add my accounts, add select with account code to register device ([79b17d0](https://github.com/energywebfoundation/origin/commit/79b17d05cbe82bb6d27a496e953e1b2b56639366))
+* **origin-ui-device:** change select value to code ([f16acd3](https://github.com/energywebfoundation/origin/commit/f16acd3457c21dd00e695c230512b931de19a808))
+* **origin-ui-device:** extend permissions ([d3ba350](https://github.com/energywebfoundation/origin/commit/d3ba350f9d79e503b95c56ea42a862c97162155e))
+* **origin-ui-device:** make country and timezone fields displaying based on config country, add selectors to import device form ([b01c4bb](https://github.com/energywebfoundation/origin/commit/b01c4bb99ee46f68c9ad22306a4fcb9aa59166ca))
+* **origin-ui-exchange-logic:** redirect to certificate details on roww click in Sell Offers table ([4a8745f](https://github.com/energywebfoundation/origin/commit/4a8745f735cd536a45e24295bdcbbcf652fe4bd0))
+* **origin-ui-exchange:** add expanding asks rows in trading view with device data ([3822bf3](https://github.com/energywebfoundation/origin/commit/3822bf3f4ff54ad511b57ecb92a68422d828a1bc))
+* **origin-ui-exchange:** autofill all available device type options, disable button if only fuel type specified ([1dfe4bc](https://github.com/energywebfoundation/origin/commit/1dfe4bce204bc0cf9776f216f85093b0f5b55953))
+* **origin-ui-exchange:** show all bids in BuyOffers table when filters not specified ([1b0684e](https://github.com/energywebfoundation/origin/commit/1b0684e1489753b40585bad989822c1e0dc3aae1))
+* **origin-ui-localization:** add claim action localization ([dc46460](https://github.com/energywebfoundation/origin/commit/dc46460d91f423c29d049f3d571fe14cdc05f552))
+* **origin-ui-localization:** add generic notification message ([cdc76e7](https://github.com/energywebfoundation/origin/commit/cdc76e776537de59d2420a3ffc94356f70594cd2))
+* **origin-ui-localization:** add irecTradeAccountCode ([98203f4](https://github.com/energywebfoundation/origin/commit/98203f4d7998351084c802dd437482724b8db8a0))
+* **origin-ui-localization:** add irecTradeAccountCode ([ef9bfcd](https://github.com/energywebfoundation/origin/commit/ef9bfcd2bb43ad581681553b4a6b073169583576))
+* **origin-ui-localization:** add localization for device edit page ([0f22c3a](https://github.com/energywebfoundation/origin/commit/0f22c3a9a588df82b0176eedb83beb9538d3d91a))
+* **origin-ui-localization:** add localization for exchange export ([62ad75e](https://github.com/energywebfoundation/origin/commit/62ad75e28fbb37f82ccf45de45282aa5dc4cafbf))
+* **origin-ui-localization:** add localization for exchange-claim action ([986f824](https://github.com/energywebfoundation/origin/commit/986f8246a2d5220a628c78d46ec051d876eb6c70))
+* **origin-ui-localization:** add localization for metamask components ([840a08a](https://github.com/energywebfoundation/origin/commit/840a08a668f771a07558a9e867bbdc3247092d0e))
+* **origin-ui-localization:** add localization for reset password flow ([4a54a38](https://github.com/energywebfoundation/origin/commit/4a54a38f143003aa4b52a00b38a198b5228337fb))
+* **origin-ui-localization:** add no-beneficiaries tooltip text ([6402bb6](https://github.com/energywebfoundation/origin/commit/6402bb66c737aa6a10434d4e7727e908a8e58927))
+* **origin-ui-localization:** add password validation message ([31c5da0](https://github.com/energywebfoundation/origin/commit/31c5da0b342d871499a361b1a372d54a588bd1f3))
+* **origin-ui-localization:** add requirements localization, adjust admin nav item ([2faac52](https://github.com/energywebfoundation/origin/commit/2faac52f965e74d6c213f9e2b8087c8c23e481b0))
+* **origin-ui-localization:** add reset-password notifications ([639ac35](https://github.com/energywebfoundation/origin/commit/639ac35194b0450ee9ae8b285b8991bc399c7dbe))
+* **origin-ui-localization:** add sefl-ownership texts ([60b883a](https://github.com/energywebfoundation/origin/commit/60b883a38920284cfa1fc2dfe768b037d9669b31))
+* **origin-ui-organization:** add permissions block to create-beneficiaries page ([9d2a9a6](https://github.com/energywebfoundation/origin/commit/9d2a9a66b8ca7aa84e86904aa0ba6b3ecaba2769))
+* **origin-ui-organization:** remove All Organizations page from organization-ui ([0f8c4d3](https://github.com/energywebfoundation/origin/commit/0f8c4d3f9664a458428b468ea6fedf14f836aee8))
+* **origin-ui-theme:** simplify makeOriginUiTheme func and allow passing custom coloring scheme ([5ab31c1](https://github.com/energywebfoundation/origin/commit/5ab31c1afa351da47db717a0eaac2c6f0a28ee0e))
+* **origin-ui-user:** add All Organizations page into admin-ui app ([a66bad9](https://github.com/energywebfoundation/origin/commit/a66bad931a8c59c2a8d021cad546c9d4c47f7e88))
+* **origin-ui-user:** add RequestResetPassword and ResetPassword pages, create LoginLayout wrapper ([0557a10](https://github.com/energywebfoundation/origin/commit/0557a101afa762ad92fd20714e3e07e7d769d47e))
+* **origin-ui-user:** add self-ownership switch ([cb61aa6](https://github.com/energywebfoundation/origin/commit/cb61aa6dc0865adae57e791618a41d805d731be2))
+* **origin-ui-user:** connect reset password ui to api ([cee02f9](https://github.com/energywebfoundation/origin/commit/cee02f9215b72323c78ffd988f74bd4b98df218e))
+* **origin-ui-user:** move from external web3 package to native web3 package usage ([9d7de59](https://github.com/energywebfoundation/origin/commit/9d7de595a17edfaa80a08314e66dfddfdb6f571f))
+* **origin-ui-web3:** create web3 state management, BaseAdapter and MetamaskAdapter ([3ad7dec](https://github.com/energywebfoundation/origin/commit/3ad7dec75c9f35d531e96e54597d984d176baf14))
+* **origin-ui:** add SINGLE_ACCOUNT_MODE env variable ([9b9a171](https://github.com/energywebfoundation/origin/commit/9b9a1717611842054d076624fcbf739b7e27dcc7))
+* **origin-ui:** add singleAccountMode env variable ([11da805](https://github.com/energywebfoundation/origin/commit/11da805713e14f5ec4915a93dcbfadfc29df5197))
+* **origin-ui:** added ui-apps lazy load ([9044621](https://github.com/energywebfoundation/origin/commit/90446216ea12721e4b87da9c2cc5421a5804bd44))
+* **ui-packages:** update ui to use new module ([4f130a9](https://github.com/energywebfoundation/origin/commit/4f130a919a09d483aca4a28e98d5b4b9d5c2b123))
+
+
+### BREAKING CHANGES
+
+* **origin-ui-theme:** makeOriginUiConfig is now makeOriginUiTheme and returns theme instead of object
+* **origin-ui-core:** GenericMap now accepts mapItems prop instead of allItems, DownloadableChip now accepts fileName instead of name
+* **origin-ui-core:** UploadChip and Dot components are no longer exported from origin-ui-core
+* **origin-ui-core:** FallbackIcon is no longer exported from origin-ui-core, now exports IconHoverText
+* package now uses @mui/* packages instead of @material-ui/* ones
+* **origin-ui-certificate:** CertificateApp now expects allowedChainIds to be supplied as env variable from the root, packages now have peerDep of origin-ui-web3 package
+* **origin-ui-user:** UserApp now expects allowedChainIds to be supplied as env variable from the root, packages now have peerDep of origin-ui-web3 package
+
+
+
+
+
 # [0.2.0](https://github.com/energywebfoundation/origin/compare/ui-packages@0.1.0...ui-packages@0.2.0) (2021-12-24)
 
 
