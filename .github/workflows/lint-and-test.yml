@@ -57,4 +57,5 @@ jobs:
     - name: Run all test:ui:e2e
       env:
         WEB3: http://localhost:8553
+        DEPLOY_KEY: d9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5
       run: node common/scripts/install-run-rush.js test:ui:e2e
