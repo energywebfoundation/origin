@@ -56,5 +56,5 @@ jobs:
 
     - name: Run all test:ui:e2e
       env:
-        WEB3: ${{ secrets.WEB3 }}
+        WEB3: http://localhost:8553
       run: node common/scripts/install-run-rush.js test:ui:e2e
