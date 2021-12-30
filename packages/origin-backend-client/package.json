@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend-client",
-    "version": "10.0.6",
+    "version": "10.0.7",
     "description": "",
     "main": "dist/js/index.js",
     "scripts": {
@@ -27,7 +27,7 @@
         "axios": "0.24.0"
     },
     "devDependencies": {
-        "@energyweb/origin-backend": "11.1.0",
+        "@energyweb/origin-backend": "11.2.0",
         "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",

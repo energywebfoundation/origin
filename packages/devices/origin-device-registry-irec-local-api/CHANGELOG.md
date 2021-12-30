@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api@0.4.0...@energyweb/origin-device-registry-irec-local-api@1.1.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **exchange-irec:** fix exchange device type filtering ([4217dc1](https://github.com/energywebfoundation/origin/commit/4217dc1a229b86f213d308757f22bf3fd9f6e6e0))
+* **exchange-irec:** fix exchange device type filtering ([eca42f5](https://github.com/energywebfoundation/origin/commit/eca42f56aeeab4dac35d2e910cff48abc0dcb6b0))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+* **origin-device-registry-irec-local-api:** do not allow editing approved device ([c319eb7](https://github.com/energywebfoundation/origin/commit/c319eb714fb00134e0109ded39c432852cd44f1f))
+* **origin-device-registry-irec-local-api:** fix capacity ([21b847b](https://github.com/energywebfoundation/origin/commit/21b847b7166641ec0e5e3ffb186a20047213b797))
+* **origin-device-registry-irec-local-api:** fix capacity ([a75d05e](https://github.com/energywebfoundation/origin/commit/a75d05e58135367f04ba85b189e0e26570bc2004))
+
+
+### Features
+
+* **issuer-irec-api:** support custom irec accounts for devices and certificates ([bfedc31](https://github.com/energywebfoundation/origin/commit/bfedc31788a4bbd8d700225e5376e4a714333dba))
+* **origin-device-registry-irec-local-api:** added trade account parameter ([6770056](https://github.com/energywebfoundation/origin/commit/67700564538b62c319b90b803e0b7286b72fc9c5))
+
+
+
+
+
 # [0.5.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api@0.4.0...@energyweb/origin-device-registry-irec-local-api@0.5.0) (2021-12-24)
 
 

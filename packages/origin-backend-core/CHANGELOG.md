@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [8.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@8.0.3...@energyweb/origin-backend-core@8.2.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+
+
+### Features
+
+* **origin-backend:** added self ownership flag ([d37f9d8](https://github.com/energywebfoundation/origin/commit/d37f9d86d123567ee04af4f0c51e2f3ed8131b1b))
+
+
+
+
+
 # [8.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-core@8.0.3...@energyweb/origin-backend-core@8.1.0) (2021-12-24)
 
 
