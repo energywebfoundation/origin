@@ -3,7 +3,7 @@ Energy Web Origin is comprised of a user interface, a backend, and multiple SDKs
 
 ![origin-architecture](./images/panels/origin-architecture.png)
 
- ## SDK API Packages
+## SDK API Packages
 Each SDK has an API package:  
 
 - [Device Registry API](./device-registry/device-registry-api.md) (@energyweb/origin-device-registry-api)
