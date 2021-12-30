@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-irec-client",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Client library interacting with the I-REC Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/exchange-irec-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",

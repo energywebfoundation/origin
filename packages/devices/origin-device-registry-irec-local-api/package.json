@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-irec-local-api",
-    "version": "0.5.0",
+    "version": "1.0.0",
     "description": "An API for local version of I-REC compatible registry",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-irec-local-api#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -30,11 +30,11 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/issuer-irec-api-wrapper": "0.7.0",
+        "@energyweb/issuer-irec-api-wrapper": "1.0.0",
         "@energyweb/origin-backend": "11.1.0",
         "@energyweb/origin-backend-core": "8.1.0",
         "@energyweb/origin-backend-utils": "1.7.0",
-        "@energyweb/origin-device-registry-api": "0.3.0",
+        "@energyweb/origin-device-registry-api": "1.0.0",
         "@energyweb/origin-organization-irec-api": "1.7.0",
         "@nestjs/common": "8.1.1",
         "@nestjs/config": "1.0.2",

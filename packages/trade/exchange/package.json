@@ -38,7 +38,7 @@
     },
     "dependencies": {
         "@energyweb/exchange-core": "3.2.3",
-        "@energyweb/exchange-token-account": "0.3.1",
+        "@energyweb/exchange-token-account": "1.0.0",
         "@energyweb/issuer": "5.0.0",
         "@energyweb/origin-backend-core": "8.1.0",
         "@energyweb/origin-backend-utils": "1.7.0",

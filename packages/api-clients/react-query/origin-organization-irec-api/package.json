@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-organization-irec-api-react-query-client",
-    "version": "0.2.1",
+    "version": "1.0.0",
     "description": "React Query Client library interacting with the Origin Organization IREC API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/origin-organization-irec-api#readme",
     "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",

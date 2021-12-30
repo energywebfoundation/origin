@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/exchange-react-query-client",
-    "version": "0.2.1",
+    "version": "1.0.0",
     "description": "React Query Client library for interacting with the Exchange",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/exchange#readme",
     "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",

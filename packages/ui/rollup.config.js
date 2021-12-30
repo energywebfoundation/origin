@@ -16,6 +16,8 @@ module.exports = (config) => {
         i18next: 'i18n',
         clsx: 'clsx',
         'dayjs/plugin/timezone': 'dayjsPluginTimezone',
+        'dayjs/plugin/utc': 'dayjsPluginUtc',
+        'query-string': 'queryString',
         'react-router': 'reactRouter',
         'react-router-dom': 'reactRouterDom',
         'react-query': 'reactQuery',
