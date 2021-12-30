@@ -60,6 +60,7 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
+        config-file: packages/ui/apps/origin-ui-e2e/cypress.json
         runTests: false
 
     - name: Cypress run
