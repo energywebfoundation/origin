@@ -111,7 +111,7 @@ The invitation module provides methods to manage fetch, create and update Organi
 
 The user module provides methods to manage fetch, create and update users. Users are persisted in the User Repository. 
 
-## Origin Backend-Core Package
+## Origin Backend-Core Package - @energyweb/origin-backend-core
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-core)
 
 The Origin Backend Core package provides the interfaces, types and enums for Origin Backend.
