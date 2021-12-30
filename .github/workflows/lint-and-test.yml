@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - '*'
-env:
-  WEB3: ${{ secrets.WEB3 }}
 
 jobs:
   cancel-previous:
@@ -49,14 +47,7 @@ jobs:
     - name: Check dependency versions
       run: node common/scripts/install-run-rush.js check
 
-    - name: Install application
-      run: |
-        node common/scripts/install-run-rush.js update
-
-    - name: Build application
-      run: node common/scripts/install-run-rush.js rebuild --verbose
-
     - name: Run all test:ui:e2e
-      run: |
-        cp .env.example .env
-        node common/scripts/install-run-rush.js test:ui:e2e
+      env:
+        WEB3: ${{ secrets.WEB3 }}
+      run: node common/scripts/install-run-rush.js test:ui:e2e
