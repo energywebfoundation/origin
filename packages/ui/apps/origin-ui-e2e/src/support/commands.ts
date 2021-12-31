@@ -1,4 +1,5 @@
 import 'cypress-file-upload';
+import 'cypress-wait-until';
 
 Cypress.Commands.add('dataCy', (value: string) => {
   cy.get(`[data-cy="${value}"]`);
@@ -57,9 +58,15 @@ Cypress.Commands.add('closeAllNotifications', () => {
     .click({
       multiple: true,
       force: true,
-      waitForAnimations: true,
     })
-    .should('not.exist');
+    .waitUntil(
+      () =>
+        cy
+          .get('.Toastify__toast')
+          .should('not.exist')
+          .then((elem) => elem === null),
+      { timeout: 30000 }
+    );
 });
 
 Cypress.Commands.add('notification', (text: string) => {
