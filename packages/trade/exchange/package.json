@@ -80,7 +80,7 @@
         "@types/superagent": "4.1.14",
         "@types/supertest": "2.0.11",
         "chai": "4.3.4",
-        "eslint-plugin-jest": "25.3.3",
+        "eslint-plugin-jest": "25.3.4",
         "ganache-cli": "6.12.2",
         "jest": "27.4.5",
         "mocha": "9.1.3",
