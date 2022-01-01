@@ -81,7 +81,7 @@
     "dayjs": "1.10.7",
     "emotion-theming": "11.0.0",
     "history": "5.2.0",
-    "i18next": "21.5.4",
+    "i18next": "21.6.4",
     "lodash": "4.17.21",
     "os-browserify": "0.3.0",
     "query-string": "7.0.1",
