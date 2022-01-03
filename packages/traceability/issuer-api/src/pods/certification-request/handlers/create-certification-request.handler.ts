@@ -69,6 +69,8 @@ export class CreateCertificationRequestHandler
             this.logger.error(
                 `Certification request creation has failed with the error: ${e.message}`
             );
+
+            throw e;
         }
     }
 }
