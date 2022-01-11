@@ -1,13 +1,20 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { IconSize } from './IconPopover';
+// import { Default } from './IconPopover.stories';
 
-import { IconPopover, IconSize } from './IconPopover';
+import * as stories from './IconPopover.stories';
+
+import { composeStories } from '@storybook/testing-react';
+
+const { Default } = composeStories(stories);
+
 import { Info } from '@mui/icons-material';
 
 describe('IconPopover', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
-      <IconPopover
+      <Default
         iconSize={IconSize.Large}
         icon={Info}
         popoverText={['This is popover text', 'Which is multiline']}
@@ -18,7 +25,7 @@ describe('IconPopover', () => {
 
   it('should match snapshot', () => {
     const { baseElement } = render(
-      <IconPopover
+      <Default
         iconSize={IconSize.Large}
         icon={Info}
         popoverText={['This is popover text', 'Which is multiline']}

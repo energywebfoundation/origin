@@ -1,6 +1,6 @@
 /* deepscan-disable */
 import React from 'react';
-import { Meta, Story } from '@storybook/react';
+import { Meta, Story, ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   Title,
   Description,
@@ -22,6 +22,7 @@ export default {
   component: DisabledFormView,
   argTypes: {
     data: {
+      type: { name: 'string', required: true },
       description: 'Required prop for building component content',
       table: {
         type: {
@@ -61,13 +62,14 @@ export default {
       ),
     },
   },
-} as Meta;
+} as Meta<DisabledFormViewProps>;
 
 const Template: Story<DisabledFormViewProps> = (args) => (
   <DisabledFormView {...args} />
 );
 
 export const Default = Template.bind({});
+
 Default.args = {
   data: [
     { label: 'Title', value: 'Mr' },

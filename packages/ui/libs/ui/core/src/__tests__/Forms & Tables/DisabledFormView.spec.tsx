@@ -7,15 +7,11 @@ import {
   WithHeading,
   WithInputProps,
   WithHeadingProps,
-} from './DisabledFormView.stories';
-
-import { DisabledFormViewProps } from './DisabledFormView';
+} from '../../components/form/DisabledFormView/DisabledFormView.stories';
 
 describe('DisabledFormView', () => {
   it('should render default DisabledFormView', () => {
-    const { baseElement } = render(
-      <Default {...(Default.args as DisabledFormViewProps)} />
-    );
+    const { baseElement } = render(<Default {...Default.args} />);
     expect(baseElement).toBeInTheDocument();
 
     expect(
@@ -33,9 +29,7 @@ describe('DisabledFormView', () => {
   });
 
   it('should render DisabledFormView with heading', () => {
-    const { baseElement } = render(
-      <WithHeading {...(WithHeading.args as DisabledFormViewProps)} />
-    );
+    const { baseElement } = render(<WithHeading {...WithHeading.args} />);
 
     expect(baseElement.querySelector('h6')).toBeInTheDocument();
     expect(baseElement.querySelector('h6')).toHaveTextContent(
@@ -44,9 +38,7 @@ describe('DisabledFormView', () => {
   });
 
   it('should render DisabledFormView with inputProps', () => {
-    const { baseElement } = render(
-      <WithInputProps {...(WithInputProps.args as DisabledFormViewProps)} />
-    );
+    const { baseElement } = render(<WithInputProps {...WithInputProps.args} />);
 
     expect(baseElement.querySelector('input')).toHaveAttribute('disabled');
     expect(
@@ -56,7 +48,7 @@ describe('DisabledFormView', () => {
 
   it('should render DisabledFormView with headingProps', () => {
     const { baseElement } = render(
-      <WithHeadingProps {...(WithHeadingProps.args as DisabledFormViewProps)} />
+      <WithHeadingProps {...WithHeadingProps.args} />
     );
 
     expect(baseElement.querySelector('input')).toHaveAttribute('disabled');
