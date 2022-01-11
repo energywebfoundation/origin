@@ -9,18 +9,12 @@ import { ThemeProvider as EmotionThemeProvider } from '@emotion/react';
 const originTheme = makeOriginUiTheme({ themeMode: ThemeModeEnum.Dark });
 
 export const OriginThemeProvider = ({ children }) => {
-  return <ThemeProvider theme={originTheme}>{children}</ThemeProvider>;
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={originTheme}>{children}</ThemeProvider>
+    </StyledEngineProvider>
+  );
 };
-
-addDecorator((story) => (
-  <EmotionThemeProvider theme={originTheme}>
-    <OriginThemeProvider>{story()}</OriginThemeProvider>
-  </EmotionThemeProvider>
-));
-
-addDecorator((story) => (
-  <MemoryRouter initialEntries={['/']}>{story()}</MemoryRouter>
-));
 
 export const decorators = [
   (Story) => (
@@ -28,6 +22,7 @@ export const decorators = [
       <OriginThemeProvider>{Story()}</OriginThemeProvider>
     </EmotionThemeProvider>
   ),
+  (Story) => <MemoryRouter initialEntries={['/']}>{Story()}</MemoryRouter>,
 ];
 
 export const parameters = {

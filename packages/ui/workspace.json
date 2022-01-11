@@ -734,7 +734,6 @@
           "outputs": ["coverage/libs/ui/core"],
           "options": {
             "jestConfig": "libs/ui/core/jest.config.js",
-            "setupFile": "libs/ui/core/setupTests.js",
             "passWithNoTests": true
           }
         },
