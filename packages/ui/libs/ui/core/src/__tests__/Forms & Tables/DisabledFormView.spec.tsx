@@ -8,10 +8,13 @@ import {
   WithInputProps,
   WithHeadingProps,
 } from '../../components/form/DisabledFormView/DisabledFormView.stories';
+import { DisabledFormViewProps } from '../../components/form/DisabledFormView/DisabledFormView';
 
 describe('DisabledFormView', () => {
   it('should render default DisabledFormView', () => {
-    const { baseElement } = render(<Default {...Default.args} />);
+    const { baseElement } = render(
+      <Default {...(Default.args as DisabledFormViewProps)} />
+    );
     expect(baseElement).toBeInTheDocument();
 
     expect(
@@ -29,7 +32,9 @@ describe('DisabledFormView', () => {
   });
 
   it('should render DisabledFormView with heading', () => {
-    const { baseElement } = render(<WithHeading {...WithHeading.args} />);
+    const { baseElement } = render(
+      <WithHeading {...(WithHeading.args as DisabledFormViewProps)} />
+    );
 
     expect(baseElement.querySelector('h6')).toBeInTheDocument();
     expect(baseElement.querySelector('h6')).toHaveTextContent(
@@ -38,17 +43,19 @@ describe('DisabledFormView', () => {
   });
 
   it('should render DisabledFormView with inputProps', () => {
-    const { baseElement } = render(<WithInputProps {...WithInputProps.args} />);
+    const { baseElement } = render(
+      <WithInputProps {...(WithInputProps.args as DisabledFormViewProps)} />
+    );
 
     expect(baseElement.querySelector('input')).toHaveAttribute('disabled');
-    expect(
-      baseElement.querySelectorAll('.MuiOutlinedInput-input').length
-    ).toEqual(WithInputProps.args.data.length);
+    expect(baseElement.querySelectorAll('.MuiInput-input').length).toEqual(
+      WithInputProps.args.data.length
+    );
   });
 
   it('should render DisabledFormView with headingProps', () => {
     const { baseElement } = render(
-      <WithHeadingProps {...WithHeadingProps.args} />
+      <WithHeadingProps {...(WithHeadingProps.args as DisabledFormViewProps)} />
     );
 
     expect(baseElement.querySelector('input')).toHaveAttribute('disabled');

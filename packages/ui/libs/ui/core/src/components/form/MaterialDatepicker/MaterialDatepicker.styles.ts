@@ -83,10 +83,10 @@ export const useStyles = makeStyles((theme) => ({
     opacity: 0,
   },
   input: {
-    [theme.breakpoints.up('md')]: {
-      '&:hover button': {
-        opacity: 1,
-      },
-    },
+    // [theme.breakpoints.up('md')]: {
+    //   '&:hover button': {
+    //     opacity: 1,
+    //   },
+    // },
   },
 }));
