@@ -43,7 +43,7 @@
         "@energyweb/issuer": "6.0.0",
         "@openzeppelin/cli": "2.8.2",
         "@openzeppelin/contracts": "4.4.1",
-        "@openzeppelin/contracts-upgradeable": "4.4.1",
+        "@openzeppelin/contracts-upgradeable": "4.4.2",
         "@openzeppelin/upgrades": "2.8.0",
         "@typechain/ethers-v5": "7.0.1",
         "@types/mocha": "9.0.0",
