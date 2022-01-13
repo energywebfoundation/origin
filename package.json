@@ -45,5 +45,9 @@
     ],
     "engines": {
         "node": "14"
+    },
+    "dependencies": {
+        "python": "0.0.4",
+        "yarn": "^1.22.17"
     }
 }
