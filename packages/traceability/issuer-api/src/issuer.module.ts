@@ -33,7 +33,6 @@ export const providers = [IntUnitsOfEnergy];
 export class IssuerModule {
     static register(originalOptions: Partial<IssuerModuleOptions> = {}): DynamicModule {
         const defaultOptions: IssuerModuleOptions = {
-            enableTransactionLogging: false,
             enableCertificationRequest: true
         };
 

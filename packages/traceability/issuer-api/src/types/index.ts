@@ -12,6 +12,5 @@ export class CertificateEvent {
 }
 
 export interface IssuerModuleOptions {
-    enableTransactionLogging: boolean;
     enableCertificationRequest: boolean;
 }

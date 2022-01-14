@@ -133,7 +133,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
     const privateIssuer = await deployPrivateIssuer(issuer.address);
-    const issuerModule = IssuerModule.register({ enableTransactionLogging: true });
+    const issuerModule = IssuerModule.register();
 
     await issuer.setPrivateIssuer(privateIssuer.address);
 
