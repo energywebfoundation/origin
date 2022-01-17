@@ -3,15 +3,15 @@ import { composeStories } from '@storybook/testing-react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import * as stories from '../../components/form/FormDatePicker/FormDatePicker.stories';
-import { FormDatePickerProps } from '../../components/form/FormDatePicker/FormDatePicker';
+import * as stories from '../../components/form/MaterialDatepicker/MaterialDatepicker.stories';
+import { MaterialDatepickerProps } from '../../components/form/MaterialDatepicker/MaterialDatepicker';
 
 const { Default } = composeStories(stories);
 
-describe('FormDatePicker', () => {
-  it('should render default FormDatePicker', () => {
+describe('MaterialDatepicker', () => {
+  it('should render default MaterialDatepicker', () => {
     const { baseElement } = render(
-      <Default {...(Default.args as FormDatePickerProps<any>)} />
+      <Default {...(Default.args as MaterialDatepickerProps<any>)} />
     );
     expect(baseElement).toBeInTheDocument();
     expect(baseElement.querySelector('input')).toBeInTheDocument();
@@ -19,7 +19,7 @@ describe('FormDatePicker', () => {
 
   it('dialog should work', () => {
     const { baseElement } = render(
-      <Default {...(Default.args as FormDatePickerProps<any>)} />
+      <Default {...(Default.args as MaterialDatepickerProps<any>)} />
     );
 
     fireEvent.click(baseElement.querySelector('input'));
@@ -28,7 +28,7 @@ describe('FormDatePicker', () => {
 
   it('should select current date', async () => {
     const { baseElement } = render(
-      <Default {...(Default.args as FormDatePickerProps<any>)} />
+      <Default {...(Default.args as MaterialDatepickerProps<any>)} />
     );
 
     fireEvent.click(baseElement.querySelector('input'));

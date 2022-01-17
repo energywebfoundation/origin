@@ -68,7 +68,6 @@ export default {
     errorExists: {
       description:
         'Prop which could be received by checking form context for errors existing in this particular field. Specifiying it as `true` marks input as errored',
-      defaultValue: false,
       table: {
         type: { summary: 'boolean' },
         defaultValue: { summary: false },
@@ -77,14 +76,12 @@ export default {
     errorText: {
       description:
         'Prop which could be received by checking form context for error message in this particular field. This property is used as `helperText` below the Input.',
-      defaultValue: '',
       table: {
         type: { summary: 'string' },
         defaultValue: { summary: '' },
       },
     },
     variant: {
-      defaultValue: 'filled',
       table: {
         defaultValue: { summary: 'filled' },
       },
@@ -92,7 +89,11 @@ export default {
   },
 } as Meta;
 
-const Template: Story<FormSelectProps<{ test: number }>> = (args) => {
+export type TestFormValues = {
+  test: string;
+};
+
+const Template: Story<FormSelectProps<TestFormValues>> = (args) => {
   const { control } = useForm({ defaultValues: { test: [] } });
   return <FormSelect control={control} {...args} />;
 };

@@ -121,7 +121,9 @@ type PersonalForm = {
   lastName: string;
   phoneNumber: string;
 };
-type MultiStepFormValuesType = RegisterForm & LocationForm & PersonalForm;
+export type MultiStepFormValuesType = RegisterForm &
+  LocationForm &
+  PersonalForm;
 
 const Template: Story<MultiStepFormProps<MultiStepFormValuesType>> = (args) => (
   <MultiStepForm {...args} />

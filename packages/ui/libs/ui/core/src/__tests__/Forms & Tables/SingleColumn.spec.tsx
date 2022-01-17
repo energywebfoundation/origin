@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { Default } from './SingleColumnForm.stories';
-import { SingleColumnFormProps } from './SingleColumnForm';
+import { Default } from '../../components/form/SingleColumnForm/SingleColumnForm.stories';
+import { SingleColumnFormProps } from '../../components/form/SingleColumnForm/SingleColumnForm';
 
 describe('DoubleColumnForm', () => {
   it('should render default DoubleColumnForm', () => {
