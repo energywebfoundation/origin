@@ -1,5 +1,4 @@
 import React from 'react';
-import { addDecorator } from '@storybook/react';
 import { MemoryRouter } from 'react-router';
 import { makeOriginUiTheme, ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { ThemeProvider } from '@mui/material/styles';
