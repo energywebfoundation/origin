@@ -1,30 +1,35 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/testing-react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import {
-  Default,
-  WithTwoParagraphs,
-  WithTwoDifferentButtons,
-  WithIcon,
-} from './GenericModal.stories';
+import * as stories from './GenericModal.stories';
+import { GenericModalProps } from './GenericModal';
+
+const { Default, WithTwoParagraphs, WithTwoButtons, WithIcon } =
+  composeStories(stories);
 
 describe('GenericModal', () => {
   it('should render default GenericModal', () => {
-    const { baseElement } = render(<Default {...Default.args} />);
+    const { baseElement, getByRole } = render(
+      <Default {...(Default.args as GenericModalProps)} />
+    );
+
+    fireEvent.click(getByRole('button'));
+
     expect(baseElement).toBeInTheDocument();
-    expect(
-      baseElement.querySelector('.MuiDialog-container')
-    ).toBeInTheDocument();
+    expect(baseElement.querySelector('.MuiDialog-root')).toBeInTheDocument();
+
     expect(screen.getByText(Default.args.title)).toBeInTheDocument();
-    expect(screen.getByText(Default.args.text)).toBeInTheDocument();
     expect(baseElement.querySelector('button')).toBeInTheDocument();
   });
 
   it('should render GenericModal with 2 paragraphs', () => {
-    const { baseElement } = render(
-      <WithTwoParagraphs {...WithTwoParagraphs.args} />
+    const { baseElement, getByRole } = render(
+      <WithTwoParagraphs {...(WithTwoParagraphs.args as GenericModalProps)} />
     );
+    fireEvent.click(getByRole('button'));
+
     expect(baseElement).toBeInTheDocument();
     expect(
       screen.getByText(WithTwoParagraphs.args.text[0])
@@ -35,18 +40,19 @@ describe('GenericModal', () => {
   });
 
   it('should render GenericModal with 2 different buttons', () => {
-    const { baseElement } = render(
-      <WithTwoDifferentButtons {...WithTwoDifferentButtons.args} />
+    const { baseElement, getByRole, getByText } = render(
+      <WithTwoButtons {...(WithTwoButtons.args as GenericModalProps)} />
     );
 
+    fireEvent.click(getByRole('button'));
+
     expect(baseElement).toBeInTheDocument();
-    expect(baseElement.querySelectorAll('button').length).toEqual(2);
 
     expect(
-      screen.getByText(WithTwoDifferentButtons.args.buttons[0].label)
+      screen.getByText(WithTwoButtons.args.buttons[0].label)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(WithTwoDifferentButtons.args.buttons[1].label)
+      screen.getByText(WithTwoButtons.args.buttons[1].label)
     ).toBeInTheDocument();
 
     expect(
@@ -58,7 +64,12 @@ describe('GenericModal', () => {
   });
 
   it('should render GenericModal with icon', () => {
-    const { baseElement } = render(<WithIcon {...WithIcon.args} />);
+    const { baseElement, getByRole } = render(
+      <WithIcon {...(WithIcon.args as GenericModalProps)} />
+    );
+
+    fireEvent.click(getByRole('button'));
+
     expect(baseElement).toBeInTheDocument();
 
     expect(baseElement.querySelector('svg')).toBeInTheDocument();

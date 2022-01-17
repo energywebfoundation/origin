@@ -1,8 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-
-import { IconPopover, IconSize } from './IconPopover';
+import { composeStories } from '@storybook/testing-react';
+import { IconSize } from './IconPopover';
 import { Info } from '@mui/icons-material';
+
+import * as stories from './IconPopover.stories';
+const { Default: IconPopover } = composeStories(stories);
 
 describe('IconPopover', () => {
   it('should render successfully', () => {

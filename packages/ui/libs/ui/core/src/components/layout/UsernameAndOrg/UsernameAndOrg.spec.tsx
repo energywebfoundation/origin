@@ -3,17 +3,18 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import { Default } from './UsernameAndOrg.stories';
+import { WithOrganisationName } from './UsernameAndOrg.stories';
+import { UsernameAndOrgProps } from './UsernameAndOrg';
 
 describe('UsernameAndOrg', () => {
   it('render username and orgName', () => {
-    const { container } = render(<Default {...Default.args} />);
+    const { getByText } = render(
+      <WithOrganisationName
+        {...(WithOrganisationName.args as UsernameAndOrgProps)}
+      />
+    );
 
-    expect(container.querySelector('h6')).toHaveTextContent(
-      Default.args.username
-    );
-    expect(container.querySelector('p')).toHaveTextContent(
-      Default.args.orgName
-    );
+    expect(getByText(WithOrganisationName.args.username)).toBeInTheDocument();
+    expect(getByText(WithOrganisationName.args.orgName)).toBeInTheDocument();
   });
 });
