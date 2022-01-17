@@ -28,7 +28,7 @@
     "deploy:container:heroku:canary": "make push-heroku-canary",
     "deploy:container:heroku:stable": "make push-heroku-stable",
     "storybook": "nx run ui-core:storybook --port=6006",
-    "test": "nx test",
+    "test": "nx test ui-core",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "./dev-env.sh && nx e2e origin-ui-e2e --watch",
     "affected:apps": "nx affected:apps",
