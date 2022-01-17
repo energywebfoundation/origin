@@ -106,7 +106,7 @@ export default {
 } as Meta;
 
 const Template: Story<SelectRegularProps> = (args) => {
-  const [value, setValue] = useState<string>(null);
+  const [value, setValue] = useState<string>('');
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
