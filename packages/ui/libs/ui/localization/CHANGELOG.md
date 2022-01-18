@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-localization@0.3.0...@energyweb/origin-ui-localization@0.3.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency i18next to v21.6.4 ([e8eaf2d](https://github.com/energywebfoundation/origin/commit/e8eaf2d931ddc95529e00705039f9988c6805472))
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-localization@0.1.0...@energyweb/origin-ui-localization@0.3.0) (2021-12-30)
 
 

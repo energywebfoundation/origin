@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "1.4.0",
+    "version": "1.4.1",
     "main": "dist/js/main.js",
     "bin": {
         "origin-migrations-irec": "./bin/migrations-irec"
@@ -32,12 +32,12 @@
     },
     "types": "dist/js/index.d.ts",
     "dependencies": {
-        "@energyweb/exchange": "1.13.0",
-        "@energyweb/issuer": "6.0.0",
-        "@energyweb/origin-backend-core": "8.2.0",
-        "@energyweb/origin-backend-irec-app": "1.5.0",
-        "@energyweb/origin-backend-utils": "1.8.0",
-        "@energyweb/utils-general": "11.2.0",
+        "@energyweb/exchange": "1.13.1",
+        "@energyweb/issuer": "6.0.1",
+        "@energyweb/origin-backend-core": "8.2.1",
+        "@energyweb/origin-backend-irec-app": "1.5.1",
+        "@energyweb/origin-backend-utils": "1.8.1",
+        "@energyweb/utils-general": "11.2.1",
         "@nestjs/core": "8.1.1",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",

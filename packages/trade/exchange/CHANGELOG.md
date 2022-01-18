@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.13.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.13.0...@energyweb/exchange@1.13.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* sync exchange deposit addresses in migration ([6e80134](https://github.com/energywebfoundation/origin/commit/6e80134914772783764dcd162dc3ecacacf790c6))
+
+
+
+
+
 # [1.13.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange@1.11.0...@energyweb/exchange@1.13.0) (2021-12-30)
 
 
