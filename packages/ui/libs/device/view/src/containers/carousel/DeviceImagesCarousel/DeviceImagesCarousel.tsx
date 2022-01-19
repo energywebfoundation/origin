@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
+import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { BlockTintedBottom, ImagesCarousel } from '@energyweb/origin-ui-core';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-device-data';
 import { CarouselControls, CarouselModeEnum } from '../CarouselControls';
-import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
 import { useDeviceImagesCarouselEffects } from './DeviceImagesCarousel.effects';
-import { BlockTintedBottom, ImagesCarousel } from '@energyweb/origin-ui-core';
 
 export interface DeviceImagesCarouselProps {
   deviceName: ComposedPublicDevice['name'];

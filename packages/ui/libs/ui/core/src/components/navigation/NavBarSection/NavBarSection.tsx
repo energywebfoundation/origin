@@ -9,6 +9,7 @@ export type TModuleMenuItem = {
   url: string;
   label: string;
   show: boolean;
+  dataCy?: string;
 };
 
 export interface NavBarSectionProps {
@@ -20,12 +21,14 @@ export interface NavBarSectionProps {
   closeMobileNav?: () => void;
   menuButtonClass?: string;
   selectedMenuItemClass?: string;
+  dataCy?: string;
 }
 
 export const NavBarSection: FC<NavBarSectionProps> = ({
   sectionTitle,
   show,
   rootUrl,
+  dataCy,
   isOpen,
   menuList,
   closeMobileNav,
@@ -38,11 +41,12 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
 
   return (
     <div>
-      {show && (
+      {show ? (
         <div className={classes.wrapper}>
           <NavSectionTitle
             url={sectionTitleUrl}
             title={sectionTitle}
+            dataCy={dataCy}
             buttonClass={menuButtonClass}
           />
           <NavSubMenu
@@ -54,7 +58,7 @@ export const NavBarSection: FC<NavBarSectionProps> = ({
             menuButtonClass={menuButtonClass}
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

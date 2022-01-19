@@ -24,6 +24,7 @@ export const useCertificateActionContentEffects = <Id>(
     items: CertificateActionContentProps<Id>['selectedItems']
   ) => {
     if (ids.length > energyAmounts.length) {
+      let newItems: EnergyAmounts<Id>[] = [];
       ids.forEach((id) => {
         const alreadyIncluded = energyAmounts.find(
           (amount) => amount.id === id
@@ -36,9 +37,10 @@ export const useCertificateActionContentEffects = <Id>(
               items.find((item) => item.id === id).energy.replace(/,/g, '')
             ).toString(),
           };
-          setEnergyAmounts([...energyAmounts, preparedNewItem]);
+          newItems.push(preparedNewItem);
         }
       });
+      setEnergyAmounts([...energyAmounts, ...newItems]);
     }
     if (ids.length < energyAmounts.length) {
       energyAmounts.forEach((amount) => {

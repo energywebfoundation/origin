@@ -1,62 +1,59 @@
-# EnergyWeb Issuer
+<p align="center">
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+</p>
 
-## Registry
+# Issuer
 
-`Registry.sol` is ERC 1888 compatible registry for certificates issued by various issuers over various topics.
+## Description
 
-## Issuer
+The Issuer package contains smart contracts and interfaces that handle the management of Energy Attribute Certificates on the blockchain.
 
-`Issuer.sol` is an implementation of an I-REC compliant issuer which has the option to hide the volume for newly created certificates.
+It is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Traceability SDK.
 
-### Recipes
+## Documentation
 
-1) Private issuance and private trading
-  - issue using `requestIssuance()` with the `isPrivate` flag set to `true`
-  - transfer using `approvePrivateTransfer()`
+-   [Issuer](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/packages/issuer/)
+-   [Traceability SDK](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/traceability/)
 
-2) Private issuance and public trading
-  - issue using `requestIssuance()` with the `isPrivate` flag set to `true`
-  - migrate to public using `migrateToPublic()`
-  - transfer / trade public volumes
+## Contributing Guidelines
 
-### Technical documentation
+See [contributing.md](../../../contributing.md)
 
-1) Private requesting and issuance
+# Energy Web Decentralized Operating System
 
-![Private issuance request](docs/1_request_private_issuance.png)
-![Private issuance sequence](docs/2_private_issuance_sequence.png)
+EW-Origin is a component of the Energy Web Decentralized Operating System (EW-DOS).
 
----
-2) Migrating certificate to public certificate
+The purpose of EW-DOS is to develop and deploy an open and decentralized digital operating system for the energy sector in support of a low-carbon, customer-centric energy future.
 
-![Migrations Private->Public certificate](docs/3_migration_privpub.png)
-![Migrations Private->Public certificate sequence](docs/4_sequence_migration_privpub.png)
+We develop blockchain technology, full-stack applications and middleware packages that facilitate participation of Distributed Energy Resources on the grid and create open market places for transparent and efficient renewable energy trading.
 
----
-3) Claiming
+-   To learn about more about the EW-DOS tech stack, see our [documentation](https://app.gitbook.com/@energy-web-foundation/s/energy-web/)
 
-Claiming is supported only by public issued certificates. Private certificates have to be migrated to public before being claimed.
+For a deep-dive into the motivation and methodology behind our technical solutions, read our White Papers:
 
-![Claiming](docs/5_claiming.png)
+-   [Energy Web White Paper on Vision and Purpose](https://www.energyweb.org/reports/EWDOS-Vision-Purpose/)
+-   [Energy Web White Paper on Technology Detail](https://www.energyweb.org/wp-content/uploads/2020/06/EnergyWeb-EWDOS-PART2-TechnologyDetail-202006-vFinal.pdf)
 
----
-4) Private transfers
+## Connect with Energy Web
 
-This is a case where volume can be transferred privately inside the private registry. 
+-   [Twitter](https://twitter.com/energywebx)
+-   [Discord](https://discord.com/channels/706103009205288990/843970822254362664)
+-   [Telegram](https://t.me/energyweb)
 
-As an example, this can be used to transfer given volume to exchange or other account.
+## License
 
-![Private Transfer](docs/6_private_transfer.png)
-![Private Transfer sequence](docs/7_private_transfer_sequence.png)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
-Notes:
+## Notes:
+
 `prevCommitment` is required to prevent state corruption, transition to new commitment based on other state that's currently on-chain will result in error.
 
 Implementation:
-- Certificate owner A has 1000kWh of energy on certificate id = 1 (C1)
-- A requesting private transfer of 500kWh from C1 to B
-  - A calls API with (id, value, newOwner) in our case (1, 500000, B)
-  - if API approves the transfer (enough balance, maybe other API checks)
-    - API returns (updatedBalanceOfA, salt) in our case (500000, 'randomsalt')
-    - A creates onChain request where hash = hash(address, updatedBalanceOfA, salt) in our case hash(A, 5000000, salt)
-    - Issuer - approves by sending new commitment that is verified against the request.hash 
+
+-   Certificate owner A has 1000kWh of energy on certificate id = 1 (C1)
+-   A requesting private transfer of 500kWh from C1 to B
+    -   A calls API with (id, value, newOwner) in our case (1, 500000, B)
+    -   if API approves the transfer (enough balance, maybe other API checks)
+        -   API returns (updatedBalanceOfA, salt) in our case (500000, 'randomsalt')
+        -   A creates onChain request where hash = hash(address, updatedBalanceOfA, salt) in our case hash(A, 5000000, salt)
+        -   Issuer - approves by sending new commitment that is verified against the request.hash

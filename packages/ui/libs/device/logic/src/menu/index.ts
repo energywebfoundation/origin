@@ -34,36 +34,43 @@ export const getDeviceMenu: TGetDeviceMenu = ({
       url: 'all',
       label: t('navigation.device.all'),
       show: showAllDevices ?? true,
+      dataCy: 'allDevices',
     },
     {
       url: 'map',
       label: t('navigation.device.map'),
       show: showMapView ?? true,
+      dataCy: 'devicesMap',
     },
     {
       url: 'my',
       label: t('navigation.device.my'),
       show: showMyDevices,
+      dataCy: 'myDevices',
     },
     {
       url: 'pending',
       label: t('navigation.device.pending'),
       show: showPendingDevices,
+      dataCy: 'pendingDevices',
     },
     {
       url: 'register',
       label: t('navigation.device.register'),
       show: showRegisterDevice,
+      dataCy: 'registerDevice',
     },
     {
       url: 'import',
       label: t('navigation.device.import'),
       show: showDeviceImport,
+      dataCy: 'importDevice',
     },
   ];
 
   return {
     isOpen,
+    dataCy: 'deviceMenu',
     sectionTitle: t('navigation.device.sectionTitle'),
     show: showSection,
     rootUrl: '/device',

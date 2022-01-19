@@ -1,4 +1,7 @@
-import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
+import {
+  InvitationDTO,
+  UserDTO,
+} from '@energyweb/origin-backend-react-query-client';
 import { useUserLogInFormConfig } from '@energyweb/origin-ui-user-logic';
 import { useUserLogin } from '@energyweb/origin-ui-user-data';
 import { useNavigate } from 'react-router';
@@ -15,12 +18,13 @@ export const useLogInPageEffects = () => {
     });
   };
 
-  const openInvitationModal = (invitation: InvitationDTO) => {
+  const openInvitationModal = (invitation: InvitationDTO, user: UserDTO) => {
     dispatchModals({
       type: UserModalsActionsEnum.SHOW_PENDING_INVITATION,
       payload: {
         open: true,
         invitation,
+        user,
       },
     });
   };

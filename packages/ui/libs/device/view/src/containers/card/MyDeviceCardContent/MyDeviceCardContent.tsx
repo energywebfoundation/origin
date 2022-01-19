@@ -1,6 +1,6 @@
 import { IconText, IconTextProps } from '@energyweb/origin-ui-core';
 import { ComposedDevice } from '@energyweb/origin-ui-device-data';
-import { useTheme } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
 import { useStyles } from './MyDeviceCardContent.styles';
 
@@ -14,8 +14,8 @@ export const MyDeviceCardContent: FC<MyDeviceCardContentProps> = ({
   iconsProps,
 }) => {
   const classes = useStyles();
-  // to ignore build errors
-  const theme: any = useTheme();
+  // to skip ts-errors while doing roll-up build of package
+  const mdScreenUp = useMediaQuery((theme: any) => theme.breakpoints.up('md'));
 
   return (
     <div className={classes.contentWrapper}>
@@ -28,9 +28,7 @@ export const MyDeviceCardContent: FC<MyDeviceCardContentProps> = ({
               height: 40,
             }}
             gridContainerProps={{
-              justifyContent: theme.breakpoints.up('md')
-                ? 'center'
-                : 'flex-start',
+              justifyContent: mdScreenUp ? 'center' : 'flex-start',
             }}
             {...field}
           />

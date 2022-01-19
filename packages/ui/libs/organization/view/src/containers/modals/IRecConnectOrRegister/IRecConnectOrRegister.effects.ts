@@ -1,7 +1,5 @@
-import {
-  getUserControllerMeQueryKey,
-  useUserControllerMe,
-} from '@energyweb/origin-backend-react-query-client';
+import { getUserControllerMeQueryKey } from '@energyweb/origin-backend-react-query-client';
+import { useUser } from '@energyweb/origin-ui-organization-data';
 import { useIRecConnectOrRegisterLogic } from '@energyweb/origin-ui-organization-logic';
 import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router';
@@ -15,7 +13,7 @@ export const useIRecConnectOrRegisterEffects = () => {
   const { iRecConnectOrRegister: open } = useOrgModalsStore();
   const dispatchModals = useOrgModalsDispatch();
   const navigate = useNavigate();
-  const { data: user } = useUserControllerMe();
+  const { user, userLoading } = useUser();
   const queryClient = useQueryClient();
   const userKey = getUserControllerMeQueryKey();
 
@@ -50,5 +48,5 @@ export const useIRecConnectOrRegisterEffects = () => {
     registerIRec
   );
 
-  return { open, title, text, buttons };
+  return { open, title, text, buttons, userLoading };
 };

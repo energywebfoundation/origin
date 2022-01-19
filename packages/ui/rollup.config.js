@@ -16,6 +16,8 @@ module.exports = (config) => {
         i18next: 'i18n',
         clsx: 'clsx',
         'dayjs/plugin/timezone': 'dayjsPluginTimezone',
+        'dayjs/plugin/utc': 'dayjsPluginUtc',
+        'query-string': 'queryString',
         'react-router': 'reactRouter',
         'react-router-dom': 'reactRouterDom',
         'react-query': 'reactQuery',
@@ -26,6 +28,12 @@ module.exports = (config) => {
         '@energyweb/utils-general': 'utilsGeneral',
         '@energyweb/origin-backend-core': 'originBackendCore',
         '@energyweb/issuer': 'issuer',
+        '@energyweb/issuer/dist/js/src/blockchain-facade/Certificate':
+          'issuerBlockchainFacadeCertificate',
+        '@energyweb/issuer/dist/js/src/ethers/factories/Issuer__factory':
+          'issuerEthersFactoriesIssuerFactory',
+        '@energyweb/issuer/dist/js/src/ethers/factories/RegistryExtended__factory':
+          'issuerEthersFactoriesRegistryExtendedFactory',
         '@energyweb/origin-backend-react-query-client':
           'originBackendReactQueryClient',
         '@energyweb/origin-device-registry-api-react-query-client':
@@ -76,6 +84,7 @@ module.exports = (config) => {
         '@ethersproject/bignumber': 'ethersprojectBigNumber',
         '@ethersproject/address': 'ethersprojectAddress',
         '@ethersproject/units': 'ethersprojectUnits',
+        'chart.js': 'chartJs',
       },
     },
     plugins: [...config.plugins, svgr()],

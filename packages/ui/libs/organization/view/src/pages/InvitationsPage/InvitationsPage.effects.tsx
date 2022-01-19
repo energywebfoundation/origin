@@ -1,5 +1,5 @@
 import { InvitationDTO } from '@energyweb/origin-backend-react-query-client';
-import { TableActionData } from '@energyweb/origin-ui-core';
+import { showNotification, TableActionData } from '@energyweb/origin-ui-core';
 import {
   useReceivedInvitationsActions,
   useReceivedInvitationsData,
@@ -10,15 +10,25 @@ import {
   useSentInvitationsTableLogic,
 } from '@energyweb/origin-ui-organization-logic';
 import { Check, Clear } from '@mui/icons-material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import {
   OrganizationModalsActionsEnum,
   useOrgModalsDispatch,
 } from '../../context';
 
-export const useInvitationsPageEffects = () => {
+export const useInvitationsPageEffects = (redirectToIndex: boolean) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (redirectToIndex) {
+      navigate('/login');
+      showNotification(t('general.notifications.pleaseLogInToView'));
+    }
+  }, [redirectToIndex]);
+
   const dispatchModals = useOrgModalsDispatch();
 
   const { isLoading: isSentLoading, invitations: sentInvitations } =
@@ -39,13 +49,13 @@ export const useInvitationsPageEffects = () => {
     useReceivedInvitationsActions(openRoleChangedModal);
   const receivedInvitationsActions: TableActionData<InvitationDTO['id']>[] = [
     {
-      icon: <Check />,
+      icon: <Check data-cy="checkIcon" />,
       name: t('organization.invitations.accept'),
       onClick: acceptInvite,
       loading: isMutating,
     },
     {
-      icon: <Clear />,
+      icon: <Clear data-cy="clearIcon" />,
       name: t('organization.invitations.decline'),
       onClick: rejectInvite,
       loading: isMutating,

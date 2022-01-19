@@ -22,6 +22,7 @@ export const useChangeMemberRoleLogic: TChangeMemberRoleLogic = ({
       name: 'member-change-role-select',
       label: 'New role',
       options: roleNamesMembersPage(t),
+      inputProps: { ['data-cy']: 'changeRoleSelect' },
     },
     buttons: [
       {

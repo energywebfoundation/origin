@@ -8,14 +8,16 @@ export interface NavSectionTitleProps {
   url: string;
   title: string;
   buttonClass?: string;
+  dataCy?: string;
 }
 
 export const NavSectionTitle: FC<NavSectionTitleProps> = memo(
-  ({ url, title, buttonClass }) => {
+  ({ url, title, buttonClass, dataCy }) => {
     const classes = useStyles();
     return (
       <ListItem className={classes.listItem} disableGutters>
         <Button
+          data-cy={dataCy}
           className={clsx(classes.button, buttonClass)}
           component={NavLink}
           to={url}

@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-irec-api-wrapper",
-    "version": "0.6.0",
+    "version": "1.1.1",
     "description": "A Typescript wrapper for I-REC Evident API",
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
@@ -37,15 +37,15 @@
         "@types/chai": "4.3.0",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.18.0",
+        "@types/node": "14.18.4",
         "@types/qs": "6.9.7",
         "chai": "4.3.4",
         "dotenv": "10.0.0",
         "mocha": "9.1.3",
         "ts-node": "9.1.1",
         "typedoc": "0.22.10",
-        "typedoc-plugin-markdown": "3.11.7",
-        "typescript": "4.5.3"
+        "typedoc-plugin-markdown": "3.11.8",
+        "typescript": "4.5.4"
     },
     "publishConfig": {
         "access": "public",

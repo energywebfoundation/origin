@@ -1,9 +1,12 @@
 import { BoxProps, Drawer, List, PaperProps } from '@mui/material';
-import React, { FC, ReactNode } from 'react';
-import { TMenuSection, NavBarSection } from '../NavBarSection';
-import { UsernameAndOrg, UsernameAndOrgProps } from '../../layout';
-import { IconLink } from '../../icons';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
+import { IconLink } from '../../icons';
+import {
+  UsernameAndOrg,
+  UsernameAndOrgProps,
+} from '../../layout/UsernameAndOrg';
+import { TMenuSection, NavBarSection } from '../NavBarSection';
 import { useStyles } from './DesktopNav.styles';
 
 export interface DesktopNavProps {
@@ -24,6 +27,7 @@ export const DesktopNav: FC<DesktopNavProps> = ({
   sidebarPaperProps,
 }) => {
   const classes = useStyles();
+  const wrapperProps = useMemo(() => ({ className: classes.userAndOrg }), []);
   return (
     <Drawer
       open
@@ -36,7 +40,7 @@ export const DesktopNav: FC<DesktopNavProps> = ({
         {icon ? icon : <EnergyWebLogo className={classes.logo} />}
       </IconLink>
       {isAuthenticated && (
-        <UsernameAndOrg className={classes.userAndOrg} {...userAndOrgData} />
+        <UsernameAndOrg wrapperProps={wrapperProps} {...userAndOrgData} />
       )}
       <List className={classes.list}>
         {menuSections.map((section) => (

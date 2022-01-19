@@ -51,6 +51,7 @@ export const SettingsPage: FC = () => {
               onChange={handleLanguageChange}
               name="language"
               variant="standard"
+              data-cy="languageSelect"
             >
               {languageOptions.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -63,6 +64,7 @@ export const SettingsPage: FC = () => {
             variant="contained"
             className={classes.button}
             onClick={handleUpdateLanguage}
+            data-cy="updateLanguage"
           >
             {buttonText}
           </Button>

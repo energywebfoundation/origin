@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "4.1.0",
+    "version": "6.0.1",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -47,7 +47,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/utils-general": "11.0.4",
+        "@energyweb/utils-general": "11.2.1",
         "@ethersproject/abi": "5.3.1",
         "@ethersproject/abstract-signer": "5.3.0",
         "@ethersproject/contracts": "5.3.0",
@@ -55,20 +55,20 @@
         "@ethersproject/wallet": "5.3.0",
         "dotenv": "10.0.0",
         "ethers": "5.3.1",
+        "ew-precise-proofs-js": "1.1.0",
         "ganache-cli": "6.12.2",
         "moment": "2.29.1",
-        "ew-precise-proofs-js": "1.1.0",
         "winston": "3.3.3"
     },
     "devDependencies": {
-        "@openzeppelin/contracts": "4.4.0",
-        "@openzeppelin/contracts-upgradeable": "4.4.0",
+        "@openzeppelin/contracts": "4.4.2",
+        "@openzeppelin/contracts-upgradeable": "4.4.1",
         "@openzeppelin/truffle-upgrades": "1.11.0",
         "@typechain/ethers-v5": "7.0.1",
         "@types/chai": "4.3.0",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.18.0",
+        "@types/node": "14.18.4",
         "@types/supertest": "2.0.11",
         "chai": "4.3.4",
         "ethlint": "1.2.5",
@@ -77,12 +77,12 @@
         "solc": "0.8.4",
         "solc-0.8": "npm:solc@0.8.4",
         "solidity-docgen": "0.5.16",
-        "truffle": "5.4.24",
+        "truffle": "5.4.26",
         "truffle-typings": "1.0.8",
         "ts-node": "9.1.1",
-        "typechain": "6.0.5",
-        "typescript": "4.5.3",
-        "winston-transport": "4.4.0"
+        "typechain": "6.1.0",
+        "typescript": "4.5.4",
+        "winston-transport": "4.4.1"
     },
     "publishConfig": {
         "access": "public",

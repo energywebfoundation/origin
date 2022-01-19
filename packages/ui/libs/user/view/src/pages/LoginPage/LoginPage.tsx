@@ -4,9 +4,9 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { EnergyWebLogo } from '@energyweb/origin-ui-assets';
 import { GenericForm } from '@energyweb/origin-ui-core';
 import { useTranslation } from 'react-i18next';
+import { LoginPageLayout } from '../../containers';
 import { useStyles } from './LoginPage.styles';
 import { useLogInPageEffects } from './LoginPage.effects';
-import { LoginPageLayout } from '../../containers';
 
 export interface LoginPageProps {
   bgImage?: string;
@@ -32,7 +32,7 @@ export const LoginPage: FC<LoginPageProps> = ({ bgImage, formIcon }) => {
         </GenericForm>
         <Box>
           <Typography>{t('user.login.dontHaveAcc')}</Typography>
-          <Button onClick={navigateToRegister}>
+          <Button data-cy="register-now-button" onClick={navigateToRegister}>
             {t('user.login.registerNow')}
           </Button>
         </Box>

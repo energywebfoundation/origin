@@ -2,6 +2,7 @@ import {
     isRole,
     ISuccessResponse,
     IUser,
+    KYCStatus,
     LoggedInUser,
     OrganizationStatus,
     ResponseSuccess,
@@ -160,10 +161,10 @@ export class OrganizationService {
         return organization.users;
     }
 
-    async update(id: number, status: OrganizationStatus): Promise<Organization> {
-        const organization = await this.findOne(id);
+    async update(organizationId: number, status: OrganizationStatus): Promise<Organization> {
+        const organization = await this.findOne(organizationId);
 
-        await this.repository.update(id, {
+        await this.repository.update(organizationId, {
             status
         });
 
@@ -171,7 +172,15 @@ export class OrganizationService {
             new OrganizationStatusChangedEvent(organization, status, organization.status)
         );
 
-        return this.findOne(id);
+        if (status === OrganizationStatus.Active) {
+            const users = await this.getMembers(organizationId);
+
+            for (const user of users) {
+                await this.userService.update(user.id, { ...user, kycStatus: KYCStatus.Passed });
+            }
+        }
+
+        return this.findOne(organizationId);
     }
 
     async removeMember(organizationId: number, memberId: number): Promise<void> {
@@ -244,14 +253,14 @@ export class OrganizationService {
     }
 
     async setBlockchainAddress(
-        id: number,
+        organizationId: number,
         signedMessage: BindBlockchainAccountDTO['signedMessage']
     ): Promise<ISuccessResponse> {
         if (!signedMessage) {
             throw new BadRequestException('Signed message is empty.');
         }
 
-        const organization = await this.findOne(id);
+        const organization = await this.findOne(organizationId);
 
         if (organization.blockchainAccountAddress) {
             throw new ConflictException('Organization already has a blockchain address');
@@ -262,7 +271,11 @@ export class OrganizationService {
             signedMessage
         );
 
-        return this.updateBlockchainAddress(id, utils.getAddress(address), signedMessage);
+        return this.updateBlockchainAddress(
+            organizationId,
+            utils.getAddress(address),
+            signedMessage
+        );
     }
 
     async setSelfOwnershipFlag(organizationId: number, selfOwnership: boolean) {

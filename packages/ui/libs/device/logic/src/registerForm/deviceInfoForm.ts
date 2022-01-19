@@ -54,6 +54,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       name: 'facilityName',
       label: t('device.register.facilityName'),
       required: true,
+      inputProps: { ['data-cy']: 'facilityName' },
     },
     {
       name: 'fuelType',
@@ -62,6 +63,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       autocomplete: true,
       required: true,
       options: prepareFuelTypesOptions(allFuelTypes),
+      inputProps: { ['data-cy']: 'fuelType' },
     },
     {
       name: 'deviceType',
@@ -71,18 +73,21 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       dependentOn: 'fuelType',
       dependentOptionsCallback: prepareDeviceTypesOptions(allDeviceTypes),
       required: true,
+      inputProps: { ['data-cy']: 'deviceType' },
     },
     {
       name: 'commissioningDate',
       label: t('device.register.commissioningDate'),
       datePicker: true,
       required: true,
+      inputProps: { ['data-cy']: 'commissioningDate' },
     },
     {
       name: 'registrationDate',
       label: t('device.register.registrationDate'),
       datePicker: true,
       required: true,
+      inputProps: { ['data-cy']: 'registrationDate' },
     },
     {
       name: 'gridOperator',
@@ -90,6 +95,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       select: true,
       options: gridOperatorOptions,
       required: true,
+      inputProps: { ['data-cy']: 'gridOperator' },
     },
     ...(singleAccountMode
       ? ([
@@ -98,6 +104,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
             label: t('device.register.irecTradeAccountCode'),
             select: true,
             options: prepareAccountCodeOptions(myAccounts),
+            inputProps: { ['data-cy']: 'irecTradeAccountCode' },
           },
         ] as GenericFormField<DeviceInfoFormValues>[])
       : []),
@@ -105,11 +112,13 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
       name: 'capacity',
       label: t('device.register.capacity'),
       required: true,
+      inputProps: { ['data-cy']: 'capacity' },
     },
     {
       name: 'smartMeterId',
       label: externalDeviceId,
       required: true,
+      inputProps: { ['data-cy']: 'smartMeterId' },
     },
     {
       name: 'description',
@@ -118,6 +127,7 @@ export const createDeviceInfoForm: TCreateDeviceInfoForm = (
         multiline: true,
         rows: 3,
       },
+      inputProps: { ['data-cy']: 'description' },
     },
   ],
   buttonText: t('general.buttons.nextStep'),

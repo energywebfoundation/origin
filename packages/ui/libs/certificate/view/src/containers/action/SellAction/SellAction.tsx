@@ -30,6 +30,7 @@ export const SellAction: TSellAction = ({ selectedIds, resetIds }) => {
 
   return (
     <CertificateActionContent
+      disableBulkActions
       title={title}
       buttonText={buttonText}
       selectedIds={selectedIds}

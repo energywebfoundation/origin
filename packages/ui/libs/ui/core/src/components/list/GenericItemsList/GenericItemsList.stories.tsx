@@ -50,6 +50,8 @@ export default {
       description: 'An array of container to be rendered as list items',
       type: {
         required: true,
+        name: 'other',
+        value: 'ListItemsContainerProps<ContainerId, ItemId>[]',
       },
       table: {
         type: {

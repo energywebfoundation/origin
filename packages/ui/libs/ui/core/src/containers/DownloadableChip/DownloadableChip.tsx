@@ -7,18 +7,20 @@ import {
 } from './DownloadableChip.effects';
 import { useStyles } from './DownloadableChip.styles';
 
-interface DownloadableChipProps {
+export interface DownloadableChipProps {
   label: string;
   downloadFunc: ApiDownloadFunction;
   documentId: string;
-  name: string;
+  dataCy?: string;
+  fileName: string;
 }
 
 export const DownloadableChip: FC<DownloadableChipProps> = ({
   downloadFunc,
   documentId,
-  name,
+  fileName,
   label,
+  dataCy,
 }) => {
   const { downloadFileHandler } = useDownloadableChipEffects();
   const classes = useStyles();
@@ -27,9 +29,10 @@ export const DownloadableChip: FC<DownloadableChipProps> = ({
       label={label ?? 'Download file'}
       variant="outlined"
       color="primary"
-      onClick={() => downloadFileHandler(downloadFunc, documentId, name)}
+      onClick={() => downloadFileHandler(downloadFunc, documentId, fileName)}
       icon={<GetApp color="primary" />}
       className={classes.chip}
+      {...(dataCy && { ['data-cy']: dataCy })}
     />
   );
 };

@@ -32,6 +32,7 @@ export const useUserSignInFormConfig = (
   }));
   return {
     buttonText: t('general.buttons.register'),
+    validationMode: 'onSubmit',
     fields: [
       {
         label: t('user.register.title'),
@@ -39,42 +40,64 @@ export const useUserSignInFormConfig = (
         select: true,
         options: TITLE_OPTIONS,
         required: true,
+        inputProps: {
+          ['data-cy']: 'register-title-select',
+        },
         additionalInputProps: {
           valueToOpen: 'Other',
           name: 'titleInput',
           label: t('user.register.title'),
           required: true,
+          inputProps: {
+            ['data-cy']: 'register-other-title-input',
+          },
         },
       },
       {
         label: t('user.register.firstName'),
         name: 'firstName',
         required: true,
+        inputProps: {
+          ['data-cy']: 'firstName',
+        },
       },
       {
         label: t('user.register.lastName'),
         name: 'lastName',
         required: true,
+        inputProps: {
+          ['data-cy']: 'lastName',
+        },
       },
       {
         label: t('user.register.email'),
         name: 'email',
         required: true,
+        inputProps: {
+          ['data-cy']: 'email',
+        },
       },
       {
         label: t('user.register.telephone'),
         name: 'telephone',
         required: true,
+        inputProps: {
+          ['data-cy']: 'telephone',
+        },
       },
       {
         type: 'password',
         label: t('user.register.password'),
         name: 'password',
         required: true,
+        inputProps: {
+          ['data-cy']: 'password',
+        },
       },
     ],
     twoColumns: true,
     buttonWrapperProps: { justifyContent: 'flex-start' },
+    buttonProps: { ['data-cy']: 'register-button' },
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,
     inputsVariant: 'filled',
@@ -84,16 +107,16 @@ export const useUserSignInFormConfig = (
       lastName: Yup.string().label(t('user.register.lastName')).required(),
       email: Yup.string().email().label(t('user.register.email')).required(),
       telephone: Yup.string()
+        .required()
         .min(10)
-        .label(t('user.register.telephone'))
-        .required(),
+        .label(t('user.register.telephone')),
       password: Yup.string()
+        .required()
         .matches(
           /((?=.*[0-9])(?=.*[a-z]).{6,})/,
           t('user.register.passwordValidation')
         )
-        .label(t('user.register.password'))
-        .required(),
+        .label(t('user.register.password')),
     }),
   };
 };

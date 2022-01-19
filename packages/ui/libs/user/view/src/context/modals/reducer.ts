@@ -14,9 +14,13 @@ export const userModalsInitialState: IUserModalsStore = {
   pendingInvitation: {
     open: false,
     invitation: null,
+    user: null,
   },
   createExchangeAddress: false,
-  roleChanged: false,
+  roleChanged: {
+    open: false,
+    user: null,
+  },
 };
 
 export const userModalsReducer = (

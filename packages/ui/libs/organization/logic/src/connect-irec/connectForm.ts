@@ -13,6 +13,7 @@ export const useConnectIRecFormLogic = (
   const { t } = useTranslation();
   return {
     formTitle: t('organization.connectIRec.iRecApiCredentials'),
+    validationMode: 'onSubmit',
     initialValues: {
       userName: iRecConnection?.userName || '',
       password: '',
@@ -42,21 +43,25 @@ export const useConnectIRecFormLogic = (
         name: 'userName',
         label: t('organization.connectIRec.userName'),
         required: true,
+        inputProps: { ['data-cy']: 'connectIRecUserName' },
       },
       {
         name: 'password',
         label: t('organization.connectIRec.apiKey'),
         required: true,
+        inputProps: { ['data-cy']: 'connectIRecApiKey' },
       },
       {
         name: 'clientId',
         label: t('organization.connectIRec.clientId'),
         required: true,
+        inputProps: { ['data-cy']: 'connectIRecClientId' },
       },
       {
         name: 'clientSecret',
         label: t('organization.connectIRec.clientSecret'),
         required: true,
+        inputProps: { ['data-cy']: 'connectIRecClientSecret' },
       },
     ],
     loading,

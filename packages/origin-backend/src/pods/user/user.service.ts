@@ -1,13 +1,14 @@
 import {
     buildRights,
+    ILoggedInUser,
     IUser,
+    IUserFilter,
     KYCStatus,
+    OrganizationStatus,
     Role,
-    UserStatus,
     UserPasswordUpdate,
     UserRegistrationData,
-    IUserFilter,
-    ILoggedInUser
+    UserStatus
 } from '@energyweb/origin-backend-core';
 import {
     ConflictException,
@@ -19,7 +20,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import bcrypt from 'bcryptjs';
 import { validate } from 'class-validator';
-import { FindConditions, Repository, FindManyOptions } from 'typeorm';
+import { FindConditions, FindManyOptions, Repository } from 'typeorm';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
 import { User } from './user.entity';
 import { EmailConfirmationService } from '../email-confirmation';
@@ -133,7 +134,13 @@ export class UserService {
     }
 
     async addToOrganization(userId: number, organizationId: number) {
-        await this.repository.update(userId, { organization: { id: organizationId } });
+        const user = await this.findOne({ id: userId });
+        await this.repository.update(userId, {
+            organization: { id: organizationId },
+            ...(user?.organization?.status === OrganizationStatus.Active
+                ? { kycStatus: KYCStatus.Passed }
+                : {})
+        });
     }
 
     async removeFromOrganization(userId: number) {
@@ -141,7 +148,7 @@ export class UserService {
     }
 
     async findOne(conditions: FindConditions<User>): Promise<TUserBaseEntity> {
-        if (typeof conditions.email === 'string') {
+        if (typeof conditions?.email === 'string') {
             conditions.email = conditions.email.toLowerCase().trim();
         }
         const user = await (this.repository.findOne(conditions, {

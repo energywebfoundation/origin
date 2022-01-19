@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/origin-ui-exchange-view",
-  "version": "0.1.0",
+  "version": "0.3.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/energywebfoundation/origin.git"

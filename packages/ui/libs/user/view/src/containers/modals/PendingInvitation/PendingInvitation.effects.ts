@@ -11,7 +11,7 @@ import {
 
 export const usePendingInvitationEffects = () => {
   const {
-    pendingInvitation: { open, invitation },
+    pendingInvitation: { open, invitation, user },
   } = useUserModalsStore();
   const dispatchModals = useUserModalsDispatch();
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export const usePendingInvitationEffects = () => {
   const closeModal = () => {
     dispatchModals({
       type: UserModalsActionsEnum.SHOW_PENDING_INVITATION,
-      payload: { open: false, invitation: null },
+      payload: { open: false, invitation: null, user: null },
     });
     queryClient.resetQueries();
     navigate('/');
@@ -29,7 +29,7 @@ export const usePendingInvitationEffects = () => {
   const openRoleChangeModal = () => {
     dispatchModals({
       type: UserModalsActionsEnum.SHOW_ROLE_CHANGED,
-      payload: true,
+      payload: { open: true, user },
     });
   };
 

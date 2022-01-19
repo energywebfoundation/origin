@@ -7,7 +7,7 @@ const queryClient = new QueryClient({
       retry: false,
       refetchOnWindowFocus: false,
       onError: (error) => {
-        console.log(error);
+        console.error(error);
       },
     },
   },

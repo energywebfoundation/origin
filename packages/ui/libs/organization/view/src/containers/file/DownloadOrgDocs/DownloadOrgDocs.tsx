@@ -6,11 +6,13 @@ import { useStyles } from './DownloadOrgDocs.styles';
 export interface DownloadOrgDocsProps {
   documents: string[];
   blockTitle: string;
+  dataCy?: string;
 }
 
 export const DownloadOrgDocs: FC<DownloadOrgDocsProps> = ({
   documents,
   blockTitle,
+  dataCy,
 }) => {
   const classes = useStyles();
   return (
@@ -20,7 +22,8 @@ export const DownloadOrgDocs: FC<DownloadOrgDocsProps> = ({
           key={documentId}
           downloadFunc={fileDownloadHandler}
           documentId={documentId}
-          name={blockTitle}
+          fileName={blockTitle}
+          dataCy={dataCy}
           label={`${
             documents.length > 1
               ? `${blockTitle} ${index + 1}`

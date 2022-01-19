@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@1.0.1...@energyweb/exchange-token-account@1.0.2) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/exchange-token-account
+
+
+
+
+
+## [1.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.3.0...@energyweb/exchange-token-account@1.0.1) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+
+
+
+
+
+## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.3.0...@energyweb/exchange-token-account@0.3.1) (2021-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-token-account@0.2.0...@energyweb/exchange-token-account@0.3.0) (2021-09-17)
 
 

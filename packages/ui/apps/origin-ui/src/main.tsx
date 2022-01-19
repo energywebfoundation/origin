@@ -10,6 +10,7 @@ import {
   OriginQueryClientProvider,
   OriginThemeProvider,
 } from './components';
+
 import { AppContainer } from './components/AppContainer';
 
 ReactDOM.render(

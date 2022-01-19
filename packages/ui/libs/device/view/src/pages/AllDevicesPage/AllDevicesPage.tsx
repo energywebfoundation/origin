@@ -20,7 +20,7 @@ export const AllDevicesPage: FC = () => {
   return (
     <Grid container spacing={3} className={classes.wrapper}>
       {allActiveDevices.map((device) => (
-        <Grid key={`device-${device.id}`} item>
+        <Grid key={`device-${device.id}`} item data-cy="deviceCard">
           <PublicDeviceCard device={device} allDeviceTypes={allDeviceTypes} />
         </Grid>
       ))}

@@ -1,15 +1,17 @@
-import React, { FC } from 'react';
+import React, { ReactNode } from 'react';
 import { useStyles } from './BlockTintedBottom.styles';
 
 export interface BlockTintedBottomProps {
+  children: ReactNode;
   height?: number;
 }
 
-export const BlockTintedBottom: FC<BlockTintedBottomProps> = ({
+export const BlockTintedBottom = ({
   children,
-  height,
-}) => {
+  height = 150,
+}: BlockTintedBottomProps) => {
   const classes = useStyles(height);
+
   return (
     <div className={classes.wrapper}>
       {children}

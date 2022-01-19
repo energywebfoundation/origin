@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
-
 import {
   getOrganizationMenu,
   IRECAccountType,
@@ -26,16 +26,17 @@ import {
   TGetAdminMenuArgs,
   getTopbarButtonList,
 } from '@energyweb/origin-ui-user-logic';
+import { LoginRoutesConfig } from '@energyweb/origin-ui-user-view';
 import {
   useInvitationControllerGetInvitations,
   useConnectionControllerGetMyConnection,
   useRegistrationControllerGetRegistrations,
 } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { isRole, Role, UserStatus } from '@energyweb/origin-backend-core';
+import { ThemeModeEnum } from '@energyweb/origin-ui-theme';
 import { useUser } from '@energyweb/origin-ui-user-data';
 import { useActiveMenuTab, useAxiosDefaults } from '../../hooks';
 import { useStyles } from './AppContainer.styles';
-import { useNavigate } from 'react-router';
 
 export type RoutesConfig = {
   orgRoutes: Omit<TGetOrganizationMenuArgs, 't' | 'isOpen' | 'showSection'>;
@@ -47,13 +48,14 @@ export type RoutesConfig = {
   exchangeRoutes: Omit<TGetExchangeMenuArgs, 't' | 'isOpen' | 'showSection'>;
   accountRoutes: Omit<TGetAccountMenuArgs, 't' | 'isOpen' | 'showSection'>;
   adminRoutes: Omit<TGetAdminMenuArgs, 't' | 'isOpen' | 'showSection'>;
+  loginRoutes: LoginRoutesConfig;
 };
 
 export const useAppContainerEffects = () => {
   useAxiosDefaults();
   const classes = useStyles();
   const theme = useTheme();
-  const isLightTheme = theme.palette.mode === 'light';
+  const isLightTheme = theme.palette.mode === ThemeModeEnum.Light;
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -221,9 +223,7 @@ export const useAppContainerEffects = () => {
       showApproved: userIsIssuer,
       showImport:
         (iRecOrg?.accountType as unknown as IRECAccountType) ===
-          IRECAccountType.Participant ||
-        (iRecOrg?.accountType as unknown as IRECAccountType) ===
-          IRECAccountType.Both,
+          IRECAccountType.Participant && iRecConnectionActive,
     }),
     [
       userIsActive,
@@ -335,6 +335,15 @@ export const useAppContainerEffects = () => {
     [t, isAdminTabAcive, userIsAdminOrSupport, isLightTheme, adminRoutesConfig]
   );
 
+  const loginRoutesConfig: RoutesConfig['loginRoutes'] = useMemo(
+    () => ({
+      showLoginPage: !isAuthenticated,
+      showRequestResetPasswordPage: !isAuthenticated,
+      showResetPasswordPage: !isAuthenticated,
+    }),
+    [isAuthenticated]
+  );
+
   const menuSections = useMemo(
     () => [
       deviceMenu,
@@ -355,6 +364,7 @@ export const useAppContainerEffects = () => {
       exchangeRoutes: exchangeRoutesConfig,
       accountRoutes: accountRoutesConfig,
       adminRoutes: adminRoutesConfig,
+      loginRoutes: loginRoutesConfig,
     }),
     [
       orgRoutesConfig,
@@ -363,6 +373,7 @@ export const useAppContainerEffects = () => {
       exchangeRoutesConfig,
       accountRoutesConfig,
       adminRoutesConfig,
+      loginRoutesConfig,
     ]
   );
 

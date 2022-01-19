@@ -69,6 +69,7 @@ export const useEditDeviceFormLogic = (
       {
         name: 'name',
         label: t('device.edit.name'),
+        inputProps: { ['data-cy']: 'facilityName' },
       },
       {
         name: 'fuelType',
@@ -126,6 +127,7 @@ export const useEditDeviceFormLogic = (
     twoColumns: true,
     inputsVariant: 'filled',
     buttonText: t('general.buttons.edit'),
+    buttonProps: { ['data-cy']: 'editDeviceButton' },
     loading,
   };
 };

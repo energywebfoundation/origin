@@ -6,7 +6,7 @@ import {
   CardContent,
   CardContentProps,
 } from '@mui/material';
-import { FallbackIcon } from '../../icons';
+import { IconHoverText } from '../../icons';
 import { useStyles } from './HorizontalCard.styles';
 
 export interface HorizontalCardProps {
@@ -41,12 +41,12 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   const cardClass = `${classes.card} ${selected && classes.selectedCard}`;
 
   return (
-    <Card className={cardClass} onClick={onClick}>
+    <Card className={cardClass} onClick={onClick} data-cy="myDeviceCard">
       {imageUrl ? (
         <CardMedia image={imageUrl} className={classes.image} />
       ) : fallbackIcon ? (
         <CardMedia className={classes.image}>
-          <FallbackIcon
+          <IconHoverText
             icon={fallbackIcon}
             iconProps={fallbackIconProps}
             wrapperProps={fallbackIconWrapperProps}

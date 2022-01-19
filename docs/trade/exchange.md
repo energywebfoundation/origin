@@ -1,10 +1,11 @@
 # Exchange - @energyweb/exchange
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange)
 
+## Overview
 The Exchange package is a [NestJS](https://docs.nestjs.com/) application that provides backend services to manage the Exchange's functionality (account management and buying, selling and transferring [Energy Attribute Certificates](../user-guide-glossary.md#energy-attribute-certificate) and [bundles](../user-guide-glossary.md#bundle) through an order book system). 
 
 ## Persistence  
-The Trade SDK uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the entity.ts files in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)).
+The Trade SDK uses [PostgreSQL](https://www.postgresql.org/) for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the entity.ts files in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)).
 
 ```
 @Entity({ name: `${DB_TABLE_PREFIX}_account` })
@@ -129,9 +130,7 @@ This service provides a method to register [assets](../user-guide-glossary.md#as
 The remaining methods in the class use the assetSources Array to calculate a user's available and locked assets, and to return their current asset amounts. 
 
 #### 2. Account Balance Asset Service
-This service returns a users locked and available assets. 
-
-**This class is the base for all of the Accounting Services in the Exchange's modules.** 
+This service returns a users locked and available assets. **This class is the base for all of the Accounting Services in the Exchange's modules.** 
 
 ### Asset
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/trade/exchange/src/pods/asset)

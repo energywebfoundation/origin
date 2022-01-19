@@ -50,21 +50,25 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
       name: 'name',
       label: t('organization.register.orgInfoName'),
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoName' },
     },
     {
       name: 'address',
       label: t('organization.register.orgInfoAddress'),
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoAddress' },
     },
     {
       name: 'zipCode',
       label: t('organization.register.orgInfoZipCode'),
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoZipCode' },
     },
     {
       name: 'city',
       label: t('organization.register.orgInfoCity'),
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoCity' },
     },
     {
       name: 'country',
@@ -73,6 +77,7 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
       autocomplete: true,
       options: COUNTRY_OPTIONS_ISO,
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoCountry' },
     },
     {
       name: 'businessType',
@@ -80,16 +85,19 @@ export const createOrgInfoForm: TCreateOrgInfoForm = (t) => ({
       select: true,
       options: BUSINESS_LEGAL_TYPE_OPTIONS,
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoBusinessType' },
     },
     {
       name: 'tradeRegistryCompanyNumber',
       label: t('organization.register.orgInfoTradeRegistryCompanyNumber'),
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoTradeRegistryCompanyNumber' },
     },
     {
       name: 'vatNumber',
       label: t('organization.register.orgInfoVatNumber'),
       required: true,
+      inputProps: { ['data-cy']: 'orgInfoVatNumber' },
     },
   ],
   buttonText: t('general.buttons.nextStep'),

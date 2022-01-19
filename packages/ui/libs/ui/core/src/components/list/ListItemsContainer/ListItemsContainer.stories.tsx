@@ -59,9 +59,7 @@ export default {
   },
   argTypes: {
     id: {
-      type: {
-        required: true,
-      },
+      type: { required: true, name: 'other', value: 'ContainerId' },
       table: {
         type: {
           summary: 'ContainerId',
@@ -70,20 +68,20 @@ export default {
     },
     containerHeader: {
       description: 'Element to be displayed as container header.',
-      type: {
-        required: true,
-      },
+      type: { required: true, name: 'other', value: 'ReactNode' },
+      control: null,
       table: {
         type: {
           summary: 'ReactNode',
         },
       },
-      control: null,
     },
     containerItems: {
       description: 'An array of items which are rendered inside the container.',
       type: {
         required: true,
+        name: 'other',
+        value: 'ListItemComponentProps<ItemId>[]',
       },
       table: {
         type: {

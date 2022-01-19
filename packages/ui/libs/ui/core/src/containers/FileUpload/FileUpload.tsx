@@ -1,20 +1,23 @@
 import { Box, Typography, TypographyProps } from '@mui/material';
 import React, { FC } from 'react';
-import { UploadChip } from '../../components/file';
-import {
-  useFileUploadEffects,
-  TUseFileUploadEffectsArgs,
-} from './FileUpload.effects';
+import { UploadChip } from './UploadChip';
+import { useFileUploadEffects } from './FileUpload.effects';
 import { useStyles } from './FileUpload.styles';
+import {
+  ApiUploadFunction,
+  FileUploadOnChangeFunction,
+} from './FileUpload.types';
 
-export interface FileUploadProps extends TUseFileUploadEffectsArgs {
+export interface FileUploadProps {
   dropzoneText: string;
+  apiUploadFunction: ApiUploadFunction;
+  onChange: FileUploadOnChangeFunction;
   heading?: string;
   headingProps?: TypographyProps;
   wrapperProps?: React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLElement>,
     HTMLElement
-  >;
+  > & { ['data-cy']?: string };
   dropzoneClassName?: string;
 }
 

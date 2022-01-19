@@ -10,7 +10,7 @@ build-canary:
 	@rush deploy -p @energyweb/migrations-irec -t ./deployment/migrations/canary/deployment --overwrite
 	@cp -r ./config ./deployment/migrations/canary/deployment/config
 	@docker rmi ${LATEST} -f
-	@docker build -f deployment/migrations/canary/Dockerfile -t ${CANARY} ./deployment/migrations/canary/deployment
+	@docker buildx build --platform linux/amd64 -f deployment/migrations/canary/Dockerfile -t ${CANARY} ./deployment/migrations/canary/deployment
 	@rm -rf ./deployment/migrations/canary/deployment
 
 build-stable:
@@ -19,7 +19,7 @@ build-stable:
 	@rush deploy -p @energyweb/migrations-irec -t ./deployment/migrations/stable/deployment --overwrite
 	@cp -r ./config ./deployment/migrations/stable/deployment/config
 	@docker rmi ${LATEST} -f
-	@docker build -f deployment/migrations/stable/Dockerfile -t ${LATEST} ./deployment/migrations/stable/deployment
+	@docker buildx build --platform linux/amd64 -f deployment/migrations/stable/Dockerfile -t ${LATEST} ./deployment/migrations/stable/deployment
 	@rm -rf ./deployment/migrations/stable/deployment
 
 push-heroku-canary:

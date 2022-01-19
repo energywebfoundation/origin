@@ -1,4 +1,4 @@
-import { TextFieldProps } from '@mui/material';
+import { TextFieldProps, InputBaseProps } from '@mui/material';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import {
   Control,
@@ -25,6 +25,7 @@ type FormSelectField<FormValuesType> = {
   multiple?: boolean;
   maxValues?: number;
   textFieldProps?: TextFieldProps;
+  inputProps?: InputBaseProps['inputProps'];
   dependentOn?: string;
   dependentOptionsCallback?: (fieldValue: any) => FormSelectOption[];
 };
@@ -65,6 +66,7 @@ export const FormSelect: TFormSelect = ({
 
   return (
     <Controller
+      key={`${field.name}`}
       name={field.name as any}
       control={control}
       render={({ field: { value, onChange } }) => {

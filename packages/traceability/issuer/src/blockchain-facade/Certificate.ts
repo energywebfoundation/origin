@@ -76,9 +76,9 @@ export class Certificate implements ICertificate {
     public claimers: IShareInCertificate;
 
     constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
-    
-     /**
-     * 
+
+    /**
+     *
      *
      * @description Uses the Issuer contract to allow direct issuance of a certificate
      *
@@ -113,8 +113,8 @@ export class Certificate implements ICertificate {
         return await issuerWithSigner.issue(properChecksumToAddress, value, data);
     }
 
-      /**
-     * 
+    /**
+     *
      *
      * @description Returns the Certificate that was created in a given transaction
      *
@@ -159,8 +159,8 @@ export class Certificate implements ICertificate {
         return newCertificate.sync();
     }
 
-       /**
-     * 
+    /**
+     *
      *
      * @description Uses Private Issuer contract to allow issuance of a private Certificate
      *
@@ -210,10 +210,10 @@ export class Certificate implements ICertificate {
         };
     }
 
-     /**
-     * 
+    /**
      *
-     * @description Retrieves current data for a Certificate 
+     *
+     * @description Retrieves current data for a Certificate
      *
      */
     async sync(): Promise<Certificate> {
@@ -257,7 +257,7 @@ export class Certificate implements ICertificate {
     }
 
     /**
-     * 
+     *
      *
      * @description Uses Registry contract to allow user to claim all or part of a Certificate's volume units
      *
@@ -283,7 +283,6 @@ export class Certificate implements ICertificate {
         const fromAddress = from ?? activeUserAddress;
 
         const encodedClaimData = encodeClaimData(claimData);
-
         return registryWithSigner.safeTransferAndClaimFrom(
             fromAddress,
             claimAddress,
@@ -294,10 +293,10 @@ export class Certificate implements ICertificate {
         );
     }
 
-     /**
-     * 
+    /**
      *
-     * @description Uses Registry contract to allow user to transfer part or all of a Certificate's volume units to another address 
+     *
+     * @description Uses Registry contract to allow user to transfer part or all of a Certificate's volume units to another address
      *
      */
     async transfer(to: string, amount?: BigNumber, from?: string): Promise<ContractTransaction> {
@@ -321,10 +320,10 @@ export class Certificate implements ICertificate {
             utils.defaultAbiCoder.encode([], []) // TO-DO: Store more meaningful transfer data?
         );
     }
-     /**
-     * 
+    /**
      *
-     * @description Uses Issuer contract to allow issuer to mint more volumes of energy units for an existing Certificate 
+     *
+     * @description Uses Issuer contract to allow issuer to mint more volumes of energy units for an existing Certificate
      *
      */
     async mint(to: string, volume: BigNumber): Promise<ContractTransaction> {
@@ -336,10 +335,10 @@ export class Certificate implements ICertificate {
         return issuerWithSigner.mint(toAddress, this.id, volume);
     }
 
-      /**
-     * 
+    /**
      *
-     * @description Uses Issuer contract to allow issuer to revoke a Certificate 
+     *
+     * @description Uses Issuer contract to allow issuer to revoke a Certificate
      *
      */
     async revoke(): Promise<ContractTransaction> {
@@ -350,7 +349,7 @@ export class Certificate implements ICertificate {
     }
 
     /**
-     * 
+     *
      *
      * @description Allows issuer to see if Certificate has been revoked
      * @returns boolean
@@ -369,8 +368,8 @@ export class Certificate implements ICertificate {
         return revokedEvents.length > 0;
     }
 
-     /**
-     * 
+    /**
+     *
      *
      * @description Returns all claim data for a Certificate
      *
@@ -464,8 +463,8 @@ export class Certificate implements ICertificate {
         return claims;
     }
 
-     /**
-     * 
+    /**
+     *
      *
      * @description Returns the Issuance transaction for a Certificate
      *

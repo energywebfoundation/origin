@@ -1,6 +1,7 @@
 # Origin Backend - @energyweb/origin-backend
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend)
 
+## Overview
 The Origin Backend is a [NestJS](https://nestjs.com/) application that provides services for user and organization authorization and management. The Backend application can be used in conjunction with one, several or all of the [Origin SDKs](./index#origin-sdks) to provide integrated user management and authorization. 
 
 The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
@@ -32,7 +33,7 @@ Each module contains code relevant for a specific feature. In general, each Nest
 + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application 
 
 ## Persistence
-The Origin Backend uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
+The Origin Backend uses [PostgreSQL](https://www.postgresql.org/) for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
 
 ```
 @Entity('email_confirmation')
@@ -110,7 +111,7 @@ The invitation module provides methods to manage fetch, create and update Organi
 
 The user module provides methods to manage fetch, create and update users. Users are persisted in the User Repository. 
 
-## Origin Backend-Core Package
+## Origin Backend-Core Package - @energyweb/origin-backend-core
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-core)
 
 The Origin Backend Core package provides the interfaces, types and enums for Origin Backend.

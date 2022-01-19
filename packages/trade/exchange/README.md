@@ -1,44 +1,48 @@
-<h1 align="center">
-  <br>
-  <a href="https://www.energyweb.org/"><img src="https://www.energyweb.org/wp-content/uploads/2019/04/logo-brand.png" alt="EnergyWeb" width="150"></a>
-  <br>
-  EnergyWeb Origin
-  <br>
-  <h2 align="center">Exchange</h2>
-  <br>
-</h1>
+<p align="center">
+  <a href="https://www.energyweb.org" target="blank"><img src="../../../docs/images/EW.png" width="120" alt="Energy Web Foundation Logo" /></a>
+</p>
 
-**Exchange** package provides the order book based exchange functionality for the certificates issued by `issuer` package. The major difference between classic (asset, time, price) order book system is the **product** based matching engine, providing the ability to create custom matching rules.
+# Exchange
 
-## Main features
+## Description
 
--   Order book matching engine for time, price and product matching
--   ERC 1155 / ERC 1888 compatible
--   Supply / Demand modules
+The Exchange package is a [NestJS](https://docs.nestjs.com/) application that provides backend services to manage the Exchange's functionality (account management and buying, selling and transferring Energy Attribute Certificates through an order book system).
 
-## Trading product concept
+It is a component of [Energy Web Origin's](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) Trade SDK.
 
-### Definition
+## Documentation
 
-`Product` defines the characteristics of the given producing device as well as buyers preferences . Currently it's represented as:
+-   [Exchange](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/trade/exchange/)
+-   [Trade SDK](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/trade/)
 
-```
-export class Product {
-    public deviceType?: string[];
+## Contributing Guidelines
 
-    public location?: string[];
+See [contributing.md](../../../contributing.md)
 
-    public deviceVintage?: number;
-}
-```
+# Energy Web Decentralized Operating System
 
-Where
+EW-Origin is a component of the Energy Web Decentralized Operating System (EW-DOS).
 
--   `deviceType` - describes the type of the device for e.g. using I-REC types
--   `location` - describes the location of the the device for e.g. can be multi-level like Country->Region->Province
--   `deviceVintage` - describes the vintage of the device for e.g. the start year of the device operation
+The purpose of EW-DOS is to develop and deploy an open and decentralized digital operating system for the energy sector in support of a low-carbon, customer-centric energy future.
 
-For a producing device all fields are mandatory.
+We develop blockchain technology, full-stack applications and middleware packages that facilitate participation of Distributed Energy Resources on the grid and create open market places for transparent and efficient renewable energy trading.
+
+-   To learn about more about the EW-DOS tech stack, see our [documentation](https://app.gitbook.com/@energy-web-foundation/s/energy-web/)
+
+For a deep-dive into the motivation and methodology behind our technical solutions, read our White Papers:
+
+-   [Energy Web White Paper on Vision and Purpose](https://www.energyweb.org/reports/EWDOS-Vision-Purpose/)
+-   [Energy Web White Paper on Technology Detail](https://www.energyweb.org/wp-content/uploads/2020/06/EnergyWeb-EWDOS-PART2-TechnologyDetail-202006-vFinal.pdf)
+
+## Connect with Energy Web
+
+-   [Twitter](https://twitter.com/energywebx)
+-   [Discord](https://discord.com/channels/706103009205288990/843970822254362664)
+-   [Telegram](https://t.me/energyweb)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Development
 

@@ -1,5 +1,6 @@
 import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { CodeNameDTO } from '@energyweb/origin-device-registry-irec-local-api-react-query-client';
+import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import { ComposedPublicDevice } from '@energyweb/origin-ui-certificate-data';
 import {
   GenericFormProps,
@@ -138,15 +139,19 @@ export type TUseClaimActionLogic<Id> = (args: TUseClaimActionLogicArgs<Id>) => {
   title: string;
   buttonText: string;
   selectedItems: SelectedItem<Id>[];
+  selectDisabledTooltip: string;
 };
 
 export type ClaimBeneficiaryFormValues = {
+  beneficiary: number;
   startDate: Dayjs;
   endDate: Dayjs;
   purpose: string;
 };
 
-export type TUseClaimBeneficiariesFormLogic = () => Pick<
+export type TUseClaimBeneficiariesFormLogic = (
+  beneficiaries: BeneficiaryDTO[]
+) => Pick<
   GenericFormProps<ClaimBeneficiaryFormValues>,
   'initialValues' | 'validationSchema' | 'fields'
 >;

@@ -149,15 +149,13 @@ async function createExchangeDepositAddresses(client: Client) {
     const accountService = app.get(AccountService);
 
     for (const { id } of rows) {
-        await accountService
-            .create(String(id))
-            .then(() => logger.info(`Exchange deposit address created for orgId=${id}`))
-            .catch((e) =>
-                logger.error(`Unable to create exchange deposit address for ${id}: ${e.message}`)
-            );
+        try {
+            await accountService.createSynchronously(String(id));
+            logger.info(`Exchange deposit address created for orgId=${id}`);
+        } catch (err) {
+            logger.error(`Unable to create exchange deposit address for ${id}: ${err.message}`);
+        }
     }
-
-    await new Promise((r) => setTimeout(r, 3000));
 }
 
 function initEnv() {

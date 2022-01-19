@@ -56,6 +56,7 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
         name: 'smartMeterId',
         label: smartMeterId || 'Smart meter ID',
         required: true,
+        inputProps: { ['data-cy']: 'smartMeterId' },
       },
       {
         name: 'gridOperator',
@@ -63,11 +64,13 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
         required: true,
         select: true,
         options: gridOperatorOptions,
+        inputProps: { ['data-cy']: 'gridOperator' },
       },
       {
         name: 'postalCode',
         label: t('device.import.postalCode'),
         required: true,
+        inputProps: { ['data-cy']: 'postalCode' },
       },
       {
         name: 'region',
@@ -76,6 +79,7 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
         select: true,
         autocomplete: true,
         options: prepareRegionsOption(allRegions),
+        inputProps: { ['data-cy']: 'region' },
       },
       {
         name: 'subregion',
@@ -85,10 +89,12 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
         autocomplete: true,
         dependentOn: 'region',
         dependentOptionsCallback: prepareSubregionOptions(allRegions),
+        inputProps: { ['data-cy']: 'subregion' },
       },
       {
         name: 'description',
         label: t('device.import.description'),
+        inputProps: { ['data-cy']: 'description' },
         textFieldProps: {
           multiline: true,
           rows: 2,
@@ -105,6 +111,7 @@ export const useImportDeviceFormLogic: TUseImportDeviceFormLogic = (
       },
     ],
     buttonText: t('device.import.saveData'),
+    buttonProps: { ['data-cy']: 'saveDataButton' },
   };
 
   if (moreThanOneTimeZone) {

@@ -33,21 +33,21 @@
         "@energyweb/origin-backend-core": "8.0.2",
         "@energyweb/origin-backend-utils": "1.6.1",
         "@energyweb/utils-general": "11.0.3",
-        "@types/pg": "8.6.1",
+        "@types/pg": "8.6.3",
         "commander": "6.2.1",
         "dotenv": "10.0.0",
         "ethers": "5.3.1",
         "pg": "8.7.1",
         "winston": "3.3.3",
-        "winston-transport": "4.4.0",
+        "winston-transport": "4.4.1",
         "write-json-file": "5.0.0",
         "yaeti": "1.0.2"
     },
     "devDependencies": {
         "@types/mocha": "9.0.0",
-        "@types/node": "14.18.0",
+        "@types/node": "14.18.4",
         "mocha": "9.1.3",
-        "typescript": "4.5.3"
+        "typescript": "4.5.4"
     },
     "publishConfig": {
         "access": "public",

@@ -36,21 +36,24 @@ export const useFileUploadEffects = ({
   const upload = async (file: File) => {
     const fileIndex = files.indexOf(file);
 
-    const uploadedArray = await apiUploadFunction([file as Blob]);
-
-    dispatch({
-      type: 'setFile',
-      payload: {
-        id: fileIndex,
-        file: {
-          ...state[fileIndex],
-          uploadedName: uploadedArray[0],
-          cancelToken: null,
-          uploadProgress: 100,
-          cancelled: false,
+    try {
+      const uploadedArray = await apiUploadFunction([file as Blob]);
+      dispatch({
+        type: 'setFile',
+        payload: {
+          id: fileIndex,
+          file: {
+            ...state[fileIndex],
+            uploadedName: uploadedArray[0],
+            cancelToken: null,
+            uploadProgress: 100,
+            cancelled: false,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      console.error(`Error while uploading file in FileUpload: ${error}`);
+    }
   };
 
   useEffect(() => {

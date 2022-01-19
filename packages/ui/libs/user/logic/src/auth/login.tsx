@@ -26,14 +26,21 @@ export const useUserLogInFormConfig = (
         label: t('user.login.email'),
         name: 'username',
         required: true,
+        inputProps: {
+          ['data-cy']: 'email',
+        },
       },
       {
         label: t('user.login.password'),
         type: 'password',
         name: 'password',
         required: true,
+        inputProps: {
+          ['data-cy']: 'password',
+        },
       },
     ],
+    buttonProps: { ['data-cy']: 'login-button' },
     buttonWrapperProps: { justifyContent: 'flex-start' },
     initialValues: INITIAL_FORM_VALUES,
     submitHandler: formSubmitHandler,

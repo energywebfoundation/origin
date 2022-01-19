@@ -1,2 +1,2 @@
-export * from './setGlobalTimeLanguage';
+export * from './DateFormatEnum';
 export * from './formatDate';
