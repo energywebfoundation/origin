@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.2.4...@energyweb/exchange-core@3.2.5) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/exchange-core
+
+
+
+
+
 ## [3.2.4](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.2.2...@energyweb/exchange-core@3.2.4) (2021-12-30)
 
 

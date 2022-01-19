@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-io-erc1888@1.4.0...@energyweb/exchange-io-erc1888@1.4.1) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/exchange-io-erc1888
+
+
+
+
+
 # [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-io-erc1888@1.2.1...@energyweb/exchange-io-erc1888@1.4.0) (2021-12-30)
 
 
