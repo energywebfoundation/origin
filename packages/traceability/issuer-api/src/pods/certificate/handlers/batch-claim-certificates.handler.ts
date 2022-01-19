@@ -26,7 +26,7 @@ export class BatchClaimCertificatesHandler
     ) {}
 
     async execute({ claims }: BatchClaimCertificatesCommand): Promise<ContractTransaction> {
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         if (claims.length === 0) {
             throw new BadRequestException('Cannot process empty claims request');
@@ -59,10 +59,7 @@ export class BatchClaimCertificatesHandler
         }
 
         try {
-            return await CertificateBatchOperations.claimCertificates(
-                claims,
-                blockchainProperties.wrap()
-            );
+            return await CertificateBatchOperations.claimCertificates(claims, blockchainProperties);
         } catch (error) {
             throw new HttpException(JSON.stringify(error), HttpStatus.FAILED_DEPENDENCY);
         }

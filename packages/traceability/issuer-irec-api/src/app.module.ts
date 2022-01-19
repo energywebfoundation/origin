@@ -23,7 +23,9 @@ export const providers = [{ provide: APP_PIPE, useClass: ValidationPipe }, IntUn
         OriginBackendModule,
         UserModule,
         FileModule,
-        IssuerModule.register({ enableCertificationRequest: false }),
+        IssuerModule.register({
+            enableCertificationRequest: false
+        }),
         CertificationRequestModule
     ],
     providers

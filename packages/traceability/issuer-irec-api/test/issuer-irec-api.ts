@@ -20,6 +20,7 @@ import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api'
 
 import { AppModule, BlockchainPropertiesService, entities } from '../src';
 
+process.env.OPERATOR_ENCRYPTION_KEY = 'randomstring';
 const web3 = 'http://localhost:8581';
 const provider = getProviderWithFallback(web3);
 
