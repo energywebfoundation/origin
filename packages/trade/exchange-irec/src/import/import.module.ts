@@ -35,8 +35,7 @@ import { ExportModule } from '../export';
         ExportModule,
         AccountModule,
         IssuerApiOptionsModule.register({
-            enableCertificationRequest: false,
-            enableTransactionLogging: false
+            enableCertificationRequest: false
         })
     ],
     controllers: [ImportController],

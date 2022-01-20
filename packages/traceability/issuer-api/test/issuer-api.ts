@@ -136,7 +136,7 @@ export const bootstrapTestInstance = async (
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
     const privateIssuer = await deployPrivateIssuer(issuer.address);
-    const issuerModule = IssuerModule.register();
+    const issuerModule = IssuerModule.register(originalOptions);
 
     await issuer.setPrivateIssuer(privateIssuer.address);
 
