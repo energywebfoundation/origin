@@ -72,6 +72,11 @@ describe('Origin Backend I-REC App', () => {
                         registry,
                         issuer
                     })
+                }),
+                getWrapped: () => ({
+                    web3: provider,
+                    registry,
+                    issuer
                 })
             })
             .compile();

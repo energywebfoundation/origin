@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-organization-irec-api-react-query-client",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "React Query Client library interacting with the Origin Organization IREC API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/origin-organization-irec-api#readme",
     "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",
@@ -27,7 +27,7 @@
         "react-query": "3.34.0"
     },
     "devDependencies": {
-        "@energyweb/origin-organization-irec-api": "1.8.0",
+        "@energyweb/origin-organization-irec-api": "1.8.1",
         "@nestjs/common": "8.1.1",
         "@nestjs/core": "8.1.1",
         "@nestjs/swagger": "5.1.4",

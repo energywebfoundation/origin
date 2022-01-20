@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@4.0.0...@energyweb/origin-ui-core@4.0.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update material-ui monorepo ([29fcfee](https://github.com/energywebfoundation/origin/commit/29fcfee537ea75fddc88d2ae0b3bb5070a73b896))
+
+
+
+
+
 # [4.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@2.0.0...@energyweb/origin-ui-core@4.0.0) (2021-12-30)
 
 

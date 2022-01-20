@@ -4,7 +4,7 @@
 
 # Origin Backend
 
-The Origin Backend is a [NestJS](https://nestjs.com/) application that provides services for user and organization authorization and management. The Backend application can be used in conjunction with one, several or all of the [Origin SDKs](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) to provide integrated user management and authorization. 
+The Origin Backend is a [NestJS](https://nestjs.com/) application that provides services for user and organization authorization and management. The Backend application can be used in conjunction with one, several or all of the [Origin SDKs](https://energy-web-foundation-origin.readthedocs-hosted.com/en/latest/) to provide integrated user management and authorization.
 
 ## Development
 

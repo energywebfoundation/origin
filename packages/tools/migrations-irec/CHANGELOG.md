@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations-irec@1.4.0...@energyweb/migrations-irec@1.4.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* sync exchange deposit addresses in migration ([6e80134](https://github.com/energywebfoundation/origin/commit/6e80134914772783764dcd162dc3ecacacf790c6))
+
+
+
+
+
 # [1.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations-irec@1.2.1...@energyweb/migrations-irec@1.4.0) (2021-12-30)
 
 

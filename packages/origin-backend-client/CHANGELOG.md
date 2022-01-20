@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.8](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@10.0.7...@energyweb/origin-backend-client@10.0.8) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/origin-backend-client
+
+
+
+
+
 ## [10.0.7](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@10.0.5...@energyweb/origin-backend-client@10.0.7) (2021-12-30)
 
 

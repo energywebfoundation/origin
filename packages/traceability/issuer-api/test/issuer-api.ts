@@ -9,7 +9,7 @@ import {
 } from '@energyweb/origin-backend-core';
 import { DatabaseService } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-import { CanActivate, ExecutionContext, Type } from '@nestjs/common';
+import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IQueryHandler, QueryHandler, QueryBus } from '@nestjs/cqrs';
 import { AuthGuard } from '@nestjs/passport';
@@ -17,10 +17,11 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
 
-import { entities } from '../src';
+import { entities, IssuerModuleInputOptions } from '../src';
 import { IssuerModule } from '../src/issuer.module';
 import { BlockchainPropertiesService } from '../src/pods/blockchain/blockchain-properties.service';
 
+process.env.OPERATOR_ENCRYPTION_KEY = 'randomstring';
 const web3 = 'http://localhost:8581';
 const provider = getProviderWithFallback(web3);
 
@@ -129,7 +130,9 @@ export class StubValidateDeviceOwnershipQueryHandler
     }
 }
 
-export const bootstrapTestInstance: any = async (handler: Type<any>) => {
+export const bootstrapTestInstance = async (
+    originalOptions: Partial<IssuerModuleInputOptions> = {}
+) => {
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
     const privateIssuer = await deployPrivateIssuer(issuer.address);
@@ -155,7 +158,7 @@ export const bootstrapTestInstance: any = async (handler: Type<any>) => {
                 keepConnectionAlive: true
             }),
             issuerModule,
-            handler ?? StubValidateDeviceOwnershipQueryHandler
+            StubValidateDeviceOwnershipQueryHandler
         ],
         providers: [DatabaseService]
     })

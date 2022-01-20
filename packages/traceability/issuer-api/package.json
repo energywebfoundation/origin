@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-api",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "description": "NestJS module for interacting with renewable energy certificates",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-api#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -37,10 +37,10 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/issuer": "6.0.0",
-        "@energyweb/origin-backend-core": "8.2.0",
-        "@energyweb/origin-backend-utils": "1.8.0",
-        "@energyweb/utils-general": "11.2.0",
+        "@energyweb/issuer": "6.0.1",
+        "@energyweb/origin-backend-core": "8.2.1",
+        "@energyweb/origin-backend-utils": "1.8.1",
+        "@energyweb/utils-general": "11.2.1",
         "@nestjs/config": "1.0.2",
         "@nestjs/passport": "8.0.1",
         "@nestjs/schedule": "1.0.1",
@@ -54,7 +54,8 @@
         "pg": "8.7.1",
         "rxjs": "7.4.0",
         "swagger-ui-express": "4.2.0",
-        "typeorm": "0.2.41"
+        "typeorm": "0.2.41",
+        "cryptr": "6.0.2"
     },
     "devDependencies": {
         "@nestjs/cli": "8.1.4",
@@ -79,7 +80,8 @@
         "prettier": "2.5.1",
         "supertest": "6.1.6",
         "ts-node": "9.1.1",
-        "typescript": "4.5.4"
+        "typescript": "4.5.4",
+        "@types/cryptr": "4.0.1"
     },
     "peerDependencies": {
         "@nestjs/common": "8.1.1",

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/energywebfoundation/origin/compare/ui-packages@0.3.0...ui-packages@0.3.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency core-js to v3.20.2 ([c8effba](https://github.com/energywebfoundation/origin/commit/c8effba57ca8ff8300043f51c579df393be46e76))
+* **deps:** update dependency history to v5.2.0 ([7ca1110](https://github.com/energywebfoundation/origin/commit/7ca1110debb0f2737e732b460b4334aaf49c844d))
+* **deps:** update dependency i18next to v21.6.4 ([e8eaf2d](https://github.com/energywebfoundation/origin/commit/e8eaf2d931ddc95529e00705039f9988c6805472))
+* **deps:** update material-ui monorepo ([29fcfee](https://github.com/energywebfoundation/origin/commit/29fcfee537ea75fddc88d2ae0b3bb5070a73b896))
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/ui-packages@0.1.0...ui-packages@0.3.0) (2021-12-30)
 
 

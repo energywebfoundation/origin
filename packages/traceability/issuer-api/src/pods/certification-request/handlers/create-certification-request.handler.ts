@@ -37,14 +37,14 @@ export class CreateCertificationRequestHandler
             );
         }
 
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         try {
             const certReq = await CertificationRequestFacade.create(
                 fromTime,
                 toTime,
                 deviceId,
-                blockchainProperties.wrap(),
+                blockchainProperties,
                 to
             );
             this.logger.debug(

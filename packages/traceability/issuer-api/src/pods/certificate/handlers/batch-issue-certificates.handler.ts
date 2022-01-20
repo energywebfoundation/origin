@@ -15,7 +15,7 @@ export class BatchIssueCertificatesHandler
     async execute({
         certificatesInfo
     }: BatchIssueCertificatesCommand): Promise<ContractTransaction> {
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         try {
             return CertificateBatchOperations.issueCertificates(
@@ -26,7 +26,7 @@ export class BatchIssueCertificatesHandler
                     amount: BigNumber.from(info.energy),
                     metadata: info.metadata
                 })),
-                blockchainProperties.wrap()
+                blockchainProperties
             );
         } catch (error) {
             throw new HttpException(JSON.stringify(error), HttpStatus.FAILED_DEPENDENCY);
