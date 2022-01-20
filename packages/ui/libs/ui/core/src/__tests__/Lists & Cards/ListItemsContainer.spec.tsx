@@ -40,7 +40,7 @@ describe('ListItemsContainer', () => {
     );
   });
 
-  it('should render with checked desabled checkboxes', () => {
+  it('should render with checked disabled checkboxes', () => {
     const { baseElement } = render(
       <Disabled {...(Disabled.args as ListItemsContainerProps<any, any>)} />
     );
