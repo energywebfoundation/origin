@@ -136,13 +136,7 @@ export const bootstrapTestInstance = async (
     const registry = await deployRegistry();
     const issuer = await deployIssuer(registry.address);
     const privateIssuer = await deployPrivateIssuer(issuer.address);
-    const options = Object.assign(
-        {
-            enableTransactionLogging: true
-        },
-        originalOptions
-    );
-    const issuerModule = IssuerModule.register(options);
+    const issuerModule = IssuerModule.register(originalOptions);
 
     await issuer.setPrivateIssuer(privateIssuer.address);
 

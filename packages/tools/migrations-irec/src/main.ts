@@ -81,17 +81,23 @@ async function importContracts(
 
     logger.info(`Saving contracts...`);
     const newContractsQuery = {
-        text: 'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback", "platformOperatorPrivateKey") VALUES ($1, $2, $3, $4, $5, $6)',
+        text: 'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback") VALUES ($1, $2, $3, $4, $5)',
         values: [
             provider.network.chainId,
             contractsLookup.registry,
             contractsLookup.issuer,
             primaryRpc,
-            fallbackRpc,
-            process.env.DEPLOY_KEY
+            fallbackRpc
         ]
     };
     await client.query(newContractsQuery);
+
+    const signerQuery = {
+        text: 'INSERT INTO public.issuer_signer ("blockchainNetId", "platformOperatorPrivateKey", "isEncrypted") VALUES ($1, $2, $3)',
+        values: [provider.network.chainId, process.env.DEPLOY_KEY, false]
+    };
+
+    await client.query(signerQuery);
 }
 
 async function isFirstMigration(client: Client) {

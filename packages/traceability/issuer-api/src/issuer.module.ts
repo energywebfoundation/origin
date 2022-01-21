@@ -33,7 +33,6 @@ export class IssuerModule {
     static register(originalOptions: IssuerModuleInputOptions): DynamicModule {
         const options: IssuerModuleOptions = Object.assign(
             {
-                enableTransactionLogging: false,
                 enableCertificationRequest: true
             },
             originalOptions
