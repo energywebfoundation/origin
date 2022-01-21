@@ -49,7 +49,7 @@
     "bundle-report": "webpack-bundle-analyzer dist/apps/origin-ui/stats.json"
   },
   "dependencies": {
-    "@emotion/react": "11.7.0",
+    "@emotion/react": "11.7.1",
     "@emotion/styled": "11.6.0",
     "@energyweb/exchange-irec-react-query-client": "1.1.1",
     "@energyweb/exchange-react-query-client": "1.0.2",
@@ -68,9 +68,9 @@
     "@ethersproject/units": "5.3.0",
     "@hookform/resolvers": "2.8.5",
     "@mui/icons-material": "5.2.5",
-    "@mui/lab": "5.0.0-alpha.62",
-    "@mui/material": "5.2.6",
-    "@mui/styles": "5.2.3",
+    "@mui/lab": "5.0.0-alpha.65",
+    "@mui/material": "5.3.0",
+    "@mui/styles": "5.3.0",
     "@react-google-maps/api": "2.7.0",
     "axios": "0.24.0",
     "buffer": "6.0.3",
