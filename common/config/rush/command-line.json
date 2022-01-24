@@ -66,6 +66,31 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
+            "name": "build:storybook",
+            "commandKind": "global",
+            "summary": "Build ui storybook",
+            "safeForSimultaneousRushProcesses": false,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "yarn run build:storybook",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
+            "name": "build:storybook:container:canary",
+            "commandKind": "global",
+            "summary": "Build ui storybook",
+            "safeForSimultaneousRushProcesses": false,
+            "shellCommand": "yarn run build:storybook:container:canary",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
+            "name": "deploy:storybook:heroku:canary",
+            "commandKind": "global",
+            "summary": "Build ui storybook",
+            "safeForSimultaneousRushProcesses": false,
+            "shellCommand": "yarn run deploy:storybook:heroku:canary",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "commandKind": "bulk",
             "name": "build:container:canary",
             "summary": "Deploys the canary containers",
