@@ -757,7 +757,7 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "uiFramework": "@storybook/react",
-            "outputPath": "dist/storybook/ui-core",
+            "outputPath": "libs/ui/core/dist/storybook",
             "config": {
               "configFolder": "libs/ui/core/.storybook"
             }
@@ -772,6 +772,7 @@
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "command": "make build-canary",
+            "cwd": "libs/ui/core",
             "parallel": false
           }
         },
