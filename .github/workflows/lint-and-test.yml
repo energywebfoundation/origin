@@ -46,3 +46,7 @@ jobs:
 
     - name: Run logs
       run: node common/scripts/install-run-rush.js heroku-logs
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_CANARY_APP_SB: ${{ secrets.HEROKU_CANARY_APP_SB }}
+        HEROKU_STABLE_APP_SB: ${{ secrets.HEROKU_STABLE_APP_SB }}
