@@ -10,13 +10,11 @@ build-canary:
 build-latest:
 	@docker build --no-cache -t ${LATEST} .
 
-push-heroku-canary:
+heroku-logs:
 ifdef HEROKU_API_KEY
 	@docker login -u _ -p $(shell echo '$$HEROKU_API_KEY') registry.heroku.com
 
-	@docker tag ${CANARY} registry.heroku.com/${HEROKU_CANARY_APP_SB}/web
-	@docker push registry.heroku.com/${HEROKU_CANARY_APP_SB}/web
-	@heroku container:release web -a ${HEROKU_CANARY_APP_SB}
+	@heroku logs --app=${HEROKU_CANARY_APP_SB} --tail
 endif
 
 push-heroku-stable:
