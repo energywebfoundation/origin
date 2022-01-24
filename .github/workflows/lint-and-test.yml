@@ -44,8 +44,24 @@ jobs:
       run: |
         sh scripts/restore-original-timestamps.sh
 
-    - name: Run logs
-      run: node common/scripts/install-run-rush.js heroku-logs
+    - name: Check dependency versions
+      run: node common/scripts/install-run-rush.js check
+
+    - name: Install application
+      run: |
+        node common/scripts/install-run-rush.js update
+
+    - name: Build application
+      run: node common/scripts/install-run-rush.js rebuild --verbose
+
+    - name: Build UI storybook
+      run: node common/scripts/install-run-rush.js build:storybook
+
+    - name: Build storybook docker container
+      run: node common/scripts/install-run-rush.js build:storybook:container:canary
+
+    - name: Deploy storybook docker container
+      run: node common/scripts/install-run-rush.js deploy:storybook:heroku:canary
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         HEROKU_CANARY_APP_SB: ${{ secrets.HEROKU_CANARY_APP_SB }}

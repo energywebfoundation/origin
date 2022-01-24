@@ -5,7 +5,7 @@ LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
 
 build-canary:
-	@docker build -t ${CANARY} .
+	@docker build -t ${CANARY} --file ../../../Dockerfile.storybook .
 
 build-latest:
 	@docker build --no-cache -t ${LATEST} .
