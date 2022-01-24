@@ -83,6 +83,14 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
+            "name": "heroku-logs",
+            "commandKind": "global",
+            "summary": "Build ui storybook",
+            "safeForSimultaneousRushProcesses": false,
+            "shellCommand": "yarn run heroku-logs",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "name": "deploy:storybook:heroku:canary",
             "commandKind": "global",
             "summary": "Build ui storybook",

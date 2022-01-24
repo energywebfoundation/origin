@@ -6,6 +6,7 @@
     "nx": "nx",
     "start": "./dev-env.sh && nx serve --port=3000",
     "config-env": "bash env.sh",
+    "heroku-logs": "make heroku-logs",
     "build:ui-utils": "nx run ui-utils:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:ui-theme": "nx run ui-theme:build --buildableProjectDepsInPackageJsonType=dependencies",
     "build:ui-assets": "nx run ui-assets:build --buildableProjectDepsInPackageJsonType=dependencies",

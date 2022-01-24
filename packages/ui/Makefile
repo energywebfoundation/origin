@@ -4,6 +4,13 @@ NAME   				= energyweb/${PROJECT}
 LATEST 				= ${NAME}:latest
 CANARY 				= ${NAME}:canary
 
+heroku-logs:
+ifdef HEROKU_API_KEY
+  @docker login -u _ -p $(shell echo '$$HEROKU_API_KEY') registry.heroku.com
+
+  @heroku logs --app=${HEROKU_CANARY_APP_SB} --tail
+endif
+
 build-canary:
 	@docker build -t ${CANARY} .
 
