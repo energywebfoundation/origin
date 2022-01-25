@@ -64,6 +64,17 @@ jobs:
         git fetch origin master:master
         node common/scripts/install-run-rush.js install
 
+    - name: Build storybook application
+      run: node common/scripts/install-run-rush.js build:storybook
+
+    - name: Deploy storybook application
+      run: |
+        yarn build:storybook:container:release
+        yarn deploy:storybook:heroku:stable
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_STABLE_APP_SB: ${{ secrets.HEROKU_STABLE_APP_SB }}
+
     - name: Build application
       run: |
         node common/scripts/install-run-rush.js build
