@@ -4,6 +4,14 @@ on:
   pull_request:
     branches:
       - '*'
+      
+env:
+  EXCHANGE_WALLET_PUB: ${{secrets.EXCHANGE_WALLET_PUB}}
+  GOOGLE_MAPS_API_KEY: ${{secrets.GOOGLE_MAPS_API_KEY}}
+  SINGLE_ACCOUNT_MODE: ${{secrets.SINGLE_ACCOUNT_MODE}}
+  ISSUER_ID: ${{secrets.ISSUER_ID}}
+  SMART_METER_ID: ${{secrets.SMART_METER_ID}}
+  REGISTRATION_MESSAGE_TO_SIGN: ${{secrets.REGISTRATION_MESSAGE_TO_SIGN}}
 
 jobs:
   cancel-previous:
@@ -15,7 +23,7 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-  run-tests:
+  deploy-application:
     services:
       postgres:
         image: postgres
@@ -26,12 +34,15 @@ jobs:
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 10s
-          --health-retries 10
+          --health-retries 10  
         ports:
           - 5432:5432
     runs-on: ubuntu-latest
     needs: cancel-previous
     steps:
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v3.x
+
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -40,33 +51,43 @@ jobs:
       with:
         node-version: '14'
 
+    - name: "Generate unique id"
+      id: generate_unique_id
+      uses: ./.github/actions/build_id
+
     - name: Restore timestamp
       run: |
         sh scripts/restore-original-timestamps.sh
-
-    - name: Check dependency versions
-      run: node common/scripts/install-run-rush.js check
-
+    - name: Install rush
+      run: |
+        npm install -g @microsoft/rush
     - name: Install application
+      # lerna doesn't work without additional fetch
       run: |
         node common/scripts/install-run-rush.js update
-
     - name: Build application
-      run: node common/scripts/install-run-rush.js rebuild --verbose
-
+      run: |
+        node common/scripts/install-run-rush.js rebuild -v
+    - name: Build UI for production
+      run: |
+        node common/scripts/install-run-rush.js build:ui:prod
     - name: Build storybook application
       run: node common/scripts/install-run-rush.js build:storybook
 
     - name: Deploy storybook application
       run: |
-        yarn build:storybook:container:release
-        yarn deploy:storybook:heroku:stable
+        yarn build:storybook:container:canary
+        yarn deploy:storybook:heroku:canary
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_STABLE_APP_SB: ${{ secrets.HEROKU_STABLE_APP_SB }}
-
-    - name: Run all test:e2e in packages
-      run: node common/scripts/install-run-rush.js test:e2e
-
-    - name: Run all test:ci:contracts
-      run: node common/scripts/install-run-rush.js test:ci:contracts
+        HEROKU_CANARY_APP_SB: ${{ secrets.HEROKU_CANARY_APP_SB }}
+      
+    - name: Deploy application
+      run: |
+        yarn build:containers:canary
+        yarn deploy:heroku:canary
+      env:
+        BUILD_ID: ${{ steps.generate_unique_id.outputs.unique_id }}
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_CANARY_APP_API: ${{ secrets.HEROKU_CANARY_APP_API }}
+        HEROKU_CANARY_APP_UI: ${{ secrets.HEROKU_CANARY_APP_UI }}
