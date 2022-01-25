@@ -20,7 +20,7 @@ export const generateSchema = async () => {
                 entities,
                 logging: ['info']
             }),
-            IssuerModule.register()
+            IssuerModule.register({})
         ]
     }).compile();
 

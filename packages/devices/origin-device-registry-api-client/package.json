@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-device-registry-api-client",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Client library interacting with the Origin Device Registry ",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-device-registry-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc -b tsconfig.json",
+        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc --project tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
         "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
@@ -26,7 +26,7 @@
         "axios": "0.24.0"
     },
     "devDependencies": {
-        "@energyweb/origin-device-registry-api": "1.1.0",
+        "@energyweb/origin-device-registry-api": "1.1.1",
         "@nestjs/passport": "8.0.1",
         "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.1",

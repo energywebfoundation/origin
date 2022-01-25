@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-api-client",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Client library interacting with the Issuer API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc -b tsconfig.json",
+        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc --project tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
         "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
@@ -26,7 +26,7 @@
         "axios": "0.24.0"
     },
     "devDependencies": {
-        "@energyweb/issuer-api": "0.6.0",
+        "@energyweb/issuer-api": "0.6.1",
         "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.1",
         "@nestjs/typeorm": "8.0.2",

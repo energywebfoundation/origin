@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [11.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@11.2.0...@energyweb/origin-backend@11.2.1) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/origin-backend
+
+
+
+
+
 # [11.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend@11.0.1...@energyweb/origin-backend@11.2.0) (2021-12-30)
 
 

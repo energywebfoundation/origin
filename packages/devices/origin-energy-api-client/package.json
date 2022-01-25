@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-energy-api-client",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "description": "Client library interacting with the Origin Energy API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-energy-api-client#readme",
     "author": "EnergyWeb DevHub GmbH; Aravind Cheziyan, aravind.cheziyan@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn build:ts",
-        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc -b tsconfig.json",
+        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc --project tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate && yarn client:clean",
         "clean": "shx rm -rf dist dist-shakeable",
         "client:generate": "openapi-generator-cli generate -g typescript-axios -i src/schema.yaml -o src --api-name-suffix Client --remove-operation-id-prefix",
@@ -23,7 +23,7 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "@energyweb/origin-energy-api": "1.0.6",
+        "@energyweb/origin-energy-api": "1.0.7",
         "axios": "0.24.0"
     },
     "devDependencies": {

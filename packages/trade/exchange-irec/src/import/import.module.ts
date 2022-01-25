@@ -14,6 +14,7 @@ import { DeviceModule } from '@energyweb/origin-device-registry-irec-local-api';
 import { DeviceRegistryModule } from '@energyweb/origin-device-registry-api';
 import { UserModule } from '@energyweb/origin-backend';
 import { AccountModule } from '@energyweb/exchange';
+import { OptionsModule as IssuerApiOptionsModule } from '@energyweb/issuer-api';
 
 import { GetIrecCertificatesToImportHandler, ImportIrecCertificateHandler } from './handler';
 import { ImportController } from './import.controller';
@@ -32,7 +33,10 @@ import { ExportModule } from '../export';
         CertificateModule,
         ConfigModule,
         ExportModule,
-        AccountModule
+        AccountModule,
+        IssuerApiOptionsModule.register({
+            enableCertificationRequest: false
+        })
     ],
     controllers: [ImportController],
     providers: [GetIrecCertificatesToImportHandler, ImportIrecCertificateHandler],

@@ -37,6 +37,11 @@ export class AccountService {
         this.requestQueue.next(userId);
     }
 
+    public async createSynchronously(userId: string) {
+        this.logger.debug(`User with userId=${userId} requesting account creation`);
+        await this.process(userId);
+    }
+
     private async process(userId: string) {
         this.logger.debug(`Processing account creation for user with userId=${userId}`);
         const accountExists = await this.repository.findOne(null, {

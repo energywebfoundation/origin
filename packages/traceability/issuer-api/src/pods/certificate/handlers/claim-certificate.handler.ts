@@ -5,7 +5,7 @@ import { Certificate as CertificateFacade } from '@energyweb/issuer';
 import { BigNumber, ContractTransaction, Event as BlockchainEvent, utils } from 'ethers';
 import { PreciseProofs } from 'ew-precise-proofs-js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-
+import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { ClaimCertificateCommand } from '../commands/claim-certificate.command';
 import { Certificate } from '../certificate.entity';
 
@@ -13,7 +13,8 @@ import { Certificate } from '../certificate.entity';
 export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificateCommand> {
     constructor(
         @InjectRepository(Certificate)
-        private readonly repository: Repository<Certificate>
+        private readonly repository: Repository<Certificate>,
+        private readonly blockchainPropertiesService: BlockchainPropertiesService
     ) {}
 
     async execute({
@@ -35,10 +36,9 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
             );
         }
 
-        const cert = await new CertificateFacade(
-            certificate.id,
-            certificate.blockchain.wrap()
-        ).sync();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
+
+        const cert = await new CertificateFacade(certificate.id, blockchainProperties).sync();
 
         const claimerBalance = BigNumber.from(
             (certificate.issuedPrivately
@@ -56,7 +56,7 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
         // Transfer private certificates to public
         if (certificate.issuedPrivately) {
-            const { activeUser, privateIssuer } = certificate.blockchain.wrap();
+            const { activeUser, privateIssuer } = blockchainProperties;
             const privateIssuerWithSigner = privateIssuer.connect(activeUser);
 
             const ownerAddressLeafHash = certificate.latestCommitment.leafs.find(
