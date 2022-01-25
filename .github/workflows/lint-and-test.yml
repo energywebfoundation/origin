@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - '*'
-      
+
 env:
   EXCHANGE_WALLET_PUB: ${{secrets.EXCHANGE_WALLET_PUB}}
   GOOGLE_MAPS_API_KEY: ${{secrets.GOOGLE_MAPS_API_KEY}}
@@ -81,13 +81,3 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         HEROKU_CANARY_APP_SB: ${{ secrets.HEROKU_CANARY_APP_SB }}
-      
-    - name: Deploy application
-      run: |
-        yarn build:containers:canary
-        yarn deploy:heroku:canary
-      env:
-        BUILD_ID: ${{ steps.generate_unique_id.outputs.unique_id }}
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_CANARY_APP_API: ${{ secrets.HEROKU_CANARY_APP_API }}
-        HEROKU_CANARY_APP_UI: ${{ secrets.HEROKU_CANARY_APP_UI }}
