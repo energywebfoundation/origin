@@ -68,6 +68,14 @@ jobs:
       run: |
         node common/scripts/install-run-rush.js update
 
+    - name: Build application
+      run: |
+        node common/scripts/install-run-rush.js rebuild -v
+
+    - name: Build UI for production
+      run: |
+        node common/scripts/install-run-rush.js build:ui:prod
+
     - name: Build storybook application
       run: node common/scripts/install-run-rush.js build:storybook
 
@@ -78,15 +86,7 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         HEROKU_CANARY_APP_SB: ${{ secrets.HEROKU_CANARY_APP_SB }}
-
-    - name: Build application
-      run: |
-        node common/scripts/install-run-rush.js rebuild -v
       
-    - name: Build UI for production
-      run: |
-        node common/scripts/install-run-rush.js build:ui:prod
-
     - name: Deploy application
       run: |
         yarn build:containers:canary
