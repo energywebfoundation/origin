@@ -768,7 +768,7 @@
             }
           }
         },
-        "build-storybook-container": {
+        "build-storybook-canary-container": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "command": "make build-canary",
@@ -776,10 +776,26 @@
             "parallel": false
           }
         },
-        "deploy-storybook-container": {
+        "build-storybook-release-container": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "make build-latest",
+            "cwd": "libs/ui/core",
+            "parallel": false
+          }
+        },
+        "deploy-storybook-canary-container": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "command": "make push-heroku-canary",
+            "cwd": "libs/ui/core",
+            "parallel": false
+          }
+        },
+        "deploy-storybook-stable-container": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "make push-heroku-stable",
             "cwd": "libs/ui/core",
             "parallel": false
           }
