@@ -5,8 +5,8 @@ import '@testing-library/jest-dom';
 import { Default } from '../../components/form/SingleColumnForm/SingleColumnForm.stories';
 import { SingleColumnFormProps } from '../../components/form/SingleColumnForm/SingleColumnForm';
 
-describe('DoubleColumnForm', () => {
-  it('should render default DoubleColumnForm', () => {
+describe('SingleColumnForm', () => {
+  it('should render default SingleColumnForm', () => {
     const { baseElement } = render(
       <Default {...(Default.args as SingleColumnFormProps<any>)} />
     );
