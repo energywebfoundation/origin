@@ -10,8 +10,3 @@ export class CertificateEvent {
     @ApiProperty()
     values?: any;
 }
-
-export interface IssuerModuleOptions {
-    enableTransactionLogging: boolean;
-    enableCertificationRequest: boolean;
-}

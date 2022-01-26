@@ -49,9 +49,11 @@ export const MyDeviceCardHeader: React.FC<MyDeviceCardHeaderProps> = ({
           tooltipText={t('device.my.deviceStatusTooltip', {
             status: deviceState,
           })}
+          dotWrapperProps={{ ['data-cy']: 'deviceStatus' }}
         />
         <Button
           color="inherit"
+          data-cy="viewDevice"
           onClick={viewDetailsClickHandler}
           className={classes.button}
           classes={{ endIcon: classes.buttonEndIcon }}
@@ -62,6 +64,7 @@ export const MyDeviceCardHeader: React.FC<MyDeviceCardHeaderProps> = ({
         {showEditButton && (
           <Button
             color="inherit"
+            data-cy="editDevice"
             onClick={editDeviceClickHandler}
             className={classes.button}
             classes={{ iconSizeMedium: classes.smallEndIcon }}

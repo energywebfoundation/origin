@@ -3,7 +3,7 @@ site_name: EW-Origin
 nav:
     - Introduction: index.md
     - Glossary: user-guide-glossary.md
-    - Getting started: getting-started.md
+    - Install and Build: getting-started.md
     - Architecture: architecture.md
     - Packages: packages.md
     - Platform User Guides:
@@ -52,7 +52,7 @@ nav:
                 - Exchange-Core Package: trade/exchange-core.md
                 - Exchange Token Account Package: trade/exchange-token-account.md
                 - Exchange IO ERC-1888 Package: trade/exchange-io-erc1888.md
-          - Device Registry: 
+          - Device Registry:
                 - Device Registry SDK Overview: device-registry.md
                 - Device Registry API Package: device-registry/device-registry-api.md
     - Origin Backend: backend.md

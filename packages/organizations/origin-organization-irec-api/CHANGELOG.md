@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.8.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.8.0...@energyweb/origin-organization-irec-api@1.8.1) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/origin-organization-irec-api
+
+
+
+
+
+# [1.8.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.6.0...@energyweb/origin-organization-irec-api@1.8.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/config to v1.0.2 ([8bf0044](https://github.com/energywebfoundation/origin/commit/8bf0044caab0b59fd6a7f1de6be03fd55c692f8d))
+* **deps:** update dependency @nestjs/swagger to v5.1.4 ([6d704a5](https://github.com/energywebfoundation/origin/commit/6d704a56e59550e9076cbf42151045e29579ef88))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency typeorm to v0.2.39 ([f872cf4](https://github.com/energywebfoundation/origin/commit/f872cf445f18e8e9686b973dbf7c36e8f08cca17))
+* **deps:** update dependency typeorm to v0.2.40 ([c13fb63](https://github.com/energywebfoundation/origin/commit/c13fb6371a005bed3c43771f073eda88020947cd))
+* **deps:** update dependency typeorm to v0.2.41 ([ea80dda](https://github.com/energywebfoundation/origin/commit/ea80dda9f029703602a50c874992ca894edf3245))
+* **origin-backend:** updated typeorm and fixed issues with it ([171e7f4](https://github.com/energywebfoundation/origin/commit/171e7f48f374f74e3aec2d99d4d1762e3805d0f5))
+* **origin-irec-backend-app:** fixed event handlers ([de56a87](https://github.com/energywebfoundation/origin/commit/de56a872e98cff6d535806e80b2d91bc8799ef4b))
+* **origin-organization-irec-api:** fix conflict in swagger for irec accounts endpoint ([a71935c](https://github.com/energywebfoundation/origin/commit/a71935cea02d78d427fed3e4b93a0ab75e460553))
+* **origin-organization-irec-api:** fix for beneficiary registration ([ef2cee1](https://github.com/energywebfoundation/origin/commit/ef2cee1af2cfe1e19241dd414be7e8cc6caba5ca))
+* **origin-organization-irec-api:** fix tokens renewal ([23a0bbd](https://github.com/energywebfoundation/origin/commit/23a0bbd1d9c1ad5d00b9e11fa9ae99945d8286ec))
+* **origin-organization-irec-api:** remove restriction on participant account for issuer and devicemanager ([f3909e2](https://github.com/energywebfoundation/origin/commit/f3909e2e51d62624546080abc1787813d15f7084))
+
+
+### Features
+
+* **exchange-irec:** added transfer certificate to irec ([eeb73cc](https://github.com/energywebfoundation/origin/commit/eeb73cc0dcf4570814580840e8d5d08ab0b68395))
+* **issuer-irec-api:** support custom irec accounts for devices and certificates ([bfedc31](https://github.com/energywebfoundation/origin/commit/bfedc31788a4bbd8d700225e5376e4a714333dba))
+* **origin-backend-irec-app:** create exchange deposit address on org registration and in migration's seed ([1f8884d](https://github.com/energywebfoundation/origin/commit/1f8884d16cdebaf3cdab80b66e27b4c93ea418a9))
+* **origin-organization-irec-api:** added optional trade/redemption account parameters for clam and transfer ([787c43b](https://github.com/energywebfoundation/origin/commit/787c43beda56b543f14ab6e9a9dcdb1ce79b8875))
+* **origin-organization-irec-api:** create irec account methods ([7c836de](https://github.com/energywebfoundation/origin/commit/7c836de5c7a9ce2fe2d7387ed8defb1fe34bc255))
+* **origin-organization-irec-api:** support source trade acc for irec module ([5711c68](https://github.com/energywebfoundation/origin/commit/5711c68b5aaa20cb9e9499b56cab6f114b65cbfa))
+* **origin-organization-irec-api:** validate irec account roles and create missing irec org accounts ([d0709d3](https://github.com/energywebfoundation/origin/commit/d0709d3a436f5c6cb54b2dc38544d9f51793de32))
+
+
+
+
+
 # [1.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.6.0...@energyweb/origin-organization-irec-api@1.7.0) (2021-12-24)
 
 

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { ISuccessResponse, ResponseFailure, ResponseSuccess } from '@energyweb/origin-backend-core';
 import { Certificate as OnChainCertificate } from '@energyweb/issuer';
-
+import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate.entity';
 import { SyncCertificateEvent, CertificateUpdatedEvent } from '../events';
 @EventsHandler(SyncCertificateEvent)
@@ -14,7 +14,8 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
     constructor(
         @InjectRepository(Certificate)
         private readonly repository: Repository<Certificate>,
-        private readonly eventBus: EventBus
+        private readonly eventBus: EventBus,
+        private readonly blockchainPropertiesService: BlockchainPropertiesService
     ) {}
 
     async handle({ id, byTxHash }: SyncCertificateEvent): Promise<ISuccessResponse> {
@@ -33,9 +34,11 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
             );
         }
 
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
+
         const onChainCert = await new OnChainCertificate(
             certificate.id,
-            certificate.blockchain.wrap()
+            blockchainProperties
         ).sync();
 
         try {

@@ -2,7 +2,7 @@
 [**Source code on GitHub**](https://github.com/energywebfoundation/origin/tree/master/packages/traceability/issuer-api)
 
 ## Overview
-The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling certificate operations (certificate request, issuance, transfer, claiming, revoking), and persisting certificate data. You can read more about the certificate lifecycle [here](../../traceability.md). 
+The Issuer API is a [NestJS](https://nestjs.com/) package that provides restful endpoints for handling certificate operations (certificate request, issuance, transfer, claiming, revoking), and persisting certificate data. You can read more about the certificate lifecycle [here](../../traceability.md#certificate-lifecycle). 
 
 The below gives an overview the of the package architecture, however the NestJS documentation provides further detail into the fundamentals of NestJS Architecture that may help to understand the elements of this application:  
 
@@ -29,7 +29,7 @@ Each module contains code relevant for a specific feature. In general, each Nest
 + A [module](https://docs.nestjs.com/modules) class that is used by NestJS to structure the application
 
 ## Persistence
-The Issuer API uses a relational database for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
+The Issuer API uses [PostgreSQL](https://www.postgresql.org/) for persistence with [TypeORM](https://typeorm.io/#/) as a database integration library. The application creates a repository for each entity. Entities are defined in the .entity.ts file in each module, and are marked with the @Entity decorator. (You can read more about entities in the TypeORM documentation [here](https://typeorm.io/#/entities)). 
 
 ```
 @Entity({ name: CERTIFICATION_REQUESTS_TABLE_NAME })

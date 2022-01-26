@@ -25,7 +25,7 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
         isPrivate,
         metadata
     }: IssueCertificateCommand): Promise<ContractTransaction> {
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         if (!isPrivate) {
             return await CertificateFacade.create(
@@ -34,7 +34,7 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
                 fromTime,
                 toTime,
                 deviceId,
-                blockchainProperties.wrap(),
+                blockchainProperties,
                 metadata
             );
         }
@@ -45,7 +45,7 @@ export class IssueCertificateHandler implements ICommandHandler<IssueCertificate
             fromTime,
             toTime,
             deviceId,
-            blockchainProperties.wrap(),
+            blockchainProperties,
             metadata
         );
 

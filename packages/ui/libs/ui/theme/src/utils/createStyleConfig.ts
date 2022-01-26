@@ -1,4 +1,3 @@
-import { Theme } from '@mui/material/styles';
 import {
   OriginUiThemeVariables,
   variables_darkTheme,
@@ -20,10 +19,6 @@ export interface IOriginStyleConfig {
 }
 
 const DEFAULT_COLOR = variables_darkTheme.primaryColor;
-
-export interface IOriginThemeConfiguration {
-  materialTheme: Theme;
-}
 
 export function createStyleConfig(
   themeVariables: OriginUiThemeVariables

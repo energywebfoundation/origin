@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "0.3.1",
+    "version": "1.0.2",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/src"
@@ -21,7 +21,7 @@
         "build": "yarn build:static && yarn build:ts && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers",
         "build:static": "yarn compile && yarn typechain:ethers",
-        "build:ts": "tsc -b tsconfig.json",
+        "build:ts": "tsc --project tsconfig.json",
         "compile": "truffle compile",
         "lint": "solium -d contracts",
         "lint-fix": "solium -d contracts --fix && eslint \"src/**/*{.ts,.tsx}\" --fix",
@@ -40,14 +40,14 @@
         "ethers": "5.3.1"
     },
     "devDependencies": {
-        "@energyweb/issuer": "5.0.0",
+        "@energyweb/issuer": "6.0.1",
         "@openzeppelin/cli": "2.8.2",
-        "@openzeppelin/contracts": "4.4.1",
+        "@openzeppelin/contracts": "4.4.2",
         "@openzeppelin/contracts-upgradeable": "4.4.1",
         "@openzeppelin/upgrades": "2.8.0",
         "@typechain/ethers-v5": "7.0.1",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.18.3",
+        "@types/node": "14.18.4",
         "mocha": "9.1.3",
         "solc": "0.8.4",
         "truffle": "5.4.26",

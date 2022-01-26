@@ -205,6 +205,7 @@ declare namespace Cypress {
     fillIRecRegistrationInfo(
       iRecData: IRecRegistrationInfoForm
     ): Chainable<Element>;
+    fillConnectIrecForm(): Chainable<Element>;
     fillDeviceInfoForm(deviceData: DeviceInfoFormValues): Chainable<Element>;
     fillDeviceLocationForm(
       deviceData: DeviceLocationFormValues
@@ -212,7 +213,7 @@ declare namespace Cypress {
     fillDeviceImagesForm(): Chainable<Element>;
     fillDeviceForm(
       userData: UserRegisterData,
-      orgData: DeviceFormPostData
+      deviceData: DeviceFormPostData
     ): Chainable<Element>;
     attachDocument(uploadDataCy: string): Chainable<Element>;
     attachMultipleDocuments(
@@ -221,6 +222,11 @@ declare namespace Cypress {
     ): Chainable<Element>;
     apiGetFuelType(userData: UserRegisterData): Chainable<Element>;
     apiGetDeviceType(userData: UserRegisterData): Chainable<Element>;
+    apiConnectIrec(userData: UserRegisterData): Chainable<Element>;
+    apiRegisterIrecOrg(
+      userData: UserRegisterData,
+      irecData: IRecOrganizationPostData
+    ): Chainable<Element>;
     apiRegisterOrg(
       userData: UserRegisterData,
       orgData: OrganizationPostData

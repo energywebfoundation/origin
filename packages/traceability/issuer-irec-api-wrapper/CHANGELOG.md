@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@1.1.0...@energyweb/issuer-irec-api-wrapper@1.1.1) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/issuer-irec-api-wrapper
+
+
+
+
+
+# [1.1.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.6.0...@energyweb/issuer-irec-api-wrapper@1.1.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v0.24.0 ([1ff92e7](https://github.com/energywebfoundation/origin/commit/1ff92e7297ff0bcdb54704b327f1e3d719e9e029))
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency class-validator to v0.13.2 ([684367a](https://github.com/energywebfoundation/origin/commit/684367a560a8ef40fc7703aaae697c622ef2fbe6))
+* **deps:** update dependency moment-timezone to v0.5.34 ([0418f59](https://github.com/energywebfoundation/origin/commit/0418f59b26c3a33b84ab2ec7d46893bfaeb32fda))
+* **deps:** update dependency qs to v6.10.2 ([fbfeb37](https://github.com/energywebfoundation/origin/commit/fbfeb370952b549866221e6767f93f716b706844))
+* **issuer-irec-api-wrapper:** fix for failing api calls after tokens refresh ([631d3ed](https://github.com/energywebfoundation/origin/commit/631d3edfaf5f80e595bcd61d17989cb1fdbb68ad))
+
+
+### Features
+
+* **origin-backend-irec-app:** create exchange deposit address on org registration and in migration's seed ([1f8884d](https://github.com/energywebfoundation/origin/commit/1f8884d16cdebaf3cdab80b66e27b4c93ea418a9))
+* **origin-organization-irec-api:** create irec account methods ([7c836de](https://github.com/energywebfoundation/origin/commit/7c836de5c7a9ce2fe2d7387ed8defb1fe34bc255))
+* **origin-organization-irec-api:** validate irec account roles and create missing irec org accounts ([d0709d3](https://github.com/energywebfoundation/origin/commit/d0709d3a436f5c6cb54b2dc38544d9f51793de32))
+
+
+
+
+
 # [0.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@0.6.0...@energyweb/issuer-irec-api-wrapper@0.7.0) (2021-12-24)
 
 

@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/energywebfoundation/origin/issues"
     },
-    "version": "5.0.0",
+    "version": "6.0.1",
     "main": "dist/js/src/index.js",
     "files": [
         "dist/js/build",
@@ -24,7 +24,7 @@
     "scripts": {
         "build": "yarn build:static && yarn build:ts && yarn generate:docs",
         "build:static": "yarn compile && yarn typechain:registry && yarn typechain:registry:extended && yarn typechain:issuer && yarn typechain:issuer:private",
-        "build:ts": "tsc -b tsconfig.json && yarn copy:declarations",
+        "build:ts": "tsc --project tsconfig.json && yarn copy:declarations",
         "copy:declarations": "shx cp src/ethers/*.d.ts dist/js/src/ethers && shx cp -rf contracts dist/",
         "typechain:registry": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/Registry.json'",
         "typechain:registry:extended": "typechain --target ethers-v5 --out-dir src/ethers './build/contracts/RegistryExtended.json'",
@@ -47,7 +47,7 @@
     },
     "types": "dist/js/src/index.d.ts",
     "dependencies": {
-        "@energyweb/utils-general": "11.1.0",
+        "@energyweb/utils-general": "11.2.1",
         "@ethersproject/abi": "5.3.1",
         "@ethersproject/abstract-signer": "5.3.0",
         "@ethersproject/contracts": "5.3.0",
@@ -61,14 +61,14 @@
         "winston": "3.3.3"
     },
     "devDependencies": {
-        "@openzeppelin/contracts": "4.4.1",
+        "@openzeppelin/contracts": "4.4.2",
         "@openzeppelin/contracts-upgradeable": "4.4.1",
         "@openzeppelin/truffle-upgrades": "1.11.0",
         "@typechain/ethers-v5": "7.0.1",
         "@types/chai": "4.3.0",
         "@types/dotenv": "6.1.1",
         "@types/mocha": "9.0.0",
-        "@types/node": "14.18.3",
+        "@types/node": "14.18.4",
         "@types/supertest": "2.0.11",
         "chai": "4.3.4",
         "ethlint": "1.2.5",

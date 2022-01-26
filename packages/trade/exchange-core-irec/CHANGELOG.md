@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.7](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core-irec@1.0.6...@energyweb/exchange-core-irec@1.0.7) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/exchange-core-irec
+
+
+
+
+
+## [1.0.6](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core-irec@1.0.4...@energyweb/exchange-core-irec@1.0.6) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **deps:** update dependency immutable to v4.0.0 ([479ae47](https://github.com/energywebfoundation/origin/commit/479ae47676deaefb2e8d9121f0a592a3d8066f59))
+* **deps:** update dependency immutable to v4.0.0-rc.15 ([edb971d](https://github.com/energywebfoundation/origin/commit/edb971d95c8fbe3dd5f719879f49021bcdb4362b))
+
+
+
+
+
 ## [1.0.5](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core-irec@1.0.4...@energyweb/exchange-core-irec@1.0.5) (2021-12-24)
 
 

@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { DateFormatEnum } from './setGlobalTimeLanguage';
+import { DateFormatEnum } from './DateFormatEnum';
 
 export const formatDate = (
   date: Dayjs | number | string,

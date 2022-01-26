@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@6.0.0...@energyweb/issuer@6.0.1) (2022-01-18)
+
+**Note:** Version bump only for package @energyweb/issuer
+
+
+
+
+
+# [6.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@4.1.0...@energyweb/issuer@6.0.0) (2021-12-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chai to v4.3.4 ([4cda837](https://github.com/energywebfoundation/origin/commit/4cda8376255385f0b8dddbfbbd4652ea36f43c83))
+* **issuer:** Make sure that .sol files are contained within the NPM release ([7b45bc8](https://github.com/energywebfoundation/origin/commit/7b45bc83b7c18c670c2ca155d7ecaa2efd5ebaf0))
+
+
+### Features
+
+* **issuer:** Operator approval check function ([15c04e3](https://github.com/energywebfoundation/origin/commit/15c04e3e377ea97ab5ae08f42305d6796f81f4b9))
+* **issuer:** Return transaction hash on Certificate.create() ([aef990a](https://github.com/energywebfoundation/origin/commit/aef990a1801d3d5e8864f59b16845cab1620ef19))
+
+
+### BREAKING CHANGES
+
+* **issuer:** The Certificate facade no longer waits for the create() transaction to be mined, but delegates that responsibility to the facade user.
+
+
+
+
+
 # [5.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@4.1.0...@energyweb/issuer@5.0.0) (2021-12-24)
 
 

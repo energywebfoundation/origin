@@ -78,7 +78,7 @@ export class OriginAppModule {
                 ExchangeErc1888Module,
                 ExchangeIRECModule,
                 IRECOrganizationModule,
-                IssuerModule.register(),
+                IssuerModule.register({}),
                 OrganizationModule,
                 OriginDeviceRegistry,
                 UserModule,
