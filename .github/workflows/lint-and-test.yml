@@ -47,38 +47,46 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup GIT user
-      uses: fregante/setup-git-user@v1
-
     - uses: actions/setup-node@v2-beta
       with:
         node-version: '14'
 
+    - name: "Generate unique id"
+      id: generate_unique_id
+      uses: ./.github/actions/build_id
+
     - name: Restore timestamp
       run: |
         sh scripts/restore-original-timestamps.sh
+
+    - name: Install rush
+      run: |
+        npm install -g @microsoft/rush
+
     - name: Install application
       # lerna doesn't work without additional fetch
       run: |
-        git fetch origin master:master
-        node common/scripts/install-run-rush.js install
+        node common/scripts/install-run-rush.js update
+
     - name: Build application
       run: |
-        node common/scripts/install-run-rush.js build
+        node common/scripts/install-run-rush.js rebuild -v
+      
     - name: Build UI for production
       run: |
         node common/scripts/install-run-rush.js build:ui:prod
-    
-    - name: Build UI packages
-      run: |
-        node common/scripts/install-run-rush.js build:ui-packages
-    - name: Build storybook application
+
+    - name: Build Storybook application
       run: node common/scripts/install-run-rush.js build:storybook
 
-    - name: Deploy storybook application
+    - name: Deploy application
       run: |
-        yarn build:storybook:container:release
-        yarn deploy:storybook:heroku:stable
+        yarn build:containers:canary
+        yarn deploy:heroku:canary
       env:
+        BUILD_ID: ${{ steps.generate_unique_id.outputs.unique_id }}
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_STABLE_APP_SB: ${{ secrets.HEROKU_STABLE_APP_SB }}
+        HEROKU_CANARY_APP_API: ${{ secrets.HEROKU_CANARY_APP_API }}
+        HEROKU_CANARY_APP_UI: ${{ secrets.HEROKU_CANARY_APP_UI }}
+        HEROKU_CANARY_APP_SB: ${{ secrets.HEROKU_CANARY_APP_SB }}
+

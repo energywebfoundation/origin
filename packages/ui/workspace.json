@@ -768,7 +768,7 @@
             }
           }
         },
-        "build-storybook-canary-container": {
+        "build-storybook-canary": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "command": "make build-canary",
@@ -776,7 +776,7 @@
             "parallel": false
           }
         },
-        "build-storybook-release-container": {
+        "build-storybook-release": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "command": "make build-latest",
@@ -784,7 +784,7 @@
             "parallel": false
           }
         },
-        "deploy-storybook-canary-container": {
+        "deploy-storybook-canary": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "command": "make push-heroku-canary",
@@ -792,7 +792,7 @@
             "parallel": false
           }
         },
-        "deploy-storybook-stable-container": {
+        "deploy-storybook-stable": {
           "executor": "@nrwl/workspace:run-commands",
           "options": {
             "command": "make push-heroku-stable",
