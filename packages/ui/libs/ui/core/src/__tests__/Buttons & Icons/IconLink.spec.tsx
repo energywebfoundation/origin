@@ -3,8 +3,8 @@ import { composeStories } from '@storybook/testing-react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import * as stories from './IconLink.stories';
-import { IconLinkProps } from './IconLink';
+import * as stories from '../../components/icons/IconLink/IconLink.stories';
+import { IconLinkProps } from '../../components/icons/IconLink/IconLink';
 
 const { Default } = composeStories(stories);
 
