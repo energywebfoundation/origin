@@ -76,16 +76,8 @@ jobs:
       run: |
         node common/scripts/install-run-rush.js build:ui-packages
 
-    - name: Build storybook application
+    - name: Build Storybook application
       run: node common/scripts/install-run-rush.js build:storybook
-
-    - name: Deploy storybook application
-      run: |
-        yarn build:storybook:container:release
-        yarn deploy:storybook:heroku:stable
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_STABLE_APP_SB: ${{ secrets.HEROKU_STABLE_APP_SB }}
 
     - name: Set creds to npm 
       run: |
@@ -110,3 +102,4 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_STABLE_APP_API: ${{ secrets.HEROKU_STABLE_APP_API }}
           HEROKU_STABLE_APP_UI: ${{ secrets.HEROKU_STABLE_APP_UI }}
+          HEROKU_STABLE_APP_SB: ${{ secrets.HEROKU_STABLE_APP_SB }}
