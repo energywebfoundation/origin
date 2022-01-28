@@ -1,6 +1,6 @@
 import React from 'react';
 import { composeStories } from '@storybook/testing-react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { WindRegular } from '@energyweb/origin-ui-assets';
 import '@testing-library/jest-dom';
 
