@@ -138,8 +138,12 @@ export class CertificationRequestController {
         type: SuccessResponseDTO,
         description: 'Approves a Certification Request'
     })
-    public async approve(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(new ApproveIrecCertificationRequestCommand(id));
+    public async approve(
+        @Param('id', new ParseIntPipe()) id: number,
+        @UserDecorator() user: ILoggedInUser
+    ): Promise<SuccessResponseDTO> {
+        const command = new ApproveIrecCertificationRequestCommand(id, user.organizationId);
+        return this.commandBus.execute(command);
     }
 
     @Put('/:id/revoke')
@@ -150,7 +154,11 @@ export class CertificationRequestController {
         type: SuccessResponseDTO,
         description: 'Revokes a Certification Request'
     })
-    public async revoke(@Param('id', new ParseIntPipe()) id: number): Promise<SuccessResponseDTO> {
-        return this.commandBus.execute(new RevokeIrecCertificationRequestCommand(id));
+    public async revoke(
+        @Param('id', new ParseIntPipe()) id: number,
+        @UserDecorator() user: ILoggedInUser
+    ): Promise<SuccessResponseDTO> {
+        const command = new RevokeIrecCertificationRequestCommand(id, user.organizationId);
+        return this.commandBus.execute(command);
     }
 }
