@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Inject } from '@nestjs/common';
 
 import { ISuccessResponse } from '@energyweb/origin-backend-core';
-import { UserService } from '@energyweb/origin-backend';
 import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
 import { ApproveCertificationRequestCommand } from '@energyweb/issuer-api';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
@@ -20,19 +19,20 @@ export class ApproveIrecCertificationRequestHandler
         @InjectRepository(IrecCertificationRequest)
         private readonly irecRepository: Repository<IrecCertificationRequest>,
         private readonly commandBus: CommandBus,
-        private readonly userService: UserService,
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService
     ) {}
 
-    async execute({ id }: ApproveIrecCertificationRequestCommand): Promise<ISuccessResponse> {
-        const platformAdmin = await this.userService.getPlatformAdmin();
+    async execute({
+        id,
+        organizationId
+    }: ApproveIrecCertificationRequestCommand): Promise<ISuccessResponse> {
         const { irecIssueRequestId } = await this.irecRepository.findOne({
             certificationRequestId: id
         });
 
         const issueRequest = await this.irecService.getIssueRequest(
-            platformAdmin.organization.id,
+            organizationId,
             irecIssueRequestId
         );
 
@@ -50,17 +50,12 @@ export class ApproveIrecCertificationRequestHandler
 
         const inProgressStatuses = [IssuanceStatus.Submitted, IssuanceStatus.InProgress];
         if (inProgressStatuses.includes(issueRequest.status)) {
-            await this.irecService.verifyIssueRequest(
-                platformAdmin.organization.id,
-                irecIssueRequestId
-            );
+            await this.irecService.verifyIssueRequest(organizationId, irecIssueRequestId);
         }
 
-        const issueAccountCode = await this.irecService.getIssueAccountCode(
-            platformAdmin.organization.id
-        );
+        const issueAccountCode = await this.irecService.getIssueAccountCode(organizationId);
         const transaction = await this.irecService.approveIssueRequest(
-            platformAdmin.organization.id,
+            organizationId,
             irecIssueRequestId,
             issueAccountCode
         );
