@@ -66,6 +66,24 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
+            "commandKind": "bulk",
+            "name": "build:container:canary",
+            "summary": "Deploys the canary containers",
+            "safeForSimultaneousRushProcesses": false,
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
+            "commandKind": "bulk",
+            "name": "build:container:latest",
+            "summary": "Deploys the stable containers",
+            "safeForSimultaneousRushProcesses": false,
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "name": "build:storybook",
             "commandKind": "global",
             "summary": "Build ui storybook",
