@@ -3,8 +3,8 @@ import { composeStories } from '@storybook/testing-react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import * as stories from './MenuItem.stories';
-import { MenuItemProps } from './MenuItem';
+import * as stories from '../../components/navigation/MenuItem/MenuItem.stories';
+import { MenuItemProps } from '../../components/navigation/MenuItem/MenuItem';
 
 const { Default } = composeStories(stories);
 
