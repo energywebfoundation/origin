@@ -3,8 +3,8 @@ import { composeStories } from '@storybook/testing-react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
-import * as stories from './GenericModal.stories';
-import { GenericModalProps } from './GenericModal';
+import * as stories from '../../components/modal/GenericModal/GenericModal.stories';
+import { GenericModalProps } from '../../components/modal/GenericModal/GenericModal';
 
 const { Default, WithTwoParagraphs, WithTwoButtons, WithIcon } =
   composeStories(stories);
@@ -40,7 +40,7 @@ describe('GenericModal', () => {
   });
 
   it('should render GenericModal with 2 different buttons', () => {
-    const { baseElement, getByRole, getByText } = render(
+    const { baseElement, getByRole } = render(
       <WithTwoButtons {...(WithTwoButtons.args as GenericModalProps)} />
     );
 
