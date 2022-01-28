@@ -757,7 +757,7 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "uiFramework": "@storybook/react",
-            "outputPath": "dist/storybook/ui-core",
+            "outputPath": "libs/ui/core/dist/storybook",
             "config": {
               "configFolder": "libs/ui/core/.storybook"
             }
@@ -766,6 +766,38 @@
             "ci": {
               "quiet": true
             }
+          }
+        },
+        "build-storybook-canary": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "make build-canary",
+            "cwd": "libs/ui/core",
+            "parallel": false
+          }
+        },
+        "build-storybook-release": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "make build-latest",
+            "cwd": "libs/ui/core",
+            "parallel": false
+          }
+        },
+        "deploy-storybook-canary": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "make push-heroku-canary",
+            "cwd": "libs/ui/core",
+            "parallel": false
+          }
+        },
+        "deploy-storybook-stable": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "command": "make push-heroku-stable",
+            "cwd": "libs/ui/core",
+            "parallel": false
           }
         }
       },

@@ -84,6 +84,15 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
+            "name": "build:storybook",
+            "commandKind": "global",
+            "summary": "Build ui storybook",
+            "safeForSimultaneousRushProcesses": false,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "yarn run build:storybook",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "commandKind": "bulk",
             "name": "clean",
             "summary": "Cleans the repo",
