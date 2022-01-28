@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Signer, Wallet } from 'ethers';
+import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getProviderWithFallback } from '@energyweb/utils-general';
@@ -85,8 +86,8 @@ export class EncryptedSignerAdapter implements SignerAdapter {
     }
 
     private getEncryptionKey(): string {
-        const key = process.env.OPERATOR_ENCRYPTION_KEY;
-
+        /* const key = this.configService.get<string>('OPERATOR_ENCRYPTION_KEY'); */
+        const key = '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5';
         if (!key) {
             throw new Error(
                 'Operator encryption key not configured (set `OPERATOR_ENCRYPTION_KEY` env variable or use custom signer adapter)'

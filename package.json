@@ -47,6 +47,7 @@
         "node": "14"
     },
     "dependencies": {
+        "@ethersproject/providers": "^5.5.2",
         "parity": "^0.2.7",
         "pnpm": "^6.26.1",
         "python": "0.0.4",

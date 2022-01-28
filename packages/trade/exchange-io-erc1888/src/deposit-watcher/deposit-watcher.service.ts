@@ -53,31 +53,39 @@ export class DepositWatcherService implements OnModuleInit {
         this.registryAddress = await exchangeConfigService.getRegistryAddress();
 
         const web3ProviderUrl = this.configService.get<string>('WEB3');
-        this.provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
+        try {
+            this.provider = getProviderWithFallback(...web3ProviderUrl.split(';'));
+        } catch (e) {
+            console.log(e);
+        }
 
-        this.registry = new Contract(
-            this.registryAddress,
-            Contracts.RegistryExtendedJSON.abi,
-            this.provider
-        );
+        try {
+            this.registry = new Contract(
+                this.registryAddress,
+                Contracts.RegistryExtendedJSON.abi,
+                this.provider
+            );
 
-        this.issuer = new Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
+            this.issuer = new Contract(issuer, Contracts.IssuerJSON.abi, this.provider);
 
-        const topics = [
-            this.tokenInterface.getEventTopic(this.tokenInterface.getEvent('TransferSingle'))
-        ];
-        const blockNumber = await this.transferService.getLastConfirmationBlock();
+            const topics = [
+                this.tokenInterface.getEventTopic(this.tokenInterface.getEvent('TransferSingle'))
+            ];
+            const blockNumber = await this.transferService.getLastConfirmationBlock();
 
-        this.logger.debug(`Starting from block ${blockNumber}`);
+            this.logger.debug(`Starting from block ${blockNumber}`);
 
-        this.provider.resetEventsBlock(blockNumber);
-        this.provider.on(
-            {
-                address: this.registryAddress,
-                topics
-            },
-            (event: providers.Log) => this.processEvent(event)
-        );
+            this.provider.resetEventsBlock(blockNumber);
+            this.provider.on(
+                {
+                    address: this.registryAddress,
+                    topics
+                },
+                (event: providers.Log) => this.processEvent(event)
+            );
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     private async processEvent(event: providers.Log) {
