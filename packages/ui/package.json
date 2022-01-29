@@ -106,8 +106,8 @@
     "yup": "0.32.11"
   },
   "devDependencies": {
-    "@babel/core": "7.16.7",
-    "@babel/preset-env": "7.16.7",
+    "@babel/core": "7.16.12",
+    "@babel/preset-env": "7.16.11",
     "@babel/preset-react": "7.16.0",
     "@babel/preset-typescript": "7.16.7",
     "@emotion/babel-plugin": "11.7.2",
