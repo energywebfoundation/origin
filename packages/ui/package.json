@@ -139,7 +139,7 @@
     "@types/jest": "27.4.0",
     "@types/lodash": "4.14.178",
     "@types/material-ui": "0.21.12",
-    "@types/node": "14.18.4",
+    "@types/node": "14.18.9",
     "@types/react": "17.0.37",
     "@types/react-beautiful-dnd": "13.1.2",
     "@types/react-dom": "17.0.11",
