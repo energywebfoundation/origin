@@ -33,7 +33,7 @@
         "@energyweb/origin-backend-core": "8.0.2",
         "@energyweb/origin-backend-utils": "1.6.1",
         "@energyweb/utils-general": "11.0.3",
-        "@types/pg": "8.6.3",
+        "@types/pg": "8.6.4",
         "commander": "6.2.1",
         "dotenv": "10.0.0",
         "ethers": "5.3.1",
