@@ -5,6 +5,7 @@
         "depcheck": "lerna exec \"depcheck --skip-missing\" --stream --concurrency 1 --no-bail",
         "build": "yarn build:static && yarn build:ts && lerna run build --scope ui-packages --stream",
         "build:ui": "lerna run build --scope ui-packages --stream",
+        "build:storybook": "lerna run storybook-build --scope ui-packages --stream",
         "build:docs": "lerna run build:docs",
         "lint": "lerna run lint --parallel --stream",
         "lint-fix": "lerna run lint-fix --parallel --stream",

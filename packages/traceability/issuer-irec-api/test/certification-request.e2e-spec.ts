@@ -139,7 +139,7 @@ describe('Certification Request tests', () => {
             .send(certificationRequestTestData);
 
         // need to wait for item to be picked up from the queue and deployed
-        await sleep(5000);
+        await sleep(7500);
 
         const {
             body: { success }
@@ -184,7 +184,7 @@ describe('Certification Request tests', () => {
             .expect(HttpStatus.CREATED);
 
         // need to wait for item to be picked up from the queue and deployed
-        await sleep(3000);
+        await sleep(7500);
 
         await request(app.getHttpServer())
             .put(`/irec/certification-request/${certificationRequestId}/revoke`)
@@ -214,7 +214,7 @@ describe('Certification Request tests', () => {
             });
 
         // need to wait for item to be picked up from the queue and deployed
-        await sleep(3000);
+        await sleep(7500);
 
         await request(app.getHttpServer())
             .put(`/irec/certification-request/${certificationRequestId}/revoke`)
@@ -258,7 +258,7 @@ describe('Certification Request tests', () => {
             .expect(HttpStatus.CREATED);
 
         // need to wait for item to be picked up from the queue and deployed
-        await sleep(3000);
+        await sleep(7500);
 
         expect(isPrivate).to.be.true;
 
