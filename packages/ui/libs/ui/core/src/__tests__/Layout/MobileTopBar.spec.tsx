@@ -1,6 +1,6 @@
 import React from 'react';
 import { composeStories } from '@storybook/testing-react';
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import * as stories from '../../components/layout/MobileTopBar/MobileTopBar.stories';
@@ -44,9 +44,7 @@ describe('MobileTopBar', () => {
     const { baseElement } = render(
       <WithThemeSwitcher {...(WithThemeSwitcher.args as MobileTopBarProps)} />
     );
-    await act(() => {
-      fireEvent.click(baseElement.querySelector('.MuiSwitch-input'));
-    });
+    fireEvent.click(baseElement.querySelector('.MuiSwitch-input'));
     expect(baseElement.querySelector('.Mui-checked')).toBeInTheDocument();
   });
 });

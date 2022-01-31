@@ -1,6 +1,6 @@
 import React from 'react';
 import { composeStories } from '@storybook/testing-react';
-import { fireEvent, render, act } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import * as stories from '../../components/layout/DesktopTopBar/DesktopTopBar.stories';
@@ -46,13 +46,11 @@ describe('DesktopTopBar', () => {
     expect(baseElement.querySelector('.MuiSwitch-input')).toBeInTheDocument();
   });
 
-  it('theme switcher should work', async () => {
+  it('theme switcher should work', () => {
     const { baseElement } = render(
       <WithThemeSwitcher {...(WithThemeSwitcher.args as DesktopTopBarProps)} />
     );
-    await act(() => {
-      fireEvent.click(baseElement.querySelector('.MuiSwitch-input'));
-    });
+    fireEvent.click(baseElement.querySelector('.MuiSwitch-input'));
     expect(baseElement.querySelector('.Mui-checked')).toBeInTheDocument();
   });
 });

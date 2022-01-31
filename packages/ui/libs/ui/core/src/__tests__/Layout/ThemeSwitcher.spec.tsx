@@ -1,6 +1,6 @@
 import React from 'react';
 import { composeStories } from '@storybook/testing-react';
-import { render, fireEvent, act } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import * as stories from '../../components/layout/ThemeSwitcher/ThemeSwitcher.stories';
@@ -18,14 +18,11 @@ describe('ThemeSwitcher', () => {
     expect(baseElement.querySelector('.MuiSwitch-input')).toBeInTheDocument();
   });
 
-  it('should render controlled ThemeSwitcher', async () => {
+  it('should render controlled ThemeSwitcher', () => {
     const { baseElement } = render(
       <Controlled {...(Controlled.args as ThemeSwitcherProps)} />
     );
-    await act(() => {
-      fireEvent.click(baseElement.querySelector('.MuiSwitch-input'));
-    });
-
+    fireEvent.click(baseElement.querySelector('.MuiSwitch-input'));
     expect(baseElement.querySelector('.Mui-checked')).toBeInTheDocument();
   });
 });
