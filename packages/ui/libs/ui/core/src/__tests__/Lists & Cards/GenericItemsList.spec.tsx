@@ -9,6 +9,11 @@ import { GenericItemsListProps } from '../../components/list/GenericItemsList/Ge
 const { Default, Title, Checkboxes, Pagination, EmptyListFallback } =
   composeStories(stories);
 
+const itemsInLists = Checkboxes.args.listContainers.reduce(
+  (acc, current) => acc + current.containerItems.length,
+  0
+);
+
 describe('GenericItemsList', () => {
   it('should render default GenericItemsList', () => {
     const { baseElement, getByText } = render(
@@ -45,13 +50,7 @@ describe('GenericItemsList', () => {
       <Checkboxes {...(Checkboxes.args as GenericItemsListProps<any, any>)} />
     );
 
-    const itemsCount =
-      Checkboxes.args.listContainers.reduce(
-        (acc, current) => acc + current.containerItems.length,
-        0
-      ) +
-      Checkboxes.args.listContainers.length +
-      1;
+    const itemsCount = itemsInLists + Checkboxes.args.listContainers.length + 1;
 
     expect(baseElement).toBeInTheDocument();
     expect(getAllByTestId('CheckBoxOutlineBlankIcon')).toHaveLength(itemsCount);
@@ -74,13 +73,7 @@ describe('GenericItemsList', () => {
       <Checkboxes {...(Checkboxes.args as GenericItemsListProps<any, any>)} />
     );
 
-    const itemsCount =
-      Checkboxes.args.listContainers.reduce(
-        (acc, current) => acc + current.containerItems.length,
-        0
-      ) +
-      Checkboxes.args.listContainers.length +
-      1;
+    const itemsCount = itemsInLists + Checkboxes.args.listContainers.length + 1;
 
     fireEvent.click(
       baseElement.querySelectorAll('.PrivateSwitchBase-input')[0]
