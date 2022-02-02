@@ -76,6 +76,12 @@ export const useAppContainerEffects = () => {
 
   const userHasOrg = Boolean(user?.organization?.id);
   const userIsOrgAdmin = isRole(user, Role.OrganizationAdmin);
+  const userIsOrgAdminOrAdminOrIssuer = isRole(
+    user,
+    Role.OrganizationAdmin,
+    Role.Admin,
+    Role.Issuer
+  );
   const userIsDeviceManagerOrAdmin = isRole(
     user,
     Role.OrganizationDeviceManager,
@@ -83,12 +89,14 @@ export const useAppContainerEffects = () => {
   );
   const userIsActive = user && user.status === UserStatus.Active;
   const userIsIssuer = isRole(user, Role.Issuer);
+  const userIsSupport = isRole(user, Role.SupportAgent);
   const userIsAdminOrSupport = isRole(user, Role.Admin, Role.SupportAgent);
-  const userIsOrgAdminOrAdminOrSupport = isRole(
+  const userIsOrgAdminOrAdminOrSupportOrIssuer = isRole(
     user,
     Role.OrganizationAdmin,
     Role.Admin,
-    Role.SupportAgent
+    Role.SupportAgent,
+    Role.Issuer
   );
   const userOrgHasBlockchainAccountAttached = Boolean(
     user?.organization?.blockchainAccountAddress
@@ -128,13 +136,14 @@ export const useAppContainerEffects = () => {
           ? true
           : !!userInvitations && userInvitations.length > 0,
       showInvite: userIsActive && userHasOrg && userIsOrgAdmin,
-      showRegisterIRec: userHasOrg && userIsOrgAdmin && !Boolean(iRecOrg),
+      showRegisterIRec:
+        userHasOrg && userIsOrgAdminOrAdminOrIssuer && !Boolean(iRecOrg),
       showCreateBeneficiary: userHasOrg && userIsOrgAdmin,
       showConnectIRec:
         userHasOrg &&
-        userIsOrgAdmin &&
+        userIsOrgAdminOrAdminOrIssuer &&
         Boolean(iRecOrg) &&
-        !userIsAdminOrSupport,
+        !userIsSupport,
     }),
     [
       userHasOrg,
@@ -150,7 +159,7 @@ export const useAppContainerEffects = () => {
       getOrganizationMenu({
         t,
         isOpen: isOrganizationTabActive,
-        showSection: userIsOrgAdminOrAdminOrSupport,
+        showSection: userIsOrgAdminOrAdminOrSupportOrIssuer,
         menuButtonClass: isLightTheme ? classes.menuButton : undefined,
         selectedMenuItemClass: isLightTheme
           ? classes.selectedMenuItem
@@ -160,7 +169,7 @@ export const useAppContainerEffects = () => {
     [
       t,
       isOrganizationTabActive,
-      userIsOrgAdminOrAdminOrSupport,
+      userIsOrgAdminOrAdminOrSupportOrIssuer,
       isLightTheme,
       orgRoutesConfig,
     ]

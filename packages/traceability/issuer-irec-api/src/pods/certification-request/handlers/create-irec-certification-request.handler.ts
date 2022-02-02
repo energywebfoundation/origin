@@ -63,7 +63,7 @@ export class CreateIrecCertificationRequestHandler
             dto.irecTradeAccountCode ||
             (await this.irecService.getTradeAccountCode(platformAdmin.organization.id));
 
-        const irecIssue = await this.irecService.createIssueRequest(platformAdmin.organization.id, {
+        const irecIssue = await this.irecService.createIssueRequest(irecDevice.ownerId, {
             device: irecDevice.code,
             fuelType: irecDevice.fuelType,
             recipient: tradeAccount,

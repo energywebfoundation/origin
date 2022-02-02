@@ -2,7 +2,9 @@ const rootMain = require('../../../../.storybook/main');
 
 module.exports = {
   ...rootMain,
-
+  features: {
+    emotionAlias: false,
+  },
   core: {
     ...rootMain.core,
     // opt-into Storybook Webpack 5

@@ -48,6 +48,15 @@
             "allowWarningsInSuccessfulBuild": true
         },
         {
+            "name": "test:ui",
+            "commandKind": "global",
+            "summary": "Run ui tests in packages",
+            "safeForSimultaneousRushProcesses": false,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "yarn run test:ui",
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
             "name": "test:e2e",
             "commandKind": "global",
             "summary": "Run all test:e2e in packages",
@@ -81,6 +90,15 @@
             "safeForSimultaneousRushProcesses": false,
             "enableParallelism": false,
             "ignoreMissingScript": true,
+            "allowWarningsInSuccessfulBuild": true
+        },
+        {
+            "name": "build:storybook",
+            "commandKind": "global",
+            "summary": "Build ui storybook",
+            "safeForSimultaneousRushProcesses": false,
+            "autoinstallerName": "rush-tools",
+            "shellCommand": "yarn run build:storybook",
             "allowWarningsInSuccessfulBuild": true
         },
         {

@@ -76,6 +76,9 @@ jobs:
       run: |
         node common/scripts/install-run-rush.js build:ui-packages
 
+    - name: Build Storybook application
+      run: node common/scripts/install-run-rush.js build:storybook
+
     - name: Set creds to npm 
       run: |
         echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc
@@ -99,3 +102,4 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HEROKU_STABLE_APP_API: ${{ secrets.HEROKU_STABLE_APP_API }}
           HEROKU_STABLE_APP_UI: ${{ secrets.HEROKU_STABLE_APP_UI }}
+          HEROKU_STABLE_APP_SB: ${{ secrets.HEROKU_STABLE_APP_SB }}

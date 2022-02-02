@@ -212,7 +212,7 @@ export default {
   },
 } as Meta;
 
-type DefaultFormValues = {
+export type DefaultFormValues = {
   email: string;
   password: string;
   url: string;
