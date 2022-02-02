@@ -46,5 +46,11 @@
     ],
     "engines": {
         "node": "14"
+    },
+    "dependencies": {
+        "parity": "^0.2.7",
+        "pnpm": "^6.26.1",
+        "python": "0.0.4",
+        "yarn": "^1.22.17"
     }
 }

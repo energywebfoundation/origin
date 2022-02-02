@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "yarn clean && yarn build:ts",
-        "build:ts": "yarn build:client 1>/dev/null 2>/dev/null && tsc --project tsconfig.json",
+        "build:ts": "yarn build:client && tsc --project tsconfig.json",
         "build:client": "yarn client:generate:schema && yarn client:generate",
         "clean": "rm -rf dist dist-shakeable && yarn client:clean",
         "client:generate": "rm -rf src/client && orval && barrelsby -d src/client",
