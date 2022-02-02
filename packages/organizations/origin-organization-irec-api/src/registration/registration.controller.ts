@@ -51,7 +51,7 @@ export class RegistrationController {
 
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.Admin)
+    @Roles(Role.OrganizationAdmin, Role.Admin, Role.Issuer)
     @ApiBody({ type: NewRegistrationDTO })
     @ApiResponse({
         status: HttpStatus.CREATED,
