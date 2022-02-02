@@ -1,18 +1,17 @@
 import React from 'react';
-
+import { composeStories } from '@storybook/testing-react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { BrowserRouter } from 'react-router-dom';
 
-import { Default } from './IconLink.stories';
+import * as stories from './IconLink.stories';
 import { IconLinkProps } from './IconLink';
+
+const { Default } = composeStories(stories);
 
 describe('IconLink', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
-      <BrowserRouter>
-        <Default {...(Default.args as IconLinkProps)} />
-      </BrowserRouter>
+      <Default {...(Default.args as IconLinkProps)} />
     );
 
     expect(baseElement).toBeInTheDocument();
@@ -20,13 +19,10 @@ describe('IconLink', () => {
 
   it('renders check icon with default url', () => {
     const { container } = render(
-      <BrowserRouter>
-        <Default {...(Default.args as IconLinkProps)} />
-      </BrowserRouter>
+      <Default {...(Default.args as IconLinkProps)} />
     );
     expect(container.querySelector('a').getAttribute('href')).toBe(
       Default.args.url
     );
-    expect(container.querySelector('svg')).toBeInTheDocument();
   });
 });

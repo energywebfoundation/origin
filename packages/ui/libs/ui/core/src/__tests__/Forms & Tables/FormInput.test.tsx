@@ -13,8 +13,8 @@ import {
   EndAdornment,
   BothAdornments,
   TestFormValues,
-} from './FormInput.stories';
-import { FormInputProps } from './FormInput';
+} from '../../components/form/FormInput/FormInput.stories';
+import { FormInputProps } from '../../components/form/FormInput/FormInput';
 
 describe('FormInput', () => {
   it('should render default form input', () => {

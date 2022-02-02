@@ -19,7 +19,7 @@
         "run:ganache": "npx ganache-cli -m \"chalk park staff buzz chair purchase wise oak receive avoid avoid home\" -l 8000000 -e 1000000 -a 40 -h 0.0.0.0",
         "test": "lerna run test:concurrent --stream --parallel",
         "test:serial": "lerna run test:concurrent --stream && yarn test:ui",
-        "test:ui": "lerna run test --scope @energyweb/origin-ui-core --stream",
+        "test:ui": "lerna run test --scope ui-packages --stream",
         "test:backend": "lerna run --scope @energyweb/origin-backend --scope @energyweb/origin-backend-utils --stream test",
         "test:utils-general": "lerna run test --scope @energyweb/utils-general --stream",
         "test:ci:e2e": "lerna run test:e2e --stream --ignore @energyweb/exchange-irec --ignore @energyweb/issuer-api && lerna run test:e2e --stream --scope @energyweb/exchange-irec --scope @energyweb/issuer-api",
