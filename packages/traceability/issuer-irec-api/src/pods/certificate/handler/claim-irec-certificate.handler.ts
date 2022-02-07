@@ -3,6 +3,7 @@ import { CommandHandler, ICommandHandler, CommandBus } from '@nestjs/cqrs';
 import { Inject, InternalServerErrorException } from '@nestjs/common';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 import { ClaimCertificateCommand } from '@energyweb/issuer-api';
+import { IClaimData as IssuerClaimData } from '@energyweb/issuer';
 
 import { ClaimIRECCertificateCommand } from '../command';
 
