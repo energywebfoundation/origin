@@ -7,7 +7,12 @@ import { getProviderWithFallback } from '@energyweb/utils-general';
 
 import { Wallet, BigNumber } from 'ethers';
 import { migrateIssuer, migratePrivateIssuer, migrateRegistry } from '../src/migrate';
-import { CertificationRequest, IBlockchainProperties, Certificate } from '../src';
+import {
+    CertificationRequest,
+    IBlockchainProperties,
+    Certificate,
+    CertificateSchemaVersion
+} from '../src';
 import { decodeData, encodeData } from '../src/blockchain-facade/CertificateUtils';
 
 describe('Issuer', () => {
@@ -188,7 +193,11 @@ describe('Issuer', () => {
 
         assert.exists(certificationRequest.issuedCertificateTokenId);
 
-        let certificate = await new Certificate(certificateId, blockchainProperties).sync();
+        let certificate = await new Certificate(
+            certificateId,
+            blockchainProperties,
+            CertificateSchemaVersion.Latest
+        ).sync();
 
         assert.equal(certificate.owners[deviceOwnerWallet.address], volume.toString());
 
@@ -214,7 +223,11 @@ describe('Issuer', () => {
         certificationRequest = await certificationRequest.sync();
         const certificateId = await certificationRequest.approve(volume);
 
-        let certificate = await new Certificate(certificateId, blockchainProperties).sync();
+        let certificate = await new Certificate(
+            certificateId,
+            blockchainProperties,
+            CertificateSchemaVersion.Latest
+        ).sync();
 
         const attackerIssuerContract = await migrateIssuer(
             provider,
