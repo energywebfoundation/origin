@@ -2,12 +2,19 @@ import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-b
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, Validate, ValidateNested } from 'class-validator';
 
-import { ClaimDataDTO } from './claim-data.dto';
+import { ClaimDataDTO, IsClaimData } from './claim-data.dto';
 
 export class ClaimCertificateDTO {
-    @ApiPropertyOptional({ type: ClaimDataDTO })
     @IsOptional()
-    @ValidateNested()
+    @ApiPropertyOptional({
+        type: 'object',
+        additionalProperties: true,
+        description:
+            'Object containing nulls, string, numbers, and arrays or objects of these (recursive type)',
+        example:
+            '{ "location": "Some location", "beneficiaries": [1, 2], "metadata": { "claimerType": "Electric vehicle" } }'
+    })
+    @IsClaimData()
     claimData?: ClaimDataDTO;
 
     @ApiPropertyOptional({ type: String, example: '1000000' })

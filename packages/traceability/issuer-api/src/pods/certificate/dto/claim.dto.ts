@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IClaim } from '@energyweb/issuer';
 import { Validate, IsInt, IsPositive, IsString, ValidateNested } from 'class-validator';
 import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
-import { ClaimDataDTO } from './claim-data.dto';
+import { ClaimDataDTO, IsClaimData } from './claim-data.dto';
 
 export class ClaimDTO implements IClaim {
     @ApiProperty({ type: Number, description: 'Certificate Id' })
@@ -34,7 +34,14 @@ export class ClaimDTO implements IClaim {
     @Validate(IntUnitsOfEnergy)
     value: string;
 
-    @ApiProperty({ type: ClaimDataDTO })
-    @ValidateNested()
+    @ApiProperty({
+        type: 'object',
+        additionalProperties: true,
+        description:
+            'Object containing nulls, string, numbers, and arrays or objects of these (recursive type)',
+        example:
+            '{ "location": "Some location", "beneficiaries": [1, 2], "metadata": { "claimerType": "Electric vehicle" } }'
+    })
+    @IsClaimData()
     claimData: ClaimDataDTO;
 }

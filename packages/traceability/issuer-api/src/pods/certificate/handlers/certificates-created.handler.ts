@@ -2,7 +2,8 @@ import { EventBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import {
     Certificate as CertificateFacade,
     IOwnershipCommitmentProof,
-    PreciseProofUtils
+    PreciseProofUtils,
+    CertificateSchemaVersion
 } from '@energyweb/issuer';
 import { Connection, Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -60,7 +61,11 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
         const newCertificates = await Promise.all(
             notExistingCertificates.map(async (id) => {
                 try {
-                    return await new CertificateFacade(id, blockchainProperties).sync();
+                    return await new CertificateFacade(
+                        id,
+                        blockchainProperties,
+                        CertificateSchemaVersion.Latest
+                    ).sync();
                 } catch (e) {
                     this.logger.error(e.message);
                     throw e;
@@ -97,7 +102,8 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
                     owners: cert.owners,
                     issuedPrivately: !!privateInfo || !!unminedCommitment,
                     latestCommitment: unminedCommitment ?? latestCommitment,
-                    metadata: cert.metadata
+                    metadata: cert.metadata,
+                    schemaVersion: cert.schemaVersion
                 })
             );
 

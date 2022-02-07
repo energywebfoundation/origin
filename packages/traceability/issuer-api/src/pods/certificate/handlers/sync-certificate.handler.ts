@@ -38,7 +38,8 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
 
         const onChainCert = await new OnChainCertificate(
             certificate.id,
-            blockchainProperties
+            blockchainProperties,
+            certificate.schemaVersion
         ).sync();
 
         try {
