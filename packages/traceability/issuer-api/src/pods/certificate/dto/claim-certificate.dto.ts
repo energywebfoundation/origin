@@ -1,6 +1,6 @@
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, Validate, ValidateNested } from 'class-validator';
+import { IsOptional, Validate } from 'class-validator';
 
 import { ClaimDataDTO, IsClaimData } from './claim-data.dto';
 

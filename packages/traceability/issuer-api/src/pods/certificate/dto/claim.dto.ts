@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IClaim } from '@energyweb/issuer';
-import { Validate, IsInt, IsPositive, IsString, ValidateNested } from 'class-validator';
+import { Validate, IsInt, IsPositive, IsString } from 'class-validator';
 import { IntUnitsOfEnergy } from '@energyweb/origin-backend-utils';
 import { ClaimDataDTO, IsClaimData } from './claim-data.dto';
 
