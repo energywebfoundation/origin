@@ -7,7 +7,12 @@ import {
     UpdateDateColumn
 } from 'typeorm';
 import { IsBoolean, IsInt, IsPositive, IsString, Min, IsNumber } from 'class-validator';
-import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
+import {
+    CertificateSchemaVersion,
+    CertificateUtils,
+    IClaim,
+    IOwnershipCommitmentProof
+} from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
 
 export const CERTIFICATES_TABLE_NAME = 'issuer_certificate';
@@ -74,5 +79,5 @@ export class Certificate {
     @Column()
     @IsNumber({ maxDecimalPlaces: 0 })
     @IsPositive()
-    schemaVersion: number;
+    schemaVersion: CertificateSchemaVersion;
 }
