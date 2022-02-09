@@ -17,7 +17,7 @@ import {
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserService } from '@energyweb/origin-backend';
+import { FileService, UserService } from '@energyweb/origin-backend';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
@@ -33,7 +33,8 @@ export class DeviceService {
         private readonly eventBus: EventBus,
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly fileService: FileService
     ) {}
 
     async findOne(id: string): Promise<Device> {
@@ -71,15 +72,28 @@ export class DeviceService {
             active: true
         };
 
+        let fileIds: string[] = [];
+        if (newDevice.files && newDevice.files.length > 0) {
+            const list = await Promise.all(
+                newDevice.files.map((fileId) => this.fileService.get(fileId, user))
+            );
+            fileIds = await this.irecService.uploadFiles(
+                user.organizationId,
+                list.map((file) => file.data)
+            );
+        }
+
         const irecDevice = await this.irecService.createDevice(user, {
             ...deviceData,
             capacity: BigNumber.from(deviceData.capacity).div(1e6).toString(),
-            address: this.getAddressLine(newDevice)
+            address: this.getAddressLine(newDevice),
+            files: fileIds
         });
 
         const deviceToStore = new Device({
             ...deviceData,
             ...irecDevice,
+            files: fileIds,
             irecTradeAccountCode,
             capacity: deviceData.capacity,
             status: DeviceState.InProgress,
