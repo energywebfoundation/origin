@@ -38,7 +38,11 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
 
         const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
-        const cert = await new CertificateFacade(certificate.id, blockchainProperties).sync();
+        const cert = await new CertificateFacade(
+            certificate.id,
+            blockchainProperties,
+            certificate.schemaVersion
+        ).sync();
 
         const claimerBalance = BigNumber.from(
             (certificate.issuedPrivately

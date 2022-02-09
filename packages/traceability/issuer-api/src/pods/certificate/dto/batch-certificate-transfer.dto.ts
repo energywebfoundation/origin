@@ -8,7 +8,8 @@ import { CertificateDTO } from './certificate.dto';
 
 export class BatchCertificateTransferDTO
     extends PickType(CertificateDTO, ['id'] as const)
-    implements Omit<CertificateBatchOperations.BatchCertificateTransfer, 'amount'>
+    implements
+        Omit<CertificateBatchOperations.BatchCertificateTransfer, 'amount' | 'schemaVersion'>
 {
     @ApiProperty({
         type: String,

@@ -10,7 +10,10 @@ import { IBlockchainProperties } from '@energyweb/issuer';
 */
 import { RegistryExtended__factory as RegistryExtendedFactory } from '@energyweb/issuer/dist/js/src/ethers/factories/RegistryExtended__factory';
 import { Issuer__factory as IssuerFactory } from '@energyweb/issuer/dist/js/src/ethers/factories/Issuer__factory';
-import { Certificate } from '@energyweb/issuer/dist/js/src/blockchain-facade/Certificate';
+import {
+  Certificate,
+  CertificateSchemaVersion,
+} from '@energyweb/issuer/dist/js/src/blockchain-facade/Certificate';
 
 export const useGetBlockchainCertificateHandler = () => {
   const { data: blockchainProperties, isLoading } =
@@ -29,7 +32,11 @@ export const useGetBlockchainCertificateHandler = () => {
       activeUser: web3.getSigner(),
     };
 
-    const certificate = new Certificate(id, configuration);
+    const certificate = new Certificate(
+      id,
+      configuration,
+      CertificateSchemaVersion.V1
+    );
     await certificate.sync();
     return certificate;
   };

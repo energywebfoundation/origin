@@ -46,14 +46,16 @@ export interface ICreateBeneficiary {
     location: string;
 }
 
-export interface IClaimData {
+// This needs to be `type` - `interface` doesn't work due to
+// https://github.com/microsoft/TypeScript/issues/15300
+export type IClaimData = {
     beneficiary: string;
     location: string;
     countryCode: string;
     periodStartDate: string;
     periodEndDate: string;
     purpose: string;
-}
+};
 
 export interface IIrecService {
     getConnectionInfo(user: UserIdentifier): Promise<ConnectionDTO>;

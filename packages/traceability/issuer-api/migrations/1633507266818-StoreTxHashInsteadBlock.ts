@@ -22,7 +22,7 @@ export class StoreTxHashInsteadBlock1633507266818 implements MigrationInterface 
                 this.getBlockchainProperties(blockchainProperties);
 
             const syncedCertificates = await Promise.all(
-                existingCertificates.map((cert: any) => new Certificate(cert.id, wrapped).sync)
+                existingCertificates.map((cert: any) => new Certificate(cert.id, wrapped, 1).sync())
             );
 
             syncedCertificates.forEach(async (cert: Certificate) => {

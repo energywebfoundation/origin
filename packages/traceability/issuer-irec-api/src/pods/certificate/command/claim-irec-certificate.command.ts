@@ -1,5 +1,5 @@
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { IClaimData } from '@energyweb/issuer';
+import { IClaimData } from '@energyweb/origin-organization-irec-api';
 
 export class ClaimIRECCertificateCommand {
     constructor(

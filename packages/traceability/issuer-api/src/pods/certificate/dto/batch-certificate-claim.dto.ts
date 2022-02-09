@@ -6,7 +6,7 @@ import { BatchCertificateTransferDTO } from './batch-certificate-transfer.dto';
 
 export class BatchCertificateClaimDTO
     extends OmitType(BatchCertificateTransferDTO, ['to'] as const)
-    implements Omit<CertificateBatchOperations.BatchCertificateClaim, 'amount'>
+    implements Omit<CertificateBatchOperations.BatchCertificateClaim, 'amount' | 'schemaVersion'>
 {
     @ApiProperty({ type: Object })
     @IsObject()

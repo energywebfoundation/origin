@@ -6,8 +6,13 @@ import {
     CreateDateColumn,
     UpdateDateColumn
 } from 'typeorm';
-import { IsBoolean, IsInt, IsPositive, IsString, Min } from 'class-validator';
-import { CertificateUtils, IClaim, IOwnershipCommitmentProof } from '@energyweb/issuer';
+import { IsBoolean, IsInt, IsPositive, IsString, Min, IsNumber } from 'class-validator';
+import {
+    CertificateSchemaVersion,
+    CertificateUtils,
+    IClaim,
+    IOwnershipCommitmentProof
+} from '@energyweb/issuer';
 import { BlockchainProperties } from '../blockchain/blockchain-properties.entity';
 
 export const CERTIFICATES_TABLE_NAME = 'issuer_certificate';
@@ -50,8 +55,6 @@ export class Certificate {
     @Column('simple-json', { nullable: true })
     claims: IClaim[];
 
-    /* BLOCKCHAIN SPECIFIC */
-
     @ManyToOne(() => BlockchainProperties)
     blockchain: BlockchainProperties;
 
@@ -59,9 +62,8 @@ export class Certificate {
     @IsString()
     creationTransactionHash: string;
 
-    /* PRIVATE CERTIFICATES ONLY */
-
     @Column('simple-json', { nullable: true })
+    /* PRIVATE CERTIFICATES ONLY */
     latestCommitment: IOwnershipCommitmentProof;
 
     @Column()
@@ -73,4 +75,9 @@ export class Certificate {
 
     @UpdateDateColumn({ type: 'timestamptz' })
     updatedAt: Date;
+
+    @Column()
+    @IsNumber({ maxDecimalPlaces: 0 })
+    @IsPositive()
+    schemaVersion: CertificateSchemaVersion;
 }

@@ -20,14 +20,29 @@ import {
     PreciseProofUtils
 } from '../utils/PreciseProofUtils';
 
-export interface IClaimData {
-    beneficiary: string;
-    location: string;
-    countryCode: string;
-    periodStartDate: string;
-    periodEndDate: string;
-    purpose: string;
+// When this get changed, please go through all usage cases
+// and make sure all versions are handled correctly
+export enum CertificateSchemaVersion {
+    /** Original version */
+    V1 = 1,
+    /** ClaimData is now serializable JSON generic */
+    V2 = 2,
+    Latest = 2
 }
+
+export type IClaimData = {
+    // This interface aims to be backward compatible with schema version 1, but make it more generic
+    // It needs to be seriazible to JSON
+    [key: string]:
+        | null
+        | string
+        | number
+        | IClaimData
+        | null[]
+        | string[]
+        | number[]
+        | IClaimData[];
+};
 
 export interface IData {
     deviceId: string;
@@ -52,6 +67,7 @@ export interface ICertificate extends IData {
     creationTransactionHash: string;
     owners: IShareInCertificate;
     claimers: IShareInCertificate;
+    schemaVersion: CertificateSchemaVersion;
 }
 
 export class Certificate implements ICertificate {
@@ -75,7 +91,11 @@ export class Certificate implements ICertificate {
 
     public claimers: IShareInCertificate;
 
-    constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
+    constructor(
+        public id: number,
+        public blockchainProperties: IBlockchainProperties,
+        public schemaVersion: CertificateSchemaVersion
+    ) {}
 
     /**
      *
@@ -121,7 +141,8 @@ export class Certificate implements ICertificate {
      */
     public static async fromTxHash(
         txHash: string,
-        blockchainProperties: IBlockchainProperties
+        blockchainProperties: IBlockchainProperties,
+        schemaVersion: CertificateSchemaVersion
     ): Promise<Certificate> {
         const tx = await blockchainProperties.web3.getTransactionReceipt(txHash);
 
@@ -153,7 +174,11 @@ export class Certificate implements ICertificate {
             }
         }
 
-        const newCertificate = new Certificate(result._id.toNumber(), blockchainProperties);
+        const newCertificate = new Certificate(
+            result._id.toNumber(),
+            blockchainProperties,
+            schemaVersion
+        );
         newCertificate.creationTransactionHash = txHash;
 
         return newCertificate.sync();
@@ -282,7 +307,7 @@ export class Certificate implements ICertificate {
 
         const fromAddress = from ?? activeUserAddress;
 
-        const encodedClaimData = encodeClaimData(claimData);
+        const encodedClaimData = encodeClaimData(this.schemaVersion, claimData);
         return registryWithSigner.safeTransferAndClaimFrom(
             fromAddress,
             claimAddress,
@@ -390,7 +415,7 @@ export class Certificate implements ICertificate {
         for (const claimEvent of claimSingleEvents) {
             if (claimEvent._id.toNumber() === this.id) {
                 const { _claimData, _id, _claimIssuer, _claimSubject, _topic, _value } = claimEvent;
-                const claimData = decodeClaimData(_claimData);
+                const claimData = decodeClaimData(this.schemaVersion, _claimData);
 
                 claims.push({
                     id: _id.toNumber(),
@@ -418,7 +443,7 @@ export class Certificate implements ICertificate {
                 const claimIds = _ids.map((idAsBN: BigNumber) => idAsBN.toNumber());
 
                 const index = claimIds.indexOf(this.id);
-                const claimData = decodeClaimData(_claimData[index]);
+                const claimData = decodeClaimData(this.schemaVersion, _claimData[index]);
 
                 claims.push({
                     id: _ids[index].toNumber(),
@@ -455,7 +480,7 @@ export class Certificate implements ICertificate {
                     to: _claimSubject[index],
                     topic: _topics[index]?.toString(),
                     value: _values[index].toString(),
-                    claimData: decodeClaimData(_claimData[index])
+                    claimData: decodeClaimData(this.schemaVersion, _claimData[index])
                 });
             }
         }

@@ -1,7 +1,7 @@
 import { BigNumber, ContractTransaction, utils } from 'ethers';
 
 import { IBlockchainProperties } from './BlockchainProperties';
-import { Certificate, IClaimData, IData } from './Certificate';
+import { Certificate, IClaimData, IData, CertificateSchemaVersion } from './Certificate';
 import { encodeClaimData, encodeData } from './CertificateUtils';
 
 export interface CertificateInfoInBatch extends IData {
@@ -9,24 +9,29 @@ export interface CertificateInfoInBatch extends IData {
     amount: BigNumber;
 }
 
-export type BatchCertificateTransfer = {
+export interface BatchCertificateTransfer {
     id: number;
     to: string;
     from?: string;
     amount?: BigNumber;
-};
+    schemaVersion: CertificateSchemaVersion;
+}
 
-export type BatchCertificateClaim = Omit<BatchCertificateTransfer, 'to'> & {
-    claimData: IClaimData;
+export interface BatchCertificateClaim {
+    id: number;
     to?: string;
-};
+    from?: string;
+    amount?: BigNumber;
+    claimData: IClaimData;
+    schemaVersion: CertificateSchemaVersion;
+}
 
-    /**
-     * 
-     *
-     * @description Uses Issuer contract to allow issuer to batch issue Certificates
-     *
-     */
+/**
+ *
+ *
+ * @description Uses Issuer contract to allow issuer to batch issue Certificates
+ *
+ */
 export async function issueCertificates(
     certificateInfo: CertificateInfoInBatch[],
     blockchainProperties: IBlockchainProperties
@@ -50,12 +55,12 @@ export async function issueCertificates(
     );
 }
 
- /**
-     * 
-     *
-     * @description Returns array Certificate Ids created in a given transaction hash
-     *
-     */
+/**
+ *
+ *
+ * @description Returns array Certificate Ids created in a given transaction hash
+ *
+ */
 export async function getIdsFromBatchIssuanceTx(
     txHash: string,
     { web3, issuer, registry }: IBlockchainProperties
@@ -85,18 +90,18 @@ export async function getIdsFromBatchIssuanceTx(
     return issuanceEvent.args[2].map((id: BigNumber) => id.toNumber());
 }
 
- /**
-     * 
-     *
-     * @description Uses Registry Extended contract to allow  transfer of multiple certififactes 
-     *
-     */
+/**
+ *
+ *
+ * @description Uses Registry Extended contract to allow  transfer of multiple certififactes
+ *
+ */
 export async function transferCertificates(
     certificateBatch: BatchCertificateTransfer[],
     blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
     const certificatesPromises = certificateBatch.map((cert) =>
-        new Certificate(cert.id, blockchainProperties).sync()
+        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync()
     );
 
     const { registry, activeUser } = blockchainProperties;
@@ -123,18 +128,18 @@ export async function transferCertificates(
     );
 }
 
- /**
-     * 
-     *
-     * @description Uses Registry Extended contract to allow claiming of multiple certififactes 
-     *
-     */
+/**
+ *
+ *
+ * @description Uses Registry Extended contract to allow claiming of multiple certififactes
+ *
+ */
 export async function claimCertificates(
     certificateBatch: BatchCertificateClaim[],
     blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
     const certificatesPromises = certificateBatch.map((cert) =>
-        new Certificate(cert.id, blockchainProperties).sync()
+        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync()
     );
     const certificates = await Promise.all(certificatesPromises);
 
@@ -157,6 +162,6 @@ export async function claimCertificates(
                 )
         ),
         certificateBatch.map(() => utils.randomBytes(32)), // TO-DO: replace with proper data
-        certificateBatch.map((cert) => encodeClaimData(cert.claimData))
+        certificateBatch.map((cert) => encodeClaimData(cert.schemaVersion, cert.claimData))
     );
 }

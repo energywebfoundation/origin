@@ -12,7 +12,8 @@ import {
     CertificateUtils,
     IClaimData,
     IBlockchainProperties,
-    CertificateBatchOperations
+    CertificateBatchOperations,
+    CertificateSchemaVersion
 } from '../src';
 
 describe('Certificate tests', () => {
@@ -79,7 +80,11 @@ describe('Certificate tests', () => {
             metadata
         );
 
-        return await Certificate.fromTxHash(tx.hash, blockchainProperties);
+        return await Certificate.fromTxHash(
+            tx.hash,
+            blockchainProperties,
+            CertificateSchemaVersion.Latest
+        );
     };
 
     it('migrates Registry and Issuer', async () => {
@@ -95,24 +100,38 @@ describe('Certificate tests', () => {
     });
 
     it('gets all certificates', async () => {
-        await issueCertificate(totalVolume, deviceOwnerWallet.address);
-        await issueCertificate(totalVolume, deviceOwnerWallet.address);
+        const { id: id1 } = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+        const { id: id2 } = await issueCertificate(totalVolume, deviceOwnerWallet.address);
 
-        const allCertificates = await CertificateUtils.getAllCertificates(blockchainProperties);
+        const allCertificates = await CertificateUtils.getAllCertificates(blockchainProperties, {
+            [id1]: CertificateSchemaVersion.Latest,
+            [id2]: CertificateSchemaVersion.Latest
+        });
         assert.equal(allCertificates.length, 2);
     });
 
     it('gets all owned certificates', async () => {
-        await issueCertificate(totalVolume, deviceOwnerWallet.address);
-        await issueCertificate(totalVolume, traderWallet.address);
+        const { id: id1 } = await issueCertificate(totalVolume, deviceOwnerWallet.address);
+        const { id: id2 } = await issueCertificate(totalVolume, traderWallet.address);
+
+        const versionMap = {
+            [id1]: CertificateSchemaVersion.Latest,
+            [id2]: CertificateSchemaVersion.Latest
+        };
 
         setActiveUser(traderWallet);
-        const [certificate] = await CertificateUtils.getAllOwnedCertificates(blockchainProperties);
+        const [certificate] = await CertificateUtils.getAllOwnedCertificates(
+            blockchainProperties,
+            versionMap
+        );
         assert.isDefined(certificate);
 
         await certificate.transfer(deviceOwnerWallet.address, totalVolume);
 
-        const myCertificates = await CertificateUtils.getAllOwnedCertificates(blockchainProperties);
+        const myCertificates = await CertificateUtils.getAllOwnedCertificates(
+            blockchainProperties,
+            versionMap
+        );
         assert.lengthOf(myCertificates, 0);
     });
 
@@ -213,6 +232,9 @@ describe('Certificate tests', () => {
 
         assert.equal(certificate.owners[traderWallet.address], '0');
         assert.equal(certificate.claimers[traderWallet.address], amountToSendToTrader.toString());
+
+        const claimedData = await certificate.getClaimedData();
+        assert.equal(JSON.stringify(claimedData[0].claimData), JSON.stringify(claimData));
     });
 
     it('partially claims a certificate', async () => {
@@ -302,11 +324,13 @@ describe('Certificate tests', () => {
             [
                 {
                     id: certificate.id,
-                    to: traderWallet.address
+                    to: traderWallet.address,
+                    schemaVersion: CertificateSchemaVersion.Latest
                 },
                 {
                     id: certificate2.id,
-                    to: traderWallet.address
+                    to: traderWallet.address,
+                    schemaVersion: CertificateSchemaVersion.Latest
                 }
             ],
             blockchainProperties
@@ -338,8 +362,8 @@ describe('Certificate tests', () => {
 
         const tx = await CertificateBatchOperations.claimCertificates(
             [
-                { id: certificate.id, claimData },
-                { id: certificate2.id, claimData }
+                { id: certificate.id, claimData, schemaVersion: CertificateSchemaVersion.Latest },
+                { id: certificate2.id, claimData, schemaVersion: CertificateSchemaVersion.Latest }
             ],
             blockchainProperties
         );
@@ -408,8 +432,18 @@ describe('Certificate tests', () => {
         try {
             const tx = await CertificateBatchOperations.claimCertificates(
                 [
-                    { id: certificate.id, claimData, from: deviceOwnerWallet.address },
-                    { id: certificate2.id, claimData, from: deviceOwnerWallet.address }
+                    {
+                        id: certificate.id,
+                        claimData,
+                        from: deviceOwnerWallet.address,
+                        schemaVersion: CertificateSchemaVersion.Latest
+                    },
+                    {
+                        id: certificate2.id,
+                        claimData,
+                        from: deviceOwnerWallet.address,
+                        schemaVersion: CertificateSchemaVersion.Latest
+                    }
                 ],
                 blockchainProperties
             );

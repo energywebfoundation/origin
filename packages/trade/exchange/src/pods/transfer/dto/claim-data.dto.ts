@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IClaimData } from '@energyweb/issuer';
 import { IsDateString, IsString } from 'class-validator';
+
+export type IClaimData = {
+    beneficiary: string;
+    location: string;
+    countryCode: string;
+    periodStartDate: string;
+    periodEndDate: string;
+    purpose: string;
+};
 
 export class ClaimDataDTO implements IClaimData {
     @ApiProperty({ type: String, example: 'Beneficiary One' })

@@ -13,7 +13,12 @@ import {
     Transfer,
     TransferService
 } from '@energyweb/exchange';
-import { Certificate, Contracts, IBlockchainProperties } from '@energyweb/issuer';
+import {
+    Certificate,
+    Contracts,
+    IBlockchainProperties,
+    CertificateSchemaVersion
+} from '@energyweb/issuer';
 
 @Injectable()
 export class WithdrawalProcessorService implements OnModuleInit {
@@ -137,7 +142,8 @@ export class WithdrawalProcessorService implements OnModuleInit {
         try {
             const certificate = await new Certificate(
                 Number(transfer.asset.tokenId),
-                this.blockchainProperties
+                this.blockchainProperties,
+                CertificateSchemaVersion.V1
             ).sync();
 
             if (

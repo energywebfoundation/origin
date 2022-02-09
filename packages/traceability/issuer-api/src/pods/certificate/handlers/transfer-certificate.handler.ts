@@ -37,7 +37,8 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
 
         const onChainCert = await new CertificateFacade(
             certificate.id,
-            blockchainProperties
+            blockchainProperties,
+            certificate.schemaVersion
         ).sync();
 
         if (certificate.issuedPrivately) {
