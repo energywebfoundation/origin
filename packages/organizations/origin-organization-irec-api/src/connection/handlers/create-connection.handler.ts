@@ -101,14 +101,16 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
                 AccountType.Issue,
                 AccountType.Trade
             ]);
-        } else if (isRegistrant || isParticipant) {
+        } else if (isParticipant) {
             await this.createAccounts(clientId, clientSecret, tokens, organization, [
                 AccountType.Trade
             ]);
         } else {
-            throw new BadRequestException(
-                'IREC account organization has to have issuer or registrant or participant role'
-            );
+            if (!isRegistrant) {
+                throw new BadRequestException(
+                    'IREC account organization has to have issuer or registrant or participant role'
+                );
+            }
         }
     }
 
@@ -126,7 +128,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
         );
 
         for (const account of accounts) {
-            if (!irecAccounts.some((a) => a.code === account)) {
+            if (!irecAccounts.some((a) => a.type === account)) {
                 await this.irecService.createAccountByTokens(clientId, clientSecret, tokens, {
                     code: `${account}-account`,
                     type: account,
