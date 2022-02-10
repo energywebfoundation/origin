@@ -5,6 +5,9 @@ on:
     branches:
       - '*'
 
+env:
+  IREC_CREATE_DEVICE_ISSUER: issueraccount
+
 jobs:
   cancel-previous:
     name: 'Cancel Previous Runs'

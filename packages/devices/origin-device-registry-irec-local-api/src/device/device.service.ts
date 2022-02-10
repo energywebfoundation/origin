@@ -24,6 +24,7 @@ import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
 import { DeviceCreatedEvent, DeviceStatusChangedEvent } from './events';
 import { IREC_DEVICE_TYPES, IREC_FUEL_TYPES } from './Fuels';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class DeviceService {
@@ -34,7 +35,8 @@ export class DeviceService {
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
         private readonly userService: UserService,
-        private readonly fileService: FileService
+        private readonly fileService: FileService,
+        private readonly configService: ConfigService
     ) {}
 
     async findOne(id: string): Promise<Device> {
@@ -61,14 +63,13 @@ export class DeviceService {
             );
         }
 
-        const issuerOrg = await this.irecService.getUserOrganization(platformAdmin.organization.id);
         const registrantOrg = await this.irecService.getUserOrganization(user);
 
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
             defaultAccount: irecTradeAccountCode,
             registrantOrganization: registrantOrg.code,
-            issuer: issuerOrg.code,
+            issuer: this.configService.get('IREC_CREATE_DEVICE_ISSUER'),
             active: true
         };
 
