@@ -142,7 +142,7 @@ export class DeviceService {
         await this.repository.update(id, { status });
     }
 
-    async approveDevice(id: string): Promise<Device> {
+    async approveDevice(user: ILoggedInUser, id: string): Promise<Device> {
         const device = await this.findOne(id);
 
         const allowedStatuses: string[] = [DeviceState.InProgress, DeviceState.Submitted];
@@ -150,8 +150,7 @@ export class DeviceService {
             throw new BadRequestException('Device state have to be in "In-Progress" state');
         }
 
-        const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.approveDevice(platformAdmin.organization.id, device.code);
+        await this.irecService.approveDevice(user.organizationId, device.code);
         await this.repository.update(id, { status: DeviceState.Approved });
         device.status = DeviceState.Approved;
 
@@ -160,15 +159,14 @@ export class DeviceService {
         return device;
     }
 
-    async rejectDevice(id: string): Promise<Device> {
+    async rejectDevice(user: ILoggedInUser, id: string): Promise<Device> {
         const device = await this.findOne(id);
 
         if (device.status === DeviceState.Draft) {
             throw new BadRequestException('Device state have to be not in "Draft" state');
         }
 
-        const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.rejectDevice(platformAdmin.organization.id, device.code);
+        await this.irecService.rejectDevice(user.organizationId, device.code);
         await this.repository.update(id, { status: DeviceState.Rejected });
         device.status = DeviceState.Rejected;
 

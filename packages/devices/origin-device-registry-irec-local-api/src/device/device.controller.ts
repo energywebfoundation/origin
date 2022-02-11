@@ -222,12 +222,13 @@ export class DeviceController {
     @ApiNotFoundResponse({ description: 'Non existent device', type: SuccessResponseDTO })
     async updateDeviceStatus(
         @Param('id') id: string,
-        @Body() { status }: UpdateDeviceStateDTO
+        @Body() { status }: UpdateDeviceStateDTO,
+        @UserDecorator() loggedInUser: ILoggedInUser
     ): Promise<DeviceDTO> {
         const device =
             status === DeviceState.Approved
-                ? await this.deviceService.approveDevice(id)
-                : await this.deviceService.rejectDevice(id);
+                ? await this.deviceService.approveDevice(loggedInUser, id)
+                : await this.deviceService.rejectDevice(loggedInUser, id);
 
         return plainToClass(DeviceDTO, device);
     }
