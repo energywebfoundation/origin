@@ -79,6 +79,21 @@ jobs:
     - name: Build Storybook application
       run: node common/scripts/install-run-rush.js build:storybook
 
+    - name: Run all test:ui:e2e
+      env:
+        WEB3: http://localhost:8545
+        DEPLOY_KEY: d9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5
+        INFLUXDB_URL: http://localhost:8086
+        INFLUXDB_TOKEN: admin:admin
+        INFLUXDB_BUCKET: energy/autogen
+        BACKEND_URL: http://localhost:3030
+        EXCHANGE_WALLET_PUB: '0xD173313A51f8fc37BcF67569b463abd89d81844f'
+        EXCHANGE_WALLET_PRIV: '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5'
+        EXCHANGE_ACCOUNT_DEPLOYER_PRIV: '0xd9066ff9f753a1898709b568119055660a77d9aae4d7a4ad677b8fb3d2a571e5'
+        OPERATOR_ENCRYPTION_KEY: 'somerandompassword'
+        IREC_CREATE_DEVICE_ISSUER: ''
+      run: node common/scripts/install-run-rush.js test:ui:e2e
+
     - name: Set creds to npm 
       run: |
         echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> $HOME/.npmrc
