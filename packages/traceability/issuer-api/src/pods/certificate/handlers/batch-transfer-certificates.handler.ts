@@ -20,14 +20,14 @@ export class BatchTransferCertificatesHandler
     ) {}
 
     async execute({ transfers }: BatchTransferCertificatesCommand): Promise<ContractTransaction> {
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
-        for (const { id, amount, from } of transfers) {
-            if (!amount) {
-                continue;
-            }
+        const certificates = await this.repository.findByIds(transfers.map((c) => c.id));
 
-            const cert = await this.repository.findOne(id);
+        const validatedTransfers = transfers.map((transfer) => {
+            const { id, amount, from } = transfer;
+
+            const cert = certificates.find((c) => c.id === id);
 
             if (!cert) {
                 throw new NotFoundException(
@@ -36,9 +36,10 @@ export class BatchTransferCertificatesHandler
             }
 
             if (
-                !cert.owners[from] ||
-                BigNumber.from(cert.owners[from] ?? 0).isZero() ||
-                BigNumber.from(cert.owners[from] ?? 0).lt(amount)
+                amount &&
+                (!cert.owners[from] ||
+                    BigNumber.from(cert.owners[from] ?? 0).isZero() ||
+                    BigNumber.from(cert.owners[from] ?? 0).lt(amount))
             ) {
                 throw new ForbiddenException(
                     `Requested transferring of certificate ${id} with amount ${amount.toString()}, but you only own ${
@@ -46,12 +47,17 @@ export class BatchTransferCertificatesHandler
                     }`
                 );
             }
-        }
+
+            return {
+                ...transfer,
+                schemaVersion: cert.schemaVersion
+            };
+        });
 
         try {
             return await CertificateBatchOperations.transferCertificates(
-                transfers,
-                blockchainProperties.wrap()
+                validatedTransfers,
+                blockchainProperties
             );
         } catch (error) {
             throw new HttpException(JSON.stringify(error), HttpStatus.FAILED_DEPENDENCY);

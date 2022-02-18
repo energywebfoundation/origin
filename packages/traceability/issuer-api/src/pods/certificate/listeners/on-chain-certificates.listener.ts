@@ -27,8 +27,7 @@ export class OnChainCertificateWatcher implements OnModuleInit {
     public async onModuleInit(): Promise<void> {
         this.logger.debug('OnModuleInit');
 
-        const blockchainProperties = await this.blockchainPropertiesService.get();
-        const { web3, registry } = blockchainProperties.wrap();
+        const { web3, registry } = await this.blockchainPropertiesService.getWrapped();
 
         this.provider = web3;
         this.registry = registry;

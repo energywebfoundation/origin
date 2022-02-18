@@ -92,6 +92,10 @@ export default {
   },
 } as Meta;
 
+export type TestFormValues = {
+  test: string[];
+};
+
 const Template: Story<FormSelectProps<{ test: number }>> = (args) => {
   const { control } = useForm({ defaultValues: { test: [] } });
   return <FormSelect control={control} {...args} />;

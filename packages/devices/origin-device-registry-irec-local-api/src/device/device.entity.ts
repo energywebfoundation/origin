@@ -109,6 +109,11 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
     @IsBoolean()
     active: boolean;
 
+    @Column({ type: 'simple-json', default: '[]' })
+    @IsString({ each: true })
+    @IsOptional()
+    files: string[];
+
     @Column({ default: '', nullable: true })
     @ApiProperty({ type: String, nullable: true })
     @IsString()

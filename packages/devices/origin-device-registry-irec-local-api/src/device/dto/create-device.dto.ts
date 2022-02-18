@@ -107,6 +107,11 @@ export class CreateDeviceDTO {
     @Expose()
     irecTradeAccountCode?: string;
 
+    @ApiProperty({ type: [String], required: false, example: ['test.pdf', 'test2.pdf'] })
+    @IsString({ each: true })
+    @IsOptional()
+    files?: string[];
+
     public static sanitize(device: CreateDeviceDTO): CreateDeviceDTO {
         return plainToClass(CreateDeviceDTO, device, { excludeExtraneousValues: true });
     }

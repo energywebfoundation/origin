@@ -8,7 +8,13 @@ import {
     constants
 } from 'ethers';
 
-import { Certificate, IClaimData, ICertificate, IData } from './Certificate';
+import {
+    Certificate,
+    IClaimData,
+    ICertificate,
+    IData,
+    CertificateSchemaVersion
+} from './Certificate';
 import { getEventsFromContract, IBlockchainEvent } from '../utils/events';
 import { IBlockchainProperties } from './BlockchainProperties';
 
@@ -16,31 +22,49 @@ export interface IShareInCertificate {
     [address: string]: string;
 }
 
-export const encodeClaimData = (claimData: IClaimData): string => {
+export const encodeClaimData = (
+    schemaVersion: CertificateSchemaVersion,
+    claimData: IClaimData
+): string => {
     const { beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose } =
         claimData;
 
-    return utils.defaultAbiCoder.encode(
-        ['string', 'string', 'string', 'string', 'string', 'string'],
-        [beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose]
-    );
+    switch (schemaVersion) {
+        case CertificateSchemaVersion.V1:
+            return utils.defaultAbiCoder.encode(
+                ['string', 'string', 'string', 'string', 'string', 'string'],
+                [beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose]
+            );
+        case CertificateSchemaVersion.V2:
+            return utils.defaultAbiCoder.encode(['string'], [JSON.stringify(claimData)]);
+    }
 };
 
-export const decodeClaimData = (encodedClaimData: string): IClaimData => {
-    const [beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose] =
-        utils.defaultAbiCoder.decode(
-            ['string', 'string', 'string', 'string', 'string', 'string'],
-            encodedClaimData
-        );
+export const decodeClaimData = (
+    schemaVersion: CertificateSchemaVersion,
+    encodedClaimData: string
+): IClaimData => {
+    switch (schemaVersion) {
+        case CertificateSchemaVersion.V1:
+            const [beneficiary, location, countryCode, periodStartDate, periodEndDate, purpose] =
+                utils.defaultAbiCoder.decode(
+                    ['string', 'string', 'string', 'string', 'string', 'string'],
+                    encodedClaimData
+                );
 
-    return {
-        beneficiary,
-        location,
-        countryCode,
-        periodStartDate,
-        periodEndDate,
-        purpose
-    };
+            return {
+                beneficiary,
+                location,
+                countryCode,
+                periodStartDate,
+                periodEndDate,
+                purpose
+            };
+        case CertificateSchemaVersion.V2:
+            const [claimData] = utils.defaultAbiCoder.decode(['string'], encodedClaimData);
+
+            return JSON.parse(claimData);
+    }
 };
 
 export const encodeData = (data: IData): string => {
@@ -65,7 +89,8 @@ export const decodeData = (encodedData: string): IData => {
 };
 
 export async function getAllCertificates(
-    blockchainProperties: IBlockchainProperties
+    blockchainProperties: IBlockchainProperties,
+    schemaVersionMap: Record<number, CertificateSchemaVersion>
 ): Promise<Certificate[]> {
     const { registry } = blockchainProperties;
 
@@ -74,15 +99,25 @@ export async function getAllCertificates(
         registry.filters.IssuanceSingle(null, null, null)
     );
 
-    const certificatePromises = issuanceEvents.map((event) =>
-        new Certificate(event._id.toNumber(), blockchainProperties).sync()
-    );
+    const certificatePromises = issuanceEvents.map((event) => {
+        const certificateId = event._id.toNumber();
+        const schemaVersion = schemaVersionMap[certificateId];
+
+        if (!schemaVersion) {
+            throw new Error(
+                `Cannot get all certificates: certificate ${certificateId} does not have schema version`
+            );
+        }
+
+        return new Certificate(certificateId, blockchainProperties, schemaVersion).sync();
+    });
 
     return Promise.all(certificatePromises);
 }
 
 export async function getAllOwnedCertificates(
-    blockchainProperties: IBlockchainProperties
+    blockchainProperties: IBlockchainProperties,
+    schemaVersionMap: Record<number, CertificateSchemaVersion>
 ): Promise<Certificate[]> {
     const { registry, activeUser } = blockchainProperties;
     const owner = await activeUser.getAddress();
@@ -100,9 +135,17 @@ export async function getAllOwnedCertificates(
     );
     const available = certificateIds.filter((id, index) => !balances[index].isZero());
 
-    const certificatePromises = available.map((id) =>
-        new Certificate(id, blockchainProperties).sync()
-    );
+    const certificatePromises = available.map((id) => {
+        const schemaVersion = schemaVersionMap[id];
+
+        if (!schemaVersion) {
+            throw new Error(
+                `Cannot get all certificates: certificate ${id} does not have schema version`
+            );
+        }
+
+        return new Certificate(id, blockchainProperties, schemaVersion).sync();
+    });
 
     return Promise.all(certificatePromises);
 }

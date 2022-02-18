@@ -22,11 +22,11 @@ export class GetAllCertificateEventsHandler implements IQueryHandler<GetAllCerti
             return [];
         }
 
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         const allCertificateEvents = await CertificateUtils.getAllCertificateEvents(
             certificate.id,
-            blockchainProperties.wrap()
+            blockchainProperties
         );
 
         return allCertificateEvents.map((blockchainEvent) => ({

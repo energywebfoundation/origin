@@ -30,12 +30,9 @@ export class RevokeCertificationRequestHandler
             return ResponseFailure(msg, HttpStatus.BAD_REQUEST);
         }
 
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
-        const certReq = await new CertificationRequestFacade(
-            id,
-            blockchainProperties.wrap()
-        ).sync();
+        const certReq = await new CertificationRequestFacade(id, blockchainProperties).sync();
 
         try {
             await certReq.revoke();

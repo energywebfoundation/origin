@@ -17,13 +17,14 @@ import {
     DeviceState
 } from '@energyweb/issuer-irec-api-wrapper';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
-import { UserService } from '@energyweb/origin-backend';
+import { FileService, UserService } from '@energyweb/origin-backend';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { Device } from './device.entity';
 import { CodeNameDTO, CreateDeviceDTO, ImportIrecDeviceDTO, UpdateDeviceDTO } from './dto';
 import { DeviceCreatedEvent, DeviceStatusChangedEvent } from './events';
 import { IREC_DEVICE_TYPES, IREC_FUEL_TYPES } from './Fuels';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class DeviceService {
@@ -33,7 +34,9 @@ export class DeviceService {
         private readonly eventBus: EventBus,
         @Inject(IREC_SERVICE)
         private readonly irecService: IrecService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly fileService: FileService,
+        private readonly configService: ConfigService
     ) {}
 
     async findOne(id: string): Promise<Device> {
@@ -60,26 +63,38 @@ export class DeviceService {
             );
         }
 
-        const issuerOrg = await this.irecService.getUserOrganization(platformAdmin.organization.id);
         const registrantOrg = await this.irecService.getUserOrganization(user);
 
         const deviceData: DeviceCreateParams = {
             ...CreateDeviceDTO.sanitize(newDevice),
             defaultAccount: irecTradeAccountCode,
             registrantOrganization: registrantOrg.code,
-            issuer: issuerOrg.code,
+            issuer: this.configService.get('IREC_CREATE_DEVICE_ISSUER'),
             active: true
         };
+
+        let fileIds: string[] = [];
+        if (newDevice.files && newDevice.files.length > 0) {
+            const list = await Promise.all(
+                newDevice.files.map((fileId) => this.fileService.get(fileId, user))
+            );
+            fileIds = await this.irecService.uploadFiles(
+                user.organizationId,
+                list.map((file) => file.data)
+            );
+        }
 
         const irecDevice = await this.irecService.createDevice(user, {
             ...deviceData,
             capacity: BigNumber.from(deviceData.capacity).div(1e6).toString(),
-            address: this.getAddressLine(newDevice)
+            address: this.getAddressLine(newDevice),
+            files: fileIds
         });
 
         const deviceToStore = new Device({
             ...deviceData,
             ...irecDevice,
+            files: fileIds,
             irecTradeAccountCode,
             capacity: deviceData.capacity,
             status: DeviceState.InProgress,
@@ -127,7 +142,7 @@ export class DeviceService {
         await this.repository.update(id, { status });
     }
 
-    async approveDevice(id: string): Promise<Device> {
+    async approveDevice(user: ILoggedInUser, id: string): Promise<Device> {
         const device = await this.findOne(id);
 
         const allowedStatuses: string[] = [DeviceState.InProgress, DeviceState.Submitted];
@@ -135,8 +150,7 @@ export class DeviceService {
             throw new BadRequestException('Device state have to be in "In-Progress" state');
         }
 
-        const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.approveDevice(platformAdmin.organization.id, device.code);
+        await this.irecService.approveDevice(user.organizationId, device.code);
         await this.repository.update(id, { status: DeviceState.Approved });
         device.status = DeviceState.Approved;
 
@@ -145,15 +159,14 @@ export class DeviceService {
         return device;
     }
 
-    async rejectDevice(id: string): Promise<Device> {
+    async rejectDevice(user: ILoggedInUser, id: string): Promise<Device> {
         const device = await this.findOne(id);
 
         if (device.status === DeviceState.Draft) {
             throw new BadRequestException('Device state have to be not in "Draft" state');
         }
 
-        const platformAdmin = await this.userService.getPlatformAdmin();
-        await this.irecService.rejectDevice(platformAdmin.organization.id, device.code);
+        await this.irecService.rejectDevice(user.organizationId, device.code);
         await this.repository.update(id, { status: DeviceState.Rejected });
         device.status = DeviceState.Rejected;
 

@@ -27,7 +27,7 @@ import { getProviderWithFallback } from '@energyweb/utils-general';
 import { RegistryExtended } from '@energyweb/issuer/dist/js/src/ethers/RegistryExtended';
 import { Issuer } from '@energyweb/issuer/dist/js/src/ethers/Issuer';
 import { ConfigService } from '@nestjs/config';
-import { Certificate } from '@energyweb/issuer';
+import { Certificate, CertificateSchemaVersion } from '@energyweb/issuer';
 import { ExchangeErc1888Module } from '../src';
 
 const web3 = 'http://localhost:8590';
@@ -322,11 +322,15 @@ describe('Deposits using deployed registry', () => {
 
         expect(claimedBalance.toString()).to.equal(tokenAmount);
 
-        const certificate = await new Certificate(Number(tokenId), {
-            registry,
-            issuer,
-            web3: getProviderWithFallback(web3)
-        }).sync();
+        const certificate = await new Certificate(
+            Number(tokenId),
+            {
+                registry,
+                issuer,
+                web3: getProviderWithFallback(web3)
+            },
+            CertificateSchemaVersion.V1
+        ).sync();
 
         const [claimDetails] = await certificate.getClaimedData();
         expect(claimDetails.claimData).to.deep.equal(claim.claimData);

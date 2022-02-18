@@ -2,7 +2,8 @@ import { EventBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import {
     Certificate as CertificateFacade,
     IOwnershipCommitmentProof,
-    PreciseProofUtils
+    PreciseProofUtils,
+    CertificateSchemaVersion
 } from '@energyweb/issuer';
 import { Connection, Repository, In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,7 +36,7 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
     async handle({ ids, privateInfo }: CertificatesCreatedEvent): Promise<void> {
         ids.forEach((id) => this.logger.log(`Detected a new certificate with ID ${id}`));
 
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         const existingCertificates = await this.repository.find({
             where: {
@@ -60,7 +61,11 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
         const newCertificates = await Promise.all(
             notExistingCertificates.map(async (id) => {
                 try {
-                    return await new CertificateFacade(id, blockchainProperties.wrap()).sync();
+                    return await new CertificateFacade(
+                        id,
+                        blockchainProperties,
+                        CertificateSchemaVersion.Latest
+                    ).sync();
                 } catch (e) {
                     this.logger.error(e.message);
                     throw e;
@@ -78,6 +83,7 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
 
         const txHash = newCertificates[0].creationTransactionHash;
         const unminedCommitment = await this.checkCommitment(txHash);
+        const blockchainPropertiesEntity = await this.blockchainPropertiesService.get();
 
         const queryRunner = this.connection.createQueryRunner();
         await queryRunner.connect();
@@ -87,7 +93,7 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
             const certificateEntities = newCertificates.map((cert) =>
                 this.repository.create({
                     id: cert.id,
-                    blockchain: blockchainProperties,
+                    blockchain: blockchainPropertiesEntity,
                     deviceId: cert.deviceId,
                     generationStartTime: cert.generationStartTime,
                     generationEndTime: cert.generationEndTime,
@@ -96,7 +102,8 @@ export class CertificatesCreatedHandler implements IEventHandler<CertificatesCre
                     owners: cert.owners,
                     issuedPrivately: !!privateInfo || !!unminedCommitment,
                     latestCommitment: unminedCommitment ?? latestCommitment,
-                    metadata: cert.metadata
+                    metadata: cert.metadata,
+                    schemaVersion: cert.schemaVersion
                 })
             );
 

@@ -1,9 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IClaimData } from '@energyweb/issuer';
 import { ExtendedBaseEntity } from '@energyweb/origin-backend-utils';
-
+import { IClaimData } from '../transfer/dto/claim-data.dto';
 import { Asset } from '../asset';
 import { ClaimDataDTO } from './dto';
 import { DB_TABLE_PREFIX } from '../../utils';

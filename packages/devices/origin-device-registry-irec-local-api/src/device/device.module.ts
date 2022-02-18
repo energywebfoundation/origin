@@ -9,7 +9,7 @@ import {
     IrecModule,
     RegistrationModule
 } from '@energyweb/origin-organization-irec-api';
-import { UserModule } from '@energyweb/origin-backend';
+import { FileModule, UserModule } from '@energyweb/origin-backend';
 
 import { DeviceController } from './device.controller';
 import { Device } from './device.entity';
@@ -26,7 +26,8 @@ import { CheckDeviceStateTask } from './cron';
         UserModule,
         ConnectionModule,
         RegistrationModule,
-        IrecModule
+        IrecModule,
+        FileModule
     ],
     providers: [DeviceService, ValidateDeviceOwnershipCommandHandler, CheckDeviceStateTask],
     exports: [DeviceService],

@@ -118,6 +118,11 @@ export const bootstrapTestInstance = async () => {
                     registry,
                     issuer
                 })
+            }),
+            getWrapped: () => ({
+                web3: provider,
+                registry,
+                issuer
             })
         })
         .overrideGuard(AuthGuard('default'))

@@ -27,7 +27,7 @@ export class ConnectionController {
 
     @Post()
     @UseGuards(AuthGuard(), RolesGuard)
-    @Roles(Role.OrganizationAdmin, Role.Admin)
+    @Roles(Role.OrganizationAdmin, Role.Admin, Role.Issuer)
     @ApiBody({ type: CreateConnectionDTO })
     @ApiCreatedResponse({
         type: ShortConnectionDTO,

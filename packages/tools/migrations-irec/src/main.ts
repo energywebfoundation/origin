@@ -81,17 +81,23 @@ async function importContracts(
 
     logger.info(`Saving contracts...`);
     const newContractsQuery = {
-        text: 'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback", "platformOperatorPrivateKey") VALUES ($1, $2, $3, $4, $5, $6)',
+        text: 'INSERT INTO public.issuer_blockchain_properties ("netId", "registry", "issuer", "rpcNode", "rpcNodeFallback") VALUES ($1, $2, $3, $4, $5)',
         values: [
             provider.network.chainId,
             contractsLookup.registry,
             contractsLookup.issuer,
             primaryRpc,
-            fallbackRpc,
-            process.env.DEPLOY_KEY
+            fallbackRpc
         ]
     };
     await client.query(newContractsQuery);
+
+    const signerQuery = {
+        text: 'INSERT INTO public.issuer_signer ("blockchainNetId", "platformOperatorPrivateKey", "isEncrypted") VALUES ($1, $2, $3)',
+        values: [provider.network.chainId, process.env.DEPLOY_KEY, false]
+    };
+
+    await client.query(signerQuery);
 }
 
 async function isFirstMigration(client: Client) {
@@ -149,15 +155,13 @@ async function createExchangeDepositAddresses(client: Client) {
     const accountService = app.get(AccountService);
 
     for (const { id } of rows) {
-        await accountService
-            .create(String(id))
-            .then(() => logger.info(`Exchange deposit address created for orgId=${id}`))
-            .catch((e) =>
-                logger.error(`Unable to create exchange deposit address for ${id}: ${e.message}`)
-            );
+        try {
+            await accountService.createSynchronously(String(id));
+            logger.info(`Exchange deposit address created for orgId=${id}`);
+        } catch (err) {
+            logger.error(`Unable to create exchange deposit address for ${id}: ${err.message}`);
+        }
     }
-
-    await new Promise((r) => setTimeout(r, 3000));
 }
 
 function initEnv() {

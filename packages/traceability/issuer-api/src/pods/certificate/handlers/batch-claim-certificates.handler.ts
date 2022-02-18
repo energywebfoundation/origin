@@ -26,18 +26,18 @@ export class BatchClaimCertificatesHandler
     ) {}
 
     async execute({ claims }: BatchClaimCertificatesCommand): Promise<ContractTransaction> {
-        const blockchainProperties = await this.blockchainPropertiesService.get();
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
 
         if (claims.length === 0) {
             throw new BadRequestException('Cannot process empty claims request');
         }
 
-        for (const { id, amount, from } of claims) {
-            if (!amount) {
-                continue;
-            }
+        const certificates = await this.repository.findByIds(claims.map((c) => c.id));
 
-            const cert = await this.repository.findOne(id);
+        const validatedClaims = claims.map((claim) => {
+            const { id, amount, from } = claim;
+
+            const cert = certificates.find((c) => c.id == id);
 
             if (!cert) {
                 throw new NotFoundException(
@@ -46,9 +46,10 @@ export class BatchClaimCertificatesHandler
             }
 
             if (
-                !cert.owners[from] ||
-                BigNumber.from(cert.owners[from] ?? 0).isZero() ||
-                BigNumber.from(cert.owners[from] ?? 0).lt(amount)
+                amount &&
+                (!cert.owners[from] ||
+                    BigNumber.from(cert.owners[from] ?? 0).isZero() ||
+                    BigNumber.from(cert.owners[from] ?? 0).lt(amount))
             ) {
                 throw new ForbiddenException(
                     `Requested claiming of certificate ${id} with amount ${amount.toString()}, but you only own ${
@@ -56,12 +57,17 @@ export class BatchClaimCertificatesHandler
                     }`
                 );
             }
-        }
+
+            return {
+                ...claim,
+                schemaVersion: cert.schemaVersion
+            };
+        });
 
         try {
             return await CertificateBatchOperations.claimCertificates(
-                claims,
-                blockchainProperties.wrap()
+                validatedClaims,
+                blockchainProperties
             );
         } catch (error) {
             throw new HttpException(JSON.stringify(error), HttpStatus.FAILED_DEPENDENCY);

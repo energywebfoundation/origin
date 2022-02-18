@@ -218,7 +218,12 @@ export const DependentSelect = (args: SelectAutocompleteProps) => {
   );
 };
 
-const secondaryOptions: Record<string, FormSelectOption[]> = {
+export const primaryOptions: FormSelectOption[] = [
+  { label: 'Size', value: 'size' },
+  { label: 'Color', value: 'color' },
+];
+
+export const secondaryOptions: Record<string, FormSelectOption[]> = {
   size: [
     { label: 'Small', value: 'small' },
     { label: 'Medium', value: 'medium' },

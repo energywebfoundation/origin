@@ -7,8 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CertificateModule } from './pods/certificate';
 import { BlockchainPropertiesModule } from './pods/blockchain';
 import { CertificationRequestModule } from './pods/certification-request';
-import { ISSUER_MODULE_OPTIONS_TOKEN } from './const';
-import { IssuerModuleOptions } from './types';
+import { IssuerModuleOptions, IssuerModuleInputOptions, OptionsModule } from './pods/options';
 
 const getEnvFilePath = () => {
     const pathsToTest = ['../../../../../.env', '../../../../../../.env'];
@@ -31,17 +30,18 @@ export const providers = [IntUnitsOfEnergy];
 
 @Module({})
 export class IssuerModule {
-    static register(originalOptions: Partial<IssuerModuleOptions> = {}): DynamicModule {
-        const defaultOptions: IssuerModuleOptions = {
-            enableTransactionLogging: false,
-            enableCertificationRequest: true
-        };
-
-        const options = Object.assign(defaultOptions, originalOptions);
+    static register(originalOptions: IssuerModuleInputOptions): DynamicModule {
+        const options: IssuerModuleOptions = Object.assign(
+            {
+                enableCertificationRequest: true
+            },
+            originalOptions
+        );
 
         return {
             module: IssuerModule,
             imports: [
+                OptionsModule.register(options),
                 ConfigModule.forRoot({
                     envFilePath: getEnvFilePath(),
                     isGlobal: true
@@ -50,13 +50,7 @@ export class IssuerModule {
                 BlockchainPropertiesModule,
                 ...(options.enableCertificationRequest ? [CertificationRequestModule] : [])
             ],
-            providers: [
-                ...providers,
-                {
-                    provide: ISSUER_MODULE_OPTIONS_TOKEN,
-                    useValue: options
-                }
-            ]
+            providers
         };
     }
 }

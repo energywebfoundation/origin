@@ -19,7 +19,8 @@ import {
     ExceptionInterceptor,
     UserDecorator
 } from '@energyweb/origin-backend-utils';
-import { CertificateController, ClaimCertificateDTO, TxHashDTO } from '@energyweb/issuer-api';
+import { CertificateController, TxHashDTO } from '@energyweb/issuer-api';
+import { ClaimIrecCertificateDTO } from './dto/claim-irec-certificate.dto';
 import { ILoggedInUser } from '@energyweb/origin-backend-core';
 import { ClaimIRECCertificateCommand } from './command';
 
@@ -31,7 +32,7 @@ import { ClaimIRECCertificateCommand } from './command';
 export class IrecCertificateController extends CertificateController {
     @Put('/:id/claim')
     @UseGuards(AuthGuard(), ActiveUserGuard, BlockchainAccountGuard)
-    @ApiBody({ type: ClaimCertificateDTO })
+    @ApiBody({ type: ClaimIrecCertificateDTO })
     @ApiResponse({
         status: HttpStatus.OK,
         type: TxHashDTO,
@@ -40,7 +41,7 @@ export class IrecCertificateController extends CertificateController {
     public async claimIREC(
         @UserDecorator() user: ILoggedInUser,
         @Param('id', new ParseIntPipe()) certificateId: number,
-        @Body() dto: ClaimCertificateDTO
+        @Body() dto: ClaimIrecCertificateDTO
     ): Promise<TxHashDTO> {
         const tx = await this.commandBus.execute(
             new ClaimIRECCertificateCommand(user, certificateId, dto.claimData)

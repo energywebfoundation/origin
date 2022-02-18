@@ -5,13 +5,15 @@ import { Certificate as CertificateFacade, PreciseProofUtils } from '@energyweb/
 import { BigNumber, ContractTransaction } from 'ethers';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { TransferCertificateCommand } from '../commands/transfer-certificate.command';
+import { BlockchainPropertiesService } from '../../blockchain/blockchain-properties.service';
 import { Certificate } from '../certificate.entity';
 
 @CommandHandler(TransferCertificateCommand)
 export class TransferCertificateHandler implements ICommandHandler<TransferCertificateCommand> {
     constructor(
         @InjectRepository(Certificate)
-        private readonly repository: Repository<Certificate>
+        private readonly repository: Repository<Certificate>,
+        private readonly blockchainPropertiesService: BlockchainPropertiesService
     ) {}
 
     async execute({
@@ -31,9 +33,12 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
             );
         }
 
+        const blockchainProperties = await this.blockchainPropertiesService.getWrapped();
+
         const onChainCert = await new CertificateFacade(
             certificate.id,
-            certificate.blockchain.wrap()
+            blockchainProperties,
+            certificate.schemaVersion
         ).sync();
 
         if (certificate.issuedPrivately) {
