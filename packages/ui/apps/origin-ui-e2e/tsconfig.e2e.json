@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "outDir": "../../dist/out-tsc",
     "allowJs": true,
-    "types": ["cypress", "cypress-file-upload", "node"]
+    "types": ["cypress", "cypress-file-upload", "cypress-wait-until", "node"]
   },
   "include": ["src/**/*.ts", "src/**/*.js"]
 }

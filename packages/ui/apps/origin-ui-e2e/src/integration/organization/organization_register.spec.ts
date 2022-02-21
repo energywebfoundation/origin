@@ -22,7 +22,7 @@ describe('Register new organization', () => {
 
   it('should show Role Changed Modal', () => {
     cy.contains('Successfully joined');
-    cy.contains('You have successfully joined organization');
+    cy.contains('You have successfully joined');
     cy.contains('As an Organization Admin you have permission');
     cy.contains('You can also perform all actions of a Device Manager');
     cy.contains(

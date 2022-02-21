@@ -5,11 +5,12 @@
   "modifyObstructiveCode": false,
   "pluginsFile": false,
   "supportFile": "./src/support/index.ts",
-  "video": true,
+  "video": false,
+  "retries": 3,
   "videosFolder": "../../dist/cypress/apps/origin-ui-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/origin-ui-e2e/screenshots",
   "chromeWebSecurity": false,
   "viewportHeight": 720,
   "viewportWidth": 1280,
-  "defaultCommandTimeout": 10000
+  "defaultCommandTimeout": 30000
 }
