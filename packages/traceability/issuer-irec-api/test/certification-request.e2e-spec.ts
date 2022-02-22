@@ -46,7 +46,7 @@ describe('Certification Request tests', () => {
     });
 
     after(async () => {
-        await databaseService.cleanUp();
+        // await databaseService.cleanUp();
         await app.close();
     });
 

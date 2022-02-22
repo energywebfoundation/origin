@@ -3,8 +3,11 @@ import {
   ClaimDataDTO,
   getAccountBalanceControllerGetQueryKey,
   RequestClaimDTO,
-  useTransferControllerRequestClaim,
 } from '@energyweb/exchange-react-query-client';
+import {
+  useIrecTransferControllerRequestClaim,
+  IrecRequestClaimDTO,
+} from '@energyweb/exchange-irec-react-query-client';
 import { BeneficiaryDTO } from '@energyweb/origin-organization-irec-api-react-query-client';
 import {
   showNotification,
@@ -27,7 +30,7 @@ export const useClaimCertificateHandler = (
   setTxPending: Dispatch<SetStateAction<boolean>>
 ) => {
   const { t } = useTranslation();
-  const { mutate, isLoading } = useTransferControllerRequestClaim();
+  const { mutate, isLoading } = useIrecTransferControllerRequestClaim();
   const queryClient = useQueryClient();
   const exchangeCertificatesQueryKey = getAccountBalanceControllerGetQueryKey();
 
@@ -40,21 +43,20 @@ export const useClaimCertificateHandler = (
         cert.asset.id === (id as unknown as AccountAssetDTO['asset']['id'])
     )?.asset.id;
 
-    const claimData: ClaimDataDTO = {
-      beneficiary: beneficiary?.name ?? '',
-      location: beneficiary?.location ?? '',
-      countryCode: beneficiary?.countryCode ?? '',
-      periodStartDate: dayjs(startDate).toISOString(),
-      periodEndDate: dayjs(endDate).toISOString(),
-      purpose,
-    };
-
-    const data: RequestClaimDTO = {
+    const data: IrecRequestClaimDTO = {
       assetId,
       amount: PowerFormatter.getBaseValueFromValueInDisplayUnit(
         Number(amount)
       ).toString(),
-      claimData,
+      beneficiary: {
+        countryCode: beneficiary?.countryCode ?? '',
+        irecId: beneficiary?.irecBeneficiaryId ?? 0,
+        location: beneficiary?.location ?? '',
+        name: beneficiary?.name ?? '',
+      },
+      periodStartDate: dayjs(startDate).toISOString(),
+      periodEndDate: dayjs(endDate).toISOString(),
+      purpose,
       claimAddress: user?.organization?.blockchainAccountAddress ?? undefined,
     };
 

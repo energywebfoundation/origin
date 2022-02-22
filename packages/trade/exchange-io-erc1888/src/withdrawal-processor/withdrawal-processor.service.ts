@@ -143,7 +143,7 @@ export class WithdrawalProcessorService implements OnModuleInit {
             const certificate = await new Certificate(
                 Number(transfer.asset.tokenId),
                 this.blockchainProperties,
-                CertificateSchemaVersion.V1
+                CertificateSchemaVersion.Latest
             ).sync();
 
             if (

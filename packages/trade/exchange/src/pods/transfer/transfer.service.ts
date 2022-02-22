@@ -16,12 +16,25 @@ import { TransferStatus } from './transfer-status';
 import { Transfer } from './transfer.entity';
 import { WithdrawalRequestedEvent } from './events/withdrawal-requested.event';
 import { RequestClaimDTO } from './dto/request-claim.dto';
+import { IClaimData } from './dto/claim-data.dto';
 import { ClaimRequestedEvent } from './events/claim-requested.event';
 import { RequestBatchClaimDTO } from './dto/request-batch-claim.dto';
 import { GetAssetAmountQuery } from '../account-balance/queries/get-asset-amount.query';
 import { AssetAmount } from '../account-balance/account-balance.service';
 import { RequestSendDTO } from './dto/request-send.dto';
 import { SendRequestedEvent } from './events/send-requested.event';
+
+export interface IRequestClaimData {
+    assetId: string;
+    amount: string;
+    claimData: IClaimData;
+    claimAddress?: string;
+}
+
+export interface IRequestBatchClaimData {
+    assetIds: string[];
+    claimData: IClaimData;
+}
 
 @Injectable()
 export class TransferService {
@@ -97,7 +110,7 @@ export class TransferService {
 
     public async requestClaim(
         userId: string,
-        { amount, assetId, claimData, claimAddress }: RequestClaimDTO,
+        { amount, assetId, claimData, claimAddress }: IRequestClaimData,
         transaction?: EntityManager
     ): Promise<Transfer['id']> {
         await this.validateEnoughFunds(userId, assetId, amount);
@@ -121,7 +134,7 @@ export class TransferService {
 
     public async requestBatchClaim(
         userId: string,
-        { assetIds, claimData }: RequestBatchClaimDTO,
+        { assetIds, claimData }: IRequestBatchClaimData,
         transaction?: EntityManager
     ): Promise<Transfer['id'][]> {
         const { address } = await this.accountService.getAccount(userId);

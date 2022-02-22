@@ -22,20 +22,6 @@ export class GetAllCertificatesHandler implements IQueryHandler<GetAllCertificat
         const creationTimeFrom = dateToSeconds(options.creationTimeFrom ?? new Date(0));
         const creationTimeTo = dateToSeconds(options.creationTimeTo ?? futureDate);
 
-        process.stdout.write(
-            JSON.stringify({
-                where: {
-                    generationEndTime: Between(generationEndFrom, generationEndTo),
-                    generationStartTime: Between(generationStartFrom, generationStartTo),
-                    creationTime: Between(creationTimeFrom, creationTimeTo),
-                    ...(options.deviceId ? { deviceId: options.deviceId } : {})
-                },
-                order: {
-                    id: 'ASC'
-                }
-            })
-        );
-
         return this.repository.find({
             where: {
                 generationEndTime: Between(generationEndFrom, generationEndTo),

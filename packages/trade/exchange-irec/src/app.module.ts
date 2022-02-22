@@ -10,6 +10,8 @@ import { RunnerModule } from './runner';
 import { TradeModule } from './trade';
 import { ExportModule } from './export';
 import { ImportModule } from './import';
+import { IrecTransferModule } from './transfer';
+import { TransferModule } from '@energyweb/exchange';
 
 @Module({
     imports: [
@@ -21,7 +23,9 @@ import { ImportModule } from './import';
         DemandModule,
         TradeModule,
         ExportModule,
-        ImportModule
+        ImportModule,
+        TransferModule,
+        IrecTransferModule
     ],
     providers: [IntUnitsOfEnergy]
 })

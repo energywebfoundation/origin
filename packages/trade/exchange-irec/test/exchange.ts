@@ -15,13 +15,13 @@ import { BlockchainPropertiesService, IrecCertificationRequest } from '@energywe
 import { IUser, OrganizationStatus, Role, UserStatus } from '@energyweb/origin-backend-core';
 import { DatabaseService, RolesGuard } from '@energyweb/origin-backend-utils';
 import { getProviderWithFallback } from '@energyweb/utils-general';
-
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { useContainer } from 'class-validator';
+import { ClaimRequestedEvent } from '@energyweb/exchange';
 import { entities as ExchangeIRECEntities, usedEntities } from '../src';
 
 import { AppModule as ExchangeIRECModule } from '../src/app.module';
@@ -30,6 +30,7 @@ import { ProductDTO } from '../src';
 import { UserService } from '@energyweb/origin-backend';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
 const web3 = 'http://localhost:8545';
 const provider = getProviderWithFallback(web3);
@@ -157,6 +158,15 @@ const deviceTypes = [
     ['Marine', 'Tidal', 'Offshore']
 ];
 
+@EventsHandler(ClaimRequestedEvent)
+export class ClaimRequestedHandler implements IEventHandler<ClaimRequestedEvent> {
+    public handledEvents: ClaimRequestedEvent[] = [];
+
+    public async handle(event: ClaimRequestedEvent) {
+        this.handledEvents.push(event);
+    }
+}
+
 export const bootstrapTestInstance = async (
     deviceServiceMock?: IExternalDeviceService,
     userServiceMock?: IExternalUserService
@@ -203,6 +213,7 @@ export const bootstrapTestInstance = async (
         ],
         providers: [
             DatabaseService,
+            ClaimRequestedHandler,
             {
                 provide: IExchangeConfigurationService,
                 useValue: {
@@ -295,6 +306,9 @@ export const bootstrapTestInstance = async (
     const blockchainPropertiesService = await app.resolve<BlockchainPropertiesService>(
         BlockchainPropertiesService
     );
+    const claimRequestedHandler = await app.resolve<ClaimRequestedHandler>(
+        ClaimRequestedHandler
+    );
 
     const blockchainProperties = await blockchainPropertiesService.create(
         provider.network.chainId,
@@ -326,6 +340,7 @@ export const bootstrapTestInstance = async (
         accountService,
         databaseService,
         orderService,
+        claimRequestedHandler,
         app
     };
 };
