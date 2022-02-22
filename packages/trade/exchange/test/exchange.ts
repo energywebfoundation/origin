@@ -34,11 +34,22 @@ const WEB3 = 'http://localhost:8580';
 const registryDeployer = '0xc4b87d68ea2b91f9d3de3fcb77c299ad962f006ffb8711900cb93d94afec3dc3';
 
 export const authenticatedUser = { id: 1, organization: { id: '1000' }, status: UserStatus.Active };
+export const adminUser = {
+    id: 2,
+    organization: { id: '2000' },
+    status: UserStatus.Active,
+    rights: 16
+};
 
 const authGuard: CanActivate = {
     canActivate: (context: ExecutionContext) => {
         const req = context.switchToHttp().getRequest();
-        req.user = authenticatedUser;
+
+        if (req.headers['as-user'] === 'admin') {
+            req.user = adminUser;
+        } else {
+            req.user = authenticatedUser;
+        }
 
         return true;
     }

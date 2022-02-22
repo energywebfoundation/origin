@@ -12,6 +12,7 @@ import { TransferService } from '../src/pods/transfer/transfer.service';
 import { authenticatedUser, bootstrapTestInstance } from './exchange';
 import { createDepositAddress } from './utils';
 import { DB_TABLE_PREFIX } from '../src/utils/tablePrefix';
+import { Order, Transfer, TradeForAdminDTO } from '../src';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -51,7 +52,18 @@ describe('Trades API', () => {
         return transferService.setAsConfirmed(transactionHash, 10000);
     };
 
-    const testTrade = async (sellerId: string, buyerId: string) => {
+    interface TestTrade {
+        sellerId: string;
+        buyerId: string;
+        asUser?: string;
+        test: (p: {
+            trade: TradeDTO<string> | TradeForAdminDTO<string>;
+            deposit: Transfer;
+            ask: Order;
+        }) => void;
+    }
+
+    const testTrade = async ({ sellerId, buyerId, asUser, test }: TestTrade) => {
         const sellerAddress = await createDepositAddress(accountService, sellerId);
 
         const deposit = await createDeposit(sellerAddress);
@@ -78,23 +90,22 @@ describe('Trades API', () => {
 
         await request(app.getHttpServer())
             .get('/trade')
+            .set('as-user', asUser ?? 'user')
             .expect(HttpStatus.OK)
             .expect((res) => {
-                const [trade] = res.body as TradeDTO<string>[];
+                const [trade] = res.body as (TradeDTO<string> | TradeForAdminDTO<string>)[];
 
-                expect(trade.assetId).equals(deposit.asset.id);
-                expect(trade.product).deep.equals(ask.product);
+                test({
+                    trade,
+                    deposit,
+                    ask
+                });
             });
     };
 
     before(async () => {
-        ({
-            orderService,
-            accountService,
-            databaseService,
-            transferService,
-            app
-        } = await bootstrapTestInstance());
+        ({ orderService, accountService, databaseService, transferService, app } =
+            await bootstrapTestInstance());
 
         await app.init();
     });
@@ -116,13 +127,47 @@ describe('Trades API', () => {
         const buyerId = authenticatedUser.organization.id;
         const sellerId = '2';
 
-        await testTrade(sellerId, buyerId);
+        await testTrade({
+            sellerId,
+            buyerId,
+            test: ({ deposit, trade, ask }) => {
+                expect(trade.assetId).equals(deposit.asset.id);
+                expect(trade.product).deep.equals(ask.product);
+            }
+        });
     });
 
     it('should be able to read the product information from the ask as a seller', async () => {
         const buyerId = '2';
         const sellerId = authenticatedUser.organization.id;
 
-        await testTrade(sellerId, buyerId);
+        await testTrade({
+            sellerId,
+            buyerId,
+            test: ({ deposit, trade, ask }) => {
+                expect(trade.assetId).equals(deposit.asset.id);
+                expect(trade.product).deep.equals(ask.product);
+            }
+        });
+    });
+
+    it('should be able to see all trade details as admin', async () => {
+        const buyerId = authenticatedUser.organization.id;
+        const sellerId = '2';
+
+        await testTrade({
+            sellerId,
+            buyerId,
+            asUser: 'admin',
+            test: ({ deposit, trade, ask }) => {
+                const adminTrade = trade as TradeForAdminDTO<string>;
+                expect(adminTrade.assetId).equals(deposit.asset.id);
+                expect(adminTrade.product).deep.equals(ask.product);
+
+                expect(adminTrade.tokenId).equals(dummyAsset.tokenId);
+                expect(adminTrade.askUserId).equals(sellerId);
+                expect(adminTrade.bidUserId).equals(buyerId);
+            }
+        });
     });
 });

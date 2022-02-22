@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty, IsNumber, IsUUID, Validate } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsString, IsUUID, Validate } from 'class-validator';
 import { IntUnitsOfEnergy, PositiveBNStringValidator } from '@energyweb/origin-backend-utils';
 import { Trade } from './trade.entity';
+import { IAsset } from '../asset/asset.entity';
 
 export class TradeDTO<TProduct> {
     @ApiProperty({
@@ -60,6 +61,43 @@ export class TradeDTO<TProduct> {
             askId: trade.ask?.id,
             assetId,
             product
+        };
+    }
+}
+
+export class TradeForAdminDTO<TProduct> extends TradeDTO<TProduct> {
+    @ApiProperty({ type: String, example: '1' })
+    @IsNotEmpty()
+    @IsString()
+    tokenId: string;
+
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
+    @IsString()
+    askUserId: string;
+
+    @ApiProperty({ type: String })
+    @IsNotEmpty()
+    @IsString()
+    bidUserId: string;
+
+    public static fromTradeForAdmin<TProduct>(
+        trade: Trade,
+        asset: IAsset,
+        product: TProduct
+    ): TradeForAdminDTO<TProduct> {
+        return {
+            id: trade.id,
+            created: trade.created.toISOString(),
+            price: trade.price,
+            volume: trade.volume.toString(10),
+            bidId: trade.bid?.id,
+            askId: trade.ask?.id,
+            assetId: asset.id,
+            product,
+            askUserId: trade.ask?.userId,
+            bidUserId: trade.bid?.userId,
+            tokenId: asset.tokenId
         };
     }
 }

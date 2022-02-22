@@ -7,17 +7,19 @@ import {
 import {
     Controller,
     Get,
-    HttpStatus,
     UseGuards,
     UseInterceptors,
     UsePipes,
     ValidationPipe
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { BaseTradeController } from '../../src/pods/trade/base-trade.controller';
-import { TradeDTO } from './trade.dto';
+import {
+    BaseTradeController,
+    BaseTradeControllerGetAllResponse
+} from '../../src/pods/trade/base-trade.controller';
+import { TradeDTO, TradeForAdminDTO } from './trade.dto';
 
 @ApiTags('trade')
 @ApiBearerAuth('access-token')
@@ -27,8 +29,10 @@ import { TradeDTO } from './trade.dto';
 export class TradeController extends BaseTradeController<string, string> {
     @UseGuards(AuthGuard(), ActiveUserGuard)
     @Get()
-    @ApiResponse({ status: HttpStatus.OK, type: [TradeDTO], description: 'Get all trades' })
-    public async getAll(@UserDecorator() user: ILoggedInUser): Promise<TradeDTO[]> {
+    @BaseTradeControllerGetAllResponse(TradeDTO, TradeForAdminDTO)
+    public async getAll(
+        @UserDecorator() user: ILoggedInUser
+    ): Promise<(TradeDTO | TradeForAdminDTO)[]> {
         return super.getAll(user);
     }
 }
