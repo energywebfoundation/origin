@@ -46,7 +46,13 @@ export const formatAsks: TFormatAsks = ({
       generationEnd: formatDate(ask.product.generationTo),
       buyDirect:
         user?.id?.toString() !== ask.userId ? (
-          <Button variant="contained" onClick={() => onBuyClick(ask.id)}>
+          <Button
+            variant="contained"
+            onClick={(e) => {
+              e.stopPropagation();
+              onBuyClick(ask.id);
+            }}
+          >
             {buyText}
           </Button>
         ) : null,
