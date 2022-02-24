@@ -107,7 +107,7 @@ export class TradeService<TProduct, TProductFilter> implements OnModuleInit {
         });
     }
 
-    private async getAll() {
+    public async getAll() {
         return this.buildGetAllQuery().orderBy('trade.created', 'DESC').getMany();
     }
 
