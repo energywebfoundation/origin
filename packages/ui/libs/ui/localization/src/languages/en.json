@@ -56,7 +56,8 @@
         "sectionTitle": "Admin",
         "users": "Users",
         "organizations": "Organizations",
-        "claims": "Claims"
+        "claims": "Claims",
+        "trades": "Trades"
       },
       "layout": {
         "userPendingTooltip": "Your user account status is pending",
@@ -1020,6 +1021,15 @@
         "beneficiary": "Beneficiary",
         "fromDate": "From date",
         "toDate": "To date"
+      },
+      "trades": {
+        "dateAndTime": "Date & Time",
+        "buyerId": "Buyer",
+        "sellerId": "Seller",
+        "certificateId": "Certificate ID",
+        "volume": "Volume",
+        "price": "Price",
+        "total": "Total"
       },
       "updateUser": {
         "title": "Title",
