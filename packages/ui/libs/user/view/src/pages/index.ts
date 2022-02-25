@@ -3,6 +3,7 @@ export * from './AdminUpdateUserPage';
 export * from './AdminClaimsPage';
 export * from './AdminAllOrganizationsPage';
 export * from './AdminOrganizationViewPage';
+export * from './AdminTradesPage';
 
 export * from './LoginPage';
 export * from './RegisterPage';

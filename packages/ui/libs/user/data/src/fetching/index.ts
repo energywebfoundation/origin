@@ -1,6 +1,7 @@
 export * from './adminFetchUsers';
 export * from './adminGetUser';
 export * from './allDevices';
+export * from './allTrades';
 export * from './blockchainCertificates';
 export * from './exchangeAddress';
 export * from './pollExchangeAddress';
