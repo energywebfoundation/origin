@@ -12,7 +12,7 @@ type TUseTradesTableLogic = (
   args: TUseTradesTableLogicArgs
 ) => TableComponentProps<string>;
 
-type TFormatTTrades = (
+type TFormatTrades = (
   args: Omit<TUseTradesTableLogicArgs, 'loading'>
 ) => TableRowData<string>[];
 
@@ -27,7 +27,7 @@ type FormattedTrades = {
   total: string;
 };
 
-const formatTrades: TFormatTTrades = ({ trades }) => {
+const formatTrades: TFormatTrades = ({ trades }) => {
   return (
     trades?.map((trade) => {
       const price = trade.price / 100;
