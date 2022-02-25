@@ -7,6 +7,7 @@ export type TGetAdminMenuArgs = {
   showSection: boolean;
   showUsers: boolean;
   showClaims: boolean;
+  showTrades: boolean;
   showAllOrgs: boolean;
   menuButtonClass?: string;
   selectedMenuItemClass?: string;
@@ -21,6 +22,7 @@ export const getAdminMenu: TUseAdminMenuFn = ({
   showUsers,
   showAllOrgs,
   showClaims,
+  showTrades,
   menuButtonClass,
   selectedMenuItemClass,
 }) => {
@@ -48,6 +50,12 @@ export const getAdminMenu: TUseAdminMenuFn = ({
         label: t('navigation.admin.claims'),
         show: showClaims,
         dataCy: 'adminClaims',
+      },
+      {
+        url: 'trades',
+        label: t('navigation.admin.trades'),
+        show: showTrades,
+        dataCy: 'adminTrades',
       },
     ],
     menuButtonClass,

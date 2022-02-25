@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router';
 import {
   AdminAllOrganizationsPage,
   AdminClaimsPage,
+  AdminTradesPage,
   AdminUpdateUserPage,
   AdminUsersPage,
   AdminOrganizationViewPage,
@@ -14,11 +15,12 @@ export interface AdminAppProps {
     showClaims: boolean;
     showUsers: boolean;
     showAllOrgs: boolean;
+    showTrades: boolean;
   };
 }
 
 export const AdminApp: FC<AdminAppProps> = ({ routesConfig }) => {
-  const { showClaims, showUsers, showAllOrgs } = routesConfig;
+  const { showClaims, showUsers, showTrades, showAllOrgs } = routesConfig;
   return (
     <Routes>
       {showUsers && <Route path="users" element={<AdminUsersPage />} />}
@@ -29,6 +31,7 @@ export const AdminApp: FC<AdminAppProps> = ({ routesConfig }) => {
         <Route path="organizations" element={<AdminAllOrganizationsPage />} />
       )}
       {showClaims && <Route path="claims" element={<AdminClaimsPage />} />}
+      {showTrades && <Route path="trades" element={<AdminTradesPage />} />}
       {showAllOrgs && (
         <Route
           path="organization/:id"
