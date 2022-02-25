@@ -27,7 +27,7 @@ type FormattedTrades = {
   total: string;
 };
 
-const formatTrades: TFormatTrades = ({ trades }) => {
+const formatTrades: TFormatTrades = ({ trades }): FormattedTrades[] => {
   return (
     trades?.map((trade) => {
       const price = trade.price / 100;
