@@ -326,6 +326,7 @@ export const useAppContainerEffects = () => {
       showClaims: userIsAdminOrSupport,
       showAllOrgs: userIsAdminOrSupport,
       showUsers: userIsAdminOrSupport,
+      showTrades: userIsAdminOrSupport,
     }),
     [userIsAdminOrSupport]
   );
