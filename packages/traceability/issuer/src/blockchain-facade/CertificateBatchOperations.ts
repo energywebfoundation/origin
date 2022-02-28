@@ -15,6 +15,7 @@ export interface BatchCertificateTransfer {
     from?: string;
     amount?: BigNumber;
     schemaVersion: CertificateSchemaVersion;
+    creationTransactionHash?: string;
 }
 
 export interface BatchCertificateClaim {
@@ -24,6 +25,7 @@ export interface BatchCertificateClaim {
     amount?: BigNumber;
     claimData: IClaimData;
     schemaVersion: CertificateSchemaVersion;
+    creationTransactionHash?: string;
 }
 
 /**
@@ -101,7 +103,9 @@ export async function transferCertificates(
     blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
     const certificatesPromises = certificateBatch.map((cert) =>
-        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync()
+        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync({
+            creationTransactionHash: cert.creationTransactionHash
+        })
     );
 
     const { registry, activeUser } = blockchainProperties;
@@ -139,7 +143,9 @@ export async function claimCertificates(
     blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
     const certificatesPromises = certificateBatch.map((cert) =>
-        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync()
+        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync({
+            creationTransactionHash: cert.creationTransactionHash
+        })
     );
     const certificates = await Promise.all(certificatesPromises);
 

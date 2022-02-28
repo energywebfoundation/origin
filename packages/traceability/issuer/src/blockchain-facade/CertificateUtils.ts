@@ -109,7 +109,9 @@ export async function getAllCertificates(
             );
         }
 
-        return new Certificate(certificateId, blockchainProperties, schemaVersion).sync();
+        return new Certificate(certificateId, blockchainProperties, schemaVersion).sync({
+            creationTransactionHash: event.transactionHash
+        });
     });
 
     return Promise.all(certificatePromises);
