@@ -98,8 +98,7 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
 
         if (isIssuer) {
             await this.createAccounts(clientId, clientSecret, tokens, organization, [
-                AccountType.Issue,
-                AccountType.Trade
+                AccountType.Issue
             ]);
         } else if (isParticipant) {
             await this.createAccounts(clientId, clientSecret, tokens, organization, [
