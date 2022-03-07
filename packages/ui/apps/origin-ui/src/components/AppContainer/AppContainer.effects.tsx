@@ -275,7 +275,7 @@ export const useAppContainerEffects = () => {
       showMyBundles: userIsActive && userHasOrg,
       showMyTrades: userIsActive && userHasOrg,
       showMyOrders: userIsActive && userHasOrg,
-      showSupply: userIsActive && userHasOrg,
+      showSupply: userIsActive && userHasOrg && userIsDeviceManagerOrAdmin,
     }),
     [userIsActive, userHasOrg]
   );
