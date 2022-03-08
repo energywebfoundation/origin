@@ -102,18 +102,20 @@ export async function transferCertificates(
     certificateBatch: BatchCertificateTransfer[],
     blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
-    const certificatesPromises = certificateBatch.map((cert) =>
-        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync({
-            creationTransactionHash: cert.creationTransactionHash
-        })
-    );
-
     const { registry, activeUser } = blockchainProperties;
     const registryWithSigner = registry.connect(activeUser);
 
     const activeUserAddress = await activeUser.getAddress();
 
-    const certificates = await Promise.all(certificatesPromises);
+    const certsWithoutAmount = await Promise.all(
+        certificateBatch
+            .filter((b) => !b.amount) // we sync only certs that don't have amount configured
+            .map((cert) =>
+                new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync({
+                    creationTransactionHash: cert.creationTransactionHash
+                })
+            )
+    );
 
     return await registryWithSigner.safeBatchTransferFromMultiple(
         certificateBatch.map((cert) => cert.from ?? activeUserAddress),
@@ -123,7 +125,7 @@ export async function transferCertificates(
             (cert) =>
                 cert.amount ??
                 BigNumber.from(
-                    certificates.find((certificate) => certificate.id === cert.id).owners[
+                    certsWithoutAmount.find((certificate) => certificate.id === cert.id).owners[
                         cert.from ?? activeUserAddress
                     ] ?? 0
                 )
@@ -142,17 +144,20 @@ export async function claimCertificates(
     certificateBatch: BatchCertificateClaim[],
     blockchainProperties: IBlockchainProperties
 ): Promise<ContractTransaction> {
-    const certificatesPromises = certificateBatch.map((cert) =>
-        new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync({
-            creationTransactionHash: cert.creationTransactionHash
-        })
-    );
-    const certificates = await Promise.all(certificatesPromises);
-
     const { activeUser, registry } = blockchainProperties;
     const activeUserAddress = await activeUser.getAddress();
 
     const registryWithSigner = registry.connect(activeUser);
+
+    const certsWithoutAmount = await Promise.all(
+        certificateBatch
+            .filter((c) => !c.amount)
+            .map((cert) =>
+                new Certificate(cert.id, blockchainProperties, cert.schemaVersion).sync({
+                    creationTransactionHash: cert.creationTransactionHash
+                })
+            )
+    );
 
     return await registryWithSigner.safeBatchTransferAndClaimFromMultiple(
         certificateBatch.map((cert) => cert.from ?? activeUserAddress),
@@ -162,7 +167,7 @@ export async function claimCertificates(
             (cert) =>
                 cert.amount ??
                 BigNumber.from(
-                    certificates.find((certificate) => certificate.id === cert.id).owners[
+                    certsWithoutAmount.find((certificate) => certificate.id === cert.id).owners[
                         cert.from ?? activeUserAddress
                     ] ?? 0
                 )
