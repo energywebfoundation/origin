@@ -87,7 +87,7 @@ describe('Certificate tests', () => {
         );
     };
 
-    it('migrates Registry and Issuer', async () => {
+    before(async () => {
         const registry = await migrateRegistry(provider, issuerPK);
         const issuer = await migrateIssuer(provider, issuerPK, registry.address);
 

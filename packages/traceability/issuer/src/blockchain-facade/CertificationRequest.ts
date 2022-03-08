@@ -47,7 +47,7 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
     constructor(public id: number, public blockchainProperties: IBlockchainProperties) {}
     /**
-     * 
+     *
      *
      * @description Uses Issuer contract to create Certificate request
      *
@@ -84,10 +84,10 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
 
         return newCertificationRequest.sync();
     }
-     /**
-     * 
+    /**
      *
-     * @description Returns all Certification Requests for an Issuer 
+     *
+     * @description Returns all Certification Requests for an Issuer
      *
      */
     public static async getAll(
@@ -105,8 +105,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         );
     }
 
-      /**
-     * 
+    /**
+     *
      *
      * @description Retrieves Certificate data
      *
@@ -152,8 +152,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         return this;
     }
 
-      /**
-     * 
+    /**
+     *
      *
      * @description Uses Issuer contract to approve a Certificate request
      *
@@ -177,8 +177,8 @@ export class CertificationRequest implements ICertificationRequestBlockchain {
         return certificateId;
     }
 
-      /**
-     * 
+    /**
+     *
      *
      * @description Uses Issuer contract to revoke a Certificate request
      *

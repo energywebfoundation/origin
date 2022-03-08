@@ -39,7 +39,9 @@ export class TransferCertificateHandler implements ICommandHandler<TransferCerti
             certificate.id,
             blockchainProperties,
             certificate.schemaVersion
-        ).sync();
+        ).sync({
+            creationTransactionHash: certificate.creationTransactionHash,
+        });
 
         if (certificate.issuedPrivately) {
             const senderBalance = BigNumber.from(

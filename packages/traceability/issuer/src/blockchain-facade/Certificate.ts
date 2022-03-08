@@ -70,6 +70,10 @@ export interface ICertificate extends IData {
     schemaVersion: CertificateSchemaVersion;
 }
 
+export interface ICertificateSyncParams {
+    creationTransactionHash?: string;
+}
+
 export class Certificate implements ICertificate {
     public deviceId: string;
 
@@ -179,9 +183,10 @@ export class Certificate implements ICertificate {
             blockchainProperties,
             schemaVersion
         );
-        newCertificate.creationTransactionHash = txHash;
 
-        return newCertificate.sync();
+        return newCertificate.sync({
+            creationTransactionHash: txHash
+        });
     }
 
     /**
@@ -241,12 +246,17 @@ export class Certificate implements ICertificate {
      * @description Retrieves current data for a Certificate
      *
      */
-    async sync(): Promise<Certificate> {
+    async sync(params: ICertificateSyncParams = {}): Promise<Certificate> {
         if (this.id === null) {
             return this;
         }
 
         const { registry } = this.blockchainProperties;
+
+        if (params.creationTransactionHash) {
+            // This will speed up getIssuanceTransaction required for starting block
+            this.creationTransactionHash = params.creationTransactionHash;
+        }
 
         const issuanceTransaction = await this.getIssuanceTransaction();
 
@@ -501,23 +511,23 @@ export class Certificate implements ICertificate {
             return await registry.provider.getTransactionReceipt(this.creationTransactionHash);
         }
 
-        const allIssuanceLogs = await getEventsFromContract(
+        const allBatchIssuanceLogs = await getEventsFromContract(
             registry,
-            registry.filters.IssuanceSingle(null, null, null)
+            registry.filters.IssuanceBatch(null, null, null, null)
         );
 
-        let issuanceLog = allIssuanceLogs.find(
-            (event) => event._id.toString() === this.id.toString()
+        let issuanceLog = allBatchIssuanceLogs.find((event) =>
+            event._ids.map((id: BigNumber) => id.toString()).includes(this.id.toString())
         );
 
         if (!issuanceLog) {
-            const allBatchIssuanceLogs = await getEventsFromContract(
+            const allIssuanceLogs = await getEventsFromContract(
                 registry,
-                registry.filters.IssuanceBatch(null, null, null, null)
+                registry.filters.IssuanceSingle(null, null, null)
             );
 
-            issuanceLog = allBatchIssuanceLogs.find((event) =>
-                event._ids.map((id: BigNumber) => id.toString()).includes(this.id.toString())
+            issuanceLog = allIssuanceLogs.find(
+                (event) => event._id.toString() === this.id.toString()
             );
 
             if (!issuanceLog) {

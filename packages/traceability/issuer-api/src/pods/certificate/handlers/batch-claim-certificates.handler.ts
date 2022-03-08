@@ -60,6 +60,7 @@ export class BatchClaimCertificatesHandler
 
             return {
                 ...claim,
+                creationTransactionHash: cert.creationTransactionHash,
                 schemaVersion: cert.schemaVersion
             };
         });

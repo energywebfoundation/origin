@@ -50,6 +50,7 @@ export class BatchTransferCertificatesHandler
 
             return {
                 ...transfer,
+                creationTransactionHash: cert.creationTransactionHash,
                 schemaVersion: cert.schemaVersion
             };
         });

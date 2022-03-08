@@ -42,7 +42,9 @@ export class ClaimCertificateHandler implements ICommandHandler<ClaimCertificate
             certificate.id,
             blockchainProperties,
             certificate.schemaVersion
-        ).sync();
+        ).sync({
+            creationTransactionHash: certificate.creationTransactionHash
+        });
 
         const claimerBalance = BigNumber.from(
             (certificate.issuedPrivately

@@ -40,7 +40,9 @@ export class SyncCertificateHandler implements IEventHandler<SyncCertificateEven
             certificate.id,
             blockchainProperties,
             certificate.schemaVersion
-        ).sync();
+        ).sync({
+            creationTransactionHash: certificate.creationTransactionHash
+        });
 
         try {
             const updateResult = await this.repository.update(certificate.id, {
