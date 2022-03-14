@@ -10,3 +10,4 @@ export * from './transfer.service';
 export * from './handlers';
 export * from './events';
 export * from './dto';
+export * from './commands';

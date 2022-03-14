@@ -124,10 +124,34 @@ export class RedeemTransaction extends Transaction {
     end: Date;
 }
 
+export interface RedeemTransactionPeriod {
+    date: string;
+    timezone_type: number;
+    timezone: string;
+}
+
+export interface RedeemTransactionItem {
+    start_cert_num: string;
+    end_cert_num: string;
+    volume: string;
+}
+
 export class RedeemTransactionResult extends TransactionResult {
-    @Expose({ name: 'encrypted_key', toClassOnly: true })
-    encryptedKey: string;
+    @Expose({ name: 'period_start', toClassOnly: true })
+    periodStart: RedeemTransactionPeriod;
+
+    @Expose({ name: 'period_end', toClassOnly: true })
+    periodEnd: RedeemTransactionPeriod;
+
+    /** Key = item id */
+    items: Record<string, RedeemTransactionItem>;
+
+    @Expose({ name: 'verification_url', toClassOnly: true })
+    verificationUrl: string;
 
     @Expose({ name: 'verification_key', toClassOnly: true })
     verificationKey: string;
+
+    @Expose({ name: 'encrypted_key', toClassOnly: true })
+    encryptedKey?: string;
 }

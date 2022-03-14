@@ -102,7 +102,8 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
             ]);
         } else if (isParticipant) {
             await this.createAccounts(clientId, clientSecret, tokens, organization, [
-                AccountType.Trade
+                AccountType.Trade,
+                AccountType.Redemption
             ]);
         } else {
             if (!isRegistrant) {

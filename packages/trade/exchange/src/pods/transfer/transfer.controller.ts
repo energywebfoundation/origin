@@ -23,6 +23,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ensureSingleProcessOnly } from '../../utils/ensureSingleProcessOnly';
+import { IClaimData } from './dto';
 
 import { RequestWithdrawalDTO } from './dto/create-withdrawal.dto';
 import { RequestBatchClaimDTO } from './dto/request-batch-claim.dto';
@@ -105,7 +106,14 @@ export class TransferController {
             const result = await ensureSingleProcessOnly(
                 ownerId,
                 'requestClaim',
-                () => this.transferService.requestClaim(ownerId, claim),
+                () =>
+                    this.transferService.requestClaim(ownerId, {
+                        ...claim,
+                        // Conversion to unknown is necessary, because IClaimData is generic interface
+                        // with index signature, but ClaimDataDTO is specific to endpoint
+                        // and doesn't have index signature
+                        claimData: claim.claimData as unknown as IClaimData
+                    }),
                 new BeingProcessedError(TransferDirection.Claim)
             );
 
@@ -134,7 +142,14 @@ export class TransferController {
             const result = await ensureSingleProcessOnly(
                 ownerId,
                 'requestClaim',
-                () => this.transferService.requestBatchClaim(ownerId, batchClaim),
+                () =>
+                    this.transferService.requestBatchClaim(ownerId, {
+                        ...batchClaim,
+                        // Conversion to unknown is necessary, because IClaimData is generic interface
+                        // with index signature, but ClaimDataDTO is specific to endpoint
+                        // and doesn't have index signature
+                        claimData: batchClaim.claimData as unknown as IClaimData
+                    }),
                 new BeingProcessedError(TransferDirection.Claim)
             );
 

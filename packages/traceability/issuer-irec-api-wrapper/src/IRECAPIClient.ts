@@ -604,13 +604,10 @@ export class IRECAPIClient {
             (res) => res,
             (err) => {
                 const status = err?.response?.data?.status ?? err?.response?.status ?? 500;
-                return Promise.reject(
-                    new HttpException(
-                        'IREC API Error:' +
-                            (err?.response?.data?.msg ?? err?.response?.data?.title ?? err.message),
-                        status
-                    )
+                const message = JSON.stringify(
+                    err?.response?.data ?? err.message ?? 'unknown error'
                 );
+                return Promise.reject(new HttpException('IREC API Error:' + message, status));
             }
         );
     }

@@ -4,7 +4,8 @@ import {
     ForbiddenException,
     Injectable,
     NotFoundException,
-    UnauthorizedException
+    UnauthorizedException,
+    Logger
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
@@ -159,6 +160,7 @@ export interface IIrecService {
 @Injectable()
 export class IrecService implements IIrecService {
     private platformAdmin: TUserBaseEntity;
+    private logger = new Logger(IrecService.name);
 
     constructor(
         private readonly commandBus: CommandBus,
@@ -316,7 +318,9 @@ export class IrecService implements IIrecService {
 
     async getRedemptionAccountCode(user: UserIdentifier): Promise<string> {
         const accounts = await this.getAccountInfo(user);
-        return accounts.find((account: Account) => account.type === AccountType.Issue)?.code || '';
+        return (
+            accounts.find((account: Account) => account.type === AccountType.Redemption)?.code || ''
+        );
     }
 
     async createAccount(user: UserIdentifier, params: CreateAccountParams): Promise<void> {
@@ -445,7 +449,9 @@ export class IrecService implements IIrecService {
         const item = items.find((i) => i.asset === assetId);
 
         if (!item) {
-            throw new NotFoundException('IREC item not found');
+            const availableAssets = items.map((i) => i.asset).join(', ');
+            this.logger.debug(`Asset ${assetId} not found. Available assets: ${availableAssets}`);
+            throw new NotFoundException(`IREC item not found.`);
         }
 
         const claimItem = new ReservationItem();

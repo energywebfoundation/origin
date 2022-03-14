@@ -329,7 +329,7 @@ describe('Deposits using deployed registry', () => {
                 issuer,
                 web3: getProviderWithFallback(web3)
             },
-            CertificateSchemaVersion.V1
+            CertificateSchemaVersion.Latest
         ).sync();
 
         const [claimDetails] = await certificate.getClaimedData();

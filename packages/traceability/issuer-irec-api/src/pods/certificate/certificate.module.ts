@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
-
+import { IrecCertificateController } from './certificate.controller';
 import {
     BlockchainPropertiesModule,
     Certificate,
@@ -12,8 +12,6 @@ import {
 } from '@energyweb/issuer-api';
 import { IrecModule } from '@energyweb/origin-organization-irec-api';
 
-import { IrecCertificateController } from './certificate.controller';
-import { CertificateHandlers } from './handler';
 
 @Module({
     imports: [
@@ -23,8 +21,8 @@ import { CertificateHandlers } from './handler';
         IrecModule,
         ConfigModule
     ],
-    controllers: [IrecCertificateController, CertificateBatchController],
-    providers: [...CertificateHandlers, OnChainCertificateWatcher],
-    exports: [...CertificateHandlers, OnChainCertificateWatcher]
+    controllers: [CertificateBatchController, IrecCertificateController],
+    providers: [OnChainCertificateWatcher],
+    exports: [OnChainCertificateWatcher]
 })
 export class CertificateModule {}

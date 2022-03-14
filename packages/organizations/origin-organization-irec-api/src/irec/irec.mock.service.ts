@@ -356,7 +356,26 @@ export class IrecMockService implements IIrecService {
             sender: 'TPOTRADE1',
             recipient: 'TRUPOWER',
             verificationKey: 'S4ELosCw',
-            encryptedKey: 'S4ELosCw'
+            encryptedKey: 'S4ELosCw',
+            items: {
+                [assetId]: {
+                    start_cert_num: '0000-0000-0000-0001',
+                    end_cert_num: '0000-0000-0000-1000',
+                    volume: '1000'
+                }
+            },
+            periodStart: {
+                date: '2020-01-01 12:32:34.000000',
+                timezone_type: 3,
+                timezone: 'UTC'
+            },
+            periodEnd: {
+                date: '2020-02-02 12:32:34.000000',
+                timezone_type: 3,
+                timezone: 'UTC'
+            },
+            verificationUrl:
+                'https://baseUrl/public/certificates/en/PwC0IE2x+ugRPJRYhwlGCTjEqk7RDz0x+zzp6Ks0k1M='
         };
     }
 
