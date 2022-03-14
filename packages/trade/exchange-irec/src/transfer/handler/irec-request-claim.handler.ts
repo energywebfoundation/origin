@@ -3,8 +3,10 @@ import { IrecRequestClaimCommand } from '../command';
 import { ForbiddenException, Inject } from '@nestjs/common';
 import { AccountBalanceService, RequestClaimCommand } from '@energyweb/exchange';
 import { IrecService, IREC_SERVICE } from '@energyweb/origin-organization-irec-api';
-import { Connection } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { UserService } from '@energyweb/origin-backend';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IrecTradeTransfer } from '../irec-trade-transfer.entity';
 
 @CommandHandler(IrecRequestClaimCommand)
 export class IrecRequestClaimHandler implements ICommandHandler<IrecRequestClaimCommand> {
@@ -14,7 +16,9 @@ export class IrecRequestClaimHandler implements ICommandHandler<IrecRequestClaim
         private irecService: IrecService,
         private accountBalanceService: AccountBalanceService,
         private connection: Connection,
-        private userService: UserService
+        private userService: UserService,
+        @InjectRepository(IrecTradeTransfer)
+        private repository: Repository<IrecTradeTransfer>
     ) {}
 
     public async execute({ userId, claim }: IrecRequestClaimCommand): Promise<void> {
@@ -40,7 +44,7 @@ export class IrecRequestClaimHandler implements ICommandHandler<IrecRequestClaim
          * Mateusz Koteja, 11.03.2022
          */
         const [irec_issuer_certification_request] = await this.connection.query(`
-      select iicr.* from exchange_asset ea
+      select iicr.*, ea."tokenId" from exchange_asset ea
       inner join issuer_certification_request icr on ea."tokenId"::int4 = icr."issuedCertificateId"
       inner join irec_issuer_certification_request iicr on iicr."certificationRequestId"  = icr.id
       where ea.id = '${claim.assetId.toString()}'
@@ -49,7 +53,9 @@ export class IrecRequestClaimHandler implements ICommandHandler<IrecRequestClaim
         const platformAdmin = await this.userService.getPlatformAdmin();
 
         if (!irec_issuer_certification_request) {
-            throw new Error(`Cannot find issuer certification request (or issuer_certificate) for asset ${claim.assetId}`);
+            throw new Error(
+                `Cannot find issuer certification request (or issuer_certificate) for asset ${claim.assetId}`
+            );
         }
 
         const irecResult = await this.irecService.redeem(
@@ -66,6 +72,11 @@ export class IrecRequestClaimHandler implements ICommandHandler<IrecRequestClaim
         );
 
         const irecItem = Object.values(irecResult.items)[0];
+
+        await this.repository.insert({
+            tokenId: irec_issuer_certification_request.tokenId,
+            verificationKey: irecResult.verificationKey
+        });
 
         await this.commandBus.execute(
             new RequestClaimCommand(userId, {

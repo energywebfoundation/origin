@@ -30,7 +30,7 @@ import { ProductDTO } from '../src';
 import { UserService } from '@energyweb/origin-backend';
 import { DeviceService } from '@energyweb/origin-device-registry-irec-local-api';
 import { DeviceRegistryService } from '@energyweb/origin-device-registry-api';
-import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+import { EventsHandler, IEventHandler, QueryBus } from '@nestjs/cqrs';
 
 const web3 = 'http://localhost:8545';
 const provider = getProviderWithFallback(web3);
@@ -303,12 +303,11 @@ export const bootstrapTestInstance = async (
     const accountService = await app.resolve<AccountService>(AccountService);
     const databaseService = await app.resolve<DatabaseService>(DatabaseService);
     const orderService = await app.resolve<OrderService<ProductDTO>>(OrderService);
+    const queryBus = await app.resolve<QueryBus>(QueryBus);
     const blockchainPropertiesService = await app.resolve<BlockchainPropertiesService>(
         BlockchainPropertiesService
     );
-    const claimRequestedHandler = await app.resolve<ClaimRequestedHandler>(
-        ClaimRequestedHandler
-    );
+    const claimRequestedHandler = await app.resolve<ClaimRequestedHandler>(ClaimRequestedHandler);
 
     const blockchainProperties = await blockchainPropertiesService.create(
         provider.network.chainId,
@@ -341,6 +340,7 @@ export const bootstrapTestInstance = async (
         databaseService,
         orderService,
         claimRequestedHandler,
+        queryBus,
         app
     };
 };
