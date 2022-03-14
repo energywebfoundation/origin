@@ -12,7 +12,7 @@
         "clean": "lerna run clean --parallel",
         "build:static": "lerna run build:static --parallel",
         "build:ts": "lerna run build:ts --stream",
-        "migrate:demo": "lerna run typeorm:run && lerna run start:defaultConfigs --scope @energyweb/migrations-irec --stream",
+        "migrate:demo": "lerna run typeorm:drop --scope @energyweb/exchange && lerna run typeorm:run && lerna run start:defaultConfigs --scope @energyweb/migrations-irec --stream",
         "migrate:demo:web3": "lerna run typeorm:run && lerna run start:defaultConfigs --scope @energyweb/migrations-irec --stream",
         "run:backend": "lerna run start --scope @energyweb/origin-backend-irec-app --stream",
         "run:ui": "lerna run start --scope ui-packages --stream",

@@ -439,19 +439,13 @@ export class IrecService implements IIrecService {
         fromTradeAccount?: string,
         toRedemptionAccount?: string
     ): Promise<RedeemTransactionResult> {
-        console.log('a');
         const userClient = await this.getIrecClient(user);
-        console.log('b');
         const userConnectionInfo = await this.getConnectionInfo(user);
 
-        console.log('c');
-
         const userTradeAccount = fromTradeAccount || (await this.getTradeAccountCode(user));
-        console.log('d', userTradeAccount);
         const accountTo = toRedemptionAccount || (await this.getRedemptionAccountCode(user));
-        console.log('e', accountTo);
+
         const items = await userClient.account.getItems(userTradeAccount);
-        console.log('f');
         const item = items.find((i) => i.asset === assetId);
 
         if (!item) {
@@ -463,19 +457,6 @@ export class IrecService implements IIrecService {
         const claimItem = new ReservationItem();
         claimItem.code = item.code;
         claimItem.amount = item.volume;
-
-        console.log({
-            sender: userTradeAccount,
-            recipient: accountTo,
-            approver: userConnectionInfo.userName,
-            volume: claimItem.amount,
-            items: [claimItem],
-            notes: '',
-            beneficiary: Number(claimData.beneficiary),
-            start: new Date(claimData.periodStartDate),
-            end: new Date(claimData.periodEndDate),
-            purpose: claimData.purpose
-        });
 
         return userClient.redeem({
             sender: userTradeAccount,
