@@ -35,7 +35,7 @@ export const useGetBlockchainCertificateHandler = () => {
     const certificate = new Certificate(
       id,
       configuration,
-      CertificateSchemaVersion.V1
+      CertificateSchemaVersion.Latest
     );
     await certificate.sync();
     return certificate;
