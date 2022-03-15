@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api@0.5.1...@energyweb/issuer-irec-api@0.6.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* **issuer-irec-api:** use device owner for issuance request ([3475b6c](https://github.com/energywebfoundation/origin/commit/3475b6c99d0565e19a5594431c6d037acde4f894))
+* **issuer-irec-api:** use issuer organization for approving and revoking certificates ([481c503](https://github.com/energywebfoundation/origin/commit/481c50344b6dd3f62a5c9cc7cb1d7ab582471948))
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+### Features
+
+* add files to create device endpoint ([d0e2be4](https://github.com/energywebfoundation/origin/commit/d0e2be4b07a435c706ec08f3c280111b7283dafc))
+* encrypt operator platform key and allow to configure custom SignerAdapter ([1a9598a](https://github.com/energywebfoundation/origin/commit/1a9598adbf5352f000e2bbeece6abc0dca7fe8d3))
+* extend irec claim data ([#3336](https://github.com/energywebfoundation/origin/issues/3336)) ([051544d](https://github.com/energywebfoundation/origin/commit/051544dd0ae36dee02db4924829d82c46ec3712e))
+
+
+### BREAKING CHANGES
+
+* - user needs to provide either OPERATOR_ENCRYPTION_KEY variable or custom signer adapter (see README)
+- existing operator keys are automatically migrated and encrypted (during first usage)
+- new entity (SignerEntity) needs to be added to TypeORM.forRoot
+- if blockchainProperties are created manually via SQL, then `issuer_signer` table needs to be populated with encryption key, that can be created using `encryptOperatorKey` function
+
+
+
+
+
 ## [0.5.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api@0.5.0...@energyweb/issuer-irec-api@0.5.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/issuer-irec-api

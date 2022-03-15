@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-user-logic@0.3.1...@energyweb/origin-ui-user-logic@0.4.0) (2022-03-15)
+
+
+### Features
+
+* **origin-ui-user:** add admin trades page and connect to the api ([45470ab](https://github.com/energywebfoundation/origin/commit/45470ab4d71718d070b09aee2b410c515459669f))
+* **origin-ui-user:** add return type for format trades ([dd462c9](https://github.com/energywebfoundation/origin/commit/dd462c9f1f674bd944970d95a51d9090bce02042))
+* **origin-ui-user:** fix type name typo ([9a8eb7a](https://github.com/energywebfoundation/origin/commit/9a8eb7a7dc9eb0fbdb6b3fe41bcbae9db715ed29))
+
+
+
+
+
 ## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-user-logic@0.3.0...@energyweb/origin-ui-user-logic@0.3.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/origin-ui-user-logic

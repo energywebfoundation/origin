@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-exchange-logic@0.3.1...@energyweb/origin-ui-exchange-logic@0.3.2) (2022-03-15)
+
+
+### Bug Fixes
+
+* **origin-ui-exchange:** fix sell offer buy click propagation ([37d2986](https://github.com/energywebfoundation/origin/commit/37d2986258f8b042f8e8cc2986ecf397fd0a7b87))
+* **ui:** add missing type definition ([117d577](https://github.com/energywebfoundation/origin/commit/117d577539af7a2c67fbc6453ea32111ca5fcc22))
+
+
+
+
+
 ## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-exchange-logic@0.3.0...@energyweb/origin-ui-exchange-logic@0.3.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/origin-ui-exchange-logic

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [10.0.9](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@10.0.8...@energyweb/origin-backend-client@10.0.9) (2022-03-15)
+
+
+### Bug Fixes
+
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+
+
+
 ## [10.0.8](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-client@10.0.7...@energyweb/origin-backend-client@10.0.8) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/origin-backend-client

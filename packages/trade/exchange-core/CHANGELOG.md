@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.6](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.2.5...@energyweb/exchange-core@3.2.6) (2022-03-15)
+
+
+### Bug Fixes
+
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+
+
+
 ## [3.2.5](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-core@3.2.4...@energyweb/exchange-core@3.2.5) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/exchange-core

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.2](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations-irec@1.4.1...@energyweb/migrations-irec@1.4.2) (2022-03-15)
+
+
+### Bug Fixes
+
+* **migrations-irec:** migrations irec migration ([b08c6e1](https://github.com/energywebfoundation/origin/commit/b08c6e18a771cd2f821f933f2e4a6da7b6557e5d))
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+
+
+
 ## [1.4.1](https://github.com/energywebfoundation/origin/compare/@energyweb/migrations-irec@1.4.0...@energyweb/migrations-irec@1.4.1) (2022-01-18)
 
 

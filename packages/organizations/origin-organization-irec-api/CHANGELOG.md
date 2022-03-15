@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.9.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.8.1...@energyweb/origin-organization-irec-api@1.9.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* correct creating irec issuer account ([eb3aa85](https://github.com/energywebfoundation/origin/commit/eb3aa85a8b23adfa61dd51ee2c574f745d5e58bf))
+* fix irec account creation ([1a571f2](https://github.com/energywebfoundation/origin/commit/1a571f24084f1e3274582f4ea29fdbbeb8b4f5c4))
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+### Features
+
+* allow issuer to create irec connection ([2bc4a15](https://github.com/energywebfoundation/origin/commit/2bc4a15da930ffb55a82267d7b65141c409b080c))
+* extend irec claim data ([#3336](https://github.com/energywebfoundation/origin/issues/3336)) ([051544d](https://github.com/energywebfoundation/origin/commit/051544dd0ae36dee02db4924829d82c46ec3712e))
+
+
+
+
+
 ## [1.8.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-organization-irec-api@1.8.0...@energyweb/origin-organization-irec-api@1.8.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/origin-organization-irec-api

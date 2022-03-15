@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api-client@0.2.4...@energyweb/issuer-api-client@0.3.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+### Features
+
+* encrypt operator platform key and allow to configure custom SignerAdapter ([1a9598a](https://github.com/energywebfoundation/origin/commit/1a9598adbf5352f000e2bbeece6abc0dca7fe8d3))
+
+
+### BREAKING CHANGES
+
+* - user needs to provide either OPERATOR_ENCRYPTION_KEY variable or custom signer adapter (see README)
+- existing operator keys are automatically migrated and encrypted (during first usage)
+- new entity (SignerEntity) needs to be added to TypeORM.forRoot
+- if blockchainProperties are created manually via SQL, then `issuer_signer` table needs to be populated with encryption key, that can be created using `encryptOperatorKey` function
+
+
+
+
+
 ## [0.2.4](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api-client@0.2.3...@energyweb/issuer-api-client@0.2.4) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/issuer-api-client
