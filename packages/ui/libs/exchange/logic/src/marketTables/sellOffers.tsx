@@ -8,7 +8,7 @@ import {
   PowerFormatter,
 } from '@energyweb/origin-ui-utils';
 import { Button, useTheme, Tooltip } from '@mui/material';
-import React, { useCallback } from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import {
@@ -48,7 +48,7 @@ export const formatAsks: TFormatAsks = ({
         user?.id?.toString() !== ask.userId ? (
           <Button
             variant="contained"
-            onClick={(e) => {
+            onClick={(e: MouseEvent) => {
               e.stopPropagation();
               onBuyClick(ask.id);
             }}
