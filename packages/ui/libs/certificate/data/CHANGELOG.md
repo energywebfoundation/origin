@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-certificate-data@0.3.0...@energyweb/origin-ui-certificate-data@0.4.0) (2022-03-15)
+
+
+### Features
+
+* extend irec claim data ([#3336](https://github.com/energywebfoundation/origin/issues/3336)) ([051544d](https://github.com/energywebfoundation/origin/commit/051544dd0ae36dee02db4924829d82c46ec3712e))
+
+
+
+
+
 # [0.3.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-certificate-data@0.1.0...@energyweb/origin-ui-certificate-data@0.3.0) (2022-01-18)
 
 

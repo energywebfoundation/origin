@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-irec@1.2.1...@energyweb/exchange-irec@2.0.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+### Features
+
+* encrypt operator platform key and allow to configure custom SignerAdapter ([1a9598a](https://github.com/energywebfoundation/origin/commit/1a9598adbf5352f000e2bbeece6abc0dca7fe8d3))
+* **exchange:** return all trades with additional data for admin ([fd23362](https://github.com/energywebfoundation/origin/commit/fd23362fc1f79ae00437d39bff4c06e9e84f2ab2))
+* extend irec claim data ([#3336](https://github.com/energywebfoundation/origin/issues/3336)) ([051544d](https://github.com/energywebfoundation/origin/commit/051544dd0ae36dee02db4924829d82c46ec3712e))
+* Remove transaction log from issuer-api ([#3298](https://github.com/energywebfoundation/origin/issues/3298)) ([fa9a72b](https://github.com/energywebfoundation/origin/commit/fa9a72b678126cc8781228101074dbaf391a7682))
+
+
+### BREAKING CHANGES
+
+* - user needs to provide either OPERATOR_ENCRYPTION_KEY variable or custom signer adapter (see README)
+- existing operator keys are automatically migrated and encrypted (during first usage)
+- new entity (SignerEntity) needs to be added to TypeORM.forRoot
+- if blockchainProperties are created manually via SQL, then `issuer_signer` table needs to be populated with encryption key, that can be created using `encryptOperatorKey` function
+
+
+
+
+
 ## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/exchange-irec@1.2.0...@energyweb/exchange-irec@1.2.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/exchange-irec

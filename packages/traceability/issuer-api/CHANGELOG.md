@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api@0.6.1...@energyweb/issuer-api@0.7.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* issuer-api certificate version type ([c1603c7](https://github.com/energywebfoundation/origin/commit/c1603c7163e25a7dc5f91687f11821840d313574))
+* optimize issuer and issuer-api transfer and claim ([088e0e0](https://github.com/energywebfoundation/origin/commit/088e0e0e85d2c70c0f5266b5c1bfe78b07615d06))
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+* return unecrypted key immediately if the key was just encrypted ([5a924b1](https://github.com/energywebfoundation/origin/commit/5a924b18a9919cdab8c9395e3d88a05bb182cee4))
+
+
+### Features
+
+* allow claim data to be more generic ([188d75c](https://github.com/energywebfoundation/origin/commit/188d75cfcf6bb07696d3b910940544bb406e8705))
+* encrypt operator platform key and allow to configure custom SignerAdapter ([1a9598a](https://github.com/energywebfoundation/origin/commit/1a9598adbf5352f000e2bbeece6abc0dca7fe8d3))
+* extend irec claim data ([#3336](https://github.com/energywebfoundation/origin/issues/3336)) ([051544d](https://github.com/energywebfoundation/origin/commit/051544dd0ae36dee02db4924829d82c46ec3712e))
+* Remove transaction log from issuer-api ([#3298](https://github.com/energywebfoundation/origin/issues/3298)) ([fa9a72b](https://github.com/energywebfoundation/origin/commit/fa9a72b678126cc8781228101074dbaf391a7682))
+
+
+### BREAKING CHANGES
+
+* - user needs to provide either OPERATOR_ENCRYPTION_KEY variable or custom signer adapter (see README)
+- existing operator keys are automatically migrated and encrypted (during first usage)
+- new entity (SignerEntity) needs to be added to TypeORM.forRoot
+- if blockchainProperties are created manually via SQL, then `issuer_signer` table needs to be populated with encryption key, that can be created using `encryptOperatorKey` function
+
+
+
+
+
 ## [0.6.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-api@0.6.0...@energyweb/issuer-api@0.6.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/issuer-api

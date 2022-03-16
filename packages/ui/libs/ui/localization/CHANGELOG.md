@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-localization@0.3.1...@energyweb/origin-ui-localization@0.4.0) (2022-03-15)
+
+
+### Features
+
+* **origin-ui-localization:** add admin trades ([067e20c](https://github.com/energywebfoundation/origin/commit/067e20ccb151a904c04512f58d7ed88f771ccbd9))
+* **origin-ui-localization:** change certificateId label ([7c0ae47](https://github.com/energywebfoundation/origin/commit/7c0ae471817117e4a6d81adc92bf616cdb0a8d60))
+
+
+
+
+
 ## [0.3.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-localization@0.3.0...@energyweb/origin-ui-localization@0.3.1) (2022-01-18)
 
 

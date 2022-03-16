@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@6.0.1...@energyweb/issuer@7.0.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* optimize issuer and issuer-api transfer and claim ([088e0e0](https://github.com/energywebfoundation/origin/commit/088e0e0e85d2c70c0f5266b5c1bfe78b07615d06))
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+### Features
+
+* add schema versioning, to allow ClaimData to be generic ([530a9c4](https://github.com/energywebfoundation/origin/commit/530a9c4c9f13580b1dfabcf06762689337591395))
+
+
+### BREAKING CHANGES
+
+* using various functions may now require passing certificate schema version
+
+
+
+
+
 ## [6.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@6.0.0...@energyweb/issuer@6.0.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/issuer

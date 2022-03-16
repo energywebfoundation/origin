@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/energywebfoundation/origin/compare/ui-packages@0.3.1...ui-packages@0.4.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* **origin-ui-exchange:** fix sell offer buy click propagation ([37d2986](https://github.com/energywebfoundation/origin/commit/37d2986258f8b042f8e8cc2986ecf397fd0a7b87))
+* **origin-ui:** fix ui ([55ea0d3](https://github.com/energywebfoundation/origin/commit/55ea0d37a3aa577f5cb18f2e7649575395396213))
+* **ui:** add missing type definition ([117d577](https://github.com/energywebfoundation/origin/commit/117d577539af7a2c67fbc6453ea32111ca5fcc22))
+
+
+### Features
+
+* extend irec claim data ([#3336](https://github.com/energywebfoundation/origin/issues/3336)) ([051544d](https://github.com/energywebfoundation/origin/commit/051544dd0ae36dee02db4924829d82c46ec3712e))
+* **origin-ui-localization:** add admin trades ([067e20c](https://github.com/energywebfoundation/origin/commit/067e20ccb151a904c04512f58d7ed88f771ccbd9))
+* **origin-ui-localization:** change certificateId label ([7c0ae47](https://github.com/energywebfoundation/origin/commit/7c0ae471817117e4a6d81adc92bf616cdb0a8d60))
+* **origin-ui-user:** add admin trades page and connect to the api ([45470ab](https://github.com/energywebfoundation/origin/commit/45470ab4d71718d070b09aee2b410c515459669f))
+* **origin-ui-user:** add return type for format trades ([dd462c9](https://github.com/energywebfoundation/origin/commit/dd462c9f1f674bd944970d95a51d9090bce02042))
+* **origin-ui-user:** fix type name typo ([9a8eb7a](https://github.com/energywebfoundation/origin/commit/9a8eb7a7dc9eb0fbdb6b3fe41bcbae9db715ed29))
+* **origin-ui:** add showTrades ([5b81c8e](https://github.com/energywebfoundation/origin/commit/5b81c8e940fcdba38754fc5925571c910acc95f8))
+* **origin-ui:** make connect irec and register irec visible for issuer and admin ([d27e9ab](https://github.com/energywebfoundation/origin/commit/d27e9ab931bd1cfe12e989ad6ebc01dd5067f988))
+
+
+
+
+
 ## [0.3.1](https://github.com/energywebfoundation/origin/compare/ui-packages@0.3.0...ui-packages@0.3.1) (2022-01-18)
 
 

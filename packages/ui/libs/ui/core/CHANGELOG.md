@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.2](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@4.0.1...@energyweb/origin-ui-core@4.0.2) (2022-03-15)
+
+**Note:** Version bump only for package @energyweb/origin-ui-core
+
+
+
+
+
 ## [4.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-ui-core@4.0.0...@energyweb/origin-ui-core@4.0.1) (2022-01-18)
 
 

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@1.1.1...@energyweb/issuer-irec-api-wrapper@1.2.0) (2022-03-15)
+
+
+### Bug Fixes
+
+* origin packages build command tsconfig path ([6edee48](https://github.com/energywebfoundation/origin/commit/6edee483e61102f14015a9c1b1b6df4f607e25c9))
+
+
+### Features
+
+* extend irec claim data ([#3336](https://github.com/energywebfoundation/origin/issues/3336)) ([051544d](https://github.com/energywebfoundation/origin/commit/051544dd0ae36dee02db4924829d82c46ec3712e))
+
+
+
+
+
 ## [1.1.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api-wrapper@1.1.0...@energyweb/issuer-irec-api-wrapper@1.1.1) (2022-01-18)
 
 **Note:** Version bump only for package @energyweb/issuer-irec-api-wrapper
