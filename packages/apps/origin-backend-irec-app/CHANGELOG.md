@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-irec-app@2.0.0...@energyweb/origin-backend-irec-app@2.0.1) (2022-03-16)
+
+**Note:** Version bump only for package @energyweb/origin-backend-irec-app
+
+
+
+
+
 # [2.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-backend-irec-app@1.5.1...@energyweb/origin-backend-irec-app@2.0.0) (2022-03-15)
 
 

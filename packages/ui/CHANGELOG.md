@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/energywebfoundation/origin/compare/ui-packages@0.4.0...ui-packages@0.4.1) (2022-03-16)
+
+**Note:** Version bump only for package ui-packages
+
+
+
+
+
 # [0.4.0](https://github.com/energywebfoundation/origin/compare/ui-packages@0.3.1...ui-packages@0.4.0) (2022-03-15)
 
 

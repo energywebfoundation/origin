@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-energy-api-react-query-client",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "React Query Client library interacting with the Energy API",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/api-clients/react-query/origin-energy-api#readme",
     "author": "EnergyWeb DevHub GmbH; Artur Sudnik Hrynkiewicz, artur.hrynkiewicz@energyweb.org",
@@ -23,7 +23,7 @@
         "client:clean": "rm -rf src/client src/schema.yaml"
     },
     "dependencies": {
-        "@energyweb/origin-energy-api": "1.0.8",
+        "@energyweb/origin-energy-api": "1.0.9",
         "axios": "0.24.0",
         "react-query": "3.34.0"
     },

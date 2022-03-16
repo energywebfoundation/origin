@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/issuer-api",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "description": "NestJS module for interacting with renewable energy certificates",
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/issuer-api#readme",
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org",
@@ -37,10 +37,10 @@
         "precommit": "lint-staged"
     },
     "dependencies": {
-        "@energyweb/issuer": "7.0.0",
-        "@energyweb/origin-backend-core": "8.2.2",
-        "@energyweb/origin-backend-utils": "1.8.2",
-        "@energyweb/utils-general": "11.2.2",
+        "@energyweb/issuer": "7.0.1",
+        "@energyweb/origin-backend-core": "8.2.3",
+        "@energyweb/origin-backend-utils": "1.8.3",
+        "@energyweb/utils-general": "11.2.3",
         "@nestjs/config": "1.0.2",
         "@nestjs/passport": "8.0.1",
         "@nestjs/schedule": "1.0.1",

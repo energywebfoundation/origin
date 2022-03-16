@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api@1.2.0...@energyweb/origin-device-registry-irec-local-api@1.2.1) (2022-03-16)
+
+**Note:** Version bump only for package @energyweb/origin-device-registry-irec-local-api
+
+
+
+
+
 # [1.2.0](https://github.com/energywebfoundation/origin/compare/@energyweb/origin-device-registry-irec-local-api@1.1.1...@energyweb/origin-device-registry-irec-local-api@1.2.0) (2022-03-15)
 
 

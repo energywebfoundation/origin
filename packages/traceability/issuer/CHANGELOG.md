@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [7.0.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@7.0.0...@energyweb/issuer@7.0.1) (2022-03-16)
+
+**Note:** Version bump only for package @energyweb/issuer
+
+
+
+
+
 # [7.0.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer@6.0.1...@energyweb/issuer@7.0.0) (2022-03-15)
 
 

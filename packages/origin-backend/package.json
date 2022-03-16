@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend",
-    "version": "11.2.2",
+    "version": "11.2.3",
     "description": "API for managing users, certificate, requests and devices in the Origin project",
     "main": "dist/js/src/index.js",
     "scripts": {
@@ -38,9 +38,9 @@
     "author": "EnergyWeb DevHub GmbH; Joseph Bagaric, joseph.bagaric@energyweb.org; Piotr Kosinski, piotr.kosinski@energyweb.org",
     "license": "MIT",
     "dependencies": {
-        "@energyweb/origin-backend-core": "8.2.2",
-        "@energyweb/origin-backend-utils": "1.8.2",
-        "@energyweb/utils-general": "11.2.2",
+        "@energyweb/origin-backend-core": "8.2.3",
+        "@energyweb/origin-backend-utils": "1.8.3",
+        "@energyweb/utils-general": "11.2.3",
         "@nestjs/common": "8.1.1",
         "@nestjs/config": "1.0.2",
         "@nestjs/core": "8.1.1",

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api@0.6.0...@energyweb/issuer-irec-api@0.6.1) (2022-03-16)
+
+**Note:** Version bump only for package @energyweb/issuer-irec-api
+
+
+
+
+
 # [0.6.0](https://github.com/energywebfoundation/origin/compare/@energyweb/issuer-irec-api@0.5.1...@energyweb/issuer-irec-api@0.6.0) (2022-03-15)
 
 
