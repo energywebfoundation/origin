@@ -83,6 +83,15 @@
             "ignoreMissingScript": true,
             "allowWarningsInSuccessfulBuild": true
         },
+	{
+            "commandKind": "bulk",
+            "name": "build:container:release",
+            "summary": "Deploys the release containers",
+            "safeForSimultaneousRushProcesses": false,
+            "enableParallelism": false,
+            "ignoreMissingScript": true,
+            "allowWarningsInSuccessfulBuild": true
+        },
         {
             "commandKind": "bulk",
             "name": "build:container:latest",
