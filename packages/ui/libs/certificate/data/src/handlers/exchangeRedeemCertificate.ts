@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useCachedUser } from '../cached';
 
-export const useRedeemCertificateHandler = (
+export const useExchangeRedeemCertificateHandler = (
   exchangeCertificates: AccountAssetDTO[],
   beneficiary: BeneficiaryDTO,
   startDate: Dayjs,

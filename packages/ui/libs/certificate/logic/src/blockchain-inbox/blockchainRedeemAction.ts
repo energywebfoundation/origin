@@ -6,10 +6,10 @@ import { formatSelectedBlockchainItems } from './formatSelectedBlockchain';
 import {
   SelectedItem,
   TUseBeneficiaryFormLogic,
-  TUseRetireActionLogic,
+  TUseBlockchainRedeemActionLogic,
 } from './types';
 
-export const useRetireActionLogic: TUseRetireActionLogic<
+export const useBlockchainRedeemActionLogic: TUseBlockchainRedeemActionLogic<
   CertificateDTO['id']
 > = ({ selectedIds, blockchainCertificates, allDevices, allFuelTypes }) => {
   const { t } = useTranslation();
@@ -24,8 +24,8 @@ export const useRetireActionLogic: TUseRetireActionLogic<
     : [];
 
   return {
-    title: t('certificate.blockchainInbox.selectedForRetirement'),
-    buttonText: t('certificate.blockchainInbox.retireButton'),
+    title: t('certificate.blockchainInbox.selectedForRedemption'),
+    buttonText: t('certificate.blockchainInbox.redeemButton'),
     selectedItems,
     selectDisabledTooltip: t(
       'certificate.blockchainInbox.addBeneficiariesTooltip'

@@ -9,17 +9,20 @@ import { CircularProgress, Grid, Box, Tooltip } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
-import { useRedeemActionEffects } from './RedeemAction.effects';
+import { useExchangeRedeemActionEffects } from './ExchangeRedeemAction.effects';
 
-type RedeemActionProps = ListActionComponentProps<
+type ExchangeRedeemActionProps = ListActionComponentProps<
   AccountAssetDTO['asset']['id']
 >;
 
-export type TRedeemAction = (
-  props: PropsWithChildren<RedeemActionProps>
+export type TExchangeRedeemAction = (
+  props: PropsWithChildren<ExchangeRedeemActionProps>
 ) => ReactElement;
 
-export const RedeemAction: TRedeemAction = ({ selectedIds, resetIds }) => {
+export const ExchangeRedeemAction: TExchangeRedeemAction = ({
+  selectedIds,
+  resetIds,
+}) => {
   const {
     title,
     buttonText,
@@ -33,7 +36,7 @@ export const RedeemAction: TRedeemAction = ({ selectedIds, resetIds }) => {
     errors,
     selectDisabled,
     selectDisabledTooltip,
-  } = useRedeemActionEffects(selectedIds, resetIds);
+  } = useExchangeRedeemActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
 

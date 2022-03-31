@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useGetBlockchainCertificateHandler } from '../fetching';
 
-export const useRetireCertificateHandler = (
+export const useBlockchainRedeemCertificateHandler = (
   selectedBeneficiary: BeneficiaryDTO,
   resetList: () => void,
   startDate: Dayjs,
@@ -32,7 +32,7 @@ export const useRetireCertificateHandler = (
   const { getBlockchainCertificate, isLoading: isGetBlockchainLoading } =
     useGetBlockchainCertificateHandler();
 
-  const retireHandler = async <Id>(id: Id, amount: string) => {
+  const redeemHandler = async <Id>(id: Id, amount: string) => {
     try {
       const onChainCertificate = await getBlockchainCertificate(
         id as unknown as CertificateDTO['id']
@@ -59,7 +59,7 @@ export const useRetireCertificateHandler = (
       } else {
         setTxPending(false);
         showNotification(
-          t('certificate.blockchainInbox.notifications.retireSuccess'),
+          t('certificate.blockchainInbox.notifications.redeemSuccess'),
           NotificationTypeEnum.Success
         );
         queryClient.resetQueries(blockchainCertificatesQueryKey);
@@ -68,7 +68,7 @@ export const useRetireCertificateHandler = (
     } catch (error) {
       console.error(error);
       showNotification(
-        t('certificate.blockchainInbox.notifications.retireError'),
+        t('certificate.blockchainInbox.notifications.redeemError'),
         NotificationTypeEnum.Error
       );
     }
@@ -76,5 +76,5 @@ export const useRetireCertificateHandler = (
 
   const isLoading = isGetBlockchainLoading;
 
-  return { retireHandler, isLoading };
+  return { redeemHandler, isLoading };
 };

@@ -128,15 +128,15 @@ export type TUseExchangeExportActionLogic<Id> = (
   inputHeader: string;
 };
 
-type TUseRedeemActionLogicArgs<Id> = {
+type TUseExchangeRedeemActionLogicArgs<Id> = {
   selectedIds: Id[];
   exchangeCertificates: AccountAssetDTO[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseRedeemActionLogic<Id> = (
-  args: TUseRedeemActionLogicArgs<Id>
+export type TUseExchangeRedeemActionLogic<Id> = (
+  args: TUseExchangeRedeemActionLogicArgs<Id>
 ) => {
   title: string;
   buttonText: string;

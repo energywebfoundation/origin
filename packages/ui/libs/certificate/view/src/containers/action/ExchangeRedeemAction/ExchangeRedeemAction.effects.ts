@@ -2,12 +2,12 @@ import {
   useCachedExchangeCertificates,
   useCachedAllFuelTypes,
   useCachedAllDevices,
-  useRedeemCertificateHandler,
+  useExchangeRedeemCertificateHandler,
   useCompanyBeneficiaries,
 } from '@energyweb/origin-ui-certificate-data';
 import {
   useRedeemBeneficiaryFormLogic,
-  useRedeemActionLogic,
+  useExchangeRedeemActionLogic,
 } from '@energyweb/origin-ui-certificate-logic';
 import { useMemo } from 'react';
 import { Dayjs } from 'dayjs';
@@ -16,7 +16,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { useTransactionPendingDispatch } from '../../../context';
 
-export const useRedeemActionEffects = (
+export const useExchangeRedeemActionEffects = (
   selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
@@ -44,7 +44,7 @@ export const useRedeemActionEffects = (
     [beneficiary, companyBeneficiaries]
   );
 
-  const { redeemHandler } = useRedeemCertificateHandler(
+  const { redeemHandler } = useExchangeRedeemCertificateHandler(
     exchangeCertificates,
     selectedBeneficiary,
     startDate as Dayjs,
@@ -54,7 +54,7 @@ export const useRedeemActionEffects = (
     setTxPending
   );
 
-  const actionLogic = useRedeemActionLogic({
+  const actionLogic = useExchangeRedeemActionLogic({
     selectedIds,
     exchangeCertificates,
     allDevices,

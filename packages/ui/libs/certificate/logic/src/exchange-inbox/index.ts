@@ -3,4 +3,4 @@ export * from './sellAction';
 export * from './withdrawAction';
 export * from './exchangeTransferAction';
 export * from './exchangeExportAction';
-export * from './redeemAction';
+export * from './exchangeRedeemAction';

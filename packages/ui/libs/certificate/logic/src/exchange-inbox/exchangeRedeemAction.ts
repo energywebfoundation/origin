@@ -5,11 +5,11 @@ import * as yup from 'yup';
 import { formatSelectedExchangeItems } from './formatSelectedExchangeItems';
 import {
   SelectedItem,
-  TUseRedeemActionLogic,
+  TUseExchangeRedeemActionLogic,
   TUseRedeemBeneficiariesFormLogic,
 } from './types';
 
-export const useRedeemActionLogic: TUseRedeemActionLogic<
+export const useExchangeRedeemActionLogic: TUseExchangeRedeemActionLogic<
   AccountAssetDTO['asset']['id']
 > = ({ selectedIds, exchangeCertificates, allDevices, allFuelTypes }) => {
   const { t } = useTranslation();
