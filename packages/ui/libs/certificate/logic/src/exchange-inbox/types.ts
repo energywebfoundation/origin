@@ -128,30 +128,32 @@ export type TUseExchangeExportActionLogic<Id> = (
   inputHeader: string;
 };
 
-type TUseClaimActionLogicArgs<Id> = {
+type TUseRedeemActionLogicArgs<Id> = {
   selectedIds: Id[];
   exchangeCertificates: AccountAssetDTO[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseClaimActionLogic<Id> = (args: TUseClaimActionLogicArgs<Id>) => {
+export type TUseRedeemActionLogic<Id> = (
+  args: TUseRedeemActionLogicArgs<Id>
+) => {
   title: string;
   buttonText: string;
   selectedItems: SelectedItem<Id>[];
   selectDisabledTooltip: string;
 };
 
-export type ClaimBeneficiaryFormValues = {
+export type RedeemBeneficiaryFormValues = {
   beneficiary: number;
   startDate: Dayjs;
   endDate: Dayjs;
   purpose: string;
 };
 
-export type TUseClaimBeneficiariesFormLogic = (
+export type TUseRedeemBeneficiariesFormLogic = (
   beneficiaries: BeneficiaryDTO[]
 ) => Pick<
-  GenericFormProps<ClaimBeneficiaryFormValues>,
+  GenericFormProps<RedeemBeneficiaryFormValues>,
   'initialValues' | 'validationSchema' | 'fields'
 >;

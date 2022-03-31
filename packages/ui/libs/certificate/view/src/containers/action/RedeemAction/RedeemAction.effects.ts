@@ -2,12 +2,12 @@ import {
   useCachedExchangeCertificates,
   useCachedAllFuelTypes,
   useCachedAllDevices,
-  useClaimCertificateHandler,
+  useRedeemCertificateHandler,
   useCompanyBeneficiaries,
 } from '@energyweb/origin-ui-certificate-data';
 import {
-  useClaimBeneficiaryFormLogic,
-  useClaimActionLogic,
+  useRedeemBeneficiaryFormLogic,
+  useRedeemActionLogic,
 } from '@energyweb/origin-ui-certificate-logic';
 import { useMemo } from 'react';
 import { Dayjs } from 'dayjs';
@@ -16,7 +16,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { AccountAssetDTO } from '@energyweb/exchange-react-query-client';
 import { useTransactionPendingDispatch } from '../../../context';
 
-export const useClaimActionEffects = (
+export const useRedeemActionEffects = (
   selectedIds: AccountAssetDTO['asset']['id'][],
   resetIds: () => void
 ) => {
@@ -29,7 +29,7 @@ export const useClaimActionEffects = (
     useCompanyBeneficiaries();
 
   const { initialValues, fields, validationSchema } =
-    useClaimBeneficiaryFormLogic(companyBeneficiaries);
+    useRedeemBeneficiaryFormLogic(companyBeneficiaries);
 
   const { register, control, watch, formState } = useForm({
     defaultValues: initialValues,
@@ -44,7 +44,7 @@ export const useClaimActionEffects = (
     [beneficiary, companyBeneficiaries]
   );
 
-  const { claimHandler } = useClaimCertificateHandler(
+  const { redeemHandler } = useRedeemCertificateHandler(
     exchangeCertificates,
     selectedBeneficiary,
     startDate as Dayjs,
@@ -54,7 +54,7 @@ export const useClaimActionEffects = (
     setTxPending
   );
 
-  const actionLogic = useClaimActionLogic({
+  const actionLogic = useRedeemActionLogic({
     selectedIds,
     exchangeCertificates,
     allDevices,
@@ -66,7 +66,7 @@ export const useClaimActionEffects = (
 
   return {
     ...actionLogic,
-    claimHandler,
+    redeemHandler,
     isLoading: areCompanyBeneficiariesLoading,
     buttonDisabled,
     fields,
