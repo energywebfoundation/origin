@@ -416,7 +416,7 @@
           "fromTime": "From",
           "toTime": "To",
           "irecTradeAccountCode": "Account Code",
-          "energy": "Amount of energy in MW"
+          "energy": "Amount of energy in MWh"
         },
         "deviceStatusTooltip": "Device status: {{status}}",
         "notifications": {
@@ -495,9 +495,9 @@
         "exportTo": "Export to",
         "exportButton": "Export",
         "iRecAccountId": "I-REC Account ID",
-        "claimActionTitle": "Claim",
-        "selectedForClaim": "Selected for Claim",
-        "claimButton": "Claim",
+        "redeemActionTitle": "Redeem",
+        "selectedForRedemption": "Selected for Redemption",
+        "redeemButton": "Redeem",
         "selectBeneficiary": "Select beneficiary",
         "beneficiary": "Beneficiary",
         "startDate": "Start date",
@@ -513,8 +513,8 @@
           "transferError": "Error while transfering certificate",
           "exportSuccess": "Certificate has been successfully exported",
           "exportError": "Error while exporting certificate",
-          "claimSuccess": "Certificate has been successfully claimed",
-          "claimError": "Error while claiming certificate"
+          "redeemSuccess": "Certificate has been successfully redeemed",
+          "redeemError": "Error while redeeming certificate"
         }
       },
       "blockchainInbox": {
