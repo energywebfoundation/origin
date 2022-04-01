@@ -42,13 +42,13 @@ export const ExchangeApp: FC<ExchangeAppProps> = ({ routesConfig }) => {
           <Route path="/view-market" element={<ViewMarketPage />} />
         )}
         {showAllBundles && (
-          <Route path="/all-bundles" element={<AllBundlesPage />} />
+          <Route path="/all-packages" element={<AllBundlesPage />} />
         )}
         {showCreateBundle && (
-          <Route path="/create-bundle" element={<CreateBundlePage />} />
+          <Route path="/create-package" element={<CreateBundlePage />} />
         )}
         {showMyBundles && (
-          <Route path="/my-bundles" element={<MyBundlesPage />} />
+          <Route path="/my-packages" element={<MyBundlesPage />} />
         )}
         {showMyTrades && <Route path="/my-trades" element={<MyTradesPage />} />}
         {showSupply && <Route path="/supply" element={<SupplyPage />} />}

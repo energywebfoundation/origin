@@ -42,7 +42,7 @@ export const useCreateBundlePageEffects = () => {
 
   const actions: ListAction[] = [
     {
-      name: t('exchange.createBundle.sellAsBundleActionTitle'),
+      name: t('exchange.createPackage.sellAsPackageActionTitle'),
       component: SellAsBundleAction,
     },
   ];
@@ -56,7 +56,7 @@ export const useCreateBundlePageEffects = () => {
     ListItemContent,
   });
 
-  const noCertificatesText = t('exchange.createBundle.noCertificates');
+  const noCertificatesText = t('exchange.createPackage.noCertificates');
 
   return {
     isLoading,

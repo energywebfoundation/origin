@@ -43,7 +43,7 @@ export const useCreateBundleHandler = (
       {
         onSuccess: () => {
           showNotification(
-            t('exchange.createBundle.notifications.createSuccess'),
+            t('exchange.createPackage.notifications.createSuccess'),
             NotificationTypeEnum.Success
           );
           queryClient.invalidateQueries(exchangeCertificatesQueryKey);
@@ -51,7 +51,7 @@ export const useCreateBundleHandler = (
         },
         onError: (error: any) => {
           showNotification(
-            `${t('exchange.createBundle.notifications.createError')}:
+            `${t('exchange.createPackage.notifications.createError')}:
             ${error?.response?.data?.message || ''}
             `,
             NotificationTypeEnum.Error

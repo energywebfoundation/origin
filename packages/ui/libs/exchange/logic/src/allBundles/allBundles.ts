@@ -34,16 +34,16 @@ export const useAllBundlesTablesLogic: TUseAllBundlesTablesLogic = ({
   };
 
   return {
-    tableTitle: t('exchange.allBundles.tableTitle'),
+    tableTitle: t('exchange.allPackages.tableTitle'),
     tableTitleProps: { variant: 'h5', gutterBottom: true },
     pageSize: 25,
     header: {
-      total: t('exchange.allBundles.totalEnergy'),
-      solar: t('exchange.allBundles.solar'),
-      wind: t('exchange.allBundles.wind'),
-      [EnergyTypeEnum.HYDRO]: t('exchange.allBundles.hydro'),
-      other: t('exchange.allBundles.other'),
-      price: t('exchange.allBundles.price'),
+      total: t('exchange.allPackages.totalEnergy'),
+      solar: t('exchange.allPackages.solar'),
+      wind: t('exchange.allPackages.wind'),
+      [EnergyTypeEnum.HYDRO]: t('exchange.allPackages.hydro'),
+      other: t('exchange.allPackages.other'),
+      price: t('exchange.allPackages.price'),
     },
     loading: isLoading,
     onRowClick: handleRowClick,

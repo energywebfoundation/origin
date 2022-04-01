@@ -81,8 +81,8 @@ export const useBundleActionContentEffects = <Id>(
     return energyAmounts.find((stateAmount) => stateAmount.id === id)?.amount;
   };
 
-  const selectCertificateText = t('exchange.createBundle.selectCertificate');
-  const totalVolumeText = t('exchange.createBundle.totalVolume');
+  const selectCertificateText = t('exchange.createPackage.selectCertificate');
+  const totalVolumeText = t('exchange.createPackage.totalVolume');
 
   const totalVolume = energyAmounts.reduce(
     (total, current) => (total += parseInt(current.amount)),
