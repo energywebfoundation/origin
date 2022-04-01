@@ -120,13 +120,13 @@ describe('Organization with status Pending and User status active flow', () => {
     cy.contains('Sell offers');
     cy.contains('Buy offers');
 
-    cy.navigateMenu('exchangeAllBundles');
-    cy.url().should('include', 'all-bundles');
+    cy.navigateMenu('exchangeAllPackages');
+    cy.url().should('include', 'all-packages');
     cy.contains('Total energy');
     cy.contains('Price per MWh');
 
-    cy.navigateMenu('exchangeCreateBundle');
-    cy.url().should('include', 'create-bundle');
+    cy.navigateMenu('exchangeCreatePackage');
+    cy.url().should('include', 'create-package');
     cy.contains('fulfill following criteria');
     cy.contains('exchange deposit address');
 
@@ -135,8 +135,8 @@ describe('Organization with status Pending and User status active flow', () => {
     cy.contains('fulfill following criteria');
     cy.contains('exchange deposit address');
 
-    cy.navigateMenu('exchangeMyBundles');
-    cy.url().should('include', 'my-bundles');
+    cy.navigateMenu('exchangeMyPackages');
+    cy.url().should('include', 'my-packages');
     cy.contains('fulfill following criteria');
     cy.contains('exchange deposit address');
 
