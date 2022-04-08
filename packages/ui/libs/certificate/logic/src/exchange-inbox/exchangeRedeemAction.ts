@@ -5,11 +5,11 @@ import * as yup from 'yup';
 import { formatSelectedExchangeItems } from './formatSelectedExchangeItems';
 import {
   SelectedItem,
-  TUseClaimActionLogic,
-  TUseClaimBeneficiariesFormLogic,
+  TUseExchangeRedeemActionLogic,
+  TUseRedeemBeneficiariesFormLogic,
 } from './types';
 
-export const useClaimActionLogic: TUseClaimActionLogic<
+export const useExchangeRedeemActionLogic: TUseExchangeRedeemActionLogic<
   AccountAssetDTO['asset']['id']
 > = ({ selectedIds, exchangeCertificates, allDevices, allFuelTypes }) => {
   const { t } = useTranslation();
@@ -25,8 +25,8 @@ export const useClaimActionLogic: TUseClaimActionLogic<
       : [];
 
   return {
-    title: t('certificate.exchangeInbox.selectedForClaim'),
-    buttonText: t('certificate.exchangeInbox.claimButton'),
+    title: t('certificate.exchangeInbox.selectedForRedemption'),
+    buttonText: t('certificate.exchangeInbox.redeemButton'),
     selectedItems,
     selectDisabledTooltip: t(
       'certificate.exchangeInbox.addBeneficiariesTooltip'
@@ -34,7 +34,7 @@ export const useClaimActionLogic: TUseClaimActionLogic<
   };
 };
 
-export const useClaimBeneficiaryFormLogic: TUseClaimBeneficiariesFormLogic = (
+export const useRedeemBeneficiaryFormLogic: TUseRedeemBeneficiariesFormLogic = (
   beneficiaries
 ) => {
   const { t } = useTranslation();

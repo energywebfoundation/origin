@@ -34,14 +34,14 @@ export const useApiRemoveBundleHandler = () => {
       {
         onSuccess: () => {
           showNotification(
-            t('exchange.myBundles.notifications.removeSuccess'),
+            t('exchange.myPackages.notifications.removeSuccess'),
             NotificationTypeEnum.Success
           );
           queryClient.invalidateQueries(myBundlesQueryKey);
         },
         onError: () => {
           showNotification(
-            t('exchange.myBundles.notifications.removeError'),
+            t('exchange.myPackages.notifications.removeError'),
             NotificationTypeEnum.Error
           );
         },

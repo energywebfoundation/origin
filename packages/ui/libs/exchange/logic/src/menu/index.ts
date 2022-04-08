@@ -38,16 +38,16 @@ export const getExchangeMenu: TGetExchangeMenu = ({
       dataCy: 'exchangeViewMarket',
     },
     {
-      url: 'all-bundles',
-      label: t('navigation.exchange.allBundles'),
+      url: 'all-packages',
+      label: t('navigation.exchange.allPackages'),
       show: showAllBundles,
-      dataCy: 'exchangeAllBundles',
+      dataCy: 'exchangeAllPackages',
     },
     {
-      url: 'create-bundle',
-      label: t('navigation.exchange.createBundle'),
+      url: 'create-package',
+      label: t('navigation.exchange.createPackage'),
       show: showCreateBundle,
-      dataCy: 'exchangeCreateBundle',
+      dataCy: 'exchangeCreatePackage',
     },
     {
       url: 'my-trades',
@@ -56,10 +56,10 @@ export const getExchangeMenu: TGetExchangeMenu = ({
       dataCy: 'exchangeMyTrades',
     },
     {
-      url: 'my-bundles',
-      label: t('navigation.exchange.myBundles'),
+      url: 'my-packages',
+      label: t('navigation.exchange.myPackages'),
       show: showCreateBundle,
-      dataCy: 'exchangeMyBundles',
+      dataCy: 'exchangeMyPackages',
     },
     {
       url: 'my-orders',

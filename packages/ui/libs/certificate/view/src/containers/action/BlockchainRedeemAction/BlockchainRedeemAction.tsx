@@ -11,20 +11,22 @@ import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
 import { ConnectMetamaskBlockchainInbox } from '../../metamask';
-import { useRetireActionEffects } from './RetireAction.effects';
+import { useBlockchainRedeemActionEffects } from './BlockchainRedeemAction.effects';
 
-type RetireActionProps = ListActionComponentProps<CertificateDTO['id']>;
+type BlockchainRedeemActionProps = ListActionComponentProps<
+  CertificateDTO['id']
+>;
 
-export type TRetireAction = (
-  props: PropsWithChildren<RetireActionProps>
+export type TBlockchainRedeemAction = (
+  props: PropsWithChildren<BlockchainRedeemActionProps>
 ) => ReactElement;
 
-const Component: TRetireAction = ({ selectedIds, resetIds }) => {
+const Component: TBlockchainRedeemAction = ({ selectedIds, resetIds }) => {
   const {
     title,
     buttonText,
     selectedItems,
-    retireHandler,
+    redeemHandler,
     isLoading,
     buttonDisabled,
     fields,
@@ -33,7 +35,7 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
     errors,
     selectDisabled,
     selectDisabledTooltip,
-  } = useRetireActionEffects(selectedIds, resetIds);
+  } = useBlockchainRedeemActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
 
@@ -43,7 +45,7 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
       buttonText={buttonText}
       selectedIds={selectedIds}
       selectedItems={selectedItems}
-      submitHandler={retireHandler}
+      submitHandler={redeemHandler}
       buttonDisabled={buttonDisabled}
     >
       <Tooltip
@@ -90,7 +92,7 @@ const Component: TRetireAction = ({ selectedIds, resetIds }) => {
   );
 };
 
-export const RetireAction = withMetamask(
+export const BlockchainRedeemAction = withMetamask(
   Component,
   ConnectMetamaskBlockchainInbox
 );

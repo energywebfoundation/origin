@@ -119,9 +119,9 @@ export const ExchangeApp: FC = () => {
     <ExchangeModalsProvider>
       <Routes>
         <Route path="/view-market" element={<ViewMarketPage />} />
-        <Route path="/all-bundles" element={<AllBundlesPage />} />
-        <Route path="/create-bundle" element={<CreateBundlePage />} />
-        <Route path="/my-bundles" element={<MyBundlesPage />} />
+        <Route path="/all-packages" element={<AllBundlesPage />} />
+        <Route path="/create-package" element={<CreateBundlePage />} />
+        <Route path="/my-packages" element={<MyBundlesPage />} />
         <Route path="/my-trades" element={<MyTradesPage />} />
 
         // This page now won't appear on our app

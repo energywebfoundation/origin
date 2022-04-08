@@ -48,10 +48,10 @@ describe('User with status Pending flow', () => {
 
     cy.dataCy('exchangeMenu');
     cy.dataCy('exchangeViewMarket');
-    cy.dataCy('exchangeAllBundles');
+    cy.dataCy('exchangeAllPackages');
 
-    cy.dataCy('exchangeCreateBundle').should('not.exist');
-    cy.dataCy('exchangeMyBundles').should('not.exist');
+    cy.dataCy('exchangeCreatePackage').should('not.exist');
+    cy.dataCy('exchangeMyPackages').should('not.exist');
     cy.dataCy('exchangeMyTrades').should('not.exist');
     cy.dataCy('exchangeMyOrders').should('not.exist');
     cy.dataCy('exchangeSupply').should('not.exist');

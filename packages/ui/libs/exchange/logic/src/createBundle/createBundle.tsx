@@ -20,7 +20,7 @@ export const useCreateBundleLogic: TUseCreateBundleLogic = ({
   const { t } = useTranslation();
 
   const containers: CreateBundleContainers = new Map();
-  const certificationDateTitle = t('exchange.createBundle.certificationDate');
+  const certificationDateTitle = t('exchange.createPackage.certificationDate');
 
   if (allDevices && exchangeCertificates) {
     allDevices.forEach((device) => {
@@ -79,8 +79,8 @@ export const useCreateBundleLogic: TUseCreateBundleLogic = ({
   return {
     listTitleProps: { gutterBottom: true, variant: 'h5' },
     checkboxes: true,
-    listTitle: t('exchange.createBundle.title'),
-    selectAllText: t('exchange.createBundle.selectAll'),
+    listTitle: t('exchange.createPackage.title'),
+    selectAllText: t('exchange.createPackage.selectAll'),
     actionsTabsProps: { scrollButtons: false },
     containers: containers,
     actions,

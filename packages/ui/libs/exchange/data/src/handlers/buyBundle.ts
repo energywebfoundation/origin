@@ -42,13 +42,13 @@ export const useBuyBundleHandler = (
           queryClient.resetQueries(bundleSplitsQueryKey);
           closeModal();
           showNotification(
-            t('exchange.allBundles.notifications.bundleBuySuccess'),
+            t('exchange.allPackages.notifications.packageBuySuccess'),
             NotificationTypeEnum.Success
           );
         },
         onError: (error: any) => {
           showNotification(
-            `${t('exchange.allBundles.notifications.bundleBuyError')}:
+            `${t('exchange.allPackages.notifications.packageBuyError')}:
             ${error?.response?.data?.message || ''}
             `,
             NotificationTypeEnum.Error

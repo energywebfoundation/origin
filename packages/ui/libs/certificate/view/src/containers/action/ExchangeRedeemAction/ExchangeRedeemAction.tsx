@@ -9,22 +9,25 @@ import { CircularProgress, Grid, Box, Tooltip } from '@mui/material';
 import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, ReactElement } from 'react';
 import { CertificateActionContent } from '../../list';
-import { useClaimActionEffects } from './ClaimAction.effects';
+import { useExchangeRedeemActionEffects } from './ExchangeRedeemAction.effects';
 
-type ClaimActionProps = ListActionComponentProps<
+type ExchangeRedeemActionProps = ListActionComponentProps<
   AccountAssetDTO['asset']['id']
 >;
 
-export type TClaimAction = (
-  props: PropsWithChildren<ClaimActionProps>
+export type TExchangeRedeemAction = (
+  props: PropsWithChildren<ExchangeRedeemActionProps>
 ) => ReactElement;
 
-export const ClaimAction: TClaimAction = ({ selectedIds, resetIds }) => {
+export const ExchangeRedeemAction: TExchangeRedeemAction = ({
+  selectedIds,
+  resetIds,
+}) => {
   const {
     title,
     buttonText,
     selectedItems,
-    claimHandler,
+    redeemHandler,
     isLoading,
     buttonDisabled,
     fields,
@@ -33,7 +36,7 @@ export const ClaimAction: TClaimAction = ({ selectedIds, resetIds }) => {
     errors,
     selectDisabled,
     selectDisabledTooltip,
-  } = useClaimActionEffects(selectedIds, resetIds);
+  } = useExchangeRedeemActionEffects(selectedIds, resetIds);
 
   if (isLoading) return <CircularProgress />;
 
@@ -44,7 +47,7 @@ export const ClaimAction: TClaimAction = ({ selectedIds, resetIds }) => {
       buttonText={buttonText}
       selectedIds={selectedIds}
       selectedItems={selectedItems}
-      submitHandler={claimHandler}
+      submitHandler={redeemHandler}
       buttonDisabled={buttonDisabled}
     >
       <Tooltip

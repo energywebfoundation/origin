@@ -69,15 +69,15 @@ export type TUseDepositActionLogic<Id> = (
   selectedItems: SelectedItem<Id>[];
 };
 
-type TUseRetireActionLogicArgs<Id> = {
+type TUseBlockchainRedeemActionLogicArgs<Id> = {
   selectedIds: Id[];
   blockchainCertificates: CertificateDTO[];
   allDevices: ComposedPublicDevice[];
   allFuelTypes: CodeNameDTO[];
 };
 
-export type TUseRetireActionLogic<Id> = (
-  args: TUseRetireActionLogicArgs<Id>
+export type TUseBlockchainRedeemActionLogic<Id> = (
+  args: TUseBlockchainRedeemActionLogicArgs<Id>
 ) => {
   title: string;
   buttonText: string;
