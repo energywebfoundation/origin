@@ -49,7 +49,7 @@
         "ethers": "5.3.1",
         "ew-precise-proofs-js": "1.1.0",
         "ganache-cli": "6.12.2",
-        "moment": "2.29.1",
+        "moment": "2.29.2",
         "moment-range": "4.0.2",
         "pg": "8.7.1",
         "rxjs": "7.4.0",
