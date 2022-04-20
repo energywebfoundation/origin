@@ -56,6 +56,9 @@ export type IClaimData = {
     periodStartDate: string;
     periodEndDate: string;
     purpose: string;
+
+    /** Amount in Wh */
+    amount?: string;
 };
 
 export interface IIrecService {
@@ -456,7 +459,9 @@ export class IrecService implements IIrecService {
 
         const claimItem = new ReservationItem();
         claimItem.code = item.code;
-        claimItem.amount = item.volume;
+
+        // Optionally convert Wh to MWh
+        claimItem.amount = claimData.amount ? Number(claimData.amount) / 1_000_000 : item.volume;
 
         return userClient.redeem({
             sender: userTradeAccount,
