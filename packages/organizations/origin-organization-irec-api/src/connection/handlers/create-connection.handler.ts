@@ -3,6 +3,7 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Inject } from '@nestjs/common';
 import { Organization, OrganizationService } from '@energyweb/origin-backend';
+import { randomBytes } from 'crypto';
 
 import { RegistrationService } from '../../registration';
 import { IREC_SERVICE, IrecService } from '../../irec';
@@ -129,8 +130,11 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
 
         for (const account of accounts) {
             if (!irecAccounts.some((a) => a.type === account)) {
+                const numberOfChars = 2;
+                const randomCode = randomBytes(numberOfChars * 2).toString('hex'); // 1 byte is 2 characters
+
                 await this.irecService.createAccountByTokens(clientId, clientSecret, tokens, {
-                    code: `${account}-account`,
+                    code: `${account}-${randomCode}`,
                     type: account,
                     name: `origin ${account} account`,
                     private: false,
