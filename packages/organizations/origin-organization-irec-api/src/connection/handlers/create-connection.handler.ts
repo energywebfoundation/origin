@@ -130,8 +130,8 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
 
         for (const account of accounts) {
             if (!irecAccounts.some((a) => a.type === account)) {
-                const numberOfChars = 2;
-                const randomCode = randomBytes(numberOfChars * 2).toString('hex'); // 1 byte is 2 characters
+                const numberOfChars = 4;
+                const randomCode = randomBytes(numberOfChars / 2).toString('hex'); // 1 byte is 2 characters
 
                 await this.irecService.createAccountByTokens(clientId, clientSecret, tokens, {
                     code: `${account}-${randomCode}`,
