@@ -85,7 +85,8 @@ export class ExportAssetHandler implements ICommandHandler<ExportAssetCommand>, 
             platformOrganization.id,
             recipientTradeAccount,
             irecCertificate.asset,
-            fromTradeAccount
+            fromTradeAccount,
+            amount
         );
 
         if (!result) {

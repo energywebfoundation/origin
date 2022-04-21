@@ -30,10 +30,21 @@ export class PowerFormatter {
         : '0';
       return result;
     }
+
     return `${PowerFormatter.formatter.format(
       BigNumber.from(powerInWatt)
         .div(Unit[PowerFormatter.displayUnit as keyof typeof Unit])
         .toNumber()
     )}${includeDisplayUnit ? ' ' + PowerFormatter.displayUnit : ''}`;
+  }
+
+  static formatToNumber(powerInWatt: number | string): number {
+    if (!powerInWatt) {
+      return 0;
+    }
+
+    return BigNumber.from(powerInWatt)
+      .div(Unit[PowerFormatter.displayUnit as keyof typeof Unit])
+      .toNumber();
   }
 }

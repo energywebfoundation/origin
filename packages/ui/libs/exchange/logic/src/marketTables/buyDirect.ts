@@ -17,7 +17,7 @@ export const useBuyDirectFormLogic: TUseBuyDirectFormLogic = (
   const { t } = useTranslation();
 
   const initialFormData = {
-    volume: PowerFormatter.format(parseInt(ask?.volume)),
+    volume: PowerFormatter.format(ask?.volume),
   };
 
   return {
@@ -45,8 +45,9 @@ export const useBuyDirectFormLogic: TUseBuyDirectFormLogic = (
     validationSchema: yup.object({
       volume: yup
         .number()
+        .transform((value) => (isNaN(value) ? 0 : value))
         .min(1)
-        .max(Number(PowerFormatter.format(parseInt(ask?.volume))))
+        .max(PowerFormatter.formatToNumber(ask?.volume))
         .label(t('exchange.viewMarket.volume')),
     }),
   };

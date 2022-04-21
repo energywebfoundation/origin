@@ -56,6 +56,9 @@ export type IClaimData = {
     periodStartDate: string;
     periodEndDate: string;
     purpose: string;
+
+    /** Amount in Wh */
+    amount?: string;
 };
 
 export interface IIrecService {
@@ -405,7 +408,8 @@ export class IrecService implements IIrecService {
         fromUser: UserIdentifier,
         toTradeAccount: string,
         assetId: string,
-        fromTradeAccount?: string
+        fromTradeAccount?: string,
+        amount?: string
     ): Promise<TransactionResult> {
         const fromUserClient = await this.getIrecClient(fromUser);
         const fromUserConnectionInfo = await this.getConnectionInfo(fromUser);
@@ -420,7 +424,9 @@ export class IrecService implements IIrecService {
 
         const transferItem = new ReservationItem();
         transferItem.code = item.code;
-        transferItem.amount = item.volume;
+
+        // Optionally convert Wh to MWh
+        transferItem.amount = amount ? Number(amount) / 1_000_000 : item.volume;
 
         return fromUserClient.transfer({
             sender: fromUserTradeAccount,
@@ -456,7 +462,9 @@ export class IrecService implements IIrecService {
 
         const claimItem = new ReservationItem();
         claimItem.code = item.code;
-        claimItem.amount = item.volume;
+
+        // Optionally convert Wh to MWh
+        claimItem.amount = claimData.amount ? Number(claimData.amount) / 1_000_000 : item.volume;
 
         return userClient.redeem({
             sender: userTradeAccount,

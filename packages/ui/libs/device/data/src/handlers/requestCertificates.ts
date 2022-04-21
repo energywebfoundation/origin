@@ -67,8 +67,11 @@ export const useRequestCertificatesHandler = ({
           ? user?.organization?.blockchainAccountAddress
           : address,
       deviceId: deviceId,
-      fromTime: dayjs(values.fromTime).startOf('day').unix(),
-      toTime: dayjs(values.toTime).endOf('day').unix(),
+      // Force set timezone to UTC, to ensure that the day of issuance will be precise, and won't
+      // be moved to another day if converted to UTC on backend on IREC.
+      // This is some kind of workaround, but applicable for current business cases.
+      fromTime: dayjs(values.fromTime).startOf('day').utc(true).unix(),
+      toTime: dayjs(values.toTime).endOf('day').utc(true).unix(),
       files: files.map((f) => f.uploadedName),
       isPrivate: false,
       irecTradeAccountCode: values.irecTradeAccountCode || undefined,
