@@ -39,7 +39,7 @@
         "@nestjs/common": "8.1.1",
         "bn.js": "5.2.0",
         "immutable": "4.0.0",
-        "moment": "2.29.1",
+        "moment": "2.29.2",
         "moment-range": "4.0.2",
         "rxjs": "7.4.0"
     },

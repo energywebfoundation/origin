@@ -2,12 +2,12 @@ import {
   useCachedBlockchainCertificates,
   useCachedAllFuelTypes,
   useCachedAllDevices,
-  useRetireCertificateHandler,
+  useBlockchainRedeemCertificateHandler,
   useCompanyBeneficiaries,
 } from '@energyweb/origin-ui-certificate-data';
 import {
   useBeneficiaryFormLogic,
-  useRetireActionLogic,
+  useBlockchainRedeemActionLogic,
 } from '@energyweb/origin-ui-certificate-logic';
 import { Dayjs } from 'dayjs';
 import { useMemo } from 'react';
@@ -16,7 +16,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { CertificateDTO } from '@energyweb/issuer-irec-api-react-query-client';
 import { useTransactionPendingDispatch } from '../../../context';
 
-export const useRetireActionEffects = (
+export const useBlockchainRedeemActionEffects = (
   selectedIds: CertificateDTO['id'][],
   resetIds: () => void
 ) => {
@@ -46,8 +46,8 @@ export const useRetireActionEffects = (
     [companyBeneficiaries, beneficiary]
   );
 
-  const { retireHandler, isLoading: isHandlerLoading } =
-    useRetireCertificateHandler(
+  const { redeemHandler, isLoading: isHandlerLoading } =
+    useBlockchainRedeemCertificateHandler(
       selectedBeneficiary,
       resetIds,
       startDate as Dayjs,
@@ -56,7 +56,7 @@ export const useRetireActionEffects = (
       setTxPending
     );
 
-  const actionLogic = useRetireActionLogic({
+  const actionLogic = useBlockchainRedeemActionLogic({
     selectedIds,
     blockchainCertificates,
     allDevices,
@@ -70,7 +70,7 @@ export const useRetireActionEffects = (
 
   return {
     ...actionLogic,
-    retireHandler,
+    redeemHandler,
     isLoading,
     buttonDisabled,
     fields,

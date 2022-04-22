@@ -39,7 +39,7 @@ export const getRoleChangedLogic: TRoleChangedLogic = ({
       t('organization.modals.roleChanged.canBuyCertificates', {
         certificateType: isIRecEnabled ? 'I-RECs' : 'certificates',
       }),
-      t('organization.modals.roleChanged.canCreateAndBuyCertificateBundles', {
+      t('organization.modals.roleChanged.canCreateAndBuyCertificatePackages', {
         certificateType: isIRecEnabled ? 'I-REC' : 'certificate',
       }),
       t('organization.modals.roleChanged.canRedeemCertificates', {

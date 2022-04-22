@@ -6,8 +6,8 @@ export const useCreateBundleButtonLogic = (user: UserDTO) => {
   const { t } = useTranslation();
 
   return {
-    linkUrl: '/exchange/create-bundle',
-    tooltipText: t('exchange.allBundles.createBundle'),
+    linkUrl: '/exchange/create-package',
+    tooltipText: t('exchange.allPackages.createPackage'),
     showButton:
       user?.status === UserStatus.Active &&
       !!user?.organization &&

@@ -19,10 +19,10 @@ export const useSellAsBundleActionLogic: TUseSellAsBundleActionLogic<
       : [];
 
   return {
-    title: t('exchange.createBundle.selectedForSale'),
-    buttonText: t('exchange.createBundle.sellAsBundleButton'),
-    priceInputLabel: t('exchange.createBundle.price'),
-    totalPriceText: t('exchange.createBundle.totalPrice'),
+    title: t('exchange.createPackage.selectedForSale'),
+    buttonText: t('exchange.createPackage.sellAsPackageButton'),
+    priceInputLabel: t('exchange.createPackage.price'),
+    totalPriceText: t('exchange.createPackage.totalPrice'),
     selectedItems,
   };
 };

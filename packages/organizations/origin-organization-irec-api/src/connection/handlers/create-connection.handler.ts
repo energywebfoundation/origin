@@ -3,6 +3,7 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BadRequestException, Inject } from '@nestjs/common';
 import { Organization, OrganizationService } from '@energyweb/origin-backend';
+import { randomBytes } from 'crypto';
 
 import { RegistrationService } from '../../registration';
 import { IREC_SERVICE, IrecService } from '../../irec';
@@ -92,25 +93,25 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
             tokens
         );
 
-        const isIssuer = irecOrganization.roles.includes(OrganisationRole.Issuer);
-        const isRegistrant = irecOrganization.roles.includes(OrganisationRole.Registrant);
-        const isParticipant = irecOrganization.roles.includes(OrganisationRole.Participant);
+        const accountTypesToRegister = this.getAccountTypesForOrganizationRoles(
+            irecOrganization.roles
+        );
 
-        if (isIssuer) {
-            await this.createAccounts(clientId, clientSecret, tokens, organization, [
-                AccountType.Issue
-            ]);
-        } else if (isParticipant) {
-            await this.createAccounts(clientId, clientSecret, tokens, organization, [
-                AccountType.Trade,
-                AccountType.Redemption
-            ]);
-        } else {
+        if (!accountTypesToRegister.length) {
+            const isRegistrant = irecOrganization.roles.includes(OrganisationRole.Registrant);
             if (!isRegistrant) {
                 throw new BadRequestException(
                     'IREC account organization has to have issuer or registrant or participant role'
                 );
             }
+        } else {
+            await this.createAccounts(
+                clientId,
+                clientSecret,
+                tokens,
+                organization,
+                accountTypesToRegister
+            );
         }
     }
 
@@ -129,8 +130,11 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
 
         for (const account of accounts) {
             if (!irecAccounts.some((a) => a.type === account)) {
+                const numberOfChars = 4;
+                const randomCode = randomBytes(numberOfChars / 2).toString('hex'); // 1 byte is 2 characters
+
                 await this.irecService.createAccountByTokens(clientId, clientSecret, tokens, {
-                    code: `${account}-account`,
+                    code: `${account}-${randomCode}`,
                     type: account,
                     name: `origin ${account} account`,
                     private: false,
@@ -141,5 +145,22 @@ export class CreateConnectionHandler implements ICommandHandler<CreateConnection
                 });
             }
         }
+    }
+
+    private getAccountTypesForOrganizationRoles(roles: OrganisationRole[]): AccountType[] {
+        const isIssuer = roles.includes(OrganisationRole.Issuer);
+        const isParticipant = roles.includes(OrganisationRole.Participant);
+
+        const accountTypes: AccountType[] = [];
+
+        if (isIssuer) {
+            accountTypes.push(AccountType.Issue);
+        }
+        if (isParticipant) {
+            accountTypes.push(AccountType.Redemption);
+            accountTypes.push(AccountType.Trade);
+        }
+
+        return accountTypes;
     }
 }

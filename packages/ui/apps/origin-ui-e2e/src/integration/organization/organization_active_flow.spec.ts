@@ -70,14 +70,14 @@ describe('Organization with status Active and User status active flow', () => {
     cy.contains('Sell offers');
     cy.contains('Buy offers');
 
-    cy.navigateMenu('exchangeAllBundles');
-    cy.url().should('include', 'all-bundles');
+    cy.navigateMenu('exchangeAllPackages');
+    cy.url().should('include', 'all-packages');
     cy.contains('Total energy');
     cy.contains('Price per MWh');
 
-    cy.navigateMenu('exchangeCreateBundle');
-    cy.url().should('include', 'create-bundle');
-    cy.contains('Create Bundle');
+    cy.navigateMenu('exchangeCreatePackage');
+    cy.url().should('include', 'create-package');
+    cy.contains('Create Package');
     cy.contains('Selected For Sale');
 
     cy.navigateMenu('exchangeMyTrades');
@@ -85,9 +85,9 @@ describe('Organization with status Active and User status active flow', () => {
     cy.contains('My Trades');
     cy.contains('Total');
 
-    cy.navigateMenu('exchangeMyBundles');
-    cy.url().should('include', 'my-bundles');
-    cy.contains('My bundles');
+    cy.navigateMenu('exchangeMyPackages');
+    cy.url().should('include', 'my-packages');
+    cy.contains('My packages');
     cy.contains('Total energy');
 
     cy.navigateMenu('exchangeMyOrders');

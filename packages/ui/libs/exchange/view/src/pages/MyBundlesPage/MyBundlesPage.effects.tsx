@@ -53,7 +53,7 @@ export const useMyBundlesPageEffects = () => {
   const actions: TableActionData<Bundle['id']>[] = [
     {
       icon: <Cancel />,
-      name: t('exchange.myBundles.removeBundle'),
+      name: t('exchange.myPackages.removePackage'),
       onClick: removeHandler,
       loading: isMutating,
     },

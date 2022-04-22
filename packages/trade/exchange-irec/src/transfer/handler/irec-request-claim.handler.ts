@@ -67,7 +67,8 @@ export class IrecRequestClaimHandler implements ICommandHandler<IrecRequestClaim
                 location: claim.beneficiary.location,
                 periodEndDate: claim.periodEndDate,
                 periodStartDate: claim.periodStartDate,
-                purpose: claim.purpose
+                purpose: claim.purpose,
+                amount: claim.amount
             }
         );
 

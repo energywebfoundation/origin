@@ -1,8 +1,6 @@
 import {
   AccountAssetDTO,
-  ClaimDataDTO,
   getAccountBalanceControllerGetQueryKey,
-  RequestClaimDTO,
 } from '@energyweb/exchange-react-query-client';
 import {
   useIrecTransferControllerRequestClaim,
@@ -20,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from 'react-query';
 import { useCachedUser } from '../cached';
 
-export const useClaimCertificateHandler = (
+export const useExchangeRedeemCertificateHandler = (
   exchangeCertificates: AccountAssetDTO[],
   beneficiary: BeneficiaryDTO,
   startDate: Dayjs,
@@ -36,7 +34,7 @@ export const useClaimCertificateHandler = (
 
   const user = useCachedUser();
 
-  const claimHandler = <Id>(id: Id, amount: string) => {
+  const redeemHandler = <Id>(id: Id, amount: string) => {
     setTxPending(true);
     const assetId = exchangeCertificates.find(
       (cert) =>
@@ -65,7 +63,7 @@ export const useClaimCertificateHandler = (
       {
         onSuccess: () => {
           showNotification(
-            t('certificate.exchangeInbox.notifications.claimSuccess'),
+            t('certificate.exchangeInbox.notifications.redeemSuccess'),
             NotificationTypeEnum.Success
           );
           queryClient.invalidateQueries(exchangeCertificatesQueryKey);
@@ -73,7 +71,7 @@ export const useClaimCertificateHandler = (
         },
         onError: (error: any) => {
           showNotification(
-            `${t('certificate.exchangeInbox.notifications.claimError')}:
+            `${t('certificate.exchangeInbox.notifications.redeemError')}:
             ${error?.response?.data?.message || ''}
             `,
             NotificationTypeEnum.Error
@@ -84,5 +82,5 @@ export const useClaimCertificateHandler = (
     );
   };
 
-  return { claimHandler, isMutating: isLoading };
+  return { redeemHandler, isMutating: isLoading };
 };

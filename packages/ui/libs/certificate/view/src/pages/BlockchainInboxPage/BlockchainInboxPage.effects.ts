@@ -14,7 +14,7 @@ import {
   ListItemContent,
   ListItemHeader,
   DepositAction,
-  RetireAction,
+  BlockchainRedeemAction,
   BlockchainTransferAction,
 } from '../../containers';
 import { useTransactionPendingStore } from '../../context';
@@ -52,8 +52,8 @@ export const useBlockchainInboxPageEffects = () => {
       component: DepositAction,
     },
     {
-      name: t('certificate.blockchainInbox.retireActionTitle'),
-      component: RetireAction,
+      name: t('certificate.blockchainInbox.redeemActionTitle'),
+      component: BlockchainRedeemAction,
     },
     {
       name: t('certificate.blockchainInbox.transferActionTitle'),

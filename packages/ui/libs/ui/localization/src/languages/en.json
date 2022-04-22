@@ -29,9 +29,9 @@
         "sectionTitle": "Exchange",
         "viewMarket": "View Market",
         "supply": "Supply",
-        "allBundles": "All bundles",
-        "createBundle": "Create bundle",
-        "myBundles": "My bundles",
+        "allPackages": "All packages",
+        "createPackage": "Create package",
+        "myPackages": "My packages",
         "myOrders": "My orders",
         "myTrades": "My trades"
       },
@@ -282,7 +282,7 @@
           "asMemberYouCan": "As an Organization Member you can:",
           "canPlaceOrder": "Place orders on the exchange",
           "canBuyCertificates": "Directly buy {{certificateType}}",
-          "canCreateAndBuyCertificateBundles": "Create and buy {{certificateType}} bundles",
+          "canCreateAndBuyCertificatePackages": "Create and buy {{certificateType}} packages",
           "canRedeemCertificates": "Redeem {{certificateType}}",
           "canWithdrawCertificates": "Withdraw {{certificateType}} to organization’s own participant account",
           "asDeviceManagerYouCan": "As a Device Manager you have permission to:",
@@ -416,7 +416,7 @@
           "fromTime": "From",
           "toTime": "To",
           "irecTradeAccountCode": "Account Code",
-          "energy": "Amount of energy in MW"
+          "energy": "Amount of energy in MWh"
         },
         "deviceStatusTooltip": "Device status: {{status}}",
         "notifications": {
@@ -495,9 +495,9 @@
         "exportTo": "Export to",
         "exportButton": "Export",
         "iRecAccountId": "I-REC Account ID",
-        "claimActionTitle": "Claim",
-        "selectedForClaim": "Selected for Claim",
-        "claimButton": "Claim",
+        "redeemActionTitle": "Redeem",
+        "selectedForRedemption": "Selected for Redemption",
+        "redeemButton": "Redeem",
         "selectBeneficiary": "Select beneficiary",
         "beneficiary": "Beneficiary",
         "startDate": "Start date",
@@ -513,18 +513,18 @@
           "transferError": "Error while transfering certificate",
           "exportSuccess": "Certificate has been successfully exported",
           "exportError": "Error while exporting certificate",
-          "claimSuccess": "Certificate has been successfully claimed",
-          "claimError": "Error while claiming certificate"
+          "redeemSuccess": "Certificate has been successfully redeemed",
+          "redeemError": "Error while redeeming certificate"
         }
       },
       "blockchainInbox": {
         "title": "Blockchain Inbox",
         "depositActionTitle": "Deposit",
-        "retireActionTitle": "Retire",
+        "redeemActionTitle": "Redeem",
         "selectedForDeposit": "Selected For Deposit",
         "depositButton": "Deposit",
-        "selectedForRetirement": "Selected For Retirement",
-        "retireButton": "Retire",
+        "selectedForRedemption": "Selected For Redemption",
+        "redeemButton": "Redeem",
         "generationTime": "Generation Time Frame",
         "selectBeneficiary": "Select beneficiary",
         "beneficiary": "Beneficiary",
@@ -540,8 +540,8 @@
           "onlyUsersWithExchangeAddress": "Only users with Exchange Deposit Address can deposit certificates",
           "depositSuccess": "Certificate has been successfully deposited",
           "depositError": "Error while depositing certificate",
-          "retireSuccess": "Certificate has been successfully retired",
-          "retireError": "Error while retiring certificate",
+          "redeemSuccess": "Certificate has been successfully redeemed",
+          "redeemError": "Error while redeeming certificate",
           "transferSuccess": "Certificate has been successfully transfered",
           "transferError": "Error while transfering certificate"
         }
@@ -719,32 +719,32 @@
           }
         }
       },
-      "allBundles": {
-        "tableTitle": "All bundles",
+      "allPackages": {
+        "tableTitle": "All packages",
         "totalEnergy": "Total energy",
         "solar": "Solar",
         "wind": "Wind",
         "hydro": "Hydro",
         "other": "Other",
         "price": "Price per MWh",
-        "createBundle": "Create bundle",
+        "createPackage": "Create package",
         "notifications": {
-          "bundleBuySuccess": "Bundle bought",
-          "bundleBuyError": "Error while buying bundle"
+          "packageBuySuccess": "Package bought",
+          "packageBuyError": "Error while buying package"
         }
       },
-      "myBundles": {
-        "tableTitle": "My bundles",
+      "myPackages": {
+        "tableTitle": "My packages",
         "totalEnergy": "Total energy",
         "solar": "Solar",
         "wind": "Wind",
         "hydro": "Hydro",
         "other": "Other",
         "price": "Price per MWh",
-        "removeBundle": "Remove bundle",
+        "removePackage": "Remove package",
         "notifications": {
-          "removeSuccess": "Bundle successfully removed",
-          "removeError": "Error while removing bundle"
+          "removeSuccess": "Package successfully removed",
+          "removeError": "Error while removing package"
         }
       },
       "myTrades": {
@@ -757,8 +757,8 @@
         "buy": "Buy",
         "sell": "Sell"
       },
-      "createBundle": {
-        "title": "Create Bundle",
+      "createPackage": {
+        "title": "Create Package",
         "selectAll": "Select All",
         "certificationDate": "Certification date",
         "selectedForSale": "Selected For Sale",
@@ -766,11 +766,11 @@
         "totalVolume": "Total Volume",
         "price": "Price per MWh",
         "totalPrice": "Total Price",
-        "sellAsBundleButton": "Sell as bundle",
-        "noCertificates": "You don't have any certificates to create a bundle from",
+        "sellAsPackageButton": "Sell as package",
+        "noCertificates": "You don't have any certificates to create a package from",
         "notifications": {
-          "createSuccess": "Bundle has been successfully created and published for sale",
-          "createError": "Error while creating bundle"
+          "createSuccess": "Package has been successfully created and published for sale",
+          "createError": "Error while creating package"
         }
       },
       "myOrders": {
@@ -942,7 +942,7 @@
           "exchangeAddressWhatFor": "This blockchain address identifies you on the certificate exchange. You need it to trade certificates on the exchange.",
           "exchangeAddressHowTo": "The platform automatically generates the deposit address on organization creation and takes custody of it. You do not have to manage your own blockchain wallet.",
           "blockchainWhatIs": "This address is separate from the exchange deposit address. You need it if you want to manage the platform with your own blockchain address.",
-          "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and retire certificates.",
+          "blockchainWhatFor": "A connected user blockchain address is required to withdraw certificates from the exchange and redeem certificates.",
           "blockchainHowTo": "Select the right blockchain account in your MetaMask browser wallet and click “Connect Blockchain Address” to connect. Visit metamask.io to set up your own blockchain wallet.",
           "fullSelfOwnership": "By choosing full self-ownership, your certificates are issued to your user blockchain account and you have to manually deposit them to the exchange to trade."
         },
