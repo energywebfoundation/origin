@@ -80,7 +80,7 @@ export class DeviceService {
             );
             fileIds = await this.irecService.uploadFiles(
                 user.organizationId,
-                list.map((file) => file.data)
+                list.map((file) => ({ data: file.data, filename: file.filename }))
             );
         }
 

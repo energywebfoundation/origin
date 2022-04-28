@@ -120,7 +120,10 @@ export interface IIrecService {
 
     getIssueRequest(user: UserIdentifier, code: string): Promise<IssueWithStatus>;
 
-    uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]>;
+    uploadFiles(
+        user: UserIdentifier,
+        files: { data: Buffer | Blob | ReadStream; filename: string }[]
+    ): Promise<string[]>;
 
     verifyIssueRequest(user: UserIdentifier, issueRequestCode: string): Promise<void>;
 
@@ -374,7 +377,7 @@ export class IrecService implements IIrecService {
 
     async uploadFiles(
         user: UserIdentifier,
-        files: Buffer[] | Blob[] | ReadStream[]
+        files: { data: Buffer | Blob | ReadStream; filename: string }[]
     ): Promise<string[]> {
         const irecClient = await this.getIrecClient(user);
         return irecClient.file.upload(files);

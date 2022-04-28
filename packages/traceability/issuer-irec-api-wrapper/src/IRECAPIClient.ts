@@ -325,11 +325,15 @@ export class IRECAPIClient {
         const fileManagementUrl = `${this.endPointUrl}/api/irec/v1/file-management`;
 
         return {
-            upload: async (files: Buffer[] | Blob[] | ReadStream[]): Promise<string[]> => {
+            upload: async (
+                files: { data: Buffer | Blob | ReadStream; filename: string }[]
+            ): Promise<string[]> => {
                 const url = `${fileManagementUrl}/upload`;
 
                 const data = new FormData();
-                files.forEach((file: Buffer | Blob | ReadStream) => data.append('files', file));
+                files.forEach((file) =>
+                    data.append('files', file.data, { filename: file.filename })
+                );
 
                 const headers = data.getHeaders();
                 const response = await this.axiosInstance.post<{ file_uids: string[] }>(url, data, {

@@ -34,7 +34,7 @@ export class CheckCertificationRequestStateTask {
             const user = await this.userService.findOne(certificateRequest.userId);
             const irecIssue = await this.irecService.getIssueRequest(
                 user.organization.id,
-                certificateRequest.irecIssueId
+                certificateRequest.irecIssueRequestId
             );
 
             if (!irecIssue) {
