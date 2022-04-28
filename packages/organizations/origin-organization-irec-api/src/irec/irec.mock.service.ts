@@ -264,7 +264,10 @@ export class IrecMockService implements IIrecService {
         params: CreateAccountParams
     ): Promise<void> {}
 
-    async uploadFiles(user: UserIdentifier, files: Buffer[] | Blob[] | ReadStream[]) {
+    async uploadFiles(
+        user: UserIdentifier,
+        files: { data: Buffer | Blob | ReadStream; filename: string }[]
+    ) {
         return files.map(() => randomString());
     }
 

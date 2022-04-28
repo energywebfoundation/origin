@@ -62,7 +62,7 @@ describe('API flows', () => {
 
     it('should pass create and approve device flow', async () => {
         const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
-        const [fileId] = await registrantClient.file.upload([file]);
+        const [fileId] = await registrantClient.file.upload([{ data: file, filename: 'test' }]);
 
         const params = getDeviceParams();
         const createdDevice: Device = await registrantClient.device.create({
@@ -109,7 +109,7 @@ describe('API flows', () => {
 
     it('should pass create and approve issue flow', async () => {
         const file = fs.createReadStream(`${__dirname}/file-sample_150kB.pdf`);
-        const [fileId] = await registrantClient.file.upload([file]);
+        const [fileId] = await registrantClient.file.upload([{ data: file, filename: 'test' }]);
 
         const params = getDeviceParams();
         const device: Device = await registrantClient.device.create(params);
