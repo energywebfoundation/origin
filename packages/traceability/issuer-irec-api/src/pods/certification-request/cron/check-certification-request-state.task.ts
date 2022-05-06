@@ -12,6 +12,9 @@ import { IssuanceStatus } from '@energyweb/issuer-irec-api-wrapper';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
 
 import { CertificationRequestStatusChangedEvent } from '../events';
+import { InjectRepository } from '@nestjs/typeorm';
+import { IrecCertificationRequest } from '../irec-certification-request.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CheckCertificationRequestStateTask {
@@ -21,7 +24,9 @@ export class CheckCertificationRequestStateTask {
         private readonly irecService: IrecService,
         private readonly eventBus: EventBus,
         private readonly queryBus: QueryBus,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        @InjectRepository(IrecCertificationRequest)
+        private readonly irecRepository: Repository<IrecCertificationRequest>
     ) {}
 
     @Cron(CronExpression.EVERY_MINUTE)
@@ -45,6 +50,12 @@ export class CheckCertificationRequestStateTask {
                 irecIssue.status === IssuanceStatus.Approved ||
                 irecIssue.status === IssuanceStatus.Issued
             ) {
+                console.log(irecIssue, irecIssue.asset);
+                console.log(certificateRequest, certificateRequest.certificationRequestId);
+                await this.irecRepository.update(
+                    { irecIssueRequestId: certificateRequest.irecIssueRequestId },
+                    { irecAssetId: irecIssue.asset }
+                );
                 await this.commandBus.execute(
                     new ApproveCertificationRequestCommand(certificateRequest.id)
                 );

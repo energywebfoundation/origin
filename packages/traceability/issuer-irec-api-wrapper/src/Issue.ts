@@ -72,4 +72,8 @@ export class IssueWithStatus extends Issue {
     @IsNotEmpty()
     @IsEnum(IssuanceStatus)
     status: IssuanceStatus;
+
+    @IsString()
+    @IsOptional()
+    asset?: string; // asset is set after approval
 }
