@@ -50,8 +50,6 @@ export class CheckCertificationRequestStateTask {
                 irecIssue.status === IssuanceStatus.Approved ||
                 irecIssue.status === IssuanceStatus.Issued
             ) {
-                console.log(irecIssue, irecIssue.asset);
-                console.log(certificateRequest, certificateRequest.certificationRequestId);
                 await this.irecRepository.update(
                     { irecIssueRequestId: certificateRequest.irecIssueRequestId },
                     { irecAssetId: irecIssue.asset }
