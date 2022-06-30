@@ -8,6 +8,7 @@ import {
     IsString,
     ValidateNested
 } from 'class-validator';
+import { timeToTimezoneDate } from './helpers';
 
 export class ReservationItem {
     @Expose({ name: 'item_code', toPlainOnly: true })
@@ -55,12 +56,12 @@ export class Redemption extends Transfer {
     beneficiary: number;
 
     @Expose({ name: 'period_start', toPlainOnly: true })
-    @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => timeToTimezoneDate(value), { toPlainOnly: true })
     @IsDate()
     start: Date;
 
     @Expose({ name: 'period_end', toPlainOnly: true })
-    @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => timeToTimezoneDate(value), { toPlainOnly: true })
     @IsDate()
     end: Date;
 
