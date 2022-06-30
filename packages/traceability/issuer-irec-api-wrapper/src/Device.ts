@@ -10,6 +10,7 @@ import {
     IsString
 } from 'class-validator';
 import { FileIds } from './File';
+import { timeToTimezoneDate } from './helpers';
 
 export enum DeviceState {
     Draft = 'Draft',
@@ -51,7 +52,7 @@ export class DeviceCreateParams extends FileIds {
     capacity: string;
 
     @Expose({ name: 'commissioning_date', toPlainOnly: true })
-    @Transform((value: Date) => value?.toISOString().split('T')[0], {
+    @Transform((value: Date) => timeToTimezoneDate(value), {
         toPlainOnly: true
     })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
@@ -59,7 +60,7 @@ export class DeviceCreateParams extends FileIds {
     commissioningDate: Date;
 
     @Expose({ name: 'registration_date', toPlainOnly: true })
-    @Transform((value: Date) => value?.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => timeToTimezoneDate(value), { toPlainOnly: true })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
     registrationDate: Date;
@@ -124,7 +125,7 @@ export class DeviceUpdateParams extends FileIds {
 
     @IsOptional()
     @Expose({ name: 'commissioning_date', toPlainOnly: true })
-    @Transform((value: Date) => value?.toISOString().split('T')[0], {
+    @Transform((value: Date) => timeToTimezoneDate(value), {
         toPlainOnly: true
     })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
@@ -133,7 +134,7 @@ export class DeviceUpdateParams extends FileIds {
 
     @IsOptional()
     @Expose({ name: 'registration_date', toPlainOnly: true })
-    @Transform((value: Date) => value?.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => timeToTimezoneDate(value), { toPlainOnly: true })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
     registrationDate?: Date;

@@ -1,6 +1,7 @@
 import { Expose, Transform } from 'class-transformer';
 import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 import { FileIds } from './File';
+import { timeToTimezoneDate } from './helpers';
 
 export enum IssuanceStatus {
     Draft = 'Draft',
@@ -31,13 +32,13 @@ export class Issue extends FileIds {
     recipient: string;
 
     @Expose({ name: 'start_date', toPlainOnly: true })
-    @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => timeToTimezoneDate(value), { toPlainOnly: true })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
     start: Date;
 
     @Expose({ name: 'end_date', toPlainOnly: true })
-    @Transform((value: Date) => value.toISOString().split('T')[0], { toPlainOnly: true })
+    @Transform((value: Date) => timeToTimezoneDate(value), { toPlainOnly: true })
     @Transform((value: string) => new Date(value), { toClassOnly: true })
     @IsDate()
     end: Date;
