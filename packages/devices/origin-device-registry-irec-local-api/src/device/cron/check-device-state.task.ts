@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { EventBus } from '@nestjs/cqrs';
 import { IREC_SERVICE, IrecService } from '@energyweb/origin-organization-irec-api';
@@ -8,6 +8,8 @@ import { DeviceState } from '@energyweb/issuer-irec-api-wrapper';
 
 @Injectable()
 export class CheckDeviceStateTask {
+    private readonly logger = new Logger(CheckDeviceStateTask.name);
+
     constructor(
         private readonly deviceService: DeviceService,
         @Inject(IREC_SERVICE)
@@ -19,11 +21,17 @@ export class CheckDeviceStateTask {
     async handleCron() {
         const devices = await this.deviceService.findAll();
         for (const device of devices) {
-            const irecDevice = await this.irecService.getDevice(device.ownerId, device.code);
-            if (irecDevice && !this.areStatusesSame(irecDevice.status, device.status)) {
-                await this.deviceService.updateStatus(device.id, irecDevice.status);
+            try {
+                const irecDevice = await this.irecService.getDevice(device.ownerId, device.code);
+                if (irecDevice && !this.areStatusesSame(irecDevice.status, device.status)) {
+                    await this.deviceService.updateStatus(device.id, irecDevice.status);
 
-                this.eventBus.publish(new DeviceStatusChangedEvent(device, irecDevice.status));
+                    this.eventBus.publish(new DeviceStatusChangedEvent(device, irecDevice.status));
+                }
+            } catch (e) {
+                this.logger.error(
+                    `Cannot check IREC device ${device.code} state because of error: ${e.message}`
+                );
             }
         }
     }
