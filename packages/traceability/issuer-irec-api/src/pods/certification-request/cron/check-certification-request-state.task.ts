@@ -74,7 +74,7 @@ export class CheckCertificationRequestStateTask {
                 }
             } catch (e) {
                 this.logger.error(
-                    `Cannot IREC certification request state ${certificateRequest.irecIssueRequestId} state because of error: ${e.message}`
+                    `Cannot check IREC certification request (${certificateRequest.irecIssueRequestId}) state because of error: ${e.message}`
                 );
             }
         }
