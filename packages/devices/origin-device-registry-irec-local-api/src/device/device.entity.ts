@@ -30,8 +30,8 @@ export class Device extends ExtendedBaseEntity implements DeviceDTO {
     name: string;
 
     @ApiProperty({ type: String })
-    @Column()
-    defaultAccount: string;
+    @Column({ nullable: true })
+    defaultAccount: string | null;
 
     @ApiProperty({ type: String })
     @Column()
