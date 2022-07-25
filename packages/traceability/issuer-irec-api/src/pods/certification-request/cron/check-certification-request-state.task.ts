@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 
@@ -18,6 +18,8 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class CheckCertificationRequestStateTask {
+    private readonly logger = new Logger(CheckCertificationRequestStateTask.name);
+
     constructor(
         private readonly commandBus: CommandBus,
         @Inject(IREC_SERVICE)
@@ -36,37 +38,43 @@ export class CheckCertificationRequestStateTask {
         );
 
         for (const certificateRequest of certificationRequests) {
-            const user = await this.userService.findOne(certificateRequest.userId);
-            const irecIssue = await this.irecService.getIssueRequest(
-                user.organization.id,
-                certificateRequest.irecIssueRequestId
-            );
+            try {
+                const user = await this.userService.findOne(certificateRequest.userId);
+                const irecIssue = await this.irecService.getIssueRequest(
+                    user.organization.id,
+                    certificateRequest.irecIssueRequestId
+                );
 
-            if (!irecIssue) {
-                return;
-            }
+                if (!irecIssue) {
+                    return;
+                }
 
-            if (
-                irecIssue.status === IssuanceStatus.Approved ||
-                irecIssue.status === IssuanceStatus.Issued
-            ) {
-                await this.irecRepository.update(
-                    { irecIssueRequestId: certificateRequest.irecIssueRequestId },
-                    { irecAssetId: irecIssue.asset }
-                );
-                await this.commandBus.execute(
-                    new ApproveCertificationRequestCommand(certificateRequest.id)
-                );
-                this.eventBus.publish(
-                    new CertificationRequestStatusChangedEvent(
-                        certificateRequest,
-                        IssuanceStatus.Approved
-                    )
-                );
-            }
-            if (irecIssue.status === IssuanceStatus.Rejected) {
-                await this.commandBus.execute(
-                    new RevokeCertificationRequestCommand(certificateRequest.id)
+                if (
+                    irecIssue.status === IssuanceStatus.Approved ||
+                    irecIssue.status === IssuanceStatus.Issued
+                ) {
+                    await this.irecRepository.update(
+                        { irecIssueRequestId: certificateRequest.irecIssueRequestId },
+                        { irecAssetId: irecIssue.asset }
+                    );
+                    await this.commandBus.execute(
+                        new ApproveCertificationRequestCommand(certificateRequest.id)
+                    );
+                    this.eventBus.publish(
+                        new CertificationRequestStatusChangedEvent(
+                            certificateRequest,
+                            IssuanceStatus.Approved
+                        )
+                    );
+                }
+                if (irecIssue.status === IssuanceStatus.Rejected) {
+                    await this.commandBus.execute(
+                        new RevokeCertificationRequestCommand(certificateRequest.id)
+                    );
+                }
+            } catch (e) {
+                this.logger.error(
+                    `Cannot IREC certification request state ${certificateRequest.irecIssueRequestId} state because of error: ${e.message}`
                 );
             }
         }
