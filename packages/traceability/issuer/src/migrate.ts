@@ -8,9 +8,9 @@ import { RegistryExtended } from './ethers/RegistryExtended';
 import { PrivateIssuer } from './ethers/PrivateIssuer';
 
 type DeployParameters = {
-    gasLimit?: number,
-    gasPrice?: number
-}
+    gasLimit?: number;
+    gasPrice?: number;
+};
 
 export async function migratePrivateIssuer(
     provider: ethers.providers.FallbackProvider,
@@ -21,9 +21,9 @@ export async function migratePrivateIssuer(
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
-    const privateIssuerContract = deployParameters ?
-        await new factories.PrivateIssuerFactory(wallet).deploy(deployParameters) :
-        await new factories.PrivateIssuerFactory(wallet).deploy();
+    const privateIssuerContract = deployParameters
+        ? await new factories.PrivateIssuerFactory(wallet).deploy(deployParameters)
+        : await new factories.PrivateIssuerFactory(wallet).deploy();
 
     await privateIssuerContract.deployed();
 
@@ -45,9 +45,9 @@ export async function migrateIssuer(
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
-    const issuerContract = deployParameters ?
-        await new factories.IssuerFactory(wallet).deploy(deployParameters) :
-        await new factories.IssuerFactory(wallet).deploy()
+    const issuerContract = deployParameters
+        ? await new factories.IssuerFactory(wallet).deploy(deployParameters)
+        : await new factories.IssuerFactory(wallet).deploy();
 
     await issuerContract.deployed();
 
@@ -63,16 +63,16 @@ export async function migrateIssuer(
 export async function migrateRegistry(
     provider: ethers.providers.FallbackProvider,
     deployKey: string,
-    uri: string = '',
-    deployParameters?: DeployParameters
+    deployParameters?: DeployParameters,
+    uri = ''
 ): Promise<RegistryExtended> {
     const privateKeyDeployment = deployKey.startsWith('0x') ? deployKey : `0x${deployKey}`;
     const wallet = new ethers.Wallet(privateKeyDeployment, provider);
 
-    const registryContract = deployParameters ?
-        await new factories.RegistryExtendedFactory(wallet).deploy(uri, deployParameters) :
-        await new factories.RegistryExtendedFactory(wallet).deploy(uri)
-    
+    const registryContract = deployParameters
+        ? await new factories.RegistryExtendedFactory(wallet).deploy(uri, deployParameters)
+        : await new factories.RegistryExtendedFactory(wallet).deploy(uri);
+
     await registryContract.deployed();
 
     console.log(`RegistryExtended.sol deployed at ${registryContract.address}`);
