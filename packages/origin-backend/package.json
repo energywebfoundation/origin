@@ -1,6 +1,6 @@
 {
     "name": "@energyweb/origin-backend",
-    "version": "11.2.1",
+    "version": "11.2.2",
     "description": "API for managing users, certificate, requests and devices in the Origin project",
     "main": "dist/js/src/index.js",
     "scripts": {
