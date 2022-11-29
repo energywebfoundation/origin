@@ -1,0 +1,13 @@
+#!/bin/bash
+
+(cd ../../traceability/issuer-irec-api && yarn typeorm:run:origin-backend) &&
+(cd ../../traceability/issuer-irec-api && yarn typeorm:run:organization) &&
+(cd ../../traceability/issuer-irec-api && yarn typeorm:run:issuer) &&
+(cd ../../traceability/issuer-irec-api && yarn typeorm:run:device-registry-irec) &&
+(cd ../../traceability/issuer-irec-api && yarn typeorm:run:prod) &&
+(cd ../../trade/exchange-irec && yarn typeorm:run:device-registry) &&
+(cd ../../trade/exchange-irec && yarn typeorm:run:organization) &&
+(cd ../../trade/exchange-irec && yarn typeorm:run:origin-backend) &&
+(cd ../../trade/exchange-irec && yarn typeorm:run:device-registry-irec) &&
+(cd ../../trade/exchange-irec && yarn typeorm:run:prod) &&
+(cd ../../devices/origin-device-registry-irec-local-api && yarn typeorm:run:prod)

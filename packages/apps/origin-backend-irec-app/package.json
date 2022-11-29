@@ -19,10 +19,12 @@
         "test:mocha": "mocha -r ts-node/register test/*.e2e-spec.ts --timeout 60000 --exit",
         "test:e2e": "yarn test:mocha",
         "build:container:canary": "make build-canary",
-        "build:container:latest": "make build-latest"
+        "build:container:latest": "make build-latest",
+        "migrate:prod": "./bin/migrate"
     },
     "bin": {
-        "origin-backend-irec-app": "./bin/origin-backend-irec-app"
+        "origin-backend-irec-app": "./bin/origin-backend-irec-app",
+        "migrate": "./bin/migrate"
     },
     "homepage": "https://github.com/energywebfoundation/origin/tree/master/packages/origin-backend-irec-app#readme",
     "repository": {
