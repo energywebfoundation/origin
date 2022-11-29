@@ -25,6 +25,7 @@
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ormconfig-dev.ts",
         "typeorm:migrate": "yarn typeorm migration:generate -- -n",
         "typeorm:run": "yarn typeorm migration:run",
+        "typeorm:run:prod": "node_modules/typeorm/cli.js migration:run --config dist/js/ormconfig.js",
         "typeorm:drop": "yarn typeorm schema:drop",
         "typeorm:dropAndMigrate": "yarn typeorm:drop && yarn typeorm:run",
         "precommit": "lint-staged"
