@@ -1,13 +1,13 @@
 #!/bin/bash
 
-(cd ../../traceability/issuer-irec-api && yarn typeorm:run:origin-backend) &&
-(cd ../../traceability/issuer-irec-api && yarn typeorm:run:organization) &&
-(cd ../../traceability/issuer-irec-api && yarn typeorm:run:issuer) &&
-(cd ../../traceability/issuer-irec-api && yarn typeorm:run:device-registry-irec) &&
-(cd ../../traceability/issuer-irec-api && yarn typeorm:run:prod) &&
-(cd ../../trade/exchange-irec && yarn typeorm:run:device-registry) &&
-(cd ../../trade/exchange-irec && yarn typeorm:run:organization) &&
-(cd ../../trade/exchange-irec && yarn typeorm:run:origin-backend) &&
-(cd ../../trade/exchange-irec && yarn typeorm:run:device-registry-irec) &&
-(cd ../../trade/exchange-irec && yarn typeorm:run:prod) &&
-(cd ../../devices/origin-device-registry-irec-local-api && yarn typeorm:run:prod)
+yarn --cwd ../../traceability/issuer-irec-api typeorm:run:origin-backend &&
+yarn --cwd ../../traceability/issuer-irec-api typeorm:run:organization &&
+yarn --cwd ../../traceability/issuer-irec-api typeorm:run:issuer &&
+yarn --cwd ../../traceability/issuer-irec-api typeorm:run:device-registry-irec
+yarn --cwd ../../traceability/issuer-irec-api typeorm:run:prod &&
+yarn --cwd ../../trade/exchange-irec typeorm:run:device-registry &&
+yarn --cwd ../../trade/exchange-irec typeorm:run:organization &&
+yarn --cwd ../../trade/exchange-irec typeorm:run:origin-backend &&
+yarn --cwd ../../trade/exchange-irec typeorm:run:device-registry-irec &&
+yarn --cwd ../../trade/exchange-irec typeorm:run:prod &&
+yarn --cwd ../../devices/origin-device-registry-irec-local-api typeorm:run:prod
