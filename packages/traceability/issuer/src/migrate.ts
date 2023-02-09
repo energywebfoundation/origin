@@ -1,16 +1,11 @@
 import { ethers } from 'ethers';
 
-import { CertificateTopic } from './const';
+import { CertificateTopic, DeployParameters } from './const';
 
 import { factories } from './contracts';
 import { Issuer } from './ethers/Issuer';
 import { RegistryExtended } from './ethers/RegistryExtended';
 import { PrivateIssuer } from './ethers/PrivateIssuer';
-
-type DeployParameters = {
-    gasLimit?: number;
-    gasPrice?: number;
-};
 
 export async function migratePrivateIssuer(
     provider: ethers.providers.FallbackProvider,
