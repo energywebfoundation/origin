@@ -69,6 +69,8 @@ contract Registry is ERC1155, ERC1888 {
 				data: _data[i]
 			});
 		}
+		
+		_latestCertificateId = ids[ids.length - 1];
 
 		emit IssuanceBatch(operator, _topics, ids, _values);
 	}
