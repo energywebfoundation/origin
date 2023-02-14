@@ -9,10 +9,13 @@ import {
   UploadedFile,
 } from '@energyweb/origin-ui-core';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { useTranslation } from 'react-i18next';
 import { EnergyFormatter } from '@energyweb/origin-ui-utils';
 import { UnpackNestedValue } from 'react-hook-form';
 import { useCachedUser } from '../cached';
+
+dayjs.extend(utc);
 
 type FormValuesTypes = {
   fromTime: string;
