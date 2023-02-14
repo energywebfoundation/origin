@@ -59,7 +59,7 @@
         "@types/superagent": "4.1.15",
         "@types/supertest": "2.0.11",
         "chai": "4.3.4",
-        "class-validator": "0.13.2",
+        "class-validator": "0.14.0",
         "eslint-plugin-jest": "25.3.4",
         "ganache-cli": "6.12.2",
         "jest": "27.4.5",
