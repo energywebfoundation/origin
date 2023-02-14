@@ -30,8 +30,8 @@
     },
     "dependencies": {
         "@energyweb/origin-backend-core": "8.2.1",
-        "@nestjs/config": "1.0.2",
-        "@nestjs/swagger": "5.1.4",
+        "@nestjs/config": "1.2.1",
+        "@nestjs/swagger": "5.2.1",
         "bn.js": "5.2.0",
         "class-validator": "0.13.2",
         "pg": "8.7.1",
@@ -40,12 +40,12 @@
         "typeorm": "0.2.41"
     },
     "peerDependencies": {
-        "@nestjs/common": "8.1.1",
-        "@nestjs/core": "8.1.1"
+        "@nestjs/common": "8.4.7",
+        "@nestjs/core": "8.4.7"
     },
     "devDependencies": {
-        "@nestjs/common": "8.1.1",
-        "@nestjs/core": "8.1.1",
+        "@nestjs/common": "8.4.7",
+        "@nestjs/core": "8.4.7",
         "@types/bn.js": "5.1.0",
         "@types/mocha": "9.0.0",
         "@types/node": "14.18.10",
