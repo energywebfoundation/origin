@@ -41,11 +41,11 @@
     },
     "peerDependencies": {
         "@nestjs/common": "8.1.1",
-        "@nestjs/core": "8.1.1"
+        "@nestjs/core": "9.0.5"
     },
     "devDependencies": {
         "@nestjs/common": "8.1.1",
-        "@nestjs/core": "8.1.1",
+        "@nestjs/core": "9.0.5",
         "@types/bn.js": "5.1.0",
         "@types/mocha": "9.0.0",
         "@types/node": "14.18.10",
