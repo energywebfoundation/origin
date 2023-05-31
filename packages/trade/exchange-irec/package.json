@@ -73,7 +73,7 @@
         "moment": "2.29.2",
         "pg": "8.7.1",
         "reflect-metadata": "0.1.13",
-        "rxjs": "7.4.0",
+        "rxjs": "7.8.1",
         "typeorm": "0.2.41"
     },
     "devDependencies": {
