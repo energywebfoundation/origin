@@ -63,7 +63,7 @@
         "passport-jwt": "4.0.0",
         "passport-local": "1.0.0",
         "reflect-metadata": "0.1.13",
-        "rxjs": "7.4.0",
+        "rxjs": "7.8.1",
         "typeorm": "0.2.41",
         "uuid": "8.3.2"
     },
