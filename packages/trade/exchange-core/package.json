@@ -38,7 +38,7 @@
         "bn.js": "5.2.0",
         "chai": "4.3.4",
         "immutable": "4.0.0",
-        "moment": "2.29.2",
+        "moment": "2.29.4",
         "rxjs": "7.4.0"
     },
     "devDependencies": {
