@@ -60,7 +60,7 @@
     "devDependencies": {
         "@nestjs/cli": "8.1.4",
         "@nestjs/common": "8.1.1",
-        "@nestjs/core": "8.1.1",
+        "@nestjs/core": "9.0.5",
         "@nestjs/cqrs": "8.0.0",
         "@nestjs/schematics": "8.0.4",
         "@nestjs/testing": "8.1.1",
@@ -85,7 +85,7 @@
     },
     "peerDependencies": {
         "@nestjs/common": "8.1.1",
-        "@nestjs/core": "8.1.1",
+        "@nestjs/core": "9.0.5",
         "@nestjs/cqrs": "8.0.0",
         "@nestjs/typeorm": "8.0.2"
     },
