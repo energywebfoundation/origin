@@ -45,7 +45,7 @@
         "@nestjs/passport": "8.0.1",
         "@nestjs/schedule": "1.0.1",
         "@nestjs/swagger": "5.1.4",
-        "class-validator": "0.13.2",
+        "class-validator": "0.14.0",
         "ethers": "5.3.1",
         "ew-precise-proofs-js": "1.1.0",
         "ganache-cli": "6.12.2",
