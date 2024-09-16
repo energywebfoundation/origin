@@ -127,8 +127,8 @@
     "@storybook/addon-storyshots": "6.4.9",
     "@storybook/addon-storysource": "6.4.9",
     "@storybook/addons": "6.4.9",
-    "@storybook/builder-webpack5": "6.4.7",
-    "@storybook/manager-webpack5": "6.4.7",
+    "@storybook/builder-webpack5": "6.5.16",
+    "@storybook/manager-webpack5": "6.5.16",
     "@storybook/react": "6.4.7",
     "@storybook/testing-react": "1.2.2",
     "@storybook/theming": "6.4.9",
@@ -147,11 +147,11 @@
     "@types/react-is": "17.0.3",
     "@types/react-router-dom": "5.3.2",
     "@types/testing-library__jest-dom": "5.14.2",
-    "@types/webpack": "5.28.0",
+    "@types/webpack": "5.28.5",
     "@typescript-eslint/eslint-plugin": "5.8.1",
     "@typescript-eslint/parser": "5.8.1",
     "babel-jest": "27.4.5",
-    "babel-loader": "8.2.3",
+    "babel-loader": "8.4.1",
     "cypress": "9.2.0",
     "cypress-file-upload": "5.0.8",
     "cypress-wait-until": "1.7.2",
@@ -176,7 +176,7 @@
     "typescript": "4.5.4",
     "url-loader": "4.1.1",
     "webpack": "5.64.4",
-    "webpack-bundle-analyzer": "4.5.0"
+    "webpack-bundle-analyzer": "4.10.2"
   },
   "workspaces": [
     "./apps/*",
