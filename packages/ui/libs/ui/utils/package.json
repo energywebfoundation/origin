@@ -29,6 +29,6 @@
     "dayjs": "1.10.7",
     "lodash": "4.17.21",
     "query-string": "7.0.1",
-    "react-router": "6.0.2"
+    "react-router": "6.27.0"
   }
 }
