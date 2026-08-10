@@ -2,6 +2,9 @@
   <a href="https://www.energyweb.org" target="blank"><img src="./images/ew_origin.png" width="120" alt="Energy Web Foundation Logo" /></a>
 </p>
 
+!!! important "Origin has been replaced by Green Proofs"
+    Origin has been succeeded by [Green Proofs by Energy Web](https://docs.energyweb.org/energy-solutions/green-proofs-by-energy-web), which shares much of the same underlying DNA. New implementations should use Green Proofs going forward; this documentation is retained for reference only.
+
 # Energy Web Origin Overview 
 Energy Web (EW) Origin is a set of software development kits (SDKs) and backend services that together provide a platform for the issuance, management and trading of [Energy Attribute Certificates (EACs)](./user-guide-glossary.md#energy-attribute-certificate). 
 
