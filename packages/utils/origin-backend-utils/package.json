@@ -33,7 +33,7 @@
         "@nestjs/config": "1.0.2",
         "@nestjs/swagger": "5.1.4",
         "bn.js": "5.2.0",
-        "class-validator": "0.13.2",
+        "class-validator": "0.14.0",
         "pg": "8.7.1",
         "polly-js": "1.8.3",
         "rxjs": "7.4.0",
