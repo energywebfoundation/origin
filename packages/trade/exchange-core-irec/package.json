@@ -36,7 +36,7 @@
     "dependencies": {
         "@energyweb/exchange-core": "3.2.5",
         "@energyweb/utils-general": "11.2.1",
-        "@nestjs/common": "8.1.1",
+        "@nestjs/common": "8.4.7",
         "bn.js": "5.2.0",
         "immutable": "4.0.0",
         "moment": "2.29.2",
