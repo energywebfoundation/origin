@@ -42,7 +42,7 @@
         "@nestjs/typeorm": "8.0.2",
         "class-sanitizer": "1.0.1",
         "class-transformer": "0.3.1",
-        "class-validator": "0.13.2",
+        "class-validator": "0.14.0",
         "ethers": "5.3.1",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.4.0",
