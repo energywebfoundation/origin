@@ -69,7 +69,7 @@
         "ethers": "5.3.1",
         "ganache-core": "2.13.2",
         "mocha": "9.1.3",
-        "moment": "2.29.2",
+        "moment": "2.29.4",
         "superagent-use": "0.1.0",
         "supertest": "6.1.6",
         "supertest-capture-error": "1.0.0",

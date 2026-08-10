@@ -58,7 +58,7 @@
         "class-validator": "0.13.2",
         "ethers": "5.3.1",
         "immutable": "4.0.0",
-        "moment": "2.29.2",
+        "moment": "2.29.4",
         "moment-range": "4.0.2",
         "pg": "8.7.1",
         "polly-js": "1.8.3",
