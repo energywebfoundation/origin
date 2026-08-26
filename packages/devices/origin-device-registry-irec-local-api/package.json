@@ -51,7 +51,7 @@
         "ethers": "5.3.1",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.4.0",
-        "typeorm": "0.2.41"
+        "typeorm": "0.3.26"
     },
     "devDependencies": {
         "@nestjs/cli": "8.1.4",

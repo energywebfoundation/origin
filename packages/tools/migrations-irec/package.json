@@ -46,7 +46,7 @@
         "dotenv": "10.0.0",
         "ethers": "5.3.1",
         "pg": "8.7.1",
-        "typeorm": "0.2.41",
+        "typeorm": "0.3.26",
         "winston": "3.3.3",
         "winston-transport": "4.4.1",
         "write-json-file": "5.0.0",
