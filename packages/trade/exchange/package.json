@@ -57,7 +57,7 @@
         "class-transformer": "0.3.1",
         "class-validator": "0.13.2",
         "ethers": "5.3.1",
-        "immutable": "4.0.0",
+        "immutable": "4.3.8",
         "moment": "2.29.2",
         "moment-range": "4.0.2",
         "pg": "8.7.1",
