@@ -23,7 +23,7 @@
         "client:clean": "find src/ -type f  ! -name \"*.ts\"  -delete"
     },
     "dependencies": {
-        "axios": "0.24.0"
+        "axios": "0.32.0"
     },
     "devDependencies": {
         "@energyweb/origin-device-registry-api": "1.1.1",
