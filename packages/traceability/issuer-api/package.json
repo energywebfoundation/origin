@@ -54,7 +54,7 @@
         "pg": "8.7.1",
         "rxjs": "7.4.0",
         "swagger-ui-express": "4.2.0",
-        "typeorm": "0.2.41",
+        "typeorm": "0.3.26",
         "cryptr": "6.0.2"
     },
     "devDependencies": {
