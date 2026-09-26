@@ -24,6 +24,6 @@
   "typings": "dist/index.d.ts",
   "dependencies": {
     "i18next": "21.6.4",
-    "react-i18next": "11.14.3"
+    "react-i18next": "11.18.6"
   }
 }
